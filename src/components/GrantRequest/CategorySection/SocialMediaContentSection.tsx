@@ -13,7 +13,7 @@ import { asNumber } from '../../../entities/Proposal/utils'
 import { disableOnWheelInput } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import { useGrantCategoryEditor } from '../../../hooks/useGrantCategoryEditor'
-import Label from '../../Common/Label'
+import Label from '../../Common/Typography/Label'
 import { ContentSection } from '../../Layout/ContentLayout'
 import MultipleChoiceField from '../MultipleChoiceField'
 

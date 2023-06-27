@@ -4,8 +4,8 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
 import useFormatMessage from '../../../../hooks/useFormatMessage'
-import Markdown from '../../../Common/Markdown/Markdown'
 import SnapshotRedirectButton from '../../../Common/SnapshotRedirectButton'
+import Markdown from '../../../Common/Typography/Markdown'
 
 import './SidebarSnapshotRedirect.css'
 

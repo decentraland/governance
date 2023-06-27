@@ -8,7 +8,7 @@ import useFormatMessage from '../../../hooks/useFormatMessage'
 import { formatDate } from '../../../utils/date/Time'
 import locations from '../../../utils/locations'
 import DateTooltip from '../../Common/DateTooltip'
-import Link from '../../Common/Link'
+import Link from '../../Common/Typography/Link'
 
 import { getStatusIcon } from './ProposalUpdate'
 import './ProposalUpdate.css'

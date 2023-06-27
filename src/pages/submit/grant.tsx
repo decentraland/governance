@@ -10,7 +10,7 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import camelCase from 'lodash/camelCase'
 
 import { Governance } from '../../clients/Governance'
-import Markdown from '../../components/Common/Markdown/Markdown'
+import Markdown from '../../components/Common/Typography/Markdown'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import GrantRequestCategorySection from '../../components/GrantRequest/GrantRequestCategorySection'
 import GrantRequestDueDiligenceSection, {

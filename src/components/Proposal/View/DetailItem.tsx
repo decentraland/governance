@@ -2,7 +2,7 @@ import React from 'react'
 
 import classNames from 'classnames'
 
-import Text from '../../Common/Text/Text'
+import Text from '../../Common/Typography/Text'
 import Helper from '../../Helper/Helper'
 
 import './DetailItem.css'

@@ -6,7 +6,7 @@ import type { AccordionTitleProps } from 'semantic-ui-react'
 import Accordion from 'semantic-ui-react/dist/commonjs/modules/Accordion/Accordion'
 
 import { isHttpsURL } from '../../helpers'
-import LinkWithTitle from '../Common/Link/LinkWithTitle'
+import LinkWithTitle from '../Common/Typography/LinkWithTitle'
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
 
 import './BreakdownAccordion.css'

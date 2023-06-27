@@ -4,7 +4,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { NewProposalPOI } from '../../entities/Proposal/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import Link from '../Common/Link'
+import Link from '../Common/Typography/Link'
 import JumpIn from '../Icon/JumpIn'
 
 import './ProposalFooterPoi.css'

@@ -10,7 +10,7 @@ import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 import { JOIN_DISCORD_URL } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Time from '../../utils/date/Time'
-import Text from '../Common/Text/Text'
+import Text from '../Common/Typography/Text'
 
 import './ProposalModal.css'
 import './SuccessModal.css'

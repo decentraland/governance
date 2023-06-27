@@ -7,7 +7,7 @@ import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useIdentityModalContext from '../../../hooks/useIdentityModalContext'
 import useIsProfileValidated from '../../../hooks/useIsProfileValidated'
-import Markdown from '../../Common/Markdown/Markdown'
+import Markdown from '../../Common/Typography/Markdown'
 import Identity from '../../Image/Identity'
 
 import AccountsConnectModal from './AccountsConnectModal'

@@ -3,7 +3,7 @@ import React from 'react'
 import { Badge as GovernanceBadge } from '../../../entities/Badges/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Time from '../../../utils/date/Time'
-import Markdown from '../../Common/Markdown/Markdown'
+import Markdown from '../../Common/Typography/Markdown'
 
 import Badge, { BadgeVariant } from './Badge'
 import './BadgeDetail.css'

@@ -6,7 +6,7 @@ import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
 import { HttpStat } from '../../clients/HttpStat'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import Label from '../Common/Label'
+import Label from '../Common/Typography/Label'
 import ErrorMessage from '../Error/ErrorMessage'
 import { ContentSection } from '../Layout/ContentLayout'
 

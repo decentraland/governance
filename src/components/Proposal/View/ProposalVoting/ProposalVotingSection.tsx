@@ -13,7 +13,7 @@ import useVotingPowerOnProposal from '../../../../hooks/useVotingPowerOnProposal
 import { ProposalPageState } from '../../../../pages/proposal'
 import Time from '../../../../utils/date/Time'
 import { getPartyVotes, getVotingSectionConfig } from '../../../../utils/votes/utils'
-import Markdown from '../../../Common/Markdown/Markdown'
+import Markdown from '../../../Common/Typography/Markdown'
 import SidebarHeaderLabel from '../SidebarHeaderLabel'
 
 import { ChoiceButtons } from './ChoiceButtons'

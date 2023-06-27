@@ -10,7 +10,7 @@ import { EDIT_DELEGATE_SNAPSHOT_URL } from '../../../entities/Proposal/utils'
 import useDelegatesInfo, { Delegate } from '../../../hooks/useDelegatesInfo'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useVotingPowerDistribution from '../../../hooks/useVotingPowerDistribution'
-import Markdown from '../../Common/Markdown/Markdown'
+import Markdown from '../../Common/Typography/Markdown'
 import DelegatesTable from '../../Delegation/DelegatesTable'
 
 import './VotingPowerDelegationCandidatesList.css'

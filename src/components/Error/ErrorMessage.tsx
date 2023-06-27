@@ -6,8 +6,8 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Time from '../../utils/date/Time'
-import Link from '../Common/Link'
-import Markdown from '../Common/Markdown/Markdown'
+import Link from '../Common/Typography/Link'
+import Markdown from '../Common/Typography/Markdown'
 import ErrorNotice from '../Icon/ErrorNotice'
 
 import './ErrorMessage.css'

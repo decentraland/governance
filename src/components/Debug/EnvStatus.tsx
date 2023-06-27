@@ -17,7 +17,7 @@ import {
   SEGMENT_KEY,
   TEST_ENV_VAR,
 } from '../../constants'
-import Label from '../Common/Label'
+import Label from '../Common/Typography/Label'
 import ErrorMessage from '../Error/ErrorMessage'
 import { ContentSection } from '../Layout/ContentLayout'
 

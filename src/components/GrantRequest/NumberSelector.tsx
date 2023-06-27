@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 
-import Label from '../Common/Label'
-import Markdown from '../Common/Markdown/Markdown'
+import Label from '../Common/Typography/Label'
+import Markdown from '../Common/Typography/Markdown'
 import Add from '../Icon/Add'
 import Remove from '../Icon/Remove'
 

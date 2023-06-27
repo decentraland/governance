@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Popup, PopupProps } from 'decentraland-ui/dist/components/Popup/Popup'
 
-import Markdown from '../Common/Markdown/Markdown'
+import Markdown from '../Common/Typography/Markdown'
 import Info from '../Icon/Info'
 
 import { HELPER_TEXT_MARKDOWN_STYLES } from './HelperText'

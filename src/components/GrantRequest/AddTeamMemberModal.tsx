@@ -7,7 +7,7 @@ import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { TeamMember, TeamMemberItemSchema } from '../../entities/Grant/types'
 import { isHttpsURL } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import Label from '../Common/Label'
+import Label from '../Common/Typography/Label'
 import { ContentSection } from '../Layout/ContentLayout'
 
 import AddModal from './AddModal'

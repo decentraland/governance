@@ -5,7 +5,7 @@ import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import Link from '../components/Common/Link'
+import Link from '../components/Common/Typography/Link'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import UpdateMarkdownView from '../components/Updates/UpdateMarkdownView'

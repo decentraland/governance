@@ -4,8 +4,8 @@ import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
 import useFormatMessage from '../../../../hooks/useFormatMessage'
-import Markdown from '../../../Common/Markdown/Markdown'
 import SnapshotRedirectButton from '../../../Common/SnapshotRedirectButton'
+import Markdown from '../../../Common/Typography/Markdown'
 import VotingDisabled from '../../../Icon/VotingDisabled'
 import '../../ProposalModal.css'
 

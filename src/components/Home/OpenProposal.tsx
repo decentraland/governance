@@ -12,7 +12,7 @@ import useProposalVotes from '../../hooks/useProposalVotes'
 import Time from '../../utils/date/Time'
 import locations from '../../utils/locations'
 import CategoryPill from '../Category/CategoryPill'
-import Link from '../Common/Link'
+import Link from '../Common/Typography/Link'
 import ChevronRight from '../Icon/ChevronRight'
 import Username from '../User/Username'
 

@@ -4,7 +4,7 @@ import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import useFormatMessage from '../../hooks/useFormatMessage'
-import Markdown from '../Common/Markdown/Markdown'
+import Markdown from '../Common/Typography/Markdown'
 
 import VotingPowerListItem from './VotingPowerListItem'
 import './VotingPowerListModal.css'

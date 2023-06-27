@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Checkbox } from '../Checkbox/Checkbox'
-import Markdown from '../Common/Markdown/Markdown'
+import Markdown from '../Common/Typography/Markdown'
 import { ContentSection } from '../Layout/ContentLayout'
 
 import './CheckboxField.css'

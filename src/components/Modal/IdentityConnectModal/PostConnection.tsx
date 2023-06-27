@@ -5,7 +5,7 @@ import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Avatar from '../../Common/Avatar'
-import Markdown from '../../Common/Markdown/Markdown'
+import Markdown from '../../Common/Typography/Markdown'
 import ForumBlue from '../../Icon/ForumBlue'
 import LinkFailed from '../../Icon/LinkFailed'
 import LinkSucceded from '../../Icon/LinkSucceded'

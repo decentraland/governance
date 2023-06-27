@@ -7,7 +7,7 @@ import { BudgetBreakdownConcept } from '../../entities/Grant/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import { PROPOSAL_DESCRIPTION_MARKDOWN_STYLES } from '../../pages/proposal'
-import Markdown from '../Common/Markdown/Markdown'
+import Markdown from '../Common/Typography/Markdown'
 
 import BreakdownAccordion, { BreakdownItem } from './BreakdownAccordion'
 

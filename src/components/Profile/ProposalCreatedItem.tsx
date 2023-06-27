@@ -11,7 +11,7 @@ import useProposalVotes from '../../hooks/useProposalVotes'
 import { abbreviateTimeDifference } from '../../utils/date/Time'
 import locations from '../../utils/locations'
 import CategoryPill from '../Category/CategoryPill'
-import Link from '../Common/Link'
+import Link from '../Common/Typography/Link'
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
 import StatusPill from '../Status/StatusPill'
 

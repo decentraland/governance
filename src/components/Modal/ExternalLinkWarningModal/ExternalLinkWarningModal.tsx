@@ -6,8 +6,8 @@ import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { openUrl } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'
-import Markdown from '../../Common/Markdown/Markdown'
-import Heading from '../../Common/Text/Heading'
+import Heading from '../../Common/Typography/Heading'
+import Markdown from '../../Common/Typography/Markdown'
 
 import './ExternalLinkWarningModal.css'
 

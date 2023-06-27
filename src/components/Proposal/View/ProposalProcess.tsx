@@ -2,7 +2,7 @@ import React from 'react'
 
 import classNames from 'classnames'
 
-import Markdown from '../../Common/Markdown/Markdown'
+import Markdown from '../../Common/Typography/Markdown'
 
 import './ProposalProcess.css'
 import Section from './Section'

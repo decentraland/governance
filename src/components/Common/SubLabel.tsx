@@ -1,7 +1,7 @@
 import React from 'react'
 
-import Markdown from './Markdown/Markdown'
-import Text from './Text/Text'
+import Markdown from './Typography/Markdown'
+import Text from './Typography/Text'
 
 import './SubLabel.css'
 

@@ -9,7 +9,7 @@ import useAnchor from 'decentraland-gatsby/dist/hooks/useAnchor'
 import { LoginModal, LoginModalOptionType } from 'decentraland-ui/dist/components/LoginModal/LoginModal'
 
 import useFormatMessage from '../../hooks/useFormatMessage'
-import Markdown from '../Common/Markdown/Markdown'
+import Markdown from '../Common/Typography/Markdown'
 
 import './WalletSelectorModal.css'
 

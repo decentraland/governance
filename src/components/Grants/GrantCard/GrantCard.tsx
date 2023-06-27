@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import { GrantWithUpdate } from '../../../entities/Proposal/types'
 import { isProposalInCliffPeriod } from '../../../entities/Proposal/utils'
 import locations from '../../../utils/locations'
-import Link from '../../Common/Link'
+import Link from '../../Common/Typography/Link'
 import ProposalUpdate from '../../Proposal/Update/ProposalUpdate'
 
 import CliffProgress from './CliffProgress'

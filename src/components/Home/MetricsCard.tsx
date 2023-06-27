@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 
-import Link from '../Common/Link'
+import Link from '../Common/Typography/Link'
 
 import HomeLoader from './HomeLoader'
 import './MetricsCard.css'

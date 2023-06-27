@@ -12,10 +12,10 @@ import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectF
 
 import { Governance } from '../../clients/Governance'
 import MarkdownField from '../../components/Common/Form/MarkdownField'
-import Label from '../../components/Common/Label'
-import Markdown from '../../components/Common/Markdown/Markdown'
 import SubLabel from '../../components/Common/SubLabel'
-import Text from '../../components/Common/Text/Text'
+import Label from '../../components/Common/Typography/Label'
+import Markdown from '../../components/Common/Typography/Markdown'
+import Text from '../../components/Common/Typography/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'

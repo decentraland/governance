@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Markdown from '../Common/Markdown/Markdown'
+import Markdown from '../Common/Typography/Markdown'
 
 import './HomeSectionHeader.css'
 

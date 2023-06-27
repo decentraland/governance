@@ -4,8 +4,8 @@ import classNames from 'classnames'
 
 import { disableOnWheelInput } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import Label from '../Common/Label'
-import Markdown from '../Common/Markdown/Markdown'
+import Label from '../Common/Typography/Label'
+import Markdown from '../Common/Typography/Markdown'
 import Helper from '../Helper/Helper'
 import ExclamationCircle from '../Icon/ExclamationCircle'
 

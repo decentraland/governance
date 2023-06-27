@@ -8,10 +8,10 @@ import omit from 'lodash/omit'
 import emoji from 'remark-emoji'
 import gfm from 'remark-gfm'
 
-import Link from '../Link/Link'
-import Heading from '../Text/Heading'
-import List, { ListItem } from '../Text/List'
-import Text, { FontSize } from '../Text/Text'
+import Heading from './Heading'
+import Link from './Link'
+import List, { ListItem } from './List'
+import Text, { FontSize } from './Text'
 
 const plugins = [gfm, emoji] as any
 type MarkdownKey = keyof Components

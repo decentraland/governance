@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { NewGrantCategory } from '../../entities/Grant/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import Label from '../Common/Label'
+import Label from '../Common/Typography/Label'
 
 import CheckboxField from './CheckboxField'
 import GrantRequestSection from './GrantRequestSection'

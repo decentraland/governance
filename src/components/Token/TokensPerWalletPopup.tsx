@@ -7,7 +7,7 @@ import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import { TokenInWallet } from '../../entities/Transparency/types'
 import { blockExplorerLink } from '../../entities/Transparency/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import Text from '../Common/Text/Text'
+import Text from '../Common/Typography/Text'
 import Info from '../Icon/Info'
 
 import './TokensPerWalletPopup.css'

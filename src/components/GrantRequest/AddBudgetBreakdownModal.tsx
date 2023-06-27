@@ -8,7 +8,7 @@ import { BudgetBreakdownConcept, BudgetBreakdownConceptSchema } from '../../enti
 import { asNumber } from '../../entities/Proposal/utils'
 import { isHttpsURL } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import Label from '../Common/Label'
+import Label from '../Common/Typography/Label'
 import { ContentSection } from '../Layout/ContentLayout'
 
 import AddModal from './AddModal'

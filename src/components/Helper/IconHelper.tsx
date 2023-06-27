@@ -3,7 +3,7 @@ import React from 'react'
 import classNames from 'classnames'
 import { Popup, PopupProps } from 'decentraland-ui/dist/components/Popup/Popup'
 
-import Markdown from '../Common/Markdown/Markdown'
+import Markdown from '../Common/Typography/Markdown'
 
 type Props = Pick<PopupProps, 'position'> & {
   text: string

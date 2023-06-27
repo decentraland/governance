@@ -6,8 +6,8 @@ import { ProposalAttributes, ProposalType } from '../../../entities/Proposal/typ
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import { useTenderProposals } from '../../../hooks/useTenderProposals'
 import locations, { navigate } from '../../../utils/locations'
-import Markdown from '../../Common/Markdown/Markdown'
 import Pill from '../../Common/Pill'
+import Markdown from '../../Common/Typography/Markdown'
 
 import './ProposalPromotionSection.css'
 

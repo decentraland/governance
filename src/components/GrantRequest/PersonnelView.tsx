@@ -3,7 +3,7 @@ import React, { useMemo } from 'react'
 import { TeamMember } from '../../entities/Grant/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import { PROPOSAL_DESCRIPTION_MARKDOWN_STYLES } from '../../pages/proposal'
-import Markdown from '../Common/Markdown/Markdown'
+import Markdown from '../Common/Typography/Markdown'
 
 import BreakdownAccordion, { BreakdownItem } from './BreakdownAccordion'
 

@@ -8,7 +8,7 @@ import useFormatMessage from '../../../hooks/useFormatMessage'
 import Time from '../../../utils/date/Time'
 import locations, { navigate } from '../../../utils/locations'
 import DateTooltip from '../../Common/DateTooltip'
-import Markdown from '../../Common/Markdown/Markdown'
+import Markdown from '../../Common/Typography/Markdown'
 import Helper from '../../Helper/Helper'
 
 import './ProposalUpdatesActions.css'

@@ -1,10 +1,9 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import Text from '../../Common/Text/Text'
+import Text from '../../Common/Typography/Text'
 import LinkIcon from '../../Icon/LinkIcon'
 
 import './CandidateDetails.css'

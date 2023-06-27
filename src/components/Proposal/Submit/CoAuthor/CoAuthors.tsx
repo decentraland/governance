@@ -1,8 +1,8 @@
 import React from 'react'
 
 import useFormatMessage from '../../../../hooks/useFormatMessage'
-import Label from '../../../Common/Label'
 import SubLabel from '../../../Common/SubLabel'
+import Label from '../../../Common/Typography/Label'
 
 import CoAuthorSelect from './CoAuthorSelect'
 import './CoAuthors.css'

@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { PROPOSAL_DESCRIPTION_MARKDOWN_STYLES } from '../../../pages/proposal'
-import Markdown from '../../Common/Markdown/Markdown'
+import Markdown from '../../Common/Typography/Markdown'
 
 interface Props {
   title: string
