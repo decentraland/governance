@@ -2,19 +2,20 @@
   margin-bottom: 8px;
 }
 
-.SidebarSnapshotRedirect__Text > p.dg.Paragraph {
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 24px !important;
-  letter-spacing: 0 !important;
+.SidebarSnapshotRedirect__Markdown {
   text-align: left;
   margin-bottom: 8px;
 }
 
-.SidebarSnapshotRedirect__Text > p.dg.Paragraph > .dg.Bold {
-  font-weight: 500;
+.SidebarSnapshotRedirect__Markdown:last-child {
+  margin-bottom: 12px;
 }
 
-.SidebarSnapshotRedirect__Text > p.dg.Paragraph:last-child {
-  margin-bottom: 12px;
+.SidebarSnapshotRedirect__Text {
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+}
+
+.SidebarSnapshotRedirect__StrongText {
+  font-weight: 500 !important;
 }
