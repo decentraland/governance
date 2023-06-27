@@ -17,7 +17,7 @@
   align-items: center;
 }
 
-.PostConnection__Text--subtext {
+.PostConnection__Subtext {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -25,39 +25,34 @@
   margin-bottom: 8px;
 }
 
-.PostConnection__Text--subtext > svg {
+.PostConnection__Subtext > svg {
   margin-left: 2px;
 }
 
-.PostConnection__Text .dg.Paragraph {
-  font-style: normal;
-  font-weight: 400;
-  font-size: 15px;
-  line-height: 24px;
+.PostConnection__TextParagraph {
+  font-weight: 400 !important;
   text-align: center;
   margin-bottom: 8px;
   max-width: 70%;
 }
 
-.PostConnection__Text .dg.Paragraph .Bold {
-  font-weight: 600;
-  font-size: 17px;
-  line-height: 26px;
-  letter-spacing: -0.2px;
+.PostConnection__TextStrong {
+  font-weight: 600 !important;
+  font-size: 17px !important;
+  line-height: 26px !important;
+  letter-spacing: -0.2px !important;
 }
 
-.PostConnection__Text--subtext .dg.Paragraph,
-.PostConnection__Text--subtext .dg.Paragraph .Bold {
-  font-style: normal;
-  font-weight: 400;
-  font-size: 13px;
-  color: var(--black-600);
+.PostConnection__SubtextParagraph,
+.PostConnection__SubtextStrong {
+  font-weight: 400 !important;
+  color: var(--black-600) !important;
   max-width: 100%;
   margin: 0;
 }
 
-.PostConnection__Text--subtext .dg.Paragraph .Bold {
-  font-weight: 600;
+.PostConnection__SubtextStrong {
+  font-weight: 600 !important;
 }
 
 .PostConnection__Action .ui.primary.button {
