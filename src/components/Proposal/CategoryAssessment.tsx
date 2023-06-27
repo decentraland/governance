@@ -1,8 +1,7 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
 import { NewGrantCategory } from '../../entities/Grant/types'
+import useFormatMessage from '../../hooks/useFormatMessage'
 
 import './CategoryAssessment.css'
 

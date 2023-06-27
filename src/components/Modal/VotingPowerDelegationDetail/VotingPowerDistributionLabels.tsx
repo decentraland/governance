@@ -1,9 +1,8 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
 import { VpDistribution } from '../../../clients/SnapshotGraphqlTypes'
 import { getFormattedPercentage } from '../../../helpers'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import { EMPTY_DISTRIBUTION } from '../../../hooks/useVotingPowerDistribution'
 import MobileSlider from '../../Common/MobileSlider'
 

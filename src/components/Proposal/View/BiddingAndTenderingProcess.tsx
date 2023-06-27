@@ -1,8 +1,7 @@
 import React, { useMemo } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import useProposal from '../../../hooks/useProposal'
 import Time from '../../../utils/date/Time'
 

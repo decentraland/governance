@@ -1,8 +1,7 @@
 import React, { useMemo } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
 import { ProposalType } from '../../../entities/Proposal/types'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 
 import ProposalProcess, { ProcessStatus, ProcessType } from './ProposalProcess'
 

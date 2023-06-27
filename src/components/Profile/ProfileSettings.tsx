@@ -1,9 +1,9 @@
 import React from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 
+import useFormatMessage from '../../hooks/useFormatMessage'
 import useIdentityModalContext from '../../hooks/useIdentityModalContext'
 import useIsProfileValidated from '../../hooks/useIsProfileValidated'
 import Gear from '../Icon/Gear'

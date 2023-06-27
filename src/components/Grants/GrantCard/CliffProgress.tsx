@@ -1,9 +1,8 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
 import { CLIFF_PERIOD_IN_DAYS } from '../../../entities/Proposal/utils'
 import { getRoundedPercentage } from '../../../helpers'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import Time from '../../../utils/date/Time'
 import '../../Modal/VotingPowerDelegationDetail/VotingPowerDistribution.css'
 

@@ -8,7 +8,7 @@ const sharp = require('sharp')
 sharp.cache(false)
 sharp.simd(false)
 
-exports.onCreateWebpackConfig = ({ actions, plugins }) => {
+exports.onCreateWebpackConfig = ({ stage, actions, getConfig }) => {
   actions.setWebpackConfig({
     resolve: {
       fallback: {
@@ -22,4 +22,14 @@ exports.onCreateWebpackConfig = ({ actions, plugins }) => {
       },
     },
   })
+  // Silence 'conflicting order' warning for CSS modules.
+  // This is only an issue with regular CSS being imported.
+  if (stage === 'build-javascript' || stage === 'develop') {
+    const config = getConfig()
+    const miniCssExtractPlugin = config.plugins.find((plugin) => plugin.constructor.name === 'MiniCssExtractPlugin')
+    if (miniCssExtractPlugin) {
+      miniCssExtractPlugin.options.ignoreOrder = true
+    }
+    actions.replaceWebpackConfig(config)
+  }
 }

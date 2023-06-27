@@ -1,9 +1,9 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { ChoiceColor } from '../../entities/Votes/types'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import ChevronRight from '../Icon/ChevronRight'
 import TextWithTooltip from '../Proposal/View/TextWithTooltip'
 

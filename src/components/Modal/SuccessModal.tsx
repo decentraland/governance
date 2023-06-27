@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react'
 
 import classNames from 'classnames'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
@@ -9,11 +8,11 @@ import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { JOIN_DISCORD_URL } from '../../entities/Proposal/utils'
 import useClipboardCopy from '../../hooks/useClipboardCopy'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import Time from '../../utils/date/Time'
 import Text from '../Common/Text/Text'
 
 import './ProposalModal.css'
-import './SuccessModal.css'
 
 export type SuccessModalProps = Omit<ModalProps, 'children'> & {
   onDismiss: (e: React.MouseEvent<unknown>) => void

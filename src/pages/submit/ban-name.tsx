@@ -4,8 +4,6 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
@@ -23,7 +21,8 @@ import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { NewProposalBanName, newProposalBanNameScheme } from '../../entities/Proposal/types'
 import { isAlreadyBannedName, isValidName } from '../../entities/Proposal/utils'
-import locations from '../../utils/locations'
+import useFormatMessage from '../../hooks/useFormatMessage'
+import locations, { navigate } from '../../utils/locations'
 
 import './submit.css'
 

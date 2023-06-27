@@ -1,11 +1,11 @@
 import React, { useCallback, useMemo } from 'react'
 import { Control, Controller } from 'react-hook-form'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import type { DropdownItemProps } from 'decentraland-ui'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 
 import { CommitteeName } from '../../../clients/DclData'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import useTransparency from '../../../hooks/useTransparency'
 
 interface ExtendedController extends React.ComponentProps<typeof Controller> {
