@@ -1,10 +1,10 @@
 import React from 'react'
 
 import { useQuery } from '@tanstack/react-query'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { Governance } from '../../../clients/Governance'
 import { DEFAULT_QUERY_STALE_TIME } from '../../../hooks/constants'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import Open from '../../Icon/Open'
 
 import './LinkWithTitle.css'
@@ -19,6 +19,7 @@ const fetchTitle = async (url: string) => {
     return response.title || ''
   } catch (error) {
     console.error(error)
+    return ''
   }
 }
 

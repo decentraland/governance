@@ -2,11 +2,11 @@ import React, { useEffect } from 'react'
 
 import Textarea from 'decentraland-gatsby/dist/components/Form/Textarea'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
 import { TeamMember, TeamMemberItemSchema } from '../../entities/Grant/types'
 import { isHttpsURL } from '../../helpers'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import Label from '../Common/Label'
 import { ContentSection } from '../Layout/ContentLayout'
 

@@ -1,10 +1,11 @@
 import React from 'react'
+import { useIntl } from 'react-intl'
 
-import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import kebabCase from 'lodash/kebabCase'
 
 import { ProposalAttributes, ProposalType } from '../../../../entities/Proposal/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../../../helpers'
+import useFormatMessage from '../../../../hooks/useFormatMessage'
 import Markdown from '../../../Common/Markdown/Markdown'
 import Text from '../../../Common/Text/Text'
 

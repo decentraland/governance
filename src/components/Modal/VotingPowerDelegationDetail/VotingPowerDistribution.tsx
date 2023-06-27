@@ -2,9 +2,9 @@ import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 
 import classNames from 'classnames'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { VpDistribution } from '../../../clients/SnapshotGraphqlTypes'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import { EMPTY_DISTRIBUTION } from '../../../hooks/useVotingPowerDistribution'
 
 import './VotingPowerDistribution.css'

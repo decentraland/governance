@@ -106,7 +106,7 @@
   color: var(--black-600);
 }
 
-.ProposalItem__Details > span.Username > img.dg.dcl-avatar {
+.ProposalItem__Details > span.Username > img.Avatar {
   margin: 0 !important;
 }
 

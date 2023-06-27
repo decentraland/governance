@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import isEmpty from 'lodash/isEmpty'
 
 import { GrantRequest, GrantRequestTeam, TeamMember } from '../../entities/Grant/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import Label from '../Common/Label'
 import SubLabel from '../Common/SubLabel'
 

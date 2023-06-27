@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { openUrl } from '../../../helpers'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import Markdown from '../../Common/Markdown/Markdown'
 import Heading from '../../Common/Text/Heading'
 

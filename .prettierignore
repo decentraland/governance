@@ -5,3 +5,4 @@ public
 node_modules
 lib
 gatsby-browser.js
+src/migrations

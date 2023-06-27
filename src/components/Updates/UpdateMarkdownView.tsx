@@ -1,8 +1,7 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
 import { UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import Time, { formatDate } from '../../utils/date/Time'
 import ArticleSectionHeading from '../Common/ArticleSectionHeading'
 import DateTooltip from '../Common/DateTooltip'

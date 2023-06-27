@@ -1,8 +1,8 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import { env } from '../../../utils/env'
 import Markdown from '../../Common/Markdown/Markdown'
 import Pill from '../../Common/Pill'

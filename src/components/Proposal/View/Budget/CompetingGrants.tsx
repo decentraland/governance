@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import snakeCase from 'lodash/snakeCase'
 
 import { BudgetWithContestants } from '../../../../entities/Budget/types'
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
+import useFormatMessage from '../../../../hooks/useFormatMessage'
 import CompetingButton from '../CompetingButton'
 
 import CompetingProposalsSidebar from './CompetingProposalsSidebar'

@@ -1,11 +1,11 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import Link from 'decentraland-gatsby/dist/components/Text/Link'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 
 import { HiringType, PoiType, ProposalType, isHiringType } from '../../entities/Proposal/types'
+import useFormatMessage from '../../hooks/useFormatMessage'
+import { navigate } from '../../utils/locations'
+import Link from '../Common/Link'
 import Markdown from '../Common/Markdown/Markdown'
 import Text from '../Common/Text/Text'
 import AddPoi from '../Icon/ProposalCategories/AddPoi'

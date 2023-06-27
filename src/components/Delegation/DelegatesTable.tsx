@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
 
 import { Delegate } from '../../hooks/useDelegatesInfo'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import { useSortingByKey } from '../../hooks/useSortingByKey'
 import Candidates from '../../utils/delegates/candidates.json'
 import Sort from '../Icon/Sort'

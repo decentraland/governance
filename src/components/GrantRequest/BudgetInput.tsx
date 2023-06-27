@@ -1,9 +1,9 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { disableOnWheelInput } from '../../helpers'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import Label from '../Common/Label'
 import Markdown from '../Common/Markdown/Markdown'
 import Helper from '../Helper/Helper'

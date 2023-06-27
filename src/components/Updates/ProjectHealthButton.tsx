@@ -19,7 +19,10 @@ const ProjectHealthButton = ({ children, type, selectedValue, onClick, disabled 
 
   return (
     <button
-      onClick={() => onClick(type)}
+      onClick={(e) => {
+        e.preventDefault()
+        onClick(type)
+      }}
       disabled={disabled}
       className={classNames('ProjectHealthButton', isSelected && `ProjectHealthButton--${type}`)}
     >

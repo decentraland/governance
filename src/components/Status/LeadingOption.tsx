@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { ProposalStatus } from '../../entities/Proposal/types'
+import useFormatMessage from '../../hooks/useFormatMessage'
 
 import './LeadingOption.css'
 

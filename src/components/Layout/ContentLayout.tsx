@@ -1,12 +1,11 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Back } from 'decentraland-ui/dist/components/Back/Back'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
 import usePreventNavigation from '../../hooks/usePreventNavigation'
-import locations from '../../utils/locations'
+import locations, { navigate } from '../../utils/locations'
 
 import './ContentLayout.css'
 

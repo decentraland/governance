@@ -1,8 +1,8 @@
 import React from 'react'
-
-import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import { useIntl } from 'react-intl'
 
 import { GrantWithUpdate } from '../../../entities/Proposal/types'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import Username from '../../User/Username'
 import GrantPill from '../GrantPill'
 

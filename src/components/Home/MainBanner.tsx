@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { DAO_DISCORD_URL, DOCS_URL } from '../../constants'
+import useFormatMessage from '../../hooks/useFormatMessage'
+import Link from '../Common/Link'
 import CloseCircle from '../Icon/CloseCircle'
 
 import './MainBanner.css'

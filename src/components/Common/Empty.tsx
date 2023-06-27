@@ -5,11 +5,11 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import Watermelon from '../Icon/Watermelon'
 
-import Link from './Link/Link'
 import Markdown from './Markdown/Markdown'
 import Heading from './Text/Heading'
 
 import './Empty.css'
+import Link from './Link'
 
 export enum ActionType {
   BUTTON,

@@ -1,11 +1,11 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
 
 import { VOTES_VP_THRESHOLD } from '../../constants'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import useTopVoters from '../../hooks/useTopVoters'
 import Helper from '../Helper/Helper'
 

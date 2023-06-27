@@ -21,7 +21,7 @@
   padding-right: 8px;
 }
 
-a.dg.Link.Link--pointer.ui.basic.button.ErrorMessage__Show {
+a.Link.Link--pointer.ui.basic.button.ErrorMessage__Show {
   height: 20px;
   text-transform: uppercase;
   font-weight: var(--weight-boldemort);

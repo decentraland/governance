@@ -57,7 +57,7 @@
   border-bottom: none;
 }
 
-.VotesList .dg.dcl-avatar {
+.VotesList .Avatar {
   margin: 0 0.25em 0 0;
 }
 
@@ -130,7 +130,7 @@
     font-size: 13px;
   }
 
-  .VotesList .dg.dcl-avatar {
+  .VotesList .Avatar {
     margin: 0 0.25em 0 0;
     width: 20px;
   }
