@@ -1,7 +1,8 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
+
+import useFormatMessage from '../../hooks/useFormatMessage'
 
 import Charts from './Charts'
 import './CommunityEngagement.css'

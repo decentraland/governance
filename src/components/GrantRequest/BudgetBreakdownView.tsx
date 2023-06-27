@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react'
+import { useIntl } from 'react-intl'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import toNumber from 'lodash/toNumber'
 
 import { BudgetBreakdownConcept } from '../../entities/Grant/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../helpers'
+import useFormatMessage from '../../hooks/useFormatMessage'
 
 import BreakdownAccordion, { BreakdownItem } from './BreakdownAccordion'
 

@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react'
 
 import classNames from 'classnames'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { Badge as GovernanceBadge } from '../../../entities/Badges/types'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 
 import Badge, { BadgeVariant } from './Badge'
 import './BadgeStack.css'

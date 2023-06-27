@@ -1,14 +1,13 @@
 import React, { useCallback } from 'react'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { UpdateAttributes, UpdateStatus } from '../../../entities/Updates/types'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import Time from '../../../utils/date/Time'
-import locations from '../../../utils/locations'
+import locations, { navigate } from '../../../utils/locations'
 import DateTooltip from '../../Common/DateTooltip'
 import Helper from '../../Helper/Helper'
 

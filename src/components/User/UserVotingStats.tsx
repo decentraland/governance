@@ -1,9 +1,9 @@
 import React from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { isSameAddress } from '../../entities/Snapshot/utils'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import useVotingStats from '../../hooks/useVotingStats'
 import MobileSlider from '../Common/MobileSlider'
 

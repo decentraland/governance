@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Radio } from 'decentraland-ui/dist/components/Radio/Radio'
 import snakeCase from 'lodash/snakeCase'
@@ -21,6 +20,7 @@ import {
 import { isValidGrantBudget } from '../../entities/Grant/utils'
 import { getFormattedPercentage } from '../../helpers'
 import useCategoryBudget from '../../hooks/useCategoryBudget'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import Label from '../Common/Label'
 import Helper from '../Helper/Helper'
 import { ContentSection } from '../Layout/ContentLayout'

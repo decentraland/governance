@@ -1,8 +1,8 @@
 import React from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
+import useFormatMessage from '../../hooks/useFormatMessage'
 import usePaginatedProposals from '../../hooks/usePaginatedProposals'
 import Empty from '../Common/Empty'
 import FullWidthButton from '../Common/FullWidthButton'

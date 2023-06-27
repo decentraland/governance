@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react'
 
-import { globalHistory, useLocation } from '@gatsbyjs/reach-router'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import { globalHistory, useLocation } from '@reach/router'
 
-import locations from '../utils/locations'
+import locations, { navigate } from '../utils/locations'
+
+import useFormatMessage from './useFormatMessage'
 
 function usePreventNavigation(isActive: boolean) {
   const currentLocation = useLocation()

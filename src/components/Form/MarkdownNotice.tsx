@@ -1,7 +1,8 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
+
+import useFormatMessage from '../../hooks/useFormatMessage'
 
 export default function MarkdownNotice() {
   const t = useFormatMessage()

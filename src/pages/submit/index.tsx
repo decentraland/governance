@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import CategoryBanner from '../../components/Category/CategoryBanner'
@@ -14,6 +13,7 @@ import {
 import { getCommitteesWithOpenSlots } from '../../entities/Committee/utils'
 import { HiringType, PoiType, ProposalType } from '../../entities/Proposal/types'
 import { isGrantProposalSubmitEnabled } from '../../entities/Proposal/utils'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import locations from '../../utils/locations'
 
 import './submit.css'

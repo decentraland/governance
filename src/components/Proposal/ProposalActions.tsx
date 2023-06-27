@@ -1,11 +1,11 @@
 import React from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { ProposalAttributes, ProposalStatus } from '../../entities/Proposal/types'
 import { isProposalDeletable, isProposalEnactable, proposalCanBePassedOrRejected } from '../../entities/Proposal/utils'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import useIsDAOCommittee from '../../hooks/useIsDAOCommittee'
 import useIsProposalOwner from '../../hooks/useIsProposalOwner'
 import { ProposalPageState } from '../../pages/proposal'

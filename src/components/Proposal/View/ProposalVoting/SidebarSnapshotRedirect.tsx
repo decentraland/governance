@@ -1,10 +1,10 @@
 import React from 'react'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
+import useFormatMessage from '../../../../hooks/useFormatMessage'
 import SnapshotRedirectButton from '../../../Common/SnapshotRedirectButton'
 
 import './SidebarSnapshotRedirect.css'

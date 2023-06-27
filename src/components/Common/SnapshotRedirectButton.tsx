@@ -1,10 +1,10 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { snapshotProposalUrl } from '../../entities/Proposal/utils'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import OpenExternalLink from '../Icon/OpenExternalLink'
 
 import './SnapshotRedirectButton.css'

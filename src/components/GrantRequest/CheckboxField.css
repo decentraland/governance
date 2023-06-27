@@ -37,6 +37,6 @@
   text-align: left;
 }
 
-.CheckboxField > a.dg.Link.Link--pointer {
+.CheckboxField > a.Link.Link--pointer {
   font-weight: 500;
 }

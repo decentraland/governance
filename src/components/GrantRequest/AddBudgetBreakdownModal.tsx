@@ -2,12 +2,12 @@ import React, { useEffect, useMemo } from 'react'
 
 import Textarea from 'decentraland-gatsby/dist/components/Form/Textarea'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
 import { BudgetBreakdownConcept, BudgetBreakdownConceptSchema } from '../../entities/Grant/types'
 import { asNumber } from '../../entities/Proposal/utils'
 import { isHttpsURL } from '../../helpers'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import Label from '../Common/Label'
 import { ContentSection } from '../Layout/ContentLayout'
 

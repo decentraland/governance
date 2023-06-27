@@ -1,8 +1,8 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
+import useFormatMessage from '../../hooks/useFormatMessage'
 import useVotedProposals from '../../hooks/useVotedProposals'
 import Empty from '../Common/Empty'
 import FullWidthButton from '../Common/FullWidthButton'

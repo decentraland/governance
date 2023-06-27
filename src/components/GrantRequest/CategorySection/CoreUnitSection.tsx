@@ -2,13 +2,13 @@ import React, { forwardRef, useEffect } from 'react'
 
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
 import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import {
   CoreUnitQuestions,
   CoreUnitQuestionsSchema,
   GrantRequestCategoryAssessment,
 } from '../../../entities/Grant/types'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import { useGrantCategoryEditor } from '../../../hooks/useGrantCategoryEditor'
 import Label from '../../Common/Label'
 import { ContentSection } from '../../Layout/ContentLayout'
