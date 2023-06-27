@@ -39,7 +39,6 @@ export default function ProposalUpdatesActions({ nextUpdate, currentUpdate, prop
     <div className="DetailsSection">
       <div className="DetailsSection__Content">
         <Markdown
-          size="md"
           className="ProposalUpdatesActions__UpdateDescription"
           componentsClassNames={{ strong: 'ProposalUpdatesActions__UpdateDescriptionBold' }}
         >

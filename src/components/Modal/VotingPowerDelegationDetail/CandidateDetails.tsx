@@ -29,7 +29,6 @@ function CandidateDetails({ title, content, links, skills }: Props) {
         {title}
       </Header>
       <Text
-        size="md"
         className={classNames(
           'CandidateDetails__Content',
           skills && 'CandidateDetails__Content--skills',
