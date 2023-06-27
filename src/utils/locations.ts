@@ -1,4 +1,6 @@
+import { NavigateOptions } from '@reach/router'
 import API from 'decentraland-gatsby/dist/utils/api/API'
+import { navigate as gatsbyNavigate } from 'gatsby-link'
 
 import { HiringType, PoiType, ProposalStatus, ProposalType } from '../entities/Proposal/types'
 
@@ -66,4 +68,11 @@ export default {
   edit: {
     update: (id: string) => url('edit/update/', { id }),
   },
+}
+
+export function navigate(to: string, options?: NavigateOptions<any>) {
+  if (typeof window === 'undefined') {
+    return
+  }
+  gatsbyNavigate(to, options)
 }

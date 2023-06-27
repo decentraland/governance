@@ -1,11 +1,11 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import snakeCase from 'lodash/snakeCase'
 
 import { BudgetWithContestants } from '../../../../entities/Budget/types'
 import { ProposalAttributes, ProposalType } from '../../../../entities/Proposal/types'
 import { CategoryIconVariant } from '../../../../helpers/styles'
+import useFormatMessage from '../../../../hooks/useFormatMessage'
 import locations from '../../../../utils/locations'
 import { getCategoryIcon } from '../../../Category/CategoryOption'
 import { GrantRequestSectionCard } from '../../../GrantRequest/GrantRequestSectionCard'

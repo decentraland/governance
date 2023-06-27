@@ -1,9 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
 import { Reaction, Topic } from '../../../entities/SurveyTopic/types'
 import { REACTION_LIST } from '../../../entities/SurveyTopic/utils'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import IconHelper from '../../Helper/IconHelper'
 import AddReaction from '../../Icon/AddReaction'
 import Cross from '../../Icon/Cross'

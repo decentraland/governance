@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import sumBy from 'lodash/sumBy'
 
 import {
@@ -9,6 +8,7 @@ import {
   GrantRequestDueDiligence,
 } from '../../entities/Grant/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import Label from '../Common/Label'
 import SubLabel from '../Common/SubLabel'
 

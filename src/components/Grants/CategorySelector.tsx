@@ -1,9 +1,9 @@
 import React from 'react'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { NewGrantCategory, VALID_CATEGORIES } from '../../entities/Grant/types'
+import useFormatMessage from '../../hooks/useFormatMessage'
 
 import CategoryItem from './CategoryItem'
 import './CategorySelector.css'

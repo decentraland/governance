@@ -1,9 +1,9 @@
 import React from 'react'
+import { useIntl } from 'react-intl'
 
-import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
-
+import useFormatMessage from '../../hooks/useFormatMessage'
 import locations from '../../utils/locations'
+import Link from '../Common/Link'
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
 import Username from '../User/Username'
 

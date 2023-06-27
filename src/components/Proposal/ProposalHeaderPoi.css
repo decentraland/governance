@@ -2,22 +2,22 @@
   padding-bottom: 38px;
 }
 
-.ProposalHeaderPoi .dg.Link {
+.ProposalHeaderPoi .Link {
   display: flex;
   justify-content: space-between;
 }
 
-.ProposalHeaderPoi .dg.Link > div.PoiImageContainer {
+.ProposalHeaderPoi .Link > div.PoiImageContainer {
   position: relative;
   flex: 0 0 100%;
 }
 
-.ProposalHeaderPoi .dg.Link.Link--with-scene > div.PoiImageContainer {
+.ProposalHeaderPoi .Link.Link--with-scene > div.PoiImageContainer {
   flex: 0 0 49%;
   flex: 0 0 calc(50% - 6px);
 }
 
-.ProposalHeaderPoi .dg.ImgFixed {
+.ProposalHeaderPoi .ImgFixed {
   border-radius: 8px;
 }
 

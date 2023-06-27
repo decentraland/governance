@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { Reaction, Survey, Topic } from '../../../entities/SurveyTopic/types'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 
 import './SentimentSurvey.css'
 import SentimentSurveyRow from './SentimentSurveyRow'

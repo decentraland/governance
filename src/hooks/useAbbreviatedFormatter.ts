@@ -1,4 +1,4 @@
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import useFormatMessage from './useFormatMessage'
 
 export default function useAbbreviatedFormatter() {
   const t = useFormatMessage()

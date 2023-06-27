@@ -1,8 +1,7 @@
 import React, { Fragment } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
 import { Reaction } from '../../../entities/SurveyTopic/types'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import Pipe from '../../Common/Pipe'
 
 import ReactionCounter from './ReactionCounter'

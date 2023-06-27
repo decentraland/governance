@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 
 import classNames from 'classnames'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { MonthlyTotal } from '../../clients/DclData'
 import { formatBalance } from '../../entities/Proposal/utils'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import { DetailItem } from '../Proposal/View/DetailItem'
 
 import './MonthlyTotal.css'

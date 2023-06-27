@@ -1,8 +1,8 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 
+import { navigate } from '../../utils/locations'
 import Text from '../Common/Text/Text'
 
 import './FilterLabel.css'

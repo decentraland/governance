@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react'
 
 import classNames from 'classnames'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import snakeCase from 'lodash/snakeCase'
 
 import { BudgetWithContestants, CategoryBudgetWithContestants } from '../../../../entities/Budget/types'
 import { ProposalAttributes, ProposalStatus } from '../../../../entities/Proposal/types'
 import { getFormattedPercentage } from '../../../../helpers'
+import useFormatMessage from '../../../../hooks/useFormatMessage'
 import DistributionBar from '../../../Common/DistributionBar/DistributionBar'
 import { DistributionBarItemProps } from '../../../Common/DistributionBar/DistributionBarItem'
 import Pill, { PillColor } from '../../../Common/Pill'

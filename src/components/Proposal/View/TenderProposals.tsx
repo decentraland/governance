@@ -1,8 +1,7 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
 import { ProposalAttributes } from '../../../entities/Proposal/types'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 
 import ProposalCard from './ProposalCard'
 import './ProposalProcess.css'

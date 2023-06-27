@@ -17,11 +17,8 @@
     "typeRoots": ["node_modules/@types", "src/@types"] /* List of folders to include type definitions from. */,
     "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
     "removeComments": true,
-    "preserveConstEnums": true,
+    "preserveConstEnums": true
   },
-  "include": [
-    "src",
-    "node_modules/bdd-lazy-var/getter.d.ts",
-  ],
+  "include": ["src", "node_modules/bdd-lazy-var/getter.d.ts"],
   "exclude": ["node_modules", "**/node_modules/*"]
 }

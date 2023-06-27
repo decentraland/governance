@@ -1,11 +1,11 @@
 import React, { useRef, useState } from 'react'
 import Flickity from 'react-flickity-component'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import { OldGrantCategory, ProposalGrantCategory } from '../../../entities/Grant/types'
 import { GrantWithUpdate, PROPOSAL_GRANT_CATEGORY_ALL } from '../../../entities/Proposal/types'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import FilterButton from '../FilterButton'
 
 import './CurrentGrantsCategoryFilters.css'
