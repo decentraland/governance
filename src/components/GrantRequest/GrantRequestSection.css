@@ -67,10 +67,6 @@
   flex: 1;
 }
 
-.GrantRequestSection__InputLabel {
-  padding-right: 20px;
-}
-
 .GrantRequestSection__Field {
   display: flex;
   flex-direction: column;
@@ -87,23 +83,4 @@
   margin-bottom: 32px;
   justify-content: space-between;
   gap: 21px;
-}
-
-.GrantRequestSection__Sublabel,
-.GrantRequestSection__Sublabel .dg.Paragraph {
-  font-weight: 400;
-  font-size: 15px;
-  line-height: 20px;
-  color: var(--black-600);
-}
-
-.GrantRequestSection__TitleSubLabel {
-  margin-bottom: 20px !important;
-}
-
-.GrantRequestSection__EmailNote {
-  font-size: 10px;
-  font-weight: 300;
-  margin-bottom: 8px;
-  margin-top: 8px;
 }

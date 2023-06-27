@@ -13,7 +13,13 @@ interface Props<T extends FieldValues> extends TextAreaFieldProps {
   rules?: any
 }
 
-export default function Field<T extends FieldValues>({ control, name, defaultValue, rules, ...fieldProps }: Props<T>) {
+export default function TextArea<T extends FieldValues>({
+  control,
+  name,
+  defaultValue,
+  rules,
+  ...fieldProps
+}: Props<T>) {
   return (
     <Controller
       control={control}
