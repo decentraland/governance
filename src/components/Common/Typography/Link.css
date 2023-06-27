@@ -1,15 +1,14 @@
 .Link {
-  font-size: inherit;
-  line-height: inherit;
-  color: var(--dcl-primary);
+  color: var(--primary);
 }
 
-.Link.Link--pointer {
+.Link--pointer {
   cursor: pointer;
 }
 
 .Link .icon {
-  font-size: 19px;
+  font-size: 15px;
+  line-height: 24px;
   vertical-align: middle;
 }
 
