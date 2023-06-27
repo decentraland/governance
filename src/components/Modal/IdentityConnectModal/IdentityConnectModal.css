@@ -10,17 +10,15 @@
   background: linear-gradient(260.87deg, rgba(49, 74, 222, 0.3) 0.46%, rgba(198, 64, 205, 0.3) 100%);
 }
 
-.IdentityConnectModal__Description .dg.Paragraph {
+.IdentityConnectModal__Text {
   margin-bottom: 4px;
-  font-size: 15px;
-  line-height: 24px;
   text-align: center;
 }
 
-.IdentityConnectModal__Description .dg.Paragraph .Bold {
-  font-size: 17px;
-  line-height: 26px;
-  letter-spacing: -0.2px;
+.IdentityConnectModal__StrongText {
+  font-size: 17px !important;
+  line-height: 26px !important;
+  letter-spacing: -0.2px !important;
 }
 
 .IdentityConnectModal__ButtonContainer {
