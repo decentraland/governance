@@ -1,7 +1,3 @@
-.GetInvolvedQuestion,
-.GetInvolvedQuestion .dg.Paragraph {
-  font-style: normal;
-  font-weight: 400;
-  font-size: 15px;
-  line-height: 24px;
+.GetInvolvedQuestion__Text {
+  font-weight: 400 !important;
 }
