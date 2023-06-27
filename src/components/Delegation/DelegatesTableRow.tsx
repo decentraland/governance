@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
+import { useIntl } from 'react-intl'
 
 import classNames from 'classnames'
-import { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
 

@@ -1,12 +1,12 @@
 import React, { useMemo, useState } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import snakeCase from 'lodash/snakeCase'
 
 import { BudgetWithContestants, CategoryBudgetWithContestants } from '../../../../entities/Budget/types'
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
 import { toNewGrantCategory } from '../../../../entities/QuarterCategoryBudget/utils'
+import useFormatMessage from '../../../../hooks/useFormatMessage'
 import GovernanceSidebar from '../../../Sidebar/GovernanceSidebar'
 import ProposalCard from '../ProposalCard'
 

@@ -1,8 +1,7 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
 import { VpDistribution } from '../../clients/SnapshotGraphqlTypes'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import MobileSlider from '../Common/MobileSlider'
 
 import { UserVpBox } from './UserVpBox'

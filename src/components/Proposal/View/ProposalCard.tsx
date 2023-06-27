@@ -1,13 +1,13 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import { useProposalDateText } from '../../../hooks/useProposalDateText'
 import useProposalVotes from '../../../hooks/useProposalVotes'
 import locations from '../../../utils/locations'
+import Link from '../../Common/Link'
 import ChevronRight from '../../Icon/ChevronRight'
 import Username from '../../User/Username'
 

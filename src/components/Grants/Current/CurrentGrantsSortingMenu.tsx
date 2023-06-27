@@ -1,7 +1,8 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
+
+import useFormatMessage from '../../../hooks/useFormatMessage'
 
 export enum SortingKey {
   CreatedAt = 'created_at',

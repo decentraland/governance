@@ -1,14 +1,14 @@
 import React, { useMemo } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { ProposalStatus, ProposalType } from '../../entities/Proposal/types'
 import { formatBalance } from '../../entities/Proposal/utils'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import useProposals from '../../hooks/useProposals'
 import locations from '../../utils/locations'
+import Link from '../Common/Link'
 import { DetailItem } from '../Proposal/View/DetailItem'
 
 import './GrantList.css'

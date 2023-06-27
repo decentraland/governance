@@ -1,9 +1,8 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { forumUrl } from '../../../entities/Proposal/utils'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import Forum from '../../Icon/Forum'
 
 import SidebarLinkButton from './SidebarLinkButton'

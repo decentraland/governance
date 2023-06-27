@@ -2,13 +2,13 @@ import React from 'react'
 
 import { useQuery } from '@tanstack/react-query'
 import ImgFixed from 'decentraland-gatsby/dist/components/Image/ImgFixed'
-import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import Land from 'decentraland-gatsby/dist/utils/api/Land'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { DEFAULT_QUERY_STALE_TIME } from '../../hooks/constants'
+import Link from '../Common/Link'
 import Pin from '../Icon/Pin'
 
 import './ProposalHeaderPoi.css'

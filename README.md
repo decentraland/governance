@@ -44,11 +44,11 @@ Create a copy of `.env.example` and name it as `.env.development`
 
 If you are running this project locally you only need to check the following environment variables:
 
-* `CONNECTION_STRING`: make sure it points to a valid database (see how to create one in the 'Database Setup' section)
-* `COMMITTEE_ADDRESSES`: list of eth addresses separated by `,` that will be able to enact finished proposals
-* `DISCOURSE_API_KEY`: the api key use to publish the proposals on the forum
-* `RPC_PROVIDER_URL`: the rpc provider to get the latest block
-* Snapshot env vars: see snapshot setup
+- `CONNECTION_STRING`: make sure it points to a valid database (see how to create one in the 'Database Setup' section)
+- `COMMITTEE_ADDRESSES`: list of eth addresses separated by `,` that will be able to enact finished proposals
+- `DISCOURSE_API_KEY`: the api key use to publish the proposals on the forum
+- `RPC_PROVIDER_URL`: the rpc provider to get the latest block
+- Snapshot env vars: see snapshot setup
 
 These environment variables are used by the application backend. The environment variables for the frontend are located in `src/config/env`.
 
@@ -69,7 +69,7 @@ The minimum amount of voting power require to pass a proposal of each type it's 
 Make sure you have Postgres installed and running:
 
 ```shell
-brew install postgresql@14  
+brew install postgresql@14
 brew services start postgresql@14
 createdb
 ```
@@ -83,26 +83,28 @@ bash scripts/import-db.sh USERNAME [DATABASE_NAME] [DUMP_FILE]
 ```
 
 If no DATABASE_NAME and DUMP_FILE arguments are given, the script will use the default values and create a `governance` db using the `development.dump` dump.
-The CONNECTION_STRING should look like this: 
+The CONNECTION_STRING should look like this:
 
 ```bash
 postgres://USERNAME:PASSWORD@localhost:5432/governance
-````
+```
 
 (the default password should be `postgres`)
 
 ### Creating DB from scratch
 
 To create a DB, run in the terminal
+
 ```bash
 createdb -U YOUR_USER DATABASE_NAME
-````
+```
+
 The default postgres user is `postgres` or your username, and the default password is `postgres`.
 Use your user and password for the connection string variable, it should look like this:
 
 ```bash
 postgres://YOUR_USER:YOUR_PASSWORD@localhost:5432/DATABASE_NAME
-````
+```
 
 Once you have a `CONNECTION_STRING` you can set up your database tables using the following command:
 
@@ -112,9 +114,9 @@ npm run migrate up
 
 ## Snapshot Setup
 
-* `GATSBY_SNAPSHOT_SPACE`: the snapshot space where the proposals will be published
-* `SNAPSHOT_PRIVATE_KEY`, `GATSBY_SNAPSHOT_ADDRESS`: a pair address/key with permissions to publish at that snapshot space
-* The configured SNAPSHOT_PROPOSAL_TYPE for the project is 'single-choice', which means each voter may select only one choice. See [available voting systems](https://docs.snapshot.org/proposals/voting-types#single-choice-voting)
+- `GATSBY_SNAPSHOT_SPACE`: the snapshot space where the proposals will be published
+- `SNAPSHOT_PRIVATE_KEY`, `GATSBY_SNAPSHOT_ADDRESS`: a pair address/key with permissions to publish at that snapshot space
+- The configured SNAPSHOT_PROPOSAL_TYPE for the project is 'single-choice', which means each voter may select only one choice. See [available voting systems](https://docs.snapshot.org/proposals/voting-types#single-choice-voting)
 
 ### Creating a Snapshot space
 
@@ -128,9 +130,11 @@ Then follow instructions on [Snapshot](https://docs.snapshot.org/spaces/create)
 #### Strategy
 
 - DCL Governance uses several strategies:
+
   - [erc20-balance-of](https://snapshot.org/#/playground/erc20-balance-of)
-  
+
   - [delegation](https://demo.snapshot.org/#/strategy/delegation)
+
   ```json
   {
     "symbol": "VP (delegated)",
@@ -139,7 +143,7 @@ Then follow instructions on [Snapshot](https://docs.snapshot.org/spaces/create)
         "name": "erc20-balance-of",
         "params": {
           "symbol": "MANA",
-          "address": "0x The address of the token contract on the network you are using", 
+          "address": "0x The address of the token contract on the network you are using",
           "decimals": 18
         }
       }
@@ -149,6 +153,7 @@ Then follow instructions on [Snapshot](https://docs.snapshot.org/spaces/create)
   ```
 
   - [erc721-with-multiplier](https://snapshot.org/#/playground/erc721-with-multiplier)
+
   ```json
   {
     "symbol": "LAND",
@@ -156,26 +161,29 @@ Then follow instructions on [Snapshot](https://docs.snapshot.org/spaces/create)
     "multiplier": 2000
   }
   ```
-  
+
   - [erc721-with-multiplier](https://snapshot.org/#/playground/erc721-with-multiplier)
+
   ```json
   {
-  "symbol": "NAMES",
-  "address": "0x2a187453064356c898cae034eaed119e1663acb8",
-  "multiplier": 100
+    "symbol": "NAMES",
+    "address": "0x2a187453064356c898cae034eaed119e1663acb8",
+    "multiplier": 100
   }
   ```
-  
+
   - [decentraland-estate-size](https://snapshot.org/#/playground/decentraland-estate-size)
+
   ```json
   {
-  "symbol": "ESTATE",
-  "address": "0x959e104e1a4db6317fa58f8295f586e1a978c297",
-  "multiplier": 2000
+    "symbol": "ESTATE",
+    "address": "0x959e104e1a4db6317fa58f8295f586e1a978c297",
+    "multiplier": 2000
   }
   ```
-  
+
   -[multichain](https://snapshot.org/#/playground/multichain)
+
   ```json
   {
     "name": "multichain",
@@ -219,26 +227,28 @@ Take into account that the voting power distribution response from snapshot retu
 The order in which each value is returned depends on the order in which strategies are added to the space on the [space settings](https://snapshot.org/#/snapshot.dcl.eth/settings)
 
 #### Current Strategies Order
-* WMANA
-* LAND
-* ESTATE
-* MANA
-* NAMES
-* DELEGATED
-* WEARABLE
+
+- WMANA
+- LAND
+- ESTATE
+- MANA
+- NAMES
+- DELEGATED
+- WEARABLE
 
 # Test
 
 To run the tests you can do
+
 ```bash
 npm test
-``` 
+```
 
-or create a run configuration in your IDE with `jest --no-cache --no-watchman --runInBand` 
+or create a run configuration in your IDE with `jest --no-cache --no-watchman --runInBand`
 
 Also, you can try adding the `--verbose` option.
 
-The `--runInBand` parameter runs the tests in a single thread, which is usually faster, but you can try without it 
+The `--runInBand` parameter runs the tests in a single thread, which is usually faster, but you can try without it
 and see what works best for you.
 
 # Run
@@ -255,13 +265,16 @@ Once you setup this project you can start it using the following command
 
 the app should be running at https://localhost:8000/
 
-# Clear 
+# Clear
+
 To clear cache and update localization and internationalization renders, run
 
 ```bash
 npm run clean
 ```
+
 or
+
 ```bash
 rm -r .cache
 ```
@@ -276,7 +289,7 @@ You can find a full documentation about the project's structure in the [`decentr
 
 this project runs gatsby as front-end and a nodejs server as back-end both connected through a proxy
 
-* locally this proxy is defined in [`gatsby-config.js` (`proxy` prop)](https://www.gatsbyjs.com/docs/api-proxy/#gatsby-skip-here)
+- locally this proxy is defined in [`gatsby-config.js` (`proxy` prop)](https://www.gatsbyjs.com/docs/api-proxy/#gatsby-skip-here)
 
 ### Routes
 
@@ -291,14 +304,16 @@ Types and Utils contain functions and types that will be accessible to both the 
 Be careful with what goes in here, because when webpack tries to compile everything for the frontend it won't have all the backend dependencies, which could result in an error (e.g. `ERROR #98123 WEBPACK`)
 
 ### Proposals statuses
+
 - Proposals are created in pending, and automatically passed to active
 - After a voting period of 1 week, they are automatically marked as finished, passed, or rejected, depending on the kind of proposal and of the voting results.
 - If proposal is in finished status, a committee user can pass/reject it, with a comment.
 - Once passed, a proposal can be enacted by a committee user, with a comment.
 
 ### Voting results
+
 - Voting results are calculated in two different ways, for different purposes:
-  - `Votes/utils.ts` calculates the results in a user-friendly way, so they can be displayed in the frontend. These results are rounded up for clarity. 
+  - `Votes/utils.ts` calculates the results in a user-friendly way, so they can be displayed in the frontend. These results are rounded up for clarity.
   - `Proposal/jobs.ts` has a more exact calculation, and is used to evaluate the real result of the voting
 
 ## Copyright & License

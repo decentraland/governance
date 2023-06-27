@@ -1,9 +1,9 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import Subscribe from '../../Icon/Subscribe'
 import Subscribed from '../../Icon/Subscribed'
 

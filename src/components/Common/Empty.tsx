@@ -1,7 +1,6 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
@@ -9,6 +8,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import Watermelon from '../Icon/Watermelon'
 
 import './Empty.css'
+import Link from './Link'
 
 export enum ActionType {
   BUTTON,

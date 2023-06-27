@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import isEmpty from 'lodash/isEmpty'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import useProposalsByParticipatingVP from '../../hooks/useProposalsByParticipatingVP'
 import Time from '../../utils/date/Time'
 import locations from '../../utils/locations'

@@ -1,9 +1,9 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import { Grant } from '../../../entities/Proposal/types'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import Time from '../../../utils/date/Time'
 import '../../Modal/VotingPowerDelegationDetail/VotingPowerDistribution.css'
 
