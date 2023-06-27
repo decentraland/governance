@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useTrackContext from 'decentraland-gatsby/dist/context/Track/useTrackContext'
-import useClipboardCopy from 'decentraland-gatsby/dist/hooks/useClipboardCopy'
 import useSign from 'decentraland-gatsby/dist/hooks/useSign'
 
 import { Governance } from '../clients/Governance'
@@ -13,6 +12,7 @@ import { DISCOURSE_API } from '../entities/User/utils'
 import { openUrl } from '../helpers'
 import Time from '../utils/date/Time'
 
+import useClipboardCopy from './useClipboardCopy'
 import useTimer from './useTimer'
 
 export const THREAD_URL = `${DISCOURSE_API}${
@@ -25,7 +25,7 @@ export default function useForumConnect() {
   const [user, userState] = useAuthContext()
   const track = useTrackContext()
   const [sign, signState] = useSign(user, userState.provider)
-  const [copied, clipboardState] = useClipboardCopy(Time.Second)
+  const { copy } = useClipboardCopy(Time.Second)
   const [signatureResolution, setSignatureResolution] = useState<{
     resolve: (value: unknown) => void
     reject: (reason?: unknown) => void
@@ -80,9 +80,9 @@ export default function useForumConnect() {
   const copyMessageToClipboard = useCallback(() => {
     const { message, signature } = sign
     if (message && signature) {
-      clipboardState.copy(`${message}\nSignature: ${signature}`)
+      copy(`${message}\nSignature: ${signature}`)
     }
-  }, [clipboardState, sign])
+  }, [copy, sign])
 
   const openThread = () => {
     openUrl(THREAD_URL)
