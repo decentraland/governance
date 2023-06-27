@@ -1,7 +1,8 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
+
+import Markdown from '../../Common/Markdown/Markdown'
 
 import './ProposalProcess.css'
 import Section from './Section'
@@ -86,7 +87,14 @@ export default function ProposalProcess({ title, items, isNew = false, type = Pr
                 {statusText && statusText !== '' && (
                   <span className="ProposalProcess___StatusTextContainer">
                     <Markdown
-                      className={classNames('ProposalProcess___StatusText', `ProposalProcess___StatusText--${status}`)}
+                      size="xs"
+                      componentsClassNames={{
+                        p: classNames('ProposalProcess___StatusText', `ProposalProcess___StatusText--${status}`),
+                        strong: classNames(
+                          'ProposalProcess___StatusTextStrong',
+                          `ProposalProcess___StatusText--${status}`
+                        ),
+                      }}
                     >
                       {statusText}
                     </Markdown>
