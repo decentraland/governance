@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { isEmpty } from 'lodash'
 
+import useFormatMessage from '../../hooks/useFormatMessage'
 import Label from '../Common/Label'
 import Text from '../Common/Text/Text'
 import { ContentSection } from '../Layout/ContentLayout'

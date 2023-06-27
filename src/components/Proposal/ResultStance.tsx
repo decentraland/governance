@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
+import useFormatMessage from '../../hooks/useFormatMessage'
 import Cancel from '../Icon/Cancel'
 import CheckCircle from '../Icon/CheckCircle'
 import Pending from '../Icon/Pending'

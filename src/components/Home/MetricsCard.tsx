@@ -1,7 +1,8 @@
 import React from 'react'
 
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
+
+import Link from '../Common/Link'
 
 import HomeLoader from './HomeLoader'
 import './MetricsCard.css'

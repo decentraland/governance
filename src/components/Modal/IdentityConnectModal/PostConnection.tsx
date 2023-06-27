@@ -1,10 +1,10 @@
 import React from 'react'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import Avatar from '../../Common/Avatar'
 import ForumBlue from '../../Icon/ForumBlue'
 import LinkFailed from '../../Icon/LinkFailed'

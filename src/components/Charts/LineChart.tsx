@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Chart } from 'react-chartjs-2'
+import { useIntl } from 'react-intl'
 
 import { ChartArea, ChartData, Chart as ChartJS } from 'chart.js'
 import 'chart.js/auto'
-import { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
 import useAbbreviatedFormatter from '../../hooks/useAbbreviatedFormatter'
 

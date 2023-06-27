@@ -1,7 +1,6 @@
 import React, { forwardRef, useCallback, useEffect } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
 import {
@@ -11,6 +10,7 @@ import {
 } from '../../../entities/Grant/types'
 import { asNumber } from '../../../entities/Proposal/utils'
 import { disableOnWheelInput } from '../../../helpers'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import MarkdownField from '../../Common/Form/MarkdownField'
 import Label from '../../Common/Label'
 import { ContentSection } from '../../Layout/ContentLayout'

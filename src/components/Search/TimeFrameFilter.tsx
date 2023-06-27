@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react'
 
 import { useLocation } from '@reach/router'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
+import useFormatMessage from '../../hooks/useFormatMessage'
 import locations from '../../utils/locations'
 
 import { FilterProps } from './CategoryFilter'

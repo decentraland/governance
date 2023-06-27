@@ -1,16 +1,17 @@
 import React from 'react'
+import { useIntl } from 'react-intl'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { TransparencyGrantsTiers } from '../../clients/DclData'
 import { Grant } from '../../entities/Proposal/types'
 import { isProposalInCliffPeriod } from '../../entities/Proposal/utils'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import { abbreviateTimeDifference, formatDate } from '../../utils/date/Time'
 import locations from '../../utils/locations'
+import Link from '../Common/Link'
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
 import Username from '../User/Username'
 

@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
 import classNames from 'classnames'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { forumUrl } from '../../../entities/Proposal/utils'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import useProposalComments from '../../../hooks/useProposalComments'
 import Empty from '../../Common/Empty'
 import Section from '../View/Section'

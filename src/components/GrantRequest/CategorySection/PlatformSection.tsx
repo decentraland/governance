@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
 import {
   GrantRequestCategoryAssessment,
   PlatformQuestions,
   PlatformQuestionsSchema,
 } from '../../../entities/Grant/types'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import MarkdownField from '../../Common/Form/MarkdownField'
 import Label from '../../Common/Label'
 import { ContentSection } from '../../Layout/ContentLayout'

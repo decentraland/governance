@@ -1,12 +1,13 @@
-import { NewProposalGovernance } from '../types';
-import { formatMarkdown, template, formatLinkedProposal } from './utils';
+import { NewProposalGovernance } from '../types'
+
+import { formatLinkedProposal, formatMarkdown, template } from './utils'
 
 export const title = (proposal: NewProposalGovernance) => proposal.title.split('\n')[0]
 
 export const description = async (proposal: NewProposalGovernance) => template`
 
 ## Linked Draft Proposal
-${ await formatLinkedProposal(proposal.linked_proposal_id)}
+${await formatLinkedProposal(proposal.linked_proposal_id)}
 
 ## Summary
 

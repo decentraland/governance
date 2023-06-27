@@ -1,10 +1,9 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
 import { ProposalAttributes, ProposalType } from '../../../entities/Proposal/types'
 import { UpdateAttributes } from '../../../entities/Updates/types'
 import { isProposalStatusWithUpdates } from '../../../entities/Updates/utils'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import Empty from '../../Common/Empty'
 import Megaphone from '../../Icon/Megaphone'
 import Section from '../View/Section'

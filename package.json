@@ -12,7 +12,7 @@
     "build:server": "tsc -p .",
     "build:front": "GATSBY_VERSION_NUMBER=$VERSION_NUMBER GATSBY_HEROKU_APP_NAME=$HEROKU_APP_NAME gatsby build",
     "develop": "gatsby develop --https -H 0.0.0.0",
-    "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
+    "format": "prettier --write \"**/*.{js,jsx,json,md,ts,tsx}\"",
     "start": "concurrently -c blue,green -n SERVER,FRONT 'npm run serve' 'npm run develop'",
     "serve": "DOTENV_CONFIG_PATH=.env.development nodemon --watch src/entities --watch src/clients --watch src/services --watch src/server.ts --watch static/api.yaml -e ts,json --exec 'ts-node -r dotenv/config' src/server",
     "clean": "gatsby clean",
@@ -20,8 +20,7 @@
     "migrate": "DOTENV_CONFIG_PATH=.env.development ts-node -r dotenv/config.js ./node_modules/node-pg-migrate/bin/node-pg-migrate -j ts -m src/migrations -d CONNECTION_STRING",
     "heroku": "./node_modules/node-pg-migrate/bin/node-pg-migrate -m lib/migrations -d CONNECTION_STRING up && NODE_ENV=production node lib/server.js",
     "prepare": "node -e \"try { require('husky').install() } catch (e) {if (e.code !== 'MODULE_NOT_FOUND') throw e}\"",
-    "postinstall": "patch-package",
-    "heroku-prebuild": "node ./heroku-setup.js"
+    "postinstall": "patch-package"
   },
   "jest": {
     "preset": "ts-jest",
@@ -33,7 +32,8 @@
       "<rootDir>/src/"
     ],
     "moduleNameMapper": {
-      "\\.(css|less|sass|scss|gif|ttf|eot|svg)$": "<rootDir>/src/__mocks__/files.ts"
+      "\\.(css|less|sass|scss|gif|ttf|eot|svg)$": "<rootDir>/src/__mocks__/files.ts",
+      "^gatsby-page-utils/(.*)$": "gatsby-page-utils/dist/$1"
     }
   },
   "repository": {
@@ -63,6 +63,7 @@
     "dotenv": "^16.0.0",
     "ethers": "^5.7.1",
     "flickity": "^2.3.0",
+    "gatsby-link": "^4.23.0",
     "gatsby": "4.23.0",
     "gatsby-plugin-image": "^2.10.0",
     "gatsby-plugin-manifest": "^4.10.1",
@@ -87,6 +88,7 @@
     "react-dom": "^17.0.2",
     "react-flickity-component": "^3.6.2",
     "react-hook-form": "^7.43.5",
+    "react-intl": "^6.4.4",
     "react-loading-skeleton": "^3.1.0",
     "react-select": "^5.3.2",
     "remark-parse": "^9.0.0",

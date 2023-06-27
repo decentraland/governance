@@ -2,8 +2,8 @@ import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 
 import classNames from 'classnames'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 
+import Link from '../Common/Link'
 import ExclamationCircle from '../Icon/ExclamationCircle'
 
 import './GrantRequestSectionCard.css'
@@ -28,10 +28,8 @@ export const GrantRequestSectionCard = ({
   error,
   href,
 }: Props) => {
-  const Component = href ? Link : 'div'
-
   return (
-    <Component
+    <Link
       className={classNames(
         'GrantRequestSectionCard',
         error && 'GrantRequestSectionCard__Error',
@@ -58,6 +56,6 @@ export const GrantRequestSectionCard = ({
       >
         {subtitle}
       </div>
-    </Component>
+    </Link>
   )
 }

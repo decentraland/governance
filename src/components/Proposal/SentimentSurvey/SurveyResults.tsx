@@ -1,10 +1,9 @@
 import React, { useMemo } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
 import { decodeSurvey } from '../../../entities/SurveyTopic/decoder'
 import { Reaction, Topic, TopicFeedback } from '../../../entities/SurveyTopic/types'
 import { Vote } from '../../../entities/Votes/types'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import Section from '../View/Section'
 
 import SurveyTopicResult from './SurveyTopicResult'

@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
 import { GrantRequestCategoryAssessment, NewGrantCategory } from '../../entities/Grant/types'
+import useFormatMessage from '../../hooks/useFormatMessage'
 
 import AcceleratorSection from './CategorySection/AcceleratorSection'
 import CoreUnitSection from './CategorySection/CoreUnitSection'

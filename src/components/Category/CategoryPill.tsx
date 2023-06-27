@@ -1,11 +1,11 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalType } from '../../entities/Proposal/types'
 import locations from '../../utils/locations'
+import Link from '../Common/Link'
 import Pill, { PillColor } from '../Common/Pill'
 
 const ColorsConfig: Record<ProposalType, PillColor> = {

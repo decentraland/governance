@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { DelegationResult, DetailedScores, VpDistribution } from '../../clients/SnapshotGraphqlTypes'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import { useSortingByKey } from '../../hooks/useSortingByKey'
 import FullWidthButton from '../Common/FullWidthButton'
 import SkeletonBars from '../Common/SkeletonBars'

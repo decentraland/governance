@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import isEmail from 'validator/lib/isEmail'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { GrantRequestGeneralInfo, GrantRequestGeneralInfoSchema } from '../../entities/Grant/types'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import Field from '../Common/Form/Field'
 import MarkdownField from '../Common/Form/MarkdownField'
 import Label from '../Common/Label'

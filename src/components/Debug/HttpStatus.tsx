@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { HttpStat } from '../../clients/HttpStat'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import Field from '../Common/Form/Field'
 import Label from '../Common/Label'
 import ErrorMessage from '../Error/ErrorMessage'

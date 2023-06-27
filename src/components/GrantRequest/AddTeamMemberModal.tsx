@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react'
 import { SubmitHandler, useForm, useWatch } from 'react-hook-form'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
 import { TeamMember, TeamMemberItemSchema } from '../../entities/Grant/types'
 import { isHttpsURL } from '../../helpers'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import Field from '../Common/Form/Field'
 import TextArea from '../Common/Form/TextArea'
 import Label from '../Common/Label'

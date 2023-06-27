@@ -1,9 +1,9 @@
 import React from 'react'
 
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
+import useFormatMessage from '../../../../hooks/useFormatMessage'
 import Info from '../../../Icon/Info'
 import VotingPower from '../../../Token/VotingPower'
 import Username from '../../../User/Username'

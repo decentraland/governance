@@ -2,10 +2,11 @@ import React, { useMemo } from 'react'
 
 import { ChainId, getChainName } from '@dcl/schemas/dist/dapps/chain-id'
 import { ProviderType } from '@dcl/schemas/dist/dapps/provider-type'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 import { ModalNavigation } from 'decentraland-ui/dist/components/ModalNavigation/ModalNavigation'
+
+import useFormatMessage from '../../hooks/useFormatMessage'
 
 type Props = {
   currentNetwork: ChainId | null

@@ -1,8 +1,8 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 
+import useFormatMessage from '../../hooks/useFormatMessage'
 import useGrants from '../../hooks/useGrants'
 import locations from '../../utils/locations'
 import FullWidthButton from '../Common/FullWidthButton'
