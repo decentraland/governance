@@ -43,8 +43,7 @@ const InWorldContentSection = forwardRef(function InWorldContentSection({ onVali
 
   useEffect(() => {
     onValidation({ inWorldContent: { ...values } } as Partial<GrantRequestCategoryAssessment>, isValid, isDirty)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isValid, isDirty, values])
+  }, [isValid, isDirty, onValidation, values])
 
   const getFieldRules = useCallback(
     (field: 'totalPieces' | 'totalUsers') => ({

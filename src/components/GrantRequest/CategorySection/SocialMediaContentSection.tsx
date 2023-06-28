@@ -60,8 +60,7 @@ export default function SocialMediaContentSection({ onValidation, isFormDisabled
 
   useEffect(() => {
     onValidation({ socialMediaContent: { ...values } } as Partial<GrantRequestCategoryAssessment>, isValid, isDirty)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isValid, isDirty, values])
+  }, [isValid, isDirty, onValidation, values])
 
   const getNumberFieldRules = useCallback(
     (field: 'totalPieces' | 'totalPeopleImpact') => ({

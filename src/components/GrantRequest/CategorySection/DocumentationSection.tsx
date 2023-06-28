@@ -46,8 +46,7 @@ export default function DocumentationSection({ onValidation, isFormDisabled }: P
 
   useEffect(() => {
     onValidation({ documentation: { ...values } } as Partial<GrantRequestCategoryAssessment>, isValid, isDirty)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isValid, isDirty, values])
+  }, [isValid, isDirty, onValidation, values])
 
   return (
     <div className="GrantRequestSection__Content">

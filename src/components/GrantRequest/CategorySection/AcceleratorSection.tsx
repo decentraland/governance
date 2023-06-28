@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 
 import {
@@ -27,6 +27,9 @@ interface Props {
   isFormDisabled: boolean
 }
 
+type FieldName = 'investmentRecoveryTime'
+type MarkdownFieldName = 'revenueGenerationModel' | 'returnOfInvestmentPlan'
+
 export default function AcceleratorSection({ onValidation, isFormDisabled }: Props) {
   const t = useFormatMessage()
   const {
@@ -42,11 +45,26 @@ export default function AcceleratorSection({ onValidation, isFormDisabled }: Pro
 
   useEffect(() => {
     onValidation({ accelerator: { ...values } } as Partial<GrantRequestCategoryAssessment>, isValid, isDirty)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isValid, isDirty, values])
+  }, [isValid, isDirty, onValidation, values])
 
-  const getMarkdownFieldRules = useCallback(
-    (field: 'revenueGenerationModel' | 'returnOfInvestmentPlan') => ({
+  const getFieldProps = (field: FieldName | MarkdownFieldName) => ({
+    name: field,
+    control,
+    error: !!errors[field],
+    disabled: isFormDisabled,
+  })
+
+  const getMarkdownFieldProps = (field: MarkdownFieldName) => ({
+    ...getFieldProps(field),
+    message:
+      (errors[field]?.message || '') +
+      ' ' +
+      t('page.submit.character_counter', {
+        current: watch(field).length,
+        limit: schema[field].maxLength,
+      }),
+    disabled: isFormDisabled,
+    rules: {
       required: { value: true, message: t('error.grant.category_assessment.field_empty') },
       minLength: {
         value: schema[field].minLength,
@@ -56,58 +74,26 @@ export default function AcceleratorSection({ onValidation, isFormDisabled }: Pro
         value: schema[field].maxLength,
         message: t('error.grant.category_assessment.field_too_large'),
       },
-    }),
-    [t]
-  )
+    },
+  })
 
   return (
     <div className="GrantRequestSection__Content">
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.accelerator.revenue_label')}</Label>
-        <MarkdownField
-          name="revenueGenerationModel"
-          control={control}
-          error={!!errors.revenueGenerationModel}
-          message={
-            (errors.revenueGenerationModel?.message || '') +
-            ' ' +
-            t('page.submit.character_counter', {
-              current: watch('revenueGenerationModel').length,
-              limit: schema.revenueGenerationModel.maxLength,
-            })
-          }
-          disabled={isFormDisabled}
-          rules={getMarkdownFieldRules('revenueGenerationModel')}
-        />
+        <MarkdownField {...getMarkdownFieldProps('revenueGenerationModel')} />
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.accelerator.return_of_investment_label')}</Label>
-        <MarkdownField
-          name="returnOfInvestmentPlan"
-          control={control}
-          error={!!errors.returnOfInvestmentPlan}
-          message={
-            (errors.returnOfInvestmentPlan?.message || '') +
-            ' ' +
-            t('page.submit.character_counter', {
-              current: watch('returnOfInvestmentPlan').length,
-              limit: schema.returnOfInvestmentPlan.maxLength,
-            })
-          }
-          disabled={isFormDisabled}
-          rules={getMarkdownFieldRules('returnOfInvestmentPlan')}
-        />
+        <MarkdownField {...getMarkdownFieldProps('returnOfInvestmentPlan')} />
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.accelerator.investment_recovery_label')}</Label>
         <Field
-          name="investmentRecoveryTime"
-          control={control}
+          {...getFieldProps('investmentRecoveryTime')}
           type="number"
           min="0"
-          error={!!errors.investmentRecoveryTime}
           message={errors.investmentRecoveryTime?.message}
-          disabled={isFormDisabled}
           onWheel={disableOnWheelInput}
           rules={{
             required: { value: true, message: t('error.grant.category_assessment.field_invalid') },

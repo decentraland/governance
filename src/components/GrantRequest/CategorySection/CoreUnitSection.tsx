@@ -40,7 +40,7 @@ export default function CoreUnitSection({ onValidation, isFormDisabled }: Props)
     onValidation({ coreUnit: { ...values } } as Partial<GrantRequestCategoryAssessment>, isValid, isDirty)
   }, [isValid, isDirty, onValidation, values])
 
-  const getFieldProps = (field: 'strategicValue' | 'impactMetrics') => {
+  const getMarkdownFieldProps = (field: 'strategicValue' | 'impactMetrics') => {
     return {
       name: field,
       control,
@@ -71,11 +71,11 @@ export default function CoreUnitSection({ onValidation, isFormDisabled }: Props)
     <div className="GrantRequestSection__Content">
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.core_unit.strategic_value_label')}</Label>
-        <MarkdownField {...getFieldProps('strategicValue')} />
+        <MarkdownField {...getMarkdownFieldProps('strategicValue')} />
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.core_unit.impact_metrics_label')}</Label>
-        <MarkdownField {...getFieldProps('impactMetrics')} />
+        <MarkdownField {...getMarkdownFieldProps('impactMetrics')} />
       </ContentSection>
     </div>
   )
