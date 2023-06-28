@@ -61,7 +61,6 @@ export default function AddTeamMemberModal({ isOpen, onClose, onSubmit, selected
 
   useEffect(() => {
     if (selectedTeamMember) {
-      console.log('hey!!!')
       const { name, role, about, relevantLink } = selectedTeamMember
       setValue('name', name)
       setValue('role', role)

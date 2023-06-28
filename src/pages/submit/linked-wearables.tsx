@@ -278,8 +278,6 @@ export default function SubmitLinkedWearables() {
   useEffect(() => {
     const errorFields = Object.keys(omitBy(errors, isNil)) as (keyof LinkedWearablesState)[]
     const errorFieldsStr = JSON.stringify(errorFields)
-    console.log('errors', errors)
-    console.log('fields', formErrorKeys, errorFields)
     if (errorFields.length > 0 && errorFieldsStr !== formErrorKeys) {
       setError(
         `${errorFields
