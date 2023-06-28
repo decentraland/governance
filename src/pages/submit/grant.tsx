@@ -189,6 +189,14 @@ export default function SubmitGrant() {
     [patchGrantRequest, patchValidationState]
   )
 
+  const handleCategorySection = useCallback(
+    (data, sectionValid) => {
+      patchGrantRequest((prevState) => ({ ...prevState, ...data }))
+      patchValidationState({ categoryAssessmentSectionValid: sectionValid })
+    },
+    [patchValidationState]
+  )
+
   if (accountState.loading) {
     return <LoadingView />
   }
@@ -281,10 +289,7 @@ export default function SubmitGrant() {
           {grantRequest.category && (
             <GrantRequestCategorySection
               category={grantRequest.category}
-              onValidation={(data, sectionValid) => {
-                patchGrantRequest((prevState) => ({ ...prevState, ...data }))
-                patchValidationState({ categoryAssessmentSectionValid: sectionValid })
-              }}
+              onValidation={handleCategorySection}
               isFormDisabled={isFormDisabled}
               sectionNumber={getSectionNumber()}
             />

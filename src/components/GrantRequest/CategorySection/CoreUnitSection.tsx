@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 
 import {
@@ -38,61 +38,44 @@ export default function CoreUnitSection({ onValidation, isFormDisabled }: Props)
 
   useEffect(() => {
     onValidation({ coreUnit: { ...values } } as Partial<GrantRequestCategoryAssessment>, isValid, isDirty)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isValid, isDirty, values])
+  }, [isValid, isDirty, onValidation, values])
 
-  const getMarkdownFieldRules = useCallback(
-    (field: 'strategicValue' | 'impactMetrics') => ({
-      required: { value: true, message: t('error.grant.category_assessment.field_empty') },
-      minLength: {
-        value: schema[field].minLength,
-        message: t('error.grant.category_assessment.field_too_short'),
+  const getFieldProps = (field: 'strategicValue' | 'impactMetrics') => {
+    return {
+      name: field,
+      control,
+      error: !!errors[field],
+      message:
+        (errors[field]?.message || '') +
+        ' ' +
+        t('page.submit.character_counter', {
+          current: watch(field).length,
+          limit: schema[field].maxLength,
+        }),
+      disabled: isFormDisabled,
+      rules: {
+        required: { value: true, message: t('error.grant.category_assessment.field_empty') },
+        minLength: {
+          value: schema[field].minLength,
+          message: t('error.grant.category_assessment.field_too_short'),
+        },
+        maxLength: {
+          value: schema[field].maxLength,
+          message: t('error.grant.category_assessment.field_too_large'),
+        },
       },
-      maxLength: {
-        value: schema[field].maxLength,
-        message: t('error.grant.category_assessment.field_too_large'),
-      },
-    }),
-    [t]
-  )
+    }
+  }
 
   return (
     <div className="GrantRequestSection__Content">
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.core_unit.strategic_value_label')}</Label>
-        <MarkdownField
-          name="strategicValue"
-          control={control}
-          error={!!errors.strategicValue}
-          message={
-            (errors.strategicValue?.message || '') +
-            ' ' +
-            t('page.submit.character_counter', {
-              current: watch('strategicValue').length,
-              limit: schema.strategicValue.maxLength,
-            })
-          }
-          disabled={isFormDisabled}
-          rules={getMarkdownFieldRules('strategicValue')}
-        />
+        <MarkdownField {...getFieldProps('strategicValue')} />
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.core_unit.impact_metrics_label')}</Label>
-        <MarkdownField
-          name="impactMetrics"
-          control={control}
-          error={!!errors.impactMetrics}
-          message={
-            (errors.impactMetrics?.message || '') +
-            ' ' +
-            t('page.submit.character_counter', {
-              current: watch('impactMetrics').length,
-              limit: schema.impactMetrics.maxLength,
-            })
-          }
-          disabled={isFormDisabled}
-          rules={getMarkdownFieldRules('impactMetrics')}
-        />
+        <MarkdownField {...getFieldProps('impactMetrics')} />
       </ContentSection>
     </div>
   )

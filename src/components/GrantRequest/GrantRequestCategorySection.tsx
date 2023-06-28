@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 
 import { GrantRequestCategoryAssessment, NewGrantCategory } from '../../entities/Grant/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
@@ -25,11 +25,14 @@ export default function GrantRequestCategorySection({ category, onValidation, is
   const [validated, setValidated] = useState<boolean | null>(null)
   const [isEdited, setIsEdited] = useState(false)
 
-  const handleValidation = (data: Partial<GrantRequestCategoryAssessment>, validated: boolean, isEdited: boolean) => {
-    onValidation(data, validated)
-    setValidated(validated)
-    setIsEdited(isEdited)
-  }
+  const handleValidation = useCallback(
+    (data: Partial<GrantRequestCategoryAssessment>, validated: boolean, isEdited: boolean) => {
+      onValidation(data, validated)
+      setValidated(validated)
+      setIsEdited(isEdited)
+    },
+    [onValidation]
+  )
 
   return (
     <GrantRequestSection
