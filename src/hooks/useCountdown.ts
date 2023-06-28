@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import Time from '../utils/date/Time'
 
@@ -23,13 +23,9 @@ export type Countdown = {
 }
 
 export default function useCountdown(until: Pick<Date, 'getTime'>): Countdown {
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const initial = useMemo(() => Date.now(), [until.getTime()])
-  const [now, setNow] = useState(initial)
+  const [now, setNow] = useState(Date.now())
   const finished = until.getTime() <= now
   const time = finished ? 0 : until.getTime() - now
-
-  useEffect(() => setNow(initial), [initial])
 
   useEffect(() => {
     if (finished) {
@@ -40,20 +36,18 @@ export default function useCountdown(until: Pick<Date, 'getTime'>): Countdown {
     return () => clearInterval(interval)
   }, [finished])
 
-  return useMemo(() => {
-    const days = (time / Time.Day) | 0
-    const hours = ((time % Time.Day) / Time.Hour) | 0
-    const minutes = ((time % Time.Hour) / Time.Minute) | 0
-    const seconds = ((time % Time.Minute) / Time.Second) | 0
-    const milliseconds = time % Time.Second | 0
+  const days = (time / Time.Day) | 0
+  const hours = ((time % Time.Day) / Time.Hour) | 0
+  const minutes = ((time % Time.Hour) / Time.Minute) | 0
+  const seconds = ((time % Time.Minute) / Time.Second) | 0
+  const milliseconds = time % Time.Second | 0
 
-    return {
-      days,
-      hours,
-      minutes,
-      seconds,
-      milliseconds,
-      time,
-    }
-  }, [time])
+  return {
+    days,
+    hours,
+    minutes,
+    seconds,
+    milliseconds,
+    time,
+  }
 }
