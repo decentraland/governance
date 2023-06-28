@@ -60,12 +60,13 @@ export default function useForumConnect() {
     setIsValidated(undefined)
     const signedMessage = await signer.signMessage(message)
     if (!signedMessage) {
+      resetTimer()
       throw new Error('Failed to sign message')
     }
 
     setClipboardMessage(`${message}\nSignature: ${signedMessage}`)
     return signedMessage
-  }, [startTimer, userState.provider])
+  }, [startTimer, resetTimer, userState.provider])
 
   const copyMessageToClipboard = useCallback(() => {
     if (clipboardMessage) {
