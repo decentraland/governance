@@ -5,7 +5,7 @@ import clipboardCopy from 'clipboard-copy'
 export default function useClipboardCopy(timeout?: number) {
   const [copiedValue, setCopiedValue] = useState<string | null>(null)
 
-  const copy = useCallback((value: unknown) => {
+  const handleCopy = useCallback((value: unknown) => {
     const copiedValue = String(value ?? '')
     clipboardCopy(copiedValue)
     setCopiedValue(copiedValue)
@@ -28,7 +28,7 @@ export default function useClipboardCopy(timeout?: number) {
 
   return {
     copiedValue,
-    copy,
+    handleCopy,
     clear,
   }
 }

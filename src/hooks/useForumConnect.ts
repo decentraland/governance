@@ -25,7 +25,7 @@ export default function useForumConnect() {
   const [user, userState] = useAuthContext()
   const track = useTrackContext()
   const [sign, signState] = useSign(user, userState.provider)
-  const { copy } = useClipboardCopy(Time.Second)
+  const { handleCopy } = useClipboardCopy(Time.Second)
   const [signatureResolution, setSignatureResolution] = useState<{
     resolve: (value: unknown) => void
     reject: (reason?: unknown) => void
@@ -80,9 +80,9 @@ export default function useForumConnect() {
   const copyMessageToClipboard = useCallback(() => {
     const { message, signature } = sign
     if (message && signature) {
-      copy(`${message}\nSignature: ${signature}`)
+      handleCopy(`${message}\nSignature: ${signature}`)
     }
-  }, [copy, sign])
+  }, [handleCopy, sign])
 
   const openThread = () => {
     openUrl(THREAD_URL)

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 
 import classNames from 'classnames'
 import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
@@ -19,16 +19,12 @@ interface Props {
 
 export default function ErrorMessage({ label, errorMessage }: Props) {
   const t = useFormatMessage()
-  const { copiedValue, copy } = useClipboardCopy(Time.Second)
+  const { copiedValue, handleCopy } = useClipboardCopy(Time.Second)
   const [open, setOpen] = useState(false)
 
   const toggleHandler = () => {
     setOpen(!open)
   }
-
-  const handleCopy = useCallback(() => {
-    copy(errorMessage)
-  }, [errorMessage, copy])
 
   return (
     <div className="ErrorMessage__Container">
@@ -42,7 +38,12 @@ export default function ErrorMessage({ label, errorMessage }: Props) {
       <div className={classNames('ErrorMessage__Content', open && 'ErrorMessage__Content--open')}>
         <div className="ErrorMessage__Message">
           <pre>{errorMessage}</pre>
-          <Button className={classNames('Button', 'ErrorMessage__Copy')} primary size="small" onClick={handleCopy}>
+          <Button
+            className={classNames('Button', 'ErrorMessage__Copy')}
+            primary
+            size="small"
+            onClick={() => handleCopy(errorMessage)}
+          >
             <span>{copiedValue ? t('error.message.copied') : t('error.message.copy')}</span>
           </Button>
         </div>

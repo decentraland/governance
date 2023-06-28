@@ -32,12 +32,12 @@ export function SuccessModal({
   ...props
 }: SuccessModalProps) {
   const t = useFormatMessage()
-  const { copiedValue, copy } = useClipboardCopy(Time.Second)
-  const handleCopy = useCallback(() => {
+  const { copiedValue, handleCopy } = useClipboardCopy(Time.Second)
+  const handleCopyClick = useCallback(() => {
     if (linkToCopy) {
-      copy(linkToCopy)
+      handleCopy(linkToCopy)
     }
-  }, [linkToCopy, copy])
+  }, [linkToCopy, handleCopy])
 
   return (
     <Modal
@@ -104,7 +104,7 @@ export function SuccessModal({
             </div>
             <Button
               className={classNames('Button', 'CopyLink')}
-              onClick={handleCopy}
+              onClick={handleCopyClick}
               loading={loading}
               primary
               size="small"
