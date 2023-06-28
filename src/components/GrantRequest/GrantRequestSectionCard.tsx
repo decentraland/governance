@@ -28,8 +28,10 @@ export const GrantRequestSectionCard = ({
   error,
   href,
 }: Props) => {
+  const Wrapper = href ? Link : 'div'
+
   return (
-    <Link
+    <Wrapper
       className={classNames(
         'GrantRequestSectionCard',
         error && 'GrantRequestSectionCard__Error',
@@ -56,6 +58,6 @@ export const GrantRequestSectionCard = ({
       >
         {subtitle}
       </div>
-    </Link>
+    </Wrapper>
   )
 }
