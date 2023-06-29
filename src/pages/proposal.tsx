@@ -460,7 +460,7 @@ export default function ProposalPage() {
         proposal={proposal}
         status={proposalPageState.confirmStatusUpdate || null}
         loading={isUpdating}
-        onClickAccept={(_, status, vesting_contract, enactingTx, description) =>
+        onClickAccept={(status, vesting_contract, enactingTx, description) =>
           updateProposal({ status, vesting_contract, enactingTx, description })
         }
         onClose={() => updatePageState({ confirmStatusUpdate: false })}

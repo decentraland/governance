@@ -102,6 +102,7 @@ function handleCancel() {
 export default function SubmitGrant() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
+
   useEffect(() => {
     const params = new URLSearchParams(location.search)
     let category: NewGrantCategory | null = null
@@ -186,6 +187,14 @@ export default function SubmitGrant() {
       patchValidationState({ fundingSectionValid: sectionValid })
     },
     [patchGrantRequest, patchValidationState]
+  )
+
+  const handleCategorySection = useCallback(
+    (data, sectionValid) => {
+      patchGrantRequest((prevState) => ({ ...prevState, ...data }))
+      patchValidationState({ categoryAssessmentSectionValid: sectionValid })
+    },
+    [patchValidationState]
   )
 
   if (accountState.loading) {
@@ -280,10 +289,7 @@ export default function SubmitGrant() {
           {grantRequest.category && (
             <GrantRequestCategorySection
               category={grantRequest.category}
-              onValidation={(data, sectionValid) => {
-                patchGrantRequest((prevState) => ({ ...prevState, ...data }))
-                patchValidationState({ categoryAssessmentSectionValid: sectionValid })
-              }}
+              onValidation={handleCategorySection}
               isFormDisabled={isFormDisabled}
               sectionNumber={getSectionNumber()}
             />

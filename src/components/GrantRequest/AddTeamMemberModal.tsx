@@ -1,19 +1,17 @@
 import React, { useEffect } from 'react'
-
-import Textarea from 'decentraland-gatsby/dist/components/Form/Textarea'
-import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
+import { SubmitHandler, useForm, useWatch } from 'react-hook-form'
 
 import { TeamMember, TeamMemberItemSchema } from '../../entities/Grant/types'
 import { isHttpsURL } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
+import Field from '../Common/Form/Field'
+import TextArea from '../Common/Form/TextArea'
 import Label from '../Common/Label'
 import { ContentSection } from '../Layout/ContentLayout'
 
 import AddModal from './AddModal'
-import './AddModal.css'
 
-export const INITIAL_TEAM_MEMBER_ITEM: TeamMember = {
+const INITIAL_TEAM_MEMBER_ITEM: TeamMember = {
   name: '',
   role: '',
   about: '',
@@ -21,36 +19,6 @@ export const INITIAL_TEAM_MEMBER_ITEM: TeamMember = {
 }
 
 const schema = TeamMemberItemSchema
-const validate = createValidator<TeamMember>({
-  name: (state) => ({
-    name:
-      assert(state.name.length <= schema.name.maxLength, 'error.grant.team.name_too_large') ||
-      assert(state.name.length > 0, 'error.grant.team.name_empty') ||
-      assert(state.name.length >= schema.name.minLength, 'error.grant.team.name_too_short') ||
-      undefined,
-  }),
-  role: (state) => ({
-    role:
-      assert(state.role.length <= schema.role.maxLength, 'error.grant.team.role_too_large') ||
-      assert(state.role.length > 0, 'error.grant.team.role_empty') ||
-      assert(state.role.length >= schema.role.minLength, 'error.grant.team.role_too_short') ||
-      undefined,
-  }),
-  about: (state) => ({
-    about:
-      assert(state.about.length <= schema.about.maxLength, 'error.grant.team.about_too_large') ||
-      assert(state.about.length > 0, 'error.grant.team.about_empty') ||
-      assert(state.about.length >= schema.about.minLength, 'error.grant.team.about_too_short') ||
-      undefined,
-  }),
-})
-
-const edit = (state: TeamMember, props: Partial<TeamMember>) => {
-  return {
-    ...state,
-    ...props,
-  }
-}
 
 interface Props {
   isOpen: boolean
@@ -60,88 +28,125 @@ interface Props {
   selectedTeamMember: TeamMember | null
 }
 
-const AddTeamMemberModal = ({ isOpen, onClose, onSubmit, selectedTeamMember, onDelete }: Props) => {
+export default function AddTeamMemberModal({ isOpen, onClose, onSubmit, selectedTeamMember, onDelete }: Props) {
   const t = useFormatMessage()
-  const [state, editor] = useEditor(edit, validate, INITIAL_TEAM_MEMBER_ITEM)
+  const {
+    formState: { errors },
+    control,
+    reset,
+    watch,
+    setValue,
+    handleSubmit,
+  } = useForm<TeamMember>({
+    defaultValues: INITIAL_TEAM_MEMBER_ITEM,
+    mode: 'onTouched',
+  })
+
+  const values = useWatch({ control })
 
   const hasInvalidUrl =
-    state.value.relevantLink !== '' &&
-    !!state.value.relevantLink &&
-    (!isHttpsURL(state.value.relevantLink) || state.value.relevantLink?.length >= schema.relevantLink.maxLength)
+    values.relevantLink !== '' &&
+    !!values.relevantLink &&
+    (!isHttpsURL(values.relevantLink) || values.relevantLink?.length >= schema.relevantLink.maxLength)
 
-  useEffect(() => {
-    if (state.validated) {
-      onSubmit(state.value)
-      onClose()
+  const onSubmitForm: SubmitHandler<TeamMember> = (data) => {
+    if (hasInvalidUrl) {
+      return
     }
-  }, [editor, onClose, onSubmit, state.validated, state.value])
+
+    onSubmit(data)
+    onClose()
+    reset()
+  }
 
   useEffect(() => {
     if (selectedTeamMember) {
-      editor.set({ ...selectedTeamMember })
+      const { name, role, about, relevantLink } = selectedTeamMember
+      setValue('name', name)
+      setValue('role', role)
+      setValue('about', about)
+      setValue('relevantLink', relevantLink)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedTeamMember])
+  }, [selectedTeamMember, setValue])
 
   return (
     <AddModal
       title={t('page.submit_grant.team.team_modal.title')}
       isOpen={isOpen}
       onClose={onClose}
+      onPrimaryClick={handleSubmit(onSubmitForm)}
       onSecondaryClick={selectedTeamMember ? onDelete : undefined}
-      onPrimaryClick={() => !hasInvalidUrl && editor.validate()}
     >
       <div>
         <ContentSection className="GrantRequestSection__Field">
           <Label>{t('page.submit_grant.team.team_modal.name_label')}</Label>
           <Field
-            value={state.value.name}
+            name="name"
+            control={control}
             placeholder={t('page.submit_grant.team.team_modal.name_placeholder')}
-            onChange={(_, { value }) => editor.set({ name: value })}
-            error={!!state.error.name}
+            error={!!errors.name}
             message={
-              t(state.error.name) +
+              (errors.name?.message || '') +
               ' ' +
               t('page.submit.character_counter', {
-                current: state.value.name.length,
+                current: watch('name').length,
                 limit: schema.name.maxLength,
               })
             }
+            rules={{
+              required: { value: true, message: t('error.grant.team.name_empty') },
+              minLength: {
+                value: schema.name.minLength,
+                message: t('error.grant.team.name_too_short'),
+              },
+              maxLength: { value: schema.name.maxLength, message: t('error.grant.team.name_too_large') },
+            }}
           />
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
           <Label>{t('page.submit_grant.team.team_modal.role_label')}</Label>
           <Field
-            value={state.value.role}
+            name="role"
+            control={control}
             placeholder={t('page.submit_grant.team.team_modal.role_placeholder')}
-            onChange={(_, { value }) => editor.set({ role: value })}
-            error={!!state.error.role}
+            error={!!errors.role}
             message={
-              t(state.error.role) +
+              (errors.role?.message || '') +
               ' ' +
               t('page.submit.character_counter', {
-                current: state.value.role.length,
+                current: watch('role').length,
                 limit: schema.role.maxLength,
               })
             }
+            rules={{
+              required: { value: true, message: t('error.grant.team.role_empty') },
+              minLength: {
+                value: schema.role.minLength,
+                message: t('error.grant.team.role_too_short'),
+              },
+              maxLength: { value: schema.role.maxLength, message: t('error.grant.team.role_too_large') },
+            }}
           />
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
           <Label>{t('page.submit_grant.team.team_modal.about_label')}</Label>
-          <Textarea
-            value={state.value.about}
-            minHeight={175}
+          <TextArea
+            name="about"
+            control={control}
             placeholder={t('page.submit_grant.team.team_modal.about_placeholder')}
-            onChange={(_: unknown, { value }: { value: string }) => editor.set({ about: String(value) })}
-            error={!!state.error.about}
-            message={
-              t(state.error.about) +
-              ' ' +
-              t('page.submit.character_counter', {
-                current: state.value.about.length,
-                limit: schema.about.maxLength,
-              })
-            }
+            error={errors.about?.message}
+            info={t('page.submit.character_counter', {
+              current: watch('about').length,
+              limit: schema.about.maxLength,
+            })}
+            rules={{
+              required: { value: true, message: t('error.grant.team.about_empty') },
+              minLength: {
+                value: schema.about.minLength,
+                message: t('error.grant.team.about_too_short'),
+              },
+              maxLength: { value: schema.about.maxLength, message: t('error.grant.team.about_too_large') },
+            }}
           />
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
@@ -150,25 +155,32 @@ const AddTeamMemberModal = ({ isOpen, onClose, onSubmit, selectedTeamMember, onD
             <span className="Optional">{t('page.submit_grant.team.team_modal.optional_label')}</span>
           </div>
           <Field
-            value={state.value.relevantLink}
+            name="relevantLink"
+            control={control}
             placeholder={t('page.submit_grant.team.team_modal.relevant_link_placeholder')}
-            onChange={(_, { value }) => editor.set({ relevantLink: value })}
-            error={hasInvalidUrl}
+            error={!!errors.relevantLink}
             message={
-              (!!state.value.relevantLink && !isHttpsURL(state.value.relevantLink)
-                ? t('error.grant.team.relevant_link_invalid')
-                : '') +
+              (errors.relevantLink?.message || '') +
               ' ' +
               t('page.submit.character_counter', {
-                current: state.value.relevantLink?.length,
+                current: (watch('relevantLink') || '').length,
                 limit: schema.relevantLink.maxLength,
               })
             }
+            rules={{
+              maxLength: {
+                value: schema.relevantLink.maxLength,
+                message: t('error.grant.team.relevant_link_invalid'),
+              },
+              validate: (value: string) => {
+                if (!isHttpsURL(value)) {
+                  return t('error.grant.team.relevant_link_invalid')
+                }
+              },
+            }}
           />
         </ContentSection>
       </div>
     </AddModal>
   )
 }
-
-export default AddTeamMemberModal

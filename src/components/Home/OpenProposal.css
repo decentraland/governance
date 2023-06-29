@@ -99,6 +99,10 @@
   }
 }
 
+.OpenProposal__Pill {
+  margin-right: 5px;
+}
+
 .OpenProposal__UsernameContainer {
   display: flex;
   flex-direction: row;

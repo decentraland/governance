@@ -10,7 +10,7 @@ const DEFAULT_FONT_SIZE: FontSize = 'md'
 const DEFAULT_FONT_STYLE: FontStyle = 'normal'
 type FontSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 type FontWeight = 'bold' | 'semi-bold' | 'normal'
-type TextColor = 'default' | 'primary' | 'secondary'
+type TextColor = 'default' | 'primary' | 'secondary' | 'error'
 type FontStyle = 'normal' | 'italic'
 
 interface Props {
