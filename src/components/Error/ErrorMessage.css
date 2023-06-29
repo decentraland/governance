@@ -82,7 +82,7 @@ button.ui.small.primary.button.Button.ErrorMessage__Copy {
 }
 
 .ErrorMessage__CallForActionText {
-  font-weight: 400 !important;
+  font-weight: var(--weight-normal) !important;
   color: var(--background-popup) !important;
 }
 

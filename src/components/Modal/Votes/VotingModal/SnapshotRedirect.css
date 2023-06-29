@@ -30,7 +30,7 @@
 }
 
 .SnapshotRedirect__Suggestion {
-  font-weight: 400 !important;
+  font-weight: var(--weight-normal) !important;
   letter-spacing: 0 !important;
   text-align: center;
   margin-bottom: 24px;

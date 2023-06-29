@@ -68,6 +68,6 @@
 
 .BudgetInput__Subtitle {
   font-style: italic !important;
-  font-weight: 400 !important;
+  font-weight: var(--weight-normal) !important;
   color: var(--black-600) !important;
 }

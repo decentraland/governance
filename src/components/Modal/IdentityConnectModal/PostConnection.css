@@ -30,7 +30,7 @@
 }
 
 .PostConnection__TextParagraph {
-  font-weight: 400 !important;
+  font-weight: var(--weight-normal) !important;
   text-align: center;
   margin-bottom: 8px;
   max-width: 70%;
@@ -45,7 +45,7 @@
 
 .PostConnection__SubtextParagraph,
 .PostConnection__SubtextStrong {
-  font-weight: 400 !important;
+  font-weight: var(--weight-normal) !important;
   color: var(--black-600) !important;
   max-width: 100%;
   margin: 0;

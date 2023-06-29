@@ -31,5 +31,5 @@
 
 .CheckboxField__Text {
   letter-spacing: -0.2px !important;
-  font-weight: 400 !important;
+  font-weight: var(--weight-normal) !important;
 }

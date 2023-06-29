@@ -1,3 +1,3 @@
 .GetInvolvedQuestion__Text {
-  font-weight: 400 !important;
+  font-weight: var(--weight-normal) !important;
 }

@@ -1,6 +1,6 @@
 .SubLabel {
   margin-bottom: 15px;
-  font-weight: 400 !important;
+  font-weight: var(--weight-normal) !important;
   line-height: 20px !important;
 }
 

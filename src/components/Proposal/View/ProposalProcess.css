@@ -195,7 +195,7 @@
 .ProposalProcess___StatusText {
   line-height: 12px !important;
   letter-spacing: 0 !important;
-  font-weight: 400 !important;
+  font-weight: var(--weight-normal) !important;
   text-transform: uppercase;
   background: var(--alpha-black-200);
   border-radius: 4px;

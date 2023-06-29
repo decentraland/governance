@@ -20,7 +20,7 @@
 }
 
 .ProposalVotingSection__VotingBeginsText {
-  font-weight: 400 !important;
+  font-weight: var(--weight-normal) !important;
 }
 .ProposalVotingSection__VotingBeginsText,
 .ProposalVotingSection__VotingBeginsStrong {

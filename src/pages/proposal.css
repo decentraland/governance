@@ -41,7 +41,7 @@
 .ProposalDetailPage__Description__Text,
 .ProposalDetailPage__Description__ListItem {
   font-size: 15px !important;
-  font-weight: 400 !important;
+  font-weight: var(--weight-normal) !important;
   letter-spacing: 0 !important;
 }
 

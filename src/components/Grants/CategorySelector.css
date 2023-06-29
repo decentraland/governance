@@ -51,7 +51,7 @@
 }
 
 .CategorySelector__DocumentationText {
-  font-weight: 400 !important;
+  font-weight: var(--weight-normal) !important;
   letter-spacing: -0.2px;
   color: var(--black-600) !important;
 }

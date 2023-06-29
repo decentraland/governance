@@ -31,7 +31,7 @@
 
 .DelegatesTable tbody {
   font-style: normal;
-  font-weight: 400 !important;
+  font-weight: var(--weight-normal) !important;
   font-size: 15px;
   line-height: 24px;
   color: var(--black-600);

@@ -75,7 +75,7 @@ a.ui.card:hover,
 
 .GrantBeneficiaryItem__DetailsText {
   color: var(--black-600) !important;
-  font-weight: 400 !important;
+  font-weight: var(--weight-normal) !important;
   line-height: 28px !important;
   text-transform: uppercase;
 }
