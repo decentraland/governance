@@ -2,7 +2,7 @@
   margin-bottom: 8px;
 }
 .ProposalUpdatesActions__UpdateDescriptionBold {
-  font-weight: 500 !important;
+  font-weight: var(--weight-medium) !important;
 }
 
 .ProposalUpdatesActions__UpdateButton {

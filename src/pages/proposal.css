@@ -31,7 +31,7 @@
 
 .ProposalDetailPage__Description__SubTitle {
   font-size: 21px !important;
-  font-weight: 500 !important;
+  font-weight: var(--weight-medium) !important;
 }
 
 .ProposalDetailPage__Description__Text {

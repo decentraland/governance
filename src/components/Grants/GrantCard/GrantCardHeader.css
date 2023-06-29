@@ -53,7 +53,7 @@
 }
 
 .GrantCardHeader__SizeContainerSlim {
-  font-weight: 500 !important;
+  font-weight: var(--weight-medium) !important;
   font-size: 11px !important;
   color: var(--black-600);
 }

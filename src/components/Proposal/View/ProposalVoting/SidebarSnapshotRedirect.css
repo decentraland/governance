@@ -17,5 +17,5 @@
 }
 
 .SidebarSnapshotRedirect__StrongText {
-  font-weight: 500 !important;
+  font-weight: var(--weight-medium) !important;
 }
