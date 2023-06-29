@@ -34,7 +34,7 @@
 
 .VotingModal__SkipAndCast {
   text-transform: none !important;
-  font-weight: 600 !important;
+  font-weight: var(--weight-semi-bold) !important;
   margin-left: 22px !important;
   padding-left: 0 !important;
   text-align: left !important;

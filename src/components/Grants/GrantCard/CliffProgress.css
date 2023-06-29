@@ -71,7 +71,7 @@
 }
 
 .CliffProgress__EnactedDate {
-  font-weight: 600 !important;
+  font-weight: var(--weight-semi-bold) !important;
 }
 
 @media (min-width: 425px) {

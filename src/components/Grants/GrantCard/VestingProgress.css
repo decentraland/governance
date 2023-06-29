@@ -105,7 +105,7 @@
 }
 
 .VestingProgress__VestedDate {
-  font-weight: 600 !important;
+  font-weight: var(--weight-semi-bold) !important;
 }
 
 .VestingProgress__Ellipsis {

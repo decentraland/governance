@@ -25,7 +25,7 @@
 .ProposalDetailPage__Description__Title {
   font-size: 13px !important;
   text-transform: uppercase;
-  font-weight: 600 !important;
+  font-weight: var(--weight-semi-bold) !important;
   color: var(--black-600) !important;
 }
 

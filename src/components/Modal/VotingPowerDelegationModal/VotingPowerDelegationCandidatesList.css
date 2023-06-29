@@ -2,7 +2,7 @@
   min-height: 36px !important;
   margin: 0 0 10px 0 !important;
   font-size: 20px !important;
-  font-weight: 600 !important;
+  font-weight: var(--weight-semi-bold) !important;
   line-height: 36px !important;
 }
 
