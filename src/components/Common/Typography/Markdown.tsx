@@ -10,7 +10,8 @@ import gfm from 'remark-gfm'
 
 import Heading from './Heading'
 import Link from './Link'
-import List, { ListItem } from './List'
+import List from './List'
+import { ListItem } from './ListItem'
 import Text, { FontSize } from './Text'
 
 const plugins = [gfm, emoji] as any

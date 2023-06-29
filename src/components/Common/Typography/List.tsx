@@ -16,9 +16,3 @@ export default function List(props: ListProps) {
     return <ul {...props} className={classNames('List', props.className)} />
   }
 }
-
-type ListItemProps = React.LiHTMLAttributes<HTMLLIElement>
-
-export function ListItem(props: ListItemProps) {
-  return <li {...props} className={classNames('ListItem', props.className)} />
-}
