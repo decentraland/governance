@@ -22,29 +22,6 @@
   min-height: 24px;
 }
 
-.ProposalDetailPage__Description__Title {
-  font-size: 13px !important;
-  text-transform: uppercase;
-  font-weight: var(--weight-semi-bold) !important;
-  color: var(--black-600) !important;
-}
-
-.ProposalDetailPage__Description__SubTitle {
-  font-size: 21px !important;
-  font-weight: var(--weight-medium) !important;
-}
-
-.ProposalDetailPage__Description__Text {
-  white-space: pre-line;
-}
-
-.ProposalDetailPage__Description__Text,
-.ProposalDetailPage__Description__ListItem {
-  font-size: 15px !important;
-  font-weight: var(--weight-normal) !important;
-  letter-spacing: 0 !important;
-}
-
 .ProposalDetailPage__Description img {
   max-width: 100%;
 }

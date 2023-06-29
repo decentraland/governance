@@ -16,7 +16,6 @@ import { ErrorClient } from '../clients/ErrorClient'
 import { Governance } from '../clients/Governance'
 import { SnapshotApi } from '../clients/SnapshotApi'
 import CategoryPill from '../components/Category/CategoryPill'
-import Markdown from '../components/Common/Typography/Markdown'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import { DeleteProposalModal } from '../components/Modal/DeleteProposalModal/DeleteProposalModal'
@@ -38,6 +37,7 @@ import GrantProposalView from '../components/Proposal/View/Categories/GrantPropo
 import CompetingTenders from '../components/Proposal/View/CompetingTenders'
 import GovernanceProcess from '../components/Proposal/View/GovernanceProcess'
 import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
+import ProposalMarkdown from '../components/Proposal/View/ProposalMarkdown'
 import TenderProposals from '../components/Proposal/View/TenderProposals'
 import StatusPill from '../components/Status/StatusPill'
 import { VOTES_VP_THRESHOLD } from '../constants'
@@ -70,12 +70,6 @@ const EMPTY_VOTE_CHOICE_SELECTION: SelectedVoteChoice = { choice: undefined, cho
 const MAX_ERRORS_BEFORE_SNAPSHOT_REDIRECT = 3
 const SECONDS_FOR_VOTING_RETRY = 5
 const SURVEY_TOPICS_FEATURE_LAUNCH = new Date(2023, 3, 5, 0, 0)
-export const PROPOSAL_DESCRIPTION_MARKDOWN_STYLES = {
-  h2: 'ProposalDetailPage__Description__Title',
-  h3: 'ProposalDetailPage__Description__SubTitle',
-  p: 'ProposalDetailPage__Description__Text',
-  li: 'ProposalDetailPage__Description__ListItem',
-}
 
 export type ProposalPageState = {
   changingVote: boolean
@@ -367,9 +361,7 @@ export default function ProposalPage() {
                 {proposal?.type === ProposalType.Grant ? (
                   <GrantProposalView config={proposal.configuration} />
                 ) : (
-                  <Markdown componentsClassNames={PROPOSAL_DESCRIPTION_MARKDOWN_STYLES}>
-                    {proposal?.description || ''}
-                  </Markdown>
+                  <ProposalMarkdown text={proposal?.description || ''} />
                 )}
               </div>
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}

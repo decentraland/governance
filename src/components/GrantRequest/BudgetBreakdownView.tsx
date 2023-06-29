@@ -6,8 +6,7 @@ import toNumber from 'lodash/toNumber'
 import { BudgetBreakdownConcept } from '../../entities/Grant/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import { PROPOSAL_DESCRIPTION_MARKDOWN_STYLES } from '../../pages/proposal'
-import Markdown from '../Common/Typography/Markdown'
+import ProposalMarkdown from '../Proposal/View/ProposalMarkdown'
 
 import BreakdownAccordion, { BreakdownItem } from './BreakdownAccordion'
 
@@ -32,9 +31,7 @@ function BudgetBreakdownView({ breakdown }: Props) {
   )
   return (
     <>
-      <Markdown componentsClassNames={PROPOSAL_DESCRIPTION_MARKDOWN_STYLES}>{`## ${t(
-        'page.proposal_view.grant.breakdown_title'
-      )}`}</Markdown>
+      <ProposalMarkdown text={`## ${t('page.proposal_view.grant.breakdown_title')}`} />
       <BreakdownAccordion items={items} />
     </>
   )

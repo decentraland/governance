@@ -2,8 +2,7 @@ import React, { useMemo } from 'react'
 
 import { TeamMember } from '../../entities/Grant/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import { PROPOSAL_DESCRIPTION_MARKDOWN_STYLES } from '../../pages/proposal'
-import Markdown from '../Common/Typography/Markdown'
+import ProposalMarkdown from '../Proposal/View/ProposalMarkdown'
 
 import BreakdownAccordion, { BreakdownItem } from './BreakdownAccordion'
 
@@ -25,9 +24,7 @@ function PersonnelView({ members }: Props) {
   )
   return (
     <>
-      <Markdown componentsClassNames={PROPOSAL_DESCRIPTION_MARKDOWN_STYLES}>{`## ${t(
-        'page.proposal_view.grant.personnel_title'
-      )}`}</Markdown>
+      <ProposalMarkdown text={`## ${t('page.proposal_view.grant.personnel_title')}`} />
       <BreakdownAccordion items={items} />
     </>
   )
