@@ -33,7 +33,7 @@
 }
 
 .Text.Text--weight-semi-bold {
-  font-weight: var(--weight-semi-bold);
+  font-weight: var(--weight-normal);
 }
 
 .Text.Text--weight-bold {

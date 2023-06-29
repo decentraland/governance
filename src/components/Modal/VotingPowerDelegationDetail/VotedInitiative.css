@@ -24,7 +24,7 @@
 .VotedInitiative__Vote {
   max-width: 65px;
   margin: 0 5px;
-  font-weight: var(--weight-semi-bold);
+  font-weight: var(--weight-normal);
   font-size: 10px;
   line-height: 24px;
   text-transform: uppercase;

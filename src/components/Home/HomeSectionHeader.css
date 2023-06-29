@@ -11,7 +11,7 @@
 
 .HomeSectionHeader__Description {
   font-style: normal;
-  font-weight: var(--weight-semi-bold);
+  font-weight: var(--weight-normal);
   margin-bottom: 16px;
   font-size: 15px !important;
   line-height: 24px !important;

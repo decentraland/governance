@@ -15,7 +15,7 @@
   display: flex;
   justify-content: space-between;
   font-style: normal;
-  font-weight: var(--weight-semi-bold);
+  font-weight: var(--weight-normal);
   font-size: 11px;
   line-height: 26px;
   letter-spacing: 0.6px;

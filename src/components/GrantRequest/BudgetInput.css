@@ -17,7 +17,7 @@
 .BudgetInput__Description {
   padding: 9px;
   background: var(--alpha-black-200);
-  font-weight: var(--weight-semi-bold);
+  font-weight: var(--weight-normal);
   font-size: 17px;
   line-height: 26px;
   letter-spacing: -0.2px;
@@ -35,7 +35,7 @@
   min-width: 160px;
   border: none;
   border-radius: 6px;
-  font-weight: var(--weight-semi-bold);
+  font-weight: var(--weight-normal);
   font-size: 17px;
   line-height: 26px;
   letter-spacing: -0.2px;

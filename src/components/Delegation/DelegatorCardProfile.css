@@ -36,7 +36,7 @@
   color: var(--black-600);
   text-transform: uppercase;
   align-items: center;
-  font-weight: var(--weight-semi-bold);
+  font-weight: var(--weight-normal);
   font-size: 11px;
   line-height: 26px;
 }

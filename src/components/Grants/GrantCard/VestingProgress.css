@@ -101,7 +101,7 @@
 
 .VestingProgress__VestedAt span {
   padding-right: 3px;
-  font-weight: var(--weight-semi-bold);
+  font-weight: var(--weight-normal);
 }
 
 .VestingProgress__VestedDate {

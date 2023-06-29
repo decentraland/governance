@@ -9,7 +9,7 @@
 
 .DistributionBarPopup__Title {
   line-height: 18px;
-  font-weight: var(--weight-semi-bold);
+  font-weight: var(--weight-normal);
   font-size: 13px;
   text-transform: uppercase;
   font-style: normal;

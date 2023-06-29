@@ -9,7 +9,7 @@
 
 .Stat .Stat__Description {
   font-style: normal;
-  font-weight: var(--weight-semi-bold);
+  font-weight: var(--weight-normal);
   font-size: 12px;
   line-height: 14px;
   letter-spacing: 0.5px;

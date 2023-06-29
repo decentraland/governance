@@ -22,7 +22,7 @@
 
 .TeamMemberItem__Duration {
   margin: 0;
-  font-weight: var(--weight-semi-bold);
+  font-weight: var(--weight-normal);
   font-size: 11px;
   letter-spacing: 0.4px;
   text-transform: uppercase;
@@ -37,7 +37,7 @@
 }
 
 .TeamMemberItem__Budget {
-  font-weight: var(--weight-semi-bold);
+  font-weight: var(--weight-normal);
   font-size: 15px;
   line-height: 28px;
   display: flex;

@@ -14,7 +14,7 @@
 }
 
 .ErrorMessage__Header span {
-  font-weight: var(--weight-semi-bold);
+  font-weight: var(--weight-normal);
   line-height: 20px;
   font-size: 15px;
   padding-left: 8px;
@@ -41,7 +41,7 @@ a.Link.Link--pointer.ui.basic.button.ErrorMessage__Show {
   flex-wrap: wrap;
   flex-direction: column;
   padding-left: 16px;
-  font-weight: var(--weight-semi-bold);
+  font-weight: var(--weight-normal);
   font-size: 15px;
   line-height: 26px;
   letter-spacing: -0.2px;
@@ -63,7 +63,7 @@ button.ui.small.primary.button.Button.ErrorMessage__Copy {
   text-align: center;
   vertical-align: middle;
   padding: 0 6px;
-  font-weight: var(--weight-semi-bold);
+  font-weight: var(--weight-normal);
   font-size: 11px;
   line-height: 26px;
   letter-spacing: -0.2px;

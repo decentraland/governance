@@ -31,7 +31,7 @@
   margin: 0;
   display: flex;
   align-items: baseline;
-  font-weight: var(--weight-semi-bold);
+  font-weight: var(--weight-normal);
 }
 
 .ui.sub.header.MonthlyTotal__Sub {

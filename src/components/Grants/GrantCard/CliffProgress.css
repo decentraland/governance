@@ -67,7 +67,7 @@
 
 .CliffProgress__EnactedAt span {
   padding-right: 3px;
-  font-weight: var(--weight-semi-bold);
+  font-weight: var(--weight-normal);
 }
 
 .CliffProgress__EnactedDate {

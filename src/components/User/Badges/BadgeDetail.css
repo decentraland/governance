@@ -35,7 +35,7 @@
 
 .BadgeDetail__MintDate {
   font-style: normal;
-  font-weight: var(--weight-semi-bold);
+  font-weight: var(--weight-normal);
   font-size: 11px;
   line-height: 28px;
   text-transform: uppercase;

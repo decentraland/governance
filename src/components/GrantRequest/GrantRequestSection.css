@@ -91,7 +91,7 @@
 
 .GrantRequestSection__Sublabel,
 .GrantRequestSection__Sublabel .dg.Paragraph {
-  font-weight: var(--weight-semi-bold);
+  font-weight: var(--weight-normal);
   font-size: 15px;
   line-height: 20px;
   color: var(--black-600);

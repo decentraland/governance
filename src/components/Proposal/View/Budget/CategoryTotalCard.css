@@ -10,7 +10,7 @@
 
 .CategoryTotalCard__Description {
   font-style: normal;
-  font-weight: var(--weight-semi-bold);
+  font-weight: var(--weight-normal);
   font-size: 13px;
   line-height: 18px;
   letter-spacing: -0.2px;

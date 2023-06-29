@@ -173,7 +173,7 @@
   min-width: auto;
   background-color: var(--black-600) !important;
   color: white;
-  font-weight: var(--weight-semi-bold);
+  font-weight: var(--weight-normal);
 }
 
 .VotingPowerDelegationDetail__Content .ShowMore .Divider {
