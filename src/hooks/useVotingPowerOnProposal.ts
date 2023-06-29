@@ -24,23 +24,23 @@ export default function useVotingPowerOnProposal(
   address: string | null,
   delegators: string[] | null,
   isLoadingDelegators: boolean,
-  votes?: Record<string, Vote> | null,
   proposal?: ProposalAttributes | null
 ) {
   const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(address, proposal?.snapshot_id)
   const { data, isLoading } = useQuery({
-    queryKey: [`vpDistribution#${address}#${proposal?.snapshot_id}`],
+    queryKey: [`votingPowerOnProposal#${address}#${proposal?.snapshot_id}`],
     queryFn: async () => {
-      if (!address || !proposal || isLoadingDelegators || isLoadingVpDistribution || !vpDistribution) {
-        return initialVotingPowerOnProposal
+      if (proposal?.snapshot_id) {
+        const votes: SnapshotVote[] = await SnapshotGraphql.get().getProposalVotes(proposal.snapshot_id)
+        const delegatedVp = getDelegatedVotingPowerOnProposal(vpDistribution, delegators, votes)
+        const addressVp = vpDistribution.own || 0
+        return { addressVp, delegatedVp }
       }
-      const votes: SnapshotVote[] = await SnapshotGraphql.get().getProposalVotes(proposal.snapshot_id)
-      const delegatedVp = getDelegatedVotingPowerOnProposal(vpDistribution, delegators, votes)
-      const addressVp = vpDistribution.own || 0
-      return { addressVp, delegatedVp }
     },
     staleTime: DEFAULT_QUERY_STALE_TIME,
+    enabled: !!address && !!proposal && !isLoadingDelegators && !isLoadingVpDistribution && !!vpDistribution,
   })
+
   const vpOnProposal = data ?? initialVotingPowerOnProposal
   const totalVpOnProposal = vpOnProposal.addressVp + vpOnProposal.delegatedVp
   const hasEnoughToVote = totalVpOnProposal > MINIMUM_VP_REQUIRED_TO_VOTE && !isLoading
