@@ -7,7 +7,7 @@
 .LeadingOption__Text {
   display: flex;
   gap: 5px;
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 12px;
   line-height: 18px;
   text-transform: uppercase;

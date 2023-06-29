@@ -24,7 +24,7 @@
 a.Link.Link--pointer.ui.basic.button.ErrorMessage__Show {
   height: 20px;
   text-transform: uppercase;
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 13px;
   line-height: 20px;
   color: var(--red-800) !important;

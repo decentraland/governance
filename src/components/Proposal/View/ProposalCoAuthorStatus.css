@@ -42,6 +42,6 @@
 
 .CoAuthorStatus__RevertButton {
   color: var(--dcl-primary);
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   cursor: pointer;
 }

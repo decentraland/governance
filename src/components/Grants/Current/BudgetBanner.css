@@ -47,7 +47,7 @@
 
 .BudgetBanner__ProgressLabel .BudgetBanner__Amount,
 .BudgetBanner__ProgressLabel .BudgetBanner__Percentage {
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
 }
 
 .BudgetBanner__LabelWithIcon {

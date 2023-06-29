@@ -22,7 +22,7 @@
 }
 
 .BadgesSidebar__Back > .BadgesSidebar__Title {
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 17px;
   line-height: 24px;
   color: var(--black-800);
@@ -33,7 +33,7 @@
 }
 
 .BadgesSidebar__Title {
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 17px;
   line-height: 24px;
   color: var(--black-800);

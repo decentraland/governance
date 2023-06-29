@@ -11,7 +11,7 @@
 }
 
 .SnapshotRedirect__Header {
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 17px;
   line-height: 26px;
   text-align: center;
@@ -21,7 +21,7 @@
 }
 
 .SnapshotRedirect__Description {
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 15px;
   line-height: 24px;
   text-align: center;

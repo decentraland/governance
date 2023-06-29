@@ -61,7 +61,7 @@
 
 .MonthlyTotal .DetailsSection__Flex .DetailsSection__Value {
   text-align: right;
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
 }
 
 strong.Number.Number--Green {

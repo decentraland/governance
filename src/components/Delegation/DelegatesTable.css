@@ -46,7 +46,7 @@
 
 .DelegatesTable__CandidateName {
   color: var(--black-800);
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
 }
 
 td.DelegatesTable__CandidateName > .Username {

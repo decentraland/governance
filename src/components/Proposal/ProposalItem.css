@@ -99,7 +99,7 @@
 }
 
 .ProposalItem__Votes {
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 12px;
   line-height: 26px;
   text-transform: uppercase;

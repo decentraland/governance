@@ -22,7 +22,7 @@
 
 .ContestedBudgetLabel__Amount {
   font-style: normal;
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 17px;
   line-height: 20px;
   letter-spacing: 0.4px;

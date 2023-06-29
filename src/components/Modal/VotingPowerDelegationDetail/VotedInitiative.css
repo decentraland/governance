@@ -47,7 +47,7 @@
 }
 
 .VotedInitiative__Vote--highlight {
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
 }
 
 .VotedInitiative__PopupVote {

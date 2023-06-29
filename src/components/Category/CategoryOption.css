@@ -33,7 +33,7 @@
 }
 
 .CategoryOption.CategoryOption--active .dg.Paragraph.Paragraph--semi-bold {
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
 }
 
 .CategoryOption.CategoryOption--catalyst:hover,
@@ -84,7 +84,7 @@
 }
 
 .CategoryOption__Counter {
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 10px;
   line-height: 13px;
   color: var(--black-600);
@@ -138,7 +138,7 @@
 .CategoryOption__SubcategoryItem:hover,
 .CategoryOption__SubcategoryItem--active {
   color: var(--black-800);
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
 }
 
 .CategoryOption__SubcategoryItem--active {

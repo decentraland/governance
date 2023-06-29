@@ -30,7 +30,7 @@
 }
 
 .SentimentSurveyRow__AddReaction > span {
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 13px;
   line-height: 18px;
   text-align: center;

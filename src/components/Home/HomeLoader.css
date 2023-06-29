@@ -21,7 +21,7 @@
 }
 
 .HomeLoader__Text--small {
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 12px;
   line-height: 18px;
 }

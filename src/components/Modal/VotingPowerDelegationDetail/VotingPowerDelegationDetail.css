@@ -185,7 +185,7 @@
 }
 
 .VotingPowerDelegationDetail__Content .stats .header {
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 11px !important;
   margin-bottom: 0 !important;
   line-height: 18px;
@@ -209,7 +209,7 @@
 }
 
 .VotingPowerDelegationDetail__StatsValue {
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 17px;
   line-height: 32px;
   letter-spacing: 0.4px;

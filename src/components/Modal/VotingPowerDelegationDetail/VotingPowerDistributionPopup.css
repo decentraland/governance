@@ -5,7 +5,7 @@
 }
 
 .VotingPowerDistributionPopup__Label {
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 10px;
   line-height: 18px;
   text-transform: uppercase;
@@ -13,7 +13,7 @@
 }
 
 .VotingPowerDistributionPopup__Percentage {
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 10px;
   line-height: 18px;
   text-transform: uppercase;

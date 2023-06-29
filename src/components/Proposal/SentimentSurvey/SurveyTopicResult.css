@@ -65,7 +65,7 @@
   }
 
   .SurveyTopicResult__Header {
-    font-weight: var(--weight-boldemort);
+    font-weight: var(--weight-semi-bold);
   }
 
   .ReactionCount {

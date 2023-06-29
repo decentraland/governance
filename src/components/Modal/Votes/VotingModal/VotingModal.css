@@ -5,7 +5,7 @@
 }
 
 .VotingModal__Choice {
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
 }
 
 .VotingModal__Actions {

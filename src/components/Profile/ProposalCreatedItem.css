@@ -103,7 +103,7 @@ a.ui.card:hover,
 }
 
 .ProposalCreatedItem__Details {
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 11px;
   color: var(--black-600);
   letter-spacing: 0.4px;
@@ -139,7 +139,7 @@ a.ui.card:hover,
 
 .ProposalCreatedItem__VoteText {
   text-transform: uppercase;
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 13px;
   line-height: 18px;
 }

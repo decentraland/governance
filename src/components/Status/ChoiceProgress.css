@@ -14,7 +14,7 @@
 }
 
 .ChoiceProgress__Choice {
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 15px;
   display: -webkit-box;
   overflow: hidden;
@@ -44,7 +44,7 @@
 
 .ChoiceProgress__Votes strong {
   font-style: normal;
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 13px;
   line-height: 18px;
   color: var(--black-700);

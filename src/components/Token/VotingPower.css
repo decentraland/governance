@@ -10,18 +10,18 @@
 }
 
 .VotingPower.VotingPower--bold {
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
 }
 
 .VotingPower.VotingPower--huge {
   font-size: 48px;
   line-height: 56px;
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
 }
 
 .VotingPower.VotingPower--large {
   font-size: 34px;
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   line-height: 42px;
   letter-spacing: 0.4px;
 }

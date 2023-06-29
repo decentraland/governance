@@ -41,7 +41,7 @@
 }
 
 .VestingProgress__Bold {
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   padding-right: 2px;
 }
 

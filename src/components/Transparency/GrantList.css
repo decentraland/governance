@@ -6,7 +6,7 @@
 
 .ui.header.GrantList__Total {
   font-size: x-large;
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
 }
 
 .content.GrantList__Content {
@@ -24,7 +24,7 @@
 
 a.GrantList__Link {
   color: #6299f0;
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 17px;
   display: flex;
   margin-top: 0.25em;

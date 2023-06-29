@@ -40,7 +40,7 @@
   color: var(--text);
   line-height: 24px;
   font-size: 15px;
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
 }
 
 .ProposalThresholdsSummary__Subtitle {

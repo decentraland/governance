@@ -30,7 +30,7 @@
 
 .CategorySelector__Content h2 {
   margin-bottom: 5px;
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 17px;
   line-height: 26px;
 }
@@ -44,7 +44,7 @@
 }
 
 .CategorySelector__Description {
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 15px;
   line-height: 24px;
   color: var(--black-600);

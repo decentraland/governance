@@ -30,7 +30,7 @@
   display: block;
   width: 100%;
   padding-right: 20px;
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 17px;
   line-height: 26px;
   letter-spacing: -0.2px;
@@ -56,13 +56,13 @@
 }
 
 .ProposalCard__ByUser {
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   text-align: left;
   margin-left: 2px;
 }
 
 .ProposalCard__Username {
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   color: var(--black-800);
   font-size: 11px;
   line-height: 26px;

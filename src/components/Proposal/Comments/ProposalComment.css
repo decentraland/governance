@@ -19,7 +19,7 @@
 }
 
 .ProposalComment .ProposalComment__Author a {
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
 }
 
 .ProposalComment__Cooked {

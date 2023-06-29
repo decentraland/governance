@@ -27,7 +27,7 @@
 
 .GrantRequest_HeaderTitle {
   font-style: normal;
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 24px;
   line-height: 42px;
   letter-spacing: 0.4px;
@@ -41,7 +41,7 @@
   gap: 24px;
   align-items: center;
   font-size: 24px;
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   line-height: 42px;
   letter-spacing: 0.4px;
   text-align: left;

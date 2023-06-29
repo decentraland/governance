@@ -4,7 +4,7 @@
 
 .BudgetBannerItem__Value {
   font-style: normal;
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 20px;
   line-height: 26px;
   letter-spacing: 0.3px;

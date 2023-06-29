@@ -42,7 +42,7 @@
     text-transform: uppercase;
     gap: 3px;
     align-items: center;
-    font-weight: var(--weight-boldemort);
+    font-weight: var(--weight-semi-bold);
     font-size: 11px;
     line-height: 18px;
   }
@@ -66,5 +66,5 @@
 }
 
 .GrantCardHeader__SizeNumber {
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
 }

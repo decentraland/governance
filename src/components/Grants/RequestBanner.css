@@ -8,7 +8,7 @@
 
 .RequestBanner__Title {
   font-style: normal;
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 13px;
   line-height: 18px;
   text-transform: uppercase;
@@ -31,7 +31,7 @@
   border-radius: 6px;
   padding: 9px;
   font-style: normal;
-  font-weight: var(--weight-boldemort);
+  font-weight: var(--weight-semi-bold);
   font-size: 13px;
   line-height: 18px;
   text-transform: uppercase;
