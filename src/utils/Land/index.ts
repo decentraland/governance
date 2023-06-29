@@ -1,5 +1,7 @@
 import fetch from 'isomorphic-fetch'
 
+import { ErrorClient } from '../../clients/ErrorClient'
+
 import { Tile } from './types'
 
 const LAND_URL = 'https://api.decentraland.org'
@@ -24,7 +26,14 @@ export async function getTiles(
     params.append('include', options.exclude.join(','))
   }
 
-  return (await (await fetch(`${LAND_URL}/v2/tiles?` + params.toString())).json()).data
+  try {
+    return (await (await fetch(`${LAND_URL}/v2/tiles?` + params.toString())).json()).data
+  } catch (error) {
+    const msg = 'Error fetching tiles'
+    console.error(msg, error)
+    ErrorClient.report(msg, error)
+  }
+  return {}
 }
 
 export async function getTile(
