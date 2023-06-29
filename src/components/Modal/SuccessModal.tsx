@@ -1,19 +1,18 @@
 import React, { useCallback } from 'react'
 
 import classNames from 'classnames'
-import useClipboardCopy from 'decentraland-gatsby/dist/hooks/useClipboardCopy'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { JOIN_DISCORD_URL } from '../../entities/Proposal/utils'
+import useClipboardCopy from '../../hooks/useClipboardCopy'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Time from '../../utils/date/Time'
 import Text from '../Common/Typography/Text'
 
 import './ProposalModal.css'
-import './SuccessModal.css'
 
 export type SuccessModalProps = Omit<ModalProps, 'children'> & {
   onDismiss: (e: React.MouseEvent<unknown>) => void
@@ -33,12 +32,12 @@ export function SuccessModal({
   ...props
 }: SuccessModalProps) {
   const t = useFormatMessage()
-  const [copied, state] = useClipboardCopy(Time.Second)
-  const handleCopy = useCallback(() => {
+  const { copiedValue, handleCopy } = useClipboardCopy(Time.Second)
+  const handleCopyClick = useCallback(() => {
     if (linkToCopy) {
-      state.copy(linkToCopy)
+      handleCopy(linkToCopy)
     }
-  }, [linkToCopy, state])
+  }, [linkToCopy, handleCopy])
 
   return (
     <Modal
@@ -105,12 +104,12 @@ export function SuccessModal({
             </div>
             <Button
               className={classNames('Button', 'CopyLink')}
-              onClick={handleCopy}
+              onClick={handleCopyClick}
               loading={loading}
               primary
               size="small"
             >
-              {copied ? t('modal.success.link_copied_label') : t('modal.success.copy_link_label')}
+              {copiedValue ? t('modal.success.link_copied_label') : t('modal.success.copy_link_label')}
             </Button>
           </div>
         )}

@@ -38,13 +38,17 @@ function ProposalCreatedItem({ proposal, showCoauthoring, hasCoauthorRequests }:
             <Header>{title}</Header>
           </div>
           <div className="ProposalCreatedItem__Status">
-            <StatusPill className="ProposalCreatedItem__StatusPill" size="small" status={status} />
-            {showCoauthoring && (
-              <CoAuthorPill className="ProposalCreatedItem__CoAuthorPill" hasCoauthorRequests={hasCoauthorRequests} />
-            )}
-            <Mobile>
-              {type && <CategoryPill className="ProposalCreatedItem__CategoryPill" size="small" proposalType={type} />}
-            </Mobile>
+            <div className="ProposalCreatedItem__StatusPillsContainer">
+              <StatusPill className="ProposalCreatedItem__StatusPill" size="small" status={status} />
+              {showCoauthoring && (
+                <CoAuthorPill className="ProposalCreatedItem__CoAuthorPill" hasCoauthorRequests={hasCoauthorRequests} />
+              )}
+              <Mobile>
+                {type && (
+                  <CategoryPill className="ProposalCreatedItem__CategoryPill" size="small" proposalType={type} />
+                )}
+              </Mobile>
+            </div>
             <div className="ProposalCreatedItem__Stats">
               <span className="ProposalCreatedItem__Details">
                 {t('page.profile.created_proposals.votes', { total: Object.keys(votes || {}).length })}

@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 
+import { Web3Provider } from '@ethersproject/providers'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useTrackContext from 'decentraland-gatsby/dist/context/Track/useTrackContext'
-import useClipboardCopy from 'decentraland-gatsby/dist/hooks/useClipboardCopy'
-import useSign from 'decentraland-gatsby/dist/hooks/useSign'
 
 import { Governance } from '../clients/Governance'
 import { AccountType } from '../components/Modal/IdentityConnectModal/AccountsConnectModal'
@@ -13,6 +12,7 @@ import { DISCOURSE_API } from '../entities/User/utils'
 import { openUrl } from '../helpers'
 import Time from '../utils/date/Time'
 
+import useClipboardCopy from './useClipboardCopy'
 import useTimer from './useTimer'
 
 export const THREAD_URL = `${DISCOURSE_API}${
@@ -21,30 +21,16 @@ export const THREAD_URL = `${DISCOURSE_API}${
 const VALIDATION_CHECK_INTERVAL = 10 * 1000 // 10 seconds
 
 const getMessage = async () => Governance.get().getValidationMessage()
+
 export default function useForumConnect() {
   const [user, userState] = useAuthContext()
   const track = useTrackContext()
-  const [sign, signState] = useSign(user, userState.provider)
-  const [copied, clipboardState] = useClipboardCopy(Time.Second)
-  const [signatureResolution, setSignatureResolution] = useState<{
-    resolve: (value: unknown) => void
-    reject: (reason?: unknown) => void
-  }>()
+
+  const [clipboardMessage, setClipboardMessage] = useState('')
+  const { handleCopy } = useClipboardCopy(Time.Second)
   const { startTimer, resetTimer, time } = useTimer(MESSAGE_TIMEOUT_TIME / 1000 - 1)
   const [validatingProfile, setValidatingProfile] = useState<NodeJS.Timer>()
   const [isValidated, setIsValidated] = useState<boolean>()
-
-  useEffect(() => {
-    if (signatureResolution && !signState.signing) {
-      if (!signState.error) {
-        signatureResolution.resolve(undefined)
-      } else {
-        resetTimer()
-        signatureResolution.reject(signState.error)
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [signatureResolution, signState])
 
   useEffect(() => {
     if (time <= 0 && validatingProfile) {
@@ -60,29 +46,33 @@ export default function useForumConnect() {
   }, [isValidated, resetTimer])
 
   const getSignedMessage = useCallback(async () => {
-    return new Promise((resolve, reject) => {
-      getMessage()
-        .then((message) => {
-          if (message) {
-            startTimer()
-            setIsValidated(undefined)
-            signState.sign(message)
-            setSignatureResolution({ resolve, reject })
-          } else {
-            reject(new Error('No message'))
-          }
-        })
-        .catch(reject)
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [signState])
+    if (!userState.provider) {
+      return
+    }
+
+    const message = await getMessage()
+    if (!message) {
+      throw new Error('No message')
+    }
+
+    const signer = new Web3Provider(userState.provider).getSigner()
+    startTimer()
+    setIsValidated(undefined)
+    const signedMessage = await signer.signMessage(message)
+    if (!signedMessage) {
+      resetTimer()
+      throw new Error('Failed to sign message')
+    }
+
+    setClipboardMessage(`${message}\nSignature: ${signedMessage}`)
+    return signedMessage
+  }, [startTimer, resetTimer, userState.provider])
 
   const copyMessageToClipboard = useCallback(() => {
-    const { message, signature } = sign
-    if (message && signature) {
-      clipboardState.copy(`${message}\nSignature: ${signature}`)
+    if (clipboardMessage) {
+      handleCopy(clipboardMessage)
     }
-  }, [clipboardState, sign])
+  }, [clipboardMessage, handleCopy])
 
   const openThread = () => {
     openUrl(THREAD_URL)

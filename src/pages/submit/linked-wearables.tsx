@@ -4,7 +4,6 @@ import { SubmitHandler, useForm, useWatch } from 'react-hook-form'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import { assert } from 'decentraland-gatsby/dist/hooks/useEditor'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Field as DCLField } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
@@ -156,12 +155,7 @@ export default function SubmitLinkedWearables() {
     } as Record<string, string>)
   }
 
-  const handleErrorOption = (
-    input: string,
-    fieldKey: string,
-    field: ListSectionType['section'],
-    validator: ListSectionValidator
-  ) => {
+  const handleErrorOption = (input: string, field: ListSectionType['section'], validator: ListSectionValidator) => {
     const error = validator(input)
     if (input !== '' && error) {
       setFormError(field, { message: (errors[field]?.message as unknown as string) || error })
@@ -173,11 +167,15 @@ export default function SubmitLinkedWearables() {
   }
 
   const urlValidator: ListSectionValidator = (input: string) => {
-    return assert(isHttpsURL(input), t('error.linked_wearables.url_invalid'))
+    if (!isHttpsURL(input)) {
+      return t('error.linked_wearables.url_invalid')
+    }
   }
 
   const addressValidator: ListSectionValidator = (input: string) => {
-    return assert(isEthereumAddress(input), t('error.linked_wearables.address_invalid'))
+    if (!isEthereumAddress(input)) {
+      return t('error.linked_wearables.address_invalid')
+    }
   }
 
   const getListSection = (
@@ -212,7 +210,7 @@ export default function SubmitLinkedWearables() {
                   onChange={(_, { value }) => handleEditOption(params.section, key, value)}
                   disabled={formDisabled}
                   error={!!errors[params.section]?.message}
-                  onBlur={() => handleErrorOption(sectionValue[key], key, params.section, validator)}
+                  onBlur={() => handleErrorOption(sectionValue[key], params.section, validator)}
                 />
               ))}
           {canAdd && (
@@ -280,8 +278,6 @@ export default function SubmitLinkedWearables() {
   useEffect(() => {
     const errorFields = Object.keys(omitBy(errors, isNil)) as (keyof LinkedWearablesState)[]
     const errorFieldsStr = JSON.stringify(errorFields)
-    console.log('errors', errors)
-    console.log('fields', formErrorKeys, errorFields)
     if (errorFields.length > 0 && errorFieldsStr !== formErrorKeys) {
       setError(
         `${errorFields

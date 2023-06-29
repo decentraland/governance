@@ -1,8 +1,6 @@
-import React, { forwardRef, useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
-import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
 
 import {
@@ -13,7 +11,8 @@ import {
 import { asNumber } from '../../../entities/Proposal/utils'
 import { disableOnWheelInput } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'
-import { useGrantCategoryEditor } from '../../../hooks/useGrantCategoryEditor'
+import Field from '../../Common/Form/Field'
+import MarkdownField from '../../Common/Form/MarkdownField'
 import Label from '../../Common/Typography/Label'
 import { ContentSection } from '../../Layout/ContentLayout'
 import MultipleChoiceField from '../MultipleChoiceField'
@@ -29,117 +28,104 @@ const INITIAL_SPONSORSHIP_QUESTIONS = {
 }
 
 const EVENT_CATEGORY_OPTIONS = ['conference', 'side_event', 'community_meetups', 'hackathon', 'other']
+const PRIMARY_SOURCE_FUNDING_OPTIONS = [
+  {
+    text: 'Yes',
+    value: 'Yes',
+  },
+  {
+    text: 'No',
+    value: 'No',
+  },
+]
 
 const schema = SponsorshipQuestionsSchema
-const validate = createValidator<SponsorshipQuestions>({
-  eventType: (state) => ({
-    eventType:
-      assert(state.eventType.length <= schema.eventType.maxLength, 'error.grant.category_assessment.field_too_large') ||
-      assert(state.eventType.length > 0, 'error.grant.category_assessment.field_empty') ||
-      assert(state.eventType.length >= schema.eventType.minLength, 'error.grant.category_assessment.field_too_short') ||
-      undefined,
-  }),
-  eventCategory: (state) => ({
-    eventCategory:
-      assert(state.eventCategory !== null, 'error.grant.category_assessment.field_invalid') ||
-      assert(
-        String(state.eventCategory).length <= schema.eventCategory.maxLength,
-        'error.grant.category_assessment.field_too_large'
-      ) ||
-      assert(String(state.eventCategory).length > 0, 'error.grant.category_assessment.field_empty') ||
-      assert(
-        String(state.eventCategory).length >= schema.eventCategory.minLength,
-        'error.grant.category_assessment.field_too_short'
-      ) ||
-      undefined,
-  }),
-  primarySourceFunding: (state) => ({
-    primarySourceFunding:
-      assert(state.primarySourceFunding !== null, 'error.grant.category_assessment.field_invalid') || undefined,
-  }),
-  audienceRelevance: (state) => ({
-    audienceRelevance:
-      assert(
-        state.audienceRelevance.length <= schema.audienceRelevance.maxLength,
-        'error.grant.category_assessment.field_too_large'
-      ) ||
-      assert(state.audienceRelevance.length > 0, 'error.grant.category_assessment.field_empty') ||
-      assert(
-        state.audienceRelevance.length >= schema.audienceRelevance.minLength,
-        'error.grant.category_assessment.field_too_short'
-      ) ||
-      undefined,
-  }),
-  showcase: (state) => ({
-    showcase:
-      assert(state.showcase.length <= schema.showcase.maxLength, 'error.grant.category_assessment.field_too_large') ||
-      assert(state.showcase.length > 0, 'error.grant.category_assessment.field_empty') ||
-      assert(state.showcase.length >= schema.showcase.minLength, 'error.grant.category_assessment.field_too_short') ||
-      undefined,
-  }),
-  totalAttendance: (state) => ({
-    totalAttendance:
-      assert(Number.isInteger(asNumber(state.totalAttendance)), 'error.grant.category_assessment.field_invalid') ||
-      assert(
-        asNumber(state.totalAttendance) >= schema.totalAttendance.minimum,
-        'error.grant.category_assessment.field_too_low'
-      ) ||
-      undefined,
-  }),
-  totalEvents: (state) => ({
-    totalEvents:
-      assert(Number.isInteger(asNumber(state.totalEvents)), 'error.grant.category_assessment.field_invalid') ||
-      assert(
-        asNumber(state.totalEvents) >= schema.totalEvents.minimum,
-        'error.grant.category_assessment.field_too_low'
-      ) ||
-      undefined,
-  }),
-})
-
-const edit = (state: SponsorshipQuestions, props: Partial<SponsorshipQuestions>) => {
-  return {
-    ...state,
-    ...props,
-  }
-}
 
 interface Props {
-  onValidation: (data: Partial<GrantRequestCategoryAssessment>, sectionValid: boolean) => void
+  onValidation: (data: Partial<GrantRequestCategoryAssessment>, sectionValid: boolean, isEdited: boolean) => void
   isFormDisabled: boolean
 }
 
-const SponsorshipSection = forwardRef(function SponsorshipSection({ onValidation, isFormDisabled }: Props, ref) {
+export default function SponsorshipSection({ onValidation, isFormDisabled }: Props) {
   const t = useFormatMessage()
-  const [state, editor] = useEditor(edit, validate, INITIAL_SPONSORSHIP_QUESTIONS)
+  const {
+    formState: { isValid, errors, isDirty },
+    control,
+    setValue,
+    setError,
+    trigger,
+    clearErrors,
+    watch,
+  } = useForm<SponsorshipQuestions>({
+    defaultValues: INITIAL_SPONSORSHIP_QUESTIONS,
+    mode: 'onTouched',
+  })
 
-  useGrantCategoryEditor(ref, editor, state, INITIAL_SPONSORSHIP_QUESTIONS)
+  const values = useWatch({ control })
 
   useEffect(() => {
-    onValidation({ sponsorship: { ...state.value } }, state.validated)
+    onValidation({ sponsorship: { ...values } } as Partial<GrantRequestCategoryAssessment>, isValid, isDirty)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.validated, state.value])
+  }, [isValid, isDirty, values])
+
+  const getNumberFieldRules = useCallback(
+    (field: 'totalAttendance' | 'totalEvents') => ({
+      required: { value: true, message: t('error.grant.category_assessment.field_invalid') },
+      validate: (value: string) => {
+        if (!Number.isInteger(asNumber(value))) {
+          return t('error.grant.category_assessment.field_invalid')
+        }
+      },
+      min: {
+        value: schema[field].minimum,
+        message: t('error.grant.category_assessment.field_too_low'),
+      },
+    }),
+    [t]
+  )
+
+  const getMarkdownFieldRules = useCallback(
+    (field: 'audienceRelevance' | 'showcase') => ({
+      required: { value: true, message: t('error.grant.category_assessment.field_empty') },
+      minLength: {
+        value: schema[field].minLength,
+        message: t('error.grant.category_assessment.field_too_short'),
+      },
+      maxLength: {
+        value: schema[field].maxLength,
+        message: t('error.grant.category_assessment.field_too_large'),
+      },
+    }),
+    [t]
+  )
 
   return (
     <div className="GrantRequestSection__Content">
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.sponsorship.event_type.label')}</Label>
-        <SelectField
-          value={state.value.eventType || undefined}
-          onChange={(_, { value }) => editor.set({ eventType: String(value) })}
-          options={[
-            {
-              text: t('page.submit_grant.category_assessment.sponsorship.event_type.choices.online'),
-              value: t('page.submit_grant.category_assessment.sponsorship.event_type.choices.online'),
-            },
-            {
-              text: t('page.submit_grant.category_assessment.sponsorship.event_type.choices.offline'),
-              value: t('page.submit_grant.category_assessment.sponsorship.event_type.choices.offline'),
-            },
-          ]}
-          error={!!state.error.eventType}
-          message={t(state.error.eventType)}
-          disabled={isFormDisabled}
+        <Controller
+          name="eventType"
+          control={control}
+          rules={{ required: true }}
+          render={({ field }) => (
+            <SelectField
+              {...field}
+              onChange={(_, { value }) => setValue('eventType', value as string)}
+              options={[
+                {
+                  text: t('page.submit_grant.category_assessment.sponsorship.event_type.choices.online'),
+                  value: t('page.submit_grant.category_assessment.sponsorship.event_type.choices.online'),
+                },
+                {
+                  text: t('page.submit_grant.category_assessment.sponsorship.event_type.choices.offline'),
+                  value: t('page.submit_grant.category_assessment.sponsorship.event_type.choices.offline'),
+                },
+              ]}
+              error={!!errors.eventType}
+              message={errors.eventType?.message}
+              disabled={isFormDisabled}
+            />
+          )}
         />
       </ContentSection>
       <MultipleChoiceField
@@ -147,91 +133,98 @@ const SponsorshipSection = forwardRef(function SponsorshipSection({ onValidation
         intlKey="page.submit_grant.category_assessment.sponsorship.event_category.choices"
         options={EVENT_CATEGORY_OPTIONS}
         isFormDisabled={isFormDisabled}
-        value={state.value.eventCategory}
-        onChange={(value) => editor.set({ eventCategory: value })}
+        value={values.eventCategory || ''}
+        error={!!errors?.eventCategory}
+        onChange={(value) => {
+          clearErrors('eventCategory')
+          setValue('eventCategory', value)
+          if (value === '') {
+            setError('eventCategory', { message: t('error.grant.category_assessment.field_empty') })
+          } else if (isDirty) {
+            trigger()
+          }
+        }}
       />
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.sponsorship.primary_source_funding_label')}</Label>
-        <SelectField
-          value={state.value.primarySourceFunding || undefined}
-          onChange={(_, { value }) => editor.set({ primarySourceFunding: String(value) })}
-          options={[
-            {
-              text: 'Yes',
-              value: 'Yes',
-            },
-            {
-              text: 'No',
-              value: 'No',
-            },
-          ]}
-          error={!!state.error.primarySourceFunding}
-          message={t(state.error.primarySourceFunding)}
-          disabled={isFormDisabled}
+        <Controller
+          name="primarySourceFunding"
+          control={control}
+          rules={{ required: true }}
+          render={({ field }) => (
+            <SelectField
+              {...field}
+              onChange={(_, { value }) => setValue('primarySourceFunding', value as string)}
+              options={PRIMARY_SOURCE_FUNDING_OPTIONS}
+              error={!!errors.primarySourceFunding}
+              message={errors.primarySourceFunding?.message}
+              disabled={isFormDisabled}
+            />
+          )}
         />
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.sponsorship.total_events_label')}</Label>
         <Field
+          name="totalEvents"
+          control={control}
           type="number"
-          value={state.value.totalEvents}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ totalEvents: value })}
-          error={!!state.error.totalEvents}
-          message={t(state.error.totalEvents)}
+          error={!!errors.totalEvents}
+          message={errors.totalEvents?.message}
           disabled={isFormDisabled}
           onWheel={disableOnWheelInput}
+          rules={getNumberFieldRules('totalEvents')}
         />
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.sponsorship.total_attendance_label')}</Label>
         <Field
+          name="totalAttendance"
           type="number"
-          value={state.value.totalAttendance}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ totalAttendance: value })}
-          error={!!state.error.totalAttendance}
-          message={t(state.error.totalAttendance)}
+          control={control}
+          error={!!errors.totalAttendance}
+          message={errors.totalAttendance?.message}
           disabled={isFormDisabled}
           onWheel={disableOnWheelInput}
+          rules={getNumberFieldRules('totalAttendance')}
         />
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.sponsorship.audience_relevance_label')}</Label>
-        <MarkdownTextarea
-          minHeight={175}
-          value={state.value.audienceRelevance}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ audienceRelevance: value })}
-          error={!!state.error.audienceRelevance}
+        <MarkdownField
+          name="audienceRelevance"
+          control={control}
+          error={!!errors.audienceRelevance}
           message={
-            t(state.error.audienceRelevance) +
+            (errors.audienceRelevance?.message || '') +
             ' ' +
             t('page.submit.character_counter', {
-              current: state.value.audienceRelevance.length,
+              current: watch('audienceRelevance').length,
               limit: schema.audienceRelevance.maxLength,
             })
           }
           disabled={isFormDisabled}
+          rules={getMarkdownFieldRules('audienceRelevance')}
         />
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.sponsorship.showcase_label')}</Label>
-        <MarkdownTextarea
-          minHeight={175}
-          value={state.value.showcase}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ showcase: value })}
-          error={!!state.error.showcase}
+        <MarkdownField
+          name="showcase"
+          control={control}
+          error={!!errors.showcase}
           message={
-            t(state.error.showcase) +
+            (errors.showcase?.message || '') +
             ' ' +
             t('page.submit.character_counter', {
-              current: state.value.showcase.length,
+              current: watch('showcase').length,
               limit: schema.showcase.maxLength,
             })
           }
           disabled={isFormDisabled}
+          rules={getMarkdownFieldRules('showcase')}
         />
       </ContentSection>
     </div>
   )
-})
-
-export default SponsorshipSection
+}

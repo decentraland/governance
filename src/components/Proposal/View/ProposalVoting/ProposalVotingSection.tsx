@@ -70,7 +70,7 @@ const ProposalVotingSection = ({
     totalVpOnProposal,
     hasEnoughToVote,
     isLoadingVp,
-  } = useVotingPowerOnProposal(account, delegators, isDelegationResultLoading, votes, proposal)
+  } = useVotingPowerOnProposal(account, delegators, isDelegationResultLoading, proposal)
 
   const { matchResult } = useVotesMatch(account, delegate)
   const voteDifference = matchResult.voteDifference

@@ -67,10 +67,6 @@
   flex: 1;
 }
 
-.GrantRequestSection__InputLabel {
-  padding-right: 20px;
-}
-
 .GrantRequestSection__Field {
   display: flex;
   flex-direction: column;
