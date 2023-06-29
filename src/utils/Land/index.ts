@@ -30,10 +30,9 @@ export async function getTiles(
     return (await (await fetch(`${LAND_URL}/v2/tiles?` + params.toString())).json()).data
   } catch (error) {
     const msg = 'Error fetching tiles'
-    console.error(msg, error)
     ErrorClient.report(msg, error)
+    throw new Error(msg)
   }
-  return {}
 }
 
 export async function getTile(
