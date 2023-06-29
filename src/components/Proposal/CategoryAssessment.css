@@ -9,7 +9,7 @@
 .CategoryAssessment__Text {
   color: var(--text);
   font-size: 15px;
-  font-weight: var(--weight-normal);
+  font-weight: var(--weight-light);
   font-stretch: normal;
   font-style: normal;
   line-height: 1.81;

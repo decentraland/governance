@@ -33,7 +33,7 @@
 }
 
 .Heading--weight-normal {
-  font-weight: var(--weight-normal);
+  font-weight: var(--weight-light);
 }
 
 .Heading--weight-semi-bold {

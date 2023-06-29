@@ -29,7 +29,7 @@
 }
 
 .Text.Text--weight-normal {
-  font-weight: var(--weight-normal);
+  font-weight: var(--weight-light);
 }
 
 .Text.Text--weight-semi-bold {

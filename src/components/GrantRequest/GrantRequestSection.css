@@ -103,7 +103,7 @@
 
 .GrantRequestSection__EmailNote {
   font-size: 10px;
-  font-weight: var(--weight-normal);
+  font-weight: var(--weight-light);
   margin-bottom: 8px;
   margin-top: 8px;
 }

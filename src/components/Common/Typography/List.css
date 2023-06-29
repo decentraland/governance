@@ -5,7 +5,7 @@
   letter-spacing: 0.3px;
   font-size: 15px;
   line-height: 24px;
-  font-weight: var(--weight-normal);
+  font-weight: var(--weight-light);
 }
 
 @media only screen and (max-width: 767px) {
