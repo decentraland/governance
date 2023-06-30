@@ -6,7 +6,7 @@ import { isHttpsURL } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Field from '../Common/Form/Field'
 import TextArea from '../Common/Form/TextArea'
-import Label from '../Common/Label'
+import Label from '../Common/Typography/Label'
 import { ContentSection } from '../Layout/ContentLayout'
 
 import AddModal from './AddModal'

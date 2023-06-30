@@ -1,10 +1,9 @@
 import React from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-
 import { Badge as GovernanceBadge } from '../../../entities/Badges/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Time from '../../../utils/date/Time'
+import Markdown from '../../Common/Typography/Markdown'
 
 import Badge, { BadgeVariant } from './Badge'
 import './BadgeDetail.css'

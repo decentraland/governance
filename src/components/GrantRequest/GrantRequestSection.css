@@ -19,7 +19,7 @@
 
 .GrantRequestSection__HeaderTitle {
   font-size: 20px;
-  font-weight: 600;
+  font-weight: var(--weight-semi-bold);
   line-height: 42px;
   letter-spacing: 0.4px;
   text-align: left;
@@ -83,4 +83,23 @@
   margin-bottom: 32px;
   justify-content: space-between;
   gap: 21px;
+}
+
+.GrantRequestSection__Sublabel,
+.GrantRequestSection__Sublabel .dg.Paragraph {
+  font-weight: var(--weight-normal);
+  font-size: 15px;
+  line-height: 20px;
+  color: var(--black-600);
+}
+
+.GrantRequestSection__TitleSubLabel {
+  margin-bottom: 20px !important;
+}
+
+.GrantRequestSection__EmailNote {
+  font-size: 10px;
+  font-weight: var(--weight-light);
+  margin-bottom: 8px;
+  margin-top: 8px;
 }

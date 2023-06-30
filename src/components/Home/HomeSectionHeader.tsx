@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
+import Markdown from '../Common/Typography/Markdown'
 
 import './HomeSectionHeader.css'
 
@@ -13,7 +13,7 @@ const HomeSectionHeader = ({ title, description }: Props) => {
   return (
     <>
       <h2 className="HomeSectionHeader__Title">{title}</h2>
-      <Markdown className="HomeSectionHeader__Description">{description}</Markdown>
+      <Markdown componentsClassNames={{ p: 'HomeSectionHeader__Description' }}>{description}</Markdown>
     </>
   )
 }

@@ -10,7 +10,7 @@ import { JOIN_DISCORD_URL } from '../../entities/Proposal/utils'
 import useClipboardCopy from '../../hooks/useClipboardCopy'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Time from '../../utils/date/Time'
-import Text from '../Common/Text/Text'
+import Text from '../Common/Typography/Text'
 
 import './ProposalModal.css'
 

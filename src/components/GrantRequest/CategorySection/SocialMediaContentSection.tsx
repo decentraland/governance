@@ -11,7 +11,7 @@ import { disableOnWheelInput } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Field from '../../Common/Form/Field'
 import MarkdownField from '../../Common/Form/MarkdownField'
-import Label from '../../Common/Label'
+import Label from '../../Common/Typography/Label'
 import { ContentSection } from '../../Layout/ContentLayout'
 import MultipleChoiceField from '../MultipleChoiceField'
 

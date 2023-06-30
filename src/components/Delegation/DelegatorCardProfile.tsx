@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 
 import useFormatMessage from '../../hooks/useFormatMessage'
 import locations from '../../utils/locations'
-import Link from '../Common/Link'
+import Link from '../Common/Typography/Link'
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
 import Username from '../User/Username'
 

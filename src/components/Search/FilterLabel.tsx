@@ -3,7 +3,7 @@ import React from 'react'
 import classNames from 'classnames'
 
 import { navigate } from '../../utils/locations'
-import Text from '../Common/Text/Text'
+import Text from '../Common/Typography/Text'
 
 import './FilterLabel.css'
 

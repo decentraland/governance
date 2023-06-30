@@ -3,7 +3,6 @@ import Helmet from 'react-helmet'
 import { SubmitHandler, useForm, useWatch } from 'react-hook-form'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Field as DCLField } from 'decentraland-ui/dist/components/Field/Field'
@@ -18,9 +17,10 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import { Governance } from '../../clients/Governance'
 import Field from '../../components/Common/Form/Field'
 import MarkdownField from '../../components/Common/Form/MarkdownField'
-import Label from '../../components/Common/Label'
 import SubLabel from '../../components/Common/SubLabel'
-import Text from '../../components/Common/Text/Text'
+import Label from '../../components/Common/Typography/Label'
+import Markdown from '../../components/Common/Typography/Markdown'
+import Text from '../../components/Common/Typography/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -319,7 +319,7 @@ export default function SubmitLinkedWearables() {
         <ContentSection>
           <Header size="huge">{t('page.submit_linked_wearables.title')}</Header>
         </ContentSection>
-        <ContentSection className="MarkdownSection--tiny">
+        <ContentSection>
           <Markdown>{t('page.submit_linked_wearables.description')}</Markdown>
         </ContentSection>
         <ContentSection>
@@ -510,7 +510,9 @@ export default function SubmitLinkedWearables() {
               checked={watch('programmatically_generated')}
               label={
                 <label>
-                  <Markdown>{t('modal.votes_list.voted_yes') || ''}</Markdown>
+                  <Markdown componentsClassNames={{ p: 'ProposalSubmit__RadioLabelText' }}>
+                    {t('modal.votes_list.voted_yes') || ''}
+                  </Markdown>
                 </label>
               }
               onChange={handleProgrammaticallyGeneratedOption}
@@ -519,7 +521,9 @@ export default function SubmitLinkedWearables() {
               checked={!watch('programmatically_generated')}
               label={
                 <label>
-                  <Markdown>{t('modal.votes_list.voted_no') || ''}</Markdown>
+                  <Markdown componentsClassNames={{ p: 'ProposalSubmit__RadioLabelText' }}>
+                    {t('modal.votes_list.voted_no') || ''}
+                  </Markdown>
                 </label>
               }
               onChange={handleProgrammaticallyGeneratedOption}

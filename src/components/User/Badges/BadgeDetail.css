@@ -26,7 +26,7 @@
 
 .BadgeDetail__Title {
   font-style: normal;
-  font-weight: 500;
+  font-weight: var(--weight-semi-bold);
   font-size: 20px;
   line-height: 28px;
   letter-spacing: 0.4px;
@@ -35,7 +35,7 @@
 
 .BadgeDetail__MintDate {
   font-style: normal;
-  font-weight: 400;
+  font-weight: var(--weight-normal);
   font-size: 11px;
   line-height: 28px;
   text-transform: uppercase;
@@ -44,12 +44,5 @@
 
 .BadgeDetail__Description {
   max-width: 360px;
-}
-
-.BadgeDetail__Description > p.dg.Paragraph {
-  font-style: normal;
-  font-size: 15px;
-  line-height: 24px;
   text-align: center;
-  letter-spacing: 0.4px;
 }

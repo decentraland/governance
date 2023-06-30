@@ -1,8 +1,7 @@
 import React, { useCallback } from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-
-import Label from '../Common/Label'
+import Label from '../Common/Typography/Label'
+import Markdown from '../Common/Typography/Markdown'
 import Add from '../Icon/Add'
 import Remove from '../Icon/Remove'
 
@@ -52,7 +51,11 @@ const NumberSelector = ({ value, onChange, min, max, label, unitLabel, subtitle 
           <div className="NumberSelector__Description">{unitLabel}</div>
         </div>
       </div>
-      {subtitle && <Markdown className="NumberSelector__Subtitle">{subtitle}</Markdown>}
+      {subtitle && (
+        <Markdown size="sm" componentsClassNames={{ p: 'NumberSelector__Subtitle' }}>
+          {subtitle}
+        </Markdown>
+      )}
     </div>
   )
 }

@@ -8,7 +8,7 @@ import { formatBalance } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useProposals from '../../hooks/useProposals'
 import locations from '../../utils/locations'
-import Link from '../Common/Link'
+import Link from '../Common/Typography/Link'
 import { DetailItem } from '../Proposal/View/DetailItem'
 
 import './GrantList.css'

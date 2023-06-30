@@ -5,7 +5,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import locations from '../../../utils/locations'
-import Link from '../../Common/Link'
+import Link from '../../Common/Typography/Link'
 import { NavigationProps, NavigationTab } from '../Navigation'
 
 import './MobileNavigation.css'

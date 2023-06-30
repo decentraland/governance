@@ -3,7 +3,6 @@ import Helmet from 'react-helmet'
 
 import classNames from 'classnames'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -11,6 +10,7 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import camelCase from 'lodash/camelCase'
 
 import { Governance } from '../../clients/Governance'
+import Markdown from '../../components/Common/Typography/Markdown'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import GrantRequestCategorySection from '../../components/GrantRequest/GrantRequestCategorySection'
 import GrantRequestDueDiligenceSection, {
@@ -224,7 +224,7 @@ export default function SubmitGrant() {
         </Button>
       </Container>
       <Container className="GrantRequestSection__Container">
-        <Markdown className="GrantRequest__HeaderDescription">{description}</Markdown>
+        <Markdown componentsClassNames={{ p: 'GrantRequest__HeaderDescription' }}>{description}</Markdown>
       </Container>
 
       {!isCategorySelected && (

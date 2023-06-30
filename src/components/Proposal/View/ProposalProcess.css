@@ -9,7 +9,7 @@
 
 .ProposalProcess__Title {
   font-style: normal;
-  font-weight: 600;
+  font-weight: var(--weight-semi-bold);
   font-size: 13px;
   line-height: 18px;
   text-transform: uppercase;
@@ -65,7 +65,7 @@
   width: 16px;
   height: 16px;
   font-style: normal;
-  font-weight: 600;
+  font-weight: var(--weight-semi-bold);
   font-size: 10px;
   line-height: 24px;
   color: var(--black-400);
@@ -155,7 +155,7 @@
 .ProposalProcess__ItemTitle {
   margin: 0;
   font-style: normal;
-  font-weight: 600;
+  font-weight: var(--weight-semi-bold);
   font-size: 15px;
   line-height: 24px;
   color: var(--black-700);
@@ -170,7 +170,7 @@
 .ProposalProcess__ItemDescription {
   margin: 0;
   font-style: normal;
-  font-weight: 400;
+  font-weight: var(--weight-normal);
   font-size: 13px;
   line-height: 24px;
   color: var(--black-700);
@@ -186,36 +186,42 @@
   display: flex;
 }
 
-.ProposalProcess___StatusText .dg.Bold {
-  font-weight: 600;
+.ProposalProcess___StatusTextStrong {
+  line-height: 12px !important;
+  font-weight: var(--weight-semi-bold) !important;
+  letter-spacing: 0 !important;
 }
 
-.ProposalProcess___StatusText .dg.Paragraph {
-  font-size: 11px !important;
-  line-height: 12px;
+.ProposalProcess___StatusText {
+  line-height: 12px !important;
+  letter-spacing: 0 !important;
+  font-weight: var(--weight-normal) !important;
   text-transform: uppercase;
-  color: var(--black-600);
   background: var(--alpha-black-200);
   border-radius: 4px;
   padding: 3px 5px;
 }
 
-.ProposalProcess___StatusText--active .dg.Paragraph {
+.ProposalProcess___StatusText--default {
+  color: var(--black-600) !important;
+}
+
+.ProposalProcess___StatusText--active {
   background: var(--red-200);
-  color: var(--red-800);
+  color: var(--red-800) !important;
 }
 
-.ProposalProcess___StatusText--passed .dg.Paragraph {
-  background: var(--green-200);
-  color: var(--green-900);
+.ProposalProcess___StatusText--passed {
+  background: var(--green-200) !important;
+  color: var(--green-900) !important;
 }
 
-.ProposalProcess___StatusText--rejected .dg.Paragraph {
+.ProposalProcess___StatusText--rejected {
   background: var(--red-200);
-  color: var(--red-800);
+  color: var(--red-800) !important;
 }
 
-.ProposalProcess___StatusText--pending .dg.Paragraph {
+.ProposalProcess___StatusText--pending {
   background: var(--yellow-100);
-  color: var(--yellow-800);
+  color: var(--yellow-800) !important;
 }

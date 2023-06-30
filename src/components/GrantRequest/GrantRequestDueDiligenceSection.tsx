@@ -9,8 +9,8 @@ import {
 } from '../../entities/Grant/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import Label from '../Common/Label'
 import SubLabel from '../Common/SubLabel'
+import Label from '../Common/Typography/Label'
 
 import AddBox from './AddBox'
 import AddBudgetBreakdownModal from './AddBudgetBreakdownModal'

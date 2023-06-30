@@ -3,8 +3,8 @@ import React, { useCallback } from 'react'
 import { isEmpty } from 'lodash'
 
 import useFormatMessage from '../../hooks/useFormatMessage'
-import Label from '../Common/Label'
-import Text from '../Common/Text/Text'
+import Label from '../Common/Typography/Label'
+import Text from '../Common/Typography/Text'
 import { ContentSection } from '../Layout/ContentLayout'
 
 import CheckboxField from './CheckboxField'

@@ -4,7 +4,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { DAO_DISCORD_URL, DOCS_URL } from '../../constants'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import Link from '../Common/Link'
+import Link from '../Common/Typography/Link'
 import CloseCircle from '../Icon/CloseCircle'
 
 import './MainBanner.css'

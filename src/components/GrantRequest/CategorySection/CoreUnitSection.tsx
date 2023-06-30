@@ -8,7 +8,7 @@ import {
 } from '../../../entities/Grant/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import MarkdownField from '../../Common/Form/MarkdownField'
-import Label from '../../Common/Label'
+import Label from '../../Common/Typography/Label'
 import { ContentSection } from '../../Layout/ContentLayout'
 
 const INITIAL_CORE_UNIT_QUESTIONS = {

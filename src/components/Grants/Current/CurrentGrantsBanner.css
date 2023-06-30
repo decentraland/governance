@@ -28,7 +28,7 @@
 
 .GrantsBanner__Title {
   font-style: normal;
-  font-weight: 600;
+  font-weight: var(--weight-semi-bold);
   font-size: 28px;
   line-height: 33px;
   letter-spacing: -1px;
@@ -37,7 +37,7 @@
 
 .GrantsBanner__Description {
   font-style: normal;
-  font-weight: 500;
+  font-weight: var(--weight-semi-bold);
   font-size: 20px;
   line-height: 28px;
   letter-spacing: 0.3px;

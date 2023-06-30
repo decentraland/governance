@@ -5,7 +5,7 @@
 }
 
 .VotingModal__Choice {
-  font-weight: 600;
+  font-weight: var(--weight-semi-bold);
 }
 
 .VotingModal__Actions {
@@ -17,7 +17,7 @@
 
 .VotingModal__ErrorNotice {
   font-style: normal;
-  font-weight: 400;
+  font-weight: var(--weight-normal);
   font-size: 15px;
   line-height: 24px;
   color: var(--black-600);
@@ -34,8 +34,8 @@
 
 .VotingModal__SkipAndCast {
   text-transform: none !important;
-  font-weight: 600 !important;
+  font-weight: var(--weight-semi-bold) !important;
   margin-left: 22px !important;
   padding-left: 0 !important;
-  text-align: left !important ;
+  text-align: left !important;
 }

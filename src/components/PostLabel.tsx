@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Text from './Common/Text/Text'
+import Text from './Common/Typography/Text'
 
 interface Props {
   children: string

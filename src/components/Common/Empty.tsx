@@ -1,19 +1,21 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import Watermelon from '../Icon/Watermelon'
 
+import Heading from './Typography/Heading'
+import Link from './Typography/Link'
+import Markdown from './Typography/Markdown'
+
 import './Empty.css'
-import Link from './Link'
 
 export enum ActionType {
   BUTTON,
   LINK,
 }
+
 interface Props {
   title?: string | null
   description?: string | null
@@ -41,10 +43,14 @@ export default function Empty({
   return (
     <div className={classNames('Empty', className)}>
       {icon ? icon : <Watermelon />}
-      {!!title && <Header>{title}</Header>}
-      {!!description && <Markdown>{description}</Markdown>}
+      {!!title && (
+        <Heading size="sm" weight="semi-bold" className="Empty__Header">
+          {title}
+        </Heading>
+      )}
+      {!!description && <Markdown componentsClassNames={{ p: 'Empty__Description' }}>{description}</Markdown>}
       {showAction && actionType === ActionType.LINK && (
-        <Link className="Empty__Action" href={linkHref} onClick={onLinkClick}>
+        <Link className={classNames('Empty__Action', 'Empty__Link')} href={linkHref} onClick={onLinkClick}>
           {linkText}
         </Link>
       )}

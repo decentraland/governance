@@ -30,18 +30,14 @@
   text-align: right;
 }
 
-.MarkdownSection--tiny .dg.Paragraph {
-  font-size: 15px;
-}
-
 .ContentLayout .ContentLayout__Section .ui.radio.checkbox label {
   font-size: 17px;
 }
 
-.ContentLayout .ContentLayout__Section .ui.radio.checkbox label .dg.Paragraph {
-  font-size: 15px;
-  line-height: 18px;
-  color: var(--black-400);
+.ProposalSubmit__RadioLabelText {
+  font-size: 15px !important;
+  line-height: 18px !important;
+  color: var(--black-400) !important;
 }
 
 .ContentLayout .ContentLayout__Section .ui.radio.checkbox input.hidden ~ label:before {

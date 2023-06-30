@@ -7,7 +7,7 @@ import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 import { HiringType, PoiType } from '../../../entities/Proposal/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import CategoryBanner from '../../Category/CategoryBanner'
-import Text from '../../Common/Text/Text'
+import Text from '../../Common/Typography/Text'
 import '../ProposalModal.css'
 
 export type AddRemoveProposalModalProps = ModalProps & {

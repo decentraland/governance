@@ -1,12 +1,9 @@
 .SubLabel {
   margin-bottom: 15px;
+  font-weight: var(--weight-normal) !important;
+  line-height: 20px !important;
 }
 
-.SubLabel,
-.SubLabel .dg.Paragraph {
-  font-style: normal;
-  font-weight: 400;
-  font-size: 15px;
-  line-height: 20px !important;
-  color: var(--black-600);
+.SubLabel, .SubLabel__Strong {
+  color: var(--black-600) !important;
 }

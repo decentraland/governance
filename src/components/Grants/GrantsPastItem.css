@@ -20,7 +20,7 @@
 
 .GrantsPastItem__Text {
   font-style: normal;
-  font-weight: 600;
+  font-weight: var(--weight-semi-bold);
   font-size: 12px;
   line-height: 24px;
   color: var(--black-600);

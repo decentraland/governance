@@ -6,7 +6,7 @@ import useCoAuthorsByProposal from '../../../hooks/useCoAuthorsByProposal'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Time from '../../../utils/date/Time'
 import DateTooltip from '../../Common/DateTooltip'
-import Link from '../../Common/Link'
+import Link from '../../Common/Typography/Link'
 import Open from '../../Icon/Open'
 import Username from '../../User/Username'
 

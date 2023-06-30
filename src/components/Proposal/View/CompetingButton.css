@@ -13,7 +13,7 @@
 }
 
 .CompetingButton__Title {
-  font-weight: 400;
+  font-weight: var(--weight-normal);
   font-size: 13px;
   line-height: 18px;
   text-transform: uppercase;

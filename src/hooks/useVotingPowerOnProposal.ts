@@ -5,7 +5,6 @@ import { SnapshotVote, StrategyOrder, VpDistribution } from '../clients/Snapshot
 import { ProposalAttributes } from '../entities/Proposal/types'
 import { isSameAddress } from '../entities/Snapshot/utils'
 import { MINIMUM_VP_REQUIRED_TO_VOTE } from '../entities/Votes/constants'
-import { Vote } from '../entities/Votes/types'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 import useVotingPowerDistribution from './useVotingPowerDistribution'

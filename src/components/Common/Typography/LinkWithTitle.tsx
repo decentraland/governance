@@ -2,10 +2,10 @@ import React from 'react'
 
 import { useQuery } from '@tanstack/react-query'
 
-import { Governance } from '../../clients/Governance'
-import { DEFAULT_QUERY_STALE_TIME } from '../../hooks/constants'
-import useFormatMessage from '../../hooks/useFormatMessage'
-import Open from '../Icon/Open'
+import { Governance } from '../../../clients/Governance'
+import { DEFAULT_QUERY_STALE_TIME } from '../../../hooks/constants'
+import useFormatMessage from '../../../hooks/useFormatMessage'
+import Open from '../../Icon/Open'
 
 import './LinkWithTitle.css'
 

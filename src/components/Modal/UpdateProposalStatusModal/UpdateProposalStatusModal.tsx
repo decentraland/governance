@@ -2,7 +2,6 @@ import React from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
 import classNames from 'classnames'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
@@ -15,7 +14,8 @@ import { isValidTransactionHash } from '../../../entities/Proposal/utils'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Field from '../../Common/Form/Field'
 import MarkdownField from '../../Common/Form/MarkdownField'
-import Label from '../../Common/Label'
+import Label from '../../Common/Typography/Label'
+import Markdown from '../../Common/Typography/Markdown'
 import '../ProposalModal.css'
 
 import './UpdateProposalStatusModal.css'
@@ -99,7 +99,7 @@ export function UpdateProposalStatusModal({
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="ProposalModal__Title">
             <Header>{t('modal.update_status_proposal.title', { status })}</Header>
-            <Markdown>{t('modal.update_status_proposal.description', { status }) || ''}</Markdown>
+            <Markdown size="lg">{t('modal.update_status_proposal.description', { status }) || ''}</Markdown>
           </div>
 
           {proposal && proposal.type === ProposalType.Grant && (

@@ -11,7 +11,7 @@
 }
 
 .SnapshotRedirect__Header {
-  font-weight: 600;
+  font-weight: var(--weight-semi-bold);
   font-size: 17px;
   line-height: 26px;
   text-align: center;
@@ -21,7 +21,7 @@
 }
 
 .SnapshotRedirect__Description {
-  font-weight: 500;
+  font-weight: var(--weight-semi-bold);
   font-size: 15px;
   line-height: 24px;
   text-align: center;
@@ -29,10 +29,8 @@
   margin-bottom: 8px !important;
 }
 
-.SnapshotRedirect__Suggestion > p.dg.Paragraph {
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 24px !important;
+.SnapshotRedirect__Suggestion {
+  font-weight: var(--weight-normal) !important;
   letter-spacing: 0 !important;
   text-align: center;
   margin-bottom: 24px;
@@ -49,7 +47,7 @@
 
 .SnapshotRedirect__FeedbackLink {
   font-size: 15px;
-  font-weight: 400;
+  font-weight: var(--weight-normal);
   line-height: 24px;
   letter-spacing: 0;
   text-align: center;
