@@ -43,10 +43,6 @@
   .ActionableLayout .ActionableLayout__Content .ui.card > .content {
     padding: 12px;
   }
-
-  .dg.Paragraph.Paragraph--small {
-    font-size: 14px;
-  }
 }
 
 .ProposalItem .ProposalItem__Title .ui.header:first-child {

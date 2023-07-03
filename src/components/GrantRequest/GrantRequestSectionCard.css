@@ -9,7 +9,7 @@
   min-height: 104px;
 }
 
-.dg.Link.Link--pointer.GrantRequestSectionCard {
+.Link.Link--pointer.GrantRequestSectionCard {
   cursor: default;
 }
 
@@ -18,7 +18,7 @@
   box-shadow: 0 1px 8px var(--red-100);
 }
 
-.dg.Link.Link--pointer.GrantRequestSectionCard__Hoverable {
+.Link.Link--pointer.GrantRequestSectionCard__Hoverable {
   cursor: pointer;
 }
 

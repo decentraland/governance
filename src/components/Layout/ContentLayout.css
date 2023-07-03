@@ -25,10 +25,6 @@
   padding-bottom: 32px;
 }
 
-.ui.container.ContentLayout .ContentLayout__Section .dg.Paragraph.Paragraph--tiny {
-  font-size: 15px;
-}
-
 @media only screen and (min-width: 320px) and (max-width: 767px) {
   .ui.container.ContentLayout {
     padding-top: 0px;

@@ -7,7 +7,3 @@
 .CoAuthors__LabelContainer > :not(:first-child) {
   margin-left: 5px;
 }
-
-.CoAuthors .dg.Paragraph.details {
-  margin-bottom: 20px !important;
-}

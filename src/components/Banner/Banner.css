@@ -4,7 +4,6 @@
   align-content: stretch;
   position: relative;
   padding: 16px 16px 16px 20px;
-  background-color: transparent;
   margin-bottom: 8px;
   border-radius: 12px;
   outline: 1px solid #0000000a;
@@ -27,14 +26,6 @@
 
 .Banner .Banner__Description {
   flex-grow: 1;
-}
-
-.Banner .dg.Paragraph {
-  margin-bottom: 0;
-}
-
-.Banner .dg.Paragraph.Paragraph--tiny {
-  font-size: 15px;
 }
 
 .Banner > .dcl.close {
