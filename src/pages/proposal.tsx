@@ -5,7 +5,6 @@ import { Web3Provider } from '@ethersproject/providers'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
@@ -38,6 +37,7 @@ import GrantProposalView from '../components/Proposal/View/Categories/GrantPropo
 import CompetingTenders from '../components/Proposal/View/CompetingTenders'
 import GovernanceProcess from '../components/Proposal/View/GovernanceProcess'
 import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
+import ProposalMarkdown from '../components/Proposal/View/ProposalMarkdown'
 import TenderProposals from '../components/Proposal/View/TenderProposals'
 import StatusPill from '../components/Status/StatusPill'
 import { VOTES_VP_THRESHOLD } from '../constants'
@@ -351,7 +351,7 @@ export default function ProposalPage() {
         </ContentSection>
         <Grid stackable>
           <Grid.Row>
-            <Grid.Column tablet="12" className="ProposalDetailDescription">
+            <Grid.Column tablet="12" className="ProposalDetailPage__Description">
               <Loader active={isLoadingProposal} />
               {showProposalBudget && <ProposalBudget proposal={proposal} budget={budgetWithContestants} />}
               {showCompetingTenders && <CompetingTenders proposal={proposal} />}
@@ -361,7 +361,7 @@ export default function ProposalPage() {
                 {proposal?.type === ProposalType.Grant ? (
                   <GrantProposalView config={proposal.configuration} />
                 ) : (
-                  <Markdown>{proposal?.description || ''}</Markdown>
+                  <ProposalMarkdown text={proposal?.description || ''} />
                 )}
               </div>
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
@@ -460,7 +460,7 @@ export default function ProposalPage() {
         proposal={proposal}
         status={proposalPageState.confirmStatusUpdate || null}
         loading={isUpdating}
-        onClickAccept={(_, status, vesting_contract, enactingTx, description) =>
+        onClickAccept={(status, vesting_contract, enactingTx, description) =>
           updateProposal({ status, vesting_contract, enactingTx, description })
         }
         onClose={() => updatePageState({ confirmStatusUpdate: false })}

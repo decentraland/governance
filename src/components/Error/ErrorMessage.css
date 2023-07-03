@@ -14,7 +14,7 @@
 }
 
 .ErrorMessage__Header span {
-  font-weight: 400;
+  font-weight: var(--weight-normal);
   line-height: 20px;
   font-size: 15px;
   padding-left: 8px;
@@ -24,7 +24,7 @@
 a.Link.Link--pointer.ui.basic.button.ErrorMessage__Show {
   height: 20px;
   text-transform: uppercase;
-  font-weight: 600;
+  font-weight: var(--weight-semi-bold);
   font-size: 13px;
   line-height: 20px;
   color: var(--red-800) !important;
@@ -41,7 +41,7 @@ a.Link.Link--pointer.ui.basic.button.ErrorMessage__Show {
   flex-wrap: wrap;
   flex-direction: column;
   padding-left: 16px;
-  font-weight: 400;
+  font-weight: var(--weight-normal);
   font-size: 15px;
   line-height: 26px;
   letter-spacing: -0.2px;
@@ -63,7 +63,7 @@ button.ui.small.primary.button.Button.ErrorMessage__Copy {
   text-align: center;
   vertical-align: middle;
   padding: 0 6px;
-  font-weight: 400;
+  font-weight: var(--weight-normal);
   font-size: 11px;
   line-height: 26px;
   letter-spacing: -0.2px;
@@ -77,16 +77,17 @@ button.ui.small.primary.button.Button.ErrorMessage__Copy {
   margin-right: 10px;
 }
 
-.ErrorMessage__CallForAction a.Link.Link--pointer {
-  font-weight: 700;
+.ErrorMessage__CallForAction {
+  margin-left: 16px;
 }
 
-.ErrorMessage__CallForAction p.dg.Paragraph {
-  font-weight: 400;
-  font-size: 13px;
-  line-height: 20px;
-  margin-left: 16px;
-  color: var(--background-popup);
+.ErrorMessage__CallForActionText {
+  font-weight: var(--weight-normal) !important;
+  color: var(--background-popup) !important;
+}
+
+.ErrorMessage__CallForActionLink {
+  font-weight: var(--weight-bold);
 }
 
 .ErrorMessage__Content {

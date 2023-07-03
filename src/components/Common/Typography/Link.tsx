@@ -2,7 +2,7 @@ import React from 'react'
 
 import classNames from 'classnames'
 
-import { navigate } from '../../utils/locations'
+import { navigate } from '../../../utils/locations'
 
 import './Link.css'
 

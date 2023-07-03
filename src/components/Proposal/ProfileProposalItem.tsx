@@ -9,7 +9,7 @@ import useFormatMessage from '../../hooks/useFormatMessage'
 import Time from '../../utils/date/Time'
 import locations from '../../utils/locations'
 import CategoryPill from '../Category/CategoryPill'
-import Link from '../Common/Link'
+import Link from '../Common/Typography/Link'
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
 import StatusPill from '../Status/StatusPill'
 

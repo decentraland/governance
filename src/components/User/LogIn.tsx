@@ -9,7 +9,7 @@ import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
 
 import useFormatMessage from '../../hooks/useFormatMessage'
 import locations, { navigate } from '../../utils/locations'
-import Text from '../Common/Text/Text'
+import Text from '../Common/Typography/Text'
 
 import './LogIn.css'
 

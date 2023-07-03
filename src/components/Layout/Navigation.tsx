@@ -10,7 +10,7 @@ import useFormatMessage from '../../hooks/useFormatMessage'
 import useIsDebugAddress from '../../hooks/useIsDebugAddress'
 import useIsProfileValidated from '../../hooks/useIsProfileValidated'
 import locations from '../../utils/locations'
-import Link from '../Common/Link'
+import Link from '../Common/Typography/Link'
 import Dot from '../Icon/Dot'
 import SearchInput from '../Search/SearchInput'
 

@@ -1,14 +1,14 @@
 import React from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useCountdown from 'decentraland-gatsby/dist/hooks/useCountdown'
 
 import { Vote } from '../../../../entities/Votes/types'
+import useCountdown from '../../../../hooks/useCountdown'
 import useFormatMessage from '../../../../hooks/useFormatMessage'
 import { ProposalPageState } from '../../../../pages/proposal'
 import Time from '../../../../utils/date/Time'
 import locations from '../../../../utils/locations'
-import Link from '../../../Common/Link'
+import Link from '../../../Common/Typography/Link'
 
 import { ChangeVoteButton } from './ChangeVoteButton'
 import VoteVotingPowerInfo from './VoteVotingPowerInfo'

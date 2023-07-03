@@ -5,8 +5,8 @@ import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalType } from '../../entities/Proposal/types'
 import locations from '../../utils/locations'
-import Link from '../Common/Link'
 import Pill, { PillColor } from '../Common/Pill'
+import Link from '../Common/Typography/Link'
 
 const ColorsConfig: Record<ProposalType, PillColor> = {
   [ProposalType.POI]: PillColor.Green,

@@ -12,7 +12,7 @@
 
 .GrantsBannerItem__Title {
   font-style: normal;
-  font-weight: 600;
+  font-weight: var(--weight-semi-bold);
   font-size: 16px;
   line-height: 19px;
   color: var(--white-900);
@@ -21,7 +21,7 @@
 
 .GrantsBannerItem__Description {
   font-style: normal;
-  font-weight: 400;
+  font-weight: var(--weight-normal);
   font-size: 14px;
   line-height: 17px;
   color: var(--white-900);

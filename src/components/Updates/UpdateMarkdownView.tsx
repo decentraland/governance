@@ -1,14 +1,13 @@
 import React from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-
 import { UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Time, { formatDate } from '../../utils/date/Time'
 import ArticleSectionHeading from '../Common/ArticleSectionHeading'
 import DateTooltip from '../Common/DateTooltip'
 import Divider from '../Common/Divider'
-import Text from '../Common/Text/Text'
+import Markdown from '../Common/Typography/Markdown'
+import Text from '../Common/Typography/Text'
 import { ContentSection } from '../Layout/ContentLayout'
 import Username from '../User/Username'
 
@@ -20,6 +19,8 @@ interface Props {
   author?: string
 }
 
+const UPDATE_DETAIL_MARKDOWN_STYLES = { p: 'UpdateDetail__ContentText', li: 'UpdateDetail__ListItem' }
+
 const UpdateMarkdownView = ({ update, author }: Props) => {
   const t = useFormatMessage()
   const formattedCompletionDate = update?.completion_date ? formatDate(update.completion_date) : ''
@@ -30,17 +31,17 @@ const UpdateMarkdownView = ({ update, author }: Props) => {
     <ContentSection className="UpdateDetail__Content">
       {update?.health && <ProjectHealthStatus health={update.health} />}
       <ArticleSectionHeading>{t('page.update_detail.introduction')}</ArticleSectionHeading>
-      <Markdown>{update?.introduction || ''}</Markdown>
+      <Markdown componentsClassNames={UPDATE_DETAIL_MARKDOWN_STYLES}>{update?.introduction || ''}</Markdown>
       <ArticleSectionHeading>{t('page.update_detail.highlights')}</ArticleSectionHeading>
-      <Markdown>{update?.highlights || ''}</Markdown>
+      <Markdown componentsClassNames={UPDATE_DETAIL_MARKDOWN_STYLES}>{update?.highlights || ''}</Markdown>
       <ArticleSectionHeading>{t('page.update_detail.blockers')}</ArticleSectionHeading>
-      <Markdown>{update?.blockers || ''}</Markdown>
+      <Markdown componentsClassNames={UPDATE_DETAIL_MARKDOWN_STYLES}>{update?.blockers || ''}</Markdown>
       <ArticleSectionHeading>{t('page.update_detail.next_steps')}</ArticleSectionHeading>
-      <Markdown>{update?.next_steps || ''}</Markdown>
+      <Markdown componentsClassNames={UPDATE_DETAIL_MARKDOWN_STYLES}>{update?.next_steps || ''}</Markdown>
       {update?.additional_notes && (
         <>
           <ArticleSectionHeading>{t('page.update_detail.additional_notes')}</ArticleSectionHeading>
-          <Markdown>{update?.additional_notes}</Markdown>
+          <Markdown componentsClassNames={UPDATE_DETAIL_MARKDOWN_STYLES}>{update?.additional_notes}</Markdown>
         </>
       )}
       {author && update.completion_date && (
@@ -56,14 +57,28 @@ const UpdateMarkdownView = ({ update, author }: Props) => {
               {author && <Username address={author} linked />}
             </div>
             {update.updated_at !== update.created_at && (
-              <div className="UpdateDetail__LastEdit">
+              <div className="UpdateDetail__CompletionDate">
                 <DateTooltip date={update.updated_at}>
-                  <Markdown>{t('page.update_detail.edit_date', { date: formattedEditDate })}</Markdown>
+                  <Markdown
+                    componentsClassNames={{
+                      p: 'UpdateDetail__CompletionDateText',
+                      strong: 'UpdateDetail__CompletionDateText',
+                    }}
+                  >
+                    {t('page.update_detail.edit_date', { date: formattedEditDate })}
+                  </Markdown>
                 </DateTooltip>
               </div>
             )}
             {update?.status === UpdateStatus.Late && (
-              <Markdown>{t('page.update_detail.due_date', { date: formattedDueDate }) || ''}</Markdown>
+              <Markdown
+                componentsClassNames={{
+                  p: 'UpdateDetail__CompletionDateText',
+                  strong: 'UpdateDetail__CompletionDateText',
+                }}
+              >
+                {t('page.update_detail.due_date', { date: formattedDueDate }) || ''}
+              </Markdown>
             )}
           </div>
         </>

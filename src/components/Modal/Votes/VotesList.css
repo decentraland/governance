@@ -6,7 +6,7 @@
   margin: 0;
   text-transform: none;
   font-style: normal;
-  font-weight: 400;
+  font-weight: var(--weight-normal);
   font-size: 15px;
   line-height: 18px;
   color: var(--black-700);
@@ -51,6 +51,7 @@
   width: 95%;
   border-bottom: 1px solid var(--black-300);
 }
+
 .VoteList__Item:has(+ .VoteList__ShowButtonContainer)::before,
 .VoteList__Item:has(+ .VoteList__LowQualityDividerContainer)::before {
   border-bottom: none;

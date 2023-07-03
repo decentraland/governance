@@ -1,8 +1,5 @@
-import React, { forwardRef, useEffect } from 'react'
-
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
-import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
+import React, { useCallback, useEffect } from 'react'
+import { useForm, useWatch } from 'react-hook-form'
 
 import {
   GrantRequestCategoryAssessment,
@@ -12,8 +9,9 @@ import {
 import { asNumber } from '../../../entities/Proposal/utils'
 import { disableOnWheelInput } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'
-import { useGrantCategoryEditor } from '../../../hooks/useGrantCategoryEditor'
-import Label from '../../Common/Label'
+import Field from '../../Common/Form/Field'
+import MarkdownField from '../../Common/Form/MarkdownField'
+import Label from '../../Common/Typography/Label'
 import { ContentSection } from '../../Layout/ContentLayout'
 import MultipleChoiceField from '../MultipleChoiceField'
 
@@ -37,157 +35,138 @@ const SOCIAL_MEDIA_PLATFORMS_OPTIONS = [
 ]
 
 const schema = SocialMediaContentQuestionsSchema
-const validate = createValidator<SocialMediaContentQuestions>({
-  socialMediaPlatforms: (state) => ({
-    socialMediaPlatforms:
-      assert(state.socialMediaPlatforms !== null, 'error.grant.category_assessment.field_invalid') ||
-      assert(
-        String(state.socialMediaPlatforms).length <= schema.socialMediaPlatforms.maxLength,
-        'error.grant.category_assessment.field_too_large'
-      ) ||
-      assert(String(state.socialMediaPlatforms).length > 0, 'error.grant.category_assessment.field_empty') ||
-      assert(
-        String(state.socialMediaPlatforms).length >= schema.socialMediaPlatforms.minLength,
-        'error.grant.category_assessment.field_too_short'
-      ) ||
-      undefined,
-  }),
-  audienceRelevance: (state) => ({
-    audienceRelevance:
-      assert(
-        state.audienceRelevance.length <= schema.audienceRelevance.maxLength,
-        'error.grant.category_assessment.field_too_large'
-      ) ||
-      assert(state.audienceRelevance.length > 0, 'error.grant.category_assessment.field_empty') ||
-      assert(
-        state.audienceRelevance.length >= schema.audienceRelevance.minLength,
-        'error.grant.category_assessment.field_too_short'
-      ) ||
-      undefined,
-  }),
-  totalPieces: (state) => ({
-    totalPieces:
-      assert(Number.isInteger(asNumber(state.totalPieces)), 'error.grant.category_assessment.field_invalid') ||
-      assert(
-        asNumber(state.totalPieces) >= schema.totalPieces.minimum,
-        'error.grant.category_assessment.field_too_low'
-      ) ||
-      undefined,
-  }),
-  totalPeopleImpact: (state) => ({
-    totalPeopleImpact:
-      assert(Number.isInteger(asNumber(state.totalPeopleImpact)), 'error.grant.category_assessment.field_invalid') ||
-      assert(
-        asNumber(state.totalPeopleImpact) >= schema.totalPeopleImpact.minimum,
-        'error.grant.category_assessment.field_too_low'
-      ) ||
-      undefined,
-  }),
-  relevantLink: (state) => ({
-    relevantLink:
-      assert(
-        state.relevantLink.length <= schema.relevantLink.maxLength,
-        'error.grant.category_assessment.field_too_large'
-      ) ||
-      assert(state.relevantLink.length > 0, 'error.grant.category_assessment.field_empty') ||
-      assert(
-        state.relevantLink.length >= schema.relevantLink.minLength,
-        'error.grant.category_assessment.field_too_short'
-      ) ||
-      undefined,
-  }),
-})
-
-const edit = (state: SocialMediaContentQuestions, props: Partial<SocialMediaContentQuestions>) => {
-  return {
-    ...state,
-    ...props,
-  }
-}
 
 interface Props {
-  onValidation: (data: Partial<GrantRequestCategoryAssessment>, sectionValid: boolean) => void
+  onValidation: (data: Partial<GrantRequestCategoryAssessment>, sectionValid: boolean, isEdited: boolean) => void
   isFormDisabled: boolean
 }
 
-const SocialMediaContentSection = forwardRef(function SocialMediaContentSection(
-  { onValidation, isFormDisabled }: Props,
-  ref
-) {
+export default function SocialMediaContentSection({ onValidation, isFormDisabled }: Props) {
   const t = useFormatMessage()
-  const [state, editor] = useEditor(edit, validate, INITIAL_SOCIAL_MEDIA_CONTENT_QUESTIONS)
+  const {
+    formState: { isValid, errors, isDirty },
+    control,
+    setValue,
+    setError,
+    trigger,
+    clearErrors,
+    watch,
+  } = useForm<SocialMediaContentQuestions>({
+    defaultValues: INITIAL_SOCIAL_MEDIA_CONTENT_QUESTIONS,
+    mode: 'onTouched',
+  })
 
-  useGrantCategoryEditor(ref, editor, state, INITIAL_SOCIAL_MEDIA_CONTENT_QUESTIONS)
+  const values = useWatch({ control })
 
   useEffect(() => {
-    onValidation({ socialMediaContent: { ...state.value } }, state.validated)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.validated, state.value])
+    onValidation({ socialMediaContent: { ...values } } as Partial<GrantRequestCategoryAssessment>, isValid, isDirty)
+  }, [isValid, isDirty, onValidation, values])
+
+  const getNumberFieldRules = useCallback(
+    (field: 'totalPieces' | 'totalPeopleImpact') => ({
+      required: { value: true, message: t('error.grant.category_assessment.field_invalid') },
+      validate: (value: string) => {
+        if (!Number.isInteger(asNumber(value))) {
+          return t('error.grant.category_assessment.field_invalid')
+        }
+      },
+      min: {
+        value: schema[field].minimum,
+        message: t('error.grant.category_assessment.field_too_low'),
+      },
+    }),
+    [t]
+  )
+
+  const getTextFieldRules = useCallback(
+    (field: 'audienceRelevance' | 'relevantLink') => ({
+      required: { value: true, message: t('error.grant.category_assessment.field_empty') },
+      minLength: {
+        value: schema[field].minLength,
+        message: t('error.grant.category_assessment.field_too_short'),
+      },
+      maxLength: {
+        value: schema[field].maxLength,
+        message: t('error.grant.category_assessment.field_too_large'),
+      },
+    }),
+    [t]
+  )
 
   return (
     <div className="GrantRequestSection__Content">
       <MultipleChoiceField
         label={t('page.submit_grant.category_assessment.social_media_content.social_media_platforms.label')}
-        onChange={(value) => editor.set({ socialMediaPlatforms: value })}
-        value={state.value.socialMediaPlatforms}
-        isFormDisabled={isFormDisabled}
         intlKey="page.submit_grant.category_assessment.social_media_content.social_media_platforms.choices"
         options={SOCIAL_MEDIA_PLATFORMS_OPTIONS}
+        isFormDisabled={isFormDisabled}
+        value={values.socialMediaPlatforms || ''}
+        error={!!errors?.socialMediaPlatforms}
+        onChange={(value) => {
+          clearErrors('socialMediaPlatforms')
+          setValue('socialMediaPlatforms', value)
+          if (value === '') {
+            setError('socialMediaPlatforms', { message: t('error.grant.category_assessment.field_empty') })
+          } else if (isDirty) {
+            trigger()
+          }
+        }}
       />
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.social_media_content.audience_relevance_label')}</Label>
-        <MarkdownTextarea
-          minHeight={175}
-          value={state.value.audienceRelevance}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ audienceRelevance: value })}
-          error={!!state.error.audienceRelevance}
+        <MarkdownField
+          name="audienceRelevance"
+          control={control}
+          error={!!errors.audienceRelevance}
           message={
-            t(state.error.audienceRelevance) +
+            (errors.audienceRelevance?.message || '') +
             ' ' +
             t('page.submit.character_counter', {
-              current: state.value.audienceRelevance.length,
+              current: watch('audienceRelevance').length,
               limit: schema.audienceRelevance.maxLength,
             })
           }
           disabled={isFormDisabled}
+          rules={getTextFieldRules('audienceRelevance')}
         />
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.social_media_content.total_pieces_label')}</Label>
         <Field
+          name="totalPieces"
+          control={control}
           type="number"
-          value={state.value.totalPieces}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ totalPieces: value })}
-          error={!!state.error.totalPieces}
-          message={t(state.error.totalPieces)}
+          error={!!errors.totalPieces}
+          message={errors.totalPieces?.message}
           disabled={isFormDisabled}
           onWheel={disableOnWheelInput}
+          rules={getNumberFieldRules('totalPieces')}
         />
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.social_media_content.total_impact_label')}</Label>
         <Field
+          name="totalPeopleImpact"
+          control={control}
           type="number"
-          value={state.value.totalPeopleImpact}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ totalPeopleImpact: value })}
-          error={!!state.error.totalPeopleImpact}
-          message={t(state.error.totalPeopleImpact)}
+          error={!!errors.totalPeopleImpact}
+          message={errors.totalPeopleImpact?.message}
           disabled={isFormDisabled}
           onWheel={disableOnWheelInput}
+          rules={getNumberFieldRules('totalPeopleImpact')}
         />
       </ContentSection>
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.social_media_content.relevant_link_label')}</Label>
         <Field
-          value={state.value.relevantLink}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ relevantLink: value })}
-          error={!!state.error.relevantLink}
-          message={t(state.error.totalPieces)}
+          name="relevantLink"
+          control={control}
+          error={!!errors.relevantLink}
+          message={errors.relevantLink?.message}
           disabled={isFormDisabled}
+          rules={getTextFieldRules('relevantLink')}
         />
       </ContentSection>
     </div>
   )
-})
-
-export default SocialMediaContentSection
+}

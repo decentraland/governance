@@ -10,6 +10,10 @@ export default function useTimer(seconds: number) {
     }
     setTime(seconds)
 
+    if (seconds <= 0) {
+      return
+    }
+
     const timer = setInterval(() => {
       setTime((prevTime) => {
         const newTime = prevTime - 1

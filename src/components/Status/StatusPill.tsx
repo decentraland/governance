@@ -6,8 +6,8 @@ import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media
 import { ProposalStatus } from '../../entities/Proposal/types'
 import { getProposalStatusDisplayName, getProposalStatusShortName } from '../../entities/Proposal/utils'
 import locations from '../../utils/locations'
-import Link from '../Common/Link'
 import Pill, { PillColor, Props as PillProps } from '../Common/Pill'
+import Link from '../Common/Typography/Link'
 import Check from '../Icon/Check'
 
 import './StatusPill.css'

@@ -3,7 +3,7 @@ import Skeleton from 'react-loading-skeleton'
 
 import classNames from 'classnames'
 
-import Link from '../Common/Link'
+import Link from '../Common/Typography/Link'
 import ExclamationCircle from '../Icon/ExclamationCircle'
 
 import './GrantRequestSectionCard.css'
@@ -18,6 +18,7 @@ interface Props {
   error?: boolean
   href?: string
 }
+
 export const GrantRequestSectionCard = ({
   subtitle,
   title,
@@ -28,8 +29,10 @@ export const GrantRequestSectionCard = ({
   error,
   href,
 }: Props) => {
+  const Wrapper = href ? Link : 'div'
+
   return (
-    <Link
+    <Wrapper
       className={classNames(
         'GrantRequestSectionCard',
         error && 'GrantRequestSectionCard__Error',
@@ -56,6 +59,6 @@ export const GrantRequestSectionCard = ({
       >
         {subtitle}
       </div>
-    </Link>
+    </Wrapper>
   )
 }

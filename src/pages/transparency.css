@@ -99,7 +99,7 @@
 .ui.header.FundingHeader {
   font-size: 20px;
   line-height: 28px;
-  font-weight: 400;
+  font-weight: var(--weight-normal);
 }
 
 .FundingProgress .FundingProgress__Description {
@@ -113,7 +113,7 @@
   margin-bottom: 0;
   display: flex;
   align-items: baseline;
-  font-weight: 400;
+  font-weight: var(--weight-normal);
 }
 
 .FundingProgress .FundingProgress__Budget {

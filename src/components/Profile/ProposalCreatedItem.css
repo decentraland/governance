@@ -82,9 +82,27 @@ a.ui.card:hover,
 
 .ProposalCreatedItem__Status {
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
   padding-top: 6px;
+}
+
+.ProposalCreatedItem__StatusPillsContainer {
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 6px;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .ProposalCreatedItem__Status {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .ProposalCreatedItem__StatusPillsContainer {
+    padding-bottom: 0;
+  }
 }
 
 .ProposalCreatedItem__Stats {
@@ -103,7 +121,7 @@ a.ui.card:hover,
 }
 
 .ProposalCreatedItem__Details {
-  font-weight: 500;
+  font-weight: var(--weight-semi-bold);
   font-size: 11px;
   color: var(--black-600);
   letter-spacing: 0.4px;
@@ -139,7 +157,7 @@ a.ui.card:hover,
 
 .ProposalCreatedItem__VoteText {
   text-transform: uppercase;
-  font-weight: 600;
+  font-weight: var(--weight-semi-bold);
   font-size: 13px;
   line-height: 18px;
 }

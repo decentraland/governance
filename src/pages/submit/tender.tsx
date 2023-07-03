@@ -3,7 +3,6 @@ import Helmet from 'react-helmet'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
@@ -13,9 +12,10 @@ import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectF
 import { Governance } from '../../clients/Governance'
 import Field from '../../components/Common/Form/Field'
 import MarkdownField from '../../components/Common/Form/MarkdownField'
-import Label from '../../components/Common/Label'
 import SubLabel from '../../components/Common/SubLabel'
-import Text from '../../components/Common/Text/Text'
+import Label from '../../components/Common/Typography/Label'
+import Markdown from '../../components/Common/Typography/Markdown'
+import Text from '../../components/Common/Typography/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -133,7 +133,7 @@ export default function SubmitTenderProposal() {
         <ContentSection>
           <Header size="huge">{t('page.submit_tender.title')}</Header>
         </ContentSection>
-        <ContentSection className="MarkdownSection--tiny">
+        <ContentSection>
           <Markdown>{t('page.submit_tender.description')}</Markdown>
         </ContentSection>
 

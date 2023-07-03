@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
@@ -8,6 +7,7 @@ import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useIdentityModalContext from '../../../hooks/useIdentityModalContext'
 import useIsProfileValidated from '../../../hooks/useIsProfileValidated'
+import Markdown from '../../Common/Typography/Markdown'
 import Identity from '../../Image/Identity'
 
 import AccountsConnectModal from './AccountsConnectModal'
@@ -57,7 +57,11 @@ function IdentityConnectModal() {
           <Identity />
         </Modal.Header>
         <Modal.Content>
-          <Markdown className="IdentityConnectModal__Description">{t('modal.identity_connect.description')}</Markdown>
+          <Markdown
+            componentsClassNames={{ p: 'IdentityConnectModal__Text', strong: 'IdentityConnectModal__StrongText' }}
+          >
+            {t('modal.identity_connect.description')}
+          </Markdown>
           <div className="IdentityConnectModal__ButtonContainer">
             <Button fluid primary className="IdentityConnectModal__Button" onClick={handleConnect}>
               {t('modal.identity_connect.connect_button')}

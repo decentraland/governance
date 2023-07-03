@@ -2,21 +2,12 @@
   min-height: 36px !important;
   margin: 0 0 10px 0 !important;
   font-size: 20px !important;
-  font-weight: 600 !important;
+  font-weight: var(--weight-semi-bold) !important;
   line-height: 36px !important;
 }
 
 .VotingPowerListModal__Description {
   margin: 0 0 32px 0 !important;
-}
-
-.VotingPowerListModal .description .dg.Paragraph {
-  font-size: 15px;
-  line-height: 24px;
-}
-
-p.dg.Paragraph a.dg.Link.Link--pointer .VotingPowerListModal_Description {
-  color: #6299f0;
 }
 
 .VotingPowerListModal_Items {

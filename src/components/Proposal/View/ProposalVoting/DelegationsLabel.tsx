@@ -1,9 +1,9 @@
 import React from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
 import useFormatMessage from '../../../../hooks/useFormatMessage'
+import Markdown from '../../../Common/Typography/Markdown'
 import Info from '../../../Icon/Info'
 import VotingPower from '../../../Token/VotingPower'
 import Username from '../../../User/Username'
@@ -57,10 +57,22 @@ const DelegationsLabel = ({ delegateLabel, delegatorsLabel, infoMessage }: Deleg
     <div className="DelegationsLabel">
       <span className="DelegationsLabel__TextContainer">
         {delegateLabel && (
-          <Markdown className="DelegationsLabel__Text">{t(delegateLabel.id, delegateLabel.values)}</Markdown>
+          <Markdown
+            size="sm"
+            className="DelegationsLabel__Text"
+            componentsClassNames={{ p: 'DelegationsLabel__TextSpacing' }}
+          >
+            {t(delegateLabel.id, delegateLabel.values)}
+          </Markdown>
         )}
         {delegatorsLabel && (
-          <Markdown className="DelegationsLabel__Text">{t(delegatorsLabel.id, delegatorsLabel.values)}</Markdown>
+          <Markdown
+            size="sm"
+            className="DelegationsLabel__Text"
+            componentsClassNames={{ p: 'DelegationsLabel__TextSpacing' }}
+          >
+            {t(delegatorsLabel.id, delegatorsLabel.values)}
+          </Markdown>
         )}
       </span>
 

@@ -21,7 +21,7 @@ import { isValidGrantBudget } from '../../entities/Grant/utils'
 import { getFormattedPercentage } from '../../helpers'
 import useCategoryBudget from '../../hooks/useCategoryBudget'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import Label from '../Common/Label'
+import Label from '../Common/Typography/Label'
 import Helper from '../Helper/Helper'
 import { ContentSection } from '../Layout/ContentLayout'
 

@@ -8,7 +8,7 @@ import { getChecksumAddress } from '../../entities/Snapshot/utils'
 import useProfile from '../../hooks/useProfile'
 import locations from '../../utils/locations'
 import Avatar, { AvatarSize } from '../Common/Avatar'
-import Link from '../Common/Link'
+import Link from '../Common/Typography/Link'
 
 import './Username.css'
 

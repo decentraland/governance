@@ -7,7 +7,7 @@ import useFormatMessage from '../../../hooks/useFormatMessage'
 import { useProposalDateText } from '../../../hooks/useProposalDateText'
 import useProposalVotes from '../../../hooks/useProposalVotes'
 import locations from '../../../utils/locations'
-import Link from '../../Common/Link'
+import Link from '../../Common/Typography/Link'
 import ChevronRight from '../../Icon/ChevronRight'
 import Username from '../../User/Username'
 

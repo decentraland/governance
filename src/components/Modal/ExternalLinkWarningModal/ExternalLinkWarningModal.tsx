@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { openUrl } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'
+import Heading from '../../Common/Typography/Heading'
+import Markdown from '../../Common/Typography/Markdown'
 
 import './ExternalLinkWarningModal.css'
 
@@ -64,8 +64,17 @@ function ExternalLinkWarningModal() {
     <Modal open={isWarningModalOpen} size="tiny" closeIcon={<Close />} onClose={handleDismiss}>
       <Modal.Content>
         <div className={'ExternalLinkWarningModal__Title'}>
-          <Header>{t('modal.external_link_warning.title')}</Header>
-          <Markdown>{t('modal.external_link_warning.description', { url: warningModalState.href })}</Markdown>
+          <Heading size="xs" weight="semi-bold">
+            {t('modal.external_link_warning.title')}
+          </Heading>
+          <Markdown
+            componentsClassNames={{
+              p: 'ExternalLinkWarningModal__Description',
+              a: 'ExternalLinkWarningModal__Link',
+            }}
+          >
+            {t('modal.external_link_warning.description', { url: warningModalState.href })}
+          </Markdown>
         </div>
         <div className={'ExternalLinkWarningModal__Actions'}>
           <Button fluid primary className={'ExternalLinkWarningModal__Button'} onClick={handleContinue}>

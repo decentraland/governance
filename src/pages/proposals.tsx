@@ -4,7 +4,6 @@ import { useLocation } from '@reach/router'
 import { useQuery } from '@tanstack/react-query'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import prevent from 'decentraland-gatsby/dist/utils/react/prevent'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
@@ -17,7 +16,7 @@ import { Governance } from '../clients/Governance'
 import RandomBanner from '../components/Banner/RandomBanner'
 import CategoryBanner from '../components/Category/CategoryBanner'
 import Empty from '../components/Common/Empty'
-import Link from '../components/Common/Link'
+import Link from '../components/Common/Typography/Link'
 import ActionableLayout from '../components/Layout/ActionableLayout'
 import BurgerMenuLayout from '../components/Layout/BurgerMenu/BurgerMenuLayout'
 import LoadingView from '../components/Layout/LoadingView'
@@ -175,14 +174,7 @@ export default function ProposalsPage() {
                       !searching && (
                         <>
                           {proposals && <SortingMenu />}
-                          <Button
-                            primary
-                            size="small"
-                            className="SubmitButton"
-                            as={Link}
-                            href={locations.submit()}
-                            onClick={prevent(() => navigate(locations.submit()))}
-                          >
+                          <Button primary size="small" className="SubmitButton" as={Link} href={locations.submit()}>
                             {t('page.proposal_list.new_proposal')}
                           </Button>
                         </>

@@ -29,14 +29,7 @@
   border: 0 !important;
 }
 
-.CheckboxField > p.dg.Paragraph {
-  font-size: 17px;
-  line-height: 26px;
-  letter-spacing: -0.2px;
-  font-weight: 400;
-  text-align: left;
-}
-
-.CheckboxField > a.Link.Link--pointer {
-  font-weight: 500;
+.CheckboxField__Text {
+  letter-spacing: -0.2px !important;
+  font-weight: var(--weight-normal) !important;
 }

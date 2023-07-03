@@ -1,13 +1,13 @@
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 
 import classNames from 'classnames'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import useClipboardCopy from 'decentraland-gatsby/dist/hooks/useClipboardCopy'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
+import useClipboardCopy from '../../hooks/useClipboardCopy'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Time from '../../utils/date/Time'
-import Link from '../Common/Link'
+import Link from '../Common/Typography/Link'
+import Markdown from '../Common/Typography/Markdown'
 import ErrorNotice from '../Icon/ErrorNotice'
 
 import './ErrorMessage.css'
@@ -19,16 +19,12 @@ interface Props {
 
 export default function ErrorMessage({ label, errorMessage }: Props) {
   const t = useFormatMessage()
-  const [copied, state] = useClipboardCopy(Time.Second)
+  const { copiedValue, handleCopy } = useClipboardCopy(Time.Second)
   const [open, setOpen] = useState(false)
 
   const toggleHandler = () => {
     setOpen(!open)
   }
-
-  const handleCopy = useCallback(() => {
-    state.copy(errorMessage)
-  }, [errorMessage, state])
 
   return (
     <div className="ErrorMessage__Container">
@@ -42,11 +38,26 @@ export default function ErrorMessage({ label, errorMessage }: Props) {
       <div className={classNames('ErrorMessage__Content', open && 'ErrorMessage__Content--open')}>
         <div className="ErrorMessage__Message">
           <pre>{errorMessage}</pre>
-          <Button className={classNames('Button', 'ErrorMessage__Copy')} primary size="small" onClick={handleCopy}>
-            <span>{copied ? t('error.message.copied') : t('error.message.copy')}</span>
+          <Button
+            className={classNames('Button', 'ErrorMessage__Copy')}
+            primary
+            size="small"
+            onClick={() => handleCopy(errorMessage)}
+          >
+            <span>{copiedValue ? t('error.message.copied') : t('error.message.copy')}</span>
           </Button>
         </div>
-        <Markdown className="ErrorMessage__CallForAction">{t('error.message.call_for_action')}</Markdown>
+        <Markdown
+          size="sm"
+          className="ErrorMessage__CallForAction"
+          componentsClassNames={{
+            p: 'ErrorMessage__CallForActionText',
+            em: 'ErrorMessage__CallForActionText',
+            a: 'ErrorMessage__CallForActionLink',
+          }}
+        >
+          {t('error.message.call_for_action')}
+        </Markdown>
       </div>
     </div>
   )

@@ -4,7 +4,7 @@ import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import CategoryBanner from '../../components/Category/CategoryBanner'
-import Text from '../../components/Common/Text/Text'
+import Text from '../../components/Common/Typography/Text'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import {
   AddRemoveProposalModal,

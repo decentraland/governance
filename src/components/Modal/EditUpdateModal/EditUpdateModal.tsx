@@ -7,7 +7,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import useFormatMessage from '../../../hooks/useFormatMessage'
-import Text from '../../Common/Text/Text'
+import Text from '../../Common/Typography/Text'
 import '../ProposalModal.css'
 
 type Props = Omit<ModalProps, 'children'> & {

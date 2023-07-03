@@ -173,7 +173,7 @@
   min-width: auto;
   background-color: var(--black-600) !important;
   color: white;
-  font-weight: 400;
+  font-weight: var(--weight-normal);
 }
 
 .VotingPowerDelegationDetail__Content .ShowMore .Divider {
@@ -185,7 +185,7 @@
 }
 
 .VotingPowerDelegationDetail__Content .stats .header {
-  font-weight: 500;
+  font-weight: var(--weight-semi-bold);
   font-size: 11px !important;
   margin-bottom: 0 !important;
   line-height: 18px;
@@ -209,7 +209,7 @@
 }
 
 .VotingPowerDelegationDetail__StatsValue {
-  font-weight: 600;
+  font-weight: var(--weight-semi-bold);
   font-size: 17px;
   line-height: 32px;
   letter-spacing: 0.4px;

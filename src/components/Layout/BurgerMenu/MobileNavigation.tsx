@@ -1,12 +1,11 @@
 import React from 'react'
 
-import prevent from 'decentraland-gatsby/dist/utils/react/prevent'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import useFormatMessage from '../../../hooks/useFormatMessage'
-import locations, { navigate } from '../../../utils/locations'
-import Link from '../../Common/Link'
+import locations from '../../../utils/locations'
+import Link from '../../Common/Typography/Link'
 import { NavigationProps, NavigationTab } from '../Navigation'
 
 import './MobileNavigation.css'
@@ -34,9 +33,6 @@ function MobileNavigation({ activeTab }: NavigationProps) {
           {...getButtonProps(NavigationTab.Home, activeTab)}
           as={Link}
           href={locations.home()}
-          onClick={prevent(() => {
-            navigate(locations.home())
-          })}
         >
           {t('navigation.home')}
         </Button>
@@ -46,9 +42,6 @@ function MobileNavigation({ activeTab }: NavigationProps) {
           {...getButtonProps(NavigationTab.Proposals, activeTab)}
           as={Link}
           href={locations.proposals()}
-          onClick={prevent(() => {
-            navigate(locations.proposals())
-          })}
         >
           {t('navigation.proposals')}
         </Button>
@@ -58,9 +51,6 @@ function MobileNavigation({ activeTab }: NavigationProps) {
           {...getButtonProps(NavigationTab.Grants, activeTab)}
           as={Link}
           href={locations.grants()}
-          onClick={prevent(() => {
-            navigate(locations.grants())
-          })}
         >
           {t('navigation.grants')}
         </Button>
@@ -70,9 +60,6 @@ function MobileNavigation({ activeTab }: NavigationProps) {
           {...getButtonProps(NavigationTab.Transparency, activeTab)}
           as={Link}
           href={locations.transparency()}
-          onClick={prevent(() => {
-            navigate(locations.transparency())
-          })}
         >
           {t('navigation.transparency')}
         </Button>

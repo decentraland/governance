@@ -4,7 +4,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { Vote } from '../../../../entities/Votes/types'
 import useFormatMessage from '../../../../hooks/useFormatMessage'
-import Link from '../../../Common/Link'
+import Link from '../../../Common/Typography/Link'
 
 interface ChangeVoteButtonProps {
   vote: Vote | null

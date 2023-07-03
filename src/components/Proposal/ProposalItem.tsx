@@ -13,7 +13,7 @@ import { calculateResultWinner } from '../../entities/Votes/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import locations from '../../utils/locations'
 import CategoryPill from '../Category/CategoryPill'
-import Link from '../Common/Link'
+import Link from '../Common/Typography/Link'
 import Subscribe from '../Icon/Subscribe'
 import Subscribed from '../Icon/Subscribed'
 import CoauthorRequestLabel from '../Status/CoauthorRequestLabel'
@@ -45,6 +45,7 @@ export default function ProposalItem({
   const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [proposal])
   const winner = useMemo(() => calculateResultWinner(choices, votes || {}), [choices, votes])
   const t = useFormatMessage()
+
   function handleSubscription(e: React.MouseEvent<unknown>) {
     e.stopPropagation()
     e.preventDefault()

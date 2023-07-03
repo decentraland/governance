@@ -8,7 +8,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { DEFAULT_QUERY_STALE_TIME } from '../../hooks/constants'
 import { getParcelImageUrl, getTile } from '../../utils/Land'
-import Link from '../Common/Link'
+import Link from '../Common/Typography/Link'
 import Pin from '../Icon/Pin'
 
 import './ProposalHeaderPoi.css'

@@ -7,12 +7,12 @@
   height: 100%;
 }
 
-.Empty .ui.header {
+.Empty__Header {
   margin-top: 0;
   margin-bottom: 7px;
 }
 
-.Empty .dg.Paragraph {
+.Empty__Description {
   margin-bottom: 0 !important;
   font-size: 15px;
   line-height: 24px;
@@ -23,10 +23,10 @@
   margin-bottom: 24px;
 }
 
-.Empty__Action {
-  margin-top: 15px !important;
+.Empty__Link {
+  text-transform: uppercase;
 }
 
-.Empty .Link {
-  text-transform: uppercase;
+.Empty__Action {
+  margin-top: 15px !important;
 }

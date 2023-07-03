@@ -5,7 +5,6 @@ import { SnapshotVote, StrategyOrder, VpDistribution } from '../clients/Snapshot
 import { ProposalAttributes } from '../entities/Proposal/types'
 import { isSameAddress } from '../entities/Snapshot/utils'
 import { MINIMUM_VP_REQUIRED_TO_VOTE } from '../entities/Votes/constants'
-import { Vote } from '../entities/Votes/types'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 import useVotingPowerDistribution from './useVotingPowerDistribution'
@@ -24,23 +23,23 @@ export default function useVotingPowerOnProposal(
   address: string | null,
   delegators: string[] | null,
   isLoadingDelegators: boolean,
-  votes?: Record<string, Vote> | null,
   proposal?: ProposalAttributes | null
 ) {
   const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(address, proposal?.snapshot_id)
   const { data, isLoading } = useQuery({
-    queryKey: [`vpDistribution#${address}#${proposal?.snapshot_id}`],
+    queryKey: [`votingPowerOnProposal#${address}#${proposal?.snapshot_id}`],
     queryFn: async () => {
-      if (!address || !proposal || isLoadingDelegators || isLoadingVpDistribution || !vpDistribution) {
-        return initialVotingPowerOnProposal
+      if (proposal?.snapshot_id) {
+        const votes: SnapshotVote[] = await SnapshotGraphql.get().getProposalVotes(proposal.snapshot_id)
+        const delegatedVp = getDelegatedVotingPowerOnProposal(vpDistribution, delegators, votes)
+        const addressVp = vpDistribution.own || 0
+        return { addressVp, delegatedVp }
       }
-      const votes: SnapshotVote[] = await SnapshotGraphql.get().getProposalVotes(proposal.snapshot_id)
-      const delegatedVp = getDelegatedVotingPowerOnProposal(vpDistribution, delegators, votes)
-      const addressVp = vpDistribution.own || 0
-      return { addressVp, delegatedVp }
     },
     staleTime: DEFAULT_QUERY_STALE_TIME,
+    enabled: !!address && !!proposal && !isLoadingDelegators && !isLoadingVpDistribution && !!vpDistribution,
   })
+
   const vpOnProposal = data ?? initialVotingPowerOnProposal
   const totalVpOnProposal = vpOnProposal.addressVp + vpOnProposal.delegatedVp
   const hasEnoughToVote = totalVpOnProposal > MINIMUM_VP_REQUIRED_TO_VOTE && !isLoading

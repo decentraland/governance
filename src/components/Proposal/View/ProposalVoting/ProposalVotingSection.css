@@ -16,14 +16,13 @@
   justify-content: center;
   padding: 9px;
   border-radius: 6px;
-  font-style: normal;
-  font-weight: 400;
   background-color: var(--black-200);
-  text-align: center;
 }
 
-.ProposalVotingSection__VotingBegins .dg.Paragraph {
-  color: var(--black-600);
-  font-size: 13px;
-  line-height: 18px;
+.ProposalVotingSection__VotingBeginsText {
+  font-weight: var(--weight-normal) !important;
+}
+.ProposalVotingSection__VotingBeginsText,
+.ProposalVotingSection__VotingBeginsStrong {
+  color: var(--black-600) !important;
 }

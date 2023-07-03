@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useCallback, useState } from 'react'
 
 import { GrantRequestCategoryAssessment, NewGrantCategory } from '../../entities/Grant/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
@@ -22,47 +22,45 @@ interface Props {
 
 export default function GrantRequestCategorySection({ category, onValidation, isFormDisabled, sectionNumber }: Props) {
   const t = useFormatMessage()
+  const [validated, setValidated] = useState<boolean | null>(null)
+  const [isEdited, setIsEdited] = useState(false)
 
-  const sectionRef = useRef<{ validate: () => void; isValidated: () => boolean; isFormEdited: () => boolean }>(null)
-
-  const handleBlur = () => {
-    if (sectionRef) {
-      sectionRef.current?.validate()
-    }
-  }
-
-  const handleValidation = (data: Partial<GrantRequestCategoryAssessment>, validated: boolean) => {
-    onValidation(data, validated)
-  }
+  const handleValidation = useCallback(
+    (data: Partial<GrantRequestCategoryAssessment>, validated: boolean, isEdited: boolean) => {
+      onValidation(data, validated)
+      setValidated(validated)
+      setIsEdited(isEdited)
+    },
+    [onValidation]
+  )
 
   return (
     <GrantRequestSection
-      onBlur={handleBlur}
-      validated={sectionRef.current?.isValidated() || false}
-      isFormEdited={sectionRef.current?.isFormEdited() || false}
+      validated={!!validated}
+      isFormEdited={isEdited}
       sectionTitle={t('page.submit_grant.category_assessment.title')}
       sectionNumber={sectionNumber}
     >
       {category === NewGrantCategory.Accelerator && (
-        <AcceleratorSection ref={sectionRef} onValidation={handleValidation} isFormDisabled={isFormDisabled} />
+        <AcceleratorSection onValidation={handleValidation} isFormDisabled={isFormDisabled} />
       )}
       {category === NewGrantCategory.CoreUnit && (
-        <CoreUnitSection ref={sectionRef} onValidation={handleValidation} isFormDisabled={isFormDisabled} />
+        <CoreUnitSection onValidation={handleValidation} isFormDisabled={isFormDisabled} />
       )}
       {category === NewGrantCategory.Documentation && (
-        <DocumentationSection ref={sectionRef} onValidation={handleValidation} isFormDisabled={isFormDisabled} />
+        <DocumentationSection onValidation={handleValidation} isFormDisabled={isFormDisabled} />
       )}
       {category === NewGrantCategory.InWorldContent && (
-        <InWorldContentSection ref={sectionRef} onValidation={handleValidation} isFormDisabled={isFormDisabled} />
+        <InWorldContentSection onValidation={handleValidation} isFormDisabled={isFormDisabled} />
       )}
       {category === NewGrantCategory.SocialMediaContent && (
-        <SocialMediaContentSection ref={sectionRef} onValidation={handleValidation} isFormDisabled={isFormDisabled} />
+        <SocialMediaContentSection onValidation={handleValidation} isFormDisabled={isFormDisabled} />
       )}
       {category === NewGrantCategory.Sponsorship && (
-        <SponsorshipSection ref={sectionRef} onValidation={handleValidation} isFormDisabled={isFormDisabled} />
+        <SponsorshipSection onValidation={handleValidation} isFormDisabled={isFormDisabled} />
       )}
       {category === NewGrantCategory.Platform && (
-        <PlatformSection ref={sectionRef} onValidation={handleValidation} isFormDisabled={isFormDisabled} />
+        <PlatformSection onValidation={handleValidation} isFormDisabled={isFormDisabled} />
       )}
     </GrantRequestSection>
   )

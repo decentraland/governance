@@ -1,12 +1,11 @@
 import React from 'react'
 
-import Paragraph from 'decentraland-gatsby/dist/components/Text/Paragraph'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
 import { Member } from '../../clients/DclData'
-import Text from '../Common/Text/Text'
+import Text from '../Common/Typography/Text'
 import Info from '../Icon/Info'
 
 import MemberCard from './MemberCard'

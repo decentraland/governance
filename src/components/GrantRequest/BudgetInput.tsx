@@ -1,11 +1,11 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 
 import { disableOnWheelInput } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import Label from '../Common/Label'
+import Label from '../Common/Typography/Label'
+import Markdown from '../Common/Typography/Markdown'
 import Helper from '../Helper/Helper'
 import ExclamationCircle from '../Icon/ExclamationCircle'
 
@@ -47,7 +47,9 @@ const BudgetInput = ({ error, label, subtitle, ...props }: Props & React.HTMLPro
           }
         />
       </div>
-      <Markdown className="BudgetInput__Subtitle">{subtitle}</Markdown>
+      <Markdown size="sm" componentsClassNames={{ p: 'BudgetInput__Subtitle' }}>
+        {subtitle}
+      </Markdown>
     </div>
   )
 }

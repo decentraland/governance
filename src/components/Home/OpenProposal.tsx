@@ -12,7 +12,7 @@ import useProposalVotes from '../../hooks/useProposalVotes'
 import Time from '../../utils/date/Time'
 import locations from '../../utils/locations'
 import CategoryPill from '../Category/CategoryPill'
-import Link from '../Common/Link'
+import Link from '../Common/Typography/Link'
 import ChevronRight from '../Icon/ChevronRight'
 import Username from '../User/Username'
 
@@ -58,7 +58,7 @@ const OpenProposal = ({ proposal }: Props) => {
           <h3 className="OpenProposal__Title">{title}</h3>
           <span className="OpenProposal__Details">
             <Mobile>
-              <CategoryPill proposalType={proposal.type} size="small" />
+              <CategoryPill className="OpenProposal__Pill" proposalType={proposal.type} size="small" />
             </Mobile>
             <span className="OpenProposal__DetailsItem OpenProposal__UsernameContainer">
               {t('page.home.open_proposals.by_user')}

@@ -6,7 +6,7 @@ import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
 import { SNAPSHOT_SPACE } from '../../entities/Snapshot/constants'
 import { getSnapshotStatusAndSpace } from '../../entities/Snapshot/utils'
-import Label from '../Common/Label'
+import Label from '../Common/Typography/Label'
 import ErrorMessage from '../Error/ErrorMessage'
 import MarkdownFieldSection from '../Form/MarkdownFieldSection'
 import { ContentSection } from '../Layout/ContentLayout'
