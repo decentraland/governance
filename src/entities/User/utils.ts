@@ -3,7 +3,6 @@ import { hashMessage, recoverAddress } from 'ethers/lib/utils'
 import { DiscoursePostInTopic } from '../../clients/Discourse'
 import { FORUM_URL } from '../../constants'
 import { env } from '../../utils/env'
-import locations from '../../utils/locations'
 import { ProposalComment, ProposalCommentsInDiscourse } from '../Proposal/types'
 import { isSameAddress } from '../Snapshot/utils'
 
@@ -16,10 +15,6 @@ const DEFAULT_AVATAR_SIZE = '45'
 
 function getDefaultAvatarSizeUrl(avatar_url: string) {
   return avatar_url.replace('{size}', DEFAULT_AVATAR_SIZE)
-}
-
-export function getUserProfileUrl(user: string, address?: string) {
-  return address ? locations.profile({ address }) : `${FORUM_URL}/u/${user}`
 }
 
 function getAvatarUrl(post: DiscoursePostInTopic) {
