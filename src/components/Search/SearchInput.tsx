@@ -24,7 +24,7 @@ export function handleSearch(textSearch: string, location: Location) {
   navigate(locations.proposals(newParams))
 }
 
-export default function SearchInput(props: React.HTMLAttributes<HTMLDivElement>) {
+export default function SearchInput(props: React.HTMLAttributes<HTMLInputElement>) {
   const t = useFormatMessage()
   const location = useLocation()
   const { search } = useProposalsSearchParams()
@@ -67,7 +67,7 @@ export default function SearchInput(props: React.HTMLAttributes<HTMLDivElement>)
   }
 
   return (
-    <div className={'SearchContainer'}>
+    <div className="SearchContainer">
       <input
         {...props}
         className={classNames('SearchInput', open && 'SearchInput--open', props.className)}

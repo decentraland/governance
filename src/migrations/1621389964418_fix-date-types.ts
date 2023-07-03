@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/camelcase */
-import { MigrationBuilder, ColumnDefinitions } from 'node-pg-migrate';
+import { MigrationBuilder, ColumnDefinitions } from 'node-pg-migrate'
 import ProposalModel from '../entities/Proposal/model'
 import VotesModel from '../entities/Votes/model'
 import SubscriptionModel from '../entities/Subscription/model'
 
-export const shorthands: ColumnDefinitions | undefined = undefined;
+export const shorthands: ColumnDefinitions | undefined = undefined
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
   pgm.alterColumn(ProposalModel.tableName, 'start_at', { type: 'TIMESTAMPTZ' })
@@ -18,4 +17,5 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
   pgm.alterColumn(SubscriptionModel.tableName, 'created_at', { type: 'TIMESTAMPTZ' })
 }
 
-export async function down(pgm: MigrationBuilder): Promise<void> {}
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+export async function down(): Promise<void> {}
