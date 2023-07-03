@@ -1,6 +1,6 @@
 import { NavigateOptions } from '@reach/router'
 import API from 'decentraland-gatsby/dist/utils/api/API'
-import { navigate as gatsbyNavigate } from 'gatsby-link'
+import { navigate as gatsbyNavigate } from 'gatsby'
 
 import { HiringType, PoiType, ProposalStatus, ProposalType } from '../entities/Proposal/types'
 

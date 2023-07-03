@@ -3,15 +3,20 @@ import React from 'react'
 import DOMPurify from 'dompurify'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-import { getUserProfileUrl } from '../../../entities/User/utils'
+import { FORUM_URL } from '../../../constants'
 import useProfile from '../../../hooks/useProfile'
 import Time from '../../../utils/date/Time'
+import locations from '../../../utils/locations'
 import Avatar from '../../Common/Avatar'
 import Link from '../../Common/Typography/Link'
 import Text from '../../Common/Typography/Text'
 import ValidatedProfile from '../../Icon/ValidatedProfile'
 
 import './ProposalComment.css'
+
+function getUserProfileUrl(user: string, address?: string) {
+  return address ? locations.profile({ address }) : `${FORUM_URL}/u/${user}`
+}
 
 type Props = {
   user: string

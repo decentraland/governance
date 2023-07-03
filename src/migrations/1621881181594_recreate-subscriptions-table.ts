@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/camelcase */
-import { MigrationBuilder, ColumnDefinitions } from 'node-pg-migrate';
+/* eslint-disable @typescript-eslint/no-empty-function */
 
-export async function up(): Promise<void> {
-}
+export async function up(): Promise<void> {}
 
 export async function down(): Promise<void> {
 }

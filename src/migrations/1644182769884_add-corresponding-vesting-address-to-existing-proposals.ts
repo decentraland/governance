@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/camelcase */
-import { MigrationBuilder, ColumnDefinitions } from 'node-pg-migrate';
+import { MigrationBuilder, ColumnDefinitions } from 'node-pg-migrate'
 
-export const shorthands: ColumnDefinitions | undefined = undefined;
+export const shorthands: ColumnDefinitions | undefined = undefined
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
     
@@ -41,9 +40,9 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
         UPDATE proposals SET vesting_address = '0x07b9fbb0b836f55dd4c19e79b1d673b3c83dcaaa' WHERE id = 'a37682b0-7798-11ec-8188-4352ce3d30e7';    
     `
 
-    pgm.sql(sql);
+    pgm.sql(sql)
     
 }
 
-export async function down(pgm: MigrationBuilder): Promise<void> {
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+export async function down(): Promise<void> {}
