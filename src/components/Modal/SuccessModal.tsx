@@ -13,6 +13,7 @@ import Time from '../../utils/date/Time'
 import Text from '../Common/Typography/Text'
 
 import './ProposalModal.css'
+import './SuccessModal.css'
 
 export type SuccessModalProps = Omit<ModalProps, 'children'> & {
   onDismiss: (e: React.MouseEvent<unknown>) => void

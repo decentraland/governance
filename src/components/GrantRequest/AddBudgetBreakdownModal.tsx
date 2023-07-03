@@ -205,6 +205,17 @@ export default function AddBudgetBreakdownModal({
               limit: schema.relevantLink.maxLength,
             })
           }
+          rules={{
+            maxLength: {
+              value: schema.relevantLink.maxLength,
+              message: t('error.grant.due_diligence.relevant_link_invalid'),
+            },
+            validate: (value: string) => {
+              if (value && value !== '' && !isHttpsURL(value)) {
+                return t('error.grant.due_diligence.relevant_link_invalid')
+              }
+            },
+          }}
         />
       </ContentSection>
     </AddModal>

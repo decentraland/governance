@@ -74,14 +74,20 @@ export default function CategoryBanner({ active = true, isNew, type, onClick, hr
     }
   }
 
-  const Component = active && href ? Link : Box
+  const isLink = active && href
+  const Component = isLink ? Link : Box
   const Icon = categoryIcons[type]
 
   return (
     <Component
       href={href}
       onClick={handleClick}
-      className={classNames('CategoryBanner', `CategoryBanner--${type}`, active && 'CategoryBanner--active')}
+      className={classNames(
+        'CategoryBanner',
+        `CategoryBanner--${type}`,
+        active && 'CategoryBanner--active',
+        !isLink && !!onClick && 'CategoryBanner--clickable'
+      )}
     >
       <div className={classNames('CategoryBanner__Icon', !active && 'CategoryBanner__Icon--inactive')}>
         <Icon />

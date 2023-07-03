@@ -353,7 +353,14 @@ export default function Update({ isEdit }: Props) {
           <Button type="submit" primary disabled={formDisabled} loading={isSubmitting}>
             {t('page.proposal_update.publish_update')}
           </Button>
-          <Button basic disabled={isSubmitting} onClick={() => setPreviewMode((prev) => !prev)}>
+          <Button
+            basic
+            disabled={isSubmitting}
+            onClick={(e) => {
+              e.preventDefault()
+              setPreviewMode((prev) => !prev)
+            }}
+          >
             {isPreviewMode ? t('page.proposal_update.edit_update') : t('page.proposal_update.preview_update')}
           </Button>
         </ContentSection>

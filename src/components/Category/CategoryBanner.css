@@ -7,7 +7,6 @@
   position: relative;
   padding: 16px 20px;
   margin-bottom: 8px;
-  cursor: default;
   border-radius: 8px;
   background-color: var(--background-disabled);
 }
@@ -59,8 +58,7 @@
   font-style: italic !important;
 }
 
-.CategoryBanner--poi,
-.CategoryBanner--hiring {
+.CategoryBanner--clickable {
   cursor: pointer;
 }
 
