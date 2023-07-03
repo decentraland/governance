@@ -3,11 +3,7 @@ import Helmet from 'react-helmet'
 import { SubmitHandler, useForm, useWatch } from 'react-hook-form'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import { assert } from 'decentraland-gatsby/dist/hooks/useEditor'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Field as DCLField } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
@@ -21,9 +17,10 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import { Governance } from '../../clients/Governance'
 import Field from '../../components/Common/Form/Field'
 import MarkdownField from '../../components/Common/Form/MarkdownField'
-import Label from '../../components/Common/Label'
 import SubLabel from '../../components/Common/SubLabel'
-import Text from '../../components/Common/Text/Text'
+import Label from '../../components/Common/Typography/Label'
+import Markdown from '../../components/Common/Typography/Markdown'
+import Text from '../../components/Common/Typography/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -34,7 +31,8 @@ import LogIn from '../../components/User/LogIn'
 import { newProposalLinkedWearablesScheme } from '../../entities/Proposal/types'
 import { asNumber, isValidImage } from '../../entities/Proposal/utils'
 import { disableOnWheelInput, isHttpsURL } from '../../helpers'
-import locations from '../../utils/locations'
+import useFormatMessage from '../../hooks/useFormatMessage'
+import locations, { navigate } from '../../utils/locations'
 
 import './submit.css'
 
@@ -157,12 +155,7 @@ export default function SubmitLinkedWearables() {
     } as Record<string, string>)
   }
 
-  const handleErrorOption = (
-    input: string,
-    fieldKey: string,
-    field: ListSectionType['section'],
-    validator: ListSectionValidator
-  ) => {
+  const handleErrorOption = (input: string, field: ListSectionType['section'], validator: ListSectionValidator) => {
     const error = validator(input)
     if (input !== '' && error) {
       setFormError(field, { message: (errors[field]?.message as unknown as string) || error })
@@ -174,11 +167,15 @@ export default function SubmitLinkedWearables() {
   }
 
   const urlValidator: ListSectionValidator = (input: string) => {
-    return assert(isHttpsURL(input), t('error.linked_wearables.url_invalid'))
+    if (!isHttpsURL(input)) {
+      return t('error.linked_wearables.url_invalid')
+    }
   }
 
   const addressValidator: ListSectionValidator = (input: string) => {
-    return assert(isEthereumAddress(input), t('error.linked_wearables.address_invalid'))
+    if (!isEthereumAddress(input)) {
+      return t('error.linked_wearables.address_invalid')
+    }
   }
 
   const getListSection = (
@@ -213,7 +210,7 @@ export default function SubmitLinkedWearables() {
                   onChange={(_, { value }) => handleEditOption(params.section, key, value)}
                   disabled={formDisabled}
                   error={!!errors[params.section]?.message}
-                  onBlur={() => handleErrorOption(sectionValue[key], key, params.section, validator)}
+                  onBlur={() => handleErrorOption(sectionValue[key], params.section, validator)}
                 />
               ))}
           {canAdd && (
@@ -281,8 +278,6 @@ export default function SubmitLinkedWearables() {
   useEffect(() => {
     const errorFields = Object.keys(omitBy(errors, isNil)) as (keyof LinkedWearablesState)[]
     const errorFieldsStr = JSON.stringify(errorFields)
-    console.log('errors', errors)
-    console.log('fields', formErrorKeys, errorFields)
     if (errorFields.length > 0 && errorFieldsStr !== formErrorKeys) {
       setError(
         `${errorFields
@@ -324,7 +319,7 @@ export default function SubmitLinkedWearables() {
         <ContentSection>
           <Header size="huge">{t('page.submit_linked_wearables.title')}</Header>
         </ContentSection>
-        <ContentSection className="MarkdownSection--tiny">
+        <ContentSection>
           <Markdown>{t('page.submit_linked_wearables.description')}</Markdown>
         </ContentSection>
         <ContentSection>
@@ -515,7 +510,9 @@ export default function SubmitLinkedWearables() {
               checked={watch('programmatically_generated')}
               label={
                 <label>
-                  <Markdown>{t('modal.votes_list.voted_yes') || ''}</Markdown>
+                  <Markdown componentsClassNames={{ p: 'ProposalSubmit__RadioLabelText' }}>
+                    {t('modal.votes_list.voted_yes') || ''}
+                  </Markdown>
                 </label>
               }
               onChange={handleProgrammaticallyGeneratedOption}
@@ -524,7 +521,9 @@ export default function SubmitLinkedWearables() {
               checked={!watch('programmatically_generated')}
               label={
                 <label>
-                  <Markdown>{t('modal.votes_list.voted_no') || ''}</Markdown>
+                  <Markdown componentsClassNames={{ p: 'ProposalSubmit__RadioLabelText' }}>
+                    {t('modal.votes_list.voted_no') || ''}
+                  </Markdown>
                 </label>
               }
               onChange={handleProgrammaticallyGeneratedOption}

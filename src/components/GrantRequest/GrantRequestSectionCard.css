@@ -32,6 +32,7 @@
   align-items: flex-start;
   margin-bottom: 8px;
 }
+
 .GrantRequestSectionCard__Header > button.ui.basic.button {
   padding-top: 0;
 }
@@ -41,7 +42,7 @@
   align-items: center;
   gap: 8px;
   font-style: normal;
-  font-weight: 400;
+  font-weight: var(--weight-normal);
   font-size: 13px;
   line-height: 18px;
   text-transform: uppercase;
@@ -59,7 +60,7 @@
   gap: 8px;
   margin-bottom: 8px;
   font-style: normal;
-  font-weight: 600;
+  font-weight: var(--weight-semi-bold);
   font-size: 20px;
   line-height: 24px;
 }
@@ -70,7 +71,7 @@
 
 .GrantRequestSectionCard__SubTitle {
   font-style: normal;
-  font-weight: 400;
+  font-weight: var(--weight-normal);
   font-size: 13px;
   line-height: 18px;
   letter-spacing: -0.2px;
@@ -78,7 +79,7 @@
 }
 
 .GrantRequestSectionCard__TitleExtra {
-  font-weight: 600;
+  font-weight: var(--weight-semi-bold);
   font-size: 15px;
   line-height: 22px;
   color: var(--black-600);
@@ -86,7 +87,7 @@
 }
 
 .GrantRequestSectionCard__CapsSubTitle {
-  font-weight: 600;
+  font-weight: var(--weight-semi-bold);
   font-size: 12px;
   line-height: 18px;
   text-transform: uppercase;

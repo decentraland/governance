@@ -2,10 +2,10 @@ import React, { useEffect, useRef, useState } from 'react'
 
 import { useLocation } from '@reach/router'
 import classNames from 'classnames'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 
 import { useBurgerMenu } from '../../hooks/useBurgerMenu'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import { useProposalsSearchParams } from '../../hooks/useSearchParams'
 
 import { handleSearch } from './SearchInput'

@@ -31,7 +31,7 @@
   margin: 0;
   display: flex;
   align-items: baseline;
-  font-weight: 400;
+  font-weight: var(--weight-normal);
 }
 
 .ui.sub.header.MonthlyTotal__Sub {
@@ -61,7 +61,7 @@
 
 .MonthlyTotal .DetailsSection__Flex .DetailsSection__Value {
   text-align: right;
-  font-weight: 500;
+  font-weight: var(--weight-semi-bold);
 }
 
 strong.Number.Number--Green {

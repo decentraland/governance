@@ -1,13 +1,13 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
 import { TokenInWallet } from '../../entities/Transparency/types'
 import { blockExplorerLink } from '../../entities/Transparency/utils'
-import Text from '../Common/Text/Text'
+import useFormatMessage from '../../hooks/useFormatMessage'
+import Text from '../Common/Typography/Text'
 import Info from '../Icon/Info'
 
 import './TokensPerWalletPopup.css'

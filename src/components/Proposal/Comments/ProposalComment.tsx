@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import DOMPurify from 'dompurify'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
@@ -8,7 +7,8 @@ import { getUserProfileUrl } from '../../../entities/User/utils'
 import useProfile from '../../../hooks/useProfile'
 import Time from '../../../utils/date/Time'
 import Avatar from '../../Common/Avatar'
-import Text from '../../Common/Text/Text'
+import Link from '../../Common/Typography/Link'
+import Text from '../../Common/Typography/Text'
 import ValidatedProfile from '../../Icon/ValidatedProfile'
 
 import './ProposalComment.css'

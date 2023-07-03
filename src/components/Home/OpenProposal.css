@@ -47,7 +47,7 @@
   margin: 0;
   max-width: 315px;
   padding-right: 20px;
-  font-weight: 500;
+  font-weight: var(--weight-semi-bold);
   font-size: 17px;
   line-height: 26px;
   letter-spacing: -0.2px;
@@ -74,7 +74,7 @@
   color: var(--black-600);
   text-transform: uppercase;
   align-items: center;
-  font-weight: 500;
+  font-weight: var(--weight-semi-bold);
   font-size: 11px;
   line-height: 26px;
 }
@@ -99,19 +99,23 @@
   }
 }
 
+.OpenProposal__Pill {
+  margin-right: 5px;
+}
+
 .OpenProposal__UsernameContainer {
   display: flex;
   flex-direction: row;
 }
 
 .OpenProposal__Username {
-  font-weight: 600;
+  font-weight: var(--weight-semi-bold);
   color: var(--black-800);
   margin-left: 2px;
 }
 
 .OpenProposal__VotingConsensus {
-  font-weight: 500;
+  font-weight: var(--weight-semi-bold);
   font-size: 11px;
   line-height: 26px;
   letter-spacing: -0.2px;
@@ -138,7 +142,7 @@
 }
 
 .OpenProposal__VotingVpNeeded {
-  font-weight: 600;
+  font-weight: var(--weight-semi-bold);
   font-size: 11px;
   line-height: 26px;
   letter-spacing: -0.2px;
@@ -159,7 +163,7 @@
 .OpenProposal__VoteText {
   margin-right: 16px;
   text-transform: uppercase;
-  font-weight: 600;
+  font-weight: var(--weight-semi-bold);
   font-size: 13px;
   line-height: 18px;
 }

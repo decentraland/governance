@@ -1,9 +1,10 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
+
+import useFormatMessage from '../../hooks/useFormatMessage'
 
 import './AddModal.css'
 
@@ -29,17 +30,31 @@ const AddModal = ({ title, isOpen, onClose, onSecondaryClick, onPrimaryClick, ch
     >
       <Modal.Header className="AddModal__Title">{title}</Modal.Header>
       <Modal.Content>
-        {children}
-        <div>
-          <Button fluid primary onClick={onPrimaryClick} className="AddModal__PrimaryButton">
-            {t('page.submit_grant.modal_actions.submit')}
-          </Button>
-          <Button fluid secondary onClick={onSecondaryClick || onClose} className="AddModal__SecondaryButton">
-            {onSecondaryClick
-              ? t('page.submit_grant.modal_actions.delete')
-              : t('page.submit_grant.modal_actions.cancel')}
-          </Button>
-        </div>
+        <form onSubmit={onPrimaryClick}>
+          {children}
+          <div>
+            <Button fluid primary onClick={onPrimaryClick} className="AddModal__PrimaryButton">
+              {t('page.submit_grant.modal_actions.submit')}
+            </Button>
+            <Button
+              fluid
+              secondary
+              onClick={(e) => {
+                e.preventDefault()
+                if (onSecondaryClick) {
+                  onSecondaryClick()
+                } else {
+                  onClose()
+                }
+              }}
+              className="AddModal__SecondaryButton"
+            >
+              {onSecondaryClick
+                ? t('page.submit_grant.modal_actions.delete')
+                : t('page.submit_grant.modal_actions.cancel')}
+            </Button>
+          </div>
+        </form>
       </Modal.Content>
     </Modal>
   )

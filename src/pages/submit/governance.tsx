@@ -4,10 +4,7 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 
 import { useLocation } from '@reach/router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
@@ -15,9 +12,10 @@ import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectF
 
 import { Governance } from '../../clients/Governance'
 import MarkdownField from '../../components/Common/Form/MarkdownField'
-import Label from '../../components/Common/Label'
 import SubLabel from '../../components/Common/SubLabel'
-import Text from '../../components/Common/Text/Text'
+import Label from '../../components/Common/Typography/Label'
+import Markdown from '../../components/Common/Typography/Markdown'
+import Text from '../../components/Common/Typography/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
@@ -26,9 +24,10 @@ import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import LogIn from '../../components/User/LogIn'
 import { SUBMISSION_THRESHOLD_GOVERNANCE } from '../../entities/Proposal/constants'
 import { NewProposalDraft, NewProposalGovernance, newProposalGovernanceScheme } from '../../entities/Proposal/types'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import usePreselectedProposal from '../../hooks/usePreselectedProposal'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
-import locations from '../../utils/locations'
+import locations, { navigate } from '../../utils/locations'
 
 import './submit.css'
 
@@ -138,7 +137,7 @@ export default function SubmitGovernanceProposal() {
         <ContentSection>
           <Header size="huge">{t('page.submit_governance.title')}</Header>
         </ContentSection>
-        <ContentSection className="MarkdownSection--tiny">
+        <ContentSection>
           <Markdown>{t('page.submit_governance.description')}</Markdown>
         </ContentSection>
         <ContentSection>

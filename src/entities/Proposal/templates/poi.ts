@@ -1,6 +1,7 @@
-import Land from "decentraland-gatsby/dist/utils/api/Land";
-import { NewProposalPOI, PoiType } from "../types";
-import { formatMarkdown, template } from "./utils";
+import { getParcelImageUrl, getTile } from '../../../utils/Land'
+import { NewProposalPOI, PoiType } from '../types'
+
+import { formatMarkdown, template } from './utils'
 
 export const title = (proposal: NewProposalPOI) => {
   switch (proposal.type) {
@@ -15,7 +16,6 @@ export const title = (proposal: NewProposalPOI) => {
 
 export const description = (proposal: NewProposalPOI) => {
   switch (proposal.type) {
-
     case PoiType.AddPOI:
       return template`
       Should the scene located at ${proposal.x},${proposal.y} be added to the Point of Interest list?
@@ -40,11 +40,8 @@ ${formatMarkdown(proposal.description)}
 }
 
 export const pre_description = async (proposal: NewProposalPOI) => {
-  const tile = await Land.get().getTile([proposal.x, proposal.y])
+  const tile = await getTile([proposal.x, proposal.y])
   const name = tile?.name || `Parcel ${proposal.x},${proposal.y}`
 
-  return [
-    `## ${name}`,
-    `![${name}](${Land.get().getParcelImage([proposal.x, proposal.y])})`,
-  ].join('\n\n') + '\n\n'
+  return [`## ${name}`, `![${name}](${getParcelImageUrl([proposal.x, proposal.y])})`].join('\n\n') + '\n\n'
 }

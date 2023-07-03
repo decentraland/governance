@@ -23,21 +23,23 @@ type Props = {
   size?: `${AvatarSize}`
   address?: string
   className?: string
+  src?: string
 }
 
-export default function Avatar({ address, size, className }: Props) {
+export default function Avatar({ address, size, src, className }: Props) {
   const { profile, isLoadingProfile } = useProfile(address)
+  const getClassNames = () =>
+    classNames(
+      'Avatar',
+      `Avatar--${size || AvatarSize.Mini}`,
+      `Avatar--${((address || '')[2] || '').toLowerCase()}`,
+      isLoadingProfile && `Avatar--loading`,
+      className
+    )
 
-  return (
-    <AvatarFace
-      avatar={profile}
-      className={classNames(
-        'Avatar',
-        `Avatar--${size || AvatarSize.Mini}`,
-        `Avatar--${((address || '')[2] || '').toLowerCase()}`,
-        isLoadingProfile && `Avatar--loading`,
-        className
-      )}
-    />
+  return src ? (
+    <img src={src} className={getClassNames()} />
+  ) : (
+    <AvatarFace avatar={profile} className={getClassNames()} />
   )
 }

@@ -1,6 +1,6 @@
 .CategoryTotalCard__Title {
   font-style: normal;
-  font-weight: 500;
+  font-weight: var(--weight-semi-bold);
   font-size: 13px;
   line-height: 18px;
   letter-spacing: -0.2px;
@@ -10,7 +10,7 @@
 
 .CategoryTotalCard__Description {
   font-style: normal;
-  font-weight: 400;
+  font-weight: var(--weight-normal);
   font-size: 13px;
   line-height: 18px;
   letter-spacing: -0.2px;
@@ -19,7 +19,7 @@
 }
 
 .CategoryTotalCard__Sub {
-  font-weight: 500;
+  font-weight: var(--weight-semi-bold);
   font-size: 13px;
   line-height: 18px;
   letter-spacing: -0.2px;

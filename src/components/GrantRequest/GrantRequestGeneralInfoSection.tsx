@@ -1,17 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
+import { useForm, useWatch } from 'react-hook-form'
 
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
-import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import isEmail from 'validator/lib/isEmail'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { GrantRequestGeneralInfo, GrantRequestGeneralInfoSchema } from '../../entities/Grant/types'
-import { userModifiedForm } from '../../entities/Proposal/utils'
-import Label from '../Common/Label'
+import useFormatMessage from '../../hooks/useFormatMessage'
+import Field from '../Common/Form/Field'
+import MarkdownField from '../Common/Form/MarkdownField'
 import SubLabel from '../Common/SubLabel'
+import Label from '../Common/Typography/Label'
 import { ContentSection } from '../Layout/ContentLayout'
+import PostLabel from '../PostLabel'
 import CoAuthors from '../Proposal/Submit/CoAuthor/CoAuthors'
 
 import GrantRequestSection from './GrantRequestSection'
@@ -26,62 +26,6 @@ export const INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE: GrantRequestGeneralInfo =
 }
 
 const schema = GrantRequestGeneralInfoSchema
-const validate = createValidator<GrantRequestGeneralInfo>({
-  title: (state) => ({
-    title:
-      assert(state.title.length <= schema.title.maxLength, 'error.grant.title_too_large') ||
-      assert(state.title.length > 0, 'error.grant.title_empty') ||
-      assert(state.title.length >= schema.title.minLength, 'error.grant.title_too_short') ||
-      undefined,
-  }),
-  abstract: (state) => ({
-    abstract:
-      assert(state.abstract.length <= schema.abstract.maxLength, 'error.grant.general_info.abstract_too_large') ||
-      assert(state.abstract.length > 0, 'error.grant.general_info.abstract_empty') ||
-      assert(state.abstract.length >= schema.abstract.minLength, 'error.grant.general_info.abstract_too_short') ||
-      undefined,
-  }),
-  description: (state) => ({
-    description:
-      assert(
-        state.description.length <= schema.description.maxLength,
-        'error.grant.general_info.description_too_large'
-      ) ||
-      assert(state.description.length > 0, 'error.grant.general_info.description_empty') ||
-      assert(
-        state.description.length >= schema.description.minLength,
-        'error.grant.general_info.description_too_short'
-      ) ||
-      undefined,
-  }),
-  beneficiary: (state) => ({
-    beneficiary:
-      assert(state.beneficiary !== '', 'error.grant.general_info.beneficiary_empty') ||
-      assert(
-        !state.beneficiary || isEthereumAddress(state.beneficiary),
-        'error.grant.general_info.beneficiary_invalid'
-      ),
-  }),
-  email: (state) => ({
-    email:
-      assert(state.email !== '', 'error.grant.general_info.email_empty') ||
-      assert(!state.email || isEmail(state.email), 'error.grant.general_info.email_invalid'),
-  }),
-  roadmap: (state) => ({
-    roadmap:
-      assert(state.roadmap.length <= schema.roadmap.maxLength, 'error.grant.general_info.roadmap_too_large') ||
-      assert(state.roadmap.length > 0, 'error.grant.general_info.roadmap_empty') ||
-      assert(state.roadmap.length >= schema.roadmap.minLength, 'error.grant.general_info.roadmap_too_short') ||
-      undefined,
-  }),
-})
-
-const edit = (state: GrantRequestGeneralInfo, props: Partial<GrantRequestGeneralInfo>) => {
-  return {
-    ...state,
-    ...props,
-  }
-}
 
 interface Props {
   onValidation: (data: GrantRequestGeneralInfo, sectionValid: boolean) => void
@@ -89,165 +33,197 @@ interface Props {
   sectionNumber: number
 }
 
-type Fields = keyof Omit<GrantRequestGeneralInfo, 'coAuthors' | 'specification' | 'personnel'>
-
 export default function GrantRequestGeneralInfoSection({ onValidation, isFormDisabled, sectionNumber }: Props) {
   const t = useFormatMessage()
-  const [state, editor] = useEditor(edit, validate, INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE)
-  const isFormEdited = userModifiedForm(state.value, INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE)
-  const [checkedFields, setCheckedFields] = useState<Record<Fields, boolean>>({
-    title: false,
-    abstract: false,
-    description: false,
-    beneficiary: false,
-    email: false,
-    roadmap: false,
+  const {
+    formState: { isValid, errors, isDirty },
+    control,
+    setValue,
+    watch,
+  } = useForm<GrantRequestGeneralInfo>({
+    defaultValues: INITIAL_GRANT_REQUEST_GENERAL_INFO_STATE,
+    mode: 'onTouched',
   })
 
-  const canValidate = useCallback(() => Object.values(checkedFields).every((value) => value), [checkedFields])
-
-  const onFieldBlur = (field: Fields) => {
-    setCheckedFields({ ...checkedFields, [field]: true })
-    editor.set({ [field]: state.value[field].trim() })
-  }
+  const values = useWatch({ control })
 
   useEffect(() => {
-    onValidation({ ...state.value }, state.validated)
+    onValidation({ ...(values as GrantRequestGeneralInfo) }, isValid)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.validated, state.value])
-
-  useEffect(() => {
-    if (canValidate()) {
-      editor.validate()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [canValidate])
+  }, [values, isValid])
 
   return (
     <GrantRequestSection
-      validated={state.validated}
-      isFormEdited={isFormEdited}
+      validated={isValid}
+      isFormEdited={isDirty}
       sectionTitle={t('page.submit_grant.general_info.title')}
       sectionNumber={sectionNumber}
     >
       <div className="GrantRequestSection__Content">
         <ContentSection className="GrantRequestSection__Field">
           <Label>{t('page.submit_grant.general_info.title_label')}</Label>
-          <span className="GrantRequestSection__Sublabel GrantRequestSection__TitleSubLabel">
-            {t('page.submit_grant.general_info.title_detail')}
-          </span>
+          <SubLabel>{t('page.submit_grant.general_info.title_detail')}</SubLabel>
           <Field
-            value={state.value.title}
+            name="title"
+            control={control}
             placeholder={t('page.submit_grant.general_info.title_placeholder')}
-            onChange={(_, { value }) => editor.set({ title: value })}
-            onBlur={() => onFieldBlur('title')}
-            error={!!state.error.title}
+            error={!!errors.title}
             message={
-              t(state.error.title) +
+              (errors.title?.message || '') +
               ' ' +
               t('page.submit.character_counter', {
-                current: state.value.title.length,
+                current: watch('title').length,
                 limit: schema.title.maxLength,
               })
             }
             disabled={isFormDisabled}
+            rules={{
+              required: { value: true, message: t('error.grant.title_empty') },
+              minLength: {
+                value: schema.title.minLength,
+                message: t('error.grant.title_too_short'),
+              },
+              maxLength: {
+                value: schema.title.maxLength,
+                message: t('error.grant.title_too_large'),
+              },
+            }}
           />
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
           <Label>{t('page.submit_grant.general_info.abstract_label')}</Label>
           <SubLabel>{t('page.submit_grant.general_info.abstract_detail')}</SubLabel>
-          <MarkdownTextarea
-            minHeight={175}
-            value={state.value.abstract}
+          <MarkdownField
+            name="abstract"
+            control={control}
             placeholder={t('page.submit_grant.general_info.abstract_placeholder')}
-            onChange={(_: unknown, { value }: { value: string }) => editor.set({ abstract: value })}
-            onBlur={() => onFieldBlur('abstract')}
-            error={!!state.error.abstract}
+            error={!!errors.abstract}
             message={
-              t(state.error.abstract) +
+              (errors.abstract?.message || '') +
               ' ' +
               t('page.submit.character_counter', {
-                current: state.value.abstract.length,
+                current: watch('abstract').length,
                 limit: schema.abstract.maxLength,
               })
             }
             disabled={isFormDisabled}
+            rules={{
+              required: { value: true, message: t('error.grant.general_info.abstract_empty') },
+              minLength: {
+                value: schema.abstract.minLength,
+                message: t('error.grant.general_info.abstract_too_short'),
+              },
+              maxLength: {
+                value: schema.abstract.maxLength,
+                message: t('error.grant.general_info.abstract_too_large'),
+              },
+            }}
           />
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
           <Label>{t('page.submit_grant.general_info.description_label')}</Label>
           <SubLabel>{t('page.submit_grant.general_info.description_detail')}</SubLabel>
-          <MarkdownTextarea
-            minHeight={175}
-            value={state.value.description}
-            onChange={(_: unknown, { value }: { value: string }) => editor.set({ description: value })}
-            onBlur={() => onFieldBlur('description')}
-            error={!!state.error.description}
+          <MarkdownField
+            name="description"
+            control={control}
+            error={!!errors.description}
             message={
-              t(state.error.description) +
+              (errors.description?.message || '') +
               ' ' +
               t('page.submit.character_counter', {
-                current: state.value.description.length,
+                current: watch('description').length,
                 limit: schema.description.maxLength,
               })
             }
             disabled={isFormDisabled}
+            rules={{
+              required: { value: true, message: t('error.grant.general_info.description_empty') },
+              minLength: {
+                value: schema.abstract.minLength,
+                message: t('error.grant.general_info.description_too_short'),
+              },
+              maxLength: {
+                value: schema.abstract.maxLength,
+                message: t('error.grant.general_info.description_too_large'),
+              },
+            }}
           />
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
           <Label>{t('page.submit_grant.general_info.beneficiary_label')}</Label>
           <SubLabel>{t('page.submit_grant.general_info.beneficiary_detail')}</SubLabel>
           <Field
+            name="beneficiary"
+            control={control}
             type="address"
-            value={state.value.beneficiary}
-            onChange={(_, { value }) => editor.set({ beneficiary: value }, { validate: false })}
-            onBlur={() => onFieldBlur('beneficiary')}
-            message={t(state.error.beneficiary)}
-            error={!!state.error.beneficiary}
+            message={errors.beneficiary?.message}
+            error={!!errors.beneficiary}
             disabled={isFormDisabled}
+            rules={{
+              required: { value: true, message: t('error.grant.general_info.beneficiary_empty') },
+              validate: (value: string) => {
+                if (!isEthereumAddress(value)) {
+                  return t('error.grant.general_info.beneficiary_invalid')
+                }
+              },
+            }}
           />
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
-          <Label>
-            <span className="EmailLabel">{t('page.submit_grant.general_info.email_label')}</span>
-          </Label>
+          <Label>{t('page.submit_grant.general_info.email_label')}</Label>
           <SubLabel>{t('page.submit_grant.general_info.email_detail')}</SubLabel>
           <Field
+            name="email"
+            control={control}
             type="email"
-            value={state.value.email}
             placeholder={t('page.submit_grant.general_info.email_placeholder')}
-            onChange={(_, { value }) => editor.set({ email: value })}
-            onBlur={() => onFieldBlur('email')}
-            message={t(state.error.email)}
-            error={!!state.error.email}
+            message={errors.email?.message}
+            error={!!errors.email}
             disabled={isFormDisabled}
+            rules={{
+              required: { value: true, message: t('error.grant.general_info.email_empty') },
+              validate: (value: string) => {
+                if (!isEmail(value)) {
+                  return t('error.grant.general_info.email_invalid')
+                }
+              },
+            }}
           />
-          <p className="GrantRequestSection__EmailNote">{t('page.submit_grant.general_info.email_note')}</p>
+          <PostLabel>{t('page.submit_grant.general_info.email_note')}</PostLabel>
         </ContentSection>
         <ContentSection className="GrantRequestSection__Field">
           <Label>{t('page.submit_grant.general_info.roadmap_label')}</Label>
           <SubLabel>{t('page.submit_grant.general_info.roadmap_detail')}</SubLabel>
-          <MarkdownTextarea
-            minHeight={175}
-            value={state.value.roadmap}
+          <MarkdownField
+            name="roadmap"
+            control={control}
             placeholder={t('page.submit_grant.general_info.roadmap_placeholder')}
-            onChange={(_: unknown, { value }: { value: string }) => editor.set({ roadmap: value })}
-            onBlur={() => onFieldBlur('roadmap')}
-            error={!!state.error.roadmap}
+            error={!!errors.roadmap}
             message={
-              t(state.error.roadmap) +
+              (errors.roadmap?.message || '') +
               ' ' +
               t('page.submit.character_counter', {
-                current: state.value.roadmap.length,
+                current: watch('roadmap').length,
                 limit: schema.roadmap.maxLength,
               })
             }
             disabled={isFormDisabled}
+            rules={{
+              required: { value: true, message: t('error.grant.general_info.roadmap_empty') },
+              minLength: {
+                value: schema.abstract.minLength,
+                message: t('error.grant.general_info.roadmap_too_short'),
+              },
+              maxLength: {
+                value: schema.abstract.maxLength,
+                message: t('error.grant.general_info.roadmap_too_large'),
+              },
+            }}
           />
         </ContentSection>
-        <ContentSection onBlur={() => onValidation({ ...state.value }, state.validated)}>
+        <ContentSection>
           <CoAuthors
-            setCoAuthors={(addresses?: string[]) => editor.set({ coAuthors: addresses })}
+            setCoAuthors={(addresses?: string[]) => setValue('coAuthors', addresses)}
             isDisabled={isFormDisabled}
           />
         </ContentSection>

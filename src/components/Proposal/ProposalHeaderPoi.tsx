@@ -2,13 +2,13 @@ import React from 'react'
 
 import { useQuery } from '@tanstack/react-query'
 import ImgFixed from 'decentraland-gatsby/dist/components/Image/ImgFixed'
-import Link from 'decentraland-gatsby/dist/components/Text/Link'
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
-import Land from 'decentraland-gatsby/dist/utils/api/Land'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { DEFAULT_QUERY_STALE_TIME } from '../../hooks/constants'
+import { getParcelImageUrl, getTile } from '../../utils/Land'
+import Link from '../Common/Typography/Link'
 import Pin from '../Icon/Pin'
 
 import './ProposalHeaderPoi.css'
@@ -45,7 +45,7 @@ export default function ProposalHeaderPoi({ configuration }: Props) {
 
   const { data: tile } = useQuery({
     queryKey: [`tile#${x},${y}`],
-    queryFn: () => Land.get().getTile([x, y]),
+    queryFn: () => getTile([x, y]),
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })
   const { data: sceneImg } = useQuery({
@@ -66,7 +66,7 @@ export default function ProposalHeaderPoi({ configuration }: Props) {
                 {x},{y}
               </span>
             </div>
-            <ImgFixed dimension="wide" size="initial" src={Land.get().getParcelImage([x, y])} />
+            <ImgFixed dimension="wide" size="initial" src={getParcelImageUrl([x, y])} />
           </div>
         </Link>
       </div>
@@ -87,7 +87,7 @@ export default function ProposalHeaderPoi({ configuration }: Props) {
           <ImgFixed dimension="standard" size="cover" src={sceneImg} />
         </div>
         <div className="PoiImageContainer">
-          <ImgFixed dimension="standard" size="initial" src={Land.get().getParcelImage([x, y])} />
+          <ImgFixed dimension="standard" size="initial" src={getParcelImageUrl([x, y])} />
         </div>
       </Link>
     </div>

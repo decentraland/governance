@@ -1,7 +1,6 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Address } from 'decentraland-ui/dist/components/Address/Address'
 import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
 
@@ -9,6 +8,7 @@ import { getChecksumAddress } from '../../entities/Snapshot/utils'
 import useProfile from '../../hooks/useProfile'
 import locations from '../../utils/locations'
 import Avatar, { AvatarSize } from '../Common/Avatar'
+import Link from '../Common/Typography/Link'
 
 import './Username.css'
 

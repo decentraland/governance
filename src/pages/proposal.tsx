@@ -5,11 +5,8 @@ import { Web3Provider } from '@ethersproject/providers'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Desktop } from 'decentraland-ui/dist/components/Media/Media'
@@ -40,6 +37,7 @@ import GrantProposalView from '../components/Proposal/View/Categories/GrantPropo
 import CompetingTenders from '../components/Proposal/View/CompetingTenders'
 import GovernanceProcess from '../components/Proposal/View/GovernanceProcess'
 import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
+import ProposalMarkdown from '../components/Proposal/View/ProposalMarkdown'
 import TenderProposals from '../components/Proposal/View/TenderProposals'
 import StatusPill from '../components/Status/StatusPill'
 import { VOTES_VP_THRESHOLD } from '../constants'
@@ -53,6 +51,7 @@ import { SelectedVoteChoice, Vote } from '../entities/Votes/types'
 import { DEFAULT_QUERY_STALE_TIME } from '../hooks/constants'
 import useAsyncTask from '../hooks/useAsyncTask'
 import useBudgetWithContestants from '../hooks/useBudgetWithContestants'
+import useFormatMessage from '../hooks/useFormatMessage'
 import useIsDAOCommittee from '../hooks/useIsDAOCommittee'
 import useIsProposalCoAuthor from '../hooks/useIsProposalCoAuthor'
 import useIsProposalOwner from '../hooks/useIsProposalOwner'
@@ -62,7 +61,7 @@ import useProposalVotes from '../hooks/useProposalVotes'
 import useSurveyTopics from '../hooks/useSurveyTopics'
 import { useTenderProposals } from '../hooks/useTenderProposals'
 import useURLSearchParams from '../hooks/useURLSearchParams'
-import locations from '../utils/locations'
+import locations, { navigate } from '../utils/locations'
 import { isUnderMaintenance } from '../utils/maintenance'
 
 import './proposal.css'
@@ -352,7 +351,7 @@ export default function ProposalPage() {
         </ContentSection>
         <Grid stackable>
           <Grid.Row>
-            <Grid.Column tablet="12" className="ProposalDetailDescription">
+            <Grid.Column tablet="12" className="ProposalDetailPage__Description">
               <Loader active={isLoadingProposal} />
               {showProposalBudget && <ProposalBudget proposal={proposal} budget={budgetWithContestants} />}
               {showCompetingTenders && <CompetingTenders proposal={proposal} />}
@@ -362,7 +361,7 @@ export default function ProposalPage() {
                 {proposal?.type === ProposalType.Grant ? (
                   <GrantProposalView config={proposal.configuration} />
                 ) : (
-                  <Markdown>{proposal?.description || ''}</Markdown>
+                  <ProposalMarkdown text={proposal?.description || ''} />
                 )}
               </div>
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
@@ -461,7 +460,7 @@ export default function ProposalPage() {
         proposal={proposal}
         status={proposalPageState.confirmStatusUpdate || null}
         loading={isUpdating}
-        onClickAccept={(_, status, vesting_contract, enactingTx, description) =>
+        onClickAccept={(status, vesting_contract, enactingTx, description) =>
           updateProposal({ status, vesting_contract, enactingTx, description })
         }
         onClose={() => updatePageState({ confirmStatusUpdate: false })}

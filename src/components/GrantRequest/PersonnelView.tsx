@@ -1,9 +1,8 @@
 import React, { useMemo } from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
 import { TeamMember } from '../../entities/Grant/types'
+import useFormatMessage from '../../hooks/useFormatMessage'
+import ProposalMarkdown from '../Proposal/View/ProposalMarkdown'
 
 import BreakdownAccordion, { BreakdownItem } from './BreakdownAccordion'
 
@@ -25,7 +24,7 @@ function PersonnelView({ members }: Props) {
   )
   return (
     <>
-      <Markdown>{`## ${t('page.proposal_view.grant.personnel_title')}`}</Markdown>
+      <ProposalMarkdown text={`## ${t('page.proposal_view.grant.personnel_title')}`} />
       <BreakdownAccordion items={items} />
     </>
   )

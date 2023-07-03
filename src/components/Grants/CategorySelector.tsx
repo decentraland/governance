@@ -1,9 +1,8 @@
 import React from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
 import { NewGrantCategory, VALID_CATEGORIES } from '../../entities/Grant/types'
+import useFormatMessage from '../../hooks/useFormatMessage'
+import Markdown from '../Common/Typography/Markdown'
 
 import CategoryItem from './CategoryItem'
 import './CategorySelector.css'
@@ -23,7 +22,7 @@ const CategorySelector = ({ onCategoryClick }: Props) => {
           return <CategoryItem key={category} category={category} onCategoryClick={onCategoryClick} />
         })}
       </div>
-      <Markdown className="CategorySelector__Documentation">
+      <Markdown componentsClassNames={{ p: 'CategorySelector__DocumentationText' }}>
         {t('page.submit_grant.category_selection.documentation')}
       </Markdown>
     </div>

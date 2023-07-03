@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
+import { useIntl } from 'react-intl'
 
 import classNames from 'classnames'
-import useFormatMessage, { useIntl } from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import snakeCase from 'lodash/snakeCase'
 
 import { GrantStatus, ProposalGrantCategory } from '../../../entities/Grant/types'
@@ -9,6 +9,7 @@ import { PROPOSAL_GRANT_CATEGORY_ALL } from '../../../entities/Proposal/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../../helpers'
 import { CategoryIconVariant } from '../../../helpers/styles'
 import useBudgetByCategory from '../../../hooks/useBudgetByCategory'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import { getCategoryIcon } from '../../Category/CategoryOption'
 import ProgressBar from '../../Common/ProgressBar'
 import { Counter } from '../../Search/CategoryFilter'

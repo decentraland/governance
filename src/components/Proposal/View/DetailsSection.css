@@ -51,7 +51,7 @@
 
 .DetailsSection__Flex .DetailsSection__Value {
   text-align: right;
-  font-weight: 400;
+  font-weight: var(--weight-normal);
   color: var(--black-600);
 }
 

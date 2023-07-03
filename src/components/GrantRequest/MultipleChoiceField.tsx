@@ -1,12 +1,14 @@
 import React, { useCallback } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { isEmpty } from 'lodash'
 
-import Label from '../Common/Label'
+import useFormatMessage from '../../hooks/useFormatMessage'
+import Label from '../Common/Typography/Label'
+import Text from '../Common/Typography/Text'
 import { ContentSection } from '../Layout/ContentLayout'
 
 import CheckboxField from './CheckboxField'
+import './MultipleChoiceField.css'
 
 interface Props {
   label: string
@@ -15,9 +17,18 @@ interface Props {
   onChange: (newValue: string | null) => void
   intlKey: string
   options: string[]
+  error: boolean
 }
 
-const MultipleChoiceField = ({ label, isFormDisabled, value, onChange, options, intlKey }: Props) => {
+export default function MultipleChoiceField({
+  label,
+  isFormDisabled,
+  value,
+  onChange,
+  options,
+  intlKey,
+  error,
+}: Props) {
   const t = useFormatMessage()
 
   const handleEventCategoryChange = useCallback(
@@ -60,8 +71,11 @@ const MultipleChoiceField = ({ label, isFormDisabled, value, onChange, options, 
           {t(`${intlKey}.${item}`)}
         </CheckboxField>
       ))}
+      {error && (
+        <Text className="MultipleChoiceField__Error" weight="semi-bold" color="error">
+          {t('error.grant.category_assessment.field_empty')}
+        </Text>
+      )}
     </ContentSection>
   )
 }
-
-export default MultipleChoiceField

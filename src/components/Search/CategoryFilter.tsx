@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react'
 
 import { useLocation } from '@reach/router'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import isEqual from 'lodash/isEqual'
 import toSnakeCase from 'lodash/snakeCase'
 
 import { NewGrantCategory, OldGrantCategory, SubtypeAlternativeOptions } from '../../entities/Grant/types'
 import { ProposalType, toProposalType } from '../../entities/Proposal/types'
 import { getUrlFilters } from '../../helpers'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import CategoryOption from '../Category/CategoryOption'
 
 import './CategoryFilter.css'

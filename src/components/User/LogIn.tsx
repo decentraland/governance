@@ -2,15 +2,14 @@ import React from 'react'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
 
-import locations from '../../utils/locations'
-import Text from '../Common/Text/Text'
+import useFormatMessage from '../../hooks/useFormatMessage'
+import locations, { navigate } from '../../utils/locations'
+import Text from '../Common/Typography/Text'
 
 import './LogIn.css'
 

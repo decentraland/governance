@@ -1,8 +1,7 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
 import { OPEN_CALL_FOR_DELEGATES_LINK } from '../../../constants'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import Delegate from '../../Icon/Delegate'
 import Banner from '../Banner'
 

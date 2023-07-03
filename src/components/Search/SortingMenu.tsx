@@ -2,12 +2,12 @@ import React, { useMemo } from 'react'
 
 import { useLocation } from '@reach/router'
 import classNames from 'classnames'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import { getUrlFilters } from '../../helpers'
+import useFormatMessage from '../../hooks/useFormatMessage'
+import { navigate } from '../../utils/locations'
 
 import './SortingMenu.css'
 

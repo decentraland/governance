@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 
+import useFormatMessage from '../../hooks/useFormatMessage'
 import useParticipatingVP from '../../hooks/useParticipatingVP'
 import useVotesPerProposal from '../../hooks/useVotesPerProposal'
 import LineChart from '../Charts/LineChart'

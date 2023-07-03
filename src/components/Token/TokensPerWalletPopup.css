@@ -77,11 +77,11 @@
 .ui.sub.header.TokensPerWalletPopup__Link {
   margin-top: 0;
   margin-bottom: 0;
-  color: var(--blue-600);
+  color: var(--blue-600) !important;
   font-size: 10px;
   line-height: 10px;
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: var(--weight-semi-bold);
   opacity: 1;
 }
 
@@ -93,9 +93,11 @@
   .ui.sub.header.TokensPerWalletPopup__Link {
     opacity: 0;
   }
+
   .TokensPerWalletPopup__Row:hover .ui.sub.header.TokensPerWalletPopup__Link {
-    opacity: 1;
+    opacity: 1 !important;
   }
+
   .ui.popup.transition.visible.TokensPerWalletPopup {
     min-width: 358px;
   }

@@ -1,6 +1,6 @@
 .HomeSectionHeader__Title {
   font-style: normal;
-  font-weight: 600;
+  font-weight: var(--weight-semi-bold);
   font-size: 17px;
   line-height: 28px;
   display: flex;
@@ -9,13 +9,10 @@
   margin-bottom: 1px;
 }
 
-.HomeSectionHeader__Description p.dg.Paragraph {
+.HomeSectionHeader__Description {
   font-style: normal;
-  font-weight: 400;
+  font-weight: var(--weight-normal);
   margin-bottom: 16px;
-}
-
-.HomeSectionHeader__Description .dg.Paragraph {
   font-size: 15px !important;
   line-height: 24px !important;
 }
@@ -26,12 +23,9 @@
     font-size: 20px;
   }
 
-  .HomeSectionHeader__Description p.dg.Paragraph {
+  .HomeSectionHeader__Description {
     width: 65%;
     margin-bottom: 35px;
-  }
-
-  .HomeSectionHeader__Description .dg.Paragraph {
     font-size: 17px !important;
     line-height: 28px !important;
   }

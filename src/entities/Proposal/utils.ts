@@ -1,10 +1,10 @@
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
-import Land from 'decentraland-gatsby/dist/utils/api/Land'
 import 'isomorphic-fetch'
 import numeral from 'numeral'
 
 import { Governance } from '../../clients/Governance'
 import { GOVERNANCE_API } from '../../constants'
+import { getTile } from '../../utils/Land'
 import Time from '../../utils/date/Time'
 import { env } from '../../utils/env'
 import { SNAPSHOT_SPACE, SNAPSHOT_URL } from '../Snapshot/constants'
@@ -51,7 +51,7 @@ export async function isAlreadyPointOfInterest(x: number, y: number) {
 }
 
 export async function isValidPointOfInterest(x: number, y: number) {
-  const tile = await Land.get().getTile([x, y])
+  const tile = await getTile([x, y])
   if (!tile) {
     return false
   }

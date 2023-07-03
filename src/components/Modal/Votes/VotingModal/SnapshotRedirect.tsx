@@ -1,11 +1,11 @@
 import React from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
+import useFormatMessage from '../../../../hooks/useFormatMessage'
 import SnapshotRedirectButton from '../../../Common/SnapshotRedirectButton'
+import Markdown from '../../../Common/Typography/Markdown'
 import VotingDisabled from '../../../Icon/VotingDisabled'
 import '../../ProposalModal.css'
 
@@ -26,7 +26,7 @@ export function SnapshotRedirect({ proposal }: Props) {
           {t('page.proposal_detail.snapshot_redirect.voting_not_available')}
         </span>
         <div className="SnapshotRedirect__Description">{t('page.proposal_detail.snapshot_redirect.description')}</div>
-        <Markdown className="SnapshotRedirect__Suggestion">
+        <Markdown componentsClassNames={{ p: 'SnapshotRedirect__Suggestion' }}>
           {t('page.proposal_detail.snapshot_redirect.suggestion')}
         </Markdown>
       </div>

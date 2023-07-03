@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
 import { NewGrantCategory } from '../../entities/Grant/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
-import Label from '../Common/Label'
+import useFormatMessage from '../../hooks/useFormatMessage'
+import Label from '../Common/Typography/Label'
 
 import CheckboxField from './CheckboxField'
 import GrantRequestSection from './GrantRequestSection'

@@ -30,13 +30,13 @@
 
 .CategorySelector__Content h2 {
   margin-bottom: 5px;
-  font-weight: 500;
+  font-weight: var(--weight-semi-bold);
   font-size: 17px;
   line-height: 26px;
 }
 
 .CategorySelector__Content p {
-  font-weight: 400;
+  font-weight: var(--weight-normal);
   font-size: 15px;
   line-height: 24px;
   letter-spacing: -0.2px;
@@ -44,16 +44,14 @@
 }
 
 .CategorySelector__Description {
-  font-weight: 600;
+  font-weight: var(--weight-semi-bold);
   font-size: 15px;
   line-height: 24px;
   color: var(--black-600);
 }
 
-.CategorySelector__Documentation p.dg.Paragraph {
-  font-weight: 400;
-  font-size: 15px;
-  line-height: 26px;
+.CategorySelector__DocumentationText {
+  font-weight: var(--weight-normal) !important;
   letter-spacing: -0.2px;
-  color: var(--black-600);
+  color: var(--black-600) !important;
 }

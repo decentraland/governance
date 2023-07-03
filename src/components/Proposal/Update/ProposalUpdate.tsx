@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
 
-import useAuth from 'decentraland-gatsby/dist/hooks/useAuth'
-import { navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 
 import { Governance } from '../../../clients/Governance'
 import { Grant, ProposalAttributes } from '../../../entities/Proposal/types'
 import { isSameAddress } from '../../../entities/Snapshot/utils'
 import { ProjectHealth, UpdateAttributes } from '../../../entities/Updates/types'
-import locations from '../../../utils/locations'
+import locations, { navigate } from '../../../utils/locations'
 import CancelIcon from '../../Icon/Cancel'
 import CheckCircleIcon from '../../Icon/CheckCircle'
 import QuestionCircleIcon from '../../Icon/QuestionCircle'
@@ -59,7 +58,7 @@ const ProposalUpdate = ({
 }: Props) => {
   const [isDeletingUpdate, setIsDeletingUpdate] = useState(false)
   const [isDeleteUpdateModalOpen, setIsDeleteUpdateModalOpen] = useState(false)
-  const [account] = useAuth()
+  const [account] = useAuthContext()
 
   if (!update) {
     return <EmptyProposalUpdate />

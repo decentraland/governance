@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { hexlify } from '@ethersproject/bytes'
 import { Contract } from '@ethersproject/contracts'
 import { Web3Provider } from '@ethersproject/providers'
-import useAuth from 'decentraland-gatsby/dist/hooks/useAuth'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 
 import { SNAPSHOT_DELEGATE_CONTRACT_ADDRESS, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import DelegateABI from '../utils/contracts/abi/Delegate.abi.json'
@@ -39,7 +39,7 @@ const validateResult = <T>(result: any, callback: (result: any) => T) => {
 }
 
 function useSnapshotDelegateContract() {
-  const [userAddress, authState] = useAuth()
+  const [userAddress, authState] = useAuthContext()
   const [delegatedAddress, setDelegatedAddress] = useState<string | undefined>()
   const [isGlobalDelegation, setGlobalDelegation] = useState(false)
   const [contract, setContract] = useState<Contract | undefined>()

@@ -1,9 +1,9 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
 import { CoauthorAttributes, CoauthorStatus } from '../../../entities/Coauthor/types'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import Cancel from '../../Icon/Cancel'
 import Check from '../../Icon/Check'
 import Warning from '../../Icon/Warning'

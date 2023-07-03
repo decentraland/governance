@@ -4,11 +4,12 @@ import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 import { ProviderType } from '@dcl/schemas/dist/dapps/provider-type'
 import { connection } from 'decentraland-connect/dist/ConnectionManager'
 import { toModalOptionType } from 'decentraland-dapps/dist/containers/LoginModal/utils'
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
 import { useFeatureFlagContext } from 'decentraland-gatsby/dist/context/FeatureFlag'
 import useAnchor from 'decentraland-gatsby/dist/hooks/useAnchor'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { LoginModal, LoginModalOptionType } from 'decentraland-ui/dist/components/LoginModal/LoginModal'
+
+import useFormatMessage from '../../hooks/useFormatMessage'
+import Markdown from '../Common/Typography/Markdown'
 
 import './WalletSelectorModal.css'
 
@@ -72,9 +73,9 @@ export default function WalletSelectorModal({ chainId, onConnect, onClose, error
       onClose={onClose}
       className="WalletSelectorModal"
       message={
-        <small className="message">
-          <Markdown>{t('modal.wallet_selector.trezor')}</Markdown>
-        </small>
+        <Markdown componentsClassNames={{ p: 'WalletSelectorModal__Text' }}>
+          {t('modal.wallet_selector.trezor')}
+        </Markdown>
       }
       hasError={!!error}
       loading={loading}

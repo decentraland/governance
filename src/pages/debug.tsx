@@ -1,7 +1,6 @@
 import React from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
@@ -12,6 +11,7 @@ import HttpStatus from '../components/Debug/HttpStatus'
 import SnapshotStatus from '../components/Debug/SnapshotStatus'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import LogIn from '../components/User/LogIn'
+import useFormatMessage from '../hooks/useFormatMessage'
 import useIsDebugAddress from '../hooks/useIsDebugAddress'
 
 import './debug.css'

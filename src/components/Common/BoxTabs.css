@@ -17,7 +17,7 @@
   border-left: none;
   border-bottom: 2px solid var(--primary);
   color: var(--black-800) !important;
-  font-weight: 500 !important;
+  font-weight: var(--weight-medium) !important;
 }
 
 .BoxTabs .tab {
@@ -25,7 +25,7 @@
   align-items: center;
   padding: 7px 0;
   font-size: 13px !important;
-  font-weight: 500 !important;
+  font-weight: var(--weight-medium) !important;
   line-height: 18px;
   text-transform: uppercase !important;
   color: var(--black-600) !important;

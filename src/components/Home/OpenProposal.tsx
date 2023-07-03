@@ -1,18 +1,18 @@
 import React, { useMemo } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Link } from 'decentraland-gatsby/dist/plugins/intl'
 import { Mobile } from 'decentraland-ui/dist/components/Media/Media'
 import isEmpty from 'lodash/isEmpty'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { calculateResult } from '../../entities/Votes/utils'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import useProposalComments from '../../hooks/useProposalComments'
 import useProposalVotes from '../../hooks/useProposalVotes'
 import Time from '../../utils/date/Time'
 import locations from '../../utils/locations'
 import CategoryPill from '../Category/CategoryPill'
+import Link from '../Common/Typography/Link'
 import ChevronRight from '../Icon/ChevronRight'
 import Username from '../User/Username'
 
@@ -58,7 +58,7 @@ const OpenProposal = ({ proposal }: Props) => {
           <h3 className="OpenProposal__Title">{title}</h3>
           <span className="OpenProposal__Details">
             <Mobile>
-              <CategoryPill proposalType={proposal.type} size="small" />
+              <CategoryPill className="OpenProposal__Pill" proposalType={proposal.type} size="small" />
             </Mobile>
             <span className="OpenProposal__DetailsItem OpenProposal__UsernameContainer">
               {t('page.home.open_proposals.by_user')}

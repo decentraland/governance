@@ -1,10 +1,9 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
 import { DAO_DISCORD_URL, FORUM_URL, NEWSLETTER_URL } from '../../../constants'
 import { ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
 import useAbbreviatedFormatter from '../../../hooks/useAbbreviatedFormatter'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import useProposals from '../../../hooks/useProposals'
 import useTransparency from '../../../hooks/useTransparency'
 import Discord from '../../Icon/Discord'

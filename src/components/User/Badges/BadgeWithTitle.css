@@ -28,7 +28,7 @@
 
 .BadgeWithTitle__Title > span {
   font-style: normal;
-  font-weight: 500;
+  font-weight: var(--weight-semi-bold);
   font-size: 13px;
   line-height: 18px;
   text-transform: uppercase;

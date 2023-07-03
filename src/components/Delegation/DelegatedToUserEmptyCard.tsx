@@ -1,7 +1,6 @@
 import React from 'react'
 
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-
+import useFormatMessage from '../../hooks/useFormatMessage'
 import Empty from '../Common/Empty'
 import Scale from '../Icon/Scale'
 

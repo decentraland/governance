@@ -1,7 +1,8 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+
+import useFormatMessage from '../../../../hooks/useFormatMessage'
 
 import './ContestedBudgetSubLabel.css'
 

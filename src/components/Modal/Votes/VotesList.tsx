@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react'
 
 import classNames from 'classnames'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
@@ -10,6 +9,7 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 import { VOTES_VP_THRESHOLD } from '../../../constants'
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { Vote } from '../../../entities/Votes/types'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import FullWidthButton from '../../Common/FullWidthButton'
 import '../ProposalModal.css'
 

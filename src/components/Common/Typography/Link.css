@@ -1,0 +1,18 @@
+.Link {
+  color: var(--dcl-primary);
+}
+
+.Link--pointer {
+  cursor: pointer;
+}
+
+.Link .icon {
+  font-size: 15px;
+  line-height: 24px;
+  vertical-align: middle;
+}
+
+.Link i.icon {
+  font-size: 1em;
+  vertical-align: text-top;
+}

@@ -1,18 +1,18 @@
 import React, { useCallback } from 'react'
 
 import classNames from 'classnames'
-import useAuth from 'decentraland-gatsby/dist/hooks/useAuth'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Link, navigate } from 'decentraland-gatsby/dist/plugins/intl'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 
 import { Grant, ProposalAttributes } from '../../../entities/Proposal/types'
 import { UpdateAttributes, UpdateStatus } from '../../../entities/Updates/types'
 import { isBetweenLateThresholdDate } from '../../../entities/Updates/utils'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import { formatDate } from '../../../utils/date/Time'
-import locations from '../../../utils/locations'
+import locations, { navigate } from '../../../utils/locations'
 import DateTooltip from '../../Common/DateTooltip'
+import Link from '../../Common/Typography/Link'
 
 import { getStatusIcon } from './ProposalUpdate'
 import './ProposalUpdate.css'
@@ -38,7 +38,7 @@ const CollapsedProposalUpdate = ({
   onDeleteUpdateClick,
 }: Props) => {
   const t = useFormatMessage()
-  const [account] = useAuth()
+  const [account] = useAuthContext()
 
   const { introduction, status, health, completion_date, due_date } = update
   const updateLocation = locations.update(update.id)

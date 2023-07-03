@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 
-import Text from '../Common/Text/Text'
+import Text from '../Common/Typography/Text'
 
 import './Banner.css'
 

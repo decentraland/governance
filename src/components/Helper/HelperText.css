@@ -4,22 +4,16 @@
   border-bottom: 1px dashed var(--black-300);
 }
 
-.HelperText__Content > p.dg.Paragraph {
-  font-style: normal;
-  font-weight: normal;
-  font-stretch: normal;
-  font-size: 13px;
-  line-height: 18px;
-  letter-spacing: 0.4px;
-  color: var(--black-200);
-}
-
-.HelperText__Content > p.dg.Paragraph > a.dg.Link.Link--pointer {
-  color: var(--blue-600);
-}
-
-.HelperText__Content > p.dg.Paragraph {
+.HelperText__Content {
   margin-bottom: 0 !important;
+}
+
+.HelperText__ContentText {
+  color: var(--black-200) !important;
+}
+
+.HelperText__Pointer {
+  color: var(--blue-600) !important;
 }
 
 .ui.bottom.center.popup.transition.visible.Helper__Container--Popup {

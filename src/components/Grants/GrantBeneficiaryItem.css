@@ -52,12 +52,18 @@ a.ui.card:hover,
   padding-right: 20px;
   font-size: 15px;
   line-height: 26px;
-  font-weight: 500;
+  font-weight: var(--weight-semi-bold);
   letter-spacing: -0.2px;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
   max-width: 280px;
+}
+
+.GrantBeneficiaryItem__GrantInfo {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .GrantBeneficiaryItem__Details {
@@ -67,27 +73,15 @@ a.ui.card:hover,
   gap: 11px;
 }
 
-.GrantBeneficiaryItem__GrantInfo {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.GrantBeneficiaryItem__Details .dg.Paragraph {
-  display: flex;
-  flex-direction: row;
-  color: var(--black-600);
-  align-items: center;
-  font-weight: 400;
-  font-size: 11px;
-  line-height: 28px;
-  letter-spacing: 0.4px;
+.GrantBeneficiaryItem__DetailsText {
+  color: var(--black-600) !important;
+  font-weight: var(--weight-normal) !important;
+  line-height: 28px !important;
   text-transform: uppercase;
 }
 
-.GrantBeneficiaryItem__Details .dg.Paragraph > .dg.Bold {
-  padding-left: 4px;
-  color: var(--black-700);
+.GrantBeneficiaryItem__DetailsStrongText {
+  color: var(--black-700) !important;
 }
 
 .GrantBeneficiaryItem__PillContainer {
@@ -113,13 +107,13 @@ a.ui.card:hover,
 }
 
 @media (max-width: 390px) {
-  .GrantBeneficiaryItem__Details .dg.Paragraph {
+  .GrantBeneficiaryItem__DetailsText {
     flex-direction: column !important;
     align-items: flex-start !important;
     line-height: 15px !important;
   }
 
-  .GrantBeneficiaryItem__Details .dg.Paragraph > .dg.Bold {
+  .GrantBeneficiaryItem__DetailsStrongText {
     padding-left: 0 !important;
   }
 }
@@ -133,8 +127,8 @@ a.ui.card:hover,
     max-width: 380px;
   }
 
-  .GrantBeneficiaryItem__Details .dg.Paragraph > .dg.Bold {
-    color: var(--black-600);
+  .GrantBeneficiaryItem__DetailsStrongText {
+    color: var(--black-600) !important;
   }
 
   .GrantBeneficiaryItem__GrantInfo {

@@ -1,7 +1,6 @@
 import React from 'react'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
@@ -17,6 +16,7 @@ import LoadingView from '../components/Layout/LoadingView'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import { ProposalStatus } from '../entities/Proposal/types'
+import useFormatMessage from '../hooks/useFormatMessage'
 import useProposals from '../hooks/useProposals'
 import { isUnderMaintenance } from '../utils/maintenance'
 

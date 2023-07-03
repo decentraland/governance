@@ -1,14 +1,13 @@
-import React, { useEffect, useMemo } from 'react'
-
-import Textarea from 'decentraland-gatsby/dist/components/Form/Textarea'
-import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
+import React, { useEffect } from 'react'
+import { SubmitHandler, useForm, useWatch } from 'react-hook-form'
 
 import { BudgetBreakdownConcept, BudgetBreakdownConceptSchema } from '../../entities/Grant/types'
 import { asNumber } from '../../entities/Proposal/utils'
 import { isHttpsURL } from '../../helpers'
-import Label from '../Common/Label'
+import useFormatMessage from '../../hooks/useFormatMessage'
+import Field from '../Common/Form/Field'
+import TextArea from '../Common/Form/TextArea'
+import Label from '../Common/Typography/Label'
 import { ContentSection } from '../Layout/ContentLayout'
 
 import AddModal from './AddModal'
@@ -16,7 +15,7 @@ import './AddModal.css'
 import BudgetInput from './BudgetInput'
 import NumberSelector from './NumberSelector'
 
-export const INITIAL_BUDGET_BREAKDOWN_CONCEPT: BudgetBreakdownConcept = {
+const INITIAL_BUDGET_BREAKDOWN_CONCEPT: BudgetBreakdownConcept = {
   concept: '',
   duration: 1,
   estimatedBudget: '',
@@ -25,52 +24,6 @@ export const INITIAL_BUDGET_BREAKDOWN_CONCEPT: BudgetBreakdownConcept = {
 }
 
 const schema = BudgetBreakdownConceptSchema
-const validate = (fundingLeftToDisclose: number) =>
-  createValidator<BudgetBreakdownConcept>({
-    concept: (state) => ({
-      concept:
-        assert(state.concept.length <= schema.concept.maxLength, 'error.grant.due_diligence.concept_too_large') ||
-        assert(state.concept.length > 0, 'error.grant.due_diligence.concept_empty') ||
-        assert(state.concept.length >= schema.concept.minLength, 'error.grant.due_diligence.concept_too_short') ||
-        undefined,
-    }),
-    estimatedBudget: (state) => ({
-      estimatedBudget:
-        assert(
-          Number.isInteger(asNumber(state.estimatedBudget)),
-          'error.grant.due_diligence.estimated_budget_invalid'
-        ) ||
-        assert(
-          !state.estimatedBudget || asNumber(state.estimatedBudget) >= schema.estimatedBudget.minimum,
-          'error.grant.due_diligence.estimated_budget_too_low'
-        ) ||
-        assert(
-          !state.estimatedBudget || asNumber(state.estimatedBudget) <= fundingLeftToDisclose,
-          'error.grant.due_diligence.estimated_budget_too_big'
-        ) ||
-        undefined,
-    }),
-    aboutThis: (state) => ({
-      aboutThis:
-        assert(
-          state.aboutThis.length <= schema.aboutThis.maxLength,
-          'error.grant.due_diligence.about_this_too_large'
-        ) ||
-        assert(state.aboutThis.length > 0, 'error.grant.due_diligence.about_this_empty') ||
-        assert(
-          state.aboutThis.length >= schema.aboutThis.minLength,
-          'error.grant.due_diligence.about_this_too_short'
-        ) ||
-        undefined,
-    }),
-  })
-
-const edit = (state: BudgetBreakdownConcept, props: Partial<BudgetBreakdownConcept>) => {
-  return {
-    ...state,
-    ...props,
-  }
-}
 
 interface Props {
   isOpen: boolean
@@ -82,7 +35,7 @@ interface Props {
   selectedConcept: BudgetBreakdownConcept | null
 }
 
-const AddBudgetBreakdownModal = ({
+export default function AddBudgetBreakdownModal({
   isOpen,
   onClose,
   onSubmit,
@@ -90,130 +43,170 @@ const AddBudgetBreakdownModal = ({
   fundingLeftToDisclose,
   selectedConcept,
   projectDuration,
-}: Props) => {
+}: Props) {
   const t = useFormatMessage()
   const leftToDisclose = selectedConcept
     ? fundingLeftToDisclose + Number(selectedConcept.estimatedBudget)
     : fundingLeftToDisclose
-  const validator = useMemo(() => validate(leftToDisclose), [leftToDisclose])
-  const [state, editor] = useEditor(edit, validator, INITIAL_BUDGET_BREAKDOWN_CONCEPT)
+
+  const {
+    formState: { errors },
+    control,
+    reset,
+    watch,
+    setValue,
+    handleSubmit,
+    register,
+  } = useForm<BudgetBreakdownConcept>({
+    defaultValues: INITIAL_BUDGET_BREAKDOWN_CONCEPT,
+    mode: 'onTouched',
+  })
+
+  const values = useWatch({ control })
 
   const hasInvalidUrl =
-    state.value.relevantLink !== '' &&
-    !!state.value.relevantLink &&
-    (!isHttpsURL(state.value.relevantLink) || state.value.relevantLink?.length >= schema.relevantLink.maxLength)
+    values.relevantLink !== '' &&
+    !!values.relevantLink &&
+    (!isHttpsURL(values.relevantLink) || values.relevantLink?.length >= schema.relevantLink.maxLength)
 
-  useEffect(() => {
-    if (state.validated) {
-      onSubmit(state.value)
-      onClose()
-      editor.set(INITIAL_BUDGET_BREAKDOWN_CONCEPT)
+  const onSubmitForm: SubmitHandler<BudgetBreakdownConcept> = (data) => {
+    if (hasInvalidUrl) {
+      return
     }
-  }, [editor, onClose, onSubmit, state.validated, state.value])
+
+    onSubmit(data)
+    onClose()
+    reset()
+  }
 
   useEffect(() => {
     if (selectedConcept) {
-      editor.set({ ...selectedConcept })
+      const { concept, aboutThis, duration, relevantLink } = selectedConcept
+      setValue('concept', concept)
+      setValue('aboutThis', aboutThis)
+      setValue('duration', duration)
+      setValue('relevantLink', relevantLink)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedConcept])
+  }, [selectedConcept, setValue])
 
   return (
     <AddModal
       title={t('page.submit_grant.due_diligence.budget_breakdown_modal.title')}
       isOpen={isOpen}
       onClose={onClose}
-      onPrimaryClick={() => !hasInvalidUrl && editor.validate()}
+      onPrimaryClick={handleSubmit(onSubmitForm)}
       onSecondaryClick={selectedConcept ? onDelete : undefined}
     >
-      <div>
-        <ContentSection className="GrantRequestSection__Field">
-          <Label>{t('page.submit_grant.due_diligence.budget_breakdown_modal.concept_label')}</Label>
-          <Field
-            value={state.value.concept}
-            placeholder={t('page.submit_grant.due_diligence.budget_breakdown_modal.concept_placeholder')}
-            onChange={(_, { value }) => editor.set({ concept: value })}
-            error={!!state.error.concept}
-            message={
-              t(state.error.concept) +
-              ' ' +
-              t('page.submit.character_counter', {
-                current: state.value.concept.length,
-                limit: schema.concept.maxLength,
-              })
-            }
-          />
-        </ContentSection>
-        <ContentSection className="GrantRequestSection__FieldRow">
-          <BudgetInput
-            label={t('page.submit_grant.due_diligence.budget_breakdown_modal.estimated_budget_label')}
-            min={0}
-            value={state.value.estimatedBudget}
-            error={state.error.estimatedBudget}
-            onChange={({ currentTarget }) =>
-              editor.set({
-                estimatedBudget: currentTarget.value !== '' ? Number(currentTarget.value) : currentTarget.value,
-              })
-            }
-            subtitle={t('page.submit_grant.due_diligence.budget_breakdown_modal.estimated_budget_left_to_disclose', {
+      <ContentSection className="GrantRequestSection__Field">
+        <Label>{t('page.submit_grant.due_diligence.budget_breakdown_modal.concept_label')}</Label>
+        <Field
+          name="concept"
+          control={control}
+          placeholder={t('page.submit_grant.due_diligence.budget_breakdown_modal.concept_placeholder')}
+          error={!!errors.concept}
+          message={
+            (errors.concept?.message || '') +
+            ' ' +
+            t('page.submit.character_counter', {
+              current: watch('concept').length,
+              limit: schema.concept.maxLength,
+            })
+          }
+          rules={{
+            required: { value: true, message: t('error.grant.due_diligence.concept_empty') },
+            minLength: {
+              value: schema.concept.minLength,
+              message: t('error.grant.due_diligence.concept_too_short'),
+            },
+            maxLength: {
+              value: schema.concept.maxLength,
+              message: t('error.grant.due_diligence.concept_too_large'),
+            },
+          }}
+        />
+      </ContentSection>
+      <ContentSection className="GrantRequestSection__FieldRow">
+        <BudgetInput
+          {...register('estimatedBudget', {
+            min: {
+              value: schema.estimatedBudget.minimum,
+              message: t('error.grant.due_diligence.estimated_budget_too_low'),
+            },
+            max: {
               value: leftToDisclose,
-            })}
-          />
-          <NumberSelector
-            value={state.value.duration}
-            min={BudgetBreakdownConceptSchema.duration.minimum}
-            max={projectDuration}
-            onChange={(value) => editor.set({ duration: Number(value) })}
-            label={t('page.submit_grant.due_diligence.budget_breakdown_modal.duration_label')}
-            unitLabel={t('page.submit_grant.due_diligence.budget_breakdown_modal.duration_unit_label')}
-            subtitle={t('page.submit_grant.due_diligence.budget_breakdown_modal.duration_subtitle')}
-          />
-        </ContentSection>
-        <ContentSection className="GrantRequestSection__Field">
-          <Label>{t('page.submit_grant.due_diligence.budget_breakdown_modal.about_this_label')}</Label>
-          <Textarea
-            value={state.value.aboutThis}
-            minHeight={175}
-            placeholder={t('page.submit_grant.due_diligence.budget_breakdown_modal.about_this_placeholder')}
-            onChange={(_: unknown, { value }: { value: string }) => editor.set({ aboutThis: String(value) })}
-            error={!!state.error.aboutThis}
-            message={
-              t(state.error.aboutThis) +
-              ' ' +
-              t('page.submit.character_counter', {
-                current: state.value.aboutThis.length,
-                limit: schema.aboutThis.maxLength,
-              })
-            }
-          />
-        </ContentSection>
-        <ContentSection className="GrantRequestSection__Field">
-          <div className="LabelContainer">
-            <Label>{t('page.submit_grant.due_diligence.budget_breakdown_modal.relevant_link_label')}</Label>
-            <span className="Optional">
-              {t('page.submit_grant.due_diligence.budget_breakdown_modal.optional_label')}
-            </span>
-          </div>
-          <Field
-            value={state.value.relevantLink}
-            placeholder={t('page.submit_grant.due_diligence.budget_breakdown_modal.relevant_link_placeholder')}
-            onChange={(_, { value }) => editor.set({ relevantLink: value })}
-            error={hasInvalidUrl}
-            message={
-              (!!state.value.relevantLink && !isHttpsURL(state.value.relevantLink)
-                ? t('error.grant.due_diligence.relevant_link_invalid')
-                : '') +
-              ' ' +
-              t('page.submit.character_counter', {
-                current: state.value.relevantLink?.length,
-                limit: schema.relevantLink.maxLength,
-              })
-            }
-          />
-        </ContentSection>
-      </div>
+              message: t('error.grant.due_diligence.estimated_budget_too_big'),
+            },
+            validate: (value) => {
+              if (!Number.isInteger(asNumber(value))) {
+                return t('error.grant.due_diligence.estimated_budget_invalid')
+              }
+            },
+          })}
+          error={errors.estimatedBudget?.message}
+          label={t('page.submit_grant.due_diligence.budget_breakdown_modal.estimated_budget_label')}
+          min={0}
+          defaultValue={selectedConcept ? selectedConcept.estimatedBudget : undefined}
+          onChange={({ currentTarget }) =>
+            setValue('estimatedBudget', currentTarget.value !== '' ? Number(currentTarget.value) : currentTarget.value)
+          }
+          subtitle={t('page.submit_grant.due_diligence.budget_breakdown_modal.estimated_budget_left_to_disclose', {
+            value: leftToDisclose,
+          })}
+        />
+        <NumberSelector
+          value={Number(values.duration)}
+          min={BudgetBreakdownConceptSchema.duration.minimum}
+          max={projectDuration}
+          onChange={(value) => setValue('duration', Number(value))}
+          label={t('page.submit_grant.due_diligence.budget_breakdown_modal.duration_label')}
+          unitLabel={t('page.submit_grant.due_diligence.budget_breakdown_modal.duration_unit_label')}
+          subtitle={t('page.submit_grant.due_diligence.budget_breakdown_modal.duration_subtitle')}
+        />
+      </ContentSection>
+      <ContentSection className="GrantRequestSection__Field">
+        <Label>{t('page.submit_grant.due_diligence.budget_breakdown_modal.about_this_label')}</Label>
+        <TextArea
+          name="aboutThis"
+          control={control}
+          placeholder={t('page.submit_grant.due_diligence.budget_breakdown_modal.about_this_placeholder')}
+          error={errors.aboutThis?.message}
+          message={t('page.submit.character_counter', {
+            current: watch('aboutThis').length,
+            limit: schema.aboutThis.maxLength,
+          })}
+          rules={{
+            required: { value: true, message: t('error.grant.due_diligence.about_this_empty') },
+            minLength: {
+              value: schema.aboutThis.minLength,
+              message: t('error.grant.due_diligence.about_this_too_short'),
+            },
+            maxLength: {
+              value: schema.aboutThis.maxLength,
+              message: t('error.grant.due_diligence.about_this_too_large'),
+            },
+          }}
+        />
+      </ContentSection>
+      <ContentSection className="GrantRequestSection__Field">
+        <div className="LabelContainer">
+          <Label>{t('page.submit_grant.due_diligence.budget_breakdown_modal.relevant_link_label')}</Label>
+          <span className="Optional">{t('page.submit_grant.due_diligence.budget_breakdown_modal.optional_label')}</span>
+        </div>
+        <Field
+          name="relevantLink"
+          control={control}
+          placeholder={t('page.submit_grant.due_diligence.budget_breakdown_modal.relevant_link_placeholder')}
+          error={hasInvalidUrl}
+          message={
+            (hasInvalidUrl ? t('error.grant.due_diligence.relevant_link_invalid') : '') +
+            ' ' +
+            t('page.submit.character_counter', {
+              current: watch('relevantLink') || ''.length,
+              limit: schema.relevantLink.maxLength,
+            })
+          }
+        />
+      </ContentSection>
     </AddModal>
   )
 }
-
-export default AddBudgetBreakdownModal

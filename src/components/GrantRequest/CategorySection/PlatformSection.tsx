@@ -1,16 +1,14 @@
-import React, { forwardRef, useEffect } from 'react'
-
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
-import useEditor, { assert, createValidator } from 'decentraland-gatsby/dist/hooks/useEditor'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
+import React, { useEffect } from 'react'
+import { useForm, useWatch } from 'react-hook-form'
 
 import {
   GrantRequestCategoryAssessment,
   PlatformQuestions,
   PlatformQuestionsSchema,
 } from '../../../entities/Grant/types'
-import { useGrantCategoryEditor } from '../../../hooks/useGrantCategoryEditor'
-import Label from '../../Common/Label'
+import useFormatMessage from '../../../hooks/useFormatMessage'
+import MarkdownField from '../../Common/Form/MarkdownField'
+import Label from '../../Common/Typography/Label'
 import { ContentSection } from '../../Layout/ContentLayout'
 
 const INITIAL_PLATFORM_QUESTIONS = {
@@ -18,67 +16,59 @@ const INITIAL_PLATFORM_QUESTIONS = {
 }
 
 const schema = PlatformQuestionsSchema
-const validate = createValidator<PlatformQuestions>({
-  impactMetrics: (state) => ({
-    impactMetrics:
-      assert(
-        state.impactMetrics.length <= schema.impactMetrics.maxLength,
-        'error.grant.category_assessment.field_too_large'
-      ) ||
-      assert(state.impactMetrics.length > 0, 'error.grant.category_assessment.field_empty') ||
-      assert(
-        state.impactMetrics.length >= schema.impactMetrics.minLength,
-        'error.grant.category_assessment.field_too_short'
-      ) ||
-      undefined,
-  }),
-})
-
-const edit = (state: PlatformQuestions, props: Partial<PlatformQuestions>) => {
-  return {
-    ...state,
-    ...props,
-  }
-}
 
 interface Props {
-  onValidation: (data: Partial<GrantRequestCategoryAssessment>, sectionValid: boolean) => void
+  onValidation: (data: Partial<GrantRequestCategoryAssessment>, sectionValid: boolean, isEdited: boolean) => void
   isFormDisabled: boolean
 }
 
-const PlatformSection = forwardRef(function PlatformSection({ onValidation, isFormDisabled }: Props, ref) {
+export default function PlatformSection({ onValidation, isFormDisabled }: Props) {
   const t = useFormatMessage()
-  const [state, editor] = useEditor(edit, validate, INITIAL_PLATFORM_QUESTIONS)
+  const {
+    formState: { isValid, errors, isDirty },
+    control,
+    watch,
+  } = useForm<PlatformQuestions>({
+    defaultValues: INITIAL_PLATFORM_QUESTIONS,
+    mode: 'onTouched',
+  })
 
-  useGrantCategoryEditor(ref, editor, state, INITIAL_PLATFORM_QUESTIONS)
+  const values = useWatch({ control })
 
   useEffect(() => {
-    onValidation({ platform: { ...state.value } }, state.validated)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.validated, state.value])
+    onValidation({ platform: { ...values } } as Partial<GrantRequestCategoryAssessment>, isValid, isDirty)
+  }, [isValid, isDirty, onValidation, values])
 
   return (
     <div className="GrantRequestSection__Content">
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.platform.impact_metrics_label')}</Label>
-        <MarkdownTextarea
-          minHeight={175}
-          value={state.value.impactMetrics}
-          onChange={(_: unknown, { value }: { value: string }) => editor.set({ impactMetrics: value })}
-          error={!!state.error.impactMetrics}
+        <MarkdownField
+          name="impactMetrics"
+          control={control}
+          error={!!errors.impactMetrics}
           message={
-            t(state.error.impactMetrics) +
+            (errors.impactMetrics?.message || '') +
             ' ' +
             t('page.submit.character_counter', {
-              current: state.value.impactMetrics.length,
+              current: watch('impactMetrics').length,
               limit: schema.impactMetrics.maxLength,
             })
           }
           disabled={isFormDisabled}
+          rules={{
+            required: { value: true, message: t('error.grant.category_assessment.field_empty') },
+            minLength: {
+              value: schema.impactMetrics.minLength,
+              message: t('error.grant.category_assessment.field_too_short'),
+            },
+            maxLength: {
+              value: schema.impactMetrics.maxLength,
+              message: t('error.grant.category_assessment.field_too_large'),
+            },
+          }}
         />
       </ContentSection>
     </div>
   )
-})
-
-export default PlatformSection
+}

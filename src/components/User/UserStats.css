@@ -26,7 +26,7 @@
 }
 
 .UserStats__Username > span {
-  font-weight: 600;
+  font-weight: var(--weight-semi-bold);
   font-size: 24px !important;
   line-height: 48px;
   letter-spacing: 0.4px;

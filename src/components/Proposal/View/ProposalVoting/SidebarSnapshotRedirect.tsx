@@ -1,11 +1,11 @@
 import React from 'react'
 
-import Markdown from 'decentraland-gatsby/dist/components/Text/Markdown'
-import useFormatMessage from 'decentraland-gatsby/dist/hooks/useFormatMessage'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
+import useFormatMessage from '../../../../hooks/useFormatMessage'
 import SnapshotRedirectButton from '../../../Common/SnapshotRedirectButton'
+import Markdown from '../../../Common/Typography/Markdown'
 
 import './SidebarSnapshotRedirect.css'
 
@@ -18,10 +18,22 @@ const SidebarSnapshotRedirect = ({ proposal }: Props) => {
   return (
     <div className="SidebarSnapshotRedirect">
       <Header sub>{t('page.proposal_detail.snapshot_redirect.voting_not_available')}</Header>
-      <Markdown className="SidebarSnapshotRedirect__Text">
+      <Markdown
+        className="SidebarSnapshotRedirect__Markdown"
+        componentsClassNames={{
+          p: 'SidebarSnapshotRedirect__Text',
+          strong: 'SidebarSnapshotRedirect__StrongText',
+        }}
+      >
         {t('page.proposal_detail.snapshot_redirect.description')}
       </Markdown>
-      <Markdown className="SidebarSnapshotRedirect__Text">
+      <Markdown
+        className="SidebarSnapshotRedirect__Markdown"
+        componentsClassNames={{
+          p: 'SidebarSnapshotRedirect__Text',
+          strong: 'SidebarSnapshotRedirect__StrongText',
+        }}
+      >
         {t('page.proposal_detail.snapshot_redirect.suggestion')}
       </Markdown>
       <SnapshotRedirectButton proposal={proposal} inverted />
