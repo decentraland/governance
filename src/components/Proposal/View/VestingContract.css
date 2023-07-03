@@ -1,10 +1,8 @@
-.VestingContract .dg.Paragraph {
-  font-size: 15px;
-  line-height: 24px;
+.VestingContract__Description {
   margin: 9px 0;
 }
 
-.VestingContract .dg.Paragraph .dg.Bold {
-  font-weight: var(--weight-semi-bold);
-  letter-spacing: -0.1px;
+.VestingContract__Description__StrongText {
+  font-weight: var(--weight-medium) !important;
+  letter-spacing: -0.1px !important;
 }

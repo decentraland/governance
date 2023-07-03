@@ -32,7 +32,12 @@ function VestingContract({ vestingAddress }: Props) {
         <Pill color="green" style="shiny" size="small">
           {t('page.proposal_detail.grant.vesting_label')}
         </Pill>
-        <Markdown>{t('page.proposal_detail.grant.vesting_description')}</Markdown>
+        <Markdown
+          className="VestingContract__Description"
+          componentsClassNames={{ strong: 'VestingContract__Description__StrongText' }}
+        >
+          {t('page.proposal_detail.grant.vesting_description')}
+        </Markdown>
         <Button href={url} target="_blank" rel="noopener noreferrer" primary size="small">
           {t('page.proposal_detail.grant.vesting_button')}
         </Button>

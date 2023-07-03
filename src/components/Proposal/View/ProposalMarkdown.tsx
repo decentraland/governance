@@ -2,7 +2,7 @@ import React from 'react'
 
 import Markdown from '../../Common/Typography/Markdown'
 
-import './ProposalDetailSection.css'
+import './ProposalMarkdown.css'
 
 const PROPOSAL_MARKDOWN_STYLES = {
   h2: 'ProposalMarkdown__Description__Title',
