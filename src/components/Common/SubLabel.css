@@ -4,6 +4,7 @@
   line-height: 20px !important;
 }
 
-.SubLabel, .SubLabel__Strong {
+.SubLabel,
+.SubLabel__Strong {
   color: var(--black-600) !important;
 }
