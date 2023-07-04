@@ -99,6 +99,7 @@
     "swagger-ui-express": "^4.6.0",
     "swiper": "^8.3.0",
     "unified": "9.2.2",
+    "web3": "^4.0.2",
     "yaml": "^2.2.1"
   },
   "devDependencies": {
