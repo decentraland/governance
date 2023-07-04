@@ -173,7 +173,7 @@ export default function AddTeamMemberModal({ isOpen, onClose, onSubmit, selected
                 message: t('error.grant.team.relevant_link_invalid'),
               },
               validate: (value: string) => {
-                if (!isHttpsURL(value)) {
+                if (value && value !== '' && !isHttpsURL(value)) {
                   return t('error.grant.team.relevant_link_invalid')
                 }
               },

@@ -11,7 +11,7 @@ function useVotedProposals(address: string, first?: number) {
   const [skip, setSkip] = useState(0)
 
   const { data: responseVotes, isLoading } = useQuery({
-    queryKey: [`votedProposals#${address}#${first}`],
+    queryKey: [`votedProposals#${address}#${first}#${skip}`],
     queryFn: async () => {
       if (!isEthereumAddress(address)) {
         return []
