@@ -203,7 +203,7 @@ export const SocialMediaContentQuestionsSchema = {
   relevantLink: {
     type: 'string',
     minLength: 1,
-    maxLength: 750,
+    maxLength: 200,
   },
 }
 
@@ -287,7 +287,7 @@ export const BudgetBreakdownConceptSchema = {
   relevantLink: {
     type: 'string',
     minLength: 0,
-    maxLength: 80,
+    maxLength: 200,
   },
 }
 
@@ -310,7 +310,7 @@ export const TeamMemberItemSchema = {
   relevantLink: {
     type: 'string',
     minLength: 0,
-    maxLength: 80,
+    maxLength: 200,
   },
 }
 
