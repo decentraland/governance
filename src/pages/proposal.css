@@ -22,6 +22,10 @@
   min-height: 24px;
 }
 
+.ProposalDetailPage__Description img {
+  max-width: 100%;
+}
+
 .ProposalImagesPreview {
   margin-bottom: 20px;
 }

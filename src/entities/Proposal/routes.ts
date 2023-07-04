@@ -317,7 +317,7 @@ export async function createProposalHiring(req: WithAuth) {
   if (!configuration.name) {
     try {
       const profile = await getProfile(configuration.address)
-      configuration.name = profile?.name || undefined
+      configuration.name = profile?.name
     } catch (error) {
       ErrorService.report(`Can't get profile ${configuration.address}`, error)
     }

@@ -129,7 +129,7 @@ export class DiscordService {
       try {
         const profile = await getProfile(user)
         const profileHasName = !!profile && !!profile.name && profile.name.length > 0
-        const displayableUser = profileHasName ? profile.name! : user
+        const displayableUser = profileHasName ? profile.name : user
 
         const hasAvatar = !!profile && !!profile.avatar
 
