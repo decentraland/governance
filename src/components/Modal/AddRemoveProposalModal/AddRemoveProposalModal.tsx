@@ -4,33 +4,34 @@ import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
-import { HiringType, PoiType } from '../../../entities/Proposal/types'
+import { CatalystType, HiringType, PoiType, ProposalType } from '../../../entities/Proposal/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
+import locations from '../../../utils/locations'
 import CategoryBanner from '../../Category/CategoryBanner'
 import Text from '../../Common/Typography/Text'
 import '../ProposalModal.css'
 
 export type AddRemoveProposalModalProps = ModalProps & {
-  title: 'poi' | 'hiring'
-  addType: PoiType | HiringType
-  addHref: string
+  title: 'poi' | 'hiring' | 'catalyst'
+  proposalType: ProposalType.POI | ProposalType.Hiring | ProposalType.Catalyst
+  addType: PoiType | HiringType | CatalystType
   isAddDisabled?: boolean
-  removeType: PoiType | HiringType
-  removeHref: string
+  removeType: PoiType | HiringType | CatalystType
   isRemoveDisabled?: boolean
 }
 
 export function AddRemoveProposalModal({
   title,
+  proposalType,
   addType,
-  addHref,
   isAddDisabled,
   removeType,
-  removeHref,
   isRemoveDisabled,
   ...props
 }: AddRemoveProposalModalProps) {
   const t = useFormatMessage()
+  const addHref = locations.submit(proposalType, { request: addType })
+  const removeHref = locations.submit(proposalType, { request: removeType })
 
   return (
     <Modal {...props} size="tiny" className="GovernanceContentModal ProposalModal" closeIcon={<Close />}>

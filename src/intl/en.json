@@ -317,6 +317,10 @@
     "all_proposals_title": "All proposals",
     "catalyst_title": "Catalyst Node",
     "catalyst_description": "Add a node to the network of community-run servers",
+    "catalyst_add_title": "Add Catalyst Node",
+    "catalyst_add_description": "Add a node to the network of community-run servers",
+    "catalyst_remove_title": "Remove Catalyst Node",
+    "catalyst_remove_description": "Remove a node from the network of community-run servers",
     "poi_title": "Point of Interest",
     "add_poi_title": "Add POI",
     "remove_poi_title": "Remove POI",
@@ -1444,9 +1448,16 @@
       "member_placeholder": "Select a member"
     },
     "submit_catalyst": {
-      "title": "Add a catalyst node",
-      "description": "Instead of using central servers, Decentraland is run on a network of community operated nodes. These nodes store copies of all scenes deployed to Decentraland, and they handle the messaging and interactions by establishing peer-to-peer connections between users.",
-      "description_2": "To propose the addition of a new node, please provide the following details.",
+      "catalyst_add": {
+        "title": "Add a catalyst node",
+        "description": "Instead of using central servers, Decentraland is run on a network of community operated nodes. These nodes store copies of all scenes deployed to Decentraland, and they handle the messaging and interactions by establishing peer-to-peer connections between users.",
+        "description_2": "To propose the addition of a new node, please provide the following details."
+      },
+      "catalyst_remove": {
+        "title": "Remove a catalyst node",
+        "description": "Instead of using central servers, Decentraland is run on a network of community operated nodes. These nodes store copies of all scenes deployed to Decentraland, and they handle the messaging and interactions by establishing peer-to-peer connections between users.",
+        "description_2": "To propose the addition of a new node, please provide the following details."
+      },
       "owner_label": "Ethereum address of the owner of the Catalyst Node",
       "owner_placeholder": "Example: 0x06012c8cf97bead5deae237070f9587f8e7a266d",
       "domain_label": "Domain for the Catalyst Node",

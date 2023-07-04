@@ -2,7 +2,7 @@ import React from 'react'
 
 import classNames from 'classnames'
 
-import { HiringType, PoiType, ProposalType, isHiringType } from '../../entities/Proposal/types'
+import { CatalystType, HiringType, PoiType, ProposalType, isHiringType } from '../../entities/Proposal/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import { navigate } from '../../utils/locations'
 import Link from '../Common/Typography/Link'
@@ -44,12 +44,14 @@ export const categoryIcons = {
   [ProposalType.Hiring]: Hiring,
   [HiringType.Add]: HiringAdd,
   [HiringType.Remove]: HiringRemove,
+  [CatalystType.Add]: HiringAdd, // TODO: Add CatalystAdd icon
+  [CatalystType.Remove]: HiringRemove, // TODO: Add CatalystRemove icon
 }
 
 type Props = Pick<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & {
   active?: boolean
   isNew?: boolean
-  type: ProposalType | PoiType | HiringType
+  type: ProposalType | PoiType | HiringType | CatalystType
   onClick?: () => void
 }
 
