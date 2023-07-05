@@ -150,6 +150,7 @@
       "domain_empty": "Domain field is empty",
       "domain_invalid": "Domain field is invalid",
       "domain_already_a_catalyst": "Domain is already a catalyst",
+      "domain_not_a_catalyst": "Domain is not a catalyst",
       "description_empty": "Description field is empty",
       "description_too_short": "Description field is too short",
       "description_too_large": "Description field is too large",

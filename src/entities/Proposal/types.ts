@@ -519,6 +519,10 @@ export const newProposalCatalystScheme = {
       minLength: 20,
       maxLength: 250,
     },
+    type: {
+      type: 'string',
+      enum: Object.values(CatalystType),
+    },
     coAuthors,
   },
 }

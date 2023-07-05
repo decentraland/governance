@@ -99,8 +99,13 @@ export default function ProposalSubmitCatalystPage({ catalystType }: Props) {
     setFormDisabled(true)
 
     try {
-      if (await isAlreadyACatalyst(data.domain)) {
+      const isDomainAlreadyACatalyst = await isAlreadyACatalyst(data.domain)
+      if (catalystType === CatalystType.Add && isDomainAlreadyACatalyst) {
         throw new Error('error.catalyst.domain_already_a_catalyst')
+      }
+
+      if (catalystType === CatalystType.Remove && !isDomainAlreadyACatalyst) {
+        throw new Error('error.catalyst.domain_not_a_catalyst')
       }
 
       const proposal = await Governance.get().createProposalCatalyst({ ...data, type: catalystType })
@@ -244,9 +249,10 @@ export default function ProposalSubmitCatalystPage({ catalystType }: Props) {
         </ContentSection>
         <ContentSection>
           <Button
+            type="submit"
             primary
             disabled={formDisabled || isCommsStatusLoading || isContentStatusLoading || isLambdasStatusLoading}
-            loading={isSubmitting || isCommsStatusLoading || isContentStatusLoading || isLambdasStatusLoading}
+            loading={isSubmitting}
           >
             {t('page.submit.button_submit')}
           </Button>
