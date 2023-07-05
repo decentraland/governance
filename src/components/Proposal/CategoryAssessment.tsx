@@ -2,6 +2,7 @@ import React from 'react'
 
 import { NewGrantCategory } from '../../entities/Grant/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
+import Markdown from '../Common/Typography/Markdown'
 
 import './CategoryAssessment.css'
 
@@ -14,7 +15,12 @@ const CategoryAssessmentItem = ({ label, children }: { label: string; children: 
   return (
     <>
       <h2 className="CategoryAssessment__Question">{label}</h2>
-      <p className="CategoryAssessment__Text">{children}</p>
+      <Markdown
+        className="CategoryAssessment__Text"
+        componentsClassNames={{ h1: 'Heading--sm', h2: 'Heading--xs', h3: 'Heading--xs' }}
+      >
+        {children}
+      </Markdown>
     </>
   )
 }
