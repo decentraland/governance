@@ -7,11 +7,11 @@ import Markdown from '../Common/Typography/Markdown'
 import './CategoryAssessment.css'
 
 interface Props {
-  data: Record<string, string>
+  data: Record<string, string | number>
   category: NewGrantCategory
 }
 
-const CategoryAssessmentItem = ({ label, children }: { label: string; children: string }) => {
+const CategoryAssessmentItem = ({ label, children }: { label: string; children: string | number }) => {
   return (
     <>
       <h2 className="CategoryAssessment__Question">{label}</h2>
@@ -19,7 +19,7 @@ const CategoryAssessmentItem = ({ label, children }: { label: string; children: 
         className="CategoryAssessment__Text"
         componentsClassNames={{ h1: 'Heading--sm', h2: 'Heading--xs', h3: 'Heading--xs' }}
       >
-        {children}
+        {String(children)}
       </Markdown>
     </>
   )
