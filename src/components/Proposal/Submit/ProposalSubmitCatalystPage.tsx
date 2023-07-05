@@ -212,7 +212,7 @@ export default function ProposalSubmitCatalystPage({ catalystType }: Props) {
             {t('page.submit_catalyst.description_label')}
             <MarkdownNotice />
           </Label>
-          <SubLabel>{t('page.submit_catalyst.description_detail')}</SubLabel>
+          <SubLabel>{t(`page.submit_catalyst.${catalystType}.description_detail`)}</SubLabel>
           <MarkdownField
             control={control}
             name="description"

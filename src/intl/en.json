@@ -1451,12 +1451,14 @@
       "catalyst_add": {
         "title": "Add a catalyst node",
         "description": "Instead of using central servers, Decentraland is run on a network of community operated nodes. These nodes store copies of all scenes deployed to Decentraland, and they handle the messaging and interactions by establishing peer-to-peer connections between users.",
-        "description_2": "To propose the addition of a new node, please provide the following details."
+        "description_2": "To propose the addition of a new node, please provide the following details.",
+        "description_detail": "Explain why this node should be added to the Catalyst network. Why would this addition be beneficial to the network? For example, adding nodes in new geographic areas helps to provide a better experience to more users."
       },
       "catalyst_remove": {
         "title": "Remove a catalyst node",
         "description": "Instead of using central servers, Decentraland is run on a network of community operated nodes. These nodes store copies of all scenes deployed to Decentraland, and they handle the messaging and interactions by establishing peer-to-peer connections between users.",
-        "description_2": "To propose the addition of a new node, please provide the following details."
+        "description_2": "To propose the addition of a new node, please provide the following details.",
+        "description_detail": "Explain why this node should be removed to the Catalyst network. Why would this addition be beneficial to the network? For example, adding nodes in new geographic areas helps to provide a better experience to more users."
       },
       "owner_label": "Ethereum address of the owner of the Catalyst Node",
       "owner_placeholder": "Example: 0x06012c8cf97bead5deae237070f9587f8e7a266d",

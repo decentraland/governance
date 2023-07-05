@@ -11,6 +11,8 @@ import Text from '../Common/Typography/Text'
 import AddPoi from '../Icon/ProposalCategories/AddPoi'
 import BanName from '../Icon/ProposalCategories/BanName'
 import Catalyst from '../Icon/ProposalCategories/Catalyst'
+import CatalystAdd from '../Icon/ProposalCategories/CatalystAdd'
+import CatalystRemove from '../Icon/ProposalCategories/CatalystRemove'
 import Draft from '../Icon/ProposalCategories/Draft'
 import Governance from '../Icon/ProposalCategories/Governance'
 import Grant from '../Icon/ProposalCategories/Grant'
@@ -44,8 +46,8 @@ export const categoryIcons = {
   [ProposalType.Hiring]: Hiring,
   [HiringType.Add]: HiringAdd,
   [HiringType.Remove]: HiringRemove,
-  [CatalystType.Add]: HiringAdd, // TODO: Add CatalystAdd icon
-  [CatalystType.Remove]: HiringRemove, // TODO: Add CatalystRemove icon
+  [CatalystType.Add]: CatalystAdd,
+  [CatalystType.Remove]: CatalystRemove,
 }
 
 type Props = Pick<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & {
