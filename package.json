@@ -57,7 +57,7 @@
     "clipboard-copy": "^4.0.1",
     "core-js": "^3.21.1",
     "decentraland-gatsby": "^5.67.2",
-    "decentraland-ui": "^3.102.0",
+    "decentraland-ui": "^3.113.0",
     "discord.js": "^14.7.1",
     "dompurify": "^2.3.3",
     "dotenv": "^16.0.0",

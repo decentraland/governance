@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import classNames from 'classnames'
+import { AvatarFace } from 'decentraland-ui/dist/components/AvatarFace/AvatarFace'
 
 import useProfile from '../../hooks/useProfile'
 
@@ -18,42 +19,26 @@ export enum AvatarSize {
   Full = 'full',
 }
 
-const DEFAULT_AVATAR = 'https://decentraland.org/images/male.png'
 type Props = {
   size?: `${AvatarSize}`
-  src?: string
   address?: string
   className?: string
+  src?: string
 }
 
 export default function Avatar({ address, size, src, className }: Props) {
-  const [failed, setFailed] = useState(false)
-
   const { profile, isLoadingProfile } = useProfile(address)
+  const avatarClassNames = classNames(
+    'Avatar',
+    `Avatar--${size || AvatarSize.Mini}`,
+    `Avatar--${((address || '')[2] || '').toLowerCase()}`,
+    isLoadingProfile && `Avatar--loading`,
+    className
+  )
 
-  const getTarget = () => {
-    const avatar = profile?.avatar?.snapshots?.face256 || profile?.avatar?.snapshots?.face
-    if (src) {
-      return src
-    } else if (failed || !avatar) {
-      return DEFAULT_AVATAR
-    }
-
-    return avatar
-  }
-
-  return (
-    <img
-      loading="lazy"
-      src={getTarget()}
-      onError={() => setFailed(true)}
-      className={classNames(
-        'Avatar',
-        `Avatar--${size || AvatarSize.Mini}`,
-        `Avatar--${((address || '')[2] || '').toLowerCase()}`,
-        !src && isLoadingProfile && `Avatar--loading`,
-        className
-      )}
-    />
+  return src ? (
+    <img src={src} className={avatarClassNames} />
+  ) : (
+    <AvatarFace avatar={profile} className={avatarClassNames} />
   )
 }

@@ -1,5 +1,4 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
-import { Avatar } from 'decentraland-gatsby/dist/utils/api/Catalyst'
 
 import { SnapshotApi, SnapshotReceipt } from '../clients/SnapshotApi'
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
@@ -7,6 +6,7 @@ import * as templates from '../entities/Proposal/templates'
 import { proposalUrl, snapshotProposalUrl } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { inBackground } from '../helpers'
+import { Avatar } from '../utils/Catalyst/types'
 
 import DclRpcService from './DclRpcService'
 import { ProposalInCreation, ProposalLifespan } from './ProposalService'

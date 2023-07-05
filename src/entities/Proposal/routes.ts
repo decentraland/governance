@@ -5,7 +5,6 @@ import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/h
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import validate from 'decentraland-gatsby/dist/entities/Route/validate'
 import schema from 'decentraland-gatsby/dist/entities/Schema'
-import profiles from 'decentraland-gatsby/dist/utils/loader/profile'
 import { Request } from 'express'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
@@ -17,6 +16,7 @@ import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
 import { GrantsService } from '../../services/GrantsService'
 import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
+import { getProfile } from '../../utils/Catalyst'
 import Time from '../../utils/date/Time'
 import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'
@@ -315,8 +315,12 @@ export async function createProposalHiring(req: WithAuth) {
   }
 
   if (!configuration.name) {
-    const profile = await profiles.load(configuration.address)
-    configuration.name = profile?.name || undefined
+    try {
+      const profile = await getProfile(configuration.address)
+      configuration.name = profile?.name
+    } catch (error) {
+      ErrorService.report(`Can't get profile ${configuration.address}`, error)
+    }
   }
 
   return createProposal({
