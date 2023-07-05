@@ -5,18 +5,12 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import { MonthlyTotal } from '../../clients/DclData'
+import { MonthlyTotal as MonthlyTotalType } from '../../clients/DclData'
 import { formatBalance } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import { DetailItem } from '../Proposal/View/DetailItem'
 
 import './MonthlyTotal.css'
-
-export type MonthlyTotalProps = React.HTMLAttributes<HTMLDivElement> & {
-  title: string
-  monthlyTotal: MonthlyTotal
-  invertDiffColors?: boolean
-}
 
 enum Color {
   RED = 'Number--Red',
@@ -30,7 +24,13 @@ enum DetailsVisibility {
 
 const MAX_TAGS = 5
 
-export default React.memo(function MonthlyTotal({ title, monthlyTotal, invertDiffColors = false }: MonthlyTotalProps) {
+type Props = React.HTMLAttributes<HTMLDivElement> & {
+  title: string
+  monthlyTotal: MonthlyTotalType
+  invertDiffColors?: boolean
+}
+
+export default function MonthlyTotal({ title, monthlyTotal, invertDiffColors = false }: Props) {
   const t = useFormatMessage()
   const [belowZeroColor, zeroOrOverColor] = invertDiffColors ? [Color.GREEN, Color.RED] : [Color.RED, Color.GREEN]
   const [detailsVisibility, setDetailsVisibility] = useState(DetailsVisibility.OVERVIEW)
@@ -90,4 +90,4 @@ export default React.memo(function MonthlyTotal({ title, monthlyTotal, invertDif
       </Card>
     </div>
   )
-})
+}
