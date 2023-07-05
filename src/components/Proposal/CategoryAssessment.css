@@ -7,11 +7,6 @@
 }
 
 .CategoryAssessment__Text {
-  color: var(--text);
-  font-size: 15px;
-  font-weight: var(--weight-light);
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1.81;
-  letter-spacing: 0.3px;
+  font-size: 15px !important;
+  line-height: 1.81 !important;
 }
