@@ -139,11 +139,11 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
             rules={{
               required: { value: true, message: t('error.grant.general_info.description_empty') },
               minLength: {
-                value: schema.abstract.minLength,
+                value: schema.description.minLength,
                 message: t('error.grant.general_info.description_too_short'),
               },
               maxLength: {
-                value: schema.abstract.maxLength,
+                value: schema.description.maxLength,
                 message: t('error.grant.general_info.description_too_large'),
               },
             }}
@@ -211,11 +211,11 @@ export default function GrantRequestGeneralInfoSection({ onValidation, isFormDis
             rules={{
               required: { value: true, message: t('error.grant.general_info.roadmap_empty') },
               minLength: {
-                value: schema.abstract.minLength,
+                value: schema.roadmap.minLength,
                 message: t('error.grant.general_info.roadmap_too_short'),
               },
               maxLength: {
-                value: schema.abstract.maxLength,
+                value: schema.roadmap.maxLength,
                 message: t('error.grant.general_info.roadmap_too_large'),
               },
             }}
