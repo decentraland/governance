@@ -7,7 +7,7 @@ export const title = (proposal: NewProposalCatalyst) => {
     case CatalystType.Add:
       return `Add catalyst node with domain ${proposal.domain} to the catalyst network`
     case CatalystType.Remove:
-      return `Remove catalyst node with domain ${proposal.domain} to the catalyst network`
+      return `Remove catalyst node with domain ${proposal.domain} from the catalyst network`
     default:
       return ''
   }
