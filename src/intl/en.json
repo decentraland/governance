@@ -317,7 +317,7 @@
     "linked_wearables": "Linked Wearables",
     "all_proposals_title": "All proposals",
     "catalyst_title": "Catalyst Node",
-    "catalyst_description": "Add a node to the network of community-run servers",
+    "catalyst_description": "Add or remove a node to the decentralized network of community-run content servers",
     "catalyst_add_title": "Add Catalyst Node",
     "catalyst_add_description": "Add a node to the network of community-run servers",
     "catalyst_remove_title": "Remove Catalyst Node",
@@ -1458,8 +1458,8 @@
       "catalyst_remove": {
         "title": "Remove a catalyst node",
         "description": "Instead of using central servers, Decentraland is run on a network of community operated nodes. These nodes store copies of all scenes deployed to Decentraland, and they handle the messaging and interactions by establishing peer-to-peer connections between users.",
-        "description_2": "To propose the addition of a new node, please provide the following details.",
-        "description_detail": "Explain why this node should be removed to the Catalyst network. Why would this addition be beneficial to the network? For example, adding nodes in new geographic areas helps to provide a better experience to more users."
+        "description_2": "To propose the removal of a node, please provide the following details.",
+        "description_detail": "Explain why this node should be removed from the Catalyst network. Please, be as descriptive and objective as possible."
       },
       "owner_label": "Ethereum address of the owner of the Catalyst Node",
       "owner_placeholder": "Example: 0x06012c8cf97bead5deae237070f9587f8e7a266d",
@@ -1474,8 +1474,7 @@
       "domain_comms_failed": "✘ Communication server is not ready.",
       "domain_content_failed": "✘ Content server is not ready.",
       "domain_lambda_failed": "✘ Lambda server is not ready.",
-      "description_label": "Description",
-      "description_detail": "Explain why this node should be added to the Catalyst network. Why would this addition be beneficial to the network? For example, adding nodes in new geographic areas helps to provide a better experience to more users."
+      "description_label": "Description"
     },
     "submit_grant": {
       "title": "Request a Grant",
