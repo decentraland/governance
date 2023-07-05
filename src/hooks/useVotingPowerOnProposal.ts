@@ -43,11 +43,12 @@ export default function useVotingPowerOnProposal(
   const vpOnProposal = data ?? initialVotingPowerOnProposal
   const totalVpOnProposal = vpOnProposal.addressVp + vpOnProposal.delegatedVp
   const hasEnoughToVote = totalVpOnProposal > MINIMUM_VP_REQUIRED_TO_VOTE && !isLoading
+
   return {
     totalVpOnProposal,
     ...vpOnProposal,
     hasEnoughToVote,
-    isLoadingVp: isLoadingVpDistribution || isLoading,
+    isLoadingVp: isLoadingVpDistribution || (data !== undefined && isLoading),
   }
 }
 
