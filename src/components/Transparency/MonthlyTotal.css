@@ -11,7 +11,6 @@
 }
 
 .MonthlyTotal--Overview {
-  max-height: 398px;
   overflow: hidden;
   -webkit-transition: max-height 0.3s;
   -moz-transition: max-height 0.3s;
@@ -69,21 +68,7 @@ strong.Number.Number--Green {
 }
 
 strong.Number.Number--Red {
-  color: #ff4545;
-}
-
-.MonthlyTotal .ui.card .ui.basic.button {
-  padding-top: 0;
-}
-
-@media only screen and (min-width: 426px) {
-  .MonthlyTotal.MonthlyTotal--Overview {
-    max-height: 404px;
-  }
-
-  .content.MonthlyTotal__Detail.MonthlyTotal--Overview {
-    max-height: 240px;
-  }
+  color: var(--dcl-primary);
 }
 
 @media only screen and (min-width: 992px) {

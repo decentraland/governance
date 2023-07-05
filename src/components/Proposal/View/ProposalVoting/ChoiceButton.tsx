@@ -9,7 +9,7 @@ import TextWithTooltip from '../TextWithTooltip'
 
 import './ChoiceButton.css'
 
-export type ChoiceButtonProps = Omit<ButtonProps, 'color'> & {
+type Props = Omit<ButtonProps, 'color'> & {
   voted?: boolean
   color?: ChoiceColor
   delegate?: string
@@ -27,7 +27,7 @@ export default function ChoiceButton({
   selected,
   children,
   ...props
-}: ChoiceButtonProps) {
+}: Props) {
   const percentage = voteCount && totalVotes ? Math.round((voteCount / totalVotes) * 100) + '%' : null
   return (
     <Button

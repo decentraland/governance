@@ -27,16 +27,6 @@
   box-shadow: none;
 }
 
-.ui.button.ChoiceButton.ChoiceButton--approve:hover,
-.ui.button.ChoiceButton.ChoiceButton--voted.ChoiceButton--approve {
-  color: var(--green-800);
-}
-
-.ui.button.ChoiceButton.ChoiceButton--reject:hover,
-.ui.button.ChoiceButton.ChoiceButton--voted.ChoiceButton--reject {
-  color: #ff4545;
-}
-
 .ui.button.ChoiceButton.ChoiceButton--status-0:hover,
 .ui.button.ChoiceButton.ChoiceButton--voted.ChoiceButton--status-0 {
   color: #4e79a7;
