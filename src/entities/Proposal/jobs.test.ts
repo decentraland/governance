@@ -8,7 +8,6 @@ import Time from '../../utils/date/Time'
 import { BUDGETING_START_DATE } from '../Grant/constants'
 import { NewGrantCategory } from '../Grant/types'
 import { getQuarterEndDate } from '../QuarterBudget/utils'
-import UpdateModel from '../Updates/model'
 
 import { finishProposal, getFinishableTenderProposals } from './jobs'
 import ProposalModel from './model'
@@ -37,19 +36,16 @@ jest.mock('../../constants', () => ({
 }))
 
 describe('finishProposals', () => {
-  const updatesSpy = jest.spyOn(UpdateModel, 'createPendingUpdates')
   beforeAll(() => {
     jest.spyOn(ProposalModel, 'finishProposal')
     jest.spyOn(routes, 'commentProposalUpdateInDiscourse').mockImplementation(() => {})
     jest.spyOn(DiscordService, 'init').mockImplementation(() => {})
-    updatesSpy.mockResolvedValue([])
     jest.spyOn(DiscordService, 'finishProposal').mockImplementation(() => {})
     jest.spyOn(DiscordService, 'newProposal').mockImplementation(() => {})
     jest.spyOn(DiscordService, 'newUpdate').mockImplementation(() => {})
     jest.spyOn(DiscourseService, 'getCategory').mockImplementation(() => 5)
   })
   beforeEach(() => {
-    updatesSpy.mockClear()
     jest.spyOn(BudgetService, 'getBudgetsForProposals').mockResolvedValue([getTestBudgetWithAvailableSize()])
     jest.spyOn(BudgetService, 'updateBudgets').mockImplementation(async () => {})
   })
@@ -64,7 +60,6 @@ describe('finishProposals', () => {
       it('finishes the proposal as rejected', async () => {
         await finishProposal(JOB_CONTEXT_MOCK)
         expect(ProposalModel.finishProposal).toHaveBeenCalledWith([GRANT_PROPOSAL_1.id], ProposalStatus.Rejected)
-        expect(UpdateModel.createPendingUpdates).toHaveBeenCalledTimes(0)
         expect(DiscordService.finishProposal).toHaveBeenCalledWith(
           GRANT_PROPOSAL_1.id,
           GRANT_PROPOSAL_1.title,
@@ -80,10 +75,6 @@ describe('finishProposals', () => {
       it('finishes the proposal as passed, and creates the pending updates for them', async () => {
         await finishProposal(JOB_CONTEXT_MOCK)
         expect(ProposalModel.finishProposal).toHaveBeenCalledWith([GRANT_PROPOSAL_1.id], ProposalStatus.Passed)
-        expect(UpdateModel.createPendingUpdates).toHaveBeenCalledWith(
-          GRANT_PROPOSAL_1.id,
-          GRANT_PROPOSAL_1.configuration.projectDuration
-        )
         expect(DiscordService.finishProposal).toHaveBeenCalledWith(
           GRANT_PROPOSAL_1.id,
           GRANT_PROPOSAL_1.title,
@@ -159,7 +150,6 @@ describe('finishProposals', () => {
       it('finishes the proposal as passed, and creates the pending updates for them', async () => {
         await finishProposal(JOB_CONTEXT_MOCK)
         expect(ProposalModel.finishProposal).toHaveBeenCalledWith([GRANT_PROPOSAL_1.id], ProposalStatus.Finished)
-        expect(UpdateModel.createPendingUpdates).toHaveBeenCalledTimes(0)
         expect(DiscordService.finishProposal).toHaveBeenCalledWith(
           GRANT_PROPOSAL_1.id,
           GRANT_PROPOSAL_1.title,

@@ -5,7 +5,6 @@ import { BudgetService } from '../../services/BudgetService'
 import { DiscordService } from '../../services/DiscordService'
 import { ErrorService } from '../../services/ErrorService'
 import { Budget } from '../Budget/types'
-import UpdateModel from '../Updates/model'
 
 import ProposalModel from './model'
 import { ProposalOutcome, ProposalWithOutcome, calculateOutcome, getWinnerTender } from './outcome'
@@ -36,14 +35,6 @@ async function updateAcceptedProposals(acceptedProposals: ProposalWithOutcome[],
     await ProposalModel.finishProposal(
       acceptedProposals.map(({ id }) => id),
       ProposalStatus.Passed
-    )
-
-    await Promise.all(
-      acceptedProposals.map(async ({ id, type, configuration }) => {
-        if (type == ProposalType.Grant) {
-          await UpdateModel.createPendingUpdates(id, configuration.projectDuration)
-        }
-      })
     )
   }
 }

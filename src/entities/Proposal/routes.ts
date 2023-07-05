@@ -12,6 +12,7 @@ import isUUID from 'validator/lib/isUUID'
 
 import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
+import { getVestingContractData } from '../../clients/VestingData'
 import { inBackground } from '../../helpers'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
@@ -520,13 +521,12 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
         proposal.user,
         update.vesting_address
       )
+      const vestingContractData = await getVestingContractData(id, update.vesting_address)
+      await UpdateModel.createPendingUpdates(id, vestingContractData, proposal.configuration.vestingStartDate)
     }
   } else if (update.status === ProposalStatus.Passed) {
     update.passed_by = user
     update.passed_description = configuration.description || null
-    if (proposal.type == ProposalType.Grant) {
-      await UpdateModel.createPendingUpdates(proposal.id, proposal.configuration.projectDuration)
-    }
   } else if (update.status === ProposalStatus.Rejected) {
     update.rejected_by = user
     update.rejected_description = configuration.description || null

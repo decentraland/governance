@@ -1,6 +1,10 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import { v1 as uuid } from 'uuid'
 
+import { VestingDates } from '../../clients/VestingData'
+import Time from '../../utils/date/Time'
+import { VestingStartDate } from '../Grant/types'
+
 import { UpdateAttributes, UpdateStatus } from './types'
 
 export default class UpdateModel extends Model<UpdateAttributes> {
@@ -8,22 +12,45 @@ export default class UpdateModel extends Model<UpdateAttributes> {
   static withTimestamps = false
   static primaryKey = 'id'
 
-  static async createPendingUpdates(proposalId: string, duration: number) {
-    const updatesQuantity = duration
-    const now = new Date()
+  static async createPendingUpdates(
+    proposalId: string,
+    vestingDates: VestingDates,
+    preferredVestingStartDate: VestingStartDate
+  ) {
+    if (proposalId.length < 0) throw new Error('Unable to create updates for empty proposal id')
 
-    return Array.from(Array(updatesQuantity), async (_, index) => {
+    const now = new Date()
+    const updatesQuantity = vestingDates.durationInMonths
+    const firstUpdateStartingDate = this.getFirstUpdateStartingDate(
+      vestingDates.vestingStartAt,
+      preferredVestingStartDate
+    )
+
+    await UpdateModel.delete<UpdateAttributes>({ proposal_id: proposalId, status: UpdateStatus.Pending })
+
+    const updates = Array.from(Array(updatesQuantity), (_, index) => {
       const update: UpdateAttributes = {
         id: uuid(),
         proposal_id: proposalId,
         status: UpdateStatus.Pending,
-        due_date: new Date(new Date().setMonth(now.getMonth() + index + 1)),
+        due_date: this.getDueDate(firstUpdateStartingDate, index),
         created_at: now,
         updated_at: now,
       }
 
-      await this.create(update)
+      return update
     })
+    return await this.createMany(updates)
+  }
+
+  public static getFirstUpdateStartingDate(vestingStartDate: string, preferredPaymentDate: VestingStartDate) {
+    return Time.utc(vestingStartDate)
+      .set('date', preferredPaymentDate === VestingStartDate.First ? 1 : 15)
+      .startOf('day')
+  }
+
+  public static getDueDate(startingDate: Time.Dayjs, index: number) {
+    return startingDate.add(1 + index, 'months').toDate()
   }
 
   static async createUpdate(

@@ -1,8 +1,8 @@
 import Web3 from 'web3'
 
-import VESTING_ABI from '../abi/vesting.json'
-import VESTING_V2_ABI from '../abi/vesting_v2.json'
 import { ErrorService } from '../services/ErrorService'
+import VESTING_ABI from '../utils/contracts/abi/vesting/vesting.json'
+import VESTING_V2_ABI from '../utils/contracts/abi/vesting/vesting_v2.json'
 
 export type VestingDates = {
   vestingStartAt: string
@@ -60,18 +60,18 @@ async function _getVestingContractDataV2(vestingAddress: string): Promise<Vestin
 
 export async function getVestingContractData(
   proposalId: string,
-  vestingAddress: string
-): Promise<VestingDates | undefined> {
-  try {
-    return await _getVestingContractDataV1(vestingAddress)
-  } catch (errorV1) {
+  vestingAddress: string | null | undefined
+): Promise<VestingDates> {
+  if (vestingAddress && vestingAddress.length > 0) {
     try {
-      return await _getVestingContractDataV2(vestingAddress)
-    } catch (errorV2) {
-      ErrorService.report(
-        `Error trying to get vesting data for proposal ${proposalId}, vesting address ${vestingAddress}`,
-        `Error V1: ${errorV1}, Error V2: ${errorV2}`
-      )
+      return await _getVestingContractDataV1(vestingAddress)
+    } catch (errorV1) {
+      try {
+        return await _getVestingContractDataV2(vestingAddress)
+      } catch (errorV2) {
+        ErrorService.report('Unable to fetch vesting contract data', { proposalId: proposalId })
+      }
     }
   }
+  throw new Error('Unable to fetch vesting contract data')
 }
