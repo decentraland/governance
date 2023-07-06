@@ -1,4 +1,5 @@
 import Web3 from 'web3'
+import { AbiItem } from 'web3-utils'
 
 import { ErrorService } from '../services/ErrorService'
 import VESTING_ABI from '../utils/contracts/abi/vesting/vesting.json'
@@ -29,7 +30,7 @@ function getMonthsBetweenDates(startDate: Date, endDate: Date) {
 }
 
 async function _getVestingContractDataV1(vestingAddress: string): Promise<VestingDates> {
-  const vestingContract = new web3.eth.Contract(VESTING_ABI, vestingAddress)
+  const vestingContract = new web3.eth.Contract(VESTING_ABI as AbiItem[], vestingAddress)
   const contractStart: number = await vestingContract.methods.start().call()
   const contractDuration: number = await vestingContract.methods.duration().call()
   const contractEndsTimestamp = Number(contractStart) + Number(contractDuration)
@@ -44,7 +45,7 @@ async function _getVestingContractDataV1(vestingAddress: string): Promise<Vestin
 }
 
 async function _getVestingContractDataV2(vestingAddress: string): Promise<VestingDates> {
-  const vestingContract = new web3.eth.Contract(VESTING_V2_ABI, vestingAddress)
+  const vestingContract = new web3.eth.Contract(VESTING_V2_ABI as AbiItem[], vestingAddress)
   const contractStart: number = await vestingContract.methods.getStart().call()
   const contractDuration: number = await vestingContract.methods.getPeriod().call()
   const contractEndsTimestamp = Number(contractStart) + Number(contractDuration)
