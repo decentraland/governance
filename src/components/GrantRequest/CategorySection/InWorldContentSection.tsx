@@ -1,7 +1,5 @@
-import React, { forwardRef, useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
-
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
 import {
   GrantRequestCategoryAssessment,
@@ -11,6 +9,7 @@ import {
 import { asNumber } from '../../../entities/Proposal/utils'
 import { disableOnWheelInput } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'
+import Field from '../../Common/Form/Field'
 import MarkdownField from '../../Common/Form/MarkdownField'
 import Label from '../../Common/Typography/Label'
 import { ContentSection } from '../../Layout/ContentLayout'
@@ -28,7 +27,7 @@ interface Props {
   isFormDisabled: boolean
 }
 
-const InWorldContentSection = forwardRef(function InWorldContentSection({ onValidation, isFormDisabled }: Props, ref) {
+export default function InWorldContentSection({ onValidation, isFormDisabled }: Props) {
   const t = useFormatMessage()
   const {
     formState: { isValid, errors, isDirty },
@@ -66,6 +65,8 @@ const InWorldContentSection = forwardRef(function InWorldContentSection({ onVali
       <ContentSection className="GrantRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.in_world_content.total_pieces_label')}</Label>
         <Field
+          name="totalPieces"
+          control={control}
           min="0"
           type="number"
           error={!!errors.totalPieces}
@@ -119,6 +120,4 @@ const InWorldContentSection = forwardRef(function InWorldContentSection({ onVali
       </ContentSection>
     </div>
   )
-})
-
-export default InWorldContentSection
+}
