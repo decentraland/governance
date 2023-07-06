@@ -1,6 +1,7 @@
 import Web3 from 'web3'
 import { AbiItem } from 'web3-utils'
 
+import DclRpcService from '../services/DclRpcService'
 import { ErrorService } from '../services/ErrorService'
 import VESTING_ABI from '../utils/contracts/abi/vesting/vesting.json'
 import VESTING_V2_ABI from '../utils/contracts/abi/vesting/vesting_v2.json'
@@ -11,9 +12,7 @@ export type VestingDates = {
   durationInMonths: number
 }
 
-const INFURA_URL = 'https://mainnet.infura.io/v3/5adeba77a95044dbadacb8e9229a2050'
-// export const INFURA_URL = process.env.INFURA_URL
-const web3 = new Web3(INFURA_URL)
+const web3 = new Web3(DclRpcService.getRpcUrl())
 
 function toISOString(seconds: number) {
   return new Date(seconds * 1000).toISOString()
@@ -29,34 +28,38 @@ function getMonthsBetweenDates(startDate: Date, endDate: Date) {
   }
 }
 
-async function _getVestingContractDataV1(vestingAddress: string): Promise<VestingDates> {
-  const vestingContract = new web3.eth.Contract(VESTING_ABI as AbiItem[], vestingAddress)
-  const contractStart: number = await vestingContract.methods.start().call()
-  const contractDuration: number = await vestingContract.methods.duration().call()
-  const contractEndsTimestamp = Number(contractStart) + Number(contractDuration)
-  const vestingStartAt = toISOString(Number(contractStart))
-  const vestingFinishAt = toISOString(Number(contractEndsTimestamp))
-  const result = {
-    vestingStartAt,
-    vestingFinishAt,
-    durationInMonths: getMonthsBetweenDates(new Date(vestingStartAt), new Date(vestingFinishAt)),
-  }
-  return result
-}
-
-async function _getVestingContractDataV2(vestingAddress: string): Promise<VestingDates> {
-  const vestingContract = new web3.eth.Contract(VESTING_V2_ABI as AbiItem[], vestingAddress)
-  const contractStart: number = await vestingContract.methods.getStart().call()
-  const contractDuration: number = await vestingContract.methods.getPeriod().call()
-  const contractEndsTimestamp = Number(contractStart) + Number(contractDuration)
-  const vestingStartAt = toISOString(Number(contractStart))
-  const vestingFinishAt = toISOString(Number(contractEndsTimestamp))
-
+function getVestingDates(contractStart: number, contractEndsTimestamp: number) {
+  const vestingStartAt = toISOString(contractStart)
+  const vestingFinishAt = toISOString(contractEndsTimestamp)
   return {
     vestingStartAt,
     vestingFinishAt,
     durationInMonths: getMonthsBetweenDates(new Date(vestingStartAt), new Date(vestingFinishAt)),
   }
+}
+
+async function getVestingContractDataV1(vestingAddress: string): Promise<VestingDates> {
+  const vestingContract = new web3.eth.Contract(VESTING_ABI as AbiItem[], vestingAddress)
+  const contractStart = Number(await vestingContract.methods.start().call())
+  const contractDuration = Number(await vestingContract.methods.duration().call())
+  const contractEndsTimestamp = contractStart + contractDuration
+
+  return getVestingDates(contractStart, contractEndsTimestamp)
+}
+
+async function getVestingContractDataV2(vestingAddress: string): Promise<VestingDates> {
+  const vestingContract = new web3.eth.Contract(VESTING_V2_ABI as AbiItem[], vestingAddress)
+  const contractStart = Number(await vestingContract.methods.getStart().call())
+  const contractDuration = Number(await vestingContract.methods.getPeriod().call())
+  let contractEndsTimestamp = 0
+  if (await vestingContract.methods.getIsLinear().call()) {
+    contractEndsTimestamp = contractStart + contractDuration
+  } else {
+    const periods = (await vestingContract.methods.getVestedPerPeriod().call()).length || 0
+    contractEndsTimestamp = contractStart + contractDuration * periods
+  }
+
+  return getVestingDates(contractStart, contractEndsTimestamp)
 }
 
 export async function getVestingContractData(
@@ -65,11 +68,11 @@ export async function getVestingContractData(
 ): Promise<VestingDates> {
   if (vestingAddress && vestingAddress.length > 0) {
     try {
-      return await _getVestingContractDataV1(vestingAddress)
-    } catch (errorV1) {
+      return await getVestingContractDataV2(vestingAddress)
+    } catch (errorV2) {
       try {
-        return await _getVestingContractDataV2(vestingAddress)
-      } catch (errorV2) {
+        return await getVestingContractDataV1(vestingAddress)
+      } catch (errorV1) {
         ErrorService.report('Unable to fetch vesting contract data', { proposalId: proposalId })
       }
     }
