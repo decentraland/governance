@@ -7,7 +7,7 @@
   border-radius: 6px;
 }
 
-.ErrorMessage__Header-vertical {
+.ErrorMessage__Header--vertical {
   align-items: center !important;
   flex-direction: column;
   gap: 8px;
@@ -80,7 +80,7 @@ button.ui.small.primary.button.Button.ErrorMessage__Copy {
   letter-spacing: -0.2px;
   text-transform: uppercase;
   color: var(--black-600);
-  background: var(--white);
+  background: var(--white-900);
   border: 1px solid var(--black-400);
   box-shadow: 0 2px 4px var(--black-400);
   border-radius: 4px;

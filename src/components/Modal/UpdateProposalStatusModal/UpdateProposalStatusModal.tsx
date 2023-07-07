@@ -32,7 +32,7 @@ type UpdateProposalState = {
 
 type UpdateProps = {
   status: ProposalStatus
-  vesting_contract: string | null
+  vestingContract: string | null
   enactingTx: string | null
   description: string
 }
@@ -94,21 +94,20 @@ export function UpdateProposalStatusModal({
 
   const { mutate: updateProposal } = useMutation({
     mutationFn: async (updateProps: UpdateProps) => {
-      const { status, vesting_contract, enactingTx, description } = updateProps
+      const { status, vestingContract, enactingTx, description } = updateProps
       if (proposal && isDAOCommittee) {
         setError('')
         try {
           const updateProposal = await Governance.get().updateProposalStatus(
             proposal.id,
             status,
-            vesting_contract,
+            vestingContract,
             enactingTx,
             description
           )
           onClose()
           return updateProposal
         } catch (err: any) {
-          console.error(err, { ...err })
           setError(err.body?.error || err.message)
         }
       }
@@ -118,14 +117,14 @@ export function UpdateProposalStatusModal({
         queryClient.setQueryData([proposalKey], proposal)
       }
     },
-    mutationKey: ['updatingProposal'],
+    mutationKey: [`updatingProposal#${proposal?.id}`],
   })
 
   const onSubmit: SubmitHandler<UpdateProposalState> = async (data) => {
     if (status) {
       updateProposal({
         status,
-        vesting_contract: data.vestingAddress ? data.vestingAddress : null,
+        vestingContract: data.vestingAddress ? data.vestingAddress : null,
         enactingTx: data.enactingTx ? data.enactingTx : null,
         description: data.description,
       })

@@ -23,7 +23,7 @@ export default function ProposalActions({ proposal, deleting, updatePageState }:
   const { isDAOCommittee } = useIsDAOCommittee(account)
   const { isOwner } = useIsProposalOwner(proposal)
 
-  const updatingStatus = useIsMutating({ mutationKey: ['updatingProposal'] }) > 0
+  const updatingStatus = useIsMutating({ mutationKey: [`updatingProposal#${proposal.id}`] }) > 0
 
   const proposalStatus = proposal?.status
   const showDeleteButton = isOwner || isDAOCommittee

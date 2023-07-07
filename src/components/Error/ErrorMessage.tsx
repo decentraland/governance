@@ -29,8 +29,8 @@ export default function ErrorMessage({ label, errorMessage, className, verticalH
   }
 
   return (
-    <div className={classNames(className, 'ErrorMessage__Container')}>
-      <div className={classNames('ErrorMessage__Header', verticalHeader && 'ErrorMessage__Header-vertical')}>
+    <div className={classNames('ErrorMessage__Container', className)}>
+      <div className={classNames('ErrorMessage__Header', verticalHeader && 'ErrorMessage__Header--vertical')}>
         <div className="ErrorMessage__ErrorNotice">
           <ErrorNotice />
           <span>{label}</span>
