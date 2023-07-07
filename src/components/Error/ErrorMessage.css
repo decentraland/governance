@@ -7,6 +7,12 @@
   border-radius: 6px;
 }
 
+.ErrorMessage__Header-vertical {
+  align-items: center !important;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .ErrorMessage__Header {
   display: inline-flex;
   align-items: flex-start;

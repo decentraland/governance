@@ -16,9 +16,10 @@ interface Props {
   label: string
   errorMessage: string
   className?: string
+  verticalHeader?: boolean
 }
 
-export default function ErrorMessage({ label, errorMessage, className }: Props) {
+export default function ErrorMessage({ label, errorMessage, className, verticalHeader }: Props) {
   const t = useFormatMessage()
   const { copiedValue, handleCopy } = useClipboardCopy(Time.Second)
   const [open, setOpen] = useState(false)
@@ -29,7 +30,7 @@ export default function ErrorMessage({ label, errorMessage, className }: Props) 
 
   return (
     <div className={classNames(className, 'ErrorMessage__Container')}>
-      <div className="ErrorMessage__Header">
+      <div className={classNames('ErrorMessage__Header', verticalHeader && 'ErrorMessage__Header-vertical')}>
         <div className="ErrorMessage__ErrorNotice">
           <ErrorNotice />
           <span>{label}</span>

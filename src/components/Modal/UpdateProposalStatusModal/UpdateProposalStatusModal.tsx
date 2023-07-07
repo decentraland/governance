@@ -197,6 +197,7 @@ export function UpdateProposalStatusModal({
                 className="ProposalModal__ErrorMessage"
                 label={t('modal.update_status_proposal.update_error_label')}
                 errorMessage={t(error) || error}
+                verticalHeader
               />
             )}
             <Button type="submit" primary fluid disabled={isSubmitting} loading={loading && isSubmitting}>
