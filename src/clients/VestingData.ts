@@ -12,8 +12,6 @@ export type VestingDates = {
   durationInMonths: number
 }
 
-const web3 = new Web3(DclRpcService.getRpcUrl())
-
 function toISOString(seconds: number) {
   return new Date(seconds * 1000).toISOString()
 }
@@ -38,7 +36,7 @@ function getVestingDates(contractStart: number, contractEndsTimestamp: number) {
   }
 }
 
-async function getVestingContractDataV1(vestingAddress: string): Promise<VestingDates> {
+async function getVestingContractDataV1(vestingAddress: string, web3: Web3): Promise<VestingDates> {
   const vestingContract = new web3.eth.Contract(VESTING_ABI as AbiItem[], vestingAddress)
   const contractStart = Number(await vestingContract.methods.start().call())
   const contractDuration = Number(await vestingContract.methods.duration().call())
@@ -47,7 +45,7 @@ async function getVestingContractDataV1(vestingAddress: string): Promise<Vesting
   return getVestingDates(contractStart, contractEndsTimestamp)
 }
 
-async function getVestingContractDataV2(vestingAddress: string): Promise<VestingDates> {
+async function getVestingContractDataV2(vestingAddress: string, web3: Web3): Promise<VestingDates> {
   const vestingContract = new web3.eth.Contract(VESTING_V2_ABI as AbiItem[], vestingAddress)
   const contractStart = Number(await vestingContract.methods.getStart().call())
   const contractDuration = Number(await vestingContract.methods.getPeriod().call())
@@ -67,11 +65,12 @@ export async function getVestingContractData(
   vestingAddress: string | null | undefined
 ): Promise<VestingDates> {
   if (vestingAddress && vestingAddress.length > 0) {
+    const web3 = new Web3(DclRpcService.getRpcUrl())
     try {
-      return await getVestingContractDataV2(vestingAddress)
+      return await getVestingContractDataV2(vestingAddress, web3)
     } catch (errorV2) {
       try {
-        return await getVestingContractDataV1(vestingAddress)
+        return await getVestingContractDataV1(vestingAddress, web3)
       } catch (errorV1) {
         ErrorService.report('Unable to fetch vesting contract data', { proposalId: proposalId })
       }
