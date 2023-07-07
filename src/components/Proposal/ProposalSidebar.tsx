@@ -37,7 +37,6 @@ type Props = {
   castingVote: boolean
   castVote: (selectedChoice: SelectedVoteChoice, survey?: Survey | undefined) => void
   voteWithSurvey: boolean
-  updatingStatus: boolean
   subscribing: boolean
   subscribe: (subscribe: boolean) => void
   subscriptions: SubscriptionAttributes[] | null
@@ -61,7 +60,6 @@ export default function ProposalSidebar({
   castingVote,
   castVote,
   voteWithSurvey,
-  updatingStatus,
   subscribing,
   subscribe,
   subscriptions,
@@ -143,7 +141,7 @@ export default function ProposalSidebar({
           <ProposalActions
             proposal={proposal}
             deleting={deleting}
-            updatingStatus={updatingStatus}
+            updatingStatus={proposalPageState.isUpdating}
             updatePageState={updatePageState}
           />
         )}

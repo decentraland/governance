@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import classNames from 'classnames'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
@@ -8,14 +9,17 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
+import { Governance } from '../../../clients/Governance'
 import { GrantTier } from '../../../entities/Grant/GrantTier'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
 import { isValidTransactionHash } from '../../../entities/Proposal/utils'
 import useFormatMessage from '../../../hooks/useFormatMessage'
+import { ProposalPageState } from '../../../pages/proposal'
 import Field from '../../Common/Form/Field'
 import MarkdownField from '../../Common/Form/MarkdownField'
 import Label from '../../Common/Typography/Label'
 import Markdown from '../../Common/Typography/Markdown'
+import ErrorMessage from '../../Error/ErrorMessage'
 import '../ProposalModal.css'
 
 import './UpdateProposalStatusModal.css'
@@ -24,6 +28,13 @@ type UpdateProposalState = {
   proposal: ProposalAttributes | null
   vestingAddress: string
   enactingTx: string
+  description: string
+}
+
+type UpdateProps = {
+  status: ProposalStatus
+  vesting_contract: string | null
+  enactingTx: string | null
   description: string
 }
 
@@ -38,12 +49,9 @@ type Props = Omit<ModalProps, 'children'> & {
   proposal?: ProposalAttributes | null
   status?: ProposalStatus | null
   loading?: boolean
-  onClickAccept: (
-    status: ProposalStatus,
-    vestingContract: string | null,
-    enactingTx: string | null,
-    description: string
-  ) => void
+  isDAOCommittee: boolean
+  updatePageState: (newState: Partial<ProposalPageState>) => void
+  proposalKey: string
 }
 
 const getPrimaryButtonTextKey = (status?: ProposalStatus | null) => {
@@ -60,30 +68,65 @@ const getPrimaryButtonTextKey = (status?: ProposalStatus | null) => {
 }
 
 export function UpdateProposalStatusModal({
-  onClickAccept,
   proposal,
+  isDAOCommittee,
   status,
   loading,
   open,
+  updatePageState,
+  proposalKey,
   className,
   ...props
 }: Props) {
   const t = useFormatMessage()
+  const isOneTimePaymentProposalTier = GrantTier.isOneTimePaymentTier(proposal?.configuration.tier)
+  const queryClient = useQueryClient()
+
   const {
     handleSubmit,
     formState: { isSubmitting, errors },
     control,
   } = useForm<UpdateProposalState>({ defaultValues: initialUpdateProposalState, mode: 'onTouched' })
-  const isOneTimePaymentProposalTier = GrantTier.isOneTimePaymentTier(proposal?.configuration.tier)
+
+  const [error, setError] = useState('')
+
+  const { mutate: updateProposal, isLoading: isUpdating } = useMutation({
+    mutationFn: async (updateProps: UpdateProps) => {
+      const { status, vesting_contract, enactingTx, description } = updateProps
+      if (proposal && isDAOCommittee) {
+        try {
+          const updateProposal = await Governance.get().updateProposalStatus(
+            proposal.id,
+            status,
+            vesting_contract,
+            enactingTx,
+            description
+          )
+          updatePageState({ confirmStatusUpdate: false })
+          return updateProposal
+        } catch (err: any) {
+          console.error(err, { ...err })
+          setError(err.body?.error || err.message)
+        }
+      }
+    },
+    onSuccess: (proposal) => {
+      if (proposal) {
+        queryClient.setQueryData([proposalKey], proposal)
+      }
+    },
+  })
 
   const onSubmit: SubmitHandler<UpdateProposalState> = async (data) => {
     if (status) {
-      onClickAccept(
+      updatePageState({ isUpdating: true })
+      updateProposal({
         status,
-        data.vestingAddress ? data.vestingAddress : null,
-        data.enactingTx ? data.enactingTx : null,
-        data.description
-      )
+        vesting_contract: data.vestingAddress ? data.vestingAddress : null,
+        enactingTx: data.enactingTx ? data.enactingTx : null,
+        description: data.description,
+      })
+      updatePageState({ isUpdating: false })
     }
   }
 
@@ -149,6 +192,13 @@ export function UpdateProposalStatusModal({
             <MarkdownField control={control} name="description" />
           </div>
           <div className="ProposalModal__Actions">
+            {error && (
+              <ErrorMessage
+                className="ProposalModal__ErrorMessage"
+                label={t('modal.update_status_proposal.update_error_label')}
+                errorMessage={t(error) || error}
+              />
+            )}
             <Button type="submit" primary fluid disabled={isSubmitting} loading={loading && isSubmitting}>
               {t(getPrimaryButtonTextKey(status))}
             </Button>
