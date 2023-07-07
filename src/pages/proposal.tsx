@@ -84,7 +84,6 @@ export type ProposalPageState = {
   showSnapshotRedirect: boolean
   retryTimer: number
   selectedChoice: SelectedVoteChoice
-  isUpdating: boolean
 }
 
 type VoteSegmentation = {
@@ -139,7 +138,6 @@ export default function ProposalPage() {
     showSnapshotRedirect: false,
     retryTimer: SECONDS_FOR_VOTING_RETRY,
     selectedChoice: EMPTY_VOTE_CHOICE_SELECTION,
-    isUpdating: false,
   })
   const [account, { provider }] = useAuthContext()
   const { isDAOCommittee } = useIsDAOCommittee(account)

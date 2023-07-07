@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -90,7 +90,7 @@ export function UpdateProposalStatusModal({
 
   const [error, setError] = useState('')
 
-  const { mutate: updateProposal, isLoading: isUpdating } = useMutation({
+  const { mutate: updateProposal } = useMutation({
     mutationFn: async (updateProps: UpdateProps) => {
       const { status, vesting_contract, enactingTx, description } = updateProps
       if (proposal && isDAOCommittee) {
@@ -115,6 +115,7 @@ export function UpdateProposalStatusModal({
         queryClient.setQueryData([proposalKey], proposal)
       }
     },
+    mutationKey: ['updatingProposal'],
   })
 
   const onSubmit: SubmitHandler<UpdateProposalState> = async (data) => {
@@ -127,8 +128,6 @@ export function UpdateProposalStatusModal({
       })
     }
   }
-
-  useEffect(() => updatePageState({ isUpdating }), [isUpdating])
 
   return (
     <Modal

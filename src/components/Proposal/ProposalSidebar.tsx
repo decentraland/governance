@@ -137,14 +137,7 @@ export default function ProposalSidebar({
           onClick={() => subscribe(!subscribed)}
         />
         {proposal && <ProposalDetailSection proposal={proposal} />}
-        {proposal && (
-          <ProposalActions
-            proposal={proposal}
-            deleting={deleting}
-            updatingStatus={proposalPageState.isUpdating}
-            updatePageState={updatePageState}
-          />
-        )}
+        {proposal && <ProposalActions proposal={proposal} deleting={deleting} updatePageState={updatePageState} />}
       </div>
     </>
   )
