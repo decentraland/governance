@@ -34,6 +34,7 @@ import { getUpdateMessage } from './templates/messages'
 import { SUBMISSION_THRESHOLD_PITCH, SUBMISSION_THRESHOLD_POLL, SUBMISSION_THRESHOLD_TENDER } from './constants'
 import ProposalModel from './model'
 import {
+  CatalystType,
   CategorizedGrants,
   GrantWithUpdate,
   HiringType,
@@ -341,8 +342,12 @@ export async function createProposalCatalyst(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalCatalyst>(newProposalCatalystValidator, req.body || {})
   const alreadyCatalyst = await isAlreadyACatalyst(configuration.domain)
-  if (alreadyCatalyst) {
+  if (configuration.type === CatalystType.Add && alreadyCatalyst) {
     throw new RequestError('Domain is already a catalyst')
+  }
+
+  if (configuration.type === CatalystType.Remove && !alreadyCatalyst) {
+    throw new RequestError('Domain is not a catalyst')
   }
 
   return createProposal({

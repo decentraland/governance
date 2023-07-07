@@ -1,6 +1,5 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 
-import { useLocation } from '@reach/router'
 import { useQuery } from '@tanstack/react-query'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 
@@ -9,13 +8,13 @@ import ProposalSubmitHiringPage from '../../components/Proposal/Submit/ProposalS
 import { getCommitteesWithOpenSlots } from '../../entities/Committee/utils'
 import { HiringType, toHiringType } from '../../entities/Proposal/types'
 import { DEFAULT_QUERY_STALE_TIME } from '../../hooks/constants'
+import useURLSearchParams from '../../hooks/useURLSearchParams'
 
 import './submit.css'
 
 export default function Hiring() {
-  const location = useLocation()
-  const param = new URLSearchParams(useMemo(() => new URLSearchParams(location.search), [location.search]))
-  const request = param.get('request')
+  const params = useURLSearchParams()
+  const request = params.get('request')
 
   const type = toHiringType(request, () => null)
 

@@ -11,7 +11,7 @@ import {
   AddRemoveProposalModalProps,
 } from '../../components/Modal/AddRemoveProposalModal/AddRemoveProposalModal'
 import { getCommitteesWithOpenSlots } from '../../entities/Committee/utils'
-import { HiringType, PoiType, ProposalType } from '../../entities/Proposal/types'
+import { CatalystType, HiringType, PoiType, ProposalType } from '../../entities/Proposal/types'
 import { isGrantProposalSubmitEnabled } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import locations from '../../utils/locations'
@@ -23,20 +23,26 @@ const NOW = Date.now()
 const POI_MODAL_PROPS: AddRemoveProposalModalProps = {
   open: false,
   title: 'poi',
+  proposalType: ProposalType.POI,
   addType: PoiType.AddPOI,
-  addHref: locations.submit(ProposalType.POI, { request: PoiType.AddPOI }),
   removeType: PoiType.RemovePOI,
-  removeHref: locations.submit(ProposalType.POI, { request: PoiType.RemovePOI }),
 }
 
 const HIRING_MODAL_PROPS: AddRemoveProposalModalProps = {
   open: false,
   title: 'hiring',
+  proposalType: ProposalType.Hiring,
   addType: HiringType.Add,
-  addHref: locations.submit(ProposalType.Hiring, { request: HiringType.Add }),
   isAddDisabled: true,
   removeType: HiringType.Remove,
-  removeHref: locations.submit(ProposalType.Hiring, { request: HiringType.Remove }),
+}
+
+const CATALYST_MODAL_PROPS: AddRemoveProposalModalProps = {
+  open: false,
+  title: 'catalyst',
+  proposalType: ProposalType.Catalyst,
+  addType: CatalystType.Add,
+  removeType: CatalystType.Remove,
 }
 
 export default function NewProposalPage() {
@@ -66,7 +72,10 @@ export default function NewProposalPage() {
           <Header sub className="ProposalDetailPage_SubHeader">
             {t('page.submit.common_actions')}
           </Header>
-          <CategoryBanner type={ProposalType.Catalyst} href={locations.submit(ProposalType.Catalyst)} />
+          <CategoryBanner
+            type={ProposalType.Catalyst}
+            onClick={() => setProposalModalProps({ ...CATALYST_MODAL_PROPS, open: true })}
+          />
           <CategoryBanner
             type={ProposalType.POI}
             onClick={() => setProposalModalProps({ ...POI_MODAL_PROPS, open: true })}

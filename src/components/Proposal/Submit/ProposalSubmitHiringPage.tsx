@@ -14,12 +14,7 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import { CommitteeName } from '../../../clients/DclData'
 import { Governance } from '../../../clients/Governance'
 import { SUBMISSION_THRESHOLD_HIRING } from '../../../entities/Proposal/constants'
-import {
-  HiringType,
-  NewProposalHiring,
-  getHiringTypeAction,
-  newProposalHiringScheme,
-} from '../../../entities/Proposal/types'
+import { HiringType, NewProposalHiring, newProposalHiringScheme } from '../../../entities/Proposal/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useVotingPowerDistribution from '../../../hooks/useVotingPowerDistribution'
 import locations, { navigate } from '../../../utils/locations'
@@ -37,6 +32,10 @@ import CoAuthors from './CoAuthor/CoAuthors'
 
 import CommitteeMembersDropdown from './CommitteeMembersDropdown'
 import './ProposalSubmitHiringPage.css'
+
+function getHiringTypeAction(hiringType: HiringType) {
+  return hiringType.split('_')[1] as 'add' | 'remove'
+}
 
 interface Props {
   type: HiringType
@@ -122,27 +121,27 @@ export default function ProposalSubmitHiringPage({ type, committees, isCommittee
     clearErrors('address')
   }
 
-  const TITLE = t(`page.submit_hiring.${action}.title`)
-  const DESCRIPTION = t(`page.submit_hiring.${action}.description`)
+  const title = t(`page.submit_hiring.${action}.title`)
+  const description = t(`page.submit_hiring.${action}.description`)
 
   if (accountState.loading) {
     return <LoadingView />
   }
 
   if (!account) {
-    return <LogIn title={TITLE} description={DESCRIPTION} />
+    return <LogIn title={title} description={description} />
   }
 
   return (
     <ContentLayout small preventNavigation={preventNavigation.current}>
-      <Head title={TITLE} description={DESCRIPTION} image="https://decentraland.org/images/decentraland.png" />
-      <Helmet title={TITLE} />
+      <Head title={title} description={description} image="https://decentraland.org/images/decentraland.png" />
+      <Helmet title={title} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <ContentSection>
-          <Header size="huge">{TITLE}</Header>
+          <Header size="huge">{title}</Header>
         </ContentSection>
         <ContentSection>
-          <Text size="lg">{DESCRIPTION}</Text>
+          <Text size="lg">{description}</Text>
         </ContentSection>
         <ContentSection>
           <Label>{t('page.submit_hiring.target_title')}</Label>
