@@ -430,7 +430,6 @@ export default function ProposalPage() {
         proposal={proposal}
         isDAOCommittee={isDAOCommittee}
         status={proposalPageState.confirmStatusUpdate || null}
-        updatePageState={updatePageState}
         proposalKey={proposalKey}
         onClose={() => updatePageState({ confirmStatusUpdate: false })}
       />

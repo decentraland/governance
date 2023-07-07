@@ -14,7 +14,6 @@ import { GrantTier } from '../../../entities/Grant/GrantTier'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
 import { isValidTransactionHash } from '../../../entities/Proposal/utils'
 import useFormatMessage from '../../../hooks/useFormatMessage'
-import { ProposalPageState } from '../../../pages/proposal'
 import Field from '../../Common/Form/Field'
 import MarkdownField from '../../Common/Form/MarkdownField'
 import Label from '../../Common/Typography/Label'
@@ -50,7 +49,6 @@ type Props = Omit<ModalProps, 'children'> & {
   status?: ProposalStatus | null
   loading?: boolean
   isDAOCommittee: boolean
-  updatePageState: (newState: Partial<ProposalPageState>) => void
   proposalKey: string
 }
 
@@ -73,7 +71,6 @@ export function UpdateProposalStatusModal({
   status,
   loading,
   open,
-  updatePageState,
   proposalKey,
   className,
   ...props
@@ -81,6 +78,11 @@ export function UpdateProposalStatusModal({
   const t = useFormatMessage()
   const isOneTimePaymentProposalTier = GrantTier.isOneTimePaymentTier(proposal?.configuration.tier)
   const queryClient = useQueryClient()
+
+  const onClose = () => {
+    setError('')
+    props.onClose()
+  }
 
   const {
     handleSubmit,
@@ -94,6 +96,7 @@ export function UpdateProposalStatusModal({
     mutationFn: async (updateProps: UpdateProps) => {
       const { status, vesting_contract, enactingTx, description } = updateProps
       if (proposal && isDAOCommittee) {
+        setError('')
         try {
           const updateProposal = await Governance.get().updateProposalStatus(
             proposal.id,
@@ -102,7 +105,7 @@ export function UpdateProposalStatusModal({
             enactingTx,
             description
           )
-          updatePageState({ confirmStatusUpdate: false })
+          onClose()
           return updateProposal
         } catch (err: any) {
           console.error(err, { ...err })
@@ -136,6 +139,7 @@ export function UpdateProposalStatusModal({
       size="small"
       className={classNames('GovernanceActionModal', 'ProposalModal', 'UpdateProposalStatusModal', className)}
       closeIcon={<Close />}
+      onClose={onClose}
     >
       <Modal.Content>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -207,7 +211,7 @@ export function UpdateProposalStatusModal({
               fluid
               onClick={(e) => {
                 e.preventDefault()
-                props.onClose()
+                onClose()
               }}
             >
               {t('modal.update_status_proposal.reject')}
