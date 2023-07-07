@@ -22,6 +22,7 @@ import coauthor from './entities/Coauthor/routes'
 import committee from './entities/Committee/routes'
 import common from './entities/Common/routes'
 import debug from './entities/Debug/routes'
+import pendingBids from './entities/PendingBids/routes'
 import { activateProposals, finishProposal } from './entities/Proposal/jobs'
 import proposal from './entities/Proposal/routes'
 import proposalSurveyTopics from './entities/ProposalSurveyTopics/routes'
@@ -64,6 +65,7 @@ app.use('/api', [
   budget,
   badges,
   common,
+  pendingBids,
   handle(async () => {
     throw new RequestError('NotFound', RequestError.NotFound)
   }),
