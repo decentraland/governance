@@ -3,7 +3,6 @@ export type BidProposalData = {
 }
 
 export type PendingBidsAttributes = {
-  id: number
   created_at: string
   publish_at: string
   author_address: string
@@ -21,22 +20,14 @@ export type NewPendingBid = {
 export const newPendingBidScheme = {
   type: 'object',
   additionalProperties: false,
-  required: ['tender_id', 'author_address', 'bid_proposal_data', 'publish_at'],
+  required: ['tender_id', 'bid_proposal_data'],
   properties: {
     tender_id: {
       type: 'string',
       minLength: 1,
     },
-    author_address: {
-      type: 'string',
-      minLength: 42,
-      maxLength: 42,
-    },
     bid_proposal_data: {
       type: 'object',
-    },
-    publish_at: {
-      type: 'string',
     },
   },
 }
