@@ -30,7 +30,7 @@ type UpdateProposalState = {
   description: string
 }
 
-type UpdateProps = {
+type UpdateData = {
   status: ProposalStatus
   vestingContract: string | null
   enactingTx: string | null
@@ -93,8 +93,8 @@ export function UpdateProposalStatusModal({
   const [error, setError] = useState('')
 
   const { mutate: updateProposal } = useMutation({
-    mutationFn: async (updateProps: UpdateProps) => {
-      const { status, vestingContract, enactingTx, description } = updateProps
+    mutationFn: async (updateData: UpdateData) => {
+      const { status, vestingContract, enactingTx, description } = updateData
       if (proposal && isDAOCommittee) {
         setError('')
         try {
