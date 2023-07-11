@@ -52,17 +52,19 @@ export async function getVestingContractData(
   proposalId: string,
   vestingAddress: string | null | undefined
 ): Promise<VestingDates> {
-  if (vestingAddress && vestingAddress.length > 0) {
-    const web3 = new Web3(DclRpcService.getRpcUrl())
+  if (!vestingAddress || vestingAddress.length === 0) {
+    throw new Error('Unable to fetch vesting data for empty contract address')
+  }
+
+  const web3 = new Web3(DclRpcService.getRpcUrl())
+  try {
+    return await getVestingContractDataV2(vestingAddress, web3)
+  } catch (errorV2) {
     try {
-      return await getVestingContractDataV2(vestingAddress, web3)
-    } catch (errorV2) {
-      try {
-        return await getVestingContractDataV1(vestingAddress, web3)
-      } catch (errorV1) {
-        ErrorService.report('Unable to fetch vesting contract data', { proposalId: proposalId })
-      }
+      return await getVestingContractDataV1(vestingAddress, web3)
+    } catch (errorV1) {
+      ErrorService.report('Unable to fetch vesting contract data', { proposalId, error: errorV1 })
+      throw errorV1
     }
   }
-  throw new Error('Unable to fetch vesting contract data')
 }
