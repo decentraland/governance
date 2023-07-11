@@ -2,6 +2,7 @@ import { def } from 'bdd-lazy-var/getter'
 import * as uuid from 'uuid'
 
 import Time from '../../utils/date/Time'
+import { getMonthsBetweenDates } from '../../utils/date/getMonthsBetweenDates'
 import { VestingStartDate } from '../Grant/types'
 
 import UpdateModel from './model'
@@ -35,6 +36,13 @@ describe('UpdateModel', () => {
 
       describe('when preferred payment date is on the 1st of the month', () => {
         def('preferredPaymentDate', () => VestingStartDate.First)
+
+        it('calculates the correct amount of pending updates', () => {
+          expect(
+            getMonthsBetweenDates(new Date(get.vestingDates.vestingStartAt), new Date(get.vestingDates.vestingFinishAt))
+          ).toEqual({ months: 2, extraDays: 30 })
+          expect(UpdateModel.getAmountOfUpdates(get.vestingDates)).toEqual(3)
+        })
 
         it('deletes any pending updates for the proposal', async () => {
           await UpdateModel.createPendingUpdates(PROPOSAL_ID, get.vestingDates, get.preferredPaymentDate)
@@ -82,6 +90,13 @@ describe('UpdateModel', () => {
       })
       describe('when preferred payment date is on the 15th of the month', () => {
         def('preferredPaymentDate', () => VestingStartDate.Fifteenth)
+
+        it('calculates the correct amount of pending updates', () => {
+          expect(
+            getMonthsBetweenDates(new Date(get.vestingDates.vestingStartAt), new Date(get.vestingDates.vestingFinishAt))
+          ).toEqual({ months: 6, extraDays: 16 })
+          expect(UpdateModel.getAmountOfUpdates(get.vestingDates)).toEqual(7)
+        })
 
         it('creates expected pending updates with the correct attributes', async () => {
           await UpdateModel.createPendingUpdates(PROPOSAL_ID, get.vestingDates, get.preferredPaymentDate)

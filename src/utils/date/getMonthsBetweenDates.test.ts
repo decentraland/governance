@@ -5,7 +5,7 @@ describe('getMonthsBetweenDates', () => {
     expect(getMonthsBetweenDates(new Date(date1), new Date(date2))).toEqual({ months, extraDays })
   }
   it('returns the exact amount of months and days between dates ', () => {
-    testItHasMonthsAndDays('2023-01-01 00:00:00z', '2023-05-01 00:00:00z', 3, 30)
+    testItHasMonthsAndDays('2023-01-01 00:00:00z', '2023-05-01 00:00:00z', 4, 0)
     testItHasMonthsAndDays('2023-01-01 00:00:00z', '2023-05-31 00:00:00z', 4, 30)
     testItHasMonthsAndDays('2023-01-15 00:00:00z', '2023-05-30 00:00:00z', 4, 15)
     testItHasMonthsAndDays('2023-01-20 00:00:00z', '2023-05-25 00:00:00z', 4, 5)
