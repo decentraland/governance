@@ -41,6 +41,7 @@ export const categoryIcons = {
   [ProposalType.LinkedWearables]: LinkedWearables,
   [ProposalType.Pitch]: Pitch,
   [ProposalType.Tender]: Tender,
+  [ProposalType.Bid]: Tender, // TODO: Add bid icon
   [ProposalType.Hiring]: Hiring,
   [HiringType.Add]: HiringAdd,
   [HiringType.Remove]: HiringRemove,

@@ -59,7 +59,7 @@ export default function MultipleChoiceField({
   )
 
   return (
-    <ContentSection className="GrantRequestSection__Field">
+    <ContentSection className="ProjectRequestSection__Field">
       <Label>{label}</Label>
       {options.map((item) => (
         <CheckboxField

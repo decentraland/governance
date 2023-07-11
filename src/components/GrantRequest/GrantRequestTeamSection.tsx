@@ -7,10 +7,10 @@ import { userModifiedForm } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import SubLabel from '../Common/SubLabel'
 import Label from '../Common/Typography/Label'
+import ProjectRequestSection from '../ProjectRequest/ProjectRequestSection'
 
 import AddBox from './AddBox'
 import AddTeamMemberModal from './AddTeamMemberModal'
-import GrantRequestSection from './GrantRequestSection'
 import TeamMemberItem from './TeamMemberItem'
 
 export const INITIAL_GRANT_REQUEST_TEAM_STATE: GrantRequestTeam = {
@@ -66,28 +66,26 @@ export default function GrantRequestTeamSection({ sectionNumber, onValidation }:
   }, [teamState, isCompleted])
 
   return (
-    <GrantRequestSection
+    <ProjectRequestSection
       shouldFocus={false}
       validated={isCompleted}
       isFormEdited={isFormEdited}
       sectionTitle={t('page.submit_grant.team.title')}
       sectionNumber={sectionNumber}
     >
-      <div className="GrantRequestSection__Content">
-        <Label>{t('page.submit_grant.team.members_label')}</Label>
-        <SubLabel>{t('page.submit_grant.team.members_detail')}</SubLabel>
-        {teamState.members.map((item, index) => (
-          <TeamMemberItem
-            key={`${item.name}-${index}`}
-            item={item}
-            onClick={() => {
-              setSelectedTeamMember(item)
-              setModalOpen(true)
-            }}
-          />
-        ))}
-        <AddBox onClick={() => setModalOpen(true)}>{t('page.submit_grant.team.add_member')}</AddBox>
-      </div>
+      <Label>{t('page.submit_grant.team.members_label')}</Label>
+      <SubLabel>{t('page.submit_grant.team.members_detail')}</SubLabel>
+      {teamState.members.map((item, index) => (
+        <TeamMemberItem
+          key={`${item.name}-${index}`}
+          item={item}
+          onClick={() => {
+            setSelectedTeamMember(item)
+            setModalOpen(true)
+          }}
+        />
+      ))}
+      <AddBox onClick={() => setModalOpen(true)}>{t('page.submit_grant.team.add_member')}</AddBox>
       {isModalOpen && (
         <AddTeamMemberModal
           isOpen={isModalOpen}
@@ -102,6 +100,6 @@ export default function GrantRequestTeamSection({ sectionNumber, onValidation }:
           selectedTeamMember={selectedTeamMember}
         />
       )}
-    </GrantRequestSection>
+    </ProjectRequestSection>
   )
 }

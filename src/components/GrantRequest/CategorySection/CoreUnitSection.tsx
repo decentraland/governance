@@ -68,12 +68,12 @@ export default function CoreUnitSection({ onValidation, isFormDisabled }: Props)
   }
 
   return (
-    <div className="GrantRequestSection__Content">
-      <ContentSection className="GrantRequestSection__Field">
+    <div>
+      <ContentSection className="ProjectRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.core_unit.strategic_value_label')}</Label>
         <MarkdownField {...getMarkdownFieldProps('strategicValue')} />
       </ContentSection>
-      <ContentSection className="GrantRequestSection__Field">
+      <ContentSection className="ProjectRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.core_unit.impact_metrics_label')}</Label>
         <MarkdownField {...getMarkdownFieldProps('impactMetrics')} />
       </ContentSection>

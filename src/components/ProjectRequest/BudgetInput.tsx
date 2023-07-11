@@ -14,7 +14,7 @@ import './BudgetInput.css'
 interface Props {
   error?: string
   label: string
-  subtitle: string
+  subtitle?: string
 }
 
 const BudgetInput = ({ error, label, subtitle, ...props }: Props & React.HTMLProps<HTMLInputElement>) => {
@@ -47,9 +47,11 @@ const BudgetInput = ({ error, label, subtitle, ...props }: Props & React.HTMLPro
           }
         />
       </div>
-      <Markdown size="sm" componentsClassNames={{ p: 'BudgetInput__Subtitle' }}>
-        {subtitle}
-      </Markdown>
+      {subtitle && (
+        <Markdown size="sm" componentsClassNames={{ p: 'BudgetInput__Subtitle' }}>
+          {subtitle}
+        </Markdown>
+      )}
     </div>
   )
 }

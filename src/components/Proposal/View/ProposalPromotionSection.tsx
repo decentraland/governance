@@ -41,10 +41,10 @@ const getSectionConfig = (type: ProposalType) => {
       }
     case ProposalType.Tender:
       return {
-        pillLabel: 'page.proposal_detail.promotion.coming_soon_label',
+        pillLabel: 'page.proposal_detail.promotion.opportunity_label',
         description: 'page.proposal_detail.promotion.submit_bid_proposal_text',
         buttonLabel: 'page.proposal_detail.promotion.submit_bid_proposal_label',
-        promotedType: null,
+        promotedType: ProposalType.Bid,
       }
     default:
       return {
@@ -60,6 +60,7 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
   const t = useFormatMessage()
   const { id, type } = proposal
   const { hasTenderProcessStarted } = useTenderProposals(proposal.id, proposal.type)
+  const hasBidProcessStarted = false // TODO: Integrate this
 
   const { pillLabel, description, buttonLabel, promotedType } = getSectionConfig(type)
 
@@ -69,7 +70,8 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
     }
   }
 
-  const isPromoteDisabled = (type === ProposalType.Pitch && hasTenderProcessStarted) || type === ProposalType.Tender
+  const isPromoteDisabled =
+    (type === ProposalType.Pitch && hasTenderProcessStarted) || (type === ProposalType.Tender && hasBidProcessStarted)
 
   return (
     <div className="ProposalPromotionSection">
