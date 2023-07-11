@@ -28,11 +28,11 @@ describe('UpdateModel', () => {
     describe('for a vesting with a duration of 3 months', () => {
       def('vestingDates', () => {
         return {
-          durationInMonths: 3,
           vestingStartAt: '2020-01-01 00:00:00z',
           vestingFinishAt: '2020-03-31 00:00:00z',
         }
       })
+
       describe('when preferred payment date is on the 1st of the month', () => {
         def('preferredPaymentDate', () => VestingStartDate.First)
 
@@ -76,7 +76,6 @@ describe('UpdateModel', () => {
     describe('for a vesting with a duration of 6 months, with a starting date different than the preferred', () => {
       def('vestingDates', () => {
         return {
-          durationInMonths: 6,
           vestingStartAt: '2020-11-17 00:00:00z',
           vestingFinishAt: '2020-04-31 00:00:00z',
         }
@@ -132,6 +131,14 @@ describe('UpdateModel', () => {
               proposal_id: PROPOSAL_ID,
               status: UpdateStatus.Pending,
               due_date: Time.utc('2021-05-15T00:00:00.000Z').toDate(),
+              created_at: FAKE_NOW,
+              updated_at: FAKE_NOW,
+            },
+            {
+              id: UUID,
+              proposal_id: PROPOSAL_ID,
+              status: UpdateStatus.Pending,
+              due_date: Time.utc('2021-06-15T00:00:00.000Z').toDate(),
               created_at: FAKE_NOW,
               updated_at: FAKE_NOW,
             },

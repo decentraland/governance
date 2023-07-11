@@ -9,21 +9,10 @@ import VESTING_V2_ABI from '../utils/contracts/abi/vesting/vesting_v2.json'
 export type VestingDates = {
   vestingStartAt: string
   vestingFinishAt: string
-  durationInMonths: number
 }
 
 function toISOString(seconds: number) {
   return new Date(seconds * 1000).toISOString()
-}
-
-function getMonthsBetweenDates(startDate: Date, endDate: Date) {
-  try {
-    const yearDiff = endDate.getFullYear() - startDate.getFullYear()
-    const monthDiff = endDate.getMonth() - startDate.getMonth()
-    return yearDiff * 12 + monthDiff
-  } catch (error) {
-    throw new Error(`startDate: ${startDate}, endDate: ${endDate}. ${error}`)
-  }
 }
 
 function getVestingDates(contractStart: number, contractEndsTimestamp: number) {
@@ -32,7 +21,6 @@ function getVestingDates(contractStart: number, contractEndsTimestamp: number) {
   return {
     vestingStartAt,
     vestingFinishAt,
-    durationInMonths: getMonthsBetweenDates(new Date(vestingStartAt), new Date(vestingFinishAt)),
   }
 }
 

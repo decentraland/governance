@@ -3,6 +3,7 @@ import { v1 as uuid } from 'uuid'
 
 import { VestingDates } from '../../clients/VestingData'
 import Time from '../../utils/date/Time'
+import { getMonthsBetweenDates } from '../../utils/date/getMonthsBetweenDates'
 import { VestingStartDate } from '../Grant/types'
 
 import { UpdateAttributes, UpdateStatus } from './types'
@@ -20,7 +21,7 @@ export default class UpdateModel extends Model<UpdateAttributes> {
     if (proposalId.length < 0) throw new Error('Unable to create updates for empty proposal id')
 
     const now = new Date()
-    const updatesQuantity = vestingDates.durationInMonths
+    const updatesQuantity = this.getAmountOfUpdates(vestingDates)
     const firstUpdateStartingDate = this.getFirstUpdateStartingDate(
       vestingDates.vestingStartAt,
       preferredVestingStartDate
@@ -41,6 +42,14 @@ export default class UpdateModel extends Model<UpdateAttributes> {
       return update
     })
     return await this.createMany(updates)
+  }
+
+  public static getAmountOfUpdates(vestingDates: VestingDates) {
+    const exactDuration = getMonthsBetweenDates(
+      new Date(vestingDates.vestingStartAt),
+      new Date(vestingDates.vestingFinishAt)
+    )
+    return exactDuration.months + (exactDuration.extraDays > 0 ? 1 : 0)
   }
 
   public static getFirstUpdateStartingDate(vestingStartDate: string, preferredPaymentDate: VestingStartDate) {
