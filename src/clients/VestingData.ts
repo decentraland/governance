@@ -2,9 +2,10 @@ import Web3 from 'web3'
 import { AbiItem } from 'web3-utils'
 
 import DclRpcService from '../services/DclRpcService'
-import { ErrorService } from '../services/ErrorService'
 import VESTING_ABI from '../utils/contracts/abi/vesting/vesting.json'
 import VESTING_V2_ABI from '../utils/contracts/abi/vesting/vesting_v2.json'
+
+import { ErrorClient } from './ErrorClient'
 
 export type VestingDates = {
   vestingStartAt: string
@@ -63,7 +64,7 @@ export async function getVestingContractData(
     try {
       return await getVestingContractDataV1(vestingAddress, web3)
     } catch (errorV1) {
-      ErrorService.report('Unable to fetch vesting contract data', { proposalId, error: errorV1 })
+      ErrorClient.report('Unable to fetch vesting contract data', { proposalId, error: errorV1 })
       throw errorV1
     }
   }
