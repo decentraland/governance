@@ -1,10 +1,10 @@
-const moment = require('moment')
-require('moment-precise-range-plugin')
+import Time from './Time'
 
 export function getMonthsBetweenDates(startDate: Date, endDate: Date) {
-  const starts = moment.utc(startDate)
-  const ends = moment.utc(endDate)
-  const diff = moment.preciseDiff(starts, ends, true)
+  const starts = Time.utc(startDate)
+  const ends = Time.utc(endDate)
+  // @ts-ignore
+  const diff = Time.preciseDiff(starts, ends, true)
   return {
     months: diff.years * 12 + diff.months,
     extraDays: diff.days,
