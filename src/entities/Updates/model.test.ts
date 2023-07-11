@@ -26,7 +26,7 @@ describe('UpdateModel', () => {
   })
 
   describe('createPendingUpdates', () => {
-    describe('for a vesting with a duration of 3 months', () => {
+    describe('for a vesting with a duration of almost 3 months', () => {
       def('vestingDates', () => {
         return {
           vestingStartAt: '2020-01-01 00:00:00z',
@@ -81,7 +81,7 @@ describe('UpdateModel', () => {
       })
     })
 
-    describe('for a vesting with a duration of 6 months, with a starting date different than the preferred', () => {
+    describe('for a vesting with a duration of 6 months and some extra days, with a starting date different than the preferred', () => {
       def('vestingDates', () => {
         return {
           vestingStartAt: '2020-11-17 00:00:00z',
@@ -154,6 +154,79 @@ describe('UpdateModel', () => {
               proposal_id: PROPOSAL_ID,
               status: UpdateStatus.Pending,
               due_date: Time.utc('2021-06-15T00:00:00.000Z').toDate(),
+              created_at: FAKE_NOW,
+              updated_at: FAKE_NOW,
+            },
+          ])
+        })
+      })
+    })
+
+    describe('for a vesting with a duration of exactly 6 months', () => {
+      def('vestingDates', () => {
+        return {
+          vestingStartAt: '2020-07-01 00:00:00z',
+          vestingFinishAt: '2021-01-01 00:00:00z',
+        }
+      })
+      describe('when preferred payment date is on the 15th of the month', () => {
+        def('preferredPaymentDate', () => VestingStartDate.Fifteenth)
+
+        it('calculates the correct amount of pending updates', () => {
+          expect(
+            getMonthsBetweenDates(new Date(get.vestingDates.vestingStartAt), new Date(get.vestingDates.vestingFinishAt))
+          ).toEqual({ months: 6, extraDays: 0 })
+          expect(UpdateModel.getAmountOfUpdates(get.vestingDates)).toEqual(6)
+        })
+
+        it('creates expected pending updates with the correct attributes', async () => {
+          await UpdateModel.createPendingUpdates(PROPOSAL_ID, get.vestingDates, get.preferredPaymentDate)
+          expect(UpdateModel.createMany).toHaveBeenCalledWith([
+            {
+              id: UUID,
+              proposal_id: PROPOSAL_ID,
+              status: UpdateStatus.Pending,
+              due_date: Time.utc('2020-08-15T00:00:00.000Z').toDate(),
+              created_at: FAKE_NOW,
+              updated_at: FAKE_NOW,
+            },
+            {
+              id: UUID,
+              proposal_id: PROPOSAL_ID,
+              status: UpdateStatus.Pending,
+              due_date: Time.utc('2020-09-15T00:00:00.000Z').toDate(),
+              created_at: FAKE_NOW,
+              updated_at: FAKE_NOW,
+            },
+            {
+              id: UUID,
+              proposal_id: PROPOSAL_ID,
+              status: UpdateStatus.Pending,
+              due_date: Time.utc('2020-10-15T00:00:00.000Z').toDate(),
+              created_at: FAKE_NOW,
+              updated_at: FAKE_NOW,
+            },
+            {
+              id: UUID,
+              proposal_id: PROPOSAL_ID,
+              status: UpdateStatus.Pending,
+              due_date: Time.utc('2020-11-15T00:00:00.000Z').toDate(),
+              created_at: FAKE_NOW,
+              updated_at: FAKE_NOW,
+            },
+            {
+              id: UUID,
+              proposal_id: PROPOSAL_ID,
+              status: UpdateStatus.Pending,
+              due_date: Time.utc('2020-12-15T00:00:00.000Z').toDate(),
+              created_at: FAKE_NOW,
+              updated_at: FAKE_NOW,
+            },
+            {
+              id: UUID,
+              proposal_id: PROPOSAL_ID,
+              status: UpdateStatus.Pending,
+              due_date: Time.utc('2021-01-15T00:00:00.000Z').toDate(),
               created_at: FAKE_NOW,
               updated_at: FAKE_NOW,
             },
