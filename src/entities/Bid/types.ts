@@ -2,7 +2,12 @@ export type BidProposalData = {
   [key: string]: string | BidProposalData
 }
 
-export type PendingBidsAttributes = {
+export enum BidStatus {
+  Pending = 'PENDING',
+  Rejected = 'REJECTED',
+}
+
+export type BidAttributes = {
   created_at: string
   publish_at: string
   author_address: string
@@ -10,21 +15,23 @@ export type PendingBidsAttributes = {
   bid_proposal_data: BidProposalData
 }
 
-export type NewPendingBid = {
-  tender_id: string
+export type NewBid = {
+  linked_proposal_id: string
   author_address: string
   bid_proposal_data: BidProposalData
   publish_at: string
+  status: BidStatus
 }
 
-export const newPendingBidScheme = {
+export const newBidScheme = {
   type: 'object',
   additionalProperties: false,
-  required: ['tender_id', 'bid_proposal_data'],
+  required: ['linked_proposal_id', 'bid_proposal_data'],
   properties: {
-    tender_id: {
+    linked_proposal_id: {
       type: 'string',
-      minLength: 1,
+      minLength: 36,
+      maxLength: 255,
     },
     bid_proposal_data: {
       type: 'object',

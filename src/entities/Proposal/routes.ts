@@ -18,6 +18,8 @@ import { GrantsService } from '../../services/GrantsService'
 import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
 import { getProfile } from '../../utils/Catalyst'
 import Time from '../../utils/date/Time'
+import BidModel from '../Bid/model'
+import { BidStatus, NewBid, newBidScheme } from '../Bid/types'
 import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'
 import isDAOCommittee from '../Committee/isDAOCommittee'
@@ -97,6 +99,7 @@ export default routes((route) => {
   route.post('/proposals/linked-wearables', withAuth, handleAPI(createProposalLinkedWearables))
   route.post('/proposals/pitch', withAuth, handleAPI(createProposalPitch))
   route.post('/proposals/tender', withAuth, handleAPI(createProposalTender))
+  route.post('/proposals/bid', withAuth, handleAPI(createProposalBid))
   route.post('/proposals/hiring', withAuth, handleAPI(createProposalHiring))
   route.get('/proposals/grants', handleAPI(getGrants))
   route.get('/proposals/grants/:address', handleAPI(getGrantsByUser))
@@ -442,6 +445,26 @@ export async function createProposalTender(req: WithAuth) {
       ...configuration,
       choices: DEFAULT_CHOICES,
     },
+  })
+}
+
+const newBidValidator = schema.compile(newBidScheme)
+export async function createProposalBid(req: WithAuth) {
+  const author_address = req.auth!
+  const configuration = validate<Omit<NewBid, 'author_address' | 'publish_at' | 'status'>>(
+    newBidValidator,
+    req.body || {}
+  )
+  await validateLinkedProposal(configuration.linked_proposal_id, ProposalType.Tender)
+  // TODO: check if the tender is still open for bids
+  const tenderBids = await BidModel.getBidsInfoByTender(configuration.linked_proposal_id)
+
+  const publish_at = tenderBids.length > 0 ? tenderBids[0].publish_at : Time().add(30, 'day').toISOString()
+  await BidModel.createBid({
+    ...configuration,
+    author_address,
+    publish_at,
+    status: BidStatus.Pending,
   })
 }
 

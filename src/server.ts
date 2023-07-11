@@ -22,8 +22,7 @@ import coauthor from './entities/Coauthor/routes'
 import committee from './entities/Committee/routes'
 import common from './entities/Common/routes'
 import debug from './entities/Debug/routes'
-import pendingBids from './entities/PendingBids/routes'
-import { activateProposals, finishProposal } from './entities/Proposal/jobs'
+import { activateProposals, finishProposal, publishBids } from './entities/Proposal/jobs'
 import proposal from './entities/Proposal/routes'
 import proposalSurveyTopics from './entities/ProposalSurveyTopics/routes'
 import sitemap from './entities/Sitemap/routes'
@@ -39,6 +38,7 @@ const jobs = manager()
 jobs.cron('@eachMinute', finishProposal)
 jobs.cron('@daily', updateGovernanceBudgets)
 jobs.cron('@eachMinute', activateProposals)
+jobs.cron('@eachHour', publishBids)
 
 const file = readFileSync('static/api.yaml', 'utf8')
 const swaggerDocument = YAML.parse(file)
@@ -65,7 +65,6 @@ app.use('/api', [
   budget,
   badges,
   common,
-  pendingBids,
   handle(async () => {
     throw new RequestError('NotFound', RequestError.NotFound)
   }),

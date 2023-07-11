@@ -4,6 +4,8 @@ import snakeCase from 'lodash/snakeCase'
 import { BudgetService } from '../../services/BudgetService'
 import { DiscordService } from '../../services/DiscordService'
 import { ErrorService } from '../../services/ErrorService'
+import { ProposalService } from '../../services/ProposalService'
+import BidModel from '../Bid/model'
 import { Budget } from '../Budget/types'
 import UpdateModel from '../Updates/model'
 
@@ -12,6 +14,8 @@ import { ProposalOutcome, ProposalWithOutcome, calculateOutcome, getWinnerTender
 import { commentProposalUpdateInDiscourse } from './routes'
 import { ProposalAttributes, ProposalStatus, ProposalType } from './types'
 import { asNumber } from './utils'
+
+const MINIMUM_BIDS_TO_PUBLISH = Number(process.env.MINIMUM_BIDS_TO_PUBLISH)
 
 export async function activateProposals(context: JobContext) {
   const activatedProposals = await ProposalModel.activateProposals()
@@ -212,5 +216,44 @@ export async function finishProposal(context: JobContext) {
         outcomeStatus === ProposalOutcome.FINISHED ? winnerChoice : undefined
       )
     }
+  }
+}
+
+export async function publishBids(context: JobContext) {
+  const pendingBids = await BidModel.getBidsReadyToPublish()
+  if (pendingBids.length === 0) {
+    return
+  }
+
+  if (isNaN(MINIMUM_BIDS_TO_PUBLISH) || MINIMUM_BIDS_TO_PUBLISH === 0) {
+    const errorMsg = `Minimum bids to publish is not set. Please set MINIMUM_BIDS_TO_PUBLISH env variable`
+    ErrorService.report(errorMsg)
+    context.log(errorMsg)
+    return
+  }
+
+  const bidsByTender = new Map<string, typeof pendingBids>()
+  pendingBids.reduce((acc, bid) => {
+    const bids = acc.get(bid.tender_id) || []
+    bids.push(bid)
+    acc.set(bid.tender_id, bids)
+    return acc
+  }, bidsByTender)
+
+  const tendersWithBidsToReject = []
+
+  for (const [tenderId, bids] of bidsByTender) {
+    if (bids.length < MINIMUM_BIDS_TO_PUBLISH) {
+      tendersWithBidsToReject.push(tenderId)
+      continue
+    }
+
+    // TODO: Implement and remove published bids from DB
+    // await ProposalService.createProposal()
+  }
+
+  if (tendersWithBidsToReject.length > 0) {
+    await BidModel.rejectBidsFromTenders(tendersWithBidsToReject)
+    // TODO: Reject Tender proposals
   }
 }
