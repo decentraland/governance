@@ -91,13 +91,6 @@ type VoteSegmentation = {
   lowQualityVotes: Record<string, Vote>
 }
 
-type UpdateProps = {
-  status: ProposalStatus
-  vesting_contract: string | null
-  enactingTx: string | null
-  description: string
-}
-
 function getVoteSegmentation(votes: Record<string, Vote> | null | undefined): VoteSegmentation {
   const highQualityVotes: Record<string, Vote> = {}
   const lowQualityVotes: Record<string, Vote> = {}
@@ -231,28 +224,6 @@ export default function ProposalPage() {
       updatePageState({ confirmSubscription: false })
       if (!proposal) return
       queryClient.setQueryData([subscriptionsQueryKey], updatedSubscriptions)
-    },
-  })
-
-  const { mutate: updateProposal, isLoading: isUpdating } = useMutation({
-    mutationFn: async (updateProps: UpdateProps) => {
-      const { status, vesting_contract, enactingTx, description } = updateProps
-      if (proposal && isDAOCommittee) {
-        const updateProposal = await Governance.get().updateProposalStatus(
-          proposal.id,
-          status,
-          vesting_contract,
-          enactingTx,
-          description
-        )
-        updatePageState({ confirmStatusUpdate: false })
-        return updateProposal
-      }
-    },
-    onSuccess: (proposal) => {
-      if (proposal) {
-        queryClient.setQueryData([proposalKey], proposal)
-      }
     },
   })
 
@@ -406,7 +377,6 @@ export default function ProposalPage() {
                 castingVote={castingVote}
                 castVote={castVote}
                 voteWithSurvey={voteWithSurvey}
-                updatingStatus={isUpdating}
                 subscribing={isUpdatingSubscription}
                 subscribe={updateSubscription}
                 subscriptions={subscriptions ?? []}
@@ -458,11 +428,9 @@ export default function ProposalPage() {
       <UpdateProposalStatusModal
         open={!!proposalPageState.confirmStatusUpdate}
         proposal={proposal}
+        isDAOCommittee={isDAOCommittee}
         status={proposalPageState.confirmStatusUpdate || null}
-        loading={isUpdating}
-        onClickAccept={(status, vesting_contract, enactingTx, description) =>
-          updateProposal({ status, vesting_contract, enactingTx, description })
-        }
+        proposalKey={proposalKey}
         onClose={() => updatePageState({ confirmStatusUpdate: false })}
       />
       <ProposalSuccessModal

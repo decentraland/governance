@@ -427,7 +427,8 @@
       "update_status_description_label": "Description",
       "update_status_description_placeholder": "Add any useful details for user",
       "accept": "Save",
-      "reject": "Cancel"
+      "reject": "Cancel",
+      "update_error_label": "There was an error while trying to update the proposal, please try again."
     },
     "poi_proposal": {
       "description": "What would you like to do?"
