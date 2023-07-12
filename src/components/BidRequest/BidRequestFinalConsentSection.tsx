@@ -10,18 +10,12 @@ export type BidRequestFinalConsent = {
   contentPolicy: boolean
   termsOfUse: boolean
   codeOfEthics: boolean
-  platformLicenseAgreement: boolean
-  platformDocumentationAgreement: boolean
-  documentationAgreement: boolean
 }
 
 export const INITIAL_BID_REQUEST_FINAL_CONSENT_STATE: BidRequestFinalConsent = {
   contentPolicy: false,
   termsOfUse: false,
   codeOfEthics: false,
-  platformLicenseAgreement: false,
-  platformDocumentationAgreement: false,
-  documentationAgreement: false,
 }
 
 const getAcceptedAllTerms = (state: BidRequestFinalConsent): boolean => {
