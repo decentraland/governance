@@ -29,18 +29,18 @@
   transform: none !important;
 }
 
-.AddModal .GrantRequestSection__Field .LabelContainer label {
+.AddModal .ProjectRequestSection__Field .LabelContainer label {
   margin: 0;
 }
 
-.AddModal .GrantRequestSection__Field .LabelContainer {
+.AddModal .ProjectRequestSection__Field .LabelContainer {
   display: flex;
   align-items: center;
   margin-bottom: 8px;
   justify-content: space-between;
 }
 
-.AddModal .GrantRequestSection__Field .LabelContainer .Optional {
+.AddModal .ProjectRequestSection__Field .LabelContainer .Optional {
   font-style: italic;
   font-weight: var(--weight-normal);
   font-size: 15px;

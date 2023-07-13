@@ -49,7 +49,7 @@ export default function DocumentationSection({ onValidation, isFormDisabled }: P
   }, [isValid, isDirty, onValidation, values])
 
   return (
-    <div className="GrantRequestSection__Content">
+    <div>
       <MultipleChoiceField
         label={t('page.submit_grant.category_assessment.documentation.content_type.label')}
         intlKey="page.submit_grant.category_assessment.documentation.content_type.choices"
@@ -67,7 +67,7 @@ export default function DocumentationSection({ onValidation, isFormDisabled }: P
           }
         }}
       />
-      <ContentSection className="GrantRequestSection__Field">
+      <ContentSection className="ProjectRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.documentation.total_pieces_label')}</Label>
         <Field
           name="totalPieces"

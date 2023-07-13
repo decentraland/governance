@@ -223,12 +223,12 @@ export default function SubmitGrant() {
           {t('page.submit_grant.cancel')}
         </Button>
       </Container>
-      <Container className="GrantRequestSection__Container">
+      <Container className="ProjectRequestSection__Container">
         <Markdown componentsClassNames={{ p: 'GrantRequest__HeaderDescription' }}>{description}</Markdown>
       </Container>
 
       {!isCategorySelected && (
-        <Container className="GrantRequestSection__Container">
+        <Container className="ProjectRequestSection__Container">
           <CategorySelector
             onCategoryClick={(value: NewGrantCategory) => {
               patchGrantRequest((prevState) => ({ ...prevState, category: value }))
@@ -303,7 +303,7 @@ export default function SubmitGrant() {
           />
 
           <Container className="ContentLayout__Container">
-            <ContentSection className="GrantRequestSection__Content">
+            <ContentSection className="ProjectRequestSection__Content">
               <div>
                 <Button primary disabled={!allSectionsValid} loading={isFormDisabled} onClick={() => submit()}>
                   {t('page.submit.button_submit')}

@@ -1,14 +1,14 @@
-.GrantRequestSection__Container {
+.ProjectRequestSection__Container {
   margin-bottom: 50px;
 }
 
-.GrantRequestSection__Head {
+.ProjectRequestSection__Head {
   display: flex;
   justify-content: space-between;
   flex-direction: column;
 }
 
-.GrantRequestSection__Header {
+.ProjectRequestSection__Header {
   width: 100%;
   display: flex;
   flex-wrap: nowrap;
@@ -17,7 +17,7 @@
   margin-bottom: 16px;
 }
 
-.GrantRequestSection__HeaderTitle {
+.ProjectRequestSection__HeaderTitle {
   font-size: 20px;
   font-weight: var(--weight-semi-bold);
   line-height: 42px;
@@ -25,28 +25,28 @@
   text-align: left;
 }
 
-.GrantRequestSection__HorizontalLine {
+.ProjectRequestSection__HorizontalLine {
   flex-grow: 100;
   border: 1px solid var(--black-300);
 }
 
-.GrantRequestSection__FixedSizeIcon {
+.ProjectRequestSection__FixedSizeIcon {
   min-width: 34px;
   max-width: 34px;
 }
 
-.GrantRequestSection__Content {
+.ProjectRequestSection__Content {
   display: flex;
   flex-direction: column;
 }
 
 @media (min-width: 768px) {
-  .GrantRequestSection__Content {
+  .ProjectRequestSection__Content {
     margin-left: 61px;
   }
 }
 
-.GrantRequestSection__Row {
+.ProjectRequestSection__Row {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -56,28 +56,28 @@
 }
 
 @media (min-width: 768px) {
-  .GrantRequestSection__Row {
+  .ProjectRequestSection__Row {
     flex-direction: row;
   }
 }
 
-.GrantRequestSection__InputContainer {
+.ProjectRequestSection__InputContainer {
   display: flex;
   flex-direction: column;
   flex: 1;
 }
 
-.GrantRequestSection__Field {
+.ProjectRequestSection__Field {
   display: flex;
   flex-direction: column;
   margin-bottom: 32px;
 }
 
-.GrantRequestSection__Field:last-child {
+.ProjectRequestSection__Field:last-child {
   margin-bottom: 0;
 }
 
-.GrantRequestSection__FieldRow {
+.ProjectRequestSection__FieldRow {
   display: flex;
   flex-direction: row;
   margin-bottom: 32px;
@@ -85,11 +85,11 @@
   gap: 21px;
 }
 
-.GrantRequestSection__TitleSubLabel {
+.ProjectRequestSection__TitleSubLabel {
   margin-bottom: 20px !important;
 }
 
-.GrantRequestSection__EmailNote {
+.ProjectRequestSection__EmailNote {
   font-size: 10px;
   font-weight: var(--weight-light);
   margin-bottom: 8px;
