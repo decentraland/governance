@@ -11,7 +11,7 @@ function GrantRequestSectionError({ sectionNumber }: GrantRequestSectionIconProp
       viewBox="0 0 34 42"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="GrantRequestSection__FixedSizeIcon"
+      className="ProjectRequestSection__FixedSizeIcon"
     >
       <circle cx="16" cy="21" r="15.5" stroke="#736E7D" strokeOpacity="0.32" />
       <NumberIcon sectionNumber={sectionNumber} />

@@ -61,8 +61,8 @@ export default function InWorldContentSection({ onValidation, isFormDisabled }: 
   )
 
   return (
-    <div className="GrantRequestSection__Content">
-      <ContentSection className="GrantRequestSection__Field">
+    <div>
+      <ContentSection className="ProjectRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.in_world_content.total_pieces_label')}</Label>
         <Field
           name="totalPieces"
@@ -76,7 +76,7 @@ export default function InWorldContentSection({ onValidation, isFormDisabled }: 
           rules={getFieldRules('totalPieces')}
         />
       </ContentSection>
-      <ContentSection className="GrantRequestSection__Field">
+      <ContentSection className="ProjectRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.in_world_content.total_users_label')}</Label>
         <Field
           name="totalUsers"
@@ -90,7 +90,7 @@ export default function InWorldContentSection({ onValidation, isFormDisabled }: 
           rules={getFieldRules('totalUsers')}
         />
       </ContentSection>
-      <ContentSection className="GrantRequestSection__Field">
+      <ContentSection className="ProjectRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.in_world_content.engagement_measurement_label')}</Label>
         <MarkdownField
           name="engagementMeasurement"

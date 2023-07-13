@@ -11,12 +11,12 @@ import { userModifiedForm } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import SubLabel from '../Common/SubLabel'
 import Label from '../Common/Typography/Label'
+import ProjectRequestSection from '../ProjectRequest/ProjectRequestSection'
 
 import AddBox from './AddBox'
 import AddBudgetBreakdownModal from './AddBudgetBreakdownModal'
 import BudgetBreakdownConcept from './BudgetBreakdownConcept'
 import './GrantRequestDueDiligenceSection.css'
-import GrantRequestSection from './GrantRequestSection'
 
 export const INITIAL_GRANT_REQUEST_DUE_DILIGENCE_STATE: GrantRequestDueDiligence = {
   budgetBreakdown: [],
@@ -83,37 +83,35 @@ export default function GrantRequestDueDiligenceSection({
   }, [dueDiligenceState, isCompleted])
 
   return (
-    <GrantRequestSection
+    <ProjectRequestSection
       shouldFocus={false}
       validated={isCompleted}
       isFormEdited={isFormEdited}
       sectionTitle={t('page.submit_grant.due_diligence.title')}
       sectionNumber={sectionNumber}
     >
-      <div className="GrantRequestSection__Content">
-        <Label>{t('page.submit_grant.due_diligence.budget_breakdown_label')}</Label>
-        <SubLabel isMarkdown>
-          {t('page.submit_grant.due_diligence.budget_breakdown_detail', { value: fundingLeftToDisclose })}
-        </SubLabel>
-        {dueDiligenceState.budgetBreakdown.map((item, index) => (
-          <BudgetBreakdownConcept
-            key={`${item.concept}-${index}`}
-            item={item}
-            onClick={() => {
-              setSelectedBudgetBreakdownConcept(item)
-              setModalOpen(true)
-            }}
-          />
-        ))}
-        <AddBox disabled={isCompleted} onClick={() => setModalOpen(true)}>
-          {isCompleted || Number(funding) <= 0
-            ? t('page.submit_grant.due_diligence.budget_breakdown_no_funds_left')
-            : t('page.submit_grant.due_diligence.budget_breakdown_add_concept')}
-        </AddBox>
-        <span className="GrantRequestSection__ExampleLabel">
-          {t('page.submit_grant.due_diligence.budget_breakdown_example')}
-        </span>
-      </div>
+      <Label>{t('page.submit_grant.due_diligence.budget_breakdown_label')}</Label>
+      <SubLabel isMarkdown>
+        {t('page.submit_grant.due_diligence.budget_breakdown_detail', { value: fundingLeftToDisclose })}
+      </SubLabel>
+      {dueDiligenceState.budgetBreakdown.map((item, index) => (
+        <BudgetBreakdownConcept
+          key={`${item.concept}-${index}`}
+          item={item}
+          onClick={() => {
+            setSelectedBudgetBreakdownConcept(item)
+            setModalOpen(true)
+          }}
+        />
+      ))}
+      <AddBox disabled={isCompleted} onClick={() => setModalOpen(true)}>
+        {isCompleted || Number(funding) <= 0
+          ? t('page.submit_grant.due_diligence.budget_breakdown_no_funds_left')
+          : t('page.submit_grant.due_diligence.budget_breakdown_add_concept')}
+      </AddBox>
+      <span className="ProjectRequestSection__ExampleLabel">
+        {t('page.submit_grant.due_diligence.budget_breakdown_example')}
+      </span>
       {isModalOpen && (
         <AddBudgetBreakdownModal
           isOpen={isModalOpen}
@@ -130,6 +128,6 @@ export default function GrantRequestDueDiligenceSection({
           selectedConcept={selectedBudgetBreakdownConcept}
         />
       )}
-    </GrantRequestSection>
+    </ProjectRequestSection>
   )
 }

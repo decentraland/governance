@@ -1,4 +1,4 @@
-.GrantRequestFundingSection__Radio {
+.RadioField {
   display: flex;
   align-items: center;
   gap: 11px;
@@ -9,27 +9,27 @@
   cursor: pointer;
 }
 
-.GrantRequestFundingSection__Radio:hover {
+.RadioField:hover {
   background-color: var(--black-200);
   border-radius: 6px;
   transition: background-color 0.3s ease;
   width: 100%;
 }
 
-.GrantRequestFundingSection__Radio > .ui.radio.checkbox input.hidden ~ label:before {
+.RadioField > .ui.radio.checkbox input.hidden ~ label:before {
   border: 1px solid var(--secondary-text);
 }
 
-.GrantRequestFundingSection__Radio > .ui.radio.checkbox > label:before {
+.RadioField > .ui.radio.checkbox > label:before {
   background: var(--white-900) !important;
 }
 
-.GrantRequestFundingSection__Radio > .ui.radio.checkbox.checked > label:before {
+.RadioField > .ui.radio.checkbox.checked > label:before {
   background: var(--dcl-primary) !important;
   border: 0 !important;
 }
 
-.GrantRequestFundingSection__Radio > p.dg.Paragraph {
+.RadioField > p.dg.Paragraph {
   font-size: 17px;
   line-height: 26px;
   letter-spacing: -0.2px;
@@ -37,6 +37,6 @@
   text-align: left;
 }
 
-.GrantRequestFundingSection__Radio > a.dg.Link.Link--pointer {
+.RadioField > a.dg.Link.Link--pointer {
   font-weight: var(--weight-semi-bold);
 }

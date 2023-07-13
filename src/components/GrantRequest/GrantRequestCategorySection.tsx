@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react'
 
 import { GrantRequestCategoryAssessment, NewGrantCategory } from '../../entities/Grant/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
+import ProjectRequestSection from '../ProjectRequest/ProjectRequestSection'
 
 import AcceleratorSection from './CategorySection/AcceleratorSection'
 import CoreUnitSection from './CategorySection/CoreUnitSection'
@@ -10,8 +11,6 @@ import InWorldContentSection from './CategorySection/InWorldContentSection'
 import PlatformSection from './CategorySection/PlatformSection'
 import SocialMediaContentSection from './CategorySection/SocialMediaContentSection'
 import SponsorshipSection from './CategorySection/SponsorshipSection'
-
-import GrantRequestSection from './GrantRequestSection'
 
 interface Props {
   category: NewGrantCategory
@@ -35,7 +34,7 @@ export default function GrantRequestCategorySection({ category, onValidation, is
   )
 
   return (
-    <GrantRequestSection
+    <ProjectRequestSection
       validated={!!validated}
       isFormEdited={isEdited}
       sectionTitle={t('page.submit_grant.category_assessment.title')}
@@ -62,6 +61,6 @@ export default function GrantRequestCategorySection({ category, onValidation, is
       {category === NewGrantCategory.Platform && (
         <PlatformSection onValidation={handleValidation} isFormDisabled={isFormDisabled} />
       )}
-    </GrantRequestSection>
+    </ProjectRequestSection>
   )
 }

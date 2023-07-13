@@ -300,6 +300,23 @@
       "deliverables_too_large": "Deliverables is too large",
       "target_release_quarter_empty": "Target release quarter is empty",
       "submission_vp_not_met": "This action requires at least 100 VP."
+    },
+    "bid": {
+      "funding": {
+        "invalid": "*Funding is invalid*"
+      },
+      "general_info": {
+        "deliverables_empty": "Deliverables is empty",
+        "deliverables_too_large": "Deliverables is too large",
+        "deliverables_too_short": "Deliverables is too short",
+        "beneficiary_empty": "Beneficiary is empty",
+        "beneficiary_invalid": "Beneficiary is invalid",
+        "email_empty": "Email address is empty",
+        "email_invalid": "Email address is invalid",
+        "roadmap_empty": "Roadmap is empty",
+        "roadmap_too_large": "Roadmap is too large",
+        "roadmap_too_short": "Roadmap is too short"
+      }
     }
   },
   "category": {
@@ -347,6 +364,8 @@
     "pitch_description": "Validate ideas to spawn new projects",
     "tender_title": "Tender Proposal",
     "tender_description": "Refine a previously passed Pitch Proposal",
+    "bid_title": "Bid Proposal",
+    "bid_description": "MISSING TEXT",
     "all_grants_title": "All grants",
     "core_unit_title": "Core Unit",
     "platform_title": "Platform",
@@ -1738,6 +1757,33 @@
       "target_release_quarter_label": "Target release quarter",
       "target_release_quarter_placeholder": "Select a target release quarter",
       "target_release_quarter_description": "State the anticipated release date for the community. Please note that this is not binding, and execution teams may propose a new date in their bid proposals."
+    },
+    "submit_bid": {
+      "title": "Submit Bid proposal",
+      "description": "Part of the Bidding & Tendering process, bid proposals are meant for professional teams to scope and propose a project out of their own understanding of one given issue or desire outlined by the Community based on the two preceding instances that would have passed. Only one Bid Proposal per a given Tender Proposal will be funded. Learn more about our [Bidding & Tendering Process](https://MISSING_URL).",
+      "cancel": "Cancel",
+      "funding_section": {
+        "title": "Funding",
+        "budget_label": "Budget",
+        "project_duration_label": "Project duration",
+        "project_duration_unit": "Months",
+        "start_date_label": "Start date"
+      },
+      "general_info": {
+        "title": "General information",
+        "deliverables_label": "Deliverables",
+        "deliverables_detail": "Deliverables detail",
+        "beneficiary_label": "Beneficiary address",
+        "beneficiary_detail": "The address that will receive the grant funds. This must be an Ethereum address! Entering a non-Ethereum address that cannot receive MANA may result in a permanent loss of funds.",
+        "roadmap_label": "Roadmap and milestones",
+        "roadmap_detail": "Describe the roadmap of your project, making sure to include any relevant milestones that the community should be aware of and how you will share progress you have made. Clearly communicating progress for long-term projects funded by vesting contracts will help prevent the removal of your funding.",
+        "roadmap_placeholder": "Your estimated timeline and key milestones. Include your plan for reporting progress to the community.",
+        "email_label": "Contact Email Address",
+        "email_detail": "This email address will be used by the Grant Support teams to contact you to check the progress of the grant, set up meetings and maintain an open communication channel.",
+        "email_placeholder": "Enter your email address",
+        "email_error_message": "Please enter a valid email",
+        "email_note": "Note: The address will be published in the proposal and publicly visible. If you want to keep your anonymity consider using an email address without personal identifiable information."
+      }
     },
     "subscription_banner": {
       "title": "Stay in the loop",

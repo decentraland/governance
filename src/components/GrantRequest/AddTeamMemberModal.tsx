@@ -78,7 +78,7 @@ export default function AddTeamMemberModal({ isOpen, onClose, onSubmit, selected
       onSecondaryClick={selectedTeamMember ? onDelete : undefined}
     >
       <div>
-        <ContentSection className="GrantRequestSection__Field">
+        <ContentSection className="ProjectRequestSection__Field">
           <Label>{t('page.submit_grant.team.team_modal.name_label')}</Label>
           <Field
             name="name"
@@ -103,7 +103,7 @@ export default function AddTeamMemberModal({ isOpen, onClose, onSubmit, selected
             }}
           />
         </ContentSection>
-        <ContentSection className="GrantRequestSection__Field">
+        <ContentSection className="ProjectRequestSection__Field">
           <Label>{t('page.submit_grant.team.team_modal.role_label')}</Label>
           <Field
             name="role"
@@ -128,7 +128,7 @@ export default function AddTeamMemberModal({ isOpen, onClose, onSubmit, selected
             }}
           />
         </ContentSection>
-        <ContentSection className="GrantRequestSection__Field">
+        <ContentSection className="ProjectRequestSection__Field">
           <Label>{t('page.submit_grant.team.team_modal.about_label')}</Label>
           <TextArea
             name="about"
@@ -149,7 +149,7 @@ export default function AddTeamMemberModal({ isOpen, onClose, onSubmit, selected
             }}
           />
         </ContentSection>
-        <ContentSection className="GrantRequestSection__Field">
+        <ContentSection className="ProjectRequestSection__Field">
           <div className="LabelContainer">
             <Label>{t('page.submit_grant.team.team_modal.relevant_link_label')}</Label>
             <span className="Optional">{t('page.submit_grant.team.team_modal.optional_label')}</span>

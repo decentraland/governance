@@ -40,8 +40,8 @@ export default function PlatformSection({ onValidation, isFormDisabled }: Props)
   }, [isValid, isDirty, onValidation, values])
 
   return (
-    <div className="GrantRequestSection__Content">
-      <ContentSection className="GrantRequestSection__Field">
+    <div>
+      <ContentSection className="ProjectRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.platform.impact_metrics_label')}</Label>
         <MarkdownField
           name="impactMetrics"

@@ -2,7 +2,6 @@ import React, { useEffect, useMemo } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Radio } from 'decentraland-ui/dist/components/Radio/Radio'
 import snakeCase from 'lodash/snakeCase'
 
 import { GrantTier } from '../../entities/Grant/GrantTier'
@@ -23,14 +22,13 @@ import useCategoryBudget from '../../hooks/useCategoryBudget'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Label from '../Common/Typography/Label'
 import Helper from '../Helper/Helper'
-import { ContentSection } from '../Layout/ContentLayout'
+import BudgetInput from '../ProjectRequest/BudgetInput'
+import NumberSelector from '../ProjectRequest/NumberSelector'
+import ProjectRequestSection from '../ProjectRequest/ProjectRequestSection'
+import RadioField from '../ProjectRequest/RadioField'
 
-import BudgetInput from './BudgetInput'
 import CalculationHelper from './CalculationHelper'
-import './GrantRequestFundingSection.css'
-import GrantRequestSection from './GrantRequestSection'
 import { GrantRequestSectionCard } from './GrantRequestSectionCard'
-import NumberSelector from './NumberSelector'
 
 const schema = GrantRequestFundingSchema
 
@@ -136,174 +134,156 @@ export default function GrantRequestFundingSection({
   }, [setValue, funding, watch])
 
   return (
-    <GrantRequestSection
+    <ProjectRequestSection
       validated={isValid}
       isFormEdited={isFormEdited}
       sectionTitle={t('page.submit_grant.funding_section.title')}
       sectionNumber={sectionNumber}
     >
-      <ContentSection className="GrantRequestSection__Content">
-        <div className="GrantRequestSection__Row">
-          {grantCategory && (
-            <GrantRequestSectionCard
-              title={t('page.submit_grant.funding_section.project_category_title')}
-              helper={
-                <Button basic onClick={() => onCategoryChange(grantCategory)}>
-                  {t('page.submit_grant.funding_section.project_category_action')}
-                </Button>
-              }
-              content={grantCategory}
-              subtitle={t(`page.submit_grant.${snakeCase(grantCategory || undefined)}_description`)}
-            />
-          )}
+      <div className="ProjectRequestSection__Row">
+        {grantCategory && (
           <GrantRequestSectionCard
-            title={t('page.submit_grant.funding_section.category_budget_title')}
+            title={t('page.submit_grant.funding_section.project_category_title')}
             helper={
-              <Helper
-                text={t('page.submit_grant.funding_section.category_budget_info')}
-                size="16"
-                position="right center"
+              <Button basic onClick={() => onCategoryChange(grantCategory)}>
+                {t('page.submit_grant.funding_section.project_category_action')}
+              </Button>
+            }
+            content={grantCategory}
+            subtitle={t(`page.submit_grant.${snakeCase(grantCategory || undefined)}_description`)}
+          />
+        )}
+        <GrantRequestSectionCard
+          title={t('page.submit_grant.funding_section.category_budget_title')}
+          helper={
+            <Helper
+              text={t('page.submit_grant.funding_section.category_budget_info')}
+              size="16"
+              position="right center"
+            />
+          }
+          content={`$${t('general.number', {
+            value: availableCategoryBudget,
+          })}`}
+          titleExtra={`(${getFormattedPercentage(availableCategoryBudget, totalCategoryBudget, 0)})`}
+          subtitle={t('page.submit_grant.funding_section.category_budget_total', {
+            value: totalCategoryBudget,
+          })}
+          subtitleVariant="uppercase"
+          error={errors.funding?.message === 'error.grant.funding.over_budget'}
+        />
+      </div>
+      <div className="ProjectRequestSection__Row">
+        <div className="ProjectRequestSection__InputContainer">
+          <Controller
+            control={control}
+            name="funding"
+            rules={{
+              required: { value: true, message: t('error.grant.funding.invalid') },
+              validate: (value) => {
+                if (Number(value) > availableCategoryBudget) {
+                  return t('error.grant.funding.over_budget')
+                }
+              },
+              min: { value: schema.funding.minimum, message: t('error.grant.funding.too_low') },
+              max: { value: schema.funding.maximum, message: t('error.grant.funding.too_big') },
+            }}
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            render={({ field: { ref, ...field } }) => (
+              <BudgetInput
+                label={t('page.submit_grant.funding_section.desired_funding')}
+                min={GRANT_PROPOSAL_MIN_BUDGET}
+                max={GRANT_PROPOSAL_MAX_BUDGET}
+                placeholder={`${GRANT_PROPOSAL_MIN_BUDGET}-${GRANT_PROPOSAL_MAX_BUDGET}`}
+                subtitle={t('page.submit_grant.funding_section.desired_funding_sub')}
+                error={errors.funding?.message || ''}
+                disabled={isFormDisabled}
+                {...field}
               />
-            }
-            content={`$${t('general.number', {
-              value: availableCategoryBudget,
-            })}`}
-            titleExtra={`(${getFormattedPercentage(availableCategoryBudget, totalCategoryBudget, 0)})`}
-            subtitle={t('page.submit_grant.funding_section.category_budget_total', {
-              value: totalCategoryBudget,
-            })}
-            subtitleVariant="uppercase"
-            error={errors.funding?.message === 'error.grant.funding.over_budget'}
+            )}
           />
         </div>
-        <div className="GrantRequestSection__Row">
-          <div className="GrantRequestSection__InputContainer">
-            <Controller
-              control={control}
-              name="funding"
-              rules={{
-                required: { value: true, message: t('error.grant.funding.invalid') },
-                validate: (value) => {
-                  if (Number(value) > availableCategoryBudget) {
-                    return t('error.grant.funding.over_budget')
-                  }
-                },
-                min: { value: schema.funding.minimum, message: t('error.grant.funding.too_low') },
-                max: { value: schema.funding.maximum, message: t('error.grant.funding.too_big') },
-              }}
-              // eslint-disable-next-line @typescript-eslint/no-unused-vars
-              render={({ field: { ref, ...field } }) => (
-                <BudgetInput
-                  label={t('page.submit_grant.funding_section.desired_funding')}
-                  min={GRANT_PROPOSAL_MIN_BUDGET}
-                  max={GRANT_PROPOSAL_MAX_BUDGET}
-                  placeholder={`${GRANT_PROPOSAL_MIN_BUDGET}-${GRANT_PROPOSAL_MAX_BUDGET}`}
-                  subtitle={t('page.submit_grant.funding_section.desired_funding_sub')}
-                  error={errors.funding?.message || ''}
-                  disabled={isFormDisabled}
-                  {...field}
-                />
-              )}
-            />
-          </div>
-          <div className="GrantRequestSection__InputContainer">
-            <NumberSelector
-              value={watch('projectDuration')}
-              min={availableDurations[0]}
-              max={availableDurations[availableDurations.length - 1]}
-              onChange={(value) => setValue('projectDuration', Number(value))}
-              label={t('page.submit_grant.funding_section.project_duration_title')}
-              unitLabel={t('page.submit_grant.funding_section.project_duration_unit')}
-            />
-          </div>
-        </div>
-        <div className="GrantRequestSection__Row">
-          <GrantRequestSectionCard
-            title={t('page.submit_grant.funding_section.pass_threshold_title')}
-            helper={<CalculationHelper />}
-            content={
-              grantCategory && isValidBudgetForCategory(watch('funding'), totalCategoryBudget)
-                ? t('page.submit_grant.funding_section.pass_threshold', { value: passThreshold })
-                : null
-            }
-            subtitle={t('page.submit_grant.funding_section.pass_threshold_sub')}
-          />
-          <GrantRequestSectionCard
-            title={t('page.submit_grant.funding_section.payout_strategy_title')}
-            helper={<CalculationHelper />}
-            content={
-              grantCategory && isValidBudgetForCategory(watch('funding'), totalCategoryBudget)
-                ? t('page.submit_grant.funding_section.payout_strategy_payments', {
-                    value: watch('projectDuration'),
-                  })
-                : null
-            }
-            subtitle={t('page.submit_grant.funding_section.payout_strategy_sub')}
+        <div className="ProjectRequestSection__InputContainer">
+          <NumberSelector
+            value={watch('projectDuration')}
+            min={availableDurations[0]}
+            max={availableDurations[availableDurations.length - 1]}
+            onChange={(value) => setValue('projectDuration', Number(value))}
+            label={t('page.submit_grant.funding_section.project_duration_title')}
+            unitLabel={t('page.submit_grant.funding_section.project_duration_unit')}
           />
         </div>
-        <div className="GrantRequestSection__Field">
-          <Label>{t('page.submit_grant.funding_section.funding_time_title')}</Label>
-          <ContentSection
-            className="GrantRequestFundingSection__Radio"
-            onClick={() => setValue('vestingStartDate', VestingStartDate.First)}
-          >
-            <Radio
-              name="vestingStartDate"
-              id={VestingStartDate.First}
-              value={VestingStartDate.First}
-              checked={watch('vestingStartDate') === VestingStartDate.First}
-              type="radio"
-              disabled={isFormDisabled}
-            />
-            {t('page.submit_grant.funding_section.funding_time_first_day')}
-          </ContentSection>
-          <ContentSection
-            className="GrantRequestFundingSection__Radio"
-            onClick={() => setValue('vestingStartDate', VestingStartDate.Fifteenth)}
-          >
-            <Radio
-              name="vestingStartDate"
-              id={VestingStartDate.Fifteenth}
-              value={VestingStartDate.Fifteenth}
-              type="radio"
-              checked={watch('vestingStartDate') === VestingStartDate.Fifteenth}
-              disabled={isFormDisabled}
-            />
-            {t('page.submit_grant.funding_section.funding_time_fifteenth_day')}
-          </ContentSection>
-        </div>
-        <div>
-          <Label>{t('page.submit_grant.funding_section.preferred_payment_token')}</Label>
-          <ContentSection
-            className="GrantRequestFundingSection__Radio"
-            onClick={() => !isHigherTier && setValue('paymentToken', PaymentToken.MANA)}
-          >
-            <Radio
-              name="paymentToken"
-              id={PaymentToken.MANA}
-              value={PaymentToken.MANA}
-              checked={watch('paymentToken') === PaymentToken.MANA}
-              type="radio"
-              disabled={isHigherTier || isFormDisabled}
-            />
-            {t('page.submit_grant.funding_section.preferred_payment_token_mana')}
-          </ContentSection>
-          <ContentSection
-            className="GrantRequestFundingSection__Radio"
-            onClick={() => !isHigherTier && setValue('paymentToken', PaymentToken.DAI)}
-          >
-            <Radio
-              name="paymentToken"
-              id={PaymentToken.DAI}
-              value={PaymentToken.DAI}
-              type="radio"
-              checked={watch('paymentToken') === PaymentToken.DAI}
-              disabled={isHigherTier || isFormDisabled}
-            />
-            {t('page.submit_grant.funding_section.preferred_payment_token_dai')}
-          </ContentSection>
-        </div>
-      </ContentSection>
-    </GrantRequestSection>
+      </div>
+      <div className="ProjectRequestSection__Row">
+        <GrantRequestSectionCard
+          title={t('page.submit_grant.funding_section.pass_threshold_title')}
+          helper={<CalculationHelper />}
+          content={
+            grantCategory && isValidBudgetForCategory(watch('funding'), totalCategoryBudget)
+              ? t('page.submit_grant.funding_section.pass_threshold', { value: passThreshold })
+              : null
+          }
+          subtitle={t('page.submit_grant.funding_section.pass_threshold_sub')}
+        />
+        <GrantRequestSectionCard
+          title={t('page.submit_grant.funding_section.payout_strategy_title')}
+          helper={<CalculationHelper />}
+          content={
+            grantCategory && isValidBudgetForCategory(watch('funding'), totalCategoryBudget)
+              ? t('page.submit_grant.funding_section.payout_strategy_payments', {
+                  value: watch('projectDuration'),
+                })
+              : null
+          }
+          subtitle={t('page.submit_grant.funding_section.payout_strategy_sub')}
+        />
+      </div>
+      <div className="ProjectRequestSection__Field">
+        <Label>{t('page.submit_grant.funding_section.funding_time_title')}</Label>
+        <RadioField
+          onClick={() => setValue('vestingStartDate', VestingStartDate.First)}
+          name="vestingStartDate"
+          id={VestingStartDate.First}
+          value={VestingStartDate.First}
+          checked={watch('vestingStartDate') === VestingStartDate.First}
+          type="radio"
+          disabled={isFormDisabled}
+          label={t('page.submit_grant.funding_section.funding_time_first_day')}
+        />
+        <RadioField
+          onClick={() => setValue('vestingStartDate', VestingStartDate.Fifteenth)}
+          name="vestingStartDate"
+          id={VestingStartDate.Fifteenth}
+          value={VestingStartDate.Fifteenth}
+          type="radio"
+          checked={watch('vestingStartDate') === VestingStartDate.Fifteenth}
+          disabled={isFormDisabled}
+          label={t('page.submit_grant.funding_section.funding_time_fifteenth_day')}
+        />
+      </div>
+      <div>
+        <Label>{t('page.submit_grant.funding_section.preferred_payment_token')}</Label>
+        <RadioField
+          onClick={() => !isHigherTier && setValue('paymentToken', PaymentToken.MANA)}
+          name="paymentToken"
+          id={PaymentToken.MANA}
+          value={PaymentToken.MANA}
+          checked={watch('paymentToken') === PaymentToken.MANA}
+          type="radio"
+          disabled={isHigherTier || isFormDisabled}
+          label={t('page.submit_grant.funding_section.preferred_payment_token_mana')}
+        />
+        <RadioField
+          onClick={() => !isHigherTier && setValue('paymentToken', PaymentToken.DAI)}
+          name="paymentToken"
+          id={PaymentToken.DAI}
+          value={PaymentToken.DAI}
+          type="radio"
+          checked={watch('paymentToken') === PaymentToken.DAI}
+          disabled={isHigherTier || isFormDisabled}
+          label={t('page.submit_grant.funding_section.preferred_payment_token_dai')}
+        />
+      </div>
+    </ProjectRequestSection>
   )
 }
