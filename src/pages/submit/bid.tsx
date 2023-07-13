@@ -100,6 +100,8 @@ export default function SubmitBid() {
       Promise.resolve()
         .then(async () => {
           parseStringsAsNumbers(bidRequest)
+          console.log('bidRequest', bidRequest)
+
           return { id: 'todo' } // Send to backend and return proposal
         })
         .then((proposal) => {

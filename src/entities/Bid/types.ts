@@ -41,7 +41,7 @@ export const newBidScheme = {
 export type BidRequestFunding = {
   funding: string | number
   projectDuration: number
-  startDate: Date | null
+  startDate: string | null
   beneficiary: string
   email: string
 }

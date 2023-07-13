@@ -109,6 +109,7 @@ export default function BidRequestFundingSection({ onValidation, isFormDisabled,
             rules={{
               required: { value: true, message: t('error.bid.start_date_empty') },
             }}
+            onChange={(_, { value }) => setValue('startDate', value)}
           />
         </ContentSection>
         <ContentSection className="ProjectRequestSection__Field">
