@@ -23,7 +23,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       primaryKey: true,
       notNull: true,
     },
-    tender_id: {
+    linked_proposal_id: {
       type: 'TEXT',
       primaryKey: true,
       notNull: true,
@@ -38,7 +38,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
     },
   })
 
-  pgm.addConstraint(Model.tableName, 'tender_id_fk', `FOREIGN KEY(tender_id) REFERENCES ${ProposalModel.tableName}(id)`)
+  pgm.addConstraint(Model.tableName, 'linked_proposal_id_fk', `FOREIGN KEY(linked_proposal_id) REFERENCES ${ProposalModel.tableName}(id)`)
   pgm.addConstraint(Model.tableName, 'author_address_check', 'CHECK(author_address ~* \'^(0x)?[0-9a-f]{40}$\')')
 }
 

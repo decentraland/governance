@@ -110,10 +110,10 @@ export default function SubmitBid() {
   const submit = useCallback(() => {
     if (allSectionsValid) {
       setIsFormDisabled(true)
-      const data = parseStringsAsNumbers(bidRequest)
+      const bidRequestParsed = parseStringsAsNumbers(bidRequest)
 
       Governance.get()
-        .createProposalBid(data)
+        .createProposalBid(bidRequestParsed)
         .then(() => navigate(locations.proposals()))
         .catch((err) => {
           console.error(err, { ...err })

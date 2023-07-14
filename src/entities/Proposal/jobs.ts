@@ -234,9 +234,9 @@ export async function publishBids(context: JobContext) {
 
   const bidsByTender = new Map<string, typeof pendingBids>()
   pendingBids.reduce((acc, bid) => {
-    const bids = acc.get(bid.tender_id) || []
+    const bids = acc.get(bid.linked_proposal_id) || []
     bids.push(bid)
-    acc.set(bid.tender_id, bids)
+    acc.set(bid.linked_proposal_id, bids)
     return acc
   }, bidsByTender)
 

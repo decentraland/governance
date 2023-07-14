@@ -7,12 +7,8 @@ export enum BidStatus {
 
 type BidProposalData = Omit<BidRequest, 'linked_proposal_id'>
 
-export type BidAttributes = {
+export type BidAttributes = NewUnpublishedBid & {
   created_at: string
-  publish_at: string
-  author_address: string
-  tender_id: string
-  bid_proposal_data: BidProposalData
 }
 
 export type NewUnpublishedBid = {
@@ -58,7 +54,8 @@ export type BidRequest = BidRequestFunding &
 export const BidRequestFundingSchema = {
   funding: {
     type: 'integer',
-    minimum: 0,
+    minimum: 100,
+    maximum: 240000,
   },
   projectDuration: {
     type: 'integer',
