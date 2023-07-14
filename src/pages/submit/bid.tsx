@@ -8,6 +8,7 @@ import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
+import { Governance } from '../../clients/Governance'
 import BidRequestFinalConsentSection from '../../components/BidRequest/BidRequestFinalConsentSection'
 import BidRequestFundingSection, {
   INITIAL_BID_REQUEST_FUNDING_STATE,
@@ -31,12 +32,14 @@ import { BidRequest } from '../../entities/Bid/types'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
+import useURLSearchParams from '../../hooks/useURLSearchParams'
 import locations, { navigate } from '../../utils/locations'
 
 import './grant.css'
 import './submit.css'
 
 const initialState: BidRequest = {
+  linked_proposal_id: '',
   ...INITIAL_BID_REQUEST_FUNDING_STATE,
   ...INITIAL_BID_REQUEST_GENERAL_INFO_STATE,
   ...INITIAL_GRANT_REQUEST_TEAM_STATE,
@@ -60,7 +63,8 @@ const initialValidationState: BidRequestValidationState = {
 }
 
 function parseStringsAsNumbers(bidRequest: BidRequest) {
-  bidRequest.funding = asNumber(bidRequest.funding)
+  const funding = asNumber(bidRequest.funding)
+  return { ...bidRequest, funding }
 }
 
 function handleCancel() {
@@ -80,8 +84,11 @@ export default function SubmitBid() {
   const [hasScrolled, setHasScrolled] = useState(false)
   const allSectionsValid = Object.values(validationState).every((prop) => prop)
   const preventNavigation = useRef(false)
+  const params = useURLSearchParams()
   const [submitError, setSubmitError] = useState<string | undefined>(undefined)
   let sectionNumber = 0
+
+  const preselectedLinkedProposalId = params.get('linked_proposal_id')
 
   const getSectionNumber = () => {
     sectionNumber++
@@ -92,21 +99,22 @@ export default function SubmitBid() {
     preventNavigation.current = userModifiedForm(bidRequest, initialState)
   }, [bidRequest])
 
+  useEffect(() => {
+    if (preselectedLinkedProposalId) {
+      patchBidRequest((prevState) => ({ ...prevState, linked_proposal_id: preselectedLinkedProposalId }))
+    }
+  }, [preselectedLinkedProposalId, patchBidRequest])
+
   usePreventNavigation(!!preventNavigation)
 
   const submit = useCallback(() => {
     if (allSectionsValid) {
       setIsFormDisabled(true)
-      Promise.resolve()
-        .then(async () => {
-          parseStringsAsNumbers(bidRequest)
-          console.log('bidRequest', bidRequest)
+      const data = parseStringsAsNumbers(bidRequest)
 
-          return { id: 'todo' } // Send to backend and return proposal
-        })
-        .then((proposal) => {
-          navigate(locations.proposal(proposal.id, { new: 'true' }), { replace: true })
-        })
+      Governance.get()
+        .createProposalBid(data)
+        .then(() => navigate(locations.proposals()))
         .catch((err) => {
           console.error(err, { ...err })
           setSubmitError(err.body?.error || err.message)

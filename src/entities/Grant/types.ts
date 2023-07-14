@@ -314,7 +314,7 @@ export const TeamMemberItemSchema = {
   },
 }
 
-const GrantRequestTeamSchema = {
+export const GrantRequestTeamSchema = {
   members: {
     type: 'array',
     items: {
@@ -326,7 +326,7 @@ const GrantRequestTeamSchema = {
   },
 }
 
-const GrantRequestDueDiligenceSchema = {
+export const GrantRequestDueDiligenceSchema = {
   budgetBreakdown: {
     type: 'array',
     items: {

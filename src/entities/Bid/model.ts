@@ -1,7 +1,7 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import { SQL, join, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 
-import { BidAttributes, BidStatus, NewBid } from './types'
+import { BidAttributes, BidStatus, NewUnpublishedBid } from './types'
 
 const DB_ENCRYPTION_KEY = process.env.DB_ENCRYPTION_KEY
 
@@ -14,7 +14,13 @@ export default class PendingBidsModel extends Model<BidAttributes> {
   static withTimestamps = false
   static primaryKey = 'id'
 
-  static async createBid({ linked_proposal_id, author_address, bid_proposal_data, publish_at, status }: NewBid) {
+  static async createBid({
+    linked_proposal_id,
+    author_address,
+    bid_proposal_data,
+    publish_at,
+    status,
+  }: NewUnpublishedBid) {
     checkEncryptionKey()
 
     const query = SQL`
