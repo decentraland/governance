@@ -2,7 +2,7 @@ import API from 'decentraland-gatsby/dist/utils/api/API'
 import env from 'decentraland-gatsby/dist/utils/env'
 import uniqBy from 'lodash/uniqBy'
 
-import { SNAPSHOT_API, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
+import { SNAPSHOT_API, SNAPSHOT_API_KEY, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 
 import { ErrorClient } from './ErrorClient'
 import {
@@ -43,6 +43,11 @@ export class SnapshotGraphql extends API {
 
   static get() {
     return this.from(env('SNAPSHOT_API', this.Url))
+  }
+
+  constructor(baseUrl: string) {
+    super(baseUrl)
+    if (SNAPSHOT_API_KEY) this.defaultOptions.header('x-api-key', SNAPSHOT_API_KEY)
   }
 
   async getStatus() {
@@ -227,42 +232,6 @@ export class SnapshotGraphql extends API {
     return result?.data?.votes
   }
 
-  fetchVotes = async (params: { start: Date; end: Date }, skip: number, batchSize: number) => {
-    const { start, end } = params
-    const query = `
-      query getVotes($space: String!, $start: Int!, $end: Int!, $first: Int!, $skip: Int!) {
-        votes(where: {space: $space, created_gte: $start, created_lt: $end}, orderBy: "created", orderDirection: asc, first: $first, skip: $skip) {
-          voter
-          created
-          vp
-          choice
-          proposal {
-            id
-            choices
-          }
-        }
-      }
-    `
-
-    const result = await this.fetch<SnapshotVoteResponse>(
-      GRAPHQL_ENDPOINT,
-      this.options()
-        .method('POST')
-        .json({
-          query,
-          variables: {
-            space: SNAPSHOT_SPACE,
-            start: getQueryTimestamp(start.getTime()),
-            end: getQueryTimestamp(end.getTime()),
-            first: batchSize,
-            skip,
-          },
-        })
-    )
-
-    return result?.data?.votes
-  }
-
   async getVotes(start: Date, end: Date) {
     const query = `
       query getVotes($space: String!, $start: Int!, $end: Int!, $first: Int!) {
@@ -401,7 +370,7 @@ export class SnapshotGraphql extends API {
       voter: address,
       proposal: proposalId || '',
     }
-
+    console.log('getting vp distribution')
     const result = await this.fetch<SnapshotVpResponse>(
       GRAPHQL_ENDPOINT,
       this.options().method('POST').json({
@@ -409,7 +378,7 @@ export class SnapshotGraphql extends API {
         variables: variables,
       })
     )
-
+    console.log('result', result)
     if (!result?.data?.vp) {
       throw Error('Unable to fetch VP Distribution')
     }
