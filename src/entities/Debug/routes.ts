@@ -17,5 +17,5 @@ export default routes((router) => {
 })
 
 function reportClientError(req: WithAuth<Request>): void {
-  ErrorService.report(req.body.message, JSON.stringify({ client: true }))
+  ErrorService.report(req.body.message, { client: true, ...req.body.data })
 }

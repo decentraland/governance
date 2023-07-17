@@ -4,6 +4,7 @@ import { GrantStatus, GrantTierType, ProposalGrantCategory } from '../entities/G
 import { ProposalStatus } from '../entities/Proposal/types'
 import { TokenInWallet } from '../entities/Transparency/types'
 import { ProjectHealth, UpdateStatus } from '../entities/Updates/types'
+import { ErrorCategory } from '../utils/errorCategories'
 
 import { ErrorClient } from './ErrorClient'
 
@@ -152,7 +153,7 @@ export class DclData extends API {
     try {
       return await fn()
     } catch (error) {
-      ErrorClient.report('Failed DclData fetch', error)
+      ErrorClient.report('Failed to fetch transparency data', { error, category: ErrorCategory.TransparencyError })
       return fallback
     }
   }

@@ -20,17 +20,17 @@ export class ErrorService {
     return 'production'
   }
 
-  public static report(errorMsg: string, error?: any) {
+  public static report(errorMsg: string, data?: Record<string, unknown>) {
     if (ROLLBAR_TOKEN) {
-      this.client.error(errorMsg, error)
+      this.client.error(errorMsg, data)
     } else {
       if (isProdEnv()) logger.error('Rollbar server access token not found')
     }
-    logger.error(errorMsg, error)
+    logger.error(errorMsg, data)
   }
 
-  public static reportAndThrow(errorMsg: string, error: any) {
-    this.report(errorMsg, error)
-    throw new Error(error)
+  public static reportAndThrow(errorMsg: string, data: Record<string, any>) {
+    this.report(errorMsg, data)
+    throw new Error(errorMsg)
   }
 }

@@ -19,6 +19,7 @@ import { GrantsService } from '../../services/GrantsService'
 import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
 import { getProfile } from '../../utils/Catalyst'
 import Time from '../../utils/date/Time'
+import { ErrorCategory } from '../../utils/errorCategories'
 import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'
 import isDAOCommittee from '../Committee/isDAOCommittee'
@@ -321,7 +322,11 @@ export async function createProposalHiring(req: WithAuth) {
       const profile = await getProfile(configuration.address)
       configuration.name = profile?.name
     } catch (error) {
-      ErrorService.report(`Can't get profile ${configuration.address}`, error)
+      ErrorService.report('Error getting profile', {
+        error,
+        address: configuration.address,
+        category: ErrorCategory.ProfileError,
+      })
     }
   }
 
@@ -454,14 +459,18 @@ export async function createProposalTender(req: WithAuth) {
 export async function createProposal(proposalInCreation: ProposalInCreation) {
   try {
     return await ProposalService.createProposal(proposalInCreation)
-  } catch (e: any) {
-    const errorTitle = `Error creating proposal: ${JSON.stringify(proposalInCreation)}`
-    ErrorService.report(errorTitle, e)
+  } catch (error: any) {
+    const errorTitle = 'Error creating proposal'
+    ErrorService.report(errorTitle, {
+      error,
+      proposal: JSON.stringify(proposalInCreation),
+      category: ErrorCategory.ProposalError,
+    })
     throw new RequestError(
       `${errorTitle}\n 
-    Error: ${e.message ? e.message : JSON.stringify(e)}`,
+    Error: ${error.message ? error.message : JSON.stringify(error)}`,
       RequestError.InternalServerError,
-      e
+      error
     )
   }
 }
@@ -569,11 +578,13 @@ export async function proposalComments(req: Request<{ proposal: string }>): Prom
     const filteredComments = filterComments(allComments, users)
 
     return filteredComments
-  } catch (e) {
-    ErrorService.report(
-      `Error while fetching discourse topic ${proposal.discourse_topic_id}: for proposal ${proposal.id}`,
-      e
-    )
+  } catch (error) {
+    ErrorService.report('Error fetching discourse topic', {
+      error,
+      discourseTopicId: proposal.discourse_topic_id,
+      proposalId: proposal.id,
+      category: ErrorCategory.DiscourseError,
+    })
     return {
       comments: [],
       totalComments: 0,

@@ -1,5 +1,6 @@
 import { OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgraph'
 import { Badge, BadgeStatus, BadgeStatusReason, UserBadges, toBadgeStatus } from '../entities/Badges/types'
+import { ErrorCategory } from '../utils/errorCategories'
 
 import { ErrorService } from './ErrorService'
 
@@ -32,8 +33,12 @@ export class BadgesService {
             }
           }
         }
-      } catch (e) {
-        ErrorService.report(`Error parsing badge ${otterspaceBadge}`, e)
+      } catch (error) {
+        ErrorService.report('Error parsing badge', {
+          error,
+          badge: otterspaceBadge,
+          category: ErrorCategory.BadgesError,
+        })
       }
     }
 

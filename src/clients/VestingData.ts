@@ -4,6 +4,7 @@ import { AbiItem } from 'web3-utils'
 import DclRpcService from '../services/DclRpcService'
 import VESTING_ABI from '../utils/contracts/abi/vesting/vesting.json'
 import VESTING_V2_ABI from '../utils/contracts/abi/vesting/vesting_v2.json'
+import { ErrorCategory } from '../utils/errorCategories'
 
 import { ErrorClient } from './ErrorClient'
 
@@ -64,7 +65,11 @@ export async function getVestingContractData(
     try {
       return await getVestingContractDataV1(vestingAddress, web3)
     } catch (errorV1) {
-      ErrorClient.report('Unable to fetch vesting contract data', { proposalId, error: errorV1 })
+      ErrorClient.report('Unable to fetch vesting contract data', {
+        proposalId,
+        error: errorV1,
+        category: ErrorCategory.VestingError,
+      })
       throw errorV1
     }
   }

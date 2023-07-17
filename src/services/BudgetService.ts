@@ -23,6 +23,7 @@ import QuarterBudgetModel from '../entities/QuarterBudget/model'
 import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { toNewGrantCategory } from '../entities/QuarterCategoryBudget/utils'
 import { getUncappedRoundedPercentage } from '../helpers'
+import { ErrorCategory } from '../utils/errorCategories'
 
 import { ErrorService } from './ErrorService'
 import { ProposalService } from './ProposalService'
@@ -129,7 +130,7 @@ export class BudgetService {
     if (currentBudget !== null) {
       return currentBudget
     }
-    ErrorService.report('Could not find current budget')
+    ErrorService.report('Could not find current budget', { category: ErrorCategory.BudgetError })
     return NULL_BUDGET
   }
 
@@ -139,7 +140,10 @@ export class BudgetService {
       const { total, allocated } = categoryBudget
       return { total, allocated, available: total - allocated }
     }
-    ErrorService.report(`Could not find category budget for current quarter. Category: ${category}`)
+    ErrorService.report('Could not find category budget for current quarter', {
+      budgetCategory: category,
+      category: ErrorCategory.BudgetError,
+    })
     return NULL_CATEGORY_BUDGET
   }
 
@@ -173,7 +177,7 @@ export class BudgetService {
     if (!minDate) return budgetsForProposals
     const oldestBudget = await QuarterBudgetModel.getBudgetForDate(minDate)
     if (oldestBudget === null) {
-      ErrorService.report(`Could not find budget for ${minDate}`)
+      ErrorService.report('Could not find budget for date', { date: minDate, category: ErrorCategory.BudgetError })
       return budgetsForProposals
     }
     budgetsForProposals.push(oldestBudget)

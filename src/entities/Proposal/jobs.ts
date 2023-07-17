@@ -4,6 +4,7 @@ import snakeCase from 'lodash/snakeCase'
 import { BudgetService } from '../../services/BudgetService'
 import { DiscordService } from '../../services/DiscordService'
 import { ErrorService } from '../../services/ErrorService'
+import { ErrorCategory } from '../../utils/errorCategories'
 import { Budget } from '../Budget/types'
 
 import ProposalModel from './model'
@@ -151,7 +152,10 @@ async function categorizeProposals(
         } else {
           const budgetForProposal = getBudgetForProposal(updatedBudgets, proposal)
           if (!budgetForProposal) {
-            ErrorService.report(`Unable to find corresponding quarter budget for ${proposal.id}`)
+            ErrorService.report(`Unable to find quarter budget`, {
+              proposalId: proposal.id,
+              category: ErrorCategory.JobError,
+            })
             break
           }
           if (grantCanBeFunded(proposal, budgetForProposal)) {

@@ -1,4 +1,5 @@
 import { ErrorService } from '../../services/ErrorService'
+import { ErrorCategory } from '../../utils/errorCategories'
 
 import { Reaction, Survey } from './types'
 
@@ -17,10 +18,8 @@ export class SurveyEncoder {
     try {
       const encodedSurvey: Record<string, unknown> = { survey }
       return JSON.stringify(encodedSurvey)
-    } catch (e) {
-      const errorMessage = `Unable to encode survey: ${survey}`
-      console.log(errorMessage)
-      ErrorService.report(errorMessage, e)
+    } catch (error) {
+      ErrorService.report('Unable to encode survey', { error, survey, category: ErrorCategory.VotingError })
       return '{"survey":[]}'
     }
   }
