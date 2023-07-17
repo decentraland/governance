@@ -24,11 +24,11 @@ interface Props {
   hasCoauthorRequests?: boolean
 }
 
-function ProposalCreatedItem({ proposal, showCoauthoring, hasCoauthorRequests }: Props) {
+export default function ProposalCreatedItem({ proposal, showCoauthoring, hasCoauthorRequests }: Props) {
   const t = useFormatMessage()
   const { start_at, finish_at, title, status, type, id } = proposal
   const dateText = useProposalDateText(start_at, finish_at)
-  const { votes } = useProposalVotes(proposal.id)
+  const { votes } = useProposalVotes(id)
 
   return (
     <Card as={Link} href={locations.proposal(id)} className="ProposalCreatedItem">
@@ -64,7 +64,7 @@ function ProposalCreatedItem({ proposal, showCoauthoring, hasCoauthorRequests }:
                   <CategoryPill size="small" proposalType={type} />
                 </div>
               )}
-              {proposal.status === ProposalStatus.Active && (
+              {status === ProposalStatus.Active && (
                 <span className="ProposalCreatedItem__VoteText">{t('page.home.open_proposals.vote')}</span>
               )}
               <ChevronRightCircleOutline />
@@ -78,5 +78,3 @@ function ProposalCreatedItem({ proposal, showCoauthoring, hasCoauthorRequests }:
     </Card>
   )
 }
-
-export default ProposalCreatedItem

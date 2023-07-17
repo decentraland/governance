@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 
 import classNames from 'classnames'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
@@ -35,22 +35,25 @@ export default function StatusPill({ className, status, size, isLink }: Props) {
   const showIcon = status === ProposalStatus.Enacted || status === ProposalStatus.Passed
   const iconColor = status === ProposalStatus.Enacted ? 'var(--white-900)' : 'var(--green-800)'
   const icon = showIcon ? <Check color={iconColor} /> : null
-  const Wrapper = isLink ? Link : Fragment
   const href = isLink ? locations.proposals({ status: status }) : undefined
   const name = isMobile ? getProposalStatusShortName(status) : getProposalStatusDisplayName(status)
   const pillSize = isMobile ? 'small' : size || 'default'
 
-  return (
-    <Wrapper href={href}>
-      <Pill
-        size={pillSize}
-        style={style}
-        className={classNames('StatusPill', className)}
-        color={ColorsConfig[status]}
-        icon={icon}
-      >
-        {name}
-      </Pill>
-    </Wrapper>
+  const component = (
+    <Pill
+      size={pillSize}
+      style={style}
+      className={classNames('StatusPill', className)}
+      color={ColorsConfig[status]}
+      icon={icon}
+    >
+      {name}
+    </Pill>
   )
+
+  if (isLink) {
+    return <Link href={href}>{component}</Link>
+  }
+
+  return component
 }
