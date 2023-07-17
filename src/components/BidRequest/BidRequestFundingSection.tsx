@@ -97,21 +97,23 @@ export default function BidRequestFundingSection({ onValidation, isFormDisabled,
             />
           </div>
         </div>
-        <ContentSection className="ProjectRequestSection__Field">
-          <Label>{t('page.submit_bid.funding_section.start_date_label')}</Label>
-          <Field
-            name="startDate"
-            type="date"
-            control={control}
-            error={!!errors.startDate}
-            message={errors.startDate?.message || ''}
-            disabled={isFormDisabled}
-            rules={{
-              required: { value: true, message: t('error.bid.start_date_empty') },
-            }}
-            onChange={(_, { value }) => setValue('startDate', value)}
-          />
-        </ContentSection>
+        <div className="ProjectRequestSection__Row">
+          <ContentSection className="ProjectRequestSection__Field">
+            <Label>{t('page.submit_bid.funding_section.start_date_label')}</Label>
+            <Field
+              name="startDate"
+              type="date"
+              control={control}
+              error={!!errors.startDate}
+              message={errors.startDate?.message || ''}
+              disabled={isFormDisabled}
+              rules={{
+                required: { value: true, message: t('error.bid.funding.start_date_empty') },
+              }}
+              onChange={(_, { value }) => setValue('startDate', value)}
+            />
+          </ContentSection>
+        </div>
         <ContentSection className="ProjectRequestSection__Field">
           <Label>{t('page.submit_bid.general_info.beneficiary_label')}</Label>
           <SubLabel>{t('page.submit_bid.general_info.beneficiary_detail')}</SubLabel>

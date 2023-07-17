@@ -303,7 +303,8 @@
     },
     "bid": {
       "funding": {
-        "invalid": "*Funding is invalid*"
+        "invalid": "*Funding is invalid*",
+        "start_date_empty": "Start date is empty"
       },
       "general_info": {
         "deliverables_empty": "Deliverables is empty",
