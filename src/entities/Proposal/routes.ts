@@ -12,14 +12,14 @@ import isUUID from 'validator/lib/isUUID'
 import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { inBackground } from '../../helpers'
+import BidService from '../../services/BidService'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
 import { GrantsService } from '../../services/GrantsService'
 import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
 import { getProfile } from '../../utils/Catalyst'
 import Time from '../../utils/date/Time'
-import BidModel from '../Bid/model'
-import { BidRequest, BidRequestSchema, BidStatus } from '../Bid/types'
+import { BidRequest, BidRequestSchema } from '../Bid/types'
 import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'
 import isDAOCommittee from '../Committee/isDAOCommittee'
@@ -450,21 +450,11 @@ export async function createProposalTender(req: WithAuth) {
 
 const BidRequestValidator = schema.compile(BidRequestSchema)
 export async function createProposalBid(req: WithAuth) {
-  const author_address = req.auth!
+  const user = req.auth!
   const configuration = validate<BidRequest>(BidRequestValidator, req.body || {})
-  const { linked_proposal_id, ...bid_proposal_data } = configuration
-  await validateLinkedProposal(configuration.linked_proposal_id, ProposalType.Tender)
-  // TODO: check if the tender is still open for bids
-  const tenderBids = await BidModel.getBidsInfoByTender(configuration.linked_proposal_id)
-
-  const publish_at = tenderBids.length > 0 ? tenderBids[0].publish_at : Time().add(30, 'day').toISOString()
-  await BidModel.createBid({
-    linked_proposal_id,
-    bid_proposal_data,
-    author_address,
-    publish_at,
-    status: BidStatus.Pending,
-  })
+  const { linked_proposal_id, ...bid } = configuration
+  await validateLinkedProposal(linked_proposal_id, ProposalType.Tender)
+  await BidService.createBid(linked_proposal_id, user, bid)
 }
 
 export async function createProposal(proposalInCreation: ProposalInCreation) {

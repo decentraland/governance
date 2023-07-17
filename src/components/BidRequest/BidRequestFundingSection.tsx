@@ -23,12 +23,8 @@ import ProjectRequestSection from '../ProjectRequest/ProjectRequestSection'
 
 const schema = BidRequestFundingSchema
 
-export const INITIAL_BID_REQUEST_FUNDING_STATE: BidRequestFunding = {
-  funding: '',
+export const INITIAL_BID_REQUEST_FUNDING_STATE: Partial<BidRequestFunding> = {
   projectDuration: MIN_LOW_TIER_PROJECT_DURATION,
-  startDate: null,
-  beneficiary: '',
-  email: '',
 }
 
 interface Props {
@@ -53,8 +49,6 @@ export default function BidRequestFundingSection({ onValidation, isFormDisabled,
   })
 
   const values = useWatch({ control }) as BidRequestFunding
-
-  console.log('s', values)
 
   useEffect(() => {
     onValidation({ ...values }, isValid)
@@ -133,8 +127,8 @@ export default function BidRequestFundingSection({ onValidation, isFormDisabled,
             error={!!errors.beneficiary}
             disabled={isFormDisabled}
             rules={{
-              validate: (value: string) => {
-                if (!isEthereumAddress(value)) {
+              validate: (value?: string) => {
+                if (!value || !isEthereumAddress(value)) {
                   return t('error.bid.general_info.beneficiary_invalid')
                 }
               },

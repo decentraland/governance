@@ -38,7 +38,7 @@ const jobs = manager()
 jobs.cron('@eachMinute', finishProposal)
 jobs.cron('@daily', updateGovernanceBudgets)
 jobs.cron('@eachMinute', activateProposals)
-jobs.cron('@eachHour', publishBids)
+jobs.cron('@eachMinute', publishBids)
 
 const file = readFileSync('static/api.yaml', 'utf8')
 const swaggerDocument = YAML.parse(file)

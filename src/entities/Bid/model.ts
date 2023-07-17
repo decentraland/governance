@@ -1,7 +1,7 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import { SQL, join, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 
-import { BidAttributes, BidStatus, NewUnpublishedBid } from './types'
+import { BidAttributes, BidStatus, UnpublishedBid } from './types'
 
 const DB_ENCRYPTION_KEY = process.env.DB_ENCRYPTION_KEY
 
@@ -20,7 +20,7 @@ export default class PendingBidsModel extends Model<BidAttributes> {
     bid_proposal_data,
     publish_at,
     status,
-  }: NewUnpublishedBid) {
+  }: UnpublishedBid) {
     checkEncryptionKey()
 
     const query = SQL`
@@ -39,29 +39,29 @@ export default class PendingBidsModel extends Model<BidAttributes> {
   }
 
   static async getBidsInfoByTender(
-    linked_proposal_id: string
+    linked_proposal_id: string,
+    status = BidStatus.Pending
   ): Promise<Pick<BidAttributes, 'author_address' | 'publish_at' | 'created_at'>[]> {
     const query = SQL`
     SELECT created_at, publish_at, author_address 
     FROM ${table(this)} 
-    WHERE linked_proposal_id = ${linked_proposal_id} AND status = ${BidStatus.Pending} 
+    WHERE linked_proposal_id = ${linked_proposal_id} AND status = ${status} 
     ORDER BY created_at ASC`
     return await this.namedQuery('get_bids_by_tender', query)
   }
-  static async getBidsReadyToPublish(): Promise<
-    Pick<BidAttributes, 'author_address' | 'linked_proposal_id' | 'bid_proposal_data'>[]
-  > {
+  static async getBidsReadyToPublish(): Promise<Omit<UnpublishedBid, 'status'>[]> {
     checkEncryptionKey()
 
     const query = SQL`
-    SELECT author_address, linked_proposal_id, pgp_sym_decrypt(bid_proposal_data::bytea, ${DB_ENCRYPTION_KEY}) as bid_proposal_data 
+    SELECT author_address, publish_at, linked_proposal_id, pgp_sym_decrypt(bid_proposal_data::bytea, ${DB_ENCRYPTION_KEY}) as bid_proposal_data 
     FROM ${table(this)} 
     WHERE publish_at <= (now() at time zone 'utc') AND status = ${BidStatus.Pending}`
 
     const bids = await this.namedQuery('get_bids_ready_to_publish', query)
 
-    return bids.map(({ author_address, linked_proposal_id, bid_proposal_data }) => ({
+    return bids.map(({ author_address, linked_proposal_id, bid_proposal_data, publish_at }) => ({
       author_address,
+      publish_at,
       linked_proposal_id,
       bid_proposal_data: JSON.parse(bid_proposal_data),
     }))
