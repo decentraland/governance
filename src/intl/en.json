@@ -304,8 +304,10 @@
     "bid": {
       "funding": {
         "invalid": "*Funding is invalid*",
-        "start_date_empty": "Start date is empty"
+        "too_low": "*Funding is too low.*\n\n*Minimum is 100 USD*",
+        "too_big": "*Funding is too big.*\n\n*Maximum is 240000 USD*"
       },
+      "start_date_empty": "Start date is empty",
       "general_info": {
         "deliverables_empty": "Deliverables is empty",
         "deliverables_too_large": "Deliverables is too large",

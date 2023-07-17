@@ -74,6 +74,8 @@ export default function BidRequestFundingSection({ onValidation, isFormDisabled,
               control={control}
               name="funding"
               rules={{
+                min: { value: schema.funding.minimum, message: t('error.bid.funding.too_low') },
+                max: { value: schema.funding.maximum, message: t('error.bid.funding.too_big') },
                 required: { value: true, message: t('error.bid.funding.invalid') },
               }}
               // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -114,7 +116,7 @@ export default function BidRequestFundingSection({ onValidation, isFormDisabled,
               onChange={(_, { value }) => {
                 clearErrors('startDate')
                 if (value === '') {
-                  setError('startDate', { message: t('error.bid.funding.start_date_empty') })
+                  setError('startDate', { message: t('error.bid.start_date_empty') })
                 }
               }}
             />
