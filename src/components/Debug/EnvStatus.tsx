@@ -17,7 +17,7 @@ import {
   SEGMENT_KEY,
   TEST_ENV_VAR,
 } from '../../constants'
-import Label from '../Common/Typography/Label'
+import Heading from '../Common/Typography/Heading'
 import ErrorMessage from '../Error/ErrorMessage'
 import { ContentSection } from '../Layout/ContentLayout'
 
@@ -60,10 +60,10 @@ export default function EnvStatus({ className }: Props) {
   return (
     <div className={className}>
       <ContentSection>
-        <Label>{'Frontend Env Variable'}</Label>
+        <Heading size="sm">{'Frontend Env Variables'}</Heading>
         <div className="EnvName__Section">
           <Field value={envName} onChange={(_, { value }) => setEnvName(value)} />
-          <Button className="Debug__SectionButton" primary disabled={!envName} onClick={() => handleReadVar()}>
+          <Button className="Debug__SideButton" primary disabled={!envName} onClick={() => handleReadVar()}>
             {'Read Env Var'}
           </Button>
         </div>

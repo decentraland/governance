@@ -10,9 +10,15 @@
   display: flex;
 }
 
-button.ui.primary.button.Debug__SectionButton {
+.Debug__SectionButton {
   max-height: 46px;
-  margin-top: 4px;
+  margin-top: 4px !important;
+  margin-bottom: 8px !important;
+}
+
+.Debug__SideButton {
+  max-height: 46px;
+  margin-top: 4px !important;
   margin-left: 16px !important;
 }
 

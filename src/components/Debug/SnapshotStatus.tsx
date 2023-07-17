@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
-import { useForm } from 'react-hook-form'
 
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
 import { SNAPSHOT_SPACE } from '../../entities/Snapshot/constants'
 import { getSnapshotStatusAndSpace } from '../../entities/Snapshot/utils'
+import Heading from '../Common/Typography/Heading'
 import Label from '../Common/Typography/Label'
+import Text from '../Common/Typography/Text'
 import ErrorMessage from '../Error/ErrorMessage'
-import MarkdownFieldSection from '../Form/MarkdownFieldSection'
 import { ContentSection } from '../Layout/ContentLayout'
 
 interface Props {
@@ -20,8 +20,6 @@ export default function SnapshotStatus({ className }: Props) {
   const [snapshotStatus, setSnapshotStatus] = useState<any>()
   const [snapshotSpace, setSnapshotSpace] = useState<any>()
   const [errorMessage, setErrorMessage] = useState<any>()
-
-  const { control } = useForm()
 
   async function handleFetchClick() {
     setErrorMessage('')
@@ -37,37 +35,20 @@ export default function SnapshotStatus({ className }: Props) {
 
   return (
     <div className={className}>
+      <Heading size="sm">{'Snapshot'}</Heading>
       <ContentSection>
         <Label>{'Space Name'}</Label>
         <div className="SpaceName__Section">
           <Field value={spaceName} onChange={(_, { value }) => setSpaceName(value)} />
-          <Button className="Debug__SectionButton" primary disabled={!spaceName} onClick={() => handleFetchClick()}>
+          <Button className="Debug__SideButton" primary disabled={!spaceName} onClick={() => handleFetchClick()}>
             {'Fetch Status & Space'}
           </Button>
         </div>
       </ContentSection>
-      <MarkdownFieldSection
-        name="snapshotStatus"
-        control={control}
-        showMarkdownNotice={false}
-        label="Snapshot Status"
-        readOnly={true}
-        minHeight={77}
-        maxHeight={77}
-        value={JSON.stringify(snapshotStatus)}
-        preview={true}
-      />
-      <MarkdownFieldSection
-        name="snapshotSpace"
-        control={control}
-        showMarkdownNotice={false}
-        label="Snapshot Space"
-        readOnly={true}
-        minHeight={77}
-        maxHeight={77}
-        value={JSON.stringify(snapshotSpace)}
-        preview={true}
-      />
+      <Label>{'Status'}</Label>
+      <Text>{JSON.stringify(snapshotStatus)}</Text>
+      <Label>{'Space'}</Label>
+      <Text>{JSON.stringify(snapshotSpace)}</Text>
       {!!errorMessage && <ErrorMessage label={'Snapshot Error'} errorMessage={errorMessage} />}
     </div>
   )

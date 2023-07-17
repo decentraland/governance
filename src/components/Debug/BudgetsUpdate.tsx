@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
-import { useForm } from 'react-hook-form'
 
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { TransparencyBudget } from '../../clients/DclData'
 import { Governance } from '../../clients/Governance'
 import { QuarterBudgetAttributes } from '../../entities/QuarterBudget/types'
+import Heading from '../Common/Typography/Heading'
 import Label from '../Common/Typography/Label'
+import Text from '../Common/Typography/Text'
 import ErrorMessage from '../Error/ErrorMessage'
-import MarkdownFieldSection from '../Form/MarkdownFieldSection'
 import { ContentSection } from '../Layout/ContentLayout'
 
 interface Props {
@@ -20,7 +20,6 @@ export default function BudgetsUpdate({ className }: Props) {
   const [governanceBudgets, setGovernanceBudgets] = useState<QuarterBudgetAttributes[]>([])
   const [errorMessage, setErrorMessage] = useState<any>()
   const [formDisabled, setFormDisabled] = useState(false)
-  const { control } = useForm()
 
   async function handleFetchBudgets() {
     await submit<TransparencyBudget[]>(async () => Governance.get().getTransparencyBudgets(), setTransparencyBudgets)
@@ -56,44 +55,27 @@ export default function BudgetsUpdate({ className }: Props) {
   return (
     <div className={className}>
       <ContentSection>
-        <Label>{'Budgets'}</Label>
+        <Heading size="sm">{'Budgets'}</Heading>
         <div>
           <Button className="Debug__SectionButton" primary disabled={formDisabled} onClick={() => handleFetchBudgets()}>
             {'Fetch Transparency Budgets'}
           </Button>
-        </div>
-        <MarkdownFieldSection
-          name="transparencyBudgets"
-          control={control}
-          showMarkdownNotice={false}
-          label="Transparency Budgets"
-          readOnly={true}
-          minHeight={77}
-          maxHeight={77}
-          value={JSON.stringify(transparencyBudgets)}
-          preview={true}
-        />
-        <div>
-          <Button
-            className="Debug__SectionButton"
-            primary
-            disabled={formDisabled}
-            onClick={() => handleUpdateBudgets()}
-          >
+          <Button className="Debug__SideButton" primary disabled={formDisabled} onClick={() => handleUpdateBudgets()}>
             {'Update Governance Budgets'}
           </Button>
         </div>
-        <MarkdownFieldSection
-          name="governanceBudgets"
-          control={control}
-          showMarkdownNotice={false}
-          label="Governance Budgets"
-          readOnly={true}
-          minHeight={77}
-          maxHeight={77}
-          value={JSON.stringify(governanceBudgets)}
-          preview={true}
-        />
+        {transparencyBudgets.length > 0 && (
+          <>
+            <Label>{'Transparency Budgets'}</Label>
+            <Text>{JSON.stringify(transparencyBudgets)}</Text>
+          </>
+        )}
+        {governanceBudgets.length > 0 && (
+          <>
+            <Label>{'Updated Governance Budgets'}</Label>
+            <Text>{JSON.stringify(governanceBudgets)}</Text>
+          </>
+        )}
       </ContentSection>
       {!!errorMessage && <ErrorMessage label={'Budgets Error'} errorMessage={errorMessage} />}
     </div>
