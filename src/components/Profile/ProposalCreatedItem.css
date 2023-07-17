@@ -4,10 +4,6 @@
   border: 1px solid var(--black-100) !important;
 }
 
-.ProposalCreatedItem__StatusPill {
-  margin-right: 8px;
-}
-
 .ProposalCreatedItem__CoAuthorPill {
   margin-right: 8px;
 }
@@ -83,14 +79,15 @@ a.ui.card:hover,
 .ProposalCreatedItem__Status {
   display: flex;
   flex-direction: column;
+  gap: 8px;
   padding-top: 6px;
 }
 
 .ProposalCreatedItem__StatusPillsContainer {
   display: flex;
   flex-direction: row;
-  padding-bottom: 6px;
   align-items: center;
+  gap: 8px;
 }
 
 @media (min-width: 768px) {
@@ -149,10 +146,6 @@ a.ui.card:hover,
 
 .ProposalCreatedItem__CategoryPillContainer {
   min-width: 110px;
-}
-
-.ProposalCreatedItem__CategoryPill {
-  margin-right: 8px;
 }
 
 .ProposalCreatedItem__VoteText {

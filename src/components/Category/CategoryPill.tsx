@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 
 import classNames from 'classnames'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
@@ -40,7 +40,7 @@ function getProposalTypeLabel(proposalType: ProposalType) {
 const CategoryPill = ({ className, proposalType, size = 'default', isLink }: Props) => {
   const colorsConfig = ColorsConfig[proposalType]
   const pillClassNames = classNames('CategoryPill', className)
-  const Wrapper = isLink ? Link : 'div'
+  const Wrapper = isLink ? Link : Fragment
   const href = isLink ? locations.proposals({ type: proposalType }) : undefined
 
   return (

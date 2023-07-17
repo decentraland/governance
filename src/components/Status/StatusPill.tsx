@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 
 import classNames from 'classnames'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
@@ -9,8 +9,6 @@ import locations from '../../utils/locations'
 import Pill, { PillColor, Props as PillProps } from '../Common/Pill'
 import Link from '../Common/Typography/Link'
 import Check from '../Icon/Check'
-
-import './StatusPill.css'
 
 type Props = {
   className?: string
@@ -30,20 +28,20 @@ const ColorsConfig: Record<ProposalStatus, PillColor> = {
   [ProposalStatus.Deleted]: PillColor.Red,
 }
 
-const StatusPill = ({ className, status, size, isLink }: Props) => {
+export default function StatusPill({ className, status, size, isLink }: Props) {
   const isMobile = useMobileMediaQuery()
 
   const style = status === (ProposalStatus.Enacted || ProposalStatus.OutOfBudget) ? 'shiny' : 'outline'
   const showIcon = status === ProposalStatus.Enacted || status === ProposalStatus.Passed
   const iconColor = status === ProposalStatus.Enacted ? 'var(--white-900)' : 'var(--green-800)'
   const icon = showIcon ? <Check color={iconColor} /> : null
-  const Wrapper = isLink ? Link : 'div'
+  const Wrapper = isLink ? Link : Fragment
   const href = isLink ? locations.proposals({ status: status }) : undefined
   const name = isMobile ? getProposalStatusShortName(status) : getProposalStatusDisplayName(status)
   const pillSize = isMobile ? 'small' : size || 'default'
 
   return (
-    <Wrapper href={href} className="StatusPill">
+    <Wrapper href={href}>
       <Pill
         size={pillSize}
         style={style}
@@ -56,5 +54,3 @@ const StatusPill = ({ className, status, size, isLink }: Props) => {
     </Wrapper>
   )
 }
-
-export default StatusPill

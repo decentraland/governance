@@ -39,15 +39,11 @@ function ProposalCreatedItem({ proposal, showCoauthoring, hasCoauthorRequests }:
           </div>
           <div className="ProposalCreatedItem__Status">
             <div className="ProposalCreatedItem__StatusPillsContainer">
-              <StatusPill className="ProposalCreatedItem__StatusPill" size="small" status={status} />
+              <StatusPill size="small" status={status} />
               {showCoauthoring && (
                 <CoAuthorPill className="ProposalCreatedItem__CoAuthorPill" hasCoauthorRequests={hasCoauthorRequests} />
               )}
-              <Mobile>
-                {type && (
-                  <CategoryPill className="ProposalCreatedItem__CategoryPill" size="small" proposalType={type} />
-                )}
-              </Mobile>
+              <Mobile>{type && <CategoryPill size="small" proposalType={type} />}</Mobile>
             </div>
             <div className="ProposalCreatedItem__Stats">
               <span className="ProposalCreatedItem__Details">

@@ -25,7 +25,14 @@ export type Props = {
   icon?: React.ReactNode
 }
 
-const Pill = ({ children, size = 'default', style = 'shiny', color = PillColor.Green, className, icon }: Props) => {
+export default function Pill({
+  children,
+  size = 'default',
+  style = 'shiny',
+  color = PillColor.Green,
+  className,
+  icon,
+}: Props) {
   return (
     <div className={classNames(`Pill`, `Pill--${size}`, `Pill--${style}-${color}`, className)}>
       {icon}
@@ -33,5 +40,3 @@ const Pill = ({ children, size = 'default', style = 'shiny', color = PillColor.G
     </div>
   )
 }
-
-export default Pill
