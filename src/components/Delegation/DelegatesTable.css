@@ -44,15 +44,6 @@
   padding-bottom: 10px !important;
 }
 
-.DelegatesTable__CandidateName {
-  color: var(--black-800);
-  font-weight: var(--weight-semi-bold);
-}
-
-td.DelegatesTable__CandidateName > .Username {
-  margin-left: 2px;
-}
-
 thead.DelegatesTable__Header > tr > th span {
   display: flex;
   justify-content: center;
@@ -75,16 +66,6 @@ thead.DelegatesTable__Header > tr > th span {
   white-space: nowrap;
 }
 
-td.DelegatesTable__CandidateName {
-  display: flex;
-  align-content: baseline;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 15px;
-  padding-right: 10px;
-  margin-left: 11px;
-}
-
 .DelegatesTable__ShadowBox {
   width: 11px;
   height: 45px;
@@ -98,15 +79,6 @@ td.DelegatesTable__CandidateName {
   width: 11px;
   height: 35px;
   padding: 0 !important;
-}
-
-.DelegatesTable__DelegateRow {
-  cursor: pointer;
-}
-
-.DelegatesTable__LastVoted {
-  width: 138px;
-  padding-left: 0 !important;
 }
 
 .DelegatesTable__ArrowColumn {
@@ -173,39 +145,9 @@ td.DelegatesTable__CandidateName {
     width: unset !important;
   }
 
-  td.DelegatesTable__CandidateName {
-    text-align: left !important;
-    padding-left: 18px !important;
-    margin-left: 0;
-  }
-
-  .DelegatesTable__LastVoted {
-    width: 143px;
-  }
-
-  .DelegatesTable__TimesVoted {
-    width: 115px;
-  }
-
-  .DelegatesTable__PickedBy {
-    width: 115px;
-  }
-
-  .DelegatesTable__TotalVP {
-    width: 120px;
-  }
-
   .DelegatesTable__ArrowColumn {
     display: table-cell;
     padding-right: 22px !important;
-  }
-
-  td.DelegatesTable__CandidateName {
-    min-width: 200px;
-  }
-
-  .DelegatesTable__UsernameArrow {
-    display: none;
   }
 }
 
