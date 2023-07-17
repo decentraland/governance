@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 
+import { Field as DCLField } from 'decentraland-ui/dist/components/Field/Field'
 import isEmail from 'validator/lib/isEmail'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
@@ -44,13 +45,16 @@ export default function BidRequestFundingSection({ onValidation, isFormDisabled,
     control,
     setValue,
     watch,
+    setError,
+    clearErrors,
   } = useForm<BidRequestFunding>({
     defaultValues: INITIAL_BID_REQUEST_FUNDING_STATE,
     mode: 'onTouched',
   })
 
   const values = useWatch({ control }) as BidRequestFunding
-  const isFormEdited = isDirty
+
+  console.log('s', values)
 
   useEffect(() => {
     onValidation({ ...values }, isValid)
@@ -59,7 +63,7 @@ export default function BidRequestFundingSection({ onValidation, isFormDisabled,
   return (
     <ProjectRequestSection
       validated={isValid}
-      isFormEdited={isFormEdited}
+      isFormEdited={isDirty}
       sectionTitle={t('page.submit_bid.funding_section.title')}
       sectionNumber={sectionNumber}
     >
@@ -100,17 +104,19 @@ export default function BidRequestFundingSection({ onValidation, isFormDisabled,
         <div className="ProjectRequestSection__Row">
           <ContentSection className="ProjectRequestSection__Field">
             <Label>{t('page.submit_bid.funding_section.start_date_label')}</Label>
-            <Field
+            <DCLField
               name="startDate"
               type="date"
               control={control}
               error={!!errors.startDate}
               message={errors.startDate?.message || ''}
               disabled={isFormDisabled}
-              rules={{
-                required: { value: true, message: t('error.bid.funding.start_date_empty') },
+              onChange={(_, { value }) => {
+                clearErrors('startDate')
+                if (value === '') {
+                  setError('startDate', { message: t('error.bid.funding.start_date_empty') })
+                }
               }}
-              onChange={(_, { value }) => setValue('startDate', value)}
             />
           </ContentSection>
         </div>
@@ -125,7 +131,6 @@ export default function BidRequestFundingSection({ onValidation, isFormDisabled,
             error={!!errors.beneficiary}
             disabled={isFormDisabled}
             rules={{
-              required: { value: true, message: t('error.bid.general_info.beneficiary_empty') },
               validate: (value: string) => {
                 if (!isEthereumAddress(value)) {
                   return t('error.bid.general_info.beneficiary_invalid')
