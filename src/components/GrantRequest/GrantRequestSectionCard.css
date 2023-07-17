@@ -11,6 +11,7 @@
 
 .Link.Link--pointer.GrantRequestSectionCard {
   cursor: default;
+  color: var(--black-800);
 }
 
 .GrantRequestSectionCard__Error {
@@ -20,6 +21,7 @@
 
 .Link.Link--pointer.GrantRequestSectionCard__Hoverable {
   cursor: pointer;
+  transition: 0.1s ease-in-out;
 }
 
 .GrantRequestSectionCard__Hoverable:hover {

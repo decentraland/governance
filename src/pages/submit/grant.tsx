@@ -37,6 +37,7 @@ import { asNumber, isGrantProposalSubmitEnabled, userModifiedForm } from '../../
 import { toNewGrantCategory } from '../../entities/QuarterCategoryBudget/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
+import useProjectRequestSectionNumber from '../../hooks/useProjectRequestSectionNumber'
 import locations, { navigate } from '../../utils/locations'
 
 import './grant.css'
@@ -127,12 +128,7 @@ export default function SubmitGrant() {
   const isCategorySelected = grantRequest.category !== null
   const preventNavigation = useRef(false)
   const [submitError, setSubmitError] = useState<string | undefined>(undefined)
-  let sectionNumber = 0
-
-  const getSectionNumber = () => {
-    sectionNumber++
-    return sectionNumber
-  }
+  const { getSectionNumber } = useProjectRequestSectionNumber()
 
   useEffect(() => {
     preventNavigation.current = userModifiedForm(grantRequest, initialState)

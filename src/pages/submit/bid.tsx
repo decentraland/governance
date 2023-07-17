@@ -15,15 +15,18 @@ import BidRequestFundingSection, {
 import BidRequestGeneralInfoSection, {
   INITIAL_BID_REQUEST_GENERAL_INFO_STATE,
 } from '../../components/BidRequest/BidRequestGeneralInfoSection'
+import CardSubtitle from '../../components/BidRequest/CardSubtitle'
 import Markdown from '../../components/Common/Typography/Markdown'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import GrantRequestDueDiligenceSection, {
   INITIAL_GRANT_REQUEST_DUE_DILIGENCE_STATE,
 } from '../../components/GrantRequest/GrantRequestDueDiligenceSection'
+import { GrantRequestSectionCard } from '../../components/GrantRequest/GrantRequestSectionCard'
 import GrantRequestTeamSection, {
   INITIAL_GRANT_REQUEST_TEAM_STATE,
 } from '../../components/GrantRequest/GrantRequestTeamSection'
 import DecentralandLogo from '../../components/Icon/DecentralandLogo'
+import OpenExternalLink from '../../components/Icon/OpenExternalLink'
 import { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/User/LogIn'
@@ -31,8 +34,13 @@ import { BidRequest } from '../../entities/Bid/types'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
+import useProjectRequestSectionNumber from '../../hooks/useProjectRequestSectionNumber'
+import useProposal from '../../hooks/useProposal'
+import useProposalOutcome from '../../hooks/useProposalOutcome'
+import useURLSearchParams from '../../hooks/useURLSearchParams'
 import locations, { navigate } from '../../utils/locations'
 
+import './bid.css'
 import './grant.css'
 import './submit.css'
 
@@ -81,12 +89,19 @@ export default function SubmitBid() {
   const allSectionsValid = Object.values(validationState).every((prop) => prop)
   const preventNavigation = useRef(false)
   const [submitError, setSubmitError] = useState<string | undefined>(undefined)
-  let sectionNumber = 0
-
-  const getSectionNumber = () => {
-    sectionNumber++
-    return sectionNumber
-  }
+  const { getSectionNumber } = useProjectRequestSectionNumber()
+  const params = useURLSearchParams()
+  const linkedProposalId = params.get('linked_proposal_id')
+  const { proposal: tenderProposal } = useProposal(linkedProposalId)
+  const { proposal: pitchProposal } = useProposal(tenderProposal?.configuration.linked_proposal_id)
+  const { winnerVotingPower: winnerTenderVotingPower, isLoadingOutcome: isLoadingTenderOutcome } = useProposalOutcome(
+    tenderProposal?.snapshot_id || '',
+    tenderProposal?.configuration.choices
+  )
+  const { winnerVotingPower: winnerPitchVotingPower, isLoadingOutcome: isLoadingPitchOutcome } = useProposalOutcome(
+    pitchProposal?.snapshot_id || '',
+    pitchProposal?.configuration.choices
+  )
 
   useEffect(() => {
     preventNavigation.current = userModifiedForm(bidRequest, initialState)
@@ -168,7 +183,40 @@ export default function SubmitBid() {
       <Container className="ProjectRequestSection__Container">
         <Markdown componentsClassNames={{ p: 'GrantRequest__HeaderDescription' }}>{description}</Markdown>
       </Container>
-
+      <Container className="BidRequest__ParentProposals">
+        <div className="ProjectRequestSection__Row">
+          {pitchProposal && (
+            <GrantRequestSectionCard
+              href={locations.proposal(pitchProposal.id)}
+              title={t('page.submit_bid.parent_pitch')}
+              content={pitchProposal.title}
+              subtitle={
+                <CardSubtitle
+                  votingPower={winnerPitchVotingPower}
+                  finishAt={pitchProposal.finish_at}
+                  isLoading={isLoadingPitchOutcome}
+                />
+              }
+              helper={<OpenExternalLink color="var(--black-400)" />}
+            />
+          )}
+          {tenderProposal && (
+            <GrantRequestSectionCard
+              href={locations.proposal(tenderProposal.id)}
+              title={t('page.submit_bid.parent_tender')}
+              content={tenderProposal.title}
+              subtitle={
+                <CardSubtitle
+                  votingPower={winnerTenderVotingPower}
+                  finishAt={tenderProposal.finish_at}
+                  isLoading={isLoadingTenderOutcome}
+                />
+              }
+              helper={<OpenExternalLink color="var(--black-400)" />}
+            />
+          )}
+        </div>
+      </Container>
       <BidRequestFundingSection
         onValidation={handleFundingSectionValidation}
         isFormDisabled={isFormDisabled}
