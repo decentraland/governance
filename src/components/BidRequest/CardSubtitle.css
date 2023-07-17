@@ -1,0 +1,16 @@
+.CardSubtitle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  position: relative;
+}
+
+.CardSubtitle__Loader {
+  position: relative;
+  height: 18px;
+  padding-left: 16px;
+}
+
+.CardSubtitle__Text {
+  color: var(--black-600) !important;
+}
