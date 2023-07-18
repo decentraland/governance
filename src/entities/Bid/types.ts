@@ -1,4 +1,4 @@
-import { GrantRequestDueDiligenceSchema, GrantRequestTeamSchema } from '../Grant/types'
+import { BudgetBreakdownConcept, GrantRequestDueDiligenceSchema, GrantRequestTeamSchema } from '../Grant/types'
 
 export enum BidStatus {
   Pending = 'PENDING',
@@ -44,9 +44,14 @@ export type BidRequestTeam = {
   members: TeamMember[]
 }
 
+export type BidRequestDueDiligence = {
+  budgetBreakdown: BudgetBreakdownConcept[]
+}
+
 export type BidRequest = BidRequestFunding &
   BidRequestGeneralInfo &
-  BidRequestTeam & {
+  BidRequestTeam &
+  BidRequestDueDiligence & {
     linked_proposal_id: string
     coAuthors?: string[]
   }

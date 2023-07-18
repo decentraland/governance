@@ -33,6 +33,7 @@ import SurveyResults from '../components/Proposal/SentimentSurvey/SurveyResults'
 import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
 import BiddingAndTenderingProcess from '../components/Proposal/View/BiddingAndTenderingProcess'
 import ProposalBudget from '../components/Proposal/View/Budget/ProposalBudget'
+import BidProposalView from '../components/Proposal/View/Categories/BidProposalView'
 import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
 import CompetingTenders from '../components/Proposal/View/CompetingTenders'
 import GovernanceProcess from '../components/Proposal/View/GovernanceProcess'
@@ -42,7 +43,7 @@ import TenderProposals from '../components/Proposal/View/TenderProposals'
 import StatusPill from '../components/Status/StatusPill'
 import { VOTES_VP_THRESHOLD } from '../constants'
 import { OldGrantCategory } from '../entities/Grant/types'
-import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
+import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { isBiddingAndTenderingProposal, isGovernanceProcessProposal } from '../entities/Proposal/utils'
 import { Survey } from '../entities/SurveyTopic/types'
 import { SurveyEncoder } from '../entities/SurveyTopic/utils'
@@ -127,6 +128,17 @@ function formatDescription(description: string) {
   const position = value.indexOf(`\n\n`)
 
   return position > 0 ? value.slice(0, position).trim() : value
+}
+
+function getProposalView(proposal: ProposalAttributes | null) {
+  switch (proposal?.type) {
+    case ProposalType.Grant:
+      return <GrantProposalView config={proposal?.configuration} />
+    case ProposalType.Bid:
+      return <BidProposalView config={proposal?.configuration} />
+    default:
+      return <ProposalMarkdown text={proposal?.description || ''} />
+  }
 }
 
 export default function ProposalPage() {
@@ -357,13 +369,7 @@ export default function ProposalPage() {
               {showCompetingTenders && <CompetingTenders proposal={proposal} />}
               {proposal?.type === ProposalType.POI && <ProposalHeaderPoi configuration={proposal?.configuration} />}
               {showImagesPreview && <ProposalImagesPreview imageUrls={proposal.configuration.image_previews} />}
-              <div className="ProposalDetailPage__Body">
-                {proposal?.type === ProposalType.Grant ? (
-                  <GrantProposalView config={proposal.configuration} />
-                ) : (
-                  <ProposalMarkdown text={proposal?.description || ''} />
-                )}
-              </div>
+              <div className="ProposalDetailPage__Body">{getProposalView(proposal)}</div>
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
               {showTenderProposals && <TenderProposals proposals={tenderProposals.data} />}
               {proposal && isBiddingAndTenderingProposal(proposal.type) && (
