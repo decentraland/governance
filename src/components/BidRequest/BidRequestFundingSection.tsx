@@ -112,6 +112,7 @@ export default function BidRequestFundingSection({ onValidation, isFormDisabled,
                 if (value === '') {
                   setError('startDate', { message: t('error.bid.start_date_empty') })
                 }
+                setValue('startDate', value)
               }}
             />
           </ContentSection>

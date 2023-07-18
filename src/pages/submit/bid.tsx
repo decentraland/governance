@@ -69,6 +69,11 @@ const initialValidationState: BidRequestValidationState = {
   finalConsentSectionValid: false,
 }
 
+function parseStringsAsNumbers(bidRequest: BidRequest) {
+  const funding = asNumber(bidRequest.funding)
+  return { ...bidRequest, funding }
+}
+
 function handleCancel() {
   if ((window as any).routeUpdate) {
     window.history.back()
@@ -116,8 +121,10 @@ export default function SubmitBid() {
   const submit = useCallback(() => {
     if (allSectionsValid) {
       setIsFormDisabled(true)
+      const bidRequestParsed = parseStringsAsNumbers(bidRequest as BidRequest)
+
       Governance.get()
-        .createProposalBid(bidRequest as BidRequest)
+        .createProposalBid(bidRequestParsed)
         .then(() => navigate(locations.proposals()))
         .catch((err) => {
           console.error(err, { ...err })
