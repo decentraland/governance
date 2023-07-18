@@ -4,6 +4,8 @@ import Rollbar from 'rollbar'
 import { GOVERNANCE_API, ROLLBAR_TOKEN } from '../constants'
 import { isHerokuEnv, isLocalEnv, isProdEnv, isStagingEnv } from '../utils/governanceEnvs'
 
+const FILTERED_ERRORS = ['FETCH_ERROR', 'ACTION_REJECTED']
+
 export class ErrorService {
   static client = new Rollbar({
     accessToken: ROLLBAR_TOKEN,
@@ -14,6 +16,13 @@ export class ErrorService {
     maxItems: 50,
     captureIp: 'anonymize',
     ignoreDuplicateErrors: true,
+    checkIgnore: (isUncaught: boolean, args: Rollbar.LogArgument[], item: Rollbar.Dictionary) => {
+      const body = item.body as { message?: string }
+      if (body && typeof body.message === 'string') {
+        return FILTERED_ERRORS.some((errorString) => body.message?.includes(errorString))
+      }
+      return false
+    },
   })
 
   private static getEnvironmentNameForRollbar() {
