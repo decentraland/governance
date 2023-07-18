@@ -45,7 +45,7 @@ import './bid.css'
 import './grant.css'
 import './submit.css'
 
-const initialState: BidRequest = {
+const initialState: Partial<BidRequest> = {
   linked_proposal_id: '',
   ...INITIAL_BID_REQUEST_FUNDING_STATE,
   ...INITIAL_BID_REQUEST_GENERAL_INFO_STATE,
@@ -69,11 +69,6 @@ const initialValidationState: BidRequestValidationState = {
   finalConsentSectionValid: false,
 }
 
-function parseStringsAsNumbers(bidRequest: BidRequest) {
-  const funding = asNumber(bidRequest.funding)
-  return { ...bidRequest, funding }
-}
-
 function handleCancel() {
   if ((window as any).routeUpdate) {
     window.history.back()
@@ -85,7 +80,7 @@ function handleCancel() {
 export default function SubmitBid() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
-  const [bidRequest, patchBidRequest] = useState<BidRequest>(initialState)
+  const [bidRequest, patchBidRequest] = useState(initialState)
   const [validationState, patchValidationState] = usePatchState<BidRequestValidationState>(initialValidationState)
   const [isFormDisabled, setIsFormDisabled] = useState(false)
   const [hasScrolled, setHasScrolled] = useState(false)
@@ -121,10 +116,8 @@ export default function SubmitBid() {
   const submit = useCallback(() => {
     if (allSectionsValid) {
       setIsFormDisabled(true)
-      const bidRequestParsed = parseStringsAsNumbers(bidRequest)
-
       Governance.get()
-        .createProposalBid(bidRequestParsed)
+        .createProposalBid(bidRequest as BidRequest)
         .then(() => navigate(locations.proposals()))
         .catch((err) => {
           console.error(err, { ...err })
@@ -239,7 +232,6 @@ export default function SubmitBid() {
       />
 
       <GrantRequestTeamSection
-        funding={bidRequest.funding}
         onValidation={(data, sectionValid) => {
           patchBidRequest((prevState) => ({ ...prevState, ...data }))
           patchValidationState({ teamSectionValid: sectionValid })
@@ -254,7 +246,7 @@ export default function SubmitBid() {
           patchValidationState({ dueDiligenceSectionValid: sectionValid })
         }}
         sectionNumber={getSectionNumber()}
-        projectDuration={bidRequest.projectDuration}
+        projectDuration={bidRequest.projectDuration || 0}
       />
 
       <BidRequestFinalConsentSection
