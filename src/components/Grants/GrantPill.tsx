@@ -24,7 +24,7 @@ const PROPOSAL_GRANT_CATEGORY_COLORS: Record<ProposalGrantCategory, PillColor> =
 
 function GrantPill({ type }: Props) {
   return (
-    <Pill size="small" color={PROPOSAL_GRANT_CATEGORY_COLORS[type]}>
+    <Pill size="sm" color={PROPOSAL_GRANT_CATEGORY_COLORS[type]}>
       {type.split(' ')[0]}
     </Pill>
   )

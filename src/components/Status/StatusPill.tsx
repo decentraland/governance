@@ -37,7 +37,7 @@ export default function StatusPill({ className, status, size, isLink }: Props) {
   const icon = showIcon ? <Check color={iconColor} /> : null
   const href = isLink ? locations.proposals({ status: status }) : undefined
   const name = isMobile ? getProposalStatusShortName(status) : getProposalStatusDisplayName(status)
-  const pillSize = isMobile ? 'small' : size || 'default'
+  const pillSize = isMobile ? 'sm' : size || 'md'
 
   const component = (
     <Pill

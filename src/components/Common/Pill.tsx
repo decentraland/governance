@@ -19,7 +19,7 @@ export enum PillColor {
 export type Props = {
   children: React.ReactText
   color?: PillColor | `${PillColor}`
-  size?: 'small' | 'default'
+  size?: 'sm' | 'md'
   style?: 'shiny' | 'medium' | 'light' | 'outline'
   className?: string
   icon?: React.ReactNode
@@ -27,7 +27,7 @@ export type Props = {
 
 export default function Pill({
   children,
-  size = 'default',
+  size = 'md',
   style = 'shiny',
   color = PillColor.Green,
   className,
