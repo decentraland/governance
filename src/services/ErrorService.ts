@@ -10,6 +10,10 @@ export class ErrorService {
     captureUncaught: true,
     captureUnhandledRejections: true,
     environment: this.getEnvironmentNameForRollbar(),
+    itemsPerMinute: 10,
+    maxItems: 50,
+    captureIp: 'anonymize',
+    ignoreDuplicateErrors: true,
   })
 
   private static getEnvironmentNameForRollbar() {

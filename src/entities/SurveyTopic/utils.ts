@@ -19,7 +19,7 @@ export class SurveyEncoder {
       const encodedSurvey: Record<string, unknown> = { survey }
       return JSON.stringify(encodedSurvey)
     } catch (error) {
-      ErrorService.report('Unable to encode survey', { error, survey, category: ErrorCategory.VotingError })
+      ErrorService.report('Unable to encode survey', { error, survey, category: ErrorCategory.Voting })
       return '{"survey":[]}'
     }
   }

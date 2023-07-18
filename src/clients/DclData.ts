@@ -153,7 +153,7 @@ export class DclData extends API {
     try {
       return await fn()
     } catch (error) {
-      ErrorClient.report('Failed to fetch transparency data', { error, category: ErrorCategory.TransparencyError })
+      ErrorClient.report('Failed to fetch transparency data', { error, category: ErrorCategory.Transparency })
       return fallback
     }
   }

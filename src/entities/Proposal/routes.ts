@@ -325,7 +325,7 @@ export async function createProposalHiring(req: WithAuth) {
       ErrorService.report('Error getting profile', {
         error,
         address: configuration.address,
-        category: ErrorCategory.ProfileError,
+        category: ErrorCategory.Profile,
       })
     }
   }
@@ -464,7 +464,7 @@ export async function createProposal(proposalInCreation: ProposalInCreation) {
     ErrorService.report(errorTitle, {
       error,
       proposal: JSON.stringify(proposalInCreation),
-      category: ErrorCategory.ProposalError,
+      category: ErrorCategory.Proposal,
     })
     throw new RequestError(
       `${errorTitle}\n 
@@ -579,11 +579,11 @@ export async function proposalComments(req: Request<{ proposal: string }>): Prom
 
     return filteredComments
   } catch (error) {
-    ErrorService.report('Error fetching discourse topic', {
+    logger.log('Error fetching discourse topic', {
       error,
       discourseTopicId: proposal.discourse_topic_id,
       proposalId: proposal.id,
-      category: ErrorCategory.DiscourseError,
+      category: ErrorCategory.Discourse,
     })
     return {
       comments: [],

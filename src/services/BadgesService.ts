@@ -37,7 +37,7 @@ export class BadgesService {
         ErrorService.report('Error parsing badge', {
           error,
           badge: otterspaceBadge,
-          category: ErrorCategory.BadgesError,
+          category: ErrorCategory.Badges,
         })
       }
     }

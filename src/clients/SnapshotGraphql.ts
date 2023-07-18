@@ -183,7 +183,7 @@ export class SnapshotGraphql extends API {
         }
       }
     } catch (error) {
-      ErrorClient.report('Error fetching addresses votes', { error, addresses, category: ErrorCategory.SnapshotError })
+      ErrorClient.report('Error fetching addresses votes', { error, addresses, category: ErrorCategory.Snapshot })
       return []
     }
 
@@ -284,7 +284,7 @@ export class SnapshotGraphql extends API {
         space: SNAPSHOT_SPACE,
         start,
         end,
-        category: ErrorCategory.SnapshotError,
+        category: ErrorCategory.Snapshot,
       })
 
       return []

@@ -154,7 +154,7 @@ async function categorizeProposals(
           if (!budgetForProposal) {
             ErrorService.report(`Unable to find quarter budget`, {
               proposalId: proposal.id,
-              category: ErrorCategory.JobError,
+              category: ErrorCategory.Job,
             })
             break
           }

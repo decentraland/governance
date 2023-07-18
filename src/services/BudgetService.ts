@@ -130,7 +130,7 @@ export class BudgetService {
     if (currentBudget !== null) {
       return currentBudget
     }
-    ErrorService.report('Could not find current budget', { category: ErrorCategory.BudgetError })
+    ErrorService.report('Could not find current budget', { category: ErrorCategory.Budget })
     return NULL_BUDGET
   }
 
@@ -142,7 +142,7 @@ export class BudgetService {
     }
     ErrorService.report('Could not find category budget for current quarter', {
       budgetCategory: category,
-      category: ErrorCategory.BudgetError,
+      category: ErrorCategory.Budget,
     })
     return NULL_CATEGORY_BUDGET
   }
@@ -177,7 +177,7 @@ export class BudgetService {
     if (!minDate) return budgetsForProposals
     const oldestBudget = await QuarterBudgetModel.getBudgetForDate(minDate)
     if (oldestBudget === null) {
-      ErrorService.report('Could not find budget for date', { date: minDate, category: ErrorCategory.BudgetError })
+      ErrorService.report('Could not find budget for date', { date: minDate, category: ErrorCategory.Budget })
       return budgetsForProposals
     }
     budgetsForProposals.push(oldestBudget)

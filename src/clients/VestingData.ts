@@ -68,7 +68,7 @@ export async function getVestingContractData(
       ErrorClient.report('Unable to fetch vesting contract data', {
         proposalId,
         error: errorV1,
-        category: ErrorCategory.VestingError,
+        category: ErrorCategory.Vesting,
       })
       throw errorV1
     }

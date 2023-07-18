@@ -14,7 +14,7 @@ export default function useProfile(address?: string | null) {
       const profile = await getProfile(address)
       return { profile: profile || createDefaultAvatar(address), isDefaultProfile: !profile }
     } catch (error) {
-      ErrorClient.report('Error getting profile', { error, address, category: ErrorCategory.ProfileError })
+      ErrorClient.report('Error getting profile', { error, address, category: ErrorCategory.Profile })
       return null
     }
   }
