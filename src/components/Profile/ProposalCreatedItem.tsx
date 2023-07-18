@@ -39,11 +39,11 @@ export default function ProposalCreatedItem({ proposal, showCoauthoring, hasCoau
           </div>
           <div className="ProposalCreatedItem__Status">
             <div className="ProposalCreatedItem__StatusPillsContainer">
-              <StatusPill size="small" status={status} />
+              <StatusPill size="sm" status={status} />
               {showCoauthoring && (
                 <CoAuthorPill className="ProposalCreatedItem__CoAuthorPill" hasCoauthorRequests={hasCoauthorRequests} />
               )}
-              <Mobile>{type && <CategoryPill size="small" proposalType={type} />}</Mobile>
+              <Mobile>{type && <CategoryPill size="sm" proposalType={type} />}</Mobile>
             </div>
             <div className="ProposalCreatedItem__Stats">
               <span className="ProposalCreatedItem__Details">
@@ -61,7 +61,7 @@ export default function ProposalCreatedItem({ proposal, showCoauthoring, hasCoau
             <div className="ProposalCreatedItem__CategorySection">
               {type && (
                 <div className="ProposalCreatedItem__CategoryPillContainer">
-                  <CategoryPill size="small" proposalType={type} />
+                  <CategoryPill size="sm" proposalType={type} />
                 </div>
               )}
               {status === ProposalStatus.Active && (

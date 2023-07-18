@@ -25,7 +25,7 @@ const ColorsConfig: Record<ProposalType, PillColor> = {
 type Props = {
   className?: string
   proposalType: ProposalType
-  size?: 'small' | 'default'
+  size?: 'sm' | 'md'
   isLink?: boolean
 }
 
@@ -37,13 +37,13 @@ function getProposalTypeLabel(proposalType: ProposalType) {
   return proposalType.replaceAll('_', ' ')
 }
 
-export default function CategoryPill({ className, proposalType, size = 'default', isLink = false }: Props) {
+export default function CategoryPill({ className, proposalType, size = 'md', isLink = false }: Props) {
   const isMobile = useMobileMediaQuery()
   const label = isMobile ? getProposalTypeShortLabel(proposalType) : getProposalTypeLabel(proposalType)
   const colorsConfig = ColorsConfig[proposalType]
   const pillClassNames = classNames('CategoryPill', className)
   const href = isLink ? locations.proposals({ type: proposalType }) : undefined
-  const pillSize = isMobile ? 'small' : size
+  const pillSize = isMobile ? 'sm' : size
 
   const component = (
     <Pill style="light" color={colorsConfig} className={pillClassNames} size={pillSize}>
