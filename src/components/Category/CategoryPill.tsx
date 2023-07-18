@@ -1,7 +1,7 @@
 import React from 'react'
 
 import classNames from 'classnames'
-import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
+import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalType } from '../../entities/Proposal/types'
 import locations from '../../utils/locations'
@@ -25,7 +25,7 @@ const ColorsConfig: Record<ProposalType, PillColor> = {
 type Props = {
   className?: string
   proposalType: ProposalType
-  size?: 'small' | 'default'
+  size?: 'sm' | 'md'
   isLink?: boolean
 }
 
@@ -37,30 +37,23 @@ function getProposalTypeLabel(proposalType: ProposalType) {
   return proposalType.replaceAll('_', ' ')
 }
 
-const CategoryPill = ({ className, proposalType, size = 'default', isLink }: Props) => {
+export default function CategoryPill({ className, proposalType, size = 'md', isLink = false }: Props) {
+  const isMobile = useMobileMediaQuery()
+  const label = isMobile ? getProposalTypeShortLabel(proposalType) : getProposalTypeLabel(proposalType)
   const colorsConfig = ColorsConfig[proposalType]
   const pillClassNames = classNames('CategoryPill', className)
-  const Wrapper = isLink ? Link : 'div'
   const href = isLink ? locations.proposals({ type: proposalType }) : undefined
+  const pillSize = isMobile ? 'sm' : size
 
-  return (
-    <>
-      <Mobile>
-        <Wrapper href={href}>
-          <Pill style="light" color={colorsConfig} className={pillClassNames} size="small">
-            {getProposalTypeShortLabel(proposalType)}
-          </Pill>
-        </Wrapper>
-      </Mobile>
-      <NotMobile>
-        <Wrapper href={href}>
-          <Pill style="light" color={colorsConfig} className={pillClassNames} size={size}>
-            {getProposalTypeLabel(proposalType)}
-          </Pill>
-        </Wrapper>
-      </NotMobile>
-    </>
+  const component = (
+    <Pill style="light" color={colorsConfig} className={pillClassNames} size={pillSize}>
+      {label}
+    </Pill>
   )
-}
 
-export default CategoryPill
+  if (isLink) {
+    return <Link href={href}>{component}</Link>
+  }
+
+  return component
+}

@@ -10,8 +10,6 @@ import Pill, { PillColor, Props as PillProps } from '../Common/Pill'
 import Link from '../Common/Typography/Link'
 import Check from '../Icon/Check'
 
-import './StatusPill.css'
-
 type Props = {
   className?: string
   status: ProposalStatus
@@ -30,31 +28,32 @@ const ColorsConfig: Record<ProposalStatus, PillColor> = {
   [ProposalStatus.Deleted]: PillColor.Red,
 }
 
-const StatusPill = ({ className, status, size, isLink }: Props) => {
+export default function StatusPill({ className, status, size, isLink }: Props) {
   const isMobile = useMobileMediaQuery()
 
   const style = status === (ProposalStatus.Enacted || ProposalStatus.OutOfBudget) ? 'shiny' : 'outline'
   const showIcon = status === ProposalStatus.Enacted || status === ProposalStatus.Passed
   const iconColor = status === ProposalStatus.Enacted ? 'var(--white-900)' : 'var(--green-800)'
   const icon = showIcon ? <Check color={iconColor} /> : null
-  const Wrapper = isLink ? Link : 'div'
   const href = isLink ? locations.proposals({ status: status }) : undefined
   const name = isMobile ? getProposalStatusShortName(status) : getProposalStatusDisplayName(status)
-  const pillSize = isMobile ? 'small' : size || 'default'
+  const pillSize = isMobile ? 'sm' : size || 'md'
 
-  return (
-    <Wrapper href={href} className="StatusPill">
-      <Pill
-        size={pillSize}
-        style={style}
-        className={classNames('StatusPill', className)}
-        color={ColorsConfig[status]}
-        icon={icon}
-      >
-        {name}
-      </Pill>
-    </Wrapper>
+  const component = (
+    <Pill
+      size={pillSize}
+      style={style}
+      className={classNames('StatusPill', className)}
+      color={ColorsConfig[status]}
+      icon={icon}
+    >
+      {name}
+    </Pill>
   )
-}
 
-export default StatusPill
+  if (isLink) {
+    return <Link href={href}>{component}</Link>
+  }
+
+  return component
+}

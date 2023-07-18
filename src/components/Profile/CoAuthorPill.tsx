@@ -14,7 +14,7 @@ const CoAuthorPill = ({ className, hasCoauthorRequests }: Props) => {
   const text = t(`page.profile.activity.coauthoring.${textKey}`)
 
   return (
-    <Pill className={className} size="small" color="yellow" style={hasCoauthorRequests ? 'shiny' : 'outline'}>
+    <Pill className={className} size="sm" color="yellow" style={hasCoauthorRequests ? 'shiny' : 'outline'}>
       {text}
     </Pill>
   )

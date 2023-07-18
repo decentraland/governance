@@ -11,6 +11,7 @@ import Arrow from '../Icon/Arrow'
 import Username from '../User/Username'
 
 import './DelegatesTable.css'
+import './DelegatesTableRow.css'
 
 function valueOrHyphen<K>(value: K, formatter: (param: K) => string) {
   return value ? formatter(value) : '-'
@@ -29,24 +30,28 @@ function DelegateRow({ delegate, onDelegateSelected }: Props) {
 
   return (
     <Table.Row
-      className="DelegatesTable__DelegateRow"
+      className="DelegatesTableRow"
       onMouseEnter={() => setIsFilled(true)}
       onMouseLeave={() => setIsFilled(false)}
       onClick={() => onDelegateSelected(delegate)}
     >
-      <Table.Cell className={classNames('DelegatesTable__CandidateName', 'DelegatesTable__Sticky')}>
-        <Username address={delegateAddress} size={isMobile ? 'tiny' : 'small'} />
-        <Arrow filled={isFilled} className="DelegatesTable__UsernameArrow" />
+      <Table.Cell className={classNames('DelegatesTableRow__CandidateName', 'DelegatesTable__Sticky')}>
+        <Username
+          className="DelegatesTableRow__Username"
+          address={delegateAddress}
+          size={isMobile ? 'tiny' : 'small'}
+        />
+        <Arrow filled={isFilled} className="DelegatesTableRow__UsernameArrow" />
       </Table.Cell>
       <Table.Cell className="DelegatesTable__ShadowBox" />
-      <Table.Cell className="DelegatesTable__PaddedColumn DelegatesTable__LastVoted">
+      <Table.Cell className="DelegatesTable__PaddedColumn DelegatesTableRow__LastVoted">
         {valueOrHyphen(delegate.lastVoted, (value) => abbreviateTimeDifference(Time.unix(value).fromNow()))}
       </Table.Cell>
-      <Table.Cell className="DelegatesTable__TimesVoted">
+      <Table.Cell className="DelegatesTableRow__TimesVoted">
         {valueOrHyphen(delegate.timesVoted, (value) => intl.formatNumber(value))}
       </Table.Cell>
-      <Table.Cell className="DelegatesTable__PickedBy">{intl.formatNumber(delegate.pickedBy)}</Table.Cell>
-      <Table.Cell className="DelegatesTable__TotalVP">{intl.formatNumber(delegate.totalVP)}</Table.Cell>
+      <Table.Cell className="DelegatesTableRow__PickedBy">{intl.formatNumber(delegate.pickedBy)}</Table.Cell>
+      <Table.Cell className="DelegatesTableRow__TotalVP">{intl.formatNumber(delegate.totalVP)}</Table.Cell>
       <Table.Cell className="DelegatesTable__ArrowColumn">
         <Arrow filled={isFilled} />
       </Table.Cell>
