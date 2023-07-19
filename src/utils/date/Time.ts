@@ -18,6 +18,9 @@ import 'dayjs/plugin/utc'
 
 import './plugin'
 
+const preciseDiff = require('dayjs-precise-range')
+
+Time.extend(preciseDiff)
 Time.extend(utc)
 Time.extend(isSameOrAfter)
 Time.extend(isSameOrBefore)

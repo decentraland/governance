@@ -62,6 +62,7 @@ import useProposalVotes from '../hooks/useProposalVotes'
 import useSurveyTopics from '../hooks/useSurveyTopics'
 import { useTenderProposals } from '../hooks/useTenderProposals'
 import useURLSearchParams from '../hooks/useURLSearchParams'
+import { ErrorCategory } from '../utils/errorCategories'
 import locations, { navigate } from '../utils/locations'
 import { isUnderMaintenance } from '../utils/maintenance'
 
@@ -90,13 +91,6 @@ export type ProposalPageState = {
 type VoteSegmentation = {
   highQualityVotes: Record<string, Vote>
   lowQualityVotes: Record<string, Vote>
-}
-
-type UpdateProps = {
-  status: ProposalStatus
-  vesting_contract: string | null
-  enactingTx: string | null
-  description: string
 }
 
 function getVoteSegmentation(votes: Record<string, Vote> | null | undefined): VoteSegmentation {
@@ -206,9 +200,9 @@ export default function ProposalPage() {
             confirmSubscription: !votes![account!],
           })
           reloadVotes()
-        } catch (err) {
-          ErrorClient.report('Unable to vote: ', err)
-          if ((err as any).code === ErrorCode.ACTION_REJECTED) {
+        } catch (error) {
+          ErrorClient.report('Unable to vote', { error, category: ErrorCategory.Voting })
+          if ((error as any).code === ErrorCode.ACTION_REJECTED) {
             updatePageState({
               changingVote: false,
             })
@@ -243,28 +237,6 @@ export default function ProposalPage() {
       updatePageState({ confirmSubscription: false })
       if (!proposal) return
       queryClient.setQueryData([subscriptionsQueryKey], updatedSubscriptions)
-    },
-  })
-
-  const { mutate: updateProposal, isLoading: isUpdating } = useMutation({
-    mutationFn: async (updateProps: UpdateProps) => {
-      const { status, vesting_contract, enactingTx, description } = updateProps
-      if (proposal && isDAOCommittee) {
-        const updateProposal = await Governance.get().updateProposalStatus(
-          proposal.id,
-          status,
-          vesting_contract,
-          enactingTx,
-          description
-        )
-        updatePageState({ confirmStatusUpdate: false })
-        return updateProposal
-      }
-    },
-    onSuccess: (proposal) => {
-      if (proposal) {
-        queryClient.setQueryData([proposalKey], proposal)
-      }
     },
   })
 
@@ -412,7 +384,6 @@ export default function ProposalPage() {
                 castingVote={castingVote}
                 castVote={castVote}
                 voteWithSurvey={voteWithSurvey}
-                updatingStatus={isUpdating}
                 subscribing={isUpdatingSubscription}
                 subscribe={updateSubscription}
                 subscriptions={subscriptions ?? []}
@@ -464,11 +435,9 @@ export default function ProposalPage() {
       <UpdateProposalStatusModal
         open={!!proposalPageState.confirmStatusUpdate}
         proposal={proposal}
+        isDAOCommittee={isDAOCommittee}
         status={proposalPageState.confirmStatusUpdate || null}
-        loading={isUpdating}
-        onClickAccept={(status, vesting_contract, enactingTx, description) =>
-          updateProposal({ status, vesting_contract, enactingTx, description })
-        }
+        proposalKey={proposalKey}
         onClose={() => updatePageState({ confirmStatusUpdate: false })}
       />
       <ProposalSuccessModal

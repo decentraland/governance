@@ -1,14 +1,14 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 
 import classNames from 'classnames'
-import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 
-import { UpdateAttributes, UpdateStatus } from '../../../entities/Updates/types'
+import { ProjectHealth, UpdateAttributes, UpdateStatus } from '../../../entities/Updates/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import { formatDate } from '../../../utils/date/Time'
-import locations from '../../../utils/locations'
+import locations, { navigate } from '../../../utils/locations'
 import DateTooltip from '../../Common/DateTooltip'
 import Link from '../../Common/Typography/Link'
+import ChevronRight from '../../Icon/ChevronRight'
 
 import { getStatusIcon } from './ProposalUpdate'
 import './ProposalUpdate.css'
@@ -22,10 +22,32 @@ interface Props {
   showMenu?: boolean
 }
 
+function getIconColor(health: ProjectHealth) {
+  switch (health) {
+    case ProjectHealth.OnTrack:
+      return 'var(--green-800)'
+    case ProjectHealth.AtRisk:
+      return 'var(--yellow-800)'
+    case ProjectHealth.OffTrack:
+      return 'var(--red-800)'
+  }
+}
+
 const ExpandedProposalUpdate = ({ update, index, onEditClick, onDeleteUpdateClick, showMenu }: Props) => {
   const t = useFormatMessage()
   const { introduction, status, health, completion_date } = update
   const UpdateIcon = getStatusIcon(health, completion_date)
+
+  const handleUpdateClick = useCallback(
+    (e: React.MouseEvent<any>) => {
+      if (update.completion_date) {
+        e.stopPropagation()
+        e.preventDefault()
+        navigate(locations.update(update.id))
+      }
+    },
+    [update]
+  )
 
   if (!completion_date) {
     return null
@@ -34,6 +56,7 @@ const ExpandedProposalUpdate = ({ update, index, onEditClick, onDeleteUpdateClic
   return (
     <Link
       href={locations.update(update.id)}
+      onClick={handleUpdateClick}
       className={classNames('ProposalUpdate', 'ProposalUpdate--expanded', `ProposalUpdate--${status}`)}
     >
       <div className="ProposalUpdate__Heading">
@@ -64,7 +87,7 @@ const ExpandedProposalUpdate = ({ update, index, onEditClick, onDeleteUpdateClic
       </div>
       <div className={classNames('ProposalUpdate__KeepReading', `ProposalUpdate__KeepReading--${health}`)}>
         {t('page.proposal_detail.grant.update_keep_reading')}
-        <Icon name="chevron right" />
+        {update?.health && <ChevronRight color={getIconColor(update.health)} />}
       </div>
     </Link>
   )

@@ -11,13 +11,19 @@
 }
 
 .VotingPowerListModal_Items {
-  margin: 0 auto 40px;
-  height: 50vh;
+  display: flex;
+  flex-direction: column;
+  height: 71vh;
   padding: 20px 0;
   overflow-y: auto;
   overflow-x: hidden;
-  display: flex;
-  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .VotingPowerListModal_Items {
+    height: 50vh;
+    margin: 0 auto 40px;
+  }
 }
 
 .VotingPowerListModal_ItemWithDivider {

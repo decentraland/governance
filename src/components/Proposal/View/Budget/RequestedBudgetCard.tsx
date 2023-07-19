@@ -95,7 +95,7 @@ export default function RequestedBudgetCard({ proposal, budget }: Props) {
         <div className="RequestedBudgetCard__Title">
           {t(`page.proposal_detail.grant.requested_budget.${isProposalActive ? 'active_title' : 'finished_title'}`)}
           {isProposalActive && isOverBudget && (
-            <Pill style="outline" color={PillColor.Yellow} size={'small'}>
+            <Pill style="outline" color={PillColor.Yellow} size="sm">
               {t('page.proposal_detail.grant.requested_budget.overbudget_pill')}
             </Pill>
           )}

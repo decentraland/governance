@@ -105,6 +105,7 @@
   line-height: 24px;
   color: var(--black-400);
   text-transform: uppercase;
+  gap: 8px;
 }
 
 .ProposalUpdate__DateText {
@@ -113,18 +114,12 @@
   opacity: 0.5;
 }
 
-.ProposalUpdate__Date i {
-  margin-left: 4px;
-  margin-right: -2px;
-}
-
 .ProposalUpdate__KeepReading {
+  display: flex;
+  align-items: center;
   font-weight: var(--weight-semi-bold);
   text-transform: uppercase;
-}
-
-.ProposalUpdate__KeepReading i {
-  margin-left: 3px;
+  gap: 4px;
 }
 
 .ProposalUpdate__KeepReading--onTrack {
@@ -145,7 +140,6 @@
 
 .ProposalUpdate__Late {
   padding: 3px 8px;
-  margin-left: 10px;
   border-radius: 12px;
   background: var(--black-200);
   color: var(--black-800);

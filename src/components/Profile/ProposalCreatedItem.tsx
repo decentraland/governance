@@ -24,11 +24,11 @@ interface Props {
   hasCoauthorRequests?: boolean
 }
 
-function ProposalCreatedItem({ proposal, showCoauthoring, hasCoauthorRequests }: Props) {
+export default function ProposalCreatedItem({ proposal, showCoauthoring, hasCoauthorRequests }: Props) {
   const t = useFormatMessage()
   const { start_at, finish_at, title, status, type, id } = proposal
   const dateText = useProposalDateText(start_at, finish_at)
-  const { votes } = useProposalVotes(proposal.id)
+  const { votes } = useProposalVotes(id)
 
   return (
     <Card as={Link} href={locations.proposal(id)} className="ProposalCreatedItem">
@@ -39,15 +39,11 @@ function ProposalCreatedItem({ proposal, showCoauthoring, hasCoauthorRequests }:
           </div>
           <div className="ProposalCreatedItem__Status">
             <div className="ProposalCreatedItem__StatusPillsContainer">
-              <StatusPill className="ProposalCreatedItem__StatusPill" size="small" status={status} />
+              <StatusPill size="sm" status={status} />
               {showCoauthoring && (
                 <CoAuthorPill className="ProposalCreatedItem__CoAuthorPill" hasCoauthorRequests={hasCoauthorRequests} />
               )}
-              <Mobile>
-                {type && (
-                  <CategoryPill className="ProposalCreatedItem__CategoryPill" size="small" proposalType={type} />
-                )}
-              </Mobile>
+              <Mobile>{type && <CategoryPill size="sm" proposalType={type} />}</Mobile>
             </div>
             <div className="ProposalCreatedItem__Stats">
               <span className="ProposalCreatedItem__Details">
@@ -65,10 +61,10 @@ function ProposalCreatedItem({ proposal, showCoauthoring, hasCoauthorRequests }:
             <div className="ProposalCreatedItem__CategorySection">
               {type && (
                 <div className="ProposalCreatedItem__CategoryPillContainer">
-                  <CategoryPill size="small" proposalType={type} />
+                  <CategoryPill size="sm" proposalType={type} />
                 </div>
               )}
-              {proposal.status === ProposalStatus.Active && (
+              {status === ProposalStatus.Active && (
                 <span className="ProposalCreatedItem__VoteText">{t('page.home.open_proposals.vote')}</span>
               )}
               <ChevronRightCircleOutline />
@@ -82,5 +78,3 @@ function ProposalCreatedItem({ proposal, showCoauthoring, hasCoauthorRequests }:
     </Card>
   )
 }
-
-export default ProposalCreatedItem

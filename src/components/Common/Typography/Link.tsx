@@ -6,6 +6,10 @@ import { navigate } from '../../../utils/locations'
 
 import './Link.css'
 
+function isMetaClick(event: React.MouseEvent<HTMLAnchorElement>) {
+  return !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey)
+}
+
 type Props = React.AnchorHTMLAttributes<HTMLAnchorElement>
 
 function isLocalLink(href?: string | null) {
@@ -14,15 +18,19 @@ function isLocalLink(href?: string | null) {
   )
 }
 
+const TARGET_BLANK = '_blank'
+
 export default function Link({ target, rel, href, onClick, className, ...props }: Props) {
   const isLocal = isLocalLink(href)
-  const linkTarget = !target && !isLocal ? '_blank' : target || undefined
+  const linkTarget = !isLocal ? target || TARGET_BLANK : undefined
   const linkRel = !isLocal ? classNames(rel, 'noopener', 'noreferrer') : rel
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (onClick) {
       onClick(e)
     }
-    if (isLocal && href) {
+
+    const isBlank = e.currentTarget.target === TARGET_BLANK
+    if (isLocal && href && !isBlank && !isMetaClick(e)) {
       e.preventDefault()
       navigate(href)
     }
