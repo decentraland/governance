@@ -29,11 +29,6 @@
 }
 
 @media (max-width: 500px) {
-  .DelegationDetails__Stats {
-    row-gap: 1rem !important;
-    grid-template-columns: auto !important;
-  }
-
   .DelegationDetails__StatPlaceholderFullWidth {
     grid-column: 1 / span 1 !important;
   }
@@ -127,14 +122,22 @@
   grid-column-gap: 1rem;
 }
 
-.DelegationDetails__Stats {
-  margin-bottom: 24px;
-  display: grid;
-  justify-content: space-between;
-  row-gap: 2rem;
-  grid-template-columns: auto auto auto;
-  width: 100%;
-  justify-items: stretch;
+.VotingPowerDelegationDetail__Stats {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+@media (min-width: 501px) {
+  .VotingPowerDelegationDetail__Stats {
+    margin-bottom: 24px;
+    display: grid;
+    justify-content: space-between;
+    row-gap: 2rem;
+    grid-template-columns: auto auto auto;
+    width: 100%;
+    justify-items: stretch;
+  }
 }
 
 .DelegationDetails__StatPlaceholder {
@@ -176,12 +179,9 @@
   font-weight: var(--weight-normal);
 }
 
-.VotingPowerDelegationDetail__Content .ShowMore .Divider {
+.VotingPowerDelegationDetail__Divider {
   position: relative;
-  bottom: -0.9em;
-  width: 100%;
-  opacity: 0.23;
-  border: 1px solid var(--black-600);
+  bottom: -0.8em;
 }
 
 .VotingPowerDelegationDetail__Content .stats .header {

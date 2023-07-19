@@ -6,6 +6,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { HttpStat } from '../../clients/HttpStat'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Field from '../Common/Form/Field'
+import Heading from '../Common/Typography/Heading'
 import Label from '../Common/Typography/Label'
 import ErrorMessage from '../Error/ErrorMessage'
 import { ContentSection } from '../Layout/ContentLayout'
@@ -52,6 +53,7 @@ export default function HttpStatus({ className }: Props) {
   return (
     <form className={className} onSubmit={handleSubmit(onSubmit)}>
       <ContentSection>
+        <Heading size="sm">{'HTTP Status'}</Heading>
         <Label>{'Http Status'}</Label>
         <Field
           name="httpStatus"
@@ -80,7 +82,7 @@ export default function HttpStatus({ className }: Props) {
           rules={{
             required: { value: true, message: t('error.draft.title_empty') },
             validate: (value: string) => {
-              if (Number(value) >= 0 && Number(value) <= MAX_SLEEP_TIME) {
+              if (Number(value) < 0 || Number(value) > MAX_SLEEP_TIME) {
                 return t('error.debug.invalid_sleep_time')
               }
             },

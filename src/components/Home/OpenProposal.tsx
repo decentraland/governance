@@ -58,7 +58,7 @@ const OpenProposal = ({ proposal }: Props) => {
           <h3 className="OpenProposal__Title">{title}</h3>
           <span className="OpenProposal__Details">
             <Mobile>
-              <CategoryPill className="OpenProposal__Pill" proposalType={proposal.type} size="small" />
+              <CategoryPill className="OpenProposal__Pill" proposalType={proposal.type} size="sm" />
             </Mobile>
             <span className="OpenProposal__DetailsItem OpenProposal__UsernameContainer">
               {t('page.home.open_proposals.by_user')}

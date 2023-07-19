@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useIsMutating } from '@tanstack/react-query'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
@@ -12,16 +13,17 @@ import { ProposalPageState } from '../../pages/proposal'
 
 type ProposalActionsProps = {
   deleting: boolean
-  updatingStatus: boolean
   proposal: ProposalAttributes
   updatePageState: (newState: Partial<ProposalPageState>) => void
 }
 
-export default function ProposalActions({ proposal, deleting, updatingStatus, updatePageState }: ProposalActionsProps) {
+export default function ProposalActions({ proposal, deleting, updatePageState }: ProposalActionsProps) {
   const t = useFormatMessage()
   const [account] = useAuthContext()
   const { isDAOCommittee } = useIsDAOCommittee(account)
   const { isOwner } = useIsProposalOwner(proposal)
+
+  const updatingStatus = useIsMutating({ mutationKey: [`updatingProposal#${proposal.id}`] }) > 0
 
   const proposalStatus = proposal?.status
   const showDeleteButton = isOwner || isDAOCommittee

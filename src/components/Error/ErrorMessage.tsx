@@ -15,9 +15,11 @@ import './ErrorMessage.css'
 interface Props {
   label: string
   errorMessage: string
+  className?: string
+  verticalHeader?: boolean
 }
 
-export default function ErrorMessage({ label, errorMessage }: Props) {
+export default function ErrorMessage({ label, errorMessage, className, verticalHeader }: Props) {
   const t = useFormatMessage()
   const { copiedValue, handleCopy } = useClipboardCopy(Time.Second)
   const [open, setOpen] = useState(false)
@@ -27,10 +29,12 @@ export default function ErrorMessage({ label, errorMessage }: Props) {
   }
 
   return (
-    <div className="ErrorMessage__Container">
-      <div className="ErrorMessage__Header">
-        <ErrorNotice />
-        <span>{label}</span>
+    <div className={classNames('ErrorMessage__Container', className)}>
+      <div className={classNames('ErrorMessage__Header', verticalHeader && 'ErrorMessage__Header--vertical')}>
+        <div className="ErrorMessage__ErrorNotice">
+          <ErrorNotice />
+          <span>{label}</span>
+        </div>
         <Button className="ErrorMessage__Show" basic as={Link} onClick={toggleHandler}>
           {open ? t('error.message.hide') : t('error.message.show')}
         </Button>

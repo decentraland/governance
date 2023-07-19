@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
 
-import { useLocation } from '@reach/router'
 import classNames from 'classnames'
 import isNumber from 'lodash/isNumber'
 import toSnakeCase from 'lodash/snakeCase'
@@ -10,7 +9,8 @@ import { getNewGrantsCategoryIcon } from '../../entities/Grant/utils'
 import { ProposalType, toProposalType } from '../../entities/Proposal/types'
 import { CategoryIconVariant } from '../../helpers/styles'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import { navigate } from '../../utils/locations'
+import useURLSearchParams from '../../hooks/useURLSearchParams'
+import Link from '../Common/Typography/Link'
 import Text from '../Common/Typography/Text'
 import Arrow from '../Icon/Arrow'
 import All from '../Icon/ProposalCategories/All'
@@ -20,7 +20,7 @@ import SubItem from '../Icon/SubItem'
 import { categoryIcons } from './CategoryBanner'
 import './CategoryOption.css'
 
-export type CategoryOptionProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'children'> & {
+type Props = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'children'> & {
   active?: boolean
   type: string
   count?: number
@@ -51,31 +51,15 @@ export const getCategoryIcon = (type: string, variant?: CategoryIconVariant, siz
   return <Icon size="24" />
 }
 
-export default React.memo(function CategoryOption({
-  active,
-  type,
-  className,
-  count,
-  subtypes,
-  ...props
-}: CategoryOptionProps) {
+export default React.memo(function CategoryOption({ active, type, className, count, subtypes, ...props }: Props) {
   const t = useFormatMessage()
-  const location = useLocation()
-  const params = useMemo(() => new URLSearchParams(location.search), [location.search])
+  const params = useURLSearchParams()
   const currentType = useMemo(() => toProposalType(params.get('type')), [params])
   const currentSubtype = useMemo(() => toGrantSubtype(params.get('subtype')), [params])
 
   function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
     if (props.onClick) {
       props.onClick(e)
-    }
-
-    if (!e.defaultPrevented) {
-      e.preventDefault()
-
-      if (props.href) {
-        navigate(props.href)
-      }
     }
   }
 
@@ -112,8 +96,9 @@ export default React.memo(function CategoryOption({
 
   return (
     <Fragment>
-      <a
+      <Link
         {...props}
+        href={props.href || undefined}
         onClick={handleClick}
         className={classNames(
           'CategoryOption',
@@ -144,7 +129,7 @@ export default React.memo(function CategoryOption({
             {count}
           </span>
         )}
-      </a>
+      </Link>
       {hasSubtypes && (
         <div
           className={classNames(
@@ -154,21 +139,17 @@ export default React.memo(function CategoryOption({
         >
           {subtypes.map((subtype, index) => {
             return (
-              <a
+              <Link
                 className={classNames(
                   'CategoryOption__SubcategoryItem',
                   isSubtypeActive(subtype) && 'CategoryOption__SubcategoryItem--active'
                 )}
                 key={subtype + `-${index}`}
-                onClick={(e) => {
-                  e.preventDefault()
-                  navigate(getHref(subtype))
-                }}
                 href={getHref(subtype)}
               >
                 <SubItem />
                 {t(`category.${toSnakeCase(subtype)}_title`)}
-              </a>
+              </Link>
             )
           })}
         </div>

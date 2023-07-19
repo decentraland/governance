@@ -88,7 +88,7 @@ async function isValidated(req: Request) {
     return await UserModel.isForumValidated(address)
   } catch (error) {
     const message = 'Error while fetching validation data'
-    ErrorService.report(message, error)
+    ErrorService.report(message, { error })
     throw new Error(`${message}. ${error}`)
   }
 }

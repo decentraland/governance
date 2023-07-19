@@ -11,6 +11,7 @@ import isUUID from 'validator/lib/isUUID'
 
 import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
+import { getVestingContractData } from '../../clients/VestingData'
 import { inBackground } from '../../helpers'
 import BidService from '../../services/BidService'
 import { DiscourseService } from '../../services/DiscourseService'
@@ -19,6 +20,7 @@ import { GrantsService } from '../../services/GrantsService'
 import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
 import { getProfile } from '../../utils/Catalyst'
 import Time from '../../utils/date/Time'
+import { ErrorCategory } from '../../utils/errorCategories'
 import { BidRequest, BidRequestSchema } from '../Bid/types'
 import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'
@@ -36,6 +38,7 @@ import { getUpdateMessage } from './templates/messages'
 import { SUBMISSION_THRESHOLD_PITCH, SUBMISSION_THRESHOLD_POLL, SUBMISSION_THRESHOLD_TENDER } from './constants'
 import ProposalModel from './model'
 import {
+  CatalystType,
   CategorizedGrants,
   GrantWithUpdate,
   HiringType,
@@ -322,7 +325,11 @@ export async function createProposalHiring(req: WithAuth) {
       const profile = await getProfile(configuration.address)
       configuration.name = profile?.name
     } catch (error) {
-      ErrorService.report(`Can't get profile ${configuration.address}`, error)
+      ErrorService.report('Error getting profile', {
+        error,
+        address: configuration.address,
+        category: ErrorCategory.Profile,
+      })
     }
   }
 
@@ -344,8 +351,12 @@ export async function createProposalCatalyst(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalCatalyst>(newProposalCatalystValidator, req.body || {})
   const alreadyCatalyst = await isAlreadyACatalyst(configuration.domain)
-  if (alreadyCatalyst) {
+  if (configuration.type === CatalystType.Add && alreadyCatalyst) {
     throw new RequestError('Domain is already a catalyst')
+  }
+
+  if (configuration.type === CatalystType.Remove && !alreadyCatalyst) {
+    throw new RequestError('Domain is not a catalyst')
   }
 
   return createProposal({
@@ -460,14 +471,18 @@ export async function createProposalBid(req: WithAuth) {
 export async function createProposal(proposalInCreation: ProposalInCreation) {
   try {
     return await ProposalService.createProposal(proposalInCreation)
-  } catch (e: any) {
-    const errorTitle = `Error creating proposal: ${JSON.stringify(proposalInCreation)}`
-    ErrorService.report(errorTitle, e)
+  } catch (error: any) {
+    const errorTitle = 'Error creating proposal'
+    ErrorService.report(errorTitle, {
+      error,
+      proposal: JSON.stringify(proposalInCreation),
+      category: ErrorCategory.Proposal,
+    })
     throw new RequestError(
       `${errorTitle}\n 
-    Error: ${e.message ? e.message : JSON.stringify(e)}`,
+    Error: ${error.message ? error.message : JSON.stringify(error)}`,
       RequestError.InternalServerError,
-      e
+      error
     )
   }
 }
@@ -536,13 +551,12 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
         proposal.user,
         update.vesting_address
       )
+      const vestingContractData = await getVestingContractData(id, update.vesting_address)
+      await UpdateModel.createPendingUpdates(id, vestingContractData, proposal.configuration.vestingStartDate)
     }
   } else if (update.status === ProposalStatus.Passed) {
     update.passed_by = user
     update.passed_description = configuration.description || null
-    if (proposal.type == ProposalType.Grant) {
-      await UpdateModel.createPendingUpdates(proposal.id, proposal.configuration.projectDuration)
-    }
   } else if (update.status === ProposalStatus.Rejected) {
     update.rejected_by = user
     update.rejected_description = configuration.description || null
@@ -576,11 +590,13 @@ export async function proposalComments(req: Request<{ proposal: string }>): Prom
     const filteredComments = filterComments(allComments, users)
 
     return filteredComments
-  } catch (e) {
-    ErrorService.report(
-      `Error while fetching discourse topic ${proposal.discourse_topic_id}: for proposal ${proposal.id}`,
-      e
-    )
+  } catch (error) {
+    logger.log('Error fetching discourse topic', {
+      error,
+      discourseTopicId: proposal.discourse_topic_id,
+      proposalId: proposal.id,
+      category: ErrorCategory.Discourse,
+    })
     return {
       comments: [],
       totalComments: 0,
