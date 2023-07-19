@@ -160,6 +160,14 @@ export default function SubmitBid() {
     [patchBidRequest, patchValidationState]
   )
 
+  const handleGeneralInfoSectionValidation = useCallback(
+    (data, sectionValid) => {
+      patchBidRequest((prevState) => ({ ...prevState, ...data }))
+      patchValidationState({ generalInformationSectionValid: sectionValid })
+    },
+    [patchBidRequest, patchValidationState]
+  )
+
   if (accountState.loading) {
     return <LoadingView />
   }
@@ -230,10 +238,7 @@ export default function SubmitBid() {
       />
 
       <BidRequestGeneralInfoSection
-        onValidation={(data, sectionValid) => {
-          patchBidRequest((prevState) => ({ ...prevState, ...data }))
-          patchValidationState({ generalInformationSectionValid: sectionValid })
-        }}
+        onValidation={handleGeneralInfoSectionValidation}
         isFormDisabled={isFormDisabled}
         sectionNumber={getSectionNumber()}
       />
