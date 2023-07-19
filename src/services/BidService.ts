@@ -5,6 +5,7 @@ import { BidStatus, UnpublishedBid } from '../entities/Bid/types'
 import { ProposalType } from '../entities/Proposal/types'
 import { DEFAULT_CHOICES } from '../entities/Proposal/utils'
 import Time from '../utils/date/Time'
+import { ErrorCategory } from '../utils/errorCategories'
 
 import { ErrorService } from './ErrorService'
 import { ProposalService } from './ProposalService'
@@ -51,7 +52,7 @@ export default class BidService {
 
     if (isNaN(MINIMUM_BIDS_TO_PUBLISH) || MINIMUM_BIDS_TO_PUBLISH === 0) {
       const errorMsg = `Minimum bids to publish is not set. Please set MINIMUM_BIDS_TO_PUBLISH env variable`
-      ErrorService.report(errorMsg)
+      ErrorService.report(errorMsg, { category: ErrorCategory.Bid })
       context.log(errorMsg)
       return
     }
@@ -91,7 +92,7 @@ export default class BidService {
           context.log(`Bid from ${author_address} for tender ${linked_proposal_id} published`)
         } catch (error) {
           const msg = `Error publishing bid from ${author_address} for tender ${linked_proposal_id}`
-          ErrorService.report(msg, error)
+          ErrorService.report(msg, { error, category: ErrorCategory.Bid })
           context.log(msg)
         }
       }
@@ -103,7 +104,7 @@ export default class BidService {
         context.log(`Rejected bids from tenders ${tendersWithBidsToReject.join(', ')}`)
       } catch (error) {
         const msg = `Error rejecting bids from tenders ${tendersWithBidsToReject.join(', ')}`
-        ErrorService.report(msg, error)
+        ErrorService.report(msg, { error, category: ErrorCategory.Bid })
         context.log(msg)
       }
     }

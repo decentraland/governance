@@ -212,5 +212,9 @@ export async function finishProposal(context: JobContext) {
 }
 
 export async function publishBids(context: JobContext) {
-  BidService.publishBids(context)
+  try {
+    await BidService.publishBids(context)
+  } catch (error) {
+    ErrorService.report('Error publishing bids', { error, category: ErrorCategory.Job })
+  }
 }
