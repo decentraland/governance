@@ -785,6 +785,19 @@
       "4_panel_description": "Click New Proposal and select the correct category. The form provided for each category is different, so be careful to select the correct one. Finish by filling out the provided form.\n\nThe DAO will post a new thread on the Forum automatically where the community can discuss your proposal. The DAO will then post your proposal on Snapshot, the decentralized voting tool used to record votes. Keep tabs on your proposal’s status from the My Proposals tab."
     },
     "proposal_view": {
+      "bid": {
+        "header": "Should funds from the DAO Treasury be allocated to finance a new community-led project addressing issues outlined herein?",
+        "linked_tender_title": "Linked Tender Proposal",
+        "budget_title": "Budget",
+        "budget_body": "{amount} USD",
+        "duration_title": "Project duration",
+        "duration_body": "{duration} {duration, plural, one {month} other {months}}",
+        "start_date_title": "Start date",
+        "beneficiary_title": "Beneficiary address",
+        "email_title": "Email address",
+        "deliverables_title": "Deliverables",
+        "roadmap_title": "Roadmap and milestones"
+      },
       "grant": {
         "header": "Should the following **{value}** grant in the **{category}** category be approved?",
         "abstract_title": "Abstract",

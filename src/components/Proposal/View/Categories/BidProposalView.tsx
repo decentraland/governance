@@ -2,9 +2,12 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 
 import { BidRequest } from '../../../../entities/Bid/types'
+import type { ProposalAttributes } from '../../../../entities/Proposal/types'
+import { proposalUrl } from '../../../../entities/Proposal/utils'
 import { CURRENCY_FORMAT_OPTIONS } from '../../../../helpers'
 import useFormatMessage from '../../../../hooks/useFormatMessage'
-import locations from '../../../../utils/locations'
+import useProposal from '../../../../hooks/useProposal'
+import Time from '../../../../utils/date/Time'
 import BudgetBreakdownView from '../../../GrantRequest/BudgetBreakdownView'
 import PersonnelView from '../../../GrantRequest/PersonnelView'
 import ProposalDescriptionItem from '../ProposalDescriptionItem'
@@ -12,6 +15,16 @@ import ProposalDescriptionItem from '../ProposalDescriptionItem'
 interface Props {
   config: BidRequest
 }
+
+function getLinkedProposalLink(proposal: ProposalAttributes | null) {
+  if (!proposal) {
+    return ''
+  }
+
+  return `[${proposal.title}](${proposalUrl({ id: proposal.id })})`
+}
+
+const formatDate = (date: Date | string) => Time.from(date).format('MMM DD, YYYY')
 
 function BidProposalView({ config }: Props) {
   const t = useFormatMessage()
@@ -30,22 +43,28 @@ function BidProposalView({ config }: Props) {
   } = config
 
   const amount = intl.formatNumber(funding, CURRENCY_FORMAT_OPTIONS as any)
-  const linkedProposalUrl = locations.proposal(linked_proposal_id)
+  const { proposal: linkedProposal } = useProposal(linked_proposal_id)
 
   return (
     <div>
-      <ProposalDescriptionItem body={'Should bla bla bla...'} />
-      <ProposalDescriptionItem title={'Linked Tender Proposal'} body={linkedProposalUrl} />
-      <ProposalDescriptionItem title={'Budget'} body={amount} />
+      <ProposalDescriptionItem body={t('page.proposal_view.bid.header')} />
       <ProposalDescriptionItem
-        title={'Project Duration'}
-        body={t('page.proposal_view.grant.breakdown_subtitle', { duration: projectDuration })}
+        title={t('page.proposal_view.bid.linked_tender_title')}
+        body={getLinkedProposalLink(linkedProposal)}
       />
-      <ProposalDescriptionItem title={'Start Date'} body={startDate} />
-      <ProposalDescriptionItem title={'Beneficiary Address'} body={beneficiary} />
-      <ProposalDescriptionItem title={'Email Address'} body={email} />
-      <ProposalDescriptionItem title={'Deliverables'} body={deliverables} />
-      <ProposalDescriptionItem title={'Roadmap and milestones'} body={roadmap} />
+      <ProposalDescriptionItem
+        title={t('page.proposal_view.bid.budget_title')}
+        body={t('page.proposal_view.bid.budget_body', { amount })}
+      />
+      <ProposalDescriptionItem
+        title={t('page.proposal_view.bid.duration_title')}
+        body={t('page.proposal_view.bid.duration_body', { duration: projectDuration })}
+      />
+      <ProposalDescriptionItem title={t('page.proposal_view.bid.start_date_title')} body={formatDate(startDate)} />
+      <ProposalDescriptionItem title={t('page.proposal_view.bid.beneficiary_title')} body={beneficiary} />
+      <ProposalDescriptionItem title={t('page.proposal_view.bid.email_title')} body={email} />
+      <ProposalDescriptionItem title={t('page.proposal_view.bid.deliverables_title')} body={deliverables} />
+      <ProposalDescriptionItem title={t('page.proposal_view.bid.roadmap_title')} body={roadmap} />
       <BudgetBreakdownView breakdown={budgetBreakdown} />
       <PersonnelView members={members} />
     </div>

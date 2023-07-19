@@ -2,6 +2,7 @@ import markdown from 'remark-parse'
 import stringify from 'remark-stringify'
 import unified from 'unified'
 
+import Time from '../../../utils/date/Time'
 import ProposalModel from '../model'
 import { ProposalAttributes } from '../types'
 import { proposalUrl } from '../utils'
@@ -50,3 +51,5 @@ function formatMarkdownAST(node: Node): Node {
       }
   }
 }
+
+export const formatDate = (date: Date | string) => Time.from(date).format('MMM DD, YYYY')
