@@ -9,8 +9,8 @@ function checkEncryptionKey() {
   if (!DB_ENCRYPTION_KEY) throw new Error('DB_ENCRYPTION_KEY is not set')
 }
 
-export default class PendingBidsModel extends Model<BidAttributes> {
-  static tableName = 'pending_bids'
+export default class BidModel extends Model<BidAttributes> {
+  static tableName = 'bids'
   static withTimestamps = false
   static primaryKey = 'id'
 
@@ -20,7 +20,7 @@ export default class PendingBidsModel extends Model<BidAttributes> {
     bid_proposal_data,
     publish_at,
     status,
-  }: UnpublishedBid) {
+  }: Omit<UnpublishedBid, 'id'>) {
     checkEncryptionKey()
 
     const query = SQL`
@@ -30,7 +30,7 @@ export default class PendingBidsModel extends Model<BidAttributes> {
       ${author_address.toLowerCase()}, 
       pgp_sym_encrypt(${bid_proposal_data}, ${DB_ENCRYPTION_KEY}), 
       ${publish_at},
-      (now() at time zone 'utc'),
+      now(),
       ${status}
       )
     `
@@ -53,13 +53,14 @@ export default class PendingBidsModel extends Model<BidAttributes> {
     checkEncryptionKey()
 
     const query = SQL`
-    SELECT author_address, publish_at, linked_proposal_id, pgp_sym_decrypt(bid_proposal_data::bytea, ${DB_ENCRYPTION_KEY}) as bid_proposal_data 
+    SELECT id, author_address, publish_at, linked_proposal_id, pgp_sym_decrypt(bid_proposal_data::bytea, ${DB_ENCRYPTION_KEY}) as bid_proposal_data 
     FROM ${table(this)} 
-    WHERE publish_at <= (now() at time zone 'utc') AND status = ${BidStatus.Pending}`
+    WHERE publish_at <= now() AND status = ${BidStatus.Pending}`
 
     const bids = await this.namedQuery('get_bids_ready_to_publish', query)
 
-    return bids.map(({ author_address, linked_proposal_id, bid_proposal_data, publish_at }) => ({
+    return bids.map(({ id, author_address, linked_proposal_id, bid_proposal_data, publish_at }) => ({
+      id,
       author_address,
       publish_at,
       linked_proposal_id,

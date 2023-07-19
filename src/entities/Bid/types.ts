@@ -14,6 +14,7 @@ export type BidAttributes = UnpublishedBid & {
 }
 
 export type UnpublishedBid = {
+  id: number
   linked_proposal_id: string
   author_address: string
   bid_proposal_data: BidProposalData

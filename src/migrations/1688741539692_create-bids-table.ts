@@ -10,22 +10,25 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
   pgm.createExtension('pgcrypto', { ifNotExists: true })
   pgm.createType(STATUS_TYPE, Object.values(BidStatus))
   pgm.createTable(Model.tableName, {
+    id: {
+      type: 'SERIAL',
+      primaryKey: true,
+      notNull: true,
+    },
     created_at: {
-      type: 'TIMESTAMP',
+      type: 'TIMESTAMPTZ',
       notNull: true,
     },
     publish_at: {
-      type: 'TIMESTAMP',
+      type: 'TIMESTAMPTZ',
       notNull: true,
     },
     author_address: {
       type: 'TEXT',
-      primaryKey: true,
       notNull: true,
     },
     linked_proposal_id: {
       type: 'TEXT',
-      primaryKey: true,
       notNull: true,
     },
     bid_proposal_data: {
@@ -40,6 +43,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
 
   pgm.addConstraint(Model.tableName, 'linked_proposal_id_fk', `FOREIGN KEY(linked_proposal_id) REFERENCES ${ProposalModel.tableName}(id)`)
   pgm.addConstraint(Model.tableName, 'author_address_check', 'CHECK(author_address ~* \'^(0x)?[0-9a-f]{40}$\')')
+  pgm.addConstraint(Model.tableName, 'author_and_tender_unique', 'UNIQUE(linked_proposal_id, author_address)')
 }
 
 export async function down(pgm: MigrationBuilder): Promise<void> {
