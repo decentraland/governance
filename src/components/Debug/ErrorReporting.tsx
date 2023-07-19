@@ -3,7 +3,8 @@ import React, { useState } from 'react'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
-import { Governance } from '../../clients/Governance'
+import { ErrorClient } from '../../clients/ErrorClient'
+import Heading from '../Common/Typography/Heading'
 import Label from '../Common/Typography/Label'
 import ErrorMessage from '../Error/ErrorMessage'
 import { ContentSection } from '../Layout/ContentLayout'
@@ -15,13 +16,14 @@ interface Props {
 export default function ErrorReporting({ className }: Props) {
   const [message, setMessage] = useState<string>('')
   const [errorMessage, setErrorMessage] = useState<any>()
+  const [errorData, setErrorData] = useState<any>()
   const [formDisabled, setFormDisabled] = useState(false)
 
   async function reportError() {
     setErrorMessage('')
     setFormDisabled(true)
     try {
-      await Governance.get().reportErrorToServer(message)
+      await ErrorClient.report(message, JSON.parse(errorData))
     } catch (e: any) {
       setErrorMessage(e.message)
     }
@@ -31,9 +33,12 @@ export default function ErrorReporting({ className }: Props) {
   return (
     <div className={className}>
       <ContentSection>
-        <Label>{'Report Error to Server'}</Label>
+        <Heading size="sm">{'Report Error to Server'}</Heading>
         <div>
+          <Label>{'Error Message'}</Label>
           <Field value={message} onChange={(_, { value }) => setMessage(value)} />
+          <Label>{'JSON data'}</Label>
+          <Field value={errorData} onChange={(_, { value }) => setErrorData(value)} />
           <Button
             className="Debug__SectionButton"
             primary

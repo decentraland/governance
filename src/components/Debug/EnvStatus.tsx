@@ -6,6 +6,7 @@ import { Field } from 'decentraland-ui/dist/components/Field/Field'
 import {
   CANDIDATE_ADDRESSES,
   DAO_DISCORD_URL,
+  DAO_ROLLBAR_TOKEN,
   DOCS_URL,
   FORUM_URL,
   GOVERNANCE_API,
@@ -13,11 +14,10 @@ import {
   NEWSLETTER_URL,
   OPEN_CALL_FOR_DELEGATES_LINK,
   PROD_ENV_VAR,
-  ROLLBAR_TOKEN,
   SEGMENT_KEY,
   TEST_ENV_VAR,
 } from '../../constants'
-import Label from '../Common/Typography/Label'
+import Heading from '../Common/Typography/Heading'
 import ErrorMessage from '../Error/ErrorMessage'
 import { ContentSection } from '../Layout/ContentLayout'
 
@@ -33,7 +33,7 @@ const CONSTANTS: Record<string, any> = {
   NEWSLETTER_URL: NEWSLETTER_URL,
   OPEN_CALL_FOR_DELEGATES_LINK: OPEN_CALL_FOR_DELEGATES_LINK,
   CANDIDATE_ADDRESSES: CANDIDATE_ADDRESSES,
-  ROLLBAR_TOKEN: ROLLBAR_TOKEN,
+  DAO_ROLLBAR_TOKEN: DAO_ROLLBAR_TOKEN,
   SEGMENT_KEY: SEGMENT_KEY,
   LOCAL_ENV_VAR: LOCAL_ENV_VAR,
   TEST_ENV_VAR: TEST_ENV_VAR,
@@ -60,10 +60,10 @@ export default function EnvStatus({ className }: Props) {
   return (
     <div className={className}>
       <ContentSection>
-        <Label>{'Frontend Env Variable'}</Label>
+        <Heading size="sm">{'Frontend Env Variables'}</Heading>
         <div className="EnvName__Section">
           <Field value={envName} onChange={(_, { value }) => setEnvName(value)} />
-          <Button className="Debug__SectionButton" primary disabled={!envName} onClick={() => handleReadVar()}>
+          <Button className="Debug__SideButton" primary disabled={!envName} onClick={() => handleReadVar()}>
             {'Read Env Var'}
           </Button>
         </div>

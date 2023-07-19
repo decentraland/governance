@@ -61,6 +61,7 @@ import useProposalVotes from '../hooks/useProposalVotes'
 import useSurveyTopics from '../hooks/useSurveyTopics'
 import { useTenderProposals } from '../hooks/useTenderProposals'
 import useURLSearchParams from '../hooks/useURLSearchParams'
+import { ErrorCategory } from '../utils/errorCategories'
 import locations, { navigate } from '../utils/locations'
 import { isUnderMaintenance } from '../utils/maintenance'
 
@@ -187,9 +188,9 @@ export default function ProposalPage() {
             confirmSubscription: !votes![account!],
           })
           reloadVotes()
-        } catch (err) {
-          ErrorClient.report('Unable to vote: ', err)
-          if ((err as any).code === ErrorCode.ACTION_REJECTED) {
+        } catch (error) {
+          ErrorClient.report('Unable to vote', { error, category: ErrorCategory.Voting })
+          if ((error as any).code === ErrorCode.ACTION_REJECTED) {
             updatePageState({
               changingVote: false,
             })

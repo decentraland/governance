@@ -2,8 +2,9 @@ import React from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
+import Heading from '../components/Common/Typography/Heading'
+import Text from '../components/Common/Typography/Text'
 import BudgetsUpdate from '../components/Debug/BudgetsUpdate'
 import EnvStatus from '../components/Debug/EnvStatus'
 import ErrorReporting from '../components/Debug/ErrorReporting'
@@ -28,13 +29,13 @@ export default function DebugPage() {
   return (
     <Container className="DebugPage">
       <Navigation activeTab={NavigationTab.Debug} />
-      <Header size="huge">{t('page.debug.title')}</Header>
+      <Heading size="sm">{'Version'}</Heading>
+      <Text>{process.env.GATSBY_VERSION_NUMBER}</Text>
+      <BudgetsUpdate className="DebugPage__Section" />
       <HttpStatus className="DebugPage__Section" />
       <SnapshotStatus className="DebugPage__Section" />
       <EnvStatus className="DebugPage__Section" />
-      <BudgetsUpdate className="DebugPage__Section" />
       <ErrorReporting className="DebugPage__Section" />
-      <div>Version: {process.env.GATSBY_VERSION_NUMBER}</div>
     </Container>
   )
 }
