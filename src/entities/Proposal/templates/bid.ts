@@ -25,7 +25,7 @@ ${await formatLinkedProposal(proposal.linked_proposal_id)}
 
 ## Budget
 
-${formatBalance(proposal.funding)} USD
+${formatBalance(Number(proposal.funding))} USD
 ${getDuration(proposal.projectDuration)}
 
 ## Start Date

@@ -1,5 +1,7 @@
 import { GrantRequestDueDiligenceSchema, GrantRequestTeamSchema } from '../Grant/types'
 
+import { BID_MIN_PROJECT_DURATION } from './constants'
+
 export enum BidStatus {
   Pending = 'PENDING',
   Rejected = 'REJECTED',
@@ -20,7 +22,7 @@ export type UnpublishedBid = {
 }
 
 export type BidRequestFunding = {
-  funding: number
+  funding: string | number
   projectDuration: number
   startDate: string
   beneficiary: string
@@ -59,7 +61,7 @@ export const BidRequestFundingSchema = {
   },
   projectDuration: {
     type: 'integer',
-    minimum: 1,
+    minimum: BID_MIN_PROJECT_DURATION,
     maximum: 12,
   },
   startDate: {
