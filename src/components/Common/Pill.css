@@ -14,14 +14,14 @@
   margin-right: 0.25em;
 }
 
-.Pill--small {
+.Pill--sm {
   padding: 0 6px;
   height: 19px;
   font-size: 10px;
   line-height: 13px;
 }
 
-.Pill--default {
+.Pill--md {
   height: 24px;
   font-size: 12px;
   line-height: 18px;
