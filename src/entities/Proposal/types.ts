@@ -103,6 +103,11 @@ export enum HiringType {
   Remove = 'hiring_remove',
 }
 
+export enum CatalystType {
+  Add = 'catalyst_add',
+  Remove = 'catalyst_remove',
+}
+
 export function isProposalType(value: string | null | undefined): boolean {
   if (value === null || value === undefined) {
     return false
@@ -119,6 +124,20 @@ export function isPoiType(value: string | null | undefined): boolean {
     default:
       return false
   }
+}
+
+export function isCatalystType(value: string | null | undefined): boolean {
+  switch (value) {
+    case CatalystType.Add:
+    case CatalystType.Remove:
+      return true
+    default:
+      return false
+  }
+}
+
+export function toCatalystType(value: string | null | undefined): CatalystType | null {
+  return isCatalystType(value) ? (value as CatalystType) : null
 }
 
 export function toProposalType(value: string | null | undefined): ProposalType | null {
@@ -145,10 +164,6 @@ export function isHiringType(value: string | null | undefined): boolean {
 
 export function toHiringType<T>(value: string | null | undefined, orElse: () => T): HiringType | T {
   return isHiringType(value) ? (value as HiringType) : orElse()
-}
-
-export function getHiringTypeAction(hiringType: HiringType) {
-  return hiringType.split('_')[1] // "add" | "remove"
 }
 
 function requiredVotingPower(value: string | undefined | null, defaultValue: number) {
@@ -484,6 +499,7 @@ export type NewProposalCatalyst = {
   owner: string
   domain: string
   description: string
+  type: CatalystType
   coAuthors?: string[]
 }
 
@@ -504,6 +520,10 @@ export const newProposalCatalystScheme = {
       type: 'string',
       minLength: 20,
       maxLength: 250,
+    },
+    type: {
+      type: 'string',
+      enum: Object.values(CatalystType),
     },
     coAuthors,
   },

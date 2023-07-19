@@ -17,11 +17,17 @@
 }
 
 .VotesList .VotesList__ItemsContainer {
-  margin: 0 auto 40px;
-  height: 50vh;
+  height: 71vh;
   padding: 20px 0;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+@media (min-width: 768px) {
+  .VotesList__ItemsContainer {
+    margin: 0 auto 40px;
+    height: 50vh;
+  }
 }
 
 .VotesList .VotesList__ItemsContainer .VoteList__Item:hover {

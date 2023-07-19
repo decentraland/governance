@@ -150,6 +150,7 @@
       "domain_empty": "Domain field is empty",
       "domain_invalid": "Domain field is invalid",
       "domain_already_a_catalyst": "Domain is already a catalyst",
+      "domain_not_a_catalyst": "Domain is not a catalyst",
       "description_empty": "Description field is empty",
       "description_too_short": "Description field is too short",
       "description_too_large": "Description field is too large",
@@ -333,7 +334,11 @@
     "linked_wearables": "Linked Wearables",
     "all_proposals_title": "All proposals",
     "catalyst_title": "Catalyst Node",
-    "catalyst_description": "Add a node to the network of community-run servers",
+    "catalyst_description": "Add or remove a node to the decentralized network of community-run content servers",
+    "catalyst_add_title": "Add Catalyst Node",
+    "catalyst_add_description": "Add a node to the network of community-run servers",
+    "catalyst_remove_title": "Remove Catalyst Node",
+    "catalyst_remove_description": "Remove a node from the network of community-run servers",
     "poi_title": "Point of Interest",
     "add_poi_title": "Add POI",
     "remove_poi_title": "Remove POI",
@@ -441,7 +446,8 @@
       "update_status_description_label": "Description",
       "update_status_description_placeholder": "Add any useful details for user",
       "accept": "Save",
-      "reject": "Cancel"
+      "reject": "Cancel",
+      "update_error_label": "There was an error while trying to update the proposal, please try again."
     },
     "poi_proposal": {
       "description": "What would you like to do?"
@@ -1463,9 +1469,18 @@
       "member_placeholder": "Select a member"
     },
     "submit_catalyst": {
-      "title": "Add a catalyst node",
-      "description": "Instead of using central servers, Decentraland is run on a network of community operated nodes. These nodes store copies of all scenes deployed to Decentraland, and they handle the messaging and interactions by establishing peer-to-peer connections between users.",
-      "description_2": "To propose the addition of a new node, please provide the following details.",
+      "catalyst_add": {
+        "title": "Add a catalyst node",
+        "description": "Instead of using central servers, Decentraland is run on a network of community operated nodes. These nodes store copies of all scenes deployed to Decentraland, and they handle the messaging and interactions by establishing peer-to-peer connections between users.",
+        "description_2": "To propose the addition of a new node, please provide the following details.",
+        "description_detail": "Explain why this node should be added to the Catalyst network. Why would this addition be beneficial to the network? For example, adding nodes in new geographic areas helps to provide a better experience to more users."
+      },
+      "catalyst_remove": {
+        "title": "Remove a catalyst node",
+        "description": "Instead of using central servers, Decentraland is run on a network of community operated nodes. These nodes store copies of all scenes deployed to Decentraland, and they handle the messaging and interactions by establishing peer-to-peer connections between users.",
+        "description_2": "To propose the removal of a node, please provide the following details.",
+        "description_detail": "Explain why this node should be removed from the Catalyst network. Please, be as descriptive and objective as possible."
+      },
       "owner_label": "Ethereum address of the owner of the Catalyst Node",
       "owner_placeholder": "Example: 0x06012c8cf97bead5deae237070f9587f8e7a266d",
       "domain_label": "Domain for the Catalyst Node",
@@ -1479,8 +1494,7 @@
       "domain_comms_failed": "✘ Communication server is not ready.",
       "domain_content_failed": "✘ Content server is not ready.",
       "domain_lambda_failed": "✘ Lambda server is not ready.",
-      "description_label": "Description",
-      "description_detail": "Explain why this node should be added to the Catalyst network. Why would this addition be beneficial to the network? For example, adding nodes in new geographic areas helps to provide a better experience to more users."
+      "description_label": "Description"
     },
     "submit_grant": {
       "title": "Request a Grant",

@@ -4,8 +4,8 @@ import snakeCase from 'lodash/snakeCase'
 import { BudgetService } from '../../services/BudgetService'
 import { DiscordService } from '../../services/DiscordService'
 import { ErrorService } from '../../services/ErrorService'
+import { ErrorCategory } from '../../utils/errorCategories'
 import { Budget } from '../Budget/types'
-import UpdateModel from '../Updates/model'
 
 import ProposalModel from './model'
 import { ProposalOutcome, ProposalWithOutcome, calculateOutcome, getWinnerTender } from './outcome'
@@ -36,14 +36,6 @@ async function updateAcceptedProposals(acceptedProposals: ProposalWithOutcome[],
     await ProposalModel.finishProposal(
       acceptedProposals.map(({ id }) => id),
       ProposalStatus.Passed
-    )
-
-    await Promise.all(
-      acceptedProposals.map(async ({ id, type, configuration }) => {
-        if (type == ProposalType.Grant) {
-          await UpdateModel.createPendingUpdates(id, configuration.projectDuration)
-        }
-      })
     )
   }
 }
@@ -160,7 +152,10 @@ async function categorizeProposals(
         } else {
           const budgetForProposal = getBudgetForProposal(updatedBudgets, proposal)
           if (!budgetForProposal) {
-            ErrorService.report(`Unable to find corresponding quarter budget for ${proposal.id}`)
+            ErrorService.report(`Unable to find quarter budget`, {
+              proposalId: proposal.id,
+              category: ErrorCategory.Job,
+            })
             break
           }
           if (grantCanBeFunded(proposal, budgetForProposal)) {

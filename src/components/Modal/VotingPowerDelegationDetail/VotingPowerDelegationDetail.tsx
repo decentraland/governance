@@ -13,6 +13,7 @@ import useFormatMessage from '../../../hooks/useFormatMessage'
 import useVotesMatch from '../../../hooks/useVotesMatch'
 import useVotingPowerDistribution from '../../../hooks/useVotingPowerDistribution'
 import Time from '../../../utils/date/Time'
+import Divider from '../../Common/Divider'
 import ChevronLeft from '../../Icon/ChevronLeft'
 import VotingPower from '../../Token/VotingPower'
 import Username from '../../User/Username'
@@ -135,7 +136,7 @@ function VotingPowerDelegationDetail({
           <div className={classNames('Fadeout', !showFadeout && 'Fadeout--hidden')} />
         </div>
         <div className="ShowMore">
-          <div className="Divider" />
+          <Divider className="VotingPowerDelegationDetail__Divider" />
           <Button secondary onClick={() => setIsExpanded((prev) => !prev)}>
             {t(`modal.vp_delegation.details.${!isExpanded ? 'show_more' : 'show_less'}`)}
           </Button>
@@ -154,7 +155,7 @@ function VotingPowerDelegationDetail({
         )}
         {!isLoading && vpDistribution && (
           <>
-            <div className="DelegationDetails__Stats">
+            <div className="VotingPowerDelegationDetail__Stats">
               <div className="DelegationDetails__StatPlaceholder">
                 <Stats title={t('modal.vp_delegation.details.stats_own_voting_power')}>
                   <VotingPower value={vpDistribution.own} size="large" />

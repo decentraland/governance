@@ -7,10 +7,21 @@
   border-radius: 6px;
 }
 
+.ErrorMessage__Header--vertical {
+  align-items: center !important;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .ErrorMessage__Header {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   margin: 12px 16px;
+}
+
+.ErrorMessage__ErrorNotice {
+  display: flex;
+  align-items: center;
 }
 
 .ErrorMessage__Header span {
@@ -69,7 +80,7 @@ button.ui.small.primary.button.Button.ErrorMessage__Copy {
   letter-spacing: -0.2px;
   text-transform: uppercase;
   color: var(--black-600);
-  background: var(--white);
+  background: var(--white-900);
   border: 1px solid var(--black-400);
   box-shadow: 0 2px 4px var(--black-400);
   border-radius: 4px;

@@ -3,6 +3,7 @@ import env from 'decentraland-gatsby/dist/utils/env'
 import uniqBy from 'lodash/uniqBy'
 
 import { SNAPSHOT_API, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
+import { ErrorCategory } from '../utils/errorCategories'
 
 import { ErrorClient } from './ErrorClient'
 import {
@@ -182,8 +183,7 @@ export class SnapshotGraphql extends API {
         }
       }
     } catch (error) {
-      ErrorClient.report(`Error fetching addresses votes`, error)
-
+      ErrorClient.report('Error fetching addresses votes', { error, addresses, category: ErrorCategory.Snapshot })
       return []
     }
 
@@ -221,42 +221,6 @@ export class SnapshotGraphql extends API {
         .json({
           query,
           variables: { space: SNAPSHOT_SPACE, addresses: addresses, skip, first },
-        })
-    )
-
-    return result?.data?.votes
-  }
-
-  fetchVotes = async (params: { start: Date; end: Date }, skip: number, batchSize: number) => {
-    const { start, end } = params
-    const query = `
-      query getVotes($space: String!, $start: Int!, $end: Int!, $first: Int!, $skip: Int!) {
-        votes(where: {space: $space, created_gte: $start, created_lt: $end}, orderBy: "created", orderDirection: asc, first: $first, skip: $skip) {
-          voter
-          created
-          vp
-          choice
-          proposal {
-            id
-            choices
-          }
-        }
-      }
-    `
-
-    const result = await this.fetch<SnapshotVoteResponse>(
-      GRAPHQL_ENDPOINT,
-      this.options()
-        .method('POST')
-        .json({
-          query,
-          variables: {
-            space: SNAPSHOT_SPACE,
-            start: getQueryTimestamp(start.getTime()),
-            end: getQueryTimestamp(end.getTime()),
-            first: batchSize,
-            skip,
-          },
         })
     )
 
@@ -315,7 +279,13 @@ export class SnapshotGraphql extends API {
         }
       }
     } catch (error) {
-      ErrorClient.report('Error fetching votes', error)
+      ErrorClient.report('Error fetching votes', {
+        error,
+        space: SNAPSHOT_SPACE,
+        start,
+        end,
+        category: ErrorCategory.Snapshot,
+      })
 
       return []
     }

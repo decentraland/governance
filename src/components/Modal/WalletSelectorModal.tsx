@@ -4,7 +4,6 @@ import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 import { ProviderType } from '@dcl/schemas/dist/dapps/provider-type'
 import { connection } from 'decentraland-connect/dist/ConnectionManager'
 import { toModalOptionType } from 'decentraland-dapps/dist/containers/LoginModal/utils'
-import { useFeatureFlagContext } from 'decentraland-gatsby/dist/context/FeatureFlag'
 import useAnchor from 'decentraland-gatsby/dist/hooks/useAnchor'
 import { LoginModal, LoginModalOptionType } from 'decentraland-ui/dist/components/LoginModal/LoginModal'
 
@@ -27,7 +26,6 @@ const availableProviders = new Set(connection.getAvailableProviders())
 export default function WalletSelectorModal({ chainId, onConnect, onClose, error, open, loading }: Props) {
   const t = useFormatMessage()
   const [provider, setProvider] = useState(LoginModalOptionType.METAMASK)
-  const [ff] = useFeatureFlagContext()
 
   useEffect(() => {
     setProvider(toModalOptionType(ProviderType.INJECTED) || LoginModalOptionType.METAMASK)
@@ -55,12 +53,8 @@ export default function WalletSelectorModal({ chainId, onConnect, onClose, error
     [chainId, handleConnect]
   )
   const handleConnectWalletConnect = useCallback(
-    () =>
-      handleConnect(
-        ff.enabled('dapps-wallet-connect-v2') ? ProviderType.WALLET_CONNECT_V2 : ProviderType.WALLET_CONNECT,
-        chainId
-      ),
-    [ff, chainId, handleConnect]
+    () => handleConnect(ProviderType.WALLET_CONNECT_V2, chainId),
+    [chainId, handleConnect]
   )
   const handleConnectWalletLink = useCallback(
     () => handleConnect(ProviderType.WALLET_LINK, chainId),

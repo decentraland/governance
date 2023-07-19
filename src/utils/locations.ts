@@ -2,7 +2,7 @@ import { NavigateOptions } from '@reach/router'
 import API from 'decentraland-gatsby/dist/utils/api/API'
 import { navigate as gatsbyNavigate } from 'gatsby'
 
-import { HiringType, PoiType, ProposalStatus, ProposalType } from '../entities/Proposal/types'
+import { CatalystType, HiringType, PoiType, ProposalStatus, ProposalType } from '../entities/Proposal/types'
 
 import { NewGrantCategory } from './../entities/Grant/types'
 
@@ -56,7 +56,11 @@ export default {
     url('/proposal/', { id: proposal, ...options }),
   submit: (
     type?: ProposalType,
-    options: { linked_proposal_id?: string; request?: PoiType | HiringType; category?: NewGrantCategory } = {}
+    options: {
+      linked_proposal_id?: string
+      request?: PoiType | HiringType | CatalystType
+      category?: NewGrantCategory
+    } = {}
   ) => url(type ? `/submit/${String(type).replace('_', '-')}/` : '/submit/', options),
   submitUpdate: (options: { id?: string; proposalId: string }) => url('/submit/update', options),
   profile: (options: Partial<{ address: string }> = {}) => url('/profile/', options),

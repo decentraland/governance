@@ -29,7 +29,7 @@ function VestingContract({ vestingAddress }: Props) {
   return (
     <div className="VestingContract DetailsSection DetailsSection--shiny">
       <div className="DetailsSection__Content">
-        <Pill color="green" style="shiny" size="small">
+        <Pill color="green" style="shiny" size="sm">
           {t('page.proposal_detail.grant.vesting_label')}
         </Pill>
         <Markdown

@@ -3,7 +3,6 @@ import React, { useCallback } from 'react'
 import classNames from 'classnames'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 
 import { Grant, ProposalAttributes } from '../../../entities/Proposal/types'
 import { UpdateAttributes, UpdateStatus } from '../../../entities/Updates/types'
@@ -13,6 +12,7 @@ import { formatDate } from '../../../utils/date/Time'
 import locations, { navigate } from '../../../utils/locations'
 import DateTooltip from '../../Common/DateTooltip'
 import Link from '../../Common/Typography/Link'
+import ChevronRight from '../../Icon/ChevronRight'
 
 import { getStatusIcon } from './ProposalUpdate'
 import './ProposalUpdate.css'
@@ -62,10 +62,13 @@ const CollapsedProposalUpdate = ({
 
   const handleUpdateClick = useCallback(
     (e: React.MouseEvent<any>) => {
-      e.preventDefault()
-      navigate(updateLocation)
+      if (update.completion_date) {
+        e.stopPropagation()
+        e.preventDefault()
+        navigate(updateLocation)
+      }
     },
-    [updateLocation]
+    [update.completion_date, updateLocation]
   )
 
   return (
@@ -100,9 +103,7 @@ const CollapsedProposalUpdate = ({
               <UpdateMenu onEditClick={onEditClick} onDeleteClick={onDeleteUpdateClick} />
             </div>
           )}
-          <div>
-            <Icon name="chevron right" />
-          </div>
+          <ChevronRight color="var(--black-300)" />
         </div>
       )}
       {showPostUpdateButton && (
