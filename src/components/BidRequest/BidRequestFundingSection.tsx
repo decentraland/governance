@@ -5,12 +5,9 @@ import { Field as DCLField } from 'decentraland-ui/dist/components/Field/Field'
 import isEmail from 'validator/lib/isEmail'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
+import { BID_MIN_PROJECT_DURATION } from '../../entities/Bid/constants'
 import { BidRequestFunding, BidRequestFundingSchema } from '../../entities/Bid/types'
-import {
-  GRANT_PROPOSAL_MAX_BUDGET,
-  GRANT_PROPOSAL_MIN_BUDGET,
-  MIN_LOW_TIER_PROJECT_DURATION,
-} from '../../entities/Grant/types'
+import { GRANT_PROPOSAL_MAX_BUDGET, GRANT_PROPOSAL_MIN_BUDGET } from '../../entities/Grant/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Field from '../Common/Form/Field'
 import SubLabel from '../Common/SubLabel'
@@ -24,7 +21,8 @@ import ProjectRequestSection from '../ProjectRequest/ProjectRequestSection'
 const schema = BidRequestFundingSchema
 
 export const INITIAL_BID_REQUEST_FUNDING_STATE: Partial<BidRequestFunding> = {
-  projectDuration: MIN_LOW_TIER_PROJECT_DURATION,
+  funding: '',
+  projectDuration: BID_MIN_PROJECT_DURATION,
 }
 
 interface Props {

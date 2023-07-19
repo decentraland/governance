@@ -85,7 +85,7 @@ export default class BidService {
               ...bid_proposal_data,
               choices: DEFAULT_CHOICES,
             },
-            required_to_pass: 1200000 + bid_proposal_data.funding * 40, // Grants high tier formula
+            required_to_pass: 1200000 + Number(bid_proposal_data.funding) * 40, // Grants high tier formula
             finish_at,
           })
           await BidModel.removePendingBid(author_address, linked_proposal_id)

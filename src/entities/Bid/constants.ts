@@ -1,0 +1,1 @@
+export const BID_MIN_PROJECT_DURATION = 1
