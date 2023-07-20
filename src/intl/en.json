@@ -1005,6 +1005,7 @@
         "submit_bid_proposal_label": "Submit Bid Proposal",
         "submitted_bid_proposal_label": "Bid Proposal Submitted",
         "submit_bid_info": "Bidding begins **soon**",
+        "submit_bid_countdown": "Submissions closes in {value}",
         "promote_to_draft_label": "Promote to Draft",
         "promote_to_governance_label": "Escalate Proposal",
         "promote_to_tender_label": "Escalate to Tender"
