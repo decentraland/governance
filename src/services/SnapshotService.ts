@@ -1,4 +1,5 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
+import isNumber from 'lodash/isNumber'
 
 import { SnapshotApi, SnapshotReceipt } from '../clients/SnapshotApi'
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
@@ -99,7 +100,7 @@ export class SnapshotService {
   }
 
   static async getAddressesVotes(addresses: string[], first?: number, skip?: number) {
-    if (!!first && !!skip) {
+    if (isNumber(first) && isNumber(skip)) {
       return await SnapshotGraphql.get().getAddressesVotesInBatches(addresses, first, skip)
     }
     return await SnapshotGraphql.get().getAddressesVotes(addresses)
