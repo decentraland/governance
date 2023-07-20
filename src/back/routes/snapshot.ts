@@ -5,13 +5,13 @@ import { Request } from 'express'
 import { SnapshotService } from '../../services/SnapshotService'
 
 export default routes((router) => {
-  router.post('/snapshot/space-status', handleAPI(getSnapshotStatusAndSpace))
+  router.post('/snapshot/status-space', handleAPI(getStatusAndSpace))
   router.post('/snapshot/votes', handleAPI(getAddressesVotes))
 })
 
-async function getSnapshotStatusAndSpace(req: Request<{ spaceName?: string }>) {
+async function getStatusAndSpace(req: Request<{ spaceName?: string }>) {
   const { spaceName } = req.body
-  return await SnapshotService.getSnapshotStatusAndSpace(spaceName)
+  return await SnapshotService.getStatusAndSpace(spaceName)
 }
 
 async function getAddressesVotes(req: Request<{ spaceName?: string }>) {

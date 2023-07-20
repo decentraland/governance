@@ -472,8 +472,8 @@ export class Governance extends API {
   }
 
   async getSnapshotStatusAndSpace(spaceName?: string) {
-    const response = await this.fetch<ApiResponse<{ snapshotStatus: SnapshotStatus; snapshotSpace: SnapshotSpace }>>(
-      `/snapshot/space-status`,
+    const response = await this.fetch<ApiResponse<{ status: SnapshotStatus; space: SnapshotSpace }>>(
+      `/snapshot/status-space`,
       this.options().method('POST').json({ spaceName })
     )
     return response.data
