@@ -127,9 +127,9 @@ function formatDescription(description: string) {
 function getProposalView(proposal: ProposalAttributes | null) {
   switch (proposal?.type) {
     case ProposalType.Grant:
-      return <GrantProposalView config={proposal?.configuration} />
+      return <GrantProposalView config={proposal.configuration} />
     case ProposalType.Bid:
-      return <BidProposalView config={proposal?.configuration} />
+      return <BidProposalView config={proposal.configuration} />
     default:
       return <ProposalMarkdown text={proposal?.description || ''} />
   }
