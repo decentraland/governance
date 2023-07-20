@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-import { Governance } from './../clients/Governance'
+import { Governance } from '../clients/Governance'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
@@ -16,7 +16,7 @@ function useVotedProposals(address: string, first?: number) {
       if (!isEthereumAddress(address)) {
         return []
       }
-      return await Governance.get().getAddressVotes(address, first, skip)
+      return await Governance.get().getAddressVotesWithProposals(address, first, skip)
     },
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })

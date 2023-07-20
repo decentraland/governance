@@ -24,9 +24,7 @@ export default function SnapshotStatus({ className }: Props) {
   async function handleFetchClick() {
     setErrorMessage('')
     try {
-      const { snapshotStatus: newStatus, snapshotSpace: newSpace } = await Governance.get().getSnapshotStatusAndSpace(
-        spaceName
-      )
+      const { status: newStatus, space: newSpace } = await Governance.get().getSnapshotStatusAndSpace(spaceName)
       setSnapshotStatus(newStatus)
       setSnapshotSpace(newSpace)
       setErrorMessage('')

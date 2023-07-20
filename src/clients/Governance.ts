@@ -296,8 +296,16 @@ export class Governance extends API {
     return result.data
   }
 
-  async getAddressVotes(address: string, first?: number, skip?: number) {
+  async getAddressVotesWithProposals(address: string, first?: number, skip?: number) {
     const result = await this.fetch<ApiResponse<VotedProposal[]>>(`/votes/${address}?first=${first}&skip=${skip}`)
+    return result.data
+  }
+
+  async getAddressesVotes(addresses: string[]) {
+    const result = await this.fetch<ApiResponse<VotedProposal[]>>(
+      `/snapshot/votes/`,
+      this.options().method('POST').json({ addresses })
+    )
     return result.data
   }
 
@@ -464,8 +472,8 @@ export class Governance extends API {
   }
 
   async getSnapshotStatusAndSpace(spaceName?: string) {
-    const response = await this.fetch<ApiResponse<{ snapshotStatus: SnapshotStatus; snapshotSpace: SnapshotSpace }>>(
-      `/snapshot/space-status`,
+    const response = await this.fetch<ApiResponse<{ status: SnapshotStatus; space: SnapshotSpace }>>(
+      `/snapshot/status-space`,
       this.options().method('POST').json({ spaceName })
     )
     return response.data
