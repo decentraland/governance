@@ -119,19 +119,18 @@ export default function SubmitBid() {
 
   usePreventNavigation(!!preventNavigation)
 
-  const submit = useCallback(() => {
+  const submit = useCallback(async () => {
     if (allSectionsValid) {
       setIsFormDisabled(true)
       const bidRequestParsed = parseStringsAsNumbers(bidRequest as BidRequest)
 
-      Governance.get()
-        .createProposalBid(bidRequestParsed)
-        .then(() => navigate(locations.proposals()))
-        .catch((err) => {
-          console.error(err, { ...err })
-          setSubmitError(err.body?.error || err.message)
-          setIsFormDisabled(false)
-        })
+      try {
+        await Governance.get().createProposalBid(bidRequestParsed)
+        navigate(locations.proposal(bidRequestParsed.linked_proposal_id, { bid: 'true' }))
+      } catch (error: any) {
+        setSubmitError(error.body?.error || error.message)
+        setIsFormDisabled(false)
+      }
     }
   }, [allSectionsValid, bidRequest])
 
@@ -271,7 +270,7 @@ export default function SubmitBid() {
       <Container className="ContentLayout__Container">
         <ContentSection className="ProjectRequestSection__Content">
           <div>
-            <Button primary disabled={!allSectionsValid} loading={isFormDisabled} onClick={submit}>
+            <Button primary disabled={!allSectionsValid || isFormDisabled} loading={isFormDisabled} onClick={submit}>
               {t('page.submit.button_submit')}
             </Button>
           </div>

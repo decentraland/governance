@@ -18,8 +18,10 @@ import { SnapshotApi } from '../clients/SnapshotApi'
 import CategoryPill from '../components/Category/CategoryPill'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
+import BidSubmittedModal from '../components/Modal/BidSubmittedModal'
 import { DeleteProposalModal } from '../components/Modal/DeleteProposalModal/DeleteProposalModal'
 import ProposalSuccessModal from '../components/Modal/ProposalSuccessModal'
+import TenderPublishedModal from '../components/Modal/TenderPublishedModal'
 import { UpdateProposalStatusModal } from '../components/Modal/UpdateProposalStatusModal/UpdateProposalStatusModal'
 import UpdateSuccessModal from '../components/Modal/UpdateSuccessModal'
 import { VoteRegisteredModal } from '../components/Modal/Votes/VoteRegisteredModal'
@@ -79,6 +81,8 @@ export type ProposalPageState = {
   confirmStatusUpdate: ProposalStatus | false
   showVotesList: boolean
   showProposalSuccessModal: boolean
+  showTenderPublishedModal: boolean
+  showBidSubmittedModal: boolean
   showUpdateSuccessModal: boolean
   showVotingModal: boolean
   showVotingError: boolean
@@ -133,6 +137,8 @@ export default function ProposalPage() {
     confirmStatusUpdate: false,
     showVotesList: false,
     showProposalSuccessModal: false,
+    showTenderPublishedModal: false,
+    showBidSubmittedModal: false,
     showUpdateSuccessModal: false,
     showVotingModal: false,
     showVotingError: false,
@@ -237,6 +243,14 @@ export default function ProposalPage() {
 
   useEffect(() => {
     updatePageStateRef.current({ showProposalSuccessModal: params.get('new') === 'true' })
+  }, [params])
+
+  useEffect(() => {
+    updatePageStateRef.current({ showTenderPublishedModal: params.get('pending') === 'true' })
+  }, [params])
+
+  useEffect(() => {
+    updatePageStateRef.current({ showBidSubmittedModal: params.get('bid') === 'true' })
   }, [params])
 
   useEffect(() => {
@@ -434,13 +448,35 @@ export default function ProposalPage() {
         proposalKey={proposalKey}
         onClose={() => updatePageState({ confirmStatusUpdate: false })}
       />
-      <ProposalSuccessModal
-        open={proposalPageState.showProposalSuccessModal}
-        onDismiss={closeProposalSuccessModal}
-        onClose={closeProposalSuccessModal}
-        proposal={proposal}
-        loading={isLoadingProposal}
-      />
+      {proposal && (
+        <>
+          <ProposalSuccessModal
+            open={proposalPageState.showProposalSuccessModal}
+            onDismiss={closeProposalSuccessModal}
+            onClose={closeProposalSuccessModal}
+            proposal={proposal}
+            loading={isLoadingProposal}
+          />
+          {proposal.type === ProposalType.Tender && (
+            <>
+              <TenderPublishedModal
+                open={proposalPageState.showTenderPublishedModal}
+                onDismiss={closeProposalSuccessModal}
+                onClose={closeProposalSuccessModal}
+                proposal={proposal}
+                loading={isLoadingProposal}
+              />
+              <BidSubmittedModal
+                open={proposalPageState.showBidSubmittedModal}
+                onDismiss={closeProposalSuccessModal}
+                onClose={closeProposalSuccessModal}
+                proposal={proposal}
+                loading={isLoadingProposal}
+              />
+            </>
+          )}
+        </>
+      )}
       <UpdateSuccessModal
         open={proposalPageState.showUpdateSuccessModal}
         onDismiss={closeUpdateSuccessModal}

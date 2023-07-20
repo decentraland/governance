@@ -1,13 +1,18 @@
 import React from 'react'
 
+import { ProposalAttributes } from '../../entities/Proposal/types'
 import { forumUrl, proposalUrl } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 
 import { SuccessModal, SuccessModalProps } from './SuccessModal'
 
-export default function ProposalSuccessModal({ proposal, ...props }: SuccessModalProps) {
+interface Props {
+  proposal: ProposalAttributes
+}
+
+export default function ProposalSuccessModal({ proposal, ...props }: Props & SuccessModalProps) {
   const t = useFormatMessage()
-  const linkToProposal = (proposal && proposalUrl(proposal)) || ''
+  const linkToProposal = (proposal && proposalUrl(proposal.id)) || ''
   const linkToForum = (proposal && forumUrl(proposal)) || ''
 
   return (
