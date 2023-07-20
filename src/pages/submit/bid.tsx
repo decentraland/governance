@@ -18,6 +18,7 @@ import BidRequestGeneralInfoSection, {
 } from '../../components/BidRequest/BidRequestGeneralInfoSection'
 import CardSubtitle from '../../components/BidRequest/CardSubtitle'
 import Markdown from '../../components/Common/Typography/Markdown'
+import Text from '../../components/Common/Typography/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import GrantRequestDueDiligenceSection, {
   INITIAL_GRANT_REQUEST_DUE_DILIGENCE_STATE,
@@ -35,11 +36,13 @@ import { BID_MIN_PROJECT_DURATION } from '../../entities/Bid/constants'
 import { BidRequest } from '../../entities/Bid/types'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
+import useIsBidSubmissionWindowFinished from '../../hooks/useIsBidSubmissionWindowFinished'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
 import useProjectRequestSectionNumber from '../../hooks/useProjectRequestSectionNumber'
 import useProposal from '../../hooks/useProposal'
 import useProposalOutcome from '../../hooks/useProposalOutcome'
 import useURLSearchParams from '../../hooks/useURLSearchParams'
+import useHasUserPlacedBid from '../../hooks/usehasUserPlacedBid'
 import locations, { navigate } from '../../utils/locations'
 
 import './bid.css'
@@ -89,6 +92,7 @@ export default function SubmitBid() {
   const [bidRequest, patchBidRequest] = useState(initialState)
   const [validationState, patchValidationState] = usePatchState<BidRequestValidationState>(initialValidationState)
   const [isFormDisabled, setIsFormDisabled] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [hasScrolled, setHasScrolled] = useState(false)
   const allSectionsValid = Object.values(validationState).every((prop) => prop)
   const preventNavigation = useRef(false)
@@ -106,6 +110,14 @@ export default function SubmitBid() {
     pitchProposal?.snapshot_id || '',
     pitchProposal?.configuration.choices
   )
+  const hasUserPlacedBid = useHasUserPlacedBid(linkedProposalId)
+  const isSubmissionWindowFinished = useIsBidSubmissionWindowFinished(linkedProposalId)
+
+  useEffect(() => {
+    if (hasUserPlacedBid !== null || isSubmissionWindowFinished) {
+      setIsFormDisabled(true)
+    }
+  }, [hasUserPlacedBid, isSubmissionWindowFinished])
 
   useEffect(() => {
     preventNavigation.current = userModifiedForm(bidRequest, initialState)
@@ -122,6 +134,7 @@ export default function SubmitBid() {
   const submit = useCallback(() => {
     if (allSectionsValid) {
       setIsFormDisabled(true)
+      setIsLoading(true)
       const bidRequestParsed = parseStringsAsNumbers(bidRequest as BidRequest)
 
       Governance.get()
@@ -131,6 +144,7 @@ export default function SubmitBid() {
           console.error(err, { ...err })
           setSubmitError(err.body?.error || err.message)
           setIsFormDisabled(false)
+          setIsLoading(false)
         })
     }
   }, [allSectionsValid, bidRequest])
@@ -250,6 +264,7 @@ export default function SubmitBid() {
           patchValidationState({ teamSectionValid: sectionValid })
         }}
         sectionNumber={getSectionNumber()}
+        isDisabled={isFormDisabled}
       />
 
       <GrantRequestDueDiligenceSection
@@ -260,6 +275,7 @@ export default function SubmitBid() {
         }}
         sectionNumber={getSectionNumber()}
         projectDuration={bidRequest.projectDuration || BID_MIN_PROJECT_DURATION}
+        isDisabled={isFormDisabled}
       />
 
       <BidRequestFinalConsentSection
@@ -271,10 +287,16 @@ export default function SubmitBid() {
       <Container className="ContentLayout__Container">
         <ContentSection className="ProjectRequestSection__Content">
           <div>
-            <Button primary disabled={!allSectionsValid} loading={isFormDisabled} onClick={submit}>
+            <Button primary disabled={!allSectionsValid || isFormDisabled} loading={isLoading} onClick={submit}>
               {t('page.submit.button_submit')}
             </Button>
           </div>
+          {(hasUserPlacedBid || isSubmissionWindowFinished) && (
+            <Text size="lg" color="primary">
+              {hasUserPlacedBid && t('error.bid.user_has_placed_bid')}
+              {isSubmissionWindowFinished && t('error.bid.submission_finished')}
+            </Text>
+          )}
         </ContentSection>
       </Container>
 

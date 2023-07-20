@@ -2,13 +2,10 @@ import { useQuery } from '@tanstack/react-query'
 
 import { Governance } from '../clients/Governance'
 
-import { DEFAULT_QUERY_STALE_TIME } from './constants'
-
-function useHasUserPlacedBid(tenderId: string) {
+function useHasUserPlacedBid(tenderId: string | null) {
   const { data: hasUserPlacedBid } = useQuery({
     queryKey: [`hasUserPlacedBid#${tenderId}`],
-    queryFn: () => Governance.get().hasUserBidOnTender(tenderId),
-    staleTime: DEFAULT_QUERY_STALE_TIME,
+    queryFn: () => (tenderId ? Governance.get().hasUserBidOnTender(tenderId) : null),
   })
   return hasUserPlacedBid ?? null
 }

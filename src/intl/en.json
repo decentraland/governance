@@ -323,7 +323,9 @@
         "roadmap_empty": "Roadmap is empty",
         "roadmap_too_large": "Roadmap is too large",
         "roadmap_too_short": "Roadmap is too short"
-      }
+      },
+      "submission_finished": "Submission period for this tender has finished",
+      "user_has_placed_bid": "You has already placed a bid for this tender"
     }
   },
   "category": {

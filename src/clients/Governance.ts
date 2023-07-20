@@ -469,14 +469,17 @@ export class Governance extends API {
   }
 
   async isBidSubmissionWindowFinished(tenderId: string) {
-    const response = await this.fetch<ApiResponse<boolean>>(`/bids/${tenderId}/is-submission-finished`)
+    const response = await this.fetch<ApiResponse<boolean>>(
+      `/bids/${tenderId}/is-submission-finished`,
+      this.options().method('GET')
+    )
     return response.data
   }
 
   async hasUserBidOnTender(tenderId: string) {
     const response = await this.fetch<
       ApiResponse<Pick<BidAttributes, 'author_address' | 'publish_at' | 'created_at'> | null>
-    >(`/bids/${tenderId}/has-user-placed-bid`)
+    >(`/bids/${tenderId}/has-user-placed-bid`, this.options().method('GET').authorization({ sign: true }))
     return response.data
   }
 }
