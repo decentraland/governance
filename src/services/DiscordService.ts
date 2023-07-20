@@ -171,7 +171,7 @@ export class DiscordService {
       const embedChoices = getChoices(choices)
       inBackground(async () => {
         const message = await this.formatMessage({
-          url: proposalUrl({ id: proposalId }),
+          url: proposalUrl(proposalId),
           title,
           proposalType: type,
           description,
@@ -238,7 +238,7 @@ export class DiscordService {
       inBackground(async () => {
         const action = `Proposal has ended with outcome ${outcome}`
         const message = await this.formatMessage({
-          url: proposalUrl({ id }),
+          url: proposalUrl(id),
           title,
           fields: winnerChoice ? [{ name: 'Result', value: capitalizeFirstLetter(winnerChoice) }] : [],
           action,

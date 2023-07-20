@@ -300,7 +300,12 @@ export default function SubmitGrant() {
           <Container className="ContentLayout__Container">
             <ContentSection className="ProjectRequestSection__Content">
               <div>
-                <Button primary disabled={!allSectionsValid} loading={isFormDisabled} onClick={() => submit()}>
+                <Button
+                  primary
+                  disabled={!allSectionsValid || isFormDisabled}
+                  loading={isFormDisabled}
+                  onClick={submit}
+                >
                   {t('page.submit.button_submit')}
                 </Button>
               </div>

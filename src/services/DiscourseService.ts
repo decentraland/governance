@@ -41,7 +41,7 @@ export class DiscourseService {
       configuration: data.configuration,
       user: data.user,
       profile,
-      proposal_url: proposalUrl({ id: proposalId }),
+      proposal_url: proposalUrl(proposalId),
       snapshot_url: snapshotUrl,
       snapshot_id: snapshotId,
     }

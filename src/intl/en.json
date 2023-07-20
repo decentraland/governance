@@ -571,6 +571,14 @@
       "title": "Proposal successfully submitted",
       "description": "Thanks for taking part in the DAO"
     },
+    "proposal_pending": {
+      "tender_title": "Proposal published",
+      "tender_description": "Your proposal is now published, but voting will begin when the Tender submission period ends.",
+      "helper": "Set a reminder in your Calendar for when the voting period begins.",
+      "bid_title": "Bid Submitted but not public until voting",
+      "bid_description": "Your bid has been successfully submitted and stored. It will remain private until the voting period starts. It will only be published for voting if at least one competing bid for the same Tender exists.",
+      "add_to_calendar": "Add to calendar"
+    },
     "update_success": {
       "title": "Thanks for sharing your Grant Update",
       "description": "Now go make some noise and let the\n\ncommunity know about your progress."
@@ -1011,6 +1019,7 @@
         "info_text": "Why does this matter? [More info](https://forum.decentraland.org/t/dao-qmsjxh1-dao-governance-proposal-stages/3584)",
         "submit_bid_proposal_text": "**This issue has to be addressed.** Calling all professional teams",
         "submit_bid_proposal_label": "Submit Bid Proposal",
+        "submitted_bid_proposal_label": "Bid Proposal Submitted",
         "submit_bid_info": "Bidding begins **soon**",
         "promote_to_draft_label": "Promote to Draft",
         "promote_to_governance_label": "Escalate Proposal",

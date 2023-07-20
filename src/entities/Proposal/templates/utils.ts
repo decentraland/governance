@@ -23,7 +23,7 @@ export function template(raw: TemplateStringsArray, ...subs: any[]) {
 }
 
 export async function formatLinkedProposal(linked_proposal_id: string) {
-  const url = proposalUrl({ id: linked_proposal_id })
+  const url = proposalUrl(linked_proposal_id)
   const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: linked_proposal_id, deleted: false })
   return `[${proposal?.title}](${url})` || ''
 }

@@ -54,7 +54,7 @@ export class SnapshotService {
       type: proposalInCreation.type,
       configuration: proposalInCreation.configuration,
       profile,
-      proposal_url: proposalUrl({ id: proposalId }),
+      proposal_url: proposalUrl(proposalId),
     }
 
     const proposalTitle = templates.snapshotTitle(snapshotTemplateProps)

@@ -131,21 +131,20 @@ export default function SubmitBid() {
 
   usePreventNavigation(!!preventNavigation)
 
-  const submit = useCallback(() => {
+  const submit = useCallback(async () => {
     if (allSectionsValid) {
       setIsFormDisabled(true)
       setIsLoading(true)
       const bidRequestParsed = parseStringsAsNumbers(bidRequest as BidRequest)
 
-      Governance.get()
-        .createProposalBid(bidRequestParsed)
-        .then(() => navigate(locations.proposals()))
-        .catch((err) => {
-          console.error(err, { ...err })
-          setSubmitError(err.body?.error || err.message)
-          setIsFormDisabled(false)
-          setIsLoading(false)
-        })
+      try {
+        await Governance.get().createProposalBid(bidRequestParsed)
+        navigate(locations.proposal(bidRequestParsed.linked_proposal_id, { bid: 'true' }))
+      } catch (error: any) {
+        setSubmitError(error.body?.error || error.message)
+        setIsLoading(false)
+        setIsFormDisabled(false)
+      }
     }
   }, [allSectionsValid, bidRequest])
 
