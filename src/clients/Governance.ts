@@ -33,6 +33,7 @@ import { Vote, VotedProposal } from '../entities/Votes/types'
 import Time from '../utils/date/Time'
 
 import { TransparencyBudget } from './DclData'
+import { SnapshotSpace, SnapshotStatus } from './SnapshotGraphqlTypes'
 
 type NewProposalMap = {
   [`/proposals/poll`]: NewProposalPoll
@@ -459,6 +460,14 @@ export class Governance extends API {
 
   async getBadges(address: string) {
     const response = await this.fetch<ApiResponse<UserBadges>>(`/badges/${address}`)
+    return response.data
+  }
+
+  async getSnapshotStatusAndSpace(spaceName?: string) {
+    const response = await this.fetch<ApiResponse<{ snapshotStatus: SnapshotStatus; snapshotSpace: SnapshotSpace }>>(
+      `/snapshot/space-status`,
+      this.options().method('POST').json({ spaceName })
+    )
     return response.data
   }
 }

@@ -81,4 +81,20 @@ export class SnapshotService {
       }
     })
   }
+
+  static async getSnapshotStatusAndSpace(spaceName?: string) {
+    spaceName = spaceName && spaceName.length > 0 ? spaceName : SNAPSHOT_SPACE
+    const values = await Promise.all([
+      await SnapshotGraphql.get().getStatus(),
+      await SnapshotGraphql.get().getSpace(spaceName),
+    ])
+    const snapshotStatus = values[0]
+    const snapshotSpace = values[1]
+    if (!snapshotSpace) {
+      throw new Error(`Couldn't find snapshot space ${spaceName}. 
+      \nSnapshot response: ${JSON.stringify(snapshotSpace)}
+      \nSnapshot status: ${JSON.stringify(snapshotStatus)}`)
+    }
+    return { snapshotStatus, snapshotSpace }
+  }
 }

@@ -3,8 +3,8 @@ import React, { useState } from 'react'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
+import { Governance } from '../../clients/Governance'
 import { SNAPSHOT_SPACE } from '../../entities/Snapshot/constants'
-import { getSnapshotStatusAndSpace } from '../../entities/Snapshot/utils'
 import Heading from '../Common/Typography/Heading'
 import Label from '../Common/Typography/Label'
 import Text from '../Common/Typography/Text'
@@ -24,7 +24,9 @@ export default function SnapshotStatus({ className }: Props) {
   async function handleFetchClick() {
     setErrorMessage('')
     try {
-      const { snapshotStatus: newStatus, snapshotSpace: newSpace } = await getSnapshotStatusAndSpace(spaceName)
+      const { snapshotStatus: newStatus, snapshotSpace: newSpace } = await Governance.get().getSnapshotStatusAndSpace(
+        spaceName
+      )
       setSnapshotStatus(newStatus)
       setSnapshotSpace(newSpace)
       setErrorMessage('')
