@@ -126,8 +126,8 @@ export function governanceUrl(pathname = '') {
   return target.toString()
 }
 
-export function proposalUrl(proposal: Pick<ProposalAttributes, 'id'>) {
-  const params = new URLSearchParams({ id: proposal.id })
+export function proposalUrl(id: ProposalAttributes['id']) {
+  const params = new URLSearchParams({ id })
   const target = new URL(GOVERNANCE_API)
   target.pathname = '/proposal/'
   target.search = '?' + params.toString()

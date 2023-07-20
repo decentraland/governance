@@ -67,7 +67,7 @@ export async function getProposalsSitemap(req: Request) {
   const proposals = await ProposalModel.getSitemapProposals(page)
   return [
     `<?xml version="1.0" encoding="UTF-8"?>` + '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-    ...proposals.map((event) => `<url><loc>${proposalUrl(event)}</loc></url>`),
+    ...proposals.map((proposal) => `<url><loc>${proposalUrl(proposal.id)}</loc></url>`),
     '</urlset>',
   ].join('')
 }
