@@ -36,7 +36,7 @@ import { BID_MIN_PROJECT_DURATION } from '../../entities/Bid/constants'
 import { BidRequest } from '../../entities/Bid/types'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import useHasUserPlacedBid from '../../hooks/useHasUserPlacedBid'
+import useGetPlacedBid from '../../hooks/useGetPlacedBid'
 import useIsBidSubmissionWindowFinished from '../../hooks/useIsBidSubmissionWindowFinished'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
 import useProjectRequestSectionNumber from '../../hooks/useProjectRequestSectionNumber'
@@ -110,7 +110,7 @@ export default function SubmitBid() {
     pitchProposal?.snapshot_id || '',
     pitchProposal?.configuration.choices
   )
-  const hasUserPlacedBid = useHasUserPlacedBid(linkedProposalId)
+  const hasUserPlacedBid = useGetPlacedBid(linkedProposalId)
   const isSubmissionWindowFinished = useIsBidSubmissionWindowFinished(linkedProposalId)
 
   useEffect(() => {

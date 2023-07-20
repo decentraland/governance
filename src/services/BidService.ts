@@ -127,7 +127,7 @@ export default class BidService {
     }
   }
 
-  static async hasUserBidOnTender(user: string, tenderId: string) {
+  static async getUserBidOnTender(user: string, tenderId: string) {
     const bids = await BidModel.getBidsInfoByTender(tenderId)
     return bids.find((bid) => bid.author_address === user) || null
   }

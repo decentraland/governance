@@ -476,10 +476,10 @@ export class Governance extends API {
     return response.data
   }
 
-  async hasUserBidOnTender(tenderId: string) {
+  async getUserBidOnTender(tenderId: string) {
     const response = await this.fetch<
       ApiResponse<Pick<UnpublishedBid, 'author_address' | 'publish_at' | 'created_at'> | null>
-    >(`/bids/${tenderId}/has-user-placed-bid`, this.options().method('GET').authorization({ sign: true }))
+    >(`/bids/${tenderId}/get-placed-bid`, this.options().method('GET').authorization({ sign: true }))
     return response.data
   }
 }

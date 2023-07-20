@@ -7,13 +7,13 @@ import BidService from '../../services/BidService'
 
 export default routes((route) => {
   const withAuth = auth()
-  route.get('/bids/:tenderId/has-user-placed-bid', withAuth, handleAPI(hasUserPlacedBid))
+  route.get('/bids/:tenderId/get-placed-bid', withAuth, handleAPI(getPlacedBid))
   route.get('/bids/:tenderId/is-submission-finished', handleAPI(isSubmissionFinished))
 })
-async function hasUserPlacedBid(req: WithAuth) {
+async function getPlacedBid(req: WithAuth) {
   const user = req.auth!
   const { tenderId } = req.params
-  return await BidService.hasUserBidOnTender(user, tenderId)
+  return await BidService.getUserBidOnTender(user, tenderId)
 }
 async function isSubmissionFinished(req: Request) {
   const { tenderId } = req.params
