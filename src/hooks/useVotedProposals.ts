@@ -16,7 +16,7 @@ function useVotedProposals(address: string, first?: number) {
       if (!isEthereumAddress(address)) {
         return []
       }
-      return await Governance.get().getAddressVotes(address, first, skip)
+      return await Governance.get().getAddressVotesWithProposals(address, first, skip)
     },
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })

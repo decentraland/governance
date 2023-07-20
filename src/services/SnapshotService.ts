@@ -97,4 +97,11 @@ export class SnapshotService {
     }
     return { snapshotStatus, snapshotSpace }
   }
+
+  static async getAddressesVotes(addresses: string[], first?: number, skip?: number) {
+    if (!!first && !!skip) {
+      return await SnapshotGraphql.get().getAddressesVotesInBatches(addresses, first, skip)
+    }
+    return await SnapshotGraphql.get().getAddressesVotes(addresses)
+  }
 }

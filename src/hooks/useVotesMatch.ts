@@ -24,7 +24,7 @@ export default function useVotesMatch(userAccount: string | null, otherAccount: 
       if (!otherAccount) {
         return null
       }
-      return Governance.get().getAddressVotes(otherAccount)
+      return Governance.get().getAddressVotesWithProposals(otherAccount)
     },
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })
