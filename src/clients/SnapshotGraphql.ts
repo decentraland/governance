@@ -370,7 +370,6 @@ export class SnapshotGraphql extends API {
       voter: address,
       proposal: proposalId || '',
     }
-    console.log('getting vp distribution')
     const result = await this.fetch<SnapshotVpResponse>(
       GRAPHQL_ENDPOINT,
       this.options().method('POST').json({
@@ -378,7 +377,6 @@ export class SnapshotGraphql extends API {
         variables: variables,
       })
     )
-    console.log('result', result)
     if (!result?.data?.vp) {
       throw Error('Unable to fetch VP Distribution')
     }
