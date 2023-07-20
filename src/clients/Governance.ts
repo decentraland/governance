@@ -5,7 +5,7 @@ import snakeCase from 'lodash/snakeCase'
 
 import { GOVERNANCE_API } from '../constants'
 import { UserBadges } from '../entities/Badges/types'
-import { BidAttributes, BidRequest } from '../entities/Bid/types'
+import { BidRequest, UnpublishedBid } from '../entities/Bid/types'
 import { Budget, BudgetWithContestants, CategoryBudget } from '../entities/Budget/types'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
 import { GrantRequest, ProposalGrantCategory, SubtypeOptions } from '../entities/Grant/types'
@@ -478,7 +478,7 @@ export class Governance extends API {
 
   async hasUserBidOnTender(tenderId: string) {
     const response = await this.fetch<
-      ApiResponse<Pick<BidAttributes, 'author_address' | 'publish_at' | 'created_at'> | null>
+      ApiResponse<Pick<UnpublishedBid, 'author_address' | 'publish_at' | 'created_at'> | null>
     >(`/bids/${tenderId}/has-user-placed-bid`, this.options().method('GET').authorization({ sign: true }))
     return response.data
   }

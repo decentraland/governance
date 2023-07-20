@@ -9,12 +9,9 @@ export enum BidStatus {
 
 type BidProposalData = Omit<BidRequest, 'linked_proposal_id'>
 
-export type BidAttributes = UnpublishedBid & {
-  created_at: string
-}
-
 export type UnpublishedBid = {
   id: number
+  created_at: string
   linked_proposal_id: string
   author_address: string
   bid_proposal_data: BidProposalData

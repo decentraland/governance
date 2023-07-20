@@ -78,7 +78,7 @@ export default class BidService {
       }
 
       for (const bid of bids) {
-        const { author_address, bid_proposal_data, linked_proposal_id, publish_at, id } = bid
+        const { author_address, bid_proposal_data, linked_proposal_id, publish_at, id, created_at } = bid
         const finish_at = Time.utc(publish_at).add(Number(process.env.DURATION_BID), 'seconds').toDate()
         try {
           const required_to_pass =
@@ -92,6 +92,7 @@ export default class BidService {
             configuration: {
               id,
               linked_proposal_id,
+              created_at,
               ...bid_proposal_data,
               choices: DEFAULT_CHOICES,
             },
