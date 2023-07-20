@@ -301,6 +301,14 @@ export class Governance extends API {
     return result.data
   }
 
+  async getAddressesVotes(addresses: string[]) {
+    const result = await this.fetch<ApiResponse<VotedProposal[]>>(
+      `/snapshot/votes/`,
+      this.options().method('POST').json({ addresses })
+    )
+    return result.data
+  }
+
   async getUserSubscriptions() {
     const result = await this.fetch<ApiResponse<SubscriptionAttributes[]>>(
       `/subscriptions`,

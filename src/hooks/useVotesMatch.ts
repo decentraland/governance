@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { Governance } from '../clients/Governance'
-import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 import { calculateMatch } from '../entities/Snapshot/utils'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
@@ -13,7 +12,7 @@ export default function useVotesMatch(userAccount: string | null, otherAccount: 
       if (!userAccount) {
         return null
       }
-      return SnapshotGraphql.get().getAddressesVotes([userAccount])
+      return Governance.get().getAddressesVotes([userAccount])
     },
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })
