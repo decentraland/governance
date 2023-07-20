@@ -103,7 +103,7 @@ export default function SubmitTenderProposal() {
         ...data,
       })
 
-      navigate(locations.proposal(proposal.id, { new: 'true' }), {
+      navigate(locations.proposal(proposal.id, { pending: 'true' }), {
         replace: true,
       })
     } catch (error: any) {
