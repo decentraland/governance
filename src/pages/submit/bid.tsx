@@ -31,6 +31,7 @@ import OpenExternalLink from '../../components/Icon/OpenExternalLink'
 import { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/User/LogIn'
+import { BID_MIN_PROJECT_DURATION } from '../../entities/Bid/constants'
 import { BidRequest } from '../../entities/Bid/types'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
@@ -160,6 +161,14 @@ export default function SubmitBid() {
     [patchBidRequest, patchValidationState]
   )
 
+  const handleGeneralInfoSectionValidation = useCallback(
+    (data, sectionValid) => {
+      patchBidRequest((prevState) => ({ ...prevState, ...data }))
+      patchValidationState({ generalInformationSectionValid: sectionValid })
+    },
+    [patchBidRequest, patchValidationState]
+  )
+
   if (accountState.loading) {
     return <LoadingView />
   }
@@ -230,10 +239,7 @@ export default function SubmitBid() {
       />
 
       <BidRequestGeneralInfoSection
-        onValidation={(data, sectionValid) => {
-          patchBidRequest((prevState) => ({ ...prevState, ...data }))
-          patchValidationState({ generalInformationSectionValid: sectionValid })
-        }}
+        onValidation={handleGeneralInfoSectionValidation}
         isFormDisabled={isFormDisabled}
         sectionNumber={getSectionNumber()}
       />
@@ -247,13 +253,13 @@ export default function SubmitBid() {
       />
 
       <GrantRequestDueDiligenceSection
-        funding={bidRequest.funding}
+        funding={Number(bidRequest.funding)}
         onValidation={(data, sectionValid) => {
           patchBidRequest((prevState) => ({ ...prevState, ...data }))
           patchValidationState({ dueDiligenceSectionValid: sectionValid })
         }}
         sectionNumber={getSectionNumber()}
-        projectDuration={bidRequest.projectDuration || 0}
+        projectDuration={bidRequest.projectDuration || BID_MIN_PROJECT_DURATION}
       />
 
       <BidRequestFinalConsentSection

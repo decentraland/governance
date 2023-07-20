@@ -3,6 +3,7 @@ import { useForm, useWatch } from 'react-hook-form'
 
 import { BidRequestGeneralInfo, BidRequestGeneralInfoSchema } from '../../entities/Bid/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
+import Field from '../Common/Form/Field'
 import MarkdownField from '../Common/Form/MarkdownField'
 import SubLabel from '../Common/SubLabel'
 import Label from '../Common/Typography/Label'
@@ -11,6 +12,7 @@ import ProjectRequestSection from '../ProjectRequest/ProjectRequestSection'
 import CoAuthors from '../Proposal/Submit/CoAuthor/CoAuthors'
 
 export const INITIAL_BID_REQUEST_GENERAL_INFO_STATE: BidRequestGeneralInfo = {
+  teamName: '',
   deliverables: '',
   roadmap: '',
 }
@@ -39,8 +41,7 @@ export default function BidRequestGeneralInfoSection({ onValidation, isFormDisab
 
   useEffect(() => {
     onValidation({ ...(values as BidRequestGeneralInfo) }, isValid)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values, isValid])
+  }, [values, isValid, onValidation])
 
   return (
     <ProjectRequestSection
@@ -49,6 +50,34 @@ export default function BidRequestGeneralInfoSection({ onValidation, isFormDisab
       sectionTitle={t('page.submit_bid.general_info.title')}
       sectionNumber={sectionNumber}
     >
+      <ContentSection className="ProjectRequestSection__Field">
+        <Label>{t('page.submit_bid.general_info.team_name_label')}</Label>
+        <Field
+          name="teamName"
+          control={control}
+          error={!!errors.teamName}
+          message={
+            (errors.teamName?.message || '') +
+            ' ' +
+            t('page.submit.character_counter', {
+              current: watch('teamName').length,
+              limit: schema.teamName.maxLength,
+            })
+          }
+          disabled={isFormDisabled}
+          rules={{
+            required: { value: true, message: t('error.bid.general_info.team_name_empty') },
+            minLength: {
+              value: schema.teamName.minLength,
+              message: t('error.bid.general_info.team_name_too_short'),
+            },
+            maxLength: {
+              value: schema.teamName.maxLength,
+              message: t('error.bid.general_info.team_name_too_large'),
+            },
+          }}
+        />
+      </ContentSection>
       <ContentSection className="ProjectRequestSection__Field">
         <Label>{t('page.submit_bid.general_info.deliverables_label')}</Label>
         <SubLabel>{t('page.submit_bid.general_info.deliverables_detail')}</SubLabel>

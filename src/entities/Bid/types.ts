@@ -1,5 +1,7 @@
 import { BudgetBreakdownConcept, GrantRequestDueDiligenceSchema, GrantRequestTeamSchema } from '../Grant/types'
 
+import { BID_MIN_PROJECT_DURATION } from './constants'
+
 export enum BidStatus {
   Pending = 'PENDING',
   Rejected = 'REJECTED',
@@ -12,6 +14,7 @@ export type BidAttributes = UnpublishedBid & {
 }
 
 export type UnpublishedBid = {
+  id: number
   linked_proposal_id: string
   author_address: string
   bid_proposal_data: BidProposalData
@@ -20,7 +23,7 @@ export type UnpublishedBid = {
 }
 
 export type BidRequestFunding = {
-  funding: number
+  funding: string | number
   projectDuration: number
   startDate: string
   beneficiary: string
@@ -28,6 +31,7 @@ export type BidRequestFunding = {
 }
 
 export type BidRequestGeneralInfo = {
+  teamName: string
   deliverables: string
   roadmap: string
   coAuthors?: string[]
@@ -64,7 +68,7 @@ export const BidRequestFundingSchema = {
   },
   projectDuration: {
     type: 'integer',
-    minimum: 1,
+    minimum: BID_MIN_PROJECT_DURATION,
     maximum: 12,
   },
   startDate: {
@@ -81,6 +85,11 @@ export const BidRequestFundingSchema = {
 }
 
 export const BidRequestGeneralInfoSchema = {
+  teamName: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 80,
+  },
   deliverables: {
     type: 'string',
     minLength: 20,
