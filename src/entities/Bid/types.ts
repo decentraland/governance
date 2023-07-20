@@ -1,23 +1,37 @@
-export type BidProposalData = {
-  [key: string]: string | BidProposalData
+import { GrantRequestDueDiligenceSchema, GrantRequestTeamSchema } from '../Grant/types'
+
+import { BID_MIN_PROJECT_DURATION } from './constants'
+
+export enum BidStatus {
+  Pending = 'PENDING',
+  Rejected = 'REJECTED',
 }
 
-export type NewPendingBid = {
-  tender_id: string
+type BidProposalData = Omit<BidRequest, 'linked_proposal_id'>
+
+export type BidAttributes = UnpublishedBid & {
+  created_at: string
+}
+
+export type UnpublishedBid = {
+  id: number
+  linked_proposal_id: string
   author_address: string
   bid_proposal_data: BidProposalData
   publish_at: string
+  status: BidStatus
 }
 
 export type BidRequestFunding = {
   funding: string | number
   projectDuration: number
-  startDate: Date | null
+  startDate: string
   beneficiary: string
   email: string
 }
 
 export type BidRequestGeneralInfo = {
+  teamName: string
   deliverables: string
   roadmap: string
   coAuthors?: string[]
@@ -34,17 +48,22 @@ export type BidRequestTeam = {
   members: TeamMember[]
 }
 
-export type BidRequest = BidRequestFunding & BidRequestGeneralInfo & BidRequestTeam
+export type BidRequest = BidRequestFunding &
+  BidRequestGeneralInfo &
+  BidRequestTeam & {
+    linked_proposal_id: string
+    coAuthors?: string[]
+  }
 
 export const BidRequestFundingSchema = {
   funding: {
     type: 'integer',
-    minimum: 0,
-    maximum: 0,
+    minimum: 100,
+    maximum: 240000,
   },
   projectDuration: {
     type: 'integer',
-    minimum: 1,
+    minimum: BID_MIN_PROJECT_DURATION,
     maximum: 12,
   },
   startDate: {
@@ -61,6 +80,11 @@ export const BidRequestFundingSchema = {
 }
 
 export const BidRequestGeneralInfoSchema = {
+  teamName: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 80,
+  },
   deliverables: {
     type: 'string',
     minLength: 20,
@@ -78,5 +102,28 @@ export const BidRequestGeneralInfoSchema = {
       minLength: 42,
       maxLength: 42,
     },
+  },
+}
+
+export const BidRequestSchema = {
+  type: 'object',
+  additionalProperties: false,
+  required: [
+    'linked_proposal_id',
+    ...Object.keys(BidRequestFundingSchema),
+    ...Object.keys(BidRequestGeneralInfoSchema).filter((section) => section !== 'coAuthors'),
+    ...Object.keys(GrantRequestTeamSchema),
+    ...Object.keys(GrantRequestDueDiligenceSchema),
+  ],
+  properties: {
+    linked_proposal_id: {
+      type: 'string',
+      minLength: 36,
+      maxLength: 255,
+    },
+    ...BidRequestFundingSchema,
+    ...BidRequestGeneralInfoSchema,
+    ...GrantRequestTeamSchema,
+    ...GrantRequestDueDiligenceSchema,
   },
 }

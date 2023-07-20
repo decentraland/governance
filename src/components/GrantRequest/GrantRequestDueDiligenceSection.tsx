@@ -24,7 +24,7 @@ export const INITIAL_GRANT_REQUEST_DUE_DILIGENCE_STATE: GrantRequestDueDiligence
 
 interface Props {
   sectionNumber: number
-  funding: GrantRequest['funding']
+  funding?: number
   onValidation: (data: GrantRequestDueDiligence, sectionValid: boolean) => void
   projectDuration: GrantRequest['projectDuration']
 }

@@ -8,6 +8,7 @@ import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
+import { Governance } from '../../clients/Governance'
 import BidRequestFinalConsentSection from '../../components/BidRequest/BidRequestFinalConsentSection'
 import BidRequestFundingSection, {
   INITIAL_BID_REQUEST_FUNDING_STATE,
@@ -30,6 +31,7 @@ import OpenExternalLink from '../../components/Icon/OpenExternalLink'
 import { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/User/LogIn'
+import { BID_MIN_PROJECT_DURATION } from '../../entities/Bid/constants'
 import { BidRequest } from '../../entities/Bid/types'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
@@ -44,7 +46,8 @@ import './bid.css'
 import './grant.css'
 import './submit.css'
 
-const initialState: BidRequest = {
+const initialState: Partial<BidRequest> = {
+  linked_proposal_id: '',
   ...INITIAL_BID_REQUEST_FUNDING_STATE,
   ...INITIAL_BID_REQUEST_GENERAL_INFO_STATE,
   ...INITIAL_GRANT_REQUEST_TEAM_STATE,
@@ -68,7 +71,8 @@ const initialValidationState: BidRequestValidationState = {
 }
 
 function parseStringsAsNumbers(bidRequest: BidRequest) {
-  bidRequest.funding = asNumber(bidRequest.funding)
+  const funding = asNumber(bidRequest.funding)
+  return { ...bidRequest, funding }
 }
 
 function handleCancel() {
@@ -82,7 +86,7 @@ function handleCancel() {
 export default function SubmitBid() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
-  const [bidRequest, patchBidRequest] = useState<BidRequest>(initialState)
+  const [bidRequest, patchBidRequest] = useState(initialState)
   const [validationState, patchValidationState] = usePatchState<BidRequestValidationState>(initialValidationState)
   const [isFormDisabled, setIsFormDisabled] = useState(false)
   const [hasScrolled, setHasScrolled] = useState(false)
@@ -107,19 +111,22 @@ export default function SubmitBid() {
     preventNavigation.current = userModifiedForm(bidRequest, initialState)
   }, [bidRequest])
 
+  useEffect(() => {
+    if (linkedProposalId) {
+      patchBidRequest((prevState) => ({ ...prevState, linked_proposal_id: linkedProposalId }))
+    }
+  }, [linkedProposalId, patchBidRequest])
+
   usePreventNavigation(!!preventNavigation)
 
   const submit = useCallback(() => {
     if (allSectionsValid) {
       setIsFormDisabled(true)
-      Promise.resolve()
-        .then(async () => {
-          parseStringsAsNumbers(bidRequest)
-          return { id: 'todo' } // Send to backend and return proposal
-        })
-        .then((proposal) => {
-          navigate(locations.proposal(proposal.id, { new: 'true' }), { replace: true })
-        })
+      const bidRequestParsed = parseStringsAsNumbers(bidRequest as BidRequest)
+
+      Governance.get()
+        .createProposalBid(bidRequestParsed)
+        .then(() => navigate(locations.proposals()))
         .catch((err) => {
           console.error(err, { ...err })
           setSubmitError(err.body?.error || err.message)
@@ -150,6 +157,14 @@ export default function SubmitBid() {
     (data, sectionValid) => {
       patchBidRequest((prevState) => ({ ...prevState, ...data }))
       patchValidationState({ fundingSectionValid: sectionValid })
+    },
+    [patchBidRequest, patchValidationState]
+  )
+
+  const handleGeneralInfoSectionValidation = useCallback(
+    (data, sectionValid) => {
+      patchBidRequest((prevState) => ({ ...prevState, ...data }))
+      patchValidationState({ generalInformationSectionValid: sectionValid })
     },
     [patchBidRequest, patchValidationState]
   )
@@ -224,16 +239,12 @@ export default function SubmitBid() {
       />
 
       <BidRequestGeneralInfoSection
-        onValidation={(data, sectionValid) => {
-          patchBidRequest((prevState) => ({ ...prevState, ...data }))
-          patchValidationState({ generalInformationSectionValid: sectionValid })
-        }}
+        onValidation={handleGeneralInfoSectionValidation}
         isFormDisabled={isFormDisabled}
         sectionNumber={getSectionNumber()}
       />
 
       <GrantRequestTeamSection
-        funding={bidRequest.funding}
         onValidation={(data, sectionValid) => {
           patchBidRequest((prevState) => ({ ...prevState, ...data }))
           patchValidationState({ teamSectionValid: sectionValid })
@@ -242,13 +253,13 @@ export default function SubmitBid() {
       />
 
       <GrantRequestDueDiligenceSection
-        funding={bidRequest.funding}
+        funding={Number(bidRequest.funding)}
         onValidation={(data, sectionValid) => {
           patchBidRequest((prevState) => ({ ...prevState, ...data }))
           patchValidationState({ dueDiligenceSectionValid: sectionValid })
         }}
         sectionNumber={getSectionNumber()}
-        projectDuration={bidRequest.projectDuration}
+        projectDuration={bidRequest.projectDuration || BID_MIN_PROJECT_DURATION}
       />
 
       <BidRequestFinalConsentSection

@@ -19,7 +19,6 @@ export const INITIAL_GRANT_REQUEST_TEAM_STATE: GrantRequestTeam = {
 
 interface Props {
   sectionNumber: number
-  funding: GrantRequest['funding']
   onValidation: (data: GrantRequestTeam, sectionValid: boolean) => void
 }
 

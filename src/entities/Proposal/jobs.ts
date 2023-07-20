@@ -1,6 +1,7 @@
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 import snakeCase from 'lodash/snakeCase'
 
+import BidService from '../../services/BidService'
 import { BudgetService } from '../../services/BudgetService'
 import { DiscordService } from '../../services/DiscordService'
 import { ErrorService } from '../../services/ErrorService'
@@ -207,5 +208,13 @@ export async function finishProposal(context: JobContext) {
         outcomeStatus === ProposalOutcome.FINISHED ? winnerChoice : undefined
       )
     }
+  }
+}
+
+export async function publishBids(context: JobContext) {
+  try {
+    await BidService.publishBids(context)
+  } catch (error) {
+    ErrorService.report('Error publishing bids', { error, category: ErrorCategory.Job })
   }
 }

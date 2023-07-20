@@ -304,9 +304,15 @@
     },
     "bid": {
       "funding": {
-        "invalid": "*Funding is invalid*"
+        "invalid": "*Funding is invalid*",
+        "too_low": "*Funding is too low.*\n\n*Minimum is 100 USD*",
+        "too_big": "*Funding is too big.*\n\n*Maximum is 240000 USD*"
       },
+      "start_date_empty": "Start date is empty",
       "general_info": {
+        "team_name_empty": "Team name is empty",
+        "team_name_too_large": "Team name is too large",
+        "team_name_too_short": "Team name is too short",
         "deliverables_empty": "Deliverables is empty",
         "deliverables_too_large": "Deliverables is too large",
         "deliverables_too_short": "Deliverables is too short",
@@ -1788,8 +1794,9 @@
       },
       "general_info": {
         "title": "General information",
+        "team_name_label": "Team Name",
         "deliverables_label": "Deliverables",
-        "deliverables_detail": "Deliverables detail",
+        "deliverables_detail": "MISSING TEXT",
         "beneficiary_label": "Beneficiary address",
         "beneficiary_detail": "The address that will receive the grant funds. This must be an Ethereum address! Entering a non-Ethereum address that cannot receive MANA may result in a permanent loss of funds.",
         "roadmap_label": "Roadmap and milestones",

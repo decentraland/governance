@@ -1,15 +1,13 @@
 import React, { useEffect } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 
+import { Field as DCLField } from 'decentraland-ui/dist/components/Field/Field'
 import isEmail from 'validator/lib/isEmail'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
+import { BID_MIN_PROJECT_DURATION } from '../../entities/Bid/constants'
 import { BidRequestFunding, BidRequestFundingSchema } from '../../entities/Bid/types'
-import {
-  GRANT_PROPOSAL_MAX_BUDGET,
-  GRANT_PROPOSAL_MIN_BUDGET,
-  MIN_LOW_TIER_PROJECT_DURATION,
-} from '../../entities/Grant/types'
+import { GRANT_PROPOSAL_MAX_BUDGET, GRANT_PROPOSAL_MIN_BUDGET } from '../../entities/Grant/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Field from '../Common/Form/Field'
 import SubLabel from '../Common/SubLabel'
@@ -22,12 +20,9 @@ import ProjectRequestSection from '../ProjectRequest/ProjectRequestSection'
 
 const schema = BidRequestFundingSchema
 
-export const INITIAL_BID_REQUEST_FUNDING_STATE: BidRequestFunding = {
+export const INITIAL_BID_REQUEST_FUNDING_STATE: Partial<BidRequestFunding> = {
   funding: '',
-  projectDuration: MIN_LOW_TIER_PROJECT_DURATION,
-  startDate: null,
-  beneficiary: '',
-  email: '',
+  projectDuration: BID_MIN_PROJECT_DURATION,
 }
 
 interface Props {
@@ -44,13 +39,14 @@ export default function BidRequestFundingSection({ onValidation, isFormDisabled,
     control,
     setValue,
     watch,
+    setError,
+    clearErrors,
   } = useForm<BidRequestFunding>({
     defaultValues: INITIAL_BID_REQUEST_FUNDING_STATE,
     mode: 'onTouched',
   })
 
   const values = useWatch({ control }) as BidRequestFunding
-  const isFormEdited = isDirty
 
   useEffect(() => {
     onValidation({ ...values }, isValid)
@@ -59,7 +55,7 @@ export default function BidRequestFundingSection({ onValidation, isFormDisabled,
   return (
     <ProjectRequestSection
       validated={isValid}
-      isFormEdited={isFormEdited}
+      isFormEdited={isDirty}
       sectionTitle={t('page.submit_bid.funding_section.title')}
       sectionNumber={sectionNumber}
     >
@@ -70,6 +66,8 @@ export default function BidRequestFundingSection({ onValidation, isFormDisabled,
               control={control}
               name="funding"
               rules={{
+                min: { value: schema.funding.minimum, message: t('error.bid.funding.too_low') },
+                max: { value: schema.funding.maximum, message: t('error.bid.funding.too_big') },
                 required: { value: true, message: t('error.bid.funding.invalid') },
               }}
               // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -97,20 +95,26 @@ export default function BidRequestFundingSection({ onValidation, isFormDisabled,
             />
           </div>
         </div>
-        <ContentSection className="ProjectRequestSection__Field">
-          <Label>{t('page.submit_bid.funding_section.start_date_label')}</Label>
-          <Field
-            name="startDate"
-            type="date"
-            control={control}
-            error={!!errors.startDate}
-            message={errors.startDate?.message || ''}
-            disabled={isFormDisabled}
-            rules={{
-              required: { value: true, message: t('error.bid.start_date_empty') },
-            }}
-          />
-        </ContentSection>
+        <div className="ProjectRequestSection__Row">
+          <ContentSection className="ProjectRequestSection__Field">
+            <Label>{t('page.submit_bid.funding_section.start_date_label')}</Label>
+            <DCLField
+              name="startDate"
+              type="date"
+              control={control}
+              error={!!errors.startDate}
+              message={errors.startDate?.message || ''}
+              disabled={isFormDisabled}
+              onChange={(_, { value }) => {
+                clearErrors('startDate')
+                if (value === '') {
+                  setError('startDate', { message: t('error.bid.start_date_empty') })
+                }
+                setValue('startDate', value)
+              }}
+            />
+          </ContentSection>
+        </div>
         <ContentSection className="ProjectRequestSection__Field">
           <Label>{t('page.submit_bid.general_info.beneficiary_label')}</Label>
           <SubLabel>{t('page.submit_bid.general_info.beneficiary_detail')}</SubLabel>
@@ -122,9 +126,8 @@ export default function BidRequestFundingSection({ onValidation, isFormDisabled,
             error={!!errors.beneficiary}
             disabled={isFormDisabled}
             rules={{
-              required: { value: true, message: t('error.bid.general_info.beneficiary_empty') },
-              validate: (value: string) => {
-                if (!isEthereumAddress(value)) {
+              validate: (value?: string) => {
+                if (!value || !isEthereumAddress(value)) {
                   return t('error.bid.general_info.beneficiary_invalid')
                 }
               },

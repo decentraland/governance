@@ -264,7 +264,6 @@ export default function SubmitGrant() {
           />
 
           <GrantRequestTeamSection
-            funding={grantRequest.funding}
             onValidation={(data, sectionValid) => {
               patchGrantRequest((prevState) => ({ ...prevState, ...data }))
               patchValidationState({ teamSectionValid: sectionValid })
@@ -273,7 +272,7 @@ export default function SubmitGrant() {
           />
 
           <GrantRequestDueDiligenceSection
-            funding={grantRequest.funding}
+            funding={Number(grantRequest.funding)}
             onValidation={(data, sectionValid) => {
               patchGrantRequest((prevState) => ({ ...prevState, ...data }))
               patchValidationState({ dueDiligenceSectionValid: sectionValid })

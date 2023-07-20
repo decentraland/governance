@@ -13,6 +13,7 @@ import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { getVestingContractData } from '../../clients/VestingData'
 import { inBackground } from '../../helpers'
+import BidService from '../../services/BidService'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
 import { GrantsService } from '../../services/GrantsService'
@@ -20,6 +21,7 @@ import { ProposalInCreation, ProposalService } from '../../services/ProposalServ
 import { getProfile } from '../../utils/Catalyst'
 import Time from '../../utils/date/Time'
 import { ErrorCategory } from '../../utils/errorCategories'
+import { BidRequest, BidRequestSchema } from '../Bid/types'
 import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'
 import isDAOCommittee from '../Committee/isDAOCommittee'
@@ -100,6 +102,7 @@ export default routes((route) => {
   route.post('/proposals/linked-wearables', withAuth, handleAPI(createProposalLinkedWearables))
   route.post('/proposals/pitch', withAuth, handleAPI(createProposalPitch))
   route.post('/proposals/tender', withAuth, handleAPI(createProposalTender))
+  route.post('/proposals/bid', withAuth, handleAPI(createProposalBid))
   route.post('/proposals/hiring', withAuth, handleAPI(createProposalHiring))
   route.get('/proposals/grants', handleAPI(getGrants))
   route.get('/proposals/grants/:address', handleAPI(getGrantsByUser))
@@ -454,6 +457,15 @@ export async function createProposalTender(req: WithAuth) {
       choices: DEFAULT_CHOICES,
     },
   })
+}
+
+const BidRequestValidator = schema.compile(BidRequestSchema)
+export async function createProposalBid(req: WithAuth) {
+  const user = req.auth!
+  const configuration = validate<BidRequest>(BidRequestValidator, req.body || {})
+  const { linked_proposal_id, ...bid } = configuration
+  await validateLinkedProposal(linked_proposal_id, ProposalType.Tender)
+  await BidService.createBid(linked_proposal_id, user, bid)
 }
 
 export async function createProposal(proposalInCreation: ProposalInCreation) {

@@ -1,39 +1,50 @@
-import { NewProposalTender } from '../types'
+import { formatDate } from '../../../utils/date/Time'
+import { BidRequest } from '../../Bid/types'
+import { formatBalance } from '../utils'
 
 import { formatLinkedProposal, formatMarkdown, template } from './utils'
 
-// TODO: Change type to NewProposalBid
-export const title = (proposal: NewProposalTender) => proposal.project_name.split('\n')[0]
+export const title = (proposal: BidRequest & { id: number }) =>
+  `[BID-${String(proposal.id).padStart(4, '0')}] ${proposal.teamName}`
 
-// TODO: Change type to NewProposalBid
-export const description = async (proposal: NewProposalTender) => template`
-// TODO: Update texts
+const getDuration = (duration: number) => {
+  const months = duration === 1 ? 'month' : 'months'
+
+  return `
+  
+## Project duration
+  
+${duration} ${months}`
+}
+
+export const description = async (proposal: BidRequest) => template`
 Should funds from the DAO Treasury be allocated to finance a new community-led project addressing issues outlined herein?
 
 ## Linked Tender Proposal
 ${await formatLinkedProposal(proposal.linked_proposal_id)}
 
-## Summary
+## Budget
 
-${formatMarkdown(proposal.summary)}
+${formatBalance(Number(proposal.funding))} USD
+${getDuration(proposal.projectDuration)}
 
-## Problem Statement
+## Start Date
 
-${formatMarkdown(proposal.problem_statement)}
+${formatDate(new Date(proposal.startDate || ''))}
 
-## Technical Specification
+## Beneficiary address
 
-${formatMarkdown(proposal.technical_specification)}
+${proposal.beneficiary}
 
-## Use Cases
+## Email address
 
-${formatMarkdown(proposal.use_cases)}
+${proposal.email}
 
 ## Deliverables
 
 ${formatMarkdown(proposal.deliverables)}
 
-## Target Release Quarter
+## Roadmap and milestones
 
-${proposal.target_release_quarter}
+${formatMarkdown(proposal.roadmap)}
 `
