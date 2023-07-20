@@ -1,6 +1,6 @@
 import { Scores } from '../Votes/utils'
 
-import { ProposalOutcome, ProposalWithOutcome, calculateOutcome, getWinnerTender } from './outcome'
+import { ProposalOutcome, ProposalWithOutcome, calculateOutcome, getWinnerBiddingAndTenderingProposal } from './outcome'
 import * as utils from './outcomeUtils'
 import { JOB_CONTEXT_MOCK } from './testHelpers'
 import { ProposalAttributes, ProposalStatus, ProposalType } from './types'
@@ -206,12 +206,12 @@ describe('calculateOutcome for legacy options', () => {
   })
 })
 
-describe('getWinnerTender', () => {
+describe('getWinnerBiddingAndTenderingProposal', () => {
   test('should return the matching tender proposal when there is only one matching proposal', () => {
     const proposals = [
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '123' }, winnerVotingPower: 10 },
     ] as ProposalWithOutcome[]
-    const result = getWinnerTender(proposals, '123')
+    const result = getWinnerBiddingAndTenderingProposal(proposals, '123', ProposalType.Tender)
 
     expect(result).toEqual({
       type: ProposalType.Tender,
@@ -225,8 +225,10 @@ describe('getWinnerTender', () => {
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '123' }, winnerVotingPower: 10 },
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '123' }, winnerVotingPower: 15 },
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '123' }, winnerVotingPower: 8 },
+      { type: ProposalType.Bid, configuration: { linked_proposal_id: '789' }, winnerVotingPower: 8 },
+      { type: ProposalType.Bid, configuration: { linked_proposal_id: '789' }, winnerVotingPower: 8 },
     ] as ProposalWithOutcome[]
-    const result = getWinnerTender(proposals, '123')
+    const result = getWinnerBiddingAndTenderingProposal(proposals, '123', ProposalType.Tender)
 
     expect(result).toEqual({
       type: ProposalType.Tender,
@@ -239,8 +241,10 @@ describe('getWinnerTender', () => {
     const proposals = [
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '456' }, winnerVotingPower: 15 },
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '789' }, winnerVotingPower: 8 },
+      { type: ProposalType.Bid, configuration: { linked_proposal_id: '789' }, winnerVotingPower: 8 },
+      { type: ProposalType.Bid, configuration: { linked_proposal_id: '789' }, winnerVotingPower: 8 },
     ] as ProposalWithOutcome[]
-    const result = getWinnerTender(proposals, '123')
+    const result = getWinnerBiddingAndTenderingProposal(proposals, '123', ProposalType.Tender)
 
     expect(result).toBeUndefined()
   })
@@ -251,8 +255,10 @@ describe('getWinnerTender', () => {
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '123' }, winnerVotingPower: 15 },
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '456' }, winnerVotingPower: 15 },
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '789' }, winnerVotingPower: 8 },
+      { type: ProposalType.Bid, configuration: { linked_proposal_id: '789' }, winnerVotingPower: 8 },
+      { type: ProposalType.Bid, configuration: { linked_proposal_id: '789' }, winnerVotingPower: 8 },
     ] as ProposalWithOutcome[]
-    const result = getWinnerTender(proposals, '123')
+    const result = getWinnerBiddingAndTenderingProposal(proposals, '123', ProposalType.Tender)
 
     expect(result).toEqual({
       type: ProposalType.Tender,
@@ -267,8 +273,10 @@ describe('getWinnerTender', () => {
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '123' }, winnerVotingPower: 15 },
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '123' }, winnerVotingPower: 15 },
       { type: ProposalType.Tender, configuration: { linked_proposal_id: '123' }, winnerVotingPower: 10 },
+      { type: ProposalType.Bid, configuration: { linked_proposal_id: '789' }, winnerVotingPower: 8 },
+      { type: ProposalType.Bid, configuration: { linked_proposal_id: '789' }, winnerVotingPower: 8 },
     ] as ProposalWithOutcome[]
-    const result = getWinnerTender(proposals, '123')
+    const result = getWinnerBiddingAndTenderingProposal(proposals, '123', ProposalType.Tender)
 
     expect(result).toBeUndefined()
   })

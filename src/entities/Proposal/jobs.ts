@@ -9,7 +9,7 @@ import { ErrorCategory } from '../../utils/errorCategories'
 import { Budget } from '../Budget/types'
 
 import ProposalModel from './model'
-import { ProposalOutcome, ProposalWithOutcome, calculateOutcome, getWinnerTender } from './outcome'
+import { ProposalOutcome, ProposalWithOutcome, calculateOutcome, getWinnerBiddingAndTenderingProposal } from './outcome'
 import { commentProposalUpdateInDiscourse } from './routes'
 import { ProposalAttributes, ProposalStatus, ProposalType } from './types'
 import { asNumber } from './utils'
@@ -99,18 +99,25 @@ async function getProposalsWithOutcome(proposals: ProposalAttributes[], context:
   return pendingProposalsWithOutcome
 }
 
-export async function getFinishableTenderProposals(pendingProposals: ProposalAttributes[]) {
-  let pendingTenderProposals = pendingProposals.filter((item) => item.type === ProposalType.Tender)
-  if (pendingTenderProposals.length > 0) {
-    const linkedProposalIds = [...new Set(pendingTenderProposals.map((item) => item.configuration.linked_proposal_id))]
-    pendingTenderProposals = []
+export async function getFinishabledLinkedProposals(
+  pendingProposals: ProposalAttributes[],
+  type: ProposalType.Bid | ProposalType.Tender
+) {
+  let proposals = pendingProposals.filter((item) => item.type === type)
+  if (proposals.length > 0) {
+    const linkedProposalIds = [...new Set(proposals.map((item) => item.configuration.linked_proposal_id))]
+    proposals = []
     for (const id of linkedProposalIds) {
-      const tenderProposals = await ProposalModel.getProposalList({ type: ProposalType.Tender, linkedProposalId: id })
-      pendingTenderProposals = [...pendingTenderProposals, ...tenderProposals]
+      const tenderProposals = await ProposalModel.getProposalList({ type, linkedProposalId: id })
+      proposals = [...proposals, ...tenderProposals]
     }
   }
 
-  return pendingTenderProposals
+  return proposals
+}
+
+function hasCustomOutcome(type: ProposalType) {
+  return type === ProposalType.Grant || type === ProposalType.Tender || type === ProposalType.Bid
 }
 
 async function categorizeProposals(
@@ -123,9 +130,14 @@ async function categorizeProposals(
   const outOfBudgetProposals: ProposalWithOutcome[] = []
   const rejectedProposals: ProposalWithOutcome[] = []
   const updatedBudgets = [...currentBudgets]
-  const finishableTenderProposals = await getFinishableTenderProposals(pendingProposals)
+  const finishableTenderProposals = await getFinishabledLinkedProposals(pendingProposals, ProposalType.Tender)
+  const finishableBidProposals = await getFinishabledLinkedProposals(pendingProposals, ProposalType.Bid)
   const pendingProposalsWithOutcome = await getProposalsWithOutcome(
-    [...pendingProposals.filter((item) => item.type !== ProposalType.Tender), ...finishableTenderProposals],
+    [
+      ...pendingProposals.filter((item) => item.type !== ProposalType.Tender && item.type !== ProposalType.Bid),
+      ...finishableTenderProposals,
+      ...finishableBidProposals,
+    ],
     context
   )
 
@@ -138,14 +150,15 @@ async function categorizeProposals(
         finishedProposals.push(proposal)
         break
       case ProposalOutcome.ACCEPTED:
-        if (proposal.type !== ProposalType.Grant && proposal.type !== ProposalType.Tender) {
+        if (!hasCustomOutcome(proposal.type)) {
           acceptedProposals.push(proposal)
-        } else if (proposal.type === ProposalType.Tender) {
-          const winnerTenderProposal = getWinnerTender(
+        } else if (proposal.type === ProposalType.Tender || proposal.type === ProposalType.Bid) {
+          const winnerProposal = getWinnerBiddingAndTenderingProposal(
             pendingProposalsWithOutcome,
-            proposal.configuration.linked_proposal_id
+            proposal.configuration.linked_proposal_id,
+            proposal.type
           )
-          if (winnerTenderProposal?.id === proposal.id) {
+          if (winnerProposal?.id === proposal.id) {
             acceptedProposals.push(proposal)
           } else {
             rejectedProposals.push(proposal)

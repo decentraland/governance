@@ -79,12 +79,16 @@ export async function calculateOutcome(proposal: ProposalAttributes, context: Jo
   }
 }
 
-export function getWinnerTender(pendingProposalsWithOutcome: ProposalWithOutcome[], linkedProposalId: string) {
-  const tenderProposals = pendingProposalsWithOutcome.filter(
-    (item) => item.type === ProposalType.Tender && item.configuration.linked_proposal_id === linkedProposalId
+export function getWinnerBiddingAndTenderingProposal(
+  pendingProposalsWithOutcome: ProposalWithOutcome[],
+  linkedProposalId: string,
+  type: ProposalType.Tender | ProposalType.Bid
+) {
+  const proposals = pendingProposalsWithOutcome.filter(
+    (item) => item.type === type && item.configuration.linked_proposal_id === linkedProposalId
   )
 
-  const sortedProposals = orderBy(tenderProposals, 'winnerVotingPower', 'desc')
+  const sortedProposals = orderBy(proposals, 'winnerVotingPower', 'desc')
   const highestVotingPower = sortedProposals[0]?.winnerVotingPower
   const hasMultipleHighest = sortedProposals.filter((item) => item.winnerVotingPower === highestVotingPower).length > 1
 
