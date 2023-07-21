@@ -670,6 +670,11 @@
       "change_chain": "switch to {expectedChainName}",
       "separator": " or ",
       "unknown_chain": "Unknown"
+    },
+    "bid_voting": {
+      "title": "There's still more reviewing to do",
+      "description": "The best way to vote is from consciousness.\n\nPlease, make sure you go through all {amount} proposals.",
+      "action": "Vote \"{vote}\" anyway"
     }
   },
   "component": {

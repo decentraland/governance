@@ -19,6 +19,7 @@ import CategoryPill from '../components/Category/CategoryPill'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import BidSubmittedModal from '../components/Modal/BidSubmittedModal'
+import BidVotingModal from '../components/Modal/BidVotingModal/BidVotingModal'
 import { DeleteProposalModal } from '../components/Modal/DeleteProposalModal/DeleteProposalModal'
 import ProposalSuccessModal from '../components/Modal/ProposalSuccessModal'
 import TenderPublishedModal from '../components/Modal/TenderPublishedModal'
@@ -397,7 +398,7 @@ export default function ProposalPage() {
                 nextUpdate={nextUpdate}
                 castingVote={castingVote}
                 castVote={castVote}
-                voteWithSurvey={voteWithSurvey}
+                voteWithSurvey={voteWithSurvey || proposal?.type === ProposalType.Bid}
                 subscribing={isUpdatingSubscription}
                 subscribe={updateSubscription}
                 subscriptions={subscriptions ?? []}
@@ -424,6 +425,14 @@ export default function ProposalPage() {
           }}
           onCastVote={castVote}
           castingVote={castingVote}
+          proposalPageState={proposalPageState}
+        />
+      )}
+      {proposal && proposal.type === ProposalType.Bid && (
+        <BidVotingModal
+          onVote={() => ({})}
+          isOpen
+          linkedTenderId={proposal.configuration.linked_proposal_id}
           proposalPageState={proposalPageState}
         />
       )}
