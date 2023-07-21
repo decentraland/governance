@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { SnapshotGraphql } from '../clients/SnapshotGraphql'
+import { Governance } from '../clients/Governance'
 import { SnapshotVote, StrategyOrder, VpDistribution } from '../clients/SnapshotGraphqlTypes'
 import { ProposalAttributes } from '../entities/Proposal/types'
 import { isSameAddress } from '../entities/Snapshot/utils'
@@ -30,7 +30,7 @@ export default function useVotingPowerOnProposal(
     queryKey: [`votingPowerOnProposal#${address}#${proposal?.snapshot_id}`],
     queryFn: async () => {
       if (proposal?.snapshot_id) {
-        const votes: SnapshotVote[] = await SnapshotGraphql.get().getProposalVotes(proposal.snapshot_id)
+        const votes: SnapshotVote[] = await Governance.get().getProposalVotes(proposal.snapshot_id)
         const delegatedVp = getDelegatedVotingPowerOnProposal(vpDistribution, delegators, votes)
         const addressVp = vpDistribution.own || 0
         return { addressVp, delegatedVp }
