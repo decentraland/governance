@@ -1,4 +1,5 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
+import isNumber from 'lodash/isNumber'
 
 import { SnapshotApi, SnapshotReceipt } from '../clients/SnapshotApi'
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
@@ -80,5 +81,25 @@ export class SnapshotService {
         result,
       }
     })
+  }
+
+  static async getStatusAndSpace(spaceName = SNAPSHOT_SPACE) {
+    const [status, space] = await Promise.all([
+      await SnapshotGraphql.get().getStatus(),
+      await SnapshotGraphql.get().getSpace(spaceName),
+    ])
+    if (!space) {
+      throw new Error(`Couldn't find snapshot space ${spaceName}. 
+      \nSnapshot response: ${JSON.stringify(space)}
+      \nSnapshot status: ${JSON.stringify(status)}`)
+    }
+    return { status, space }
+  }
+
+  static async getAddressesVotes(addresses: string[], first?: number, skip?: number) {
+    if (isNumber(first) && isNumber(skip)) {
+      return await SnapshotGraphql.get().getAddressesVotesInBatches(addresses, first, skip)
+    }
+    return await SnapshotGraphql.get().getAddressesVotes(addresses)
   }
 }
