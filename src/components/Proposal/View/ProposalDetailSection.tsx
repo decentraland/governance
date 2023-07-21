@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { ProposalAttributes } from '../../../entities/Proposal/types'
+import { ProposalAttributes, ProposalType } from '../../../entities/Proposal/types'
 import { snapshotProposalUrl } from '../../../entities/Proposal/utils'
 import useCoAuthorsByProposal from '../../../hooks/useCoAuthorsByProposal'
 import useFormatMessage from '../../../hooks/useFormatMessage'
@@ -18,7 +18,7 @@ interface Props {
   proposal: ProposalAttributes
 }
 
-const formatDate = (date: Date) => Time.from(date).format('MMM DD HH:mm')
+const formatDate = (date: Date) => Time.from(date).format('MMM DD, YYYY HH:mm')
 
 export default function ProposalDetailSection({ proposal }: Props) {
   const t = useFormatMessage()
@@ -42,8 +42,18 @@ export default function ProposalDetailSection({ proposal }: Props) {
             </div>
           </div>
         )}
+        {proposal.type === ProposalType.Bid && (
+          <div className="DetailsSection__Flex">
+            <div>{t('page.proposal_detail.details_submitted_label')}</div>
+            <div className="DetailsSection__Value">
+              <DateTooltip date={proposal.configuration.created_at}>
+                {formatDate(proposal.configuration.created_at)}
+              </DateTooltip>
+            </div>
+          </div>
+        )}
         <div className="DetailsSection__Flex">
-          <div>{t('page.proposal_detail.details_created_label')}</div>
+          <div>{t('page.proposal_detail.details_published_label')}</div>
           <div className="DetailsSection__Value">
             <DateTooltip date={proposal.created_at}>{formatDate(proposal.created_at)}</DateTooltip>
           </div>

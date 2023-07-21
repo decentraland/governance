@@ -27,6 +27,7 @@ interface Props {
   funding?: number
   onValidation: (data: GrantRequestDueDiligence, sectionValid: boolean) => void
   projectDuration: GrantRequest['projectDuration']
+  isDisabled?: boolean
 }
 
 export default function GrantRequestDueDiligenceSection({
@@ -34,6 +35,7 @@ export default function GrantRequestDueDiligenceSection({
   funding,
   projectDuration,
   onValidation,
+  isDisabled = false,
 }: Props) {
   const t = useFormatMessage()
   const [dueDiligenceState, setDueDiligenceState] = useState(INITIAL_GRANT_REQUEST_DUE_DILIGENCE_STATE)
@@ -104,7 +106,7 @@ export default function GrantRequestDueDiligenceSection({
           }}
         />
       ))}
-      <AddBox disabled={isCompleted} onClick={() => setModalOpen(true)}>
+      <AddBox disabled={isCompleted || isDisabled} onClick={() => setModalOpen(true)}>
         {isCompleted || Number(funding) <= 0
           ? t('page.submit_grant.due_diligence.budget_breakdown_no_funds_left')
           : t('page.submit_grant.due_diligence.budget_breakdown_add_concept')}
