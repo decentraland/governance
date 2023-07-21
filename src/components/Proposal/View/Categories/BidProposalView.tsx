@@ -21,7 +21,7 @@ function getLinkedProposalLink(proposal: ProposalAttributes | null) {
     return ''
   }
 
-  return `[${proposal.title}](${proposalUrl({ id: proposal.id })})`
+  return `[${proposal.title}](${proposalUrl(proposal.id)})`
 }
 
 const formatDate = (date: Date | string) => Time.from(date).format('MMM DD, YYYY')

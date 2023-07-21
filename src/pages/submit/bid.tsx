@@ -36,7 +36,7 @@ import { BID_MIN_PROJECT_DURATION } from '../../entities/Bid/constants'
 import { BidRequest } from '../../entities/Bid/types'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import useGetPlacedBid from '../../hooks/useGetPlacedBid'
+import useGetUserBid from '../../hooks/useGetUserBid'
 import useIsBidSubmissionWindowFinished from '../../hooks/useIsBidSubmissionWindowFinished'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
 import useProjectRequestSectionNumber from '../../hooks/useProjectRequestSectionNumber'
@@ -110,14 +110,14 @@ export default function SubmitBid() {
     pitchProposal?.snapshot_id || '',
     pitchProposal?.configuration.choices
   )
-  const hasUserPlacedBid = useGetPlacedBid(linkedProposalId)
+  const userPlacedBid = useGetUserBid(linkedProposalId)
   const isSubmissionWindowFinished = useIsBidSubmissionWindowFinished(linkedProposalId)
 
   useEffect(() => {
-    if (hasUserPlacedBid !== null || isSubmissionWindowFinished) {
+    if (userPlacedBid !== null || isSubmissionWindowFinished) {
       setIsFormDisabled(true)
     }
-  }, [hasUserPlacedBid, isSubmissionWindowFinished])
+  }, [userPlacedBid, isSubmissionWindowFinished])
 
   useEffect(() => {
     preventNavigation.current = userModifiedForm(bidRequest, initialState)
@@ -290,9 +290,9 @@ export default function SubmitBid() {
               {t('page.submit.button_submit')}
             </Button>
           </div>
-          {(hasUserPlacedBid || isSubmissionWindowFinished) && (
+          {(userPlacedBid || isSubmissionWindowFinished) && (
             <Text size="lg" color="primary">
-              {hasUserPlacedBid && t('error.bid.user_has_placed_bid')}
+              {userPlacedBid && t('error.bid.user_has_placed_bid')}
               {isSubmissionWindowFinished && t('error.bid.submission_finished')}
             </Text>
           )}

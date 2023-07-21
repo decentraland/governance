@@ -1,7 +1,7 @@
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 
-import BidModel from '../entities/Bid/model'
-import { BidStatus, UnpublishedBid } from '../entities/Bid/types'
+import UnpublishedBidsModel from '../entities/Bid/model'
+import { BidStatus, UnpublishedBidAttributes } from '../entities/Bid/types'
 import { GATSBY_GRANT_VP_THRESHOLD } from '../entities/Grant/constants'
 import ProposalModel from '../entities/Proposal/model'
 import { ProposalType } from '../entities/Proposal/types'
@@ -19,7 +19,7 @@ export default class BidService {
   static async createBid(
     linked_proposal_id: string,
     author_address: string,
-    bid_proposal_data: UnpublishedBid['bid_proposal_data']
+    bid_proposal_data: UnpublishedBidAttributes['bid_proposal_data']
   ) {
     const bidsSubmissionWindow = process.env.SUBMISSION_WINDOW_DURATION_BID
       ? Number(process.env.SUBMISSION_WINDOW_DURATION_BID)
@@ -31,7 +31,7 @@ export default class BidService {
     if (await this.isSubmissionWindowFinished(linked_proposal_id)) {
       throw new Error('Bids submission window is finished')
     }
-    const tenderBids = await BidModel.getBidsInfoByTender(linked_proposal_id)
+    const tenderBids = await UnpublishedBidsModel.getBidsInfoByTender(linked_proposal_id)
 
     if (tenderBids.find((bid) => bid.author_address === author_address)) {
       throw new Error('Bid already exists')
@@ -39,7 +39,7 @@ export default class BidService {
 
     const publish_at =
       tenderBids.length > 0 ? tenderBids[0].publish_at : Time.utc().add(bidsSubmissionWindow, 'seconds').toISOString()
-    await BidModel.createBid({
+    await UnpublishedBidsModel.createBid({
       linked_proposal_id,
       bid_proposal_data,
       author_address,
@@ -49,7 +49,7 @@ export default class BidService {
   }
 
   static async publishBids(context: JobContext) {
-    const pendingBids = await BidModel.getBidsReadyToPublish()
+    const pendingBids = await UnpublishedBidsModel.getBidsReadyToPublish()
     if (pendingBids.length === 0) {
       return
     }
@@ -99,7 +99,7 @@ export default class BidService {
             required_to_pass,
             finish_at,
           })
-          await BidModel.removePendingBid(author_address, linked_proposal_id)
+          await UnpublishedBidsModel.removePendingBid(author_address, linked_proposal_id)
           context.log(`Bid from ${author_address} for tender ${linked_proposal_id} published`)
         } catch (error) {
           const msg = 'Error publishing bid for tender'
@@ -117,7 +117,7 @@ export default class BidService {
     if (tendersWithBidsToReject.length > 0) {
       const tenderIds = tendersWithBidsToReject.join(', ')
       try {
-        await BidModel.rejectBidsFromTenders(tendersWithBidsToReject)
+        await UnpublishedBidsModel.rejectBidsFromTenders(tendersWithBidsToReject)
         context.log(`Rejected bids from tenders ${tenderIds}`)
       } catch (error) {
         const msg = `Error rejecting bids`
@@ -128,12 +128,12 @@ export default class BidService {
   }
 
   static async getUserBidOnTender(user: string, tenderId: string) {
-    const bids = await BidModel.getBidsInfoByTender(tenderId)
+    const bids = await UnpublishedBidsModel.getBidsInfoByTender(tenderId)
     return bids.find((bid) => bid.author_address === user) || null
   }
 
   static async isSubmissionWindowFinished(tenderId: string) {
-    const bidsPromise = BidModel.getBidsInfoByTender(tenderId, BidStatus.Rejected)
+    const bidsPromise = UnpublishedBidsModel.getBidsInfoByTender(tenderId, BidStatus.Rejected)
     const proposalsAmountPromise = ProposalModel.getProposalTotal({
       linkedProposalId: tenderId,
       type: ProposalType.Bid,

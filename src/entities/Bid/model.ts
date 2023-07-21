@@ -1,7 +1,7 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import { SQL, join, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 
-import { BidStatus, UnpublishedBid } from './types'
+import { BidStatus, UnpublishedBidAttributes } from './types'
 
 const DB_ENCRYPTION_KEY = process.env.DB_ENCRYPTION_KEY
 
@@ -9,8 +9,8 @@ function checkEncryptionKey() {
   if (!DB_ENCRYPTION_KEY) throw new Error('DB_ENCRYPTION_KEY is not set')
 }
 
-export default class BidModel extends Model<UnpublishedBid> {
-  static tableName = 'bids'
+export default class UnpublishedBidsModel extends Model<UnpublishedBidAttributes> {
+  static tableName = 'unpublished_bids'
   static withTimestamps = false
   static primaryKey = 'id'
 
@@ -20,7 +20,7 @@ export default class BidModel extends Model<UnpublishedBid> {
     bid_proposal_data,
     publish_at,
     status,
-  }: Omit<UnpublishedBid, 'id' | 'created_at'>) {
+  }: Omit<UnpublishedBidAttributes, 'id' | 'created_at'>) {
     checkEncryptionKey()
 
     const query = SQL`
@@ -41,7 +41,7 @@ export default class BidModel extends Model<UnpublishedBid> {
   static async getBidsInfoByTender(
     linked_proposal_id: string,
     status = BidStatus.Pending
-  ): Promise<Pick<UnpublishedBid, 'author_address' | 'publish_at' | 'created_at'>[]> {
+  ): Promise<Pick<UnpublishedBidAttributes, 'author_address' | 'publish_at' | 'created_at'>[]> {
     const query = SQL`
     SELECT created_at, publish_at, author_address 
     FROM ${table(this)} 
@@ -49,7 +49,7 @@ export default class BidModel extends Model<UnpublishedBid> {
     ORDER BY created_at ASC`
     return await this.namedQuery('get_bids_by_tender', query)
   }
-  static async getBidsReadyToPublish(): Promise<Omit<UnpublishedBid, 'status'>[]> {
+  static async getBidsReadyToPublish(): Promise<Omit<UnpublishedBidAttributes, 'status'>[]> {
     checkEncryptionKey()
 
     const query = SQL`
