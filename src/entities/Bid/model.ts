@@ -9,7 +9,7 @@ function checkEncryptionKey() {
   if (!DB_ENCRYPTION_KEY) throw new Error('DB_ENCRYPTION_KEY is not set')
 }
 
-export default class UnpublishedBidsModel extends Model<UnpublishedBidAttributes> {
+export default class UnpublishedBidModel extends Model<UnpublishedBidAttributes> {
   static tableName = 'unpublished_bids'
   static withTimestamps = false
   static primaryKey = 'id'
