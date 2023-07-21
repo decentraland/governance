@@ -16,6 +16,7 @@ import swaggerUi from 'swagger-ui-express'
 import YAML from 'yaml'
 
 import badges from './entities/Badges/routes'
+import bids from './entities/Bid/routes'
 import { updateGovernanceBudgets } from './entities/Budget/jobs'
 import budget from './entities/Budget/routes'
 import coauthor from './entities/Coauthor/routes'
@@ -65,6 +66,7 @@ app.use('/api', [
   budget,
   badges,
   common,
+  bids,
   handle(async () => {
     throw new RequestError('NotFound', RequestError.NotFound)
   }),

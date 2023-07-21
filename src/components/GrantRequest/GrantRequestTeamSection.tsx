@@ -20,9 +20,10 @@ export const INITIAL_GRANT_REQUEST_TEAM_STATE: GrantRequestTeam = {
 interface Props {
   sectionNumber: number
   onValidation: (data: GrantRequestTeam, sectionValid: boolean) => void
+  isDisabled?: boolean
 }
 
-export default function GrantRequestTeamSection({ sectionNumber, onValidation }: Props) {
+export default function GrantRequestTeamSection({ sectionNumber, onValidation, isDisabled = false }: Props) {
   const t = useFormatMessage()
   const [teamState, setTeamState] = useState(INITIAL_GRANT_REQUEST_TEAM_STATE)
   const isFormEdited = userModifiedForm(teamState, INITIAL_GRANT_REQUEST_TEAM_STATE)
@@ -84,7 +85,9 @@ export default function GrantRequestTeamSection({ sectionNumber, onValidation }:
           }}
         />
       ))}
-      <AddBox onClick={() => setModalOpen(true)}>{t('page.submit_grant.team.add_member')}</AddBox>
+      <AddBox disabled={isDisabled} onClick={() => setModalOpen(true)}>
+        {t('page.submit_grant.team.add_member')}
+      </AddBox>
       {isModalOpen && (
         <AddTeamMemberModal
           isOpen={isModalOpen}
