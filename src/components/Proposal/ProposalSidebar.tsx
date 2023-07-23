@@ -37,6 +37,7 @@ type Props = {
   castingVote: boolean
   castVote: (selectedChoice: SelectedVoteChoice, survey?: Survey | undefined) => void
   voteWithSurvey: boolean
+  voteOnBid: boolean
   subscribing: boolean
   subscribe: (subscribe: boolean) => void
   subscriptions: SubscriptionAttributes[] | null
@@ -60,6 +61,7 @@ export default function ProposalSidebar({
   castingVote,
   castVote,
   voteWithSurvey,
+  voteOnBid,
   subscribing,
   subscribe,
   subscriptions,
@@ -83,6 +85,11 @@ export default function ProposalSidebar({
       updatePageState({
         selectedChoice: selectedChoice,
         showVotingModal: true,
+      })
+    } else if (voteOnBid) {
+      updatePageState({
+        selectedChoice: selectedChoice,
+        showBidVotingModal: true,
       })
     } else {
       castVote(selectedChoice)

@@ -20,9 +20,18 @@ interface Props {
   highlight?: boolean
   isOverBudget?: boolean
   showBudget?: boolean
+  onCardClick?: () => void
+  isDisabled?: boolean
 }
 
-export default function ProposalCard({ proposal, highlight, isOverBudget, showBudget }: Props) {
+export default function ProposalCard({
+  proposal,
+  highlight,
+  isOverBudget,
+  showBudget,
+  onCardClick,
+  isDisabled,
+}: Props) {
   const t = useFormatMessage()
   const { id, title, user, start_at, finish_at, type, configuration } = proposal
   const { votes } = useProposalVotes(id)
@@ -35,9 +44,11 @@ export default function ProposalCard({ proposal, highlight, isOverBudget, showBu
     <Link
       className={classNames(
         'ProposalCard',
-        highlight && (isOverBudget ? 'ProposalCard--overbudget' : 'ProposalCard--highlight')
+        highlight && (isOverBudget ? 'ProposalCard--overbudget' : 'ProposalCard--highlight'),
+        isDisabled && 'ProposalCard--disabled'
       )}
       href={locations.proposal(id)}
+      onClick={onCardClick}
     >
       <div className="ProposalCard__Container">
         <span className="ProposalCard__Title">{title}</span>

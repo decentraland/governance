@@ -88,3 +88,20 @@
 .ProposalCard__ViewAllButton {
   margin-bottom: 40px;
 }
+
+.ProposalCard--disabled {
+  position: relative;
+  text-decoration: none;
+  pointer-events: none;
+}
+
+.ProposalCard--disabled::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}

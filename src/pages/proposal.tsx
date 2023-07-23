@@ -87,6 +87,7 @@ export type ProposalPageState = {
   showBidSubmittedModal: boolean
   showUpdateSuccessModal: boolean
   showVotingModal: boolean
+  showBidVotingModal: boolean
   showVotingError: boolean
   showSnapshotRedirect: boolean
   retryTimer: number
@@ -154,6 +155,7 @@ export default function ProposalPage() {
     showBidSubmittedModal: false,
     showUpdateSuccessModal: false,
     showVotingModal: false,
+    showBidVotingModal: false,
     showVotingError: false,
     showSnapshotRedirect: false,
     retryTimer: SECONDS_FOR_VOTING_RETRY,
@@ -203,6 +205,7 @@ export default function ProposalPage() {
           updatePageState({
             changingVote: false,
             showVotingModal: false,
+            showBidVotingModal: false,
             showVotingError: false,
             confirmSubscription: !votes![account!],
           })
@@ -398,7 +401,8 @@ export default function ProposalPage() {
                 nextUpdate={nextUpdate}
                 castingVote={castingVote}
                 castVote={castVote}
-                voteWithSurvey={voteWithSurvey || proposal?.type === ProposalType.Bid}
+                voteWithSurvey={voteWithSurvey}
+                voteOnBid={proposal?.type === ProposalType.Bid && !proposalPageState.changingVote}
                 subscribing={isUpdatingSubscription}
                 subscribe={updateSubscription}
                 subscriptions={subscriptions ?? []}
@@ -430,10 +434,19 @@ export default function ProposalPage() {
       )}
       {proposal && proposal.type === ProposalType.Bid && (
         <BidVotingModal
-          onVote={() => ({})}
-          isOpen
+          proposal={proposal}
+          onCastVote={castVote}
+          castingVote={castingVote}
           linkedTenderId={proposal.configuration.linked_proposal_id}
           proposalPageState={proposalPageState}
+          onClose={() => {
+            setErrorCounter(0)
+            updatePageState({ showBidVotingModal: false, showSnapshotRedirect: false })
+          }}
+          onProposalClick={() => {
+            setErrorCounter(0)
+            updatePageState({ showBidVotingModal: false })
+          }}
         />
       )}
       <VotesListModal
