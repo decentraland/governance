@@ -3,6 +3,7 @@ import React from 'react'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { ProposalAttributes, ProposalType } from '../../../entities/Proposal/types'
+import useBidsInfoOnTender from '../../../hooks/useBidsInfoOnTender'
 import useCountdown from '../../../hooks/useCountdown'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import { useTenderProposals } from '../../../hooks/useTenderProposals'
@@ -59,14 +60,28 @@ const getSectionConfig = (type: ProposalType) => {
   }
 }
 
-const MOCK_FUTURE_TIME = Time().add(1, 'day')
+function BidCountdown({ publishAt }: { publishAt: string }) {
+  const t = useFormatMessage()
+  const { hours, minutes, seconds, time } = useCountdown(Time(publishAt))
+
+  if (time <= 0) {
+    return null
+  }
+
+  return (
+    <Text className="ProposalPromotionSection__Text ProposalPromotionSection__Countdown" size="xs">
+      {t('page.proposal_detail.promotion.submit_bid_countdown', { value: `${hours}:${minutes}:${seconds}` })}
+    </Text>
+  )
+}
 
 export default function ProposalPromotionSection({ proposal, loading }: Props) {
   const t = useFormatMessage()
   const { id, type } = proposal
   const { hasTenderProcessStarted } = useTenderProposals(proposal.id, proposal.type)
-  const { days, minutes, seconds } = useCountdown(MOCK_FUTURE_TIME)
-  const hasBidProcessStarted = true // TODO: Integrate this
+  const bidsInfo = useBidsInfoOnTender(proposal.id)
+  const hasBidProcessStarted = Time().isBefore(bidsInfo?.publishAt)
+  console.log('ok')
 
   const { pillLabel, description, buttonLabel, promotedType } = getSectionConfig(type)
 
@@ -92,13 +107,11 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
       </Button>
       {(type === ProposalType.Poll || type === ProposalType.Draft) && (
         <Markdown className="ProposalPromotionSection__Text" size="xs">
-          {hasBidProcessStarted ? `${days}:${minutes}:${seconds}` : t('page.proposal_detail.promotion.info_text') || ''}
+          {t('page.proposal_detail.promotion.info_text')}
         </Markdown>
       )}
-      {type === ProposalType.Tender && hasBidProcessStarted && (
-        <Text className="ProposalPromotionSection__Text ProposalPromotionSection__Countdown" size="xs">
-          {t('page.proposal_detail.promotion.submit_bid_countdown', { value: `${days}:${minutes}:${seconds}` })}
-        </Text>
+      {type === ProposalType.Tender && hasBidProcessStarted && bidsInfo?.publishAt && (
+        <BidCountdown publishAt={bidsInfo.publishAt} />
       )}
     </div>
   )

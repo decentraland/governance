@@ -28,9 +28,11 @@ export default class BidService {
     if (!bidsSubmissionWindow) {
       throw new Error('Bids submission window is not defined')
     }
-    if (await this.isSubmissionWindowFinished(linked_proposal_id)) {
+
+    if ((await this.getBidsInfoByTender(linked_proposal_id)).is_submission_window_finished) {
       throw new Error('Bids submission window is finished')
     }
+
     const tenderBids = await UnpublishedBidModel.getBidsInfoByTender(linked_proposal_id)
 
     if (tenderBids.find((bid) => bid.author_address === author_address)) {
@@ -132,15 +134,23 @@ export default class BidService {
     return bids.find((bid) => bid.author_address === user) || null
   }
 
-  static async isSubmissionWindowFinished(tenderId: string) {
-    const bidsPromise = UnpublishedBidModel.getBidsInfoByTender(tenderId, BidStatus.Rejected)
+  static async getBidsInfoByTender(tenderId: string) {
+    const pendingBidsPromise = UnpublishedBidModel.getBidsInfoByTender(tenderId, BidStatus.Pending)
+    const rejectedBidsPromise = UnpublishedBidModel.getBidsInfoByTender(tenderId, BidStatus.Rejected)
     const proposalsAmountPromise = ProposalModel.getProposalTotal({
       linkedProposalId: tenderId,
       type: ProposalType.Bid,
     })
 
-    const [bids, proposalsAmount] = await Promise.all([bidsPromise, proposalsAmountPromise])
+    const [pendingBids, rejectedBids, proposalsAmount] = await Promise.all([
+      pendingBidsPromise,
+      rejectedBidsPromise,
+      proposalsAmountPromise,
+    ])
 
-    return bids.length > 0 || proposalsAmount > 0
+    return {
+      is_submission_window_finished: rejectedBids.length > 0 || proposalsAmount > 0,
+      publish_at: pendingBids[0]?.publish_at,
+    }
   }
 }

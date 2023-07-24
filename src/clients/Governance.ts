@@ -468,9 +468,9 @@ export class Governance extends API {
     return response.data
   }
 
-  async isBidSubmissionWindowFinished(tenderId: string) {
-    const response = await this.fetch<ApiResponse<boolean>>(
-      `/bids/${tenderId}/is-submission-finished`,
+  async getBidsInfoOnTender(tenderId: string) {
+    const response = await this.fetch<ApiResponse<{ is_submission_window_finished: boolean; publish_at: string }>>(
+      `/bids/${tenderId}`,
       this.options().method('GET')
     )
     return response.data
