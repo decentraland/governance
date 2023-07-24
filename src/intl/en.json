@@ -670,6 +670,11 @@
       "change_chain": "switch to {expectedChainName}",
       "separator": " or ",
       "unknown_chain": "Unknown"
+    },
+    "bid_voting": {
+      "title": "There's still more reviewing to do",
+      "description": "The best way to vote is from consciousness.\n\nPlease, make sure you go through all {amount} proposals.",
+      "action": "Vote \"{vote}\" anyway"
     }
   },
   "component": {
@@ -728,6 +733,7 @@
         "ending_soon": "Ending soon",
         "by_user": "By ",
         "votes": "{total} {total, plural, one {vote} other {votes}}",
+        "leading_vp": "{total} VP in {choice}",
         "comments": "{total} {total, plural, one {comment} other {comments}}",
         "starts_date": "Starts {value}",
         "ends_date": "Ends {value}",
