@@ -35,7 +35,7 @@ export class ErrorService {
 
   public static report(errorMsg: string, extraInfo?: Record<string, unknown>) {
     if (DAO_ROLLBAR_TOKEN) {
-      this.client.error(errorMsg, extraInfo)
+      this.client.error(errorMsg, { extraInfo })
     } else {
       if (isProdEnv()) logger.error('Rollbar server access token not found')
     }
