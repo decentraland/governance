@@ -34,6 +34,7 @@ import { Vote, VotedProposal } from '../entities/Votes/types'
 import Time from '../utils/date/Time'
 
 import { TransparencyBudget } from './DclData'
+import { SnapshotSpace, SnapshotStatus, SnapshotVote } from './SnapshotGraphqlTypes'
 
 type NewProposalMap = {
   [`/proposals/poll`]: NewProposalPoll
@@ -282,7 +283,7 @@ export class Governance extends API {
     return result.data
   }
 
-  async getProposalVotes(proposal_id: string) {
+  async getProposalCachedVotes(proposal_id: string) {
     const result = await this.fetch<ApiResponse<Record<string, Vote>>>(`/proposals/${proposal_id}/votes`)
     return result.data
   }
@@ -301,7 +302,7 @@ export class Governance extends API {
     return result.data
   }
 
-  async getAddressVotes(address: string, first?: number, skip?: number) {
+  async getAddressVotesWithProposals(address: string, first?: number, skip?: number) {
     const result = await this.fetch<ApiResponse<VotedProposal[]>>(`/votes/${address}?first=${first}&skip=${skip}`)
     return result.data
   }
@@ -414,10 +415,10 @@ export class Governance extends API {
     return response.data
   }
 
-  async reportErrorToServer(message: string, data?: Record<string, unknown>) {
+  async reportErrorToServer(message: string, extraInfo?: Record<string, unknown>) {
     const response = await this.fetch<ApiResponse<string>>(
       `/debug/report-error`,
-      this.options().method('POST').authorization({ sign: true }).json({ message, data })
+      this.options().method('POST').authorization({ sign: true }).json({ message, extraInfo })
     )
     return response.data
   }
@@ -480,6 +481,29 @@ export class Governance extends API {
     const response = await this.fetch<
       ApiResponse<Pick<UnpublishedBidAttributes, 'author_address' | 'publish_at' | 'created_at'> | null>
     >(`/bids/${tenderId}/get-user-bid`, this.options().method('GET').authorization({ sign: true }))
+    return response.data
+  }
+  async getSnapshotStatusAndSpace(spaceName?: string) {
+    const response = await this.fetch<ApiResponse<{ status: SnapshotStatus; space: SnapshotSpace }>>(
+      `/snapshot/status-space/${spaceName}`,
+      this.options().method('GET')
+    )
+    return response.data
+  }
+
+  async getAddressesVotes(addresses: string[]) {
+    const result = await this.fetch<ApiResponse<VotedProposal[]>>(
+      `/snapshot/votes/`,
+      this.options().method('POST').json({ addresses })
+    )
+    return result.data
+  }
+
+  async getProposalVotes(proposalId: string) {
+    const response = await this.fetch<ApiResponse<SnapshotVote[]>>(
+      `/snapshot/proposal-votes/${proposalId}`,
+      this.options().method('GET')
+    )
     return response.data
   }
 }

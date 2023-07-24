@@ -19,6 +19,7 @@ import CategoryPill from '../components/Category/CategoryPill'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import BidSubmittedModal from '../components/Modal/BidSubmittedModal'
+import BidVotingModal from '../components/Modal/BidVotingModal/BidVotingModal'
 import { DeleteProposalModal } from '../components/Modal/DeleteProposalModal/DeleteProposalModal'
 import ProposalSuccessModal from '../components/Modal/ProposalSuccessModal'
 import TenderPublishedModal from '../components/Modal/TenderPublishedModal'
@@ -86,6 +87,7 @@ export type ProposalPageState = {
   showBidSubmittedModal: boolean
   showUpdateSuccessModal: boolean
   showVotingModal: boolean
+  showBidVotingModal: boolean
   showVotingError: boolean
   showSnapshotRedirect: boolean
   retryTimer: number
@@ -153,6 +155,7 @@ export default function ProposalPage() {
     showBidSubmittedModal: false,
     showUpdateSuccessModal: false,
     showVotingModal: false,
+    showBidVotingModal: false,
     showVotingError: false,
     showSnapshotRedirect: false,
     retryTimer: SECONDS_FOR_VOTING_RETRY,
@@ -202,6 +205,7 @@ export default function ProposalPage() {
           updatePageState({
             changingVote: false,
             showVotingModal: false,
+            showBidVotingModal: false,
             showVotingError: false,
             confirmSubscription: !votes![account!],
           })
@@ -398,6 +402,7 @@ export default function ProposalPage() {
                 castingVote={castingVote}
                 castVote={castVote}
                 voteWithSurvey={voteWithSurvey}
+                voteOnBid={proposal?.type === ProposalType.Bid && !proposalPageState.changingVote}
                 subscribing={isUpdatingSubscription}
                 subscribe={updateSubscription}
                 subscriptions={subscriptions ?? []}
@@ -425,6 +430,19 @@ export default function ProposalPage() {
           onCastVote={castVote}
           castingVote={castingVote}
           proposalPageState={proposalPageState}
+        />
+      )}
+      {proposal && proposal.type === ProposalType.Bid && (
+        <BidVotingModal
+          proposal={proposal}
+          onCastVote={castVote}
+          castingVote={castingVote}
+          linkedTenderId={proposal.configuration.linked_proposal_id}
+          proposalPageState={proposalPageState}
+          onClose={() => {
+            setErrorCounter(0)
+            updatePageState({ showBidVotingModal: false, showSnapshotRedirect: false })
+          }}
         />
       )}
       <VotesListModal

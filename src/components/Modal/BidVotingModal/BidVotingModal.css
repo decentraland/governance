@@ -1,0 +1,11 @@
+.BidVotingModal .BidVotingModal__Description {
+  margin-bottom: 0;
+}
+
+.BidVotingModal .BidVotingModal__ActionContainer {
+  justify-content: center;
+}
+
+.BidVotingModal .BidVotingModal__Action {
+  max-width: 40%;
+}

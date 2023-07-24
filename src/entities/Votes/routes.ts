@@ -6,6 +6,7 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
+import { SnapshotService } from '../../services/SnapshotService'
 import Time from '../../utils/date/Time'
 import ProposalModel from '../Proposal/model'
 import { getProposal } from '../Proposal/routes'
@@ -18,7 +19,7 @@ import { createVotes, toProposalIds } from './utils'
 export default routes((route) => {
   route.get('/proposals/:proposal/votes', handleAPI(getProposalVotes))
   route.get('/votes', handleAPI(getCachedVotes))
-  route.get('/votes/:address', handleAPI(getAddressVotes))
+  route.get('/votes/:address', handleAPI(getAddressVotesWithProposals))
 })
 
 export async function getProposalVotes(req: Request<{ proposal: string }>) {
@@ -79,19 +80,15 @@ export async function getVotes(proposal_id: string) {
   return proposalVotes?.votes ? proposalVotes.votes : await VotesModel.createEmpty(proposal_id)
 }
 
-async function getAddressVotes(req: Request) {
+async function getAddressVotesWithProposals(req: Request) {
   const address = req.params.address
   if (!address || !isEthereumAddress(address)) {
     throw new RequestError('Invalid address', RequestError.BadRequest)
   }
-  const first = Number(req.query.first)
-  const skip = Number(req.query.skip)
+  const first = Number(req.query.first) || undefined
+  const skip = Number(req.query.skip) || undefined
 
-  const isParamMissing = isNaN(first) || isNaN(skip)
-
-  const votes = isParamMissing
-    ? await SnapshotGraphql.get().getAddressesVotes([address])
-    : await SnapshotGraphql.get().getAddressesVotesInBatches([address], first, skip)
+  const votes = await SnapshotService.getAddressesVotes([address], first, skip)
 
   if (votes.length === 0) {
     return []
