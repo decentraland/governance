@@ -417,10 +417,10 @@ export class Governance extends API {
     return response.data
   }
 
-  async reportErrorToServer(message: string, data?: Record<string, unknown>) {
+  async reportErrorToServer(message: string, extraInfo?: Record<string, unknown>) {
     const response = await this.fetch<ApiResponse<string>>(
       `/debug/report-error`,
-      this.options().method('POST').authorization({ sign: true }).json({ message, data })
+      this.options().method('POST').authorization({ sign: true }).json({ message, extraInfo })
     )
     return response.data
   }
