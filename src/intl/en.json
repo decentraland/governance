@@ -733,6 +733,7 @@
         "ending_soon": "Ending soon",
         "by_user": "By ",
         "votes": "{total} {total, plural, one {vote} other {votes}}",
+        "leading_vp": "{total} VP in {choice}",
         "comments": "{total} {total, plural, one {comment} other {comments}}",
         "starts_date": "Starts {value}",
         "ends_date": "Ends {value}",

@@ -23,18 +23,9 @@ type Props = Omit<ModalProps, 'children'> & {
   linkedTenderId: string
   onCastVote: (selectedChoice: SelectedVoteChoice) => void
   castingVote: boolean
-  onProposalClick: () => void
 }
 
-function BidVotingModal({
-  onCastVote,
-  castingVote,
-  linkedTenderId,
-  proposalPageState,
-  proposal,
-  onProposalClick,
-  ...props
-}: Props) {
+function BidVotingModal({ onCastVote, castingVote, linkedTenderId, proposalPageState, proposal, ...props }: Props) {
   const t = useFormatMessage()
   const { proposals } = useProposals({
     type: ProposalType.Bid,
@@ -46,7 +37,7 @@ function BidVotingModal({
 
   return (
     <Modal
-      size={showSnapshotRedirect ? 'tiny' : 'small'}
+      size="tiny"
       className="BidVotingModal ProposalModal"
       open={showBidVotingModal}
       closeIcon={<Close />}
@@ -66,8 +57,10 @@ function BidVotingModal({
                 key={proposal.id}
                 proposal={proposal}
                 showBudget
-                onCardClick={onProposalClick}
                 isDisabled={proposal.snapshot_id === currentProposal}
+                hideUser
+                showLeadingVP
+                hideEndDate
               />
             ))}
           </Modal.Content>

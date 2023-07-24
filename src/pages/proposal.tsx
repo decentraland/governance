@@ -443,10 +443,6 @@ export default function ProposalPage() {
             setErrorCounter(0)
             updatePageState({ showBidVotingModal: false, showSnapshotRedirect: false })
           }}
-          onProposalClick={() => {
-            setErrorCounter(0)
-            updatePageState({ showBidVotingModal: false })
-          }}
         />
       )}
       <VotesListModal

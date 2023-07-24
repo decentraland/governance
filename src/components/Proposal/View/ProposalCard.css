@@ -16,6 +16,7 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  width: 94%;
 }
 
 .ProposalCard--highlight {
@@ -42,17 +43,23 @@
   text-align: left;
 }
 
-.ProposalCard__Details {
+.ProposalCard__DetailsContainer {
   display: flex;
   flex-direction: row;
   align-items: center;
-  width: 100%;
+  justify-content: space-between;
   text-transform: uppercase;
-  gap: 4px;
   font-size: 11px;
   line-height: 26px;
   letter-spacing: -0.2px;
   color: var(--black-600);
+}
+
+.ProposalCard__Details {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
 }
 
 .ProposalCard__ByUser {
