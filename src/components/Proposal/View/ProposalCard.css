@@ -43,6 +43,10 @@
   text-align: left;
 }
 
+.ProposalCard:visited .ProposalCard__Title {
+  color: var(--black-600);
+}
+
 .ProposalCard__DetailsContainer {
   display: flex;
   flex-direction: row;
@@ -100,15 +104,4 @@
   position: relative;
   text-decoration: none;
   pointer-events: none;
-}
-
-.ProposalCard--disabled::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
 }
