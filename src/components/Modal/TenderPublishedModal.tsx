@@ -26,7 +26,7 @@ export default function TenderPublishedModal({ proposal, ...props }: Props & Mod
           title: proposal.title,
           url: proposalUrl(proposal.id),
         }),
-        startAt: proposal.status,
+        startAt: proposal.start_at,
       })}
       {...props}
     />

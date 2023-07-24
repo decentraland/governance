@@ -4,7 +4,15 @@ export function getHighBudgetVpThreshold(budget: number) {
   return 1200000 + budget * 40
 }
 
-export function getGoogleCalendarUrl({ title, details, startAt }: { title: string; details: string; startAt: string }) {
+export function getGoogleCalendarUrl({
+  title,
+  details,
+  startAt,
+}: {
+  title: string
+  details: string
+  startAt: string | Date
+}) {
   const params = new URLSearchParams()
   params.set('text', title)
   params.set('details', details)
