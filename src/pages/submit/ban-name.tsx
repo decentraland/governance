@@ -58,7 +58,7 @@ export default function SubmitBanName() {
     setFormDisabled(true)
 
     try {
-      if (await isAlreadyBannedName(data.name)) {
+      if (isAlreadyBannedName(data.name)) {
         throw new Error('error.ban_name.name_already_banned')
       }
 

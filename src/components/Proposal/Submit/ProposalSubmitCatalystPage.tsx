@@ -99,7 +99,7 @@ export default function ProposalSubmitCatalystPage({ catalystType }: Props) {
     setFormDisabled(true)
 
     try {
-      const isDomainAlreadyACatalyst = await isAlreadyACatalyst(data.domain)
+      const isDomainAlreadyACatalyst = isAlreadyACatalyst(data.domain)
       if (catalystType === CatalystType.Add && isDomainAlreadyACatalyst) {
         throw new Error('error.catalyst.domain_already_a_catalyst')
       }

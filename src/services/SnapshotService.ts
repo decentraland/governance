@@ -3,6 +3,7 @@ import isNumber from 'lodash/isNumber'
 
 import { SnapshotApi, SnapshotReceipt } from '../clients/SnapshotApi'
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
+import { SnapshotVote } from '../clients/SnapshotGraphqlTypes'
 import * as templates from '../entities/Proposal/templates'
 import { proposalUrl, snapshotProposalUrl } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
@@ -101,5 +102,9 @@ export class SnapshotService {
       return await SnapshotGraphql.get().getAddressesVotesInBatches(addresses, first, skip)
     }
     return await SnapshotGraphql.get().getAddressesVotes(addresses)
+  }
+
+  static async getProposalVotes(proposalId: string): Promise<SnapshotVote[]> {
+    return await SnapshotGraphql.get().getProposalVotes(proposalId)
   }
 }
