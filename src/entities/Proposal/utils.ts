@@ -222,3 +222,15 @@ export function hasTenderProcessFinished(tenderProposals: ProposalAttributes[]) 
 export function hasTenderProcessStarted(tenderProposals: ProposalAttributes[]) {
   return tenderProposals.length > 0 && Time(tenderProposals[0].start_at).isBefore(Time())
 }
+
+export function getBudget(proposal: ProposalAttributes) {
+  const { type, configuration } = proposal
+  switch (type) {
+    case ProposalType.Grant:
+      return Number(configuration.size)
+    case ProposalType.Bid:
+      return Number(configuration.funding)
+    default:
+      return null
+  }
+}

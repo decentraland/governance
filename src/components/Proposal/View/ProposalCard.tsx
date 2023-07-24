@@ -3,8 +3,8 @@ import { useIntl } from 'react-intl'
 
 import classNames from 'classnames'
 
-import { ProposalAttributes, ProposalType } from '../../../entities/Proposal/types'
-import { proposalUrl } from '../../../entities/Proposal/utils'
+import { ProposalAttributes } from '../../../entities/Proposal/types'
+import { getBudget, proposalUrl } from '../../../entities/Proposal/utils'
 import { CURRENCY_FORMAT_OPTIONS } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import { useProposalDateText } from '../../../hooks/useProposalDateText'
@@ -40,12 +40,11 @@ export default function ProposalCard({
   hideEndDate,
 }: Props) {
   const t = useFormatMessage()
-  const { id, title, user, start_at, finish_at, type, configuration } = proposal
+  const { id, title, user, start_at, finish_at } = proposal
   const { votes } = useProposalVotes(id)
   const dateText = useProposalDateText(start_at, finish_at)
   const { formatNumber } = useIntl()
-  const hasBudget = type === ProposalType.Grant || type === ProposalType.Bid
-  const budget = hasBudget && (configuration.size || configuration.funding)
+  const budget = getBudget(proposal)
   const { winningChoice, userChoice } = useWinningChoice(proposal)
 
   return (
@@ -72,10 +71,10 @@ export default function ProposalCard({
                 <span>{' · '}</span>
               </>
             )}
-            {showBudget && hasBudget && (
+            {showBudget && budget && (
               <>
                 <span className="ProposalCard__DetailsItem">
-                  {formatNumber(Number(budget), CURRENCY_FORMAT_OPTIONS as any)}
+                  {formatNumber(budget, CURRENCY_FORMAT_OPTIONS as any)}
                 </span>
                 <span>{' · '}</span>
               </>

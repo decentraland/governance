@@ -48,7 +48,7 @@ function BidVotingModal({ onCastVote, castingVote, linkedTenderId, proposalPageS
           <Modal.Content>
             <div className="ProposalModal__Title">
               <Header>{t('modal.bid_voting.title')}</Header>
-              <Markdown className="BidVotingModal__Description">
+              <Markdown componentsClassNames={{ p: 'BidVotingModal__Description' }}>
                 {t('modal.bid_voting.description', { amount: proposals?.total })}
               </Markdown>
             </div>
