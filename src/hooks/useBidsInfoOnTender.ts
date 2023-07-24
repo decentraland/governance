@@ -4,7 +4,7 @@ import { Governance } from '../clients/Governance'
 
 function useBidsInfoOnTender(tenderId: string | null) {
   const { data } = useQuery({
-    queryKey: [`bidSubmissionWindow#${tenderId}`],
+    queryKey: [`bidsInfo#${tenderId}`],
     queryFn: () => (tenderId ? Governance.get().getBidsInfoOnTender(tenderId) : null),
   })
 

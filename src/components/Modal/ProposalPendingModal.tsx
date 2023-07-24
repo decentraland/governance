@@ -35,11 +35,16 @@ export default function ProposalPendingModal({ title, description, calendarUrl, 
           {title}
         </Heading>
         <Text className="ProposalPendingModal__Description">{description}</Text>
-        {calendarUrl && (
-          <Button as={Link} href={calendarUrl} className="ProposalPendingModal__Button" primary>
-            {t('modal.proposal_pending.add_to_calendar')}
-          </Button>
-        )}
+        <Button
+          as={Link}
+          disabled={!calendarUrl}
+          loading={!calendarUrl}
+          href={calendarUrl}
+          className="ProposalPendingModal__Button"
+          primary
+        >
+          {t('modal.proposal_pending.add_to_calendar')}
+        </Button>
         <Text size="sm" color="secondary">
           {t(`modal.proposal_pending.helper`)}
         </Text>
