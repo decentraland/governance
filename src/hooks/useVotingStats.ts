@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 
 import { useQuery } from '@tanstack/react-query'
 
+import { Governance } from '../clients/Governance'
 import { SnapshotGraphql, getQueryTimestamp } from '../clients/SnapshotGraphql'
 import { SnapshotProposal, SnapshotVote } from '../clients/SnapshotGraphqlTypes'
 import { calculateMatch, getChecksumAddress, outcomeMatch } from '../entities/Snapshot/utils'
@@ -62,7 +63,7 @@ export default function useVotingStats(address: string, userAddress: string | nu
     queryFn: async () => {
       const addresses = [address]
       if (userAddress) addresses.push(userAddress)
-      return await SnapshotGraphql.get().getAddressesVotes(addresses)
+      return await Governance.get().getAddressesVotes(addresses)
     },
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })

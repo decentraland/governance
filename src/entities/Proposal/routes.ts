@@ -275,7 +275,7 @@ const verify: VerifyFunction = async (config: NewProposalPOI) => {
     const validPointOfInterest = await isValidPointOfInterest(config.x, config.y)
     if (!validPointOfInterest) {
       throw new RequestError(
-        `Coodinate "${config.x},${config.y}" is not valid as point of interest`,
+        `Coordinate "${config.x},${config.y}" is not valid as point of interest`,
         RequestError.BadRequest
       )
     }
@@ -520,7 +520,7 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
   const user = req.auth!
   const id = req.params.proposal
   if (!isDAOCommittee(user)) {
-    throw new RequestError('Only DAO commitee members can enact a proposal', RequestError.Forbidden)
+    throw new RequestError('Only DAO committee members can enact a proposal', RequestError.Forbidden)
   }
 
   const proposal = await getProposal(req)

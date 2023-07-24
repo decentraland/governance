@@ -1,14 +1,14 @@
 import { useQuery } from '@tanstack/react-query'
 import max from 'lodash/max'
 
-import { SnapshotGraphql } from '../clients/SnapshotGraphql'
+import { Governance } from '../clients/Governance'
 
 import { TWENTY_MINUTES_MS } from './constants'
 
 export type VoteHistory = { lastVoted: number; timesVoted: number }
 
 const fetchVotes = async (addresses: string[]) => {
-  const addressesVotesByDate = await SnapshotGraphql.get().getAddressesVotes(addresses)
+  const addressesVotesByDate = await Governance.get().getAddressesVotes(addresses)
   const aggregatedVotes: Record<string, VoteHistory> = {}
   addressesVotesByDate.map((voteByDate) => {
     const voter = voteByDate.voter.toLowerCase()
