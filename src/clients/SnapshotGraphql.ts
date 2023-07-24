@@ -2,7 +2,7 @@ import API from 'decentraland-gatsby/dist/utils/api/API'
 import env from 'decentraland-gatsby/dist/utils/env'
 import uniqBy from 'lodash/uniqBy'
 
-import { SNAPSHOT_API, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
+import { SNAPSHOT_API, SNAPSHOT_API_KEY, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { ErrorCategory } from '../utils/errorCategories'
 
 import { ErrorClient } from './ErrorClient'
@@ -44,6 +44,11 @@ export class SnapshotGraphql extends API {
 
   static get() {
     return this.from(env('SNAPSHOT_API', this.Url))
+  }
+
+  constructor(baseUrl: string) {
+    super(baseUrl)
+    if (SNAPSHOT_API_KEY) this.defaultOptions.header('x-api-key', SNAPSHOT_API_KEY)
   }
 
   async getStatus() {

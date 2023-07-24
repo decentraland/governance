@@ -15,6 +15,7 @@ import { register } from 'prom-client'
 import swaggerUi from 'swagger-ui-express'
 import YAML from 'yaml'
 
+import snapshot from './back/routes/snapshot'
 import badges from './entities/Badges/routes'
 import bids from './entities/Bid/routes'
 import { updateGovernanceBudgets } from './entities/Budget/jobs'
@@ -67,6 +68,7 @@ app.use('/api', [
   badges,
   common,
   bids,
+  snapshot,
   handle(async () => {
     throw new RequestError('NotFound', RequestError.NotFound)
   }),

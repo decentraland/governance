@@ -15,8 +15,8 @@ interface Props {
 
 export default function ErrorReporting({ className }: Props) {
   const [message, setMessage] = useState<string>('')
+  const [errorData, setErrorData] = useState<string>('{}')
   const [errorMessage, setErrorMessage] = useState<any>()
-  const [errorData, setErrorData] = useState<any>()
   const [formDisabled, setFormDisabled] = useState(false)
 
   async function reportError() {
