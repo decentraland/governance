@@ -21,7 +21,6 @@ interface Props {
   highlight?: boolean
   isOverBudget?: boolean
   showBudget?: boolean
-  onCardClick?: () => void
   isDisabled?: boolean
   hideUser?: boolean
   showLeadingVP?: boolean
@@ -33,7 +32,6 @@ export default function ProposalCard({
   highlight,
   isOverBudget,
   showBudget,
-  onCardClick,
   isDisabled,
   hideUser,
   showLeadingVP,
@@ -55,7 +53,6 @@ export default function ProposalCard({
         isDisabled && 'ProposalCard--disabled'
       )}
       href={proposalUrl(id)}
-      onClick={onCardClick}
       target="_blank"
       rel="noopener noreferrer"
     >
