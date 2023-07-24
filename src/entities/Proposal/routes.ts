@@ -238,7 +238,7 @@ export async function createProposalBanName(req: WithAuth) {
     throw new RequestError('Name is not valid')
   }
 
-  const alreadyBanned = await isAlreadyBannedName(configuration.name)
+  const alreadyBanned = isAlreadyBannedName(configuration.name)
   if (alreadyBanned) {
     throw new RequestError('Name is already banned')
   }
@@ -347,7 +347,7 @@ const newProposalCatalystValidator = schema.compile(newProposalCatalystScheme)
 export async function createProposalCatalyst(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalCatalyst>(newProposalCatalystValidator, req.body || {})
-  const alreadyCatalyst = await isAlreadyACatalyst(configuration.domain)
+  const alreadyCatalyst = isAlreadyACatalyst(configuration.domain)
   if (configuration.type === CatalystType.Add && alreadyCatalyst) {
     throw new RequestError('Domain is already a catalyst')
   }

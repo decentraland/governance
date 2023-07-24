@@ -1,3 +1,4 @@
+import { cache as catalystCache } from 'dcl-catalyst-client/dist/contracts-snapshots/data'
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import 'isomorphic-fetch'
 import numeral from 'numeral'
@@ -40,9 +41,9 @@ export async function isValidImage(imageUrl: string) {
   return await Governance.get().checkImage(imageUrl)
 }
 
-export async function isAlreadyBannedName(name: string) {
-  const names = await Catalyst.get().getBanNames()
-  return names.includes(name.toLowerCase())
+export function isAlreadyBannedName(name: string) {
+  const { nameDenylist } = catalystCache
+  return nameDenylist.mainnet.includes(name.toLowerCase())
 }
 
 export async function isAlreadyPointOfInterest(x: number, y: number) {
@@ -64,9 +65,10 @@ export async function isValidPointOfInterest(x: number, y: number) {
   }
 }
 
-export async function isAlreadyACatalyst(domain: string) {
-  const servers = await Catalyst.get().getServers()
-  return !!servers.find((server) => server.baseUrl === 'https://' + domain)
+export function isAlreadyACatalyst(domain: string) {
+  const { catalysts } = catalystCache
+  const servers = catalysts.mainnet
+  return !!servers.find((server) => server.address === 'https://' + domain)
 }
 
 export function isValidUpdateProposalStatus(current: ProposalStatus, next: ProposalStatus) {
