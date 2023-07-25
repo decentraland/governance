@@ -34,6 +34,7 @@ import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
 import ProposalSidebar from '../components/Proposal/ProposalSidebar'
 import SurveyResults from '../components/Proposal/SentimentSurvey/SurveyResults'
 import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
+import BidProposals from '../components/Proposal/View/BidProposals'
 import BiddingAndTenderingProcess from '../components/Proposal/View/BiddingAndTenderingProcess'
 import ProposalBudget from '../components/Proposal/View/Budget/ProposalBudget'
 import BidProposalView from '../components/Proposal/View/Categories/BidProposalView'
@@ -54,6 +55,7 @@ import { isProposalStatusWithUpdates } from '../entities/Updates/utils'
 import { SelectedVoteChoice, Vote } from '../entities/Votes/types'
 import { DEFAULT_QUERY_STALE_TIME } from '../hooks/constants'
 import useAsyncTask from '../hooks/useAsyncTask'
+import { useBidProposals } from '../hooks/useBidProposals'
 import useBudgetWithContestants from '../hooks/useBudgetWithContestants'
 import useFormatMessage from '../hooks/useFormatMessage'
 import useIsDAOCommittee from '../hooks/useIsDAOCommittee'
@@ -184,6 +186,7 @@ export default function ProposalPage() {
   })
   const { budgetWithContestants, isLoadingBudgetWithContestants } = useBudgetWithContestants(proposal?.id)
   const { tenderProposals } = useTenderProposals(proposal?.id, proposal?.type)
+  const { bidProposals } = useBidProposals(proposal?.id, proposal?.type)
 
   const { publicUpdates, pendingUpdates, nextUpdate, currentUpdate, refetchUpdates } = useProposalUpdates(proposal?.id)
   const showProposalUpdates =
@@ -329,6 +332,7 @@ export default function ProposalPage() {
     !isLoadingBudgetWithContestants
   const showTenderProposals =
     proposal?.type === ProposalType.Pitch && tenderProposals?.data && tenderProposals?.total > 0
+  const showBidProposals = proposal?.type === ProposalType.Tender && bidProposals?.data && bidProposals?.total > 0
   const showCompetingTenders = !!proposal && proposal.type === ProposalType.Tender
 
   return (
@@ -362,6 +366,7 @@ export default function ProposalPage() {
               <div className="ProposalDetailPage__Body">{getProposalView(proposal)}</div>
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
               {showTenderProposals && <TenderProposals proposals={tenderProposals.data} />}
+              {showBidProposals && <BidProposals proposals={bidProposals.data} />}
               {proposal && isBiddingAndTenderingProposal(proposal.type) && (
                 <BiddingAndTenderingProcess proposal={proposal} tenderProposalsTotal={tenderProposals?.total} />
               )}
