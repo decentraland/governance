@@ -74,7 +74,14 @@ export default class BidService {
     const tendersWithBidsToReject = []
 
     for (const [tenderId, bids] of bidsByTender) {
-      if (bids.length < MINIMUM_BIDS_TO_PUBLISH) {
+      const proposalsAmount = await ProposalModel.getProposalTotal({
+        linkedProposalId: tenderId,
+        type: ProposalType.Bid,
+      })
+
+      const bidsAmount = bids.length + proposalsAmount
+
+      if (bidsAmount < MINIMUM_BIDS_TO_PUBLISH) {
         tendersWithBidsToReject.push(tenderId)
         continue
       }
