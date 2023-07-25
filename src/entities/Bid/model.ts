@@ -49,6 +49,7 @@ export default class UnpublishedBidModel extends Model<UnpublishedBidAttributes>
     ORDER BY created_at ASC`
     return await this.namedQuery('get_bids_by_tender', query)
   }
+
   static async getBidsReadyToPublish(): Promise<Omit<UnpublishedBidAttributes, 'status'>[]> {
     checkEncryptionKey()
 

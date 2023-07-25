@@ -7,6 +7,7 @@ function useUserBid(tenderId: string | null) {
     queryKey: [`userBid#${tenderId}`],
     queryFn: () => (tenderId ? Governance.get().getUserBidOnTender(tenderId) : null),
   })
+
   return userBid ?? null
 }
 
