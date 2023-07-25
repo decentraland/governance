@@ -1,9 +1,8 @@
-import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
-import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
+import { validateAddress } from '../../back/routes/validations'
 import { BadgesService } from '../../services/BadgesService'
 
 import { UserBadges } from './types'
@@ -14,8 +13,6 @@ export default routes((router) => {
 
 async function getBadges(req: Request<{ address: string }>): Promise<UserBadges> {
   const address = req.params.address
-  if (!address || !isEthereumAddress(address)) {
-    throw new RequestError('Invalid address', RequestError.BadRequest)
-  }
+  validateAddress(address)
   return await BadgesService.getBadges(address)
 }

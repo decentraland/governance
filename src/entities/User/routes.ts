@@ -2,8 +2,8 @@ import { WithAuth, auth } from 'decentraland-gatsby/dist/entities/Auth/middlewar
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
-import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
+import { validateAddress } from '../../back/routes/validations'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
 import { isSameAddress } from '../Snapshot/utils'
@@ -81,9 +81,7 @@ async function checkValidationMessage(req: WithAuth) {
 
 async function isValidated(req: Request) {
   const address = req.params.address
-  if (!isEthereumAddress(address)) {
-    throw new Error('Invalid address')
-  }
+  validateAddress(address)
   try {
     return await UserModel.isForumValidated(address)
   } catch (error) {

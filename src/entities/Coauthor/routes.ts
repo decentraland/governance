@@ -6,8 +6,8 @@ import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import validate from 'decentraland-gatsby/dist/entities/Route/validate'
 import schema from 'decentraland-gatsby/dist/entities/Schema'
 import { Request } from 'express'
-import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
+import { validateAddress } from '../../back/routes/validations'
 import ProposalModel from '../Proposal/model'
 import { ProposalAttributes } from '../Proposal/types'
 
@@ -40,9 +40,7 @@ export async function filterCoauthorRequests(requests: CoauthorAttributes[]) {
 
 export async function getProposals(req: Request) {
   const address = req.params.address
-  if (!address || !isEthereumAddress(address)) {
-    throw new RequestError('Invalid address', RequestError.BadRequest)
-  }
+  validateAddress(address)
   const status = toCoauthorStatusType(req.params.status)
   const requests = await CoauthorModel.findProposals(address, status)
   return await filterCoauthorRequests(requests)
