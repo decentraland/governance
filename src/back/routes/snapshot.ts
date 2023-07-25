@@ -6,6 +6,8 @@ import { SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
 import { SnapshotService } from '../../services/SnapshotService'
 import { validateAddress, validateDates, validateFields, validateProposalId } from '../utils/validations'
 
+import { validateAddress, validateDates, validateFields, validateProposalId } from './validations'
+
 export default routes((router) => {
   router.get('/snapshot/status-space/:spaceName', handleAPI(getStatusAndSpace))
   router.post('/snapshot/votes', handleAPI(getAddressesVotes))
