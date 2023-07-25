@@ -1,11 +1,11 @@
-import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
-import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-import { SnapshotProposal, SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
+import { SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
 import { SnapshotService } from '../../services/SnapshotService'
+
+import { validateAddress, validateDates, validateFields, validateProposalId } from './validations'
 
 export default routes((router) => {
   router.get('/snapshot/status-space/:spaceName', handleAPI(getStatusAndSpace))
@@ -30,6 +30,7 @@ async function getAddressesVotes(req: Request) {
 async function getProposalVotes(req: Request<{ id?: string }>) {
   const { id } = req.params
   validateProposalId(id)
+
   return await SnapshotService.getProposalVotes(id!)
 }
 
@@ -58,55 +59,8 @@ async function getPendingProposals(req: Request) {
 
 async function getVpDistribution(req: Request<{ address: string; proposalSnapshotId?: string }>) {
   const { address, proposalSnapshotId } = req.params
-  if (!address || !isEthereumAddress(address)) {
-    throw new RequestError('Invalid address', RequestError.BadRequest)
-  }
+  validateAddress(address)
   validateProposalId(proposalSnapshotId, 'optional')
+
   return await SnapshotService.getVpDistribution(address, proposalSnapshotId)
-}
-
-function validateDates(start?: string, end?: string) {
-  if (!start || !(start.length > 0) || !end || !(end.length > 0)) {
-    throw new RequestError('Invalid dates', RequestError.BadRequest)
-  }
-}
-
-function validateFields(fields: unknown) {
-  if (!fields || !Array.isArray(fields) || fields.length === 0) {
-    throw new RequestError('Invalid fields', RequestError.BadRequest)
-  }
-  const validFields: (keyof SnapshotProposal)[] = [
-    'id',
-    'ipfs',
-    'author',
-    'created',
-    'type',
-    'title',
-    'body',
-    'choices',
-    'start',
-    'end',
-    'snapshot',
-    'state',
-    'link',
-    'scores',
-    'scores_by_strategy',
-    'scores_state',
-    'scores_total',
-    'scores_updated',
-    'votes',
-    'space',
-    'strategies',
-    'discussion',
-    'plugins',
-  ]
-  if (!fields.every((field) => validFields.includes(field))) {
-    throw new RequestError('Invalid fields', RequestError.BadRequest)
-  }
-}
-
-function validateProposalId(id?: string, optional: 'optional' | 'required' = 'required') {
-  if ((!optional && !id) || (optional && !!id && id.length === 0)) {
-    throw new RequestError('Invalid proposal id', RequestError.BadRequest)
-  }
 }
