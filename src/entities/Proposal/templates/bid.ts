@@ -29,7 +29,7 @@ ${getDuration(proposal.projectDuration)}
 
 ## Start Date
 
-${formatDate(new Date(proposal.startDate))}
+${formatDate(new Date(proposal.deliveryDate))}
 
 ## Beneficiary address
 

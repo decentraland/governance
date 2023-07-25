@@ -22,7 +22,7 @@ export type UnpublishedBidAttributes = {
 export type BidRequestFunding = {
   funding: string | number
   projectDuration: number
-  startDate: string
+  deliveryDate: string
   beneficiary: string
   email: string
 }
@@ -68,7 +68,7 @@ export const BidRequestFundingSchema = {
     minimum: BID_MIN_PROJECT_DURATION,
     maximum: 12,
   },
-  startDate: {
+  deliveryDate: {
     type: 'string',
   },
   beneficiary: {
