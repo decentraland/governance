@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { SnapshotGraphql } from '../clients/SnapshotGraphql'
+import { Governance } from '../clients/Governance'
 import { VpDistribution } from '../clients/SnapshotGraphqlTypes'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
@@ -23,7 +23,7 @@ export default function useVotingPowerDistribution(address?: string | null, prop
     queryKey: [`vpDistribution#${address}#${proposalSnapshotId}`],
     queryFn: async () => {
       if (!address) return EMPTY_DISTRIBUTION
-      return await SnapshotGraphql.get().getVpDistribution(address, proposalSnapshotId)
+      return await Governance.get().getVpDistribution(address, proposalSnapshotId)
     },
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })

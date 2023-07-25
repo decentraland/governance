@@ -2,6 +2,7 @@ import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
+import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { SnapshotProposal, SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
 import { SnapshotService } from '../../services/SnapshotService'
@@ -13,6 +14,7 @@ export default routes((router) => {
   router.post('/snapshot/votes/all', handleAPI(getAllVotesBetweenDates))
   router.post('/snapshot/proposals', handleAPI(getProposals))
   router.post('/snapshot/proposals/pending', handleAPI(getPendingProposals))
+  router.get('/snapshot/vp-distribution/:address/:proposalSnapshotId?', handleAPI(getVpDistribution))
 })
 
 async function getStatusAndSpace(req: Request<{ spaceName?: string }>) {
@@ -27,10 +29,8 @@ async function getAddressesVotes(req: Request) {
 
 async function getProposalVotes(req: Request<{ id?: string }>) {
   const { id } = req.params
-  if (!id || id.length === 0) {
-    throw new RequestError('Invalid proposal id', RequestError.BadRequest)
-  }
-  return await SnapshotService.getProposalVotes(id)
+  validateProposalId(id)
+  return await SnapshotService.getProposalVotes(id!)
 }
 
 async function getAllVotesBetweenDates(req: Request): Promise<SnapshotVote[]> {
@@ -54,6 +54,15 @@ async function getPendingProposals(req: Request) {
   validateFields(fields)
 
   return await SnapshotService.getPendingProposals(new Date(start), new Date(end), fields, limit)
+}
+
+async function getVpDistribution(req: Request<{ address: string; proposalSnapshotId?: string }>) {
+  const { address, proposalSnapshotId } = req.params
+  if (!address || !isEthereumAddress(address)) {
+    throw new RequestError('Invalid address', RequestError.BadRequest)
+  }
+  validateProposalId(proposalSnapshotId, 'optional')
+  return await SnapshotService.getVpDistribution(address, proposalSnapshotId)
 }
 
 function validateDates(start?: string, end?: string) {
@@ -93,5 +102,11 @@ function validateFields(fields: unknown) {
   ]
   if (!fields.every((field) => validFields.includes(field))) {
     throw new RequestError('Invalid fields', RequestError.BadRequest)
+  }
+}
+
+function validateProposalId(id?: string, optional: 'optional' | 'required' = 'required') {
+  if ((!optional && !id) || (optional && !!id && id.length === 0)) {
+    throw new RequestError('Invalid proposal id', RequestError.BadRequest)
   }
 }

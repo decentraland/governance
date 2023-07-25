@@ -34,7 +34,7 @@ import { Vote, VotedProposal } from '../entities/Votes/types'
 import Time from '../utils/date/Time'
 
 import { TransparencyBudget } from './DclData'
-import { SnapshotProposal, SnapshotSpace, SnapshotStatus, SnapshotVote } from './SnapshotGraphqlTypes'
+import { SnapshotProposal, SnapshotSpace, SnapshotStatus, SnapshotVote, VpDistribution } from './SnapshotGraphqlTypes'
 
 type NewProposalMap = {
   [`/proposals/poll`]: NewProposalPoll
@@ -533,6 +533,15 @@ export class Governance extends API {
       `/snapshot/proposals/pending`,
       this.options().method('POST').json({ start, end, fields, limit })
     )
+    return response.data
+  }
+
+  async getVpDistribution(address: string, proposalSnapshotId?: string) {
+    let url = `/snapshot/vp-distribution/${address}`
+    if (proposalSnapshotId) {
+      url += `/${proposalSnapshotId}`
+    }
+    const response = await this.fetch<ApiResponse<VpDistribution>>(url, this.options().method('GET'))
     return response.data
   }
 }
