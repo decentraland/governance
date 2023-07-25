@@ -34,7 +34,7 @@ import { Vote, VotedProposal } from '../entities/Votes/types'
 import Time from '../utils/date/Time'
 
 import { TransparencyBudget } from './DclData'
-import { SnapshotSpace, SnapshotStatus, SnapshotVote } from './SnapshotGraphqlTypes'
+import { SnapshotProposal, SnapshotSpace, SnapshotStatus, SnapshotVote } from './SnapshotGraphqlTypes'
 
 type NewProposalMap = {
   [`/proposals/poll`]: NewProposalPoll
@@ -516,6 +516,22 @@ export class Governance extends API {
     const response = await this.fetch<ApiResponse<SnapshotVote[]>>(
       `/snapshot/votes/all`,
       this.options().method('POST').json({ start, end })
+    )
+    return response.data
+  }
+
+  async getSnapshotProposals(start: Date, end: Date, fields: (keyof SnapshotProposal)[]) {
+    const response = await this.fetch<ApiResponse<Partial<SnapshotProposal>[]>>(
+      `/snapshot/proposals`,
+      this.options().method('POST').json({ start, end, fields })
+    )
+    return response.data
+  }
+
+  async getPendingProposals(start: Date, end: Date, fields: (keyof SnapshotProposal)[], limit: number) {
+    const response = await this.fetch<ApiResponse<Partial<SnapshotProposal>[]>>(
+      `/snapshot/proposals/pending`,
+      this.options().method('POST').json({ start, end, fields, limit })
     )
     return response.data
   }

@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import compact from 'lodash/compact'
 import orderBy from 'lodash/orderBy'
 
-import { SnapshotGraphql } from '../clients/SnapshotGraphql'
+import { Governance } from '../clients/Governance'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 import useProposals from './useProposals'
@@ -13,7 +13,7 @@ export default function useProposalsByParticipatingVP(start: Date, end: Date) {
   const { data: snapshotProposals, isLoading: isLoadingSnapshotProposals } = useQuery({
     queryKey: [`snapshotProposals#${start}#${end}`],
     queryFn: async () => {
-      const pendingProposals = await SnapshotGraphql.get().getPendingProposals(start, end, ['id'], 5)
+      const pendingProposals = await Governance.get().getPendingProposals(start, end, ['id', 'scores_total'], 5)
       return orderBy(pendingProposals, ['scores_total'], ['desc'])
     },
     staleTime: DEFAULT_QUERY_STALE_TIME,

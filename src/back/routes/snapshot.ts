@@ -3,7 +3,7 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
-import { SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
+import { SnapshotProposal, SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
 import { SnapshotService } from '../../services/SnapshotService'
 
 export default routes((router) => {
@@ -11,6 +11,8 @@ export default routes((router) => {
   router.post('/snapshot/votes', handleAPI(getAddressesVotes))
   router.get('/snapshot/votes/:id', handleAPI(getProposalVotes))
   router.post('/snapshot/votes/all', handleAPI(getAllVotesBetweenDates))
+  router.post('/snapshot/proposals', handleAPI(getProposals))
+  router.post('/snapshot/proposals/pending', handleAPI(getPendingProposals))
 })
 
 async function getStatusAndSpace(req: Request<{ spaceName?: string }>) {
@@ -18,7 +20,7 @@ async function getStatusAndSpace(req: Request<{ spaceName?: string }>) {
   return await SnapshotService.getStatusAndSpace(spaceName)
 }
 
-async function getAddressesVotes(req: Request<{ spaceName?: string }>) {
+async function getAddressesVotes(req: Request) {
   const { addresses } = req.body
   return await SnapshotService.getAddressesVotes(addresses)
 }
@@ -33,10 +35,63 @@ async function getProposalVotes(req: Request<{ id?: string }>) {
 
 async function getAllVotesBetweenDates(req: Request): Promise<SnapshotVote[]> {
   const { start, end } = req.body
-  if (!start || !end) {
+  validateDates(start, end)
+
+  return await SnapshotService.getAllVotesBetweenDates(new Date(start), new Date(end))
+}
+
+async function getProposals(req: Request) {
+  const { start, end, fields } = req.body
+  validateDates(start, end)
+  validateFields(fields)
+
+  return await SnapshotService.getProposals(new Date(start), new Date(end), fields)
+}
+
+async function getPendingProposals(req: Request) {
+  const { start, end, fields, limit } = req.body
+  validateDates(start, end)
+  validateFields(fields)
+
+  return await SnapshotService.getPendingProposals(new Date(start), new Date(end), fields, limit)
+}
+
+function validateDates(start?: string, end?: string) {
+  if (!start || !(start.length > 0) || !end || !(end.length > 0)) {
     throw new RequestError('Invalid dates', RequestError.BadRequest)
   }
-  console.log('start', start)
-  console.log('end', end)
-  return await SnapshotService.getAllVotesBetweenDates(start, end)
+}
+
+function validateFields(fields: unknown) {
+  if (!fields || !Array.isArray(fields) || fields.length === 0) {
+    throw new RequestError('Invalid fields', RequestError.BadRequest)
+  }
+  const validFields: (keyof SnapshotProposal)[] = [
+    'id',
+    'ipfs',
+    'author',
+    'created',
+    'type',
+    'title',
+    'body',
+    'choices',
+    'start',
+    'end',
+    'snapshot',
+    'state',
+    'link',
+    'scores',
+    'scores_by_strategy',
+    'scores_state',
+    'scores_total',
+    'scores_updated',
+    'votes',
+    'space',
+    'strategies',
+    'discussion',
+    'plugins',
+  ]
+  if (!fields.every((field) => validFields.includes(field))) {
+    throw new RequestError('Invalid fields', RequestError.BadRequest)
+  }
 }
