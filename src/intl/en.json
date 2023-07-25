@@ -1044,6 +1044,10 @@
         "show_sidebar_label": "This proposal is contesting with {amount} {amount, plural, one {other} other {others}}",
         "sidebar_title": "Competing tender proposals"
       },
+      "competing_bids": {
+        "show_sidebar_label": "This proposal is contesting with {amount} {amount, plural, one {other} other {others}}",
+        "sidebar_title": "Competing bid proposals"
+      },
       "grant": {
         "requested_budget": {
           "active_title": "Requesting",

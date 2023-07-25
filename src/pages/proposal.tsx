@@ -39,6 +39,7 @@ import BiddingAndTenderingProcess from '../components/Proposal/View/BiddingAndTe
 import ProposalBudget from '../components/Proposal/View/Budget/ProposalBudget'
 import BidProposalView from '../components/Proposal/View/Categories/BidProposalView'
 import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
+import CompetingBids from '../components/Proposal/View/CompetingBids'
 import CompetingTenders from '../components/Proposal/View/CompetingTenders'
 import GovernanceProcess from '../components/Proposal/View/GovernanceProcess'
 import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
@@ -333,7 +334,9 @@ export default function ProposalPage() {
   const showTenderProposals =
     proposal?.type === ProposalType.Pitch && tenderProposals?.data && tenderProposals?.total > 0
   const showBidProposals = proposal?.type === ProposalType.Tender && bidProposals?.data && bidProposals?.total > 0
-  const showCompetingTenders = !!proposal && proposal.type === ProposalType.Tender
+  const isActiveProposal = !!proposal && proposal.status === ProposalStatus.Active
+  const showCompetingTenders = isActiveProposal && proposal.type === ProposalType.Tender
+  const showCompetingBids = isActiveProposal && proposal.type === ProposalType.Bid
 
   return (
     <>
@@ -361,6 +364,7 @@ export default function ProposalPage() {
               <Loader active={isLoadingProposal} />
               {showProposalBudget && <ProposalBudget proposal={proposal} budget={budgetWithContestants} />}
               {showCompetingTenders && <CompetingTenders proposal={proposal} />}
+              {showCompetingBids && <CompetingBids proposal={proposal} />}
               {proposal?.type === ProposalType.POI && <ProposalHeaderPoi configuration={proposal?.configuration} />}
               {showImagesPreview && <ProposalImagesPreview imageUrls={proposal.configuration.image_previews} />}
               <div className="ProposalDetailPage__Body">{getProposalView(proposal)}</div>
