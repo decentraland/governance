@@ -483,6 +483,7 @@ export class Governance extends API {
     >(`/bids/${tenderId}/get-user-bid`, this.options().method('GET').authorization({ sign: true }))
     return response.data
   }
+
   async getSnapshotStatusAndSpace(spaceName?: string) {
     const response = await this.fetch<ApiResponse<{ status: SnapshotStatus; space: SnapshotSpace }>>(
       `/snapshot/status-space/${spaceName}`,
@@ -501,7 +502,7 @@ export class Governance extends API {
 
   async getProposalVotes(proposalId: string) {
     const response = await this.fetch<ApiResponse<SnapshotVote[]>>(
-      `/snapshot/proposal-votes/${proposalId}`,
+      `/snapshot/votes/${proposalId}`,
       this.options().method('GET')
     )
     return response.data
@@ -509,5 +510,13 @@ export class Governance extends API {
 
   async removeAllPendingBids() {
     return await this.fetch<ApiResponse<null>>(`/bids`, this.options().method('DELETE').authorization({ sign: true }))
+  }
+
+  async getAllVotesBetweenDates(start: Date, end: Date) {
+    const response = await this.fetch<ApiResponse<SnapshotVote[]>>(
+      `/snapshot/votes/all`,
+      this.options().method('POST').json({ start, end })
+    )
+    return response.data
   }
 }

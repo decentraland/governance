@@ -107,4 +107,8 @@ export class SnapshotService {
   static async getProposalVotes(proposalId: string): Promise<SnapshotVote[]> {
     return await SnapshotGraphql.get().getProposalVotes(proposalId)
   }
+
+  static async getAllVotesBetweenDates(start: Date, end: Date): Promise<SnapshotVote[]> {
+    return await SnapshotGraphql.get().getAllVotesBetweenDates(start, end)
+  }
 }
