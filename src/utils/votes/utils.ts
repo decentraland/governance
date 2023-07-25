@@ -19,8 +19,10 @@ export function getEnvironmentChainId() {
       return ChainId.ETHEREUM_MAINNET
     case ChainId.ETHEREUM_GOERLI:
       return ChainId.ETHEREUM_GOERLI
+    case ChainId.ETHEREUM_SEPOLIA:
+      return ChainId.ETHEREUM_SEPOLIA
     default:
-      throw new Error(`GATSBY_DEFAULT_CHAIN_ID is not Mainnet or Goerli: ${DEFAULT_CHAIN_ID}`)
+      throw new Error(`GATSBY_DEFAULT_CHAIN_ID is not Mainnet or Testnet: ${DEFAULT_CHAIN_ID}`)
   }
 }
 
