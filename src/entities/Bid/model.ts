@@ -70,13 +70,26 @@ export default class UnpublishedBidModel extends Model<UnpublishedBidAttributes>
   }
 
   static async rejectBidsFromTenders(linked_proposal_ids: string[]) {
-    const query = SQL`
-    UPDATE ${table(this)} 
-    SET status = ${BidStatus.Rejected} 
+    checkEncryptionKey()
+    const dataQuery = SQL`
+    SELECT id, pgp_sym_decrypt(bid_proposal_data::bytea, ${DB_ENCRYPTION_KEY}) as bid_proposal_data
+    FROM ${table(this)}
     WHERE linked_proposal_id IN (${join(
       linked_proposal_ids.map((id) => SQL`${id}`),
       SQL`, `
-    )}) AND status = ${BidStatus.Pending}`
+    )}) AND status = ${BidStatus.Pending}
+    `
+    const decryptedData = await this.namedQuery('decrypt_rejected_bids', dataQuery)
+
+    const query = SQL`
+    UPDATE ${table(this)} as t
+    SET status = ${BidStatus.Rejected}, bid_proposal_data = c.bid_proposal_data
+    FROM (values
+      ${join(
+        decryptedData.map(({ id, bid_proposal_data }) => SQL`(${id}, ${bid_proposal_data})`),
+        SQL`, `
+      )}) as c(id, bid_proposal_data)
+    WHERE t.id = c.id::integer`
 
     return await this.namedQuery('reject_bids_from_tenders', query)
   }
