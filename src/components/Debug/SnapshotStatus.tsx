@@ -11,6 +11,8 @@ import Text from '../Common/Typography/Text'
 import ErrorMessage from '../Error/ErrorMessage'
 import { ContentSection } from '../Layout/ContentLayout'
 
+import SnapshotPing from './SnapshotPing'
+
 interface Props {
   className?: string
 }
@@ -50,6 +52,7 @@ export default function SnapshotStatus({ className }: Props) {
       <Label>{'Space'}</Label>
       <Text>{JSON.stringify(snapshotSpace)}</Text>
       {!!errorMessage && <ErrorMessage label={'Snapshot Error'} errorMessage={errorMessage} />}
+      <SnapshotPing />
     </div>
   )
 }
