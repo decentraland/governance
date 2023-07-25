@@ -2,8 +2,8 @@ import { handleRaw } from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
-import ProposalModel from '../Proposal/model'
-import { SITEMAP_ITEMS_PER_PAGE, governanceUrl, proposalUrl } from '../Proposal/utils'
+import ProposalModel from '../../entities/Proposal/model'
+import { SITEMAP_ITEMS_PER_PAGE, governanceUrl, proposalUrl } from '../../entities/Proposal/utils'
 
 export default routes((router) => {
   router.get('/sitemap.xml', handleRaw(getIndexSitemap, 'application/xml'))
@@ -12,15 +12,6 @@ export default routes((router) => {
 })
 
 export async function getIndexSitemap() {
-  // <?xml version="1.0" encoding="UTF-8"?>
-  // <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  //   <sitemap>
-  //     <loc>http://www.example.com/sitemap1.xml.gz</loc>
-  //   </sitemap>
-  //   <sitemap>
-  //     <loc>http://www.example.com/sitemap2.xml.gz</loc>
-  //   </sitemap>
-  // </sitemapindex>
   const proposals = await ProposalModel.countAll()
   const pages = Math.ceil(proposals / SITEMAP_ITEMS_PER_PAGE)
 

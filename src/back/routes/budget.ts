@@ -4,11 +4,10 @@ import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
 import { TransparencyBudget } from '../../clients/DclData'
+import { Budget, BudgetWithContestants, CategoryBudget } from '../../entities/Budget/types'
+import { QuarterBudgetAttributes } from '../../entities/QuarterBudget/types'
+import { toNewGrantCategory } from '../../entities/QuarterCategoryBudget/utils'
 import { BudgetService } from '../../services/BudgetService'
-import { QuarterBudgetAttributes } from '../QuarterBudget/types'
-import { toNewGrantCategory } from '../QuarterCategoryBudget/utils'
-
-import { Budget, BudgetWithContestants, CategoryBudget } from './types'
 
 export default routes((route) => {
   const withAuth = auth()

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { cloneDeep } from 'lodash'
 
+import * as routes from '../../back/routes/proposal'
 import { BudgetService } from '../../services/BudgetService'
 import { DiscordService } from '../../services/DiscordService'
 import { DiscourseService } from '../../services/DiscourseService'
@@ -12,7 +13,6 @@ import { getQuarterEndDate } from '../QuarterBudget/utils'
 import { finishProposal, getFinishabledLinkedProposals } from './jobs'
 import ProposalModel from './model'
 import * as calculateOutcome from './outcome'
-import * as routes from './routes'
 import {
   ACCEPTED_OUTCOME,
   FINISHED_OUTCOME,
