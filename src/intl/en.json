@@ -1840,7 +1840,7 @@
         "title": "General information",
         "team_name_label": "Team Name",
         "deliverables_label": "Deliverables",
-        "deliverables_detail": "MISSING TEXT",
+        "deliverables_detail": "Be as specific as possible. Describe the entire scope of the project and the actual work you are going to deliver to the DAO.",
         "beneficiary_label": "Beneficiary address",
         "beneficiary_detail": "The address that will receive the grant funds. This must be an Ethereum address! Entering a non-Ethereum address that cannot receive MANA may result in a permanent loss of funds.",
         "roadmap_label": "Roadmap and milestones",
