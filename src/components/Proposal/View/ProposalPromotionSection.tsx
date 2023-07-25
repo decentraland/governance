@@ -80,8 +80,8 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
   const { id, type } = proposal
   const { hasTenderProcessStarted } = useTenderProposals(proposal.id, proposal.type)
   const bidsInfo = useBidsInfoOnTender(proposal.id)
-  const hasBidProcessStarted = Time().isBefore(bidsInfo?.publishAt)
-  console.log('ok')
+  const hasBidProcessStarted = !!bidsInfo?.publishAt && Time().isBefore(bidsInfo?.publishAt)
+  const hasBidProcessFinished = Time().isAfter(bidsInfo?.publishAt)
 
   const { pillLabel, description, buttonLabel, promotedType } = getSectionConfig(type)
 
@@ -92,7 +92,7 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
   }
 
   const isPromoteDisabled =
-    (type === ProposalType.Pitch && hasTenderProcessStarted) || (type === ProposalType.Tender && hasBidProcessStarted)
+    (type === ProposalType.Pitch && hasTenderProcessStarted) || (type === ProposalType.Tender && hasBidProcessFinished)
 
   return (
     <div className="ProposalPromotionSection">
