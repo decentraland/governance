@@ -72,7 +72,8 @@ export default class UnpublishedBidModel extends Model<UnpublishedBidAttributes>
 
   static async rejectBidsFromTenders(linked_proposal_ids: string[]) {
     checkEncryptionKey()
-    const dataQuery = SQL`
+
+    const decryptedBidsToRejectQuery = SQL`
     SELECT id, pgp_sym_decrypt(bid_proposal_data::bytea, ${DB_ENCRYPTION_KEY}) as bid_proposal_data
     FROM ${table(this)}
     WHERE linked_proposal_id IN (${join(
@@ -80,19 +81,19 @@ export default class UnpublishedBidModel extends Model<UnpublishedBidAttributes>
       SQL`, `
     )}) AND status = ${BidStatus.Pending}
     `
-    const decryptedData = await this.namedQuery('decrypt_rejected_bids', dataQuery)
+    const decryptedBids = await this.namedQuery('decrypt_bids_to_reject', decryptedBidsToRejectQuery)
 
-    const query = SQL`
+    const rejectBidsFromTendersQuery = SQL`
     UPDATE ${table(this)} as t
     SET status = ${BidStatus.Rejected}, bid_proposal_data = c.bid_proposal_data
     FROM (values
       ${join(
-        decryptedData.map(({ id, bid_proposal_data }) => SQL`(${id}, ${bid_proposal_data})`),
+        decryptedBids.map(({ id, bid_proposal_data }) => SQL`(${id}, ${bid_proposal_data})`),
         SQL`, `
       )}) as c(id, bid_proposal_data)
     WHERE t.id = c.id::integer`
 
-    return await this.namedQuery('reject_bids_from_tenders', query)
+    return await this.namedQuery('reject_bids_from_tenders', rejectBidsFromTendersQuery)
   }
 
   static async removePendingBid(author_address: string, linked_proposal_id: string) {
