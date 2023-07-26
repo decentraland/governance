@@ -71,7 +71,11 @@ const getOpenForBidsConfig = (status: ProposalStatus, hasBid: boolean, hasBidPro
   return { status: ProcessStatus.Default, statusText: 'page.proposal_bidding_tendering.open_for_bids_requires' }
 }
 
-const getProjectAssignationConfig = (hasWinnerBid: boolean, hasRejectedBid: boolean) => {
+const getProjectAssignationConfig = (hasBidProposals: boolean, hasWinnerBid: boolean, hasRejectedBid: boolean) => {
+  if (hasBidProposals && !hasWinnerBid && !hasRejectedBid) {
+    return { status: ProcessStatus.Pending, statusText: 'page.proposal_bidding_tendering.voting_ends' }
+  }
+
   if (hasWinnerBid) {
     return { status: ProcessStatus.Active, statusText: 'page.proposal_bidding_tendering.project_assignation_passed' }
   }
@@ -90,20 +94,17 @@ export default function AboutTenderProcess({ proposal }: Props) {
   const { proposal: pitchProposal } = useProposal(pitchProposalId)
   const { tenderProposals, winnerTenderProposal } = useTenderProposals(pitchProposalId, proposal.type)
   const { bidProposals } = useBidProposals(winnerTenderProposal?.id, winnerTenderProposal?.type)
+  const hasBidProposals = Number(bidProposals?.total) > 0
 
   const bidsInfo = useBidsInfoOnTender(winnerTenderProposal?.id)
   const pitchConfig = getPitchConfig()
   const tenderConfig = getTenderConfig(status)
-  const openForBidsConfig = getOpenForBidsConfig(
-    proposal.status,
-    !!bidsInfo?.publishAt,
-    Number(bidProposals?.total) > 0
-  )
+  const openForBidsConfig = getOpenForBidsConfig(proposal.status, !!bidsInfo?.publishAt, hasBidProposals)
   const projectAssignationConfig = getProjectAssignationConfig(
+    hasBidProposals,
     !!bidProposals?.data.find((item) => item.status === ProposalStatus.Passed),
     !!bidProposals?.data.find((item) => item.status === ProposalStatus.Rejected)
   )
-  const formattedDate = Time(start_at).fromNow()
   const formattedProposalEndDate = Time(finish_at).fromNow()
 
   const items = useMemo(
@@ -124,7 +125,7 @@ export default function AboutTenderProcess({ proposal }: Props) {
         status: tenderConfig.status,
         statusText: t(tenderConfig.statusText, {
           title: proposal.title,
-          date: formattedDate,
+          date: Time(start_at).fromNow(),
           proposalEndDate: formattedProposalEndDate,
           total: tenderProposals?.total,
         }),
@@ -139,12 +140,14 @@ export default function AboutTenderProcess({ proposal }: Props) {
         title: t('page.proposal_bidding_tendering.project_assignation_title'),
         description: t('page.proposal_bidding_tendering.project_assignation_description'),
         status: projectAssignationConfig.status,
-        statusText: t(projectAssignationConfig.statusText, { proposalEndDate: formattedProposalEndDate }),
+        statusText: t(projectAssignationConfig.statusText, {
+          proposalEndDate: Time(bidProposals?.data[0]?.finish_at).fromNow(),
+        }),
       },
     ],
     [
       bidsInfo,
-      formattedDate,
+      start_at,
       formattedProposalEndDate,
       openForBidsConfig,
       pitchConfig,
@@ -154,6 +157,7 @@ export default function AboutTenderProcess({ proposal }: Props) {
       tenderProposals,
       projectAssignationConfig,
       pitchProposal,
+      bidProposals,
     ]
   )
 

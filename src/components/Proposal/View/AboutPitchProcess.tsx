@@ -71,7 +71,11 @@ const getOpenForBidsConfig = (hasWinnerTenderProposal: boolean, hasBid: boolean,
   return { status: ProcessStatus.Default, statusText: 'page.proposal_bidding_tendering.open_for_bids_requires' }
 }
 
-const getProjectAssignationConfig = (hasWinnerBid: boolean, hasRejectedBid: boolean) => {
+const getProjectAssignationConfig = (hasBidProposals: boolean, hasWinnerBid: boolean, hasRejectedBid: boolean) => {
+  if (hasBidProposals && !hasWinnerBid && !hasRejectedBid) {
+    return { status: ProcessStatus.Pending, statusText: 'page.proposal_bidding_tendering.voting_ends' }
+  }
+
   if (hasWinnerBid) {
     return { status: ProcessStatus.Active, statusText: 'page.proposal_bidding_tendering.project_assignation_passed' }
   }
@@ -88,16 +92,14 @@ export default function AboutPitchProcess({ proposal }: Props) {
   const { start_at, finish_at, status } = proposal
   const { tenderProposals, winnerTenderProposal } = useTenderProposals(proposal.id, proposal.type)
   const { bidProposals } = useBidProposals(winnerTenderProposal?.id, winnerTenderProposal?.type)
+  const hasBidProposals = Number(bidProposals?.total) > 0
 
   const bidsInfo = useBidsInfoOnTender(winnerTenderProposal?.id)
   const pitchConfig = getPitchConfig(status)
   const tenderConfig = getTenderConfig(status, tenderProposals?.total, !!winnerTenderProposal)
-  const openForBidsConfig = getOpenForBidsConfig(
-    !!winnerTenderProposal,
-    !!bidsInfo?.publishAt,
-    Number(bidProposals?.total) > 0
-  )
+  const openForBidsConfig = getOpenForBidsConfig(!!winnerTenderProposal, !!bidsInfo?.publishAt, hasBidProposals)
   const projectAssignationConfig = getProjectAssignationConfig(
+    hasBidProposals,
     !!bidProposals?.data.find((item) => item.status === ProposalStatus.Passed),
     !!bidProposals?.data.find((item) => item.status === ProposalStatus.Rejected)
   )
@@ -137,7 +139,9 @@ export default function AboutPitchProcess({ proposal }: Props) {
         title: t('page.proposal_bidding_tendering.project_assignation_title'),
         description: t('page.proposal_bidding_tendering.project_assignation_description'),
         status: projectAssignationConfig.status,
-        statusText: t(projectAssignationConfig.statusText, { proposalEndDate: formattedProposalEndDate }),
+        statusText: t(projectAssignationConfig.statusText, {
+          proposalEndDate: Time(bidProposals?.data[0]?.finish_at).fromNow(),
+        }),
       },
     ],
     [
@@ -147,6 +151,7 @@ export default function AboutPitchProcess({ proposal }: Props) {
       openForBidsConfig,
       pitchConfig,
       tenderConfig,
+      bidProposals,
       t,
       proposal.title,
       tenderProposals,

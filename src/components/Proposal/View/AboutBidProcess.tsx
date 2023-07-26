@@ -51,7 +51,7 @@ const getProjectAssignationConfig = (status: ProposalStatus) => {
   return { status: ProcessStatus.Default, statusText: 'page.proposal_bidding_tendering.open_for_bids_requires' }
 }
 
-export default function AboutTenderProcess({ proposal }: Props) {
+export default function AboutBidProcess({ proposal }: Props) {
   const t = useFormatMessage()
   const { start_at, finish_at, configuration, status } = proposal
   const tenderProposalId = configuration.linked_proposal_id
