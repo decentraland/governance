@@ -189,7 +189,12 @@ export default function ProposalPage() {
           })
           reloadVotes()
         } catch (error) {
-          ErrorClient.report('Unable to vote', { error, category: ErrorCategory.Voting })
+          ErrorClient.report('Unable to vote', {
+            error,
+            address: listedAccount,
+            proposal: proposal.id,
+            category: ErrorCategory.Voting,
+          })
           if ((error as any).code === ErrorCode.ACTION_REJECTED) {
             updatePageState({
               changingVote: false,
