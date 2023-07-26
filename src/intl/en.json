@@ -857,6 +857,7 @@
       "open_for_bids_description": "Teams submit projects they think would match the Tender",
       "open_for_bids_begins": "**Bidding begins** {date}",
       "open_for_bids_requires": "**Requires Tender to Pass**",
+      "open_for_bids_open": "Submissions pending",
       "open_for_bids_inbound": "**Submissions inbound**",
       "project_assignation_title": "Project assignation",
       "project_assignation_description": "Funding allocated to the proposal accumulating the most VP",

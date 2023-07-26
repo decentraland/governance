@@ -55,13 +55,17 @@ const getTenderConfig = (status: ProposalStatus) => {
   return { status: ProcessStatus.Default, statusText: 'page.proposal_bidding_tendering.tender_proposal_requires' }
 }
 
-const getOpenForBidsConfig = (hasBid: boolean, hasBidProposals: boolean) => {
+const getOpenForBidsConfig = (status: ProposalStatus, hasBid: boolean, hasBidProposals: boolean) => {
   if (hasBid) {
     return { status: ProcessStatus.Pending, statusText: 'page.proposal_bidding_tendering.open_for_bids_begins' }
   }
 
   if (hasBidProposals) {
     return { status: ProcessStatus.Passed, statusText: 'page.proposal_bidding_tendering.open_for_bids_inbound' }
+  }
+
+  if (status === ProposalStatus.Passed && !hasBidProposals) {
+    return { status: ProcessStatus.Pending, statusText: 'page.proposal_bidding_tendering.open_for_bids_open' }
   }
 
   return { status: ProcessStatus.Default, statusText: 'page.proposal_bidding_tendering.open_for_bids_requires' }
@@ -90,7 +94,11 @@ export default function AboutTenderProcess({ proposal }: Props) {
   const bidsInfo = useBidsInfoOnTender(winnerTenderProposal?.id)
   const pitchConfig = getPitchConfig()
   const tenderConfig = getTenderConfig(status)
-  const openForBidsConfig = getOpenForBidsConfig(!!bidsInfo?.publishAt, Number(bidProposals?.total) > 0)
+  const openForBidsConfig = getOpenForBidsConfig(
+    proposal.status,
+    !!bidsInfo?.publishAt,
+    Number(bidProposals?.total) > 0
+  )
   const projectAssignationConfig = getProjectAssignationConfig(
     !!bidProposals?.data.find((item) => item.status === ProposalStatus.Passed),
     !!bidProposals?.data.find((item) => item.status === ProposalStatus.Rejected)
@@ -125,7 +133,7 @@ export default function AboutTenderProcess({ proposal }: Props) {
         title: t('page.proposal_bidding_tendering.open_for_bids_title'),
         description: t('page.proposal_bidding_tendering.open_for_bids_description'),
         status: openForBidsConfig.status,
-        statusText: t(openForBidsConfig.statusText, { date: bidsInfo?.publishAt }),
+        statusText: t(openForBidsConfig.statusText, { date: Time(bidsInfo?.publishAt).fromNow() }),
       },
       {
         title: t('page.proposal_bidding_tendering.project_assignation_title'),

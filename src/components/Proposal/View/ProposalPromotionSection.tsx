@@ -7,6 +7,7 @@ import useBidsInfoOnTender from '../../../hooks/useBidsInfoOnTender'
 import useCountdown from '../../../hooks/useCountdown'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import { useTenderProposals } from '../../../hooks/useTenderProposals'
+import useUserBid from '../../../hooks/useUserBid'
 import Time from '../../../utils/date/Time'
 import locations from '../../../utils/locations'
 import Pill from '../../Common/Pill'
@@ -81,12 +82,13 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
   const { id, type } = proposal
   const { tenderProposals, hasTenderProcessStarted } = useTenderProposals(id, type)
   const bidsInfo = useBidsInfoOnTender(id)
+  const userBid = useUserBid(id)
   const hasBidProcessStarted = !!bidsInfo?.publishAt && Time().isBefore(bidsInfo?.publishAt)
   const { pillLabel, description, buttonLabel, promotedType } = getSectionConfig(type)
 
   const isPromoteDisabled =
     (type === ProposalType.Pitch && hasTenderProcessStarted) ||
-    (type === ProposalType.Tender && bidsInfo.isSubmissionWindowFinished)
+    (type === ProposalType.Tender && (bidsInfo.isSubmissionWindowFinished || !!userBid))
 
   const showTenderCountdown =
     type === ProposalType.Pitch && Number(tenderProposals?.total) > 0 && tenderProposals?.data[0].start_at

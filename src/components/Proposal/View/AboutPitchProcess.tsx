@@ -55,7 +55,11 @@ const getTenderConfig = (
   return { status: ProcessStatus.Default, statusText: 'page.proposal_bidding_tendering.tender_proposal_requires' }
 }
 
-const getOpenForBidsConfig = (hasBid: boolean, hasBidProposals: boolean) => {
+const getOpenForBidsConfig = (hasWinnerTenderProposal: boolean, hasBid: boolean, hasBidProposals: boolean) => {
+  if (hasWinnerTenderProposal && !hasBid && !hasBidProposals) {
+    return { status: ProcessStatus.Pending, statusText: 'page.proposal_bidding_tendering.open_for_bids_open' }
+  }
+
   if (hasBid) {
     return { status: ProcessStatus.Pending, statusText: 'page.proposal_bidding_tendering.open_for_bids_begins' }
   }
@@ -88,7 +92,11 @@ export default function AboutPitchProcess({ proposal }: Props) {
   const bidsInfo = useBidsInfoOnTender(winnerTenderProposal?.id)
   const pitchConfig = getPitchConfig(status)
   const tenderConfig = getTenderConfig(status, tenderProposals?.total, !!winnerTenderProposal)
-  const openForBidsConfig = getOpenForBidsConfig(!!bidsInfo?.publishAt, Number(bidProposals?.total) > 0)
+  const openForBidsConfig = getOpenForBidsConfig(
+    !!winnerTenderProposal,
+    !!bidsInfo?.publishAt,
+    Number(bidProposals?.total) > 0
+  )
   const projectAssignationConfig = getProjectAssignationConfig(
     !!bidProposals?.data.find((item) => item.status === ProposalStatus.Passed),
     !!bidProposals?.data.find((item) => item.status === ProposalStatus.Rejected)
