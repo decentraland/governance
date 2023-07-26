@@ -35,8 +35,8 @@ import LogIn from '../../components/User/LogIn'
 import { BID_MIN_PROJECT_DURATION } from '../../entities/Bid/constants'
 import { BidRequest } from '../../entities/Bid/types'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
+import useBidsInfoOnTender from '../../hooks/useBidsInfoOnTender'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import useIsBidSubmissionWindowFinished from '../../hooks/useIsBidSubmissionWindowFinished'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
 import useProjectRequestSectionNumber from '../../hooks/useProjectRequestSectionNumber'
 import useProposal from '../../hooks/useProposal'
@@ -111,7 +111,7 @@ export default function SubmitBid() {
     pitchProposal?.configuration.choices
   )
   const userPlacedBid = useUserBid(linkedProposalId)
-  const isSubmissionWindowFinished = useIsBidSubmissionWindowFinished(linkedProposalId)
+  const { isSubmissionWindowFinished } = useBidsInfoOnTender(linkedProposalId)
 
   useEffect(() => {
     if (userPlacedBid !== null || isSubmissionWindowFinished) {

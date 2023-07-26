@@ -9,6 +9,7 @@ export function useTenderProposals(
 ) {
   const { proposals, isLoadingProposals } = useProposals({
     linkedProposalId,
+    type: ProposalType.Tender,
     load: !!linkedProposalId && (proposalType === ProposalType.Pitch || proposalType === ProposalType.Tender),
   })
 

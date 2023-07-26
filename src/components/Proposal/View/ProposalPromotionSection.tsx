@@ -3,11 +3,15 @@ import React from 'react'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { ProposalAttributes, ProposalType } from '../../../entities/Proposal/types'
+import useBidsInfoOnTender from '../../../hooks/useBidsInfoOnTender'
+import useCountdown from '../../../hooks/useCountdown'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import { useTenderProposals } from '../../../hooks/useTenderProposals'
+import Time from '../../../utils/date/Time'
 import locations, { navigate } from '../../../utils/locations'
 import Pill from '../../Common/Pill'
 import Markdown from '../../Common/Typography/Markdown'
+import Text from '../../Common/Typography/Text'
 
 import './ProposalPromotionSection.css'
 
@@ -56,11 +60,28 @@ const getSectionConfig = (type: ProposalType) => {
   }
 }
 
+function BidCountdown({ publishAt }: { publishAt: string }) {
+  const t = useFormatMessage()
+  const { hours, minutes, seconds, time } = useCountdown(Time(publishAt))
+
+  if (time <= 0) {
+    return null
+  }
+
+  return (
+    <Text className="ProposalPromotionSection__Text ProposalPromotionSection__Countdown" size="xs">
+      {t('page.proposal_detail.promotion.submit_bid_countdown', { value: `${hours}:${minutes}:${seconds}` })}
+    </Text>
+  )
+}
+
 export default function ProposalPromotionSection({ proposal, loading }: Props) {
   const t = useFormatMessage()
   const { id, type } = proposal
   const { hasTenderProcessStarted } = useTenderProposals(proposal.id, proposal.type)
-  const hasBidProcessStarted = false // TODO: Integrate this
+  const bidsInfo = useBidsInfoOnTender(proposal.id)
+  const hasBidProcessStarted = !!bidsInfo?.publishAt && Time().isBefore(bidsInfo?.publishAt)
+  const hasBidProcessFinished = Time().isAfter(bidsInfo?.publishAt)
 
   const { pillLabel, description, buttonLabel, promotedType } = getSectionConfig(type)
 
@@ -71,7 +92,7 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
   }
 
   const isPromoteDisabled =
-    (type === ProposalType.Pitch && hasTenderProcessStarted) || (type === ProposalType.Tender && hasBidProcessStarted)
+    (type === ProposalType.Pitch && hasTenderProcessStarted) || (type === ProposalType.Tender && hasBidProcessFinished)
 
   return (
     <div className="ProposalPromotionSection">
@@ -86,8 +107,11 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
       </Button>
       {(type === ProposalType.Poll || type === ProposalType.Draft) && (
         <Markdown className="ProposalPromotionSection__Text" size="xs">
-          {t('page.proposal_detail.promotion.info_text') || ''}
+          {t('page.proposal_detail.promotion.info_text')}
         </Markdown>
+      )}
+      {type === ProposalType.Tender && hasBidProcessStarted && bidsInfo?.publishAt && (
+        <BidCountdown publishAt={bidsInfo.publishAt} />
       )}
     </div>
   )
