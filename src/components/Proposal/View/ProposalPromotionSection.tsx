@@ -38,14 +38,14 @@ const getSectionConfig = (type: ProposalType) => {
       }
     case ProposalType.Pitch:
       return {
-        pillLabel: 'page.proposal_detail.promotion.opportunity_label',
+        pillLabel: 'page.proposal_detail.promotion.open_for_tenders_label',
         description: 'page.proposal_detail.promotion.tender_text',
         buttonLabel: 'page.proposal_detail.promotion.promote_to_tender_label',
         promotedType: ProposalType.Tender,
       }
     case ProposalType.Tender:
       return {
-        pillLabel: 'page.proposal_detail.promotion.opportunity_label',
+        pillLabel: 'page.proposal_detail.promotion.open_for_bids_label',
         description: 'page.proposal_detail.promotion.submit_bid_proposal_text',
         buttonLabel: 'page.proposal_detail.promotion.submit_bid_proposal_label',
         promotedType: ProposalType.Bid,
@@ -60,9 +60,9 @@ const getSectionConfig = (type: ProposalType) => {
   }
 }
 
-function BidCountdown({ publishAt }: { publishAt: string }) {
+function Countdown({ startAt }: { startAt: string | Date }) {
   const t = useFormatMessage()
-  const { hours, minutes, seconds, time } = useCountdown(Time(publishAt))
+  const { hours, minutes, seconds, time } = useCountdown(Time(startAt))
 
   if (time <= 0) {
     return null
@@ -70,7 +70,7 @@ function BidCountdown({ publishAt }: { publishAt: string }) {
 
   return (
     <Text className="ProposalPromotionSection__Text ProposalPromotionSection__Countdown" size="xs">
-      {t('page.proposal_detail.promotion.submit_bid_countdown', { value: `${hours}:${minutes}:${seconds}` })}
+      {t('page.proposal_detail.promotion.submit_countdown', { value: `${hours}:${minutes}:${seconds}` })}
     </Text>
   )
 }
@@ -78,11 +78,9 @@ function BidCountdown({ publishAt }: { publishAt: string }) {
 export default function ProposalPromotionSection({ proposal, loading }: Props) {
   const t = useFormatMessage()
   const { id, type } = proposal
-  const { hasTenderProcessStarted } = useTenderProposals(proposal.id, proposal.type)
-  const bidsInfo = useBidsInfoOnTender(proposal.id)
+  const { tenderProposals, hasTenderProcessStarted } = useTenderProposals(id, type)
+  const bidsInfo = useBidsInfoOnTender(id)
   const hasBidProcessStarted = !!bidsInfo?.publishAt && Time().isBefore(bidsInfo?.publishAt)
-  const hasBidProcessFinished = Time().isAfter(bidsInfo?.publishAt)
-
   const { pillLabel, description, buttonLabel, promotedType } = getSectionConfig(type)
 
   const handlePromoteClick = () => {
@@ -92,7 +90,12 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
   }
 
   const isPromoteDisabled =
-    (type === ProposalType.Pitch && hasTenderProcessStarted) || (type === ProposalType.Tender && hasBidProcessFinished)
+    (type === ProposalType.Pitch && hasTenderProcessStarted) ||
+    (type === ProposalType.Tender && bidsInfo.isSubmissionWindowFinished)
+
+  const showTenderCountdown =
+    type === ProposalType.Pitch && hasTenderProcessStarted && tenderProposals?.data[0].start_at
+  const showBidCountdown = type === ProposalType.Tender && hasBidProcessStarted && bidsInfo?.publishAt
 
   return (
     <div className="ProposalPromotionSection">
@@ -110,9 +113,8 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
           {t('page.proposal_detail.promotion.info_text')}
         </Markdown>
       )}
-      {type === ProposalType.Tender && hasBidProcessStarted && bidsInfo?.publishAt && (
-        <BidCountdown publishAt={bidsInfo.publishAt} />
-      )}
+      {showTenderCountdown && <Countdown startAt={tenderProposals?.data[0].start_at} />}
+      {showBidCountdown && bidsInfo?.publishAt && <Countdown startAt={bidsInfo.publishAt} />}
     </div>
   )
 }

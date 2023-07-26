@@ -1,5 +1,5 @@
-import { ProposalAttributes, ProposalType } from '../entities/Proposal/types'
-import { hasTenderProcessStarted } from '../entities/Proposal/utils'
+import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
+import { hasTenderProcessFinished, hasTenderProcessStarted } from '../entities/Proposal/utils'
 
 import useProposals from './useProposals'
 
@@ -17,5 +17,7 @@ export function useTenderProposals(
     tenderProposals: proposals,
     isLoadingTenderProposals: isLoadingProposals,
     hasTenderProcessStarted: !!proposals?.data && hasTenderProcessStarted(proposals?.data),
+    hasTenderProcessFinished: !!proposals?.data && hasTenderProcessFinished(proposals?.data),
+    winnerTenderProposal: proposals?.data.find((item) => item.status === ProposalStatus.Passed),
   }
 }

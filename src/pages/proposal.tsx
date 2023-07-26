@@ -34,8 +34,8 @@ import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
 import ProposalSidebar from '../components/Proposal/ProposalSidebar'
 import SurveyResults from '../components/Proposal/SentimentSurvey/SurveyResults'
 import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
+import AboutPitchProcess from '../components/Proposal/View/AboutPitchProcess'
 import BidProposals from '../components/Proposal/View/BidProposals'
-import BiddingAndTenderingProcess from '../components/Proposal/View/BiddingAndTenderingProcess'
 import ProposalBudget from '../components/Proposal/View/Budget/ProposalBudget'
 import BidProposalView from '../components/Proposal/View/Categories/BidProposalView'
 import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
@@ -371,9 +371,7 @@ export default function ProposalPage() {
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
               {showTenderProposals && <TenderProposals proposals={tenderProposals.data} />}
               {showBidProposals && <BidProposals proposals={bidProposals.data} />}
-              {proposal && isBiddingAndTenderingProposal(proposal.type) && (
-                <BiddingAndTenderingProcess proposal={proposal} tenderProposalsTotal={tenderProposals?.total} />
-              )}
+              {proposal && proposal.type === ProposalType.Pitch && <AboutPitchProcess proposal={proposal} />}
               {proposal && isGovernanceProcessProposal(proposal.type) && (
                 <GovernanceProcess proposalType={proposal.type} />
               )}
