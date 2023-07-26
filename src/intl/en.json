@@ -308,7 +308,8 @@
         "too_low": "*Funding is too low.*\n\n*Minimum is 100 USD*",
         "too_big": "*Funding is too big.*\n\n*Maximum is 240000 USD*"
       },
-      "start_date_empty": "Start date is empty",
+      "delivery_date_empty": "Delivery date is empty",
+      "delivery_date_future": "Delivery date must be in the future",
       "general_info": {
         "team_name_empty": "Team name is empty",
         "team_name_too_large": "Team name is too large",
@@ -378,7 +379,7 @@
     "tender_title": "Tender Proposal",
     "tender_description": "Refine a previously passed Pitch Proposal",
     "bid_title": "Bid Proposal",
-    "bid_description": "MISSING TEXT",
+    "bid_description": "Choose a team to execute a project that solves a previously passed Tender",
     "all_grants_title": "All grants",
     "core_unit_title": "Core Unit",
     "platform_title": "Platform",
@@ -815,7 +816,7 @@
         "budget_body": "{amount} USD",
         "duration_title": "Project duration",
         "duration_body": "{duration} {duration, plural, one {month} other {months}}",
-        "start_date_title": "Start date",
+        "delivery_date_title": "Delivery date",
         "beneficiary_title": "Beneficiary address",
         "email_title": "Email address",
         "deliverables_title": "Deliverables",
@@ -843,6 +844,7 @@
     "proposal_bidding_tendering": {
       "get_involved_question": "Should the problem/opportunity outlined be refined and taken to the next level?",
       "escalated_tender_proposals": "Escalated Tender Proposals",
+      "submitted_bid_proposals": "Submitted Bid Proposals",
       "title": "About the bidding and tendering process",
       "pitch_proposal_title": "Validate by pitching",
       "pitch_proposal_description": "Relevant topics may spawn initiatives eligible for being funded by the DAO",
@@ -855,8 +857,10 @@
       "open_for_bids_description": "Teams submit projects they think would match the Tender",
       "open_for_bids_soon": "**Bidding Begins Soon**",
       "open_for_bids_requires": "**Requires Tender to Pass**",
+      "open_for_bids_inbound": "**Submissions inbound**",
       "project_assignation_title": "Project assignation",
       "project_assignation_description": "Funding allocated to the proposal accumulating the most VP",
+      "project_assignation_failed": "**Project rejected**",
       "voting_starts": "**Voting starts** {proposalEndDate}",
       "voting_ends": "**Voting ends** {proposalEndDate}",
       "initiative_passed": "**This initiative passed** {proposalEndDate}",
@@ -1039,6 +1043,10 @@
       "competing_tenders": {
         "show_sidebar_label": "This proposal is contesting with {amount} {amount, plural, one {other} other {others}}",
         "sidebar_title": "Competing tender proposals"
+      },
+      "competing_bids": {
+        "show_sidebar_label": "This proposal is contesting with {amount} {amount, plural, one {other} other {others}}",
+        "sidebar_title": "Competing bid proposals"
       },
       "grant": {
         "requested_budget": {
@@ -1826,13 +1834,13 @@
         "budget_label": "Budget",
         "project_duration_label": "Project duration",
         "project_duration_unit": "Months",
-        "start_date_label": "Start date"
+        "delivery_date_label": "Delivery date"
       },
       "general_info": {
         "title": "General information",
         "team_name_label": "Team Name",
         "deliverables_label": "Deliverables",
-        "deliverables_detail": "MISSING TEXT",
+        "deliverables_detail": "Be as specific as possible. Describe the entire scope of the project and the actual work you are going to deliver to the DAO.",
         "beneficiary_label": "Beneficiary address",
         "beneficiary_detail": "The address that will receive the grant funds. This must be an Ethereum address! Entering a non-Ethereum address that cannot receive MANA may result in a permanent loss of funds.",
         "roadmap_label": "Roadmap and milestones",

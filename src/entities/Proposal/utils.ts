@@ -150,7 +150,7 @@ export function isGovernanceProcessProposal(type: ProposalType) {
 }
 
 export function isBiddingAndTenderingProposal(type: ProposalType) {
-  return type === ProposalType.Pitch || type === ProposalType.Tender
+  return type === ProposalType.Pitch || type === ProposalType.Tender || type === ProposalType.Bid
 }
 
 export function isProposalStatus(value: string | null | undefined): boolean {

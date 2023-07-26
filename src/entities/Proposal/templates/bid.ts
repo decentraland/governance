@@ -27,9 +27,9 @@ ${await formatLinkedProposal(proposal.linked_proposal_id)}
 ${formatBalance(Number(proposal.funding))} USD
 ${getDuration(proposal.projectDuration)}
 
-## Start Date
+## Delivery Date
 
-${formatDate(new Date(proposal.startDate))}
+${formatDate(new Date(proposal.deliveryDate))}
 
 ## Beneficiary address
 

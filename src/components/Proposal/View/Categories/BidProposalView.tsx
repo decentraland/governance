@@ -32,7 +32,7 @@ function BidProposalView({ config }: Props) {
   const {
     funding,
     projectDuration,
-    startDate,
+    deliveryDate,
     beneficiary,
     email,
     deliverables,
@@ -60,7 +60,10 @@ function BidProposalView({ config }: Props) {
         title={t('page.proposal_view.bid.duration_title')}
         body={t('page.proposal_view.bid.duration_body', { duration: projectDuration })}
       />
-      <ProposalDescriptionItem title={t('page.proposal_view.bid.start_date_title')} body={formatDate(startDate)} />
+      <ProposalDescriptionItem
+        title={t('page.proposal_view.bid.delivery_date_title')}
+        body={formatDate(deliveryDate)}
+      />
       <ProposalDescriptionItem title={t('page.proposal_view.bid.beneficiary_title')} body={beneficiary} />
       <ProposalDescriptionItem title={t('page.proposal_view.bid.email_title')} body={email} />
       <ProposalDescriptionItem title={t('page.proposal_view.bid.deliverables_title')} body={deliverables} />
