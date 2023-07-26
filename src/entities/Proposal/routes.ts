@@ -318,6 +318,9 @@ export async function createProposalHiring(req: WithAuth) {
   }
 
   if (!configuration.name) {
+    if (!isEthereumAddress(configuration.address)) {
+      throw new RequestError('Invalid address')
+    }
     try {
       const profile = await getProfile(configuration.address)
       configuration.name = profile?.name
