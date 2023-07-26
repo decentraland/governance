@@ -34,6 +34,7 @@ import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
 import ProposalSidebar from '../components/Proposal/ProposalSidebar'
 import SurveyResults from '../components/Proposal/SentimentSurvey/SurveyResults'
 import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
+import AboutBidProcess from '../components/Proposal/View/AboutBidProcess'
 import AboutPitchProcess from '../components/Proposal/View/AboutPitchProcess'
 import AboutTenderProcess from '../components/Proposal/View/AboutTenderProcess'
 import BidProposals from '../components/Proposal/View/BidProposals'
@@ -374,6 +375,7 @@ export default function ProposalPage() {
               {showBidProposals && <BidProposals proposals={bidProposals.data} />}
               {proposal && proposal.type === ProposalType.Pitch && <AboutPitchProcess proposal={proposal} />}
               {proposal && proposal.type === ProposalType.Tender && <AboutTenderProcess proposal={proposal} />}
+              {proposal && proposal.type === ProposalType.Bid && <AboutBidProcess proposal={proposal} />}
               {proposal && isGovernanceProcessProposal(proposal.type) && (
                 <GovernanceProcess proposalType={proposal.type} />
               )}
