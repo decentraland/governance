@@ -9,6 +9,7 @@ import { BID_MIN_PROJECT_DURATION } from '../../entities/Bid/constants'
 import { BidRequestFunding, BidRequestFundingSchema } from '../../entities/Bid/types'
 import { GRANT_PROPOSAL_MAX_BUDGET, GRANT_PROPOSAL_MIN_BUDGET } from '../../entities/Grant/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
+import Time from '../../utils/date/Time'
 import Field from '../Common/Form/Field'
 import SubLabel from '../Common/SubLabel'
 import Label from '../Common/Typography/Label'
@@ -97,20 +98,23 @@ export default function BidRequestFundingSection({ onValidation, isFormDisabled,
         </div>
         <div className="ProjectRequestSection__Row">
           <ContentSection className="ProjectRequestSection__Field">
-            <Label>{t('page.submit_bid.funding_section.start_date_label')}</Label>
+            <Label>{t('page.submit_bid.funding_section.delivery_date_label')}</Label>
             <DCLField
-              name="startDate"
+              name="deliveryDate"
               type="date"
               control={control}
-              error={!!errors.startDate}
-              message={errors.startDate?.message || ''}
+              error={!!errors.deliveryDate}
+              message={errors.deliveryDate?.message || ''}
               disabled={isFormDisabled}
               onChange={(_, { value }) => {
-                clearErrors('startDate')
+                clearErrors('deliveryDate')
                 if (value === '') {
-                  setError('startDate', { message: t('error.bid.start_date_empty') })
+                  setError('deliveryDate', { message: t('error.bid.delivery_date_empty') })
                 }
-                setValue('startDate', value)
+                if (Time(value).isBefore(Time())) {
+                  setError('deliveryDate', { message: t('error.bid.delivery_date_future') })
+                }
+                setValue('deliveryDate', value)
               }}
             />
           </ContentSection>
