@@ -89,7 +89,7 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
     (type === ProposalType.Tender && bidsInfo.isSubmissionWindowFinished)
 
   const showTenderCountdown =
-    type === ProposalType.Pitch && hasTenderProcessStarted && tenderProposals?.data[0].start_at
+    type === ProposalType.Pitch && Number(tenderProposals?.total) > 0 && tenderProposals?.data[0].start_at
   const showBidCountdown = type === ProposalType.Tender && hasBidProcessStarted && bidsInfo?.publishAt
 
   return (
