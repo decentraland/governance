@@ -862,7 +862,7 @@
       "project_assignation_description": "Funding allocated to the proposal accumulating the most VP",
       "project_assignation_passed": "**Project passed**",
       "project_assignation_failed": "**Project rejected**",
-      "voting_starts": "**Voting starts** {proposalEndDate}",
+      "voting_starts": "**Voting starts** {date}",
       "voting_ends": "**Voting ends** {proposalEndDate}",
       "initiative_passed": "**This initiative passed** {proposalEndDate}",
       "initiative_passed_title": "**{title}** passed {date}",
