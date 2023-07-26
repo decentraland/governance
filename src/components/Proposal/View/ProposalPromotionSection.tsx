@@ -8,8 +8,9 @@ import useCountdown from '../../../hooks/useCountdown'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import { useTenderProposals } from '../../../hooks/useTenderProposals'
 import Time from '../../../utils/date/Time'
-import locations, { navigate } from '../../../utils/locations'
+import locations from '../../../utils/locations'
 import Pill from '../../Common/Pill'
+import Link from '../../Common/Typography/Link'
 import Markdown from '../../Common/Typography/Markdown'
 import Text from '../../Common/Typography/Text'
 
@@ -83,12 +84,6 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
   const hasBidProcessStarted = !!bidsInfo?.publishAt && Time().isBefore(bidsInfo?.publishAt)
   const { pillLabel, description, buttonLabel, promotedType } = getSectionConfig(type)
 
-  const handlePromoteClick = () => {
-    if (promotedType) {
-      navigate(locations.submit(promotedType, { linked_proposal_id: id }), { replace: true })
-    }
-  }
-
   const isPromoteDisabled =
     (type === ProposalType.Pitch && hasTenderProcessStarted) ||
     (type === ProposalType.Tender && bidsInfo.isSubmissionWindowFinished)
@@ -105,7 +100,14 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
       <Markdown className="ProposalPromotionSection__Text" size="sm">
         {t(description)}
       </Markdown>
-      <Button primary size="small" loading={loading} onClick={() => handlePromoteClick()} disabled={isPromoteDisabled}>
+      <Button
+        as={Link}
+        primary
+        href={promotedType ? locations.submit(promotedType, { linked_proposal_id: id }) : undefined}
+        size="small"
+        loading={loading}
+        disabled={isPromoteDisabled}
+      >
         {t(buttonLabel)}
       </Button>
       {(type === ProposalType.Poll || type === ProposalType.Draft) && (
