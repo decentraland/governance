@@ -35,6 +35,7 @@ import ProposalSidebar from '../components/Proposal/ProposalSidebar'
 import SurveyResults from '../components/Proposal/SentimentSurvey/SurveyResults'
 import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
 import AboutPitchProcess from '../components/Proposal/View/AboutPitchProcess'
+import AboutTenderProcess from '../components/Proposal/View/AboutTenderProcess'
 import BidProposals from '../components/Proposal/View/BidProposals'
 import ProposalBudget from '../components/Proposal/View/Budget/ProposalBudget'
 import BidProposalView from '../components/Proposal/View/Categories/BidProposalView'
@@ -49,7 +50,7 @@ import StatusPill from '../components/Status/StatusPill'
 import { VOTES_VP_THRESHOLD } from '../constants'
 import { OldGrantCategory } from '../entities/Grant/types'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
-import { isBiddingAndTenderingProposal, isGovernanceProcessProposal } from '../entities/Proposal/utils'
+import { isGovernanceProcessProposal } from '../entities/Proposal/utils'
 import { Survey } from '../entities/SurveyTopic/types'
 import { SurveyEncoder } from '../entities/SurveyTopic/utils'
 import { isProposalStatusWithUpdates } from '../entities/Updates/utils'
@@ -372,6 +373,7 @@ export default function ProposalPage() {
               {showTenderProposals && <TenderProposals proposals={tenderProposals.data} />}
               {showBidProposals && <BidProposals proposals={bidProposals.data} />}
               {proposal && proposal.type === ProposalType.Pitch && <AboutPitchProcess proposal={proposal} />}
+              {proposal && proposal.type === ProposalType.Tender && <AboutTenderProcess proposal={proposal} />}
               {proposal && isGovernanceProcessProposal(proposal.type) && (
                 <GovernanceProcess proposalType={proposal.type} />
               )}

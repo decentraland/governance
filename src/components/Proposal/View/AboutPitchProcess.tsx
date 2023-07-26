@@ -4,7 +4,6 @@ import { ProposalAttributes, ProposalStatus } from '../../../entities/Proposal/t
 import { useBidProposals } from '../../../hooks/useBidProposals'
 import useBidsInfoOnTender from '../../../hooks/useBidsInfoOnTender'
 import useFormatMessage from '../../../hooks/useFormatMessage'
-import useProposal from '../../../hooks/useProposal'
 import { useTenderProposals } from '../../../hooks/useTenderProposals'
 import Time from '../../../utils/date/Time'
 
@@ -86,7 +85,6 @@ export default function AboutPitchProcess({ proposal }: Props) {
   const { tenderProposals, winnerTenderProposal } = useTenderProposals(proposal.id, proposal.type)
   const { bidProposals } = useBidProposals(winnerTenderProposal?.id, winnerTenderProposal?.type)
 
-  console.log('b', bidProposals)
   const bidsInfo = useBidsInfoOnTender(winnerTenderProposal?.id)
   const pitchConfig = getPitchConfig(status)
   const tenderConfig = getTenderConfig(status, tenderProposals?.total, !!winnerTenderProposal)
@@ -134,7 +132,19 @@ export default function AboutPitchProcess({ proposal }: Props) {
         statusText: t(projectAssignationConfig.statusText, { proposalEndDate: formattedProposalEndDate }),
       },
     ],
-    [bidsInfo?.publishAt, formattedDate, formattedProposalEndDate, openForBidsConfig.status]
+    [
+      bidsInfo,
+      formattedDate,
+      formattedProposalEndDate,
+      openForBidsConfig,
+      pitchConfig,
+      tenderConfig,
+      t,
+      proposal.title,
+      tenderProposals,
+      projectAssignationConfig,
+      winnerTenderProposal,
+    ]
   )
 
   return (
