@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import { Governance } from '../clients/Governance'
 
-function useBidsInfoOnTender(tenderId: string | null | undefined) {
+function useBidsInfoOnTender(tenderId?: string | null) {
   const { data } = useQuery({
     queryKey: [`bidsInfo#${tenderId}`],
     queryFn: () => (tenderId ? Governance.get().getBidsInfoOnTender(tenderId) : null),

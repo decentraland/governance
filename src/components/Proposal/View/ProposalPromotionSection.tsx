@@ -4,7 +4,6 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { ProposalAttributes, ProposalType } from '../../../entities/Proposal/types'
 import useBidsInfoOnTender from '../../../hooks/useBidsInfoOnTender'
-import useCountdown from '../../../hooks/useCountdown'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import { useTenderProposals } from '../../../hooks/useTenderProposals'
 import useUserBid from '../../../hooks/useUserBid'
@@ -13,8 +12,8 @@ import locations from '../../../utils/locations'
 import Pill from '../../Common/Pill'
 import Link from '../../Common/Typography/Link'
 import Markdown from '../../Common/Typography/Markdown'
-import Text from '../../Common/Typography/Text'
 
+import ProposalPromotionCountdown from './ProposalPromotionCountdown'
 import './ProposalPromotionSection.css'
 
 interface Props {
@@ -62,21 +61,6 @@ const getSectionConfig = (type: ProposalType) => {
   }
 }
 
-function Countdown({ startAt }: { startAt: string | Date }) {
-  const t = useFormatMessage()
-  const { hours, minutes, seconds, time } = useCountdown(Time(startAt))
-
-  if (time <= 0) {
-    return null
-  }
-
-  return (
-    <Text className="ProposalPromotionSection__Text ProposalPromotionSection__Countdown" size="xs">
-      {t('page.proposal_detail.promotion.submit_countdown', { value: `${hours}:${minutes}:${seconds}` })}
-    </Text>
-  )
-}
-
 export default function ProposalPromotionSection({ proposal, loading }: Props) {
   const t = useFormatMessage()
   const { id, type } = proposal
@@ -117,8 +101,8 @@ export default function ProposalPromotionSection({ proposal, loading }: Props) {
           {t('page.proposal_detail.promotion.info_text')}
         </Markdown>
       )}
-      {showTenderCountdown && <Countdown startAt={tenderProposals?.data[0].start_at} />}
-      {showBidCountdown && bidsInfo?.publishAt && <Countdown startAt={bidsInfo.publishAt} />}
+      {showTenderCountdown && <ProposalPromotionCountdown startAt={tenderProposals?.data[0].start_at} />}
+      {showBidCountdown && bidsInfo?.publishAt && <ProposalPromotionCountdown startAt={bidsInfo.publishAt} />}
     </div>
   )
 }
