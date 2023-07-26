@@ -24,6 +24,13 @@ const getPitchConfig = () => {
 }
 
 const getTenderConfig = (status: ProposalStatus) => {
+  if (status === ProposalStatus.Pending) {
+    return {
+      status: ProcessStatus.Pending,
+      statusText: 'page.proposal_bidding_tendering.voting_starts',
+    }
+  }
+
   if (status === ProposalStatus.Passed) {
     return {
       status: ProcessStatus.Passed,
