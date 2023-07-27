@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
 
-import { Toast, ToastType, Toasts } from 'decentraland-ui'
+import { Toasts } from 'decentraland-ui'
 import fetch from 'isomorphic-fetch'
 
 import { getQueryTimestamp } from '../../clients/SnapshotGraphql'
 import { SNAPSHOT_SPACE } from '../../entities/Snapshot/constants'
 import Time from '../../utils/date/Time'
-
-import './SnapshotPing.css'
+import SnapshotFailing from '../Icon/SnapshotFailing'
+import SnapshotOk from '../Icon/SnapshotOk'
+import SnapshotSlow from '../Icon/SnapshotSlow'
+import { Toast, ToastType } from '../Toast/Toast'
 
 async function pingSnapshot(): Promise<number> {
   const startTime = new Date().getTime()
@@ -43,8 +45,7 @@ async function pingSnapshot(): Promise<number> {
     })
 
     const endTime = new Date().getTime()
-    const responseTime = endTime - startTime
-    return responseTime
+    return endTime - startTime
   } catch (error) {
     return -1 // Return -1 to indicate API failure
   }
@@ -63,18 +64,40 @@ const getToastType = (serviceStatus: ServiceStatus) => {
 
 type ServiceStatus = 'normal' | 'slow' | 'failing'
 
+const SLOW_RESPONSE_TIME_THRESHOLD = 200
+
 function getMessage(serviceStatus: ServiceStatus) {
   switch (serviceStatus) {
     case 'slow':
-      return 'Voting and creating proposals might take some time'
+      return 'Voting and creating proposals may take some time'
     case 'failing':
       return 'Voting and creating proposals is currently unavailable'
     default:
-      return 'All good!'
+      return 'Let’s get governin’'
   }
 }
 
-const SLOW_RESPONSE_TIME_THRESHOLD = 200
+function getStatusIcon(serviceStatus: ServiceStatus) {
+  switch (serviceStatus) {
+    case 'slow':
+      return <SnapshotSlow />
+    case 'failing':
+      return <SnapshotFailing />
+    default:
+      return <SnapshotOk />
+  }
+}
+
+function getTitle(serviceStatus: 'normal' | 'slow' | 'failing') {
+  switch (serviceStatus) {
+    case 'slow':
+      return `Snapshot is ${serviceStatus}`
+    case 'failing':
+      return `Snapshot is ${serviceStatus}`
+    default:
+      return `Snapshot back to normal`
+  }
+}
 
 export default function SnapshotPing() {
   const [serviceStatus, setServiceStatus] = useState<ServiceStatus>('normal')
@@ -99,13 +122,17 @@ export default function SnapshotPing() {
   }, [])
 
   return (
-    <Toasts position="top right">
+    <Toasts position="bottom right">
       {showToast && (
         <Toast
-          title={`Snapshot is ${serviceStatus}`}
+          title={
+            <>
+              {getStatusIcon(serviceStatus)}
+              {getTitle(serviceStatus)}
+            </>
+          }
           className={`Toast--${getToastType(serviceStatus)}`}
           body={getMessage(serviceStatus)}
-          closable
           onClose={() => setShowToast(false)}
         />
       )}
