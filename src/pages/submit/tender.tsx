@@ -225,7 +225,6 @@ export default function SubmitTenderProposal() {
                 message: t('error.tender.problem_statement_too_large'),
               },
             }}
-            loading={isLoadingVpDistribution}
             disabled={submissionVpNotMet || formDisabled}
             error={!!errors.problem_statement}
             message={
@@ -324,7 +323,6 @@ export default function SubmitTenderProposal() {
               },
             }}
             minHeight={175}
-            loading={isLoadingVpDistribution}
             disabled={submissionVpNotMet || formDisabled}
             error={!!errors.deliverables}
             message={

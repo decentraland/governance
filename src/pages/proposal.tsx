@@ -38,6 +38,7 @@ import BiddingAndTendering from '../components/Proposal/View/BiddingAndTendering
 import ProposalBudget from '../components/Proposal/View/Budget/ProposalBudget'
 import BidProposalView from '../components/Proposal/View/Categories/BidProposalView'
 import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
+import CompetingBiddingAndTendering from '../components/Proposal/View/CompetingBiddingAndTendering'
 import GovernanceProcess from '../components/Proposal/View/GovernanceProcess'
 import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
 import ProposalMarkdown from '../components/Proposal/View/ProposalMarkdown'
@@ -323,6 +324,10 @@ export default function ProposalPage() {
     proposal?.type === ProposalType.Grant &&
     !isLegacyGrantCategory(proposal.configuration.category) &&
     !isLoadingBudgetWithContestants
+  const showCompetingBiddingAndTendering =
+    proposal &&
+    proposal?.status === ProposalStatus.Active &&
+    (proposal?.type === ProposalType.Tender || proposal?.type === ProposalType.Bid)
 
   return (
     <>
@@ -349,6 +354,7 @@ export default function ProposalPage() {
             <Grid.Column tablet="12" className="ProposalDetailPage__Description">
               <Loader active={isLoadingProposal} />
               {showProposalBudget && <ProposalBudget proposal={proposal} budget={budgetWithContestants} />}
+              {showCompetingBiddingAndTendering && <CompetingBiddingAndTendering proposal={proposal} />}
               {proposal?.type === ProposalType.POI && <ProposalHeaderPoi configuration={proposal?.configuration} />}
               {showImagesPreview && <ProposalImagesPreview imageUrls={proposal.configuration.image_previews} />}
               <div className="ProposalDetailPage__Body">{getProposalView(proposal)}</div>

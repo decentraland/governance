@@ -133,7 +133,9 @@ export default function AboutTenderProcess({ proposal }: Props) {
         title: t('page.proposal_bidding_tendering.open_for_bids_title'),
         description: t('page.proposal_bidding_tendering.open_for_bids_description'),
         status: openForBidsConfig.status,
-        statusText: t(openForBidsConfig.statusText, { date: Time(bidProposals?.data[0]?.start_at).fromNow() }),
+        statusText: t(openForBidsConfig.statusText, {
+          date: Time(bidProposals?.data[0]?.start_at || bidsInfo?.publishAt).fromNow(),
+        }),
       },
       {
         title: t('page.proposal_bidding_tendering.project_assignation_title'),
@@ -146,6 +148,7 @@ export default function AboutTenderProcess({ proposal }: Props) {
     ],
     [
       start_at,
+      bidsInfo?.publishAt,
       finish_at,
       openForBidsConfig,
       pitchConfig,
