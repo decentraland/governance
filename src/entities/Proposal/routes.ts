@@ -6,6 +6,7 @@ import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import validate from 'decentraland-gatsby/dist/entities/Route/validate'
 import schema from 'decentraland-gatsby/dist/entities/Schema'
 import { Request } from 'express'
+import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
 import { validateAddress } from '../../back/routes/validations'

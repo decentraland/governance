@@ -43,8 +43,11 @@ export function validateFields(fields: unknown) {
   }
 }
 
-export function validateProposalId(id?: string, optional: 'optional' | 'required' = 'required') {
-  if ((!optional && !id) || (optional && !!id && id.length === 0)) {
+export function validateProposalId(id?: string, required?: 'optional') {
+  if (!id && required !== 'optional') {
+    throw new RequestError('Invalid proposal id', RequestError.BadRequest)
+  }
+  if (id?.trim().length === 0) {
     throw new RequestError('Invalid proposal id', RequestError.BadRequest)
   }
 }

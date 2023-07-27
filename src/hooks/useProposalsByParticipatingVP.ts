@@ -13,7 +13,12 @@ export default function useProposalsByParticipatingVP(start: Date, end: Date) {
   const { data: snapshotProposals, isLoading: isLoadingSnapshotProposals } = useQuery({
     queryKey: [`snapshotProposals#${start}#${end}`],
     queryFn: async () => {
-      const pendingProposals = await Governance.get().getPendingProposals(start, end, ['id', 'scores_total'], 5)
+      const pendingProposals = await Governance.get().getPendingProposals({
+        start,
+        end,
+        fields: ['id', 'scores_total'],
+        limit: 5,
+      })
       return orderBy(pendingProposals, ['scores_total'], ['desc'])
     },
     staleTime: DEFAULT_QUERY_STALE_TIME,

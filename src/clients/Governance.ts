@@ -68,6 +68,8 @@ export type GetProposalsFilter = {
   linkedProposalId?: string
 }
 
+type PendingProposalsQuery = { start: Date; end: Date; fields: (keyof SnapshotProposal)[]; limit: number }
+
 const getGovernanceApiUrl = () => {
   if (process.env.GATSBY_HEROKU_APP_NAME) {
     return `https://${process.env.GATSBY_HEROKU_APP_NAME}.herokuapp.com/api`
@@ -528,19 +530,17 @@ export class Governance extends API {
     return response.data
   }
 
-  async getPendingProposals(start: Date, end: Date, fields: (keyof SnapshotProposal)[], limit: number) {
+  async getPendingProposals(query: PendingProposalsQuery) {
     const response = await this.fetch<ApiResponse<Partial<SnapshotProposal>[]>>(
       `/snapshot/proposals/pending`,
-      this.options().method('POST').json({ start, end, fields, limit })
+      this.options().method('POST').json(query)
     )
     return response.data
   }
 
   async getVpDistribution(address: string, proposalSnapshotId?: string) {
-    let url = `/snapshot/vp-distribution/${address}`
-    if (proposalSnapshotId) {
-      url += `/${proposalSnapshotId}`
-    }
+    const snapshotId = proposalSnapshotId ? `/${proposalSnapshotId}` : ''
+    const url = `/snapshot/vp-distribution/${address}${snapshotId}`
     const response = await this.fetch<ApiResponse<VpDistribution>>(url, this.options().method('GET'))
     return response.data
   }
