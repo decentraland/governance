@@ -858,7 +858,7 @@
       "open_for_bids_begins": "**Bidding begins** {date}",
       "open_for_bids_requires": "**Requires Tender to Pass**",
       "open_for_bids_open": "Submissions pending",
-      "open_for_bids_inbound": "**Submissions inbound**",
+      "open_for_bids_closed": "**Submissions closed** {date}",
       "project_assignation_title": "Project assignation",
       "project_assignation_description": "Funding allocated to the proposal accumulating the most VP",
       "project_assignation_passed": "**Project passed**",

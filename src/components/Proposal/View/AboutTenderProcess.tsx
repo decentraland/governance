@@ -56,12 +56,12 @@ const getTenderConfig = (status: ProposalStatus) => {
 }
 
 const getOpenForBidsConfig = (status: ProposalStatus, hasBid: boolean, hasBidProposals: boolean) => {
-  if (hasBid) {
-    return { status: ProcessStatus.Pending, statusText: 'page.proposal_bidding_tendering.open_for_bids_begins' }
+  if (hasBidProposals) {
+    return { status: ProcessStatus.Passed, statusText: 'page.proposal_bidding_tendering.open_for_bids_closed' }
   }
 
-  if (hasBidProposals) {
-    return { status: ProcessStatus.Passed, statusText: 'page.proposal_bidding_tendering.open_for_bids_inbound' }
+  if (hasBid) {
+    return { status: ProcessStatus.Pending, statusText: 'page.proposal_bidding_tendering.open_for_bids_begins' }
   }
 
   if (status === ProposalStatus.Passed && !hasBidProposals) {
@@ -105,7 +105,6 @@ export default function AboutTenderProcess({ proposal }: Props) {
     !!bidProposals?.data.find((item) => item.status === ProposalStatus.Passed),
     !!bidProposals?.data.find((item) => item.status === ProposalStatus.Rejected)
   )
-  const formattedProposalEndDate = Time(finish_at).fromNow()
 
   const items = useMemo(
     () => [
@@ -126,7 +125,7 @@ export default function AboutTenderProcess({ proposal }: Props) {
         statusText: t(tenderConfig.statusText, {
           title: proposal.title,
           date: Time(start_at).fromNow(),
-          proposalEndDate: formattedProposalEndDate,
+          proposalEndDate: Time(finish_at).fromNow(),
           total: tenderProposals?.total,
         }),
       },
@@ -134,7 +133,7 @@ export default function AboutTenderProcess({ proposal }: Props) {
         title: t('page.proposal_bidding_tendering.open_for_bids_title'),
         description: t('page.proposal_bidding_tendering.open_for_bids_description'),
         status: openForBidsConfig.status,
-        statusText: t(openForBidsConfig.statusText, { date: Time(bidsInfo?.publishAt).fromNow() }),
+        statusText: t(openForBidsConfig.statusText, { date: Time(bidProposals?.data[0]?.start_at).fromNow() }),
       },
       {
         title: t('page.proposal_bidding_tendering.project_assignation_title'),
@@ -146,9 +145,8 @@ export default function AboutTenderProcess({ proposal }: Props) {
       },
     ],
     [
-      bidsInfo,
       start_at,
-      formattedProposalEndDate,
+      finish_at,
       openForBidsConfig,
       pitchConfig,
       tenderConfig,

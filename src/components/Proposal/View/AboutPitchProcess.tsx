@@ -60,12 +60,12 @@ const getOpenForBidsConfig = (hasWinnerTenderProposal: boolean, hasBid: boolean,
     return { status: ProcessStatus.Pending, statusText: 'page.proposal_bidding_tendering.open_for_bids_open' }
   }
 
-  if (hasBid) {
-    return { status: ProcessStatus.Pending, statusText: 'page.proposal_bidding_tendering.open_for_bids_begins' }
+  if (hasBidProposals) {
+    return { status: ProcessStatus.Passed, statusText: 'page.proposal_bidding_tendering.open_for_bids_closed' }
   }
 
-  if (hasBidProposals) {
-    return { status: ProcessStatus.Passed, statusText: 'page.proposal_bidding_tendering.open_for_bids_inbound' }
+  if (hasBid) {
+    return { status: ProcessStatus.Pending, statusText: 'page.proposal_bidding_tendering.open_for_bids_begins' }
   }
 
   return { status: ProcessStatus.Default, statusText: 'page.proposal_bidding_tendering.open_for_bids_requires' }
@@ -133,7 +133,7 @@ export default function AboutPitchProcess({ proposal }: Props) {
         title: t('page.proposal_bidding_tendering.open_for_bids_title'),
         description: t('page.proposal_bidding_tendering.open_for_bids_description'),
         status: openForBidsConfig.status,
-        statusText: t(openForBidsConfig.statusText, { date: bidsInfo?.publishAt }),
+        statusText: t(openForBidsConfig.statusText, { date: Time(bidProposals?.data[0]?.start_at).fromNow() }),
       },
       {
         title: t('page.proposal_bidding_tendering.project_assignation_title'),
@@ -145,7 +145,6 @@ export default function AboutPitchProcess({ proposal }: Props) {
       },
     ],
     [
-      bidsInfo,
       formattedDate,
       formattedProposalEndDate,
       openForBidsConfig,
