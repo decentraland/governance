@@ -1,6 +1,7 @@
 import { OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgraph'
 import { Badge, BadgeStatus, BadgeStatusReason, UserBadges, toBadgeStatus } from '../entities/Badges/types'
 import { ErrorCategory } from '../utils/errorCategories'
+import { isProdEnv } from '../utils/governanceEnvs'
 
 import { ErrorService } from './ErrorService'
 
@@ -51,5 +52,38 @@ export class BadgesService {
 
   private static getIpfsHttpsLink(ipfsLink: string) {
     return ipfsLink.replace('ipfs://', 'https://ipfs.io/ipfs/')
+  }
+
+  public static async grantBadgeToUsers(badgeCid: string, users: any[]) {
+    const badgeOwners = await OtterspaceSubgraph.get().getBadgeOwners(badgeCid)
+
+    const usersWithoutBadge = users.filter((user) => {
+      return !badgeOwners.includes(user.toLowerCase())
+    })
+
+    const recipients = usersWithoutBadge.join(',')
+
+    await this.airdropWithRetry(badgeCid, recipients)
+  }
+
+  private static async airdropWithRetry(badgeCid: string, recipients: string, retries = 3) {
+    try {
+      const hre = require('hardhat')
+      await hre.run('airdrop', {
+        network: isProdEnv() ? 'polygon' : 'polytest',
+        badgeCid,
+        recipients,
+      })
+      console.log('Airdrop successful!')
+    } catch (error) {
+      console.error('Airdrop failed:', error)
+      if (retries > 0) {
+        console.log(`Retrying airdrop... Attempts left: ${retries}`)
+        await this.airdropWithRetry(badgeCid, recipients, retries - 1)
+      } else {
+        console.error('Airdrop failed after maximum retries.')
+        // You can handle the failure accordingly, like logging an error or notifying someone.
+      }
+    }
   }
 }
