@@ -26,3 +26,4 @@
 ./node_modules/react-chartjs-2
 ./node_modules/react-loading-skeleton
 ./node_modules/@dcl/ui-env
+./node_modules/hardhat
