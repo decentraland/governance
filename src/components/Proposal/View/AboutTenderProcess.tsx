@@ -84,7 +84,7 @@ const getProjectAssignationConfig = (hasBidProposals: boolean, hasWinnerBid: boo
     return { status: ProcessStatus.Rejected, statusText: 'page.proposal_bidding_tendering.project_assignation_failed' }
   }
 
-  return { status: ProcessStatus.Default, statusText: 'page.proposal_bidding_tendering.open_for_bids_requires' }
+  return { status: ProcessStatus.Default, statusText: 'page.proposal_bidding_tendering.tbd' }
 }
 
 export default function AboutTenderProcess({ proposal }: Props) {

@@ -48,7 +48,7 @@ const getProjectAssignationConfig = (status: ProposalStatus) => {
     return { status: ProcessStatus.Active, statusText: 'page.proposal_bidding_tendering.voting_ends' }
   }
 
-  return { status: ProcessStatus.Default, statusText: 'page.proposal_bidding_tendering.open_for_bids_requires' }
+  return { status: ProcessStatus.Default, statusText: 'page.proposal_bidding_tendering.tbd' }
 }
 
 export default function AboutBidProcess({ proposal }: Props) {
