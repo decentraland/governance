@@ -64,7 +64,8 @@ const getToastType = (serviceStatus: ServiceStatus) => {
 
 type ServiceStatus = 'normal' | 'slow' | 'failing'
 
-const SLOW_RESPONSE_TIME_THRESHOLD = 200
+const SLOW_RESPONSE_TIME_THRESHOLD = 190
+const PING_INTERVAL = 5000
 
 function getMessage(serviceStatus: ServiceStatus) {
   switch (serviceStatus) {
@@ -101,25 +102,32 @@ function getTitle(serviceStatus: 'normal' | 'slow' | 'failing') {
 
 export default function SnapshotPing() {
   const [serviceStatus, setServiceStatus] = useState<ServiceStatus>('normal')
+  const [previousServiceStatus, setPreviousServiceStatus] = useState<ServiceStatus | null>(null)
   const [showToast, setShowToast] = useState(false)
 
   const updateServiceStatus = async () => {
     const responseTime = await pingSnapshot()
+    console.log('responseTime', responseTime)
+    let currentStatus: ServiceStatus = 'normal'
     if (responseTime === -1) {
-      setServiceStatus('failing')
+      currentStatus = 'failing'
     } else if (responseTime > SLOW_RESPONSE_TIME_THRESHOLD) {
-      setServiceStatus('slow')
-    } else {
-      setServiceStatus('normal')
+      currentStatus = 'slow'
     }
-    setShowToast(true)
+    console.log('serviceStatus', serviceStatus)
+    console.log('currentStatus', currentStatus)
+    setPreviousServiceStatus(serviceStatus)
+    setServiceStatus(currentStatus)
   }
 
   useEffect(() => {
-    // const intervalId = setInterval(updateServiceStatus, PING_INTERVAL)
-    // return () => clearInterval(intervalId)
-    updateServiceStatus()
+    const intervalId = setInterval(updateServiceStatus, PING_INTERVAL)
+    return () => clearInterval(intervalId)
   }, [])
+
+  useEffect(() => {
+    if (serviceStatus !== previousServiceStatus) setShowToast(true)
+  }, [serviceStatus])
 
   return (
     <Toasts position="bottom right">
