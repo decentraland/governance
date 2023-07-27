@@ -92,7 +92,7 @@ export default function ProposalProcess({ title, items, isNew = false, type = Pr
                         p: classNames('ProposalProcess___StatusText', `ProposalProcess___StatusText--${status}`),
                         strong: classNames(
                           'ProposalProcess___StatusTextStrong',
-                          `ProposalProcess___StatusText--${status}`
+                          `ProposalProcess___StatusTextStrong--${status}`
                         ),
                       }}
                     >
