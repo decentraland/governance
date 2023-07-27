@@ -1829,7 +1829,7 @@
     },
     "submit_bid": {
       "title": "Submit Bid proposal",
-      "description": "Part of the Bidding & Tendering process, bid proposals are meant for professional teams to scope and propose a project out of their own understanding of one given issue or desire outlined by the Community based on the two preceding instances that would have passed. Only one Bid Proposal per a given Tender Proposal will be funded. Learn more about our [Bidding & Tendering Process](https://MISSING_URL).",
+      "description": "Part of the Bidding & Tendering process, bid proposals are meant for professional teams to scope and propose a project out of their own understanding of one given issue or desire outlined by the Community based on the two preceding instances that would have passed. Only one Bid Proposal per a given Tender Proposal will be funded.",
       "cancel": "Cancel",
       "parent_pitch": "Parent Pitch",
       "parent_tender": "Parent Tender",
