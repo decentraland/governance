@@ -578,7 +578,7 @@
       "tender_calendar_title": "Tender \"{title}\" voting available",
       "tender_calendar_details": "Your Tender proposal titled: {title} is now open for voting. The voting period will remain open for 30 days. Use this link to check and share the proposal: {url}",
       "helper": "Set a reminder in your Calendar for when the voting period begins.",
-      "bid_title": "Bid Submitted but not public until voting",
+      "bid_title": "Bid submitted but not published",
       "bid_description": "Your bid has been successfully submitted and stored. It will remain private until the voting period starts. It will only be published for voting if at least one competing bid for the same Tender exists.",
       "bid_calendar_title": "Your Bid proposal is open for voting",
       "bid_calendar_details": "If the Tender proposal received more than 1 bid, the voting period is starting today. The voting period will remain open for 30 days. Use this link to check the status and share the proposal: {url}",
