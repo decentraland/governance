@@ -1,0 +1,46 @@
+.DaoToast {
+  width: 356px;
+  height: 79px;
+  border-radius: 6px;
+  opacity: 0.800000011920929;
+  background: #16141a;
+  box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.35);
+  padding: 6px 8px 17px 16px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+}
+
+.DaoToast__Container {
+  display: flex;
+}
+
+.DaoToast__Text {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 7px;
+}
+
+.DaoToast__Title {
+  color: var(--white-900);
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 26px;
+  letter-spacing: -0.2px;
+  margin-bottom: 1px;
+  width: 100%;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.DaoToast__Body {
+  color: var(--white-900);
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+  letter-spacing: -0.2px;
+  opacity: 0.8999999761581421;
+}
