@@ -28,6 +28,7 @@ export default function TenderPublishedModal({ proposal, ...props }: Props & Mod
         }),
         startAt: proposal.start_at,
       })}
+      votingStartsAt={proposal.start_at}
       {...props}
     />
   )

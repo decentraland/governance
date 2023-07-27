@@ -6,6 +6,7 @@ import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import useFormatMessage from '../../hooks/useFormatMessage'
+import Time from '../../utils/date/Time'
 import Heading from '../Common/Typography/Heading'
 import Link from '../Common/Typography/Link'
 import Text from '../Common/Typography/Text'
@@ -17,9 +18,16 @@ import './ProposalPendingModal.css'
 type ProposalPendingModalProps = Omit<ModalProps, 'children'> & {
   title: string
   description: string
+  votingStartsAt?: Date | string
 }
 
-export default function ProposalPendingModal({ title, description, calendarUrl, ...props }: ProposalPendingModalProps) {
+export default function ProposalPendingModal({
+  title,
+  description,
+  calendarUrl,
+  votingStartsAt,
+  ...props
+}: ProposalPendingModalProps) {
   const t = useFormatMessage()
 
   return (
@@ -35,6 +43,13 @@ export default function ProposalPendingModal({ title, description, calendarUrl, 
           {title}
         </Heading>
         <Text className="ProposalPendingModal__Description">{description}</Text>
+        {votingStartsAt && (
+          <Text className="ProposalPendingModal__Description">
+            {t('modal.proposal_pending.voting_begins', {
+              date: Time.from(votingStartsAt).format('MMM DD, YYYY HH:mm'),
+            })}
+          </Text>
+        )}
         <Button
           as={Link}
           disabled={!calendarUrl}

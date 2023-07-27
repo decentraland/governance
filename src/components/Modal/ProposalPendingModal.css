@@ -6,9 +6,10 @@
 }
 
 .ProposalPendingModal__Description {
-  margin-bottom: 24px;
+  margin-bottom: 10px;
 }
 
 .ProposalPendingModal__Button {
+  margin-top: 14px !important;
   margin-bottom: 12px !important;
 }

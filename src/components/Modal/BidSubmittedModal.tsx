@@ -32,6 +32,7 @@ export default function BidSubmittedModal({ proposal, ...props }: Props & ModalP
             })
           : null
       }
+      votingStartsAt={publishAt}
       {...props}
     />
   )
