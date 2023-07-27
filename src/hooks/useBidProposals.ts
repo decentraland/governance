@@ -9,7 +9,7 @@ export function useBidProposals(
   const { proposals, isLoadingProposals } = useProposals({
     linkedProposalId,
     type: ProposalType.Bid,
-    load: !!linkedProposalId && proposalType === ProposalType.Tender,
+    load: !!linkedProposalId && (proposalType === ProposalType.Tender || proposalType === ProposalType.Bid),
   })
 
   return {

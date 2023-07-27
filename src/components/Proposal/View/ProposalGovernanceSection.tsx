@@ -5,6 +5,7 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
 import { SelectedVoteChoice, Vote } from '../../../entities/Votes/types'
+import { useBidProposals } from '../../../hooks/useBidProposals'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import { useTenderProposals } from '../../../hooks/useTenderProposals'
 import { ProposalPageState } from '../../../pages/proposal'
@@ -58,11 +59,13 @@ export default function ProposalGovernanceSection({
   const hasVoted = !!(!!userAddress && votes?.[userAddress])
   const showResultsButton = !hasVoted && !finished && proposal?.status !== ProposalStatus.Pending
   const { hasTenderProcessStarted } = useTenderProposals(proposal?.id, proposal?.type)
+  const { bidProposals } = useBidProposals(proposal?.id, proposal?.type)
   const showPromotionSection =
     proposal &&
     proposal.status === ProposalStatus.Passed &&
     PROMOTABLE_PROPOSALS.includes(proposal.type) &&
-    !hasTenderProcessStarted
+    !hasTenderProcessStarted &&
+    Number(bidProposals?.total) === 0
 
   useEffect(() => {
     setShowResults(hasVoted || finished || !userAddress)
