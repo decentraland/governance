@@ -55,8 +55,12 @@ const getTenderConfig = (
   return { status: ProcessStatus.Default, statusText: 'page.proposal_bidding_tendering.tender_proposal_requires' }
 }
 
-const getOpenForBidsConfig = (hasWinnerTenderProposal: boolean, hasBid: boolean, hasBidProposals: boolean) => {
-  if (hasWinnerTenderProposal && !hasBid && !hasBidProposals) {
+const getOpenForBidsConfig = (
+  hasWinnerTenderProposal: boolean,
+  hasUnpublishedBid: boolean,
+  hasBidProposals: boolean
+) => {
+  if (hasWinnerTenderProposal && !hasUnpublishedBid && !hasBidProposals) {
     return { status: ProcessStatus.Pending, statusText: 'page.proposal_bidding_tendering.open_for_bids_open' }
   }
 
@@ -64,7 +68,7 @@ const getOpenForBidsConfig = (hasWinnerTenderProposal: boolean, hasBid: boolean,
     return { status: ProcessStatus.Passed, statusText: 'page.proposal_bidding_tendering.open_for_bids_closed' }
   }
 
-  if (hasBid) {
+  if (hasUnpublishedBid) {
     return { status: ProcessStatus.Pending, statusText: 'page.proposal_bidding_tendering.open_for_bids_begins' }
   }
 

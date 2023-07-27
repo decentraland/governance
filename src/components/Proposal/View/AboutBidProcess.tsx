@@ -23,12 +23,12 @@ const getTenderConfig = () => {
   return { status: ProcessStatus.Passed, statusText: 'page.proposal_bidding_tendering.initiative_passed_title' }
 }
 
-const getOpenForBidsConfig = (hasBid: boolean, hasBidProposals: boolean) => {
+const getOpenForBidsConfig = (hasUnpublishedBid: boolean, hasBidProposals: boolean) => {
   if (hasBidProposals) {
     return { status: ProcessStatus.Passed, statusText: 'page.proposal_bidding_tendering.open_for_bids_closed' }
   }
 
-  if (hasBid) {
+  if (hasUnpublishedBid) {
     return { status: ProcessStatus.Pending, statusText: 'page.proposal_bidding_tendering.open_for_bids_begins' }
   }
 
