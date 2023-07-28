@@ -56,7 +56,7 @@ export type ProposalAttributes<C extends Record<string, unknown> = any> = {
   enacted_by: string | null
   enacted_description: string | null
   enacting_tx: string | null
-  vesting_address: string | null
+  vesting_addresses: string[]
   passed_by: string | null
   passed_description: string | null
   rejected_by: string | null

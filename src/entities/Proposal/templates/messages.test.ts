@@ -57,7 +57,7 @@ export function initProposalAttributes(
     enacted_by: updatingUser,
     enacted_description: enactedDescription,
     enacting_tx: enactingTransaction,
-    vesting_address: null,
+    vesting_addresses: [],
     passed_by: updatingUser,
     passed_description: passedDescription,
     rejected_by: updatingUser,

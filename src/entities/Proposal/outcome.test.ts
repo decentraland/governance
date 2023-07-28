@@ -31,7 +31,7 @@ const DEFAULT_VALID_PROPOSAL: ProposalAttributes = {
   enacted_by: null,
   enacted_description: null,
   enacting_tx: null,
-  vesting_address: null,
+  vesting_addresses: [],
   passed_by: null,
   passed_description: null,
   rejected_by: null,
@@ -115,7 +115,7 @@ const YES_NO_VALID_PROPOSAL: ProposalAttributes = {
   passed_description: null,
   rejected_by: null,
   rejected_description: null,
-  vesting_address: null,
+  vesting_addresses: [],
   textsearch: null,
   enacting_tx: null,
 }

@@ -13,10 +13,10 @@ import './VestingContract.css'
 const VESTING_DASHBOARD_URL = env('GATSBY_VESTING_DASHBOARD_URL')
 
 interface Props {
-  vestingAddress: string
+  vestingAddresses: string[]
 }
 
-function VestingContract({ vestingAddress }: Props) {
+function VestingContract({ vestingAddresses }: Props) {
   const t = useFormatMessage()
 
   if (!VESTING_DASHBOARD_URL) {
@@ -24,25 +24,32 @@ function VestingContract({ vestingAddress }: Props) {
     return <></>
   }
 
+  const vestingAddressIsEmpty = vestingAddresses.length === 0
+  const vestingAddress = vestingAddresses[0]
+
   const url = VESTING_DASHBOARD_URL.replace('%23', '#').concat(vestingAddress.toLowerCase())
 
   return (
-    <div className="VestingContract DetailsSection DetailsSection--shiny">
-      <div className="DetailsSection__Content">
-        <Pill color="green" style="shiny" size="sm">
-          {t('page.proposal_detail.grant.vesting_label')}
-        </Pill>
-        <Markdown
-          className="VestingContract__Description"
-          componentsClassNames={{ strong: 'VestingContract__Description__StrongText' }}
-        >
-          {t('page.proposal_detail.grant.vesting_description')}
-        </Markdown>
-        <Button href={url} target="_blank" rel="noopener noreferrer" primary size="small">
-          {t('page.proposal_detail.grant.vesting_button')}
-        </Button>
-      </div>
-    </div>
+    <>
+      {!vestingAddressIsEmpty && (
+        <div className="VestingContract DetailsSection DetailsSection--shiny">
+          <div className="DetailsSection__Content">
+            <Pill color="green" style="shiny" size="sm">
+              {t('page.proposal_detail.grant.vesting_label')}
+            </Pill>
+            <Markdown
+              className="VestingContract__Description"
+              componentsClassNames={{ strong: 'VestingContract__Description__StrongText' }}
+            >
+              {t('page.proposal_detail.grant.vesting_description')}
+            </Markdown>
+            <Button href={url} target="_blank" rel="noopener noreferrer" primary size="small">
+              {t('page.proposal_detail.grant.vesting_button')}
+            </Button>
+          </div>
+        </div>
+      )}
+    </>
   )
 }
 

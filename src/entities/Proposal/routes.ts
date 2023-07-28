@@ -546,15 +546,16 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
     update.enacted_by = user
     update.enacted_description = configuration.description || null
     if (proposal.type == ProposalType.Grant) {
-      update.vesting_address = configuration.vesting_address
-      update.enacting_tx = configuration.enacting_tx
+      const { vesting_address, enacting_tx } = configuration
+      update.vesting_addresses = vesting_address ? [vesting_address] : []
+      update.enacting_tx = enacting_tx
       update.textsearch = ProposalModel.textsearch(
         proposal.title,
         proposal.description,
         proposal.user,
-        update.vesting_address
+        update.vesting_addresses
       )
-      const vestingContractData = await getVestingContractData(id, update.vesting_address)
+      const vestingContractData = await getVestingContractData(id, configuration.vesting_address)
       await UpdateModel.createPendingUpdates(id, vestingContractData, proposal.configuration.vestingStartDate)
     }
   } else if (update.status === ProposalStatus.Passed) {

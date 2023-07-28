@@ -140,7 +140,7 @@ const BASIC_ATTRIBUTES = {
   enacted_by: null,
   enacted_description: null,
   enacting_tx: null,
-  vesting_address: null,
+  vesting_addresses: [],
   passed_by: null,
   passed_description: null,
   rejected_by: null,
