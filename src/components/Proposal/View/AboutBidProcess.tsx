@@ -29,7 +29,7 @@ const getOpenForBidsConfig = (hasUnpublishedBid: boolean, hasBidProposals: boole
   }
 
   if (hasUnpublishedBid) {
-    return { status: ProcessStatus.Pending, statusText: 'page.proposal_bidding_tendering.open_for_bids_begins' }
+    return { status: ProcessStatus.Active, statusText: 'page.proposal_bidding_tendering.open_for_bids_begins' }
   }
 
   return { status: ProcessStatus.Default, statusText: 'page.proposal_bidding_tendering.open_for_bids_requires' }
