@@ -26,11 +26,19 @@ export function calculateWinnerChoice(result: Scores) {
   return { winnerChoice, winnerVotingPower }
 }
 
-export async function getVotingResults(proposal: ProposalAttributes<any>, choices: string[]) {
-  const snapshotScores = await SnapshotGraphql.get().getProposalScores(proposal.snapshot_id)
+export function getScoresResult(snapshotScores: number[], choices: string[]) {
   const result: Scores = {}
+  if (!snapshotScores || !choices) {
+    return result
+  }
+
   for (const choice of choices) {
     result[choice] = snapshotScores[choices.indexOf(choice)]
   }
   return result
+}
+
+export async function getVotingResults(proposal: ProposalAttributes<any>, choices: string[]) {
+  const snapshotScores = await SnapshotGraphql.get().getProposalScores(proposal.snapshot_id)
+  return getScoresResult(snapshotScores, choices)
 }

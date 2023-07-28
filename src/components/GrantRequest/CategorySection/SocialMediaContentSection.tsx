@@ -94,7 +94,7 @@ export default function SocialMediaContentSection({ onValidation, isFormDisabled
   )
 
   return (
-    <div className="GrantRequestSection__Content">
+    <div>
       <MultipleChoiceField
         label={t('page.submit_grant.category_assessment.social_media_content.social_media_platforms.label')}
         intlKey="page.submit_grant.category_assessment.social_media_content.social_media_platforms.choices"
@@ -112,7 +112,7 @@ export default function SocialMediaContentSection({ onValidation, isFormDisabled
           }
         }}
       />
-      <ContentSection className="GrantRequestSection__Field">
+      <ContentSection className="ProjectRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.social_media_content.audience_relevance_label')}</Label>
         <MarkdownField
           name="audienceRelevance"
@@ -130,7 +130,7 @@ export default function SocialMediaContentSection({ onValidation, isFormDisabled
           rules={getTextFieldRules('audienceRelevance')}
         />
       </ContentSection>
-      <ContentSection className="GrantRequestSection__Field">
+      <ContentSection className="ProjectRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.social_media_content.total_pieces_label')}</Label>
         <Field
           name="totalPieces"
@@ -143,7 +143,7 @@ export default function SocialMediaContentSection({ onValidation, isFormDisabled
           rules={getNumberFieldRules('totalPieces')}
         />
       </ContentSection>
-      <ContentSection className="GrantRequestSection__Field">
+      <ContentSection className="ProjectRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.social_media_content.total_impact_label')}</Label>
         <Field
           name="totalPeopleImpact"
@@ -156,7 +156,7 @@ export default function SocialMediaContentSection({ onValidation, isFormDisabled
           rules={getNumberFieldRules('totalPeopleImpact')}
         />
       </ContentSection>
-      <ContentSection className="GrantRequestSection__Field">
+      <ContentSection className="ProjectRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.social_media_content.relevant_link_label')}</Label>
         <Field
           name="relevantLink"

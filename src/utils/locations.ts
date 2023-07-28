@@ -52,7 +52,7 @@ export default {
         >
       | URLSearchParams = {}
   ) => url('/proposals/', options),
-  proposal: (proposal: string, options: { new?: 'true'; newUpdate?: 'true' } = {}) =>
+  proposal: (proposal: string, options: { new?: 'true'; newUpdate?: 'true'; pending?: 'true'; bid?: 'true' } = {}) =>
     url('/proposal/', { id: proposal, ...options }),
   submit: (
     type?: ProposalType,

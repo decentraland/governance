@@ -10,6 +10,7 @@ import Markdown from '../Common/Typography/Markdown'
 import Text from '../Common/Typography/Text'
 import AddPoi from '../Icon/ProposalCategories/AddPoi'
 import BanName from '../Icon/ProposalCategories/BanName'
+import Bid from '../Icon/ProposalCategories/Bid'
 import Catalyst from '../Icon/ProposalCategories/Catalyst'
 import CatalystAdd from '../Icon/ProposalCategories/CatalystAdd'
 import CatalystRemove from '../Icon/ProposalCategories/CatalystRemove'
@@ -43,6 +44,7 @@ export const categoryIcons = {
   [ProposalType.LinkedWearables]: LinkedWearables,
   [ProposalType.Pitch]: Pitch,
   [ProposalType.Tender]: Tender,
+  [ProposalType.Bid]: Bid,
   [ProposalType.Hiring]: Hiring,
   [HiringType.Add]: HiringAdd,
   [HiringType.Remove]: HiringRemove,

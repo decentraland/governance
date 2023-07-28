@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 
 import classNames from 'classnames'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
@@ -9,8 +9,8 @@ import { Desktop } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { Vote } from '../../entities/Votes/types'
-import { calculateResultWinner } from '../../entities/Votes/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
+import useWinningChoice from '../../hooks/useWinningChoice'
 import locations from '../../utils/locations'
 import CategoryPill from '../Category/CategoryPill'
 import Link from '../Common/Typography/Link'
@@ -42,8 +42,7 @@ export default function ProposalItem({
   onSubscribe,
 }: Props) {
   const [account] = useAuthContext()
-  const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [proposal])
-  const winner = useMemo(() => calculateResultWinner(choices, votes || {}), [choices, votes])
+  const { winningChoice, userChoice } = useWinningChoice(proposal)
   const t = useFormatMessage()
 
   function handleSubscription(e: React.MouseEvent<unknown>) {
@@ -51,9 +50,6 @@ export default function ProposalItem({
     e.preventDefault()
     onSubscribe && onSubscribe(e, proposal)
   }
-
-  const userVote = account ? votes?.[account] : null
-  const userChoice = userVote?.choice ? choices?.[userVote.choice - 1] : null
 
   return (
     <Card
@@ -91,12 +87,12 @@ export default function ProposalItem({
               <FinishLabel startAt={proposal.start_at} finishAt={proposal.finish_at} />
             </div>
           </div>
-          {winner.votes > 0 && (
+          {winningChoice.votes > 0 && (
             <Desktop>
               <LeadingOption
                 status={proposal.status}
-                leadingOption={winner.choice}
-                metVP={winner.power >= (proposal.required_to_pass || 0)}
+                leadingOption={winningChoice.choice}
+                metVP={winningChoice.power >= (proposal.required_to_pass || 0)}
                 userChoice={userChoice}
               />
             </Desktop>

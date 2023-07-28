@@ -78,16 +78,16 @@ export default function AcceleratorSection({ onValidation, isFormDisabled }: Pro
   })
 
   return (
-    <div className="GrantRequestSection__Content">
-      <ContentSection className="GrantRequestSection__Field">
+    <div>
+      <ContentSection className="ProjectRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.accelerator.revenue_label')}</Label>
         <MarkdownField {...getMarkdownFieldProps('revenueGenerationModel')} />
       </ContentSection>
-      <ContentSection className="GrantRequestSection__Field">
+      <ContentSection className="ProjectRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.accelerator.return_of_investment_label')}</Label>
         <MarkdownField {...getMarkdownFieldProps('returnOfInvestmentPlan')} />
       </ContentSection>
-      <ContentSection className="GrantRequestSection__Field">
+      <ContentSection className="ProjectRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.accelerator.investment_recovery_label')}</Label>
         <Field
           {...getFieldProps('investmentRecoveryTime')}

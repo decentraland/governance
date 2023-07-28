@@ -225,3 +225,23 @@
   background: var(--yellow-100);
   color: var(--yellow-800) !important;
 }
+
+.ProposalProcess___StatusTextStrong--default {
+  color: var(--black-600) !important;
+}
+
+.ProposalProcess___StatusTextStrong--active {
+  color: var(--red-800) !important;
+}
+
+.ProposalProcess___StatusTextStrong--passed {
+  color: var(--green-900) !important;
+}
+
+.ProposalProcess___StatusTextStrong--rejected {
+  color: var(--red-800) !important;
+}
+
+.ProposalProcess___StatusTextStrong--pending {
+  color: var(--yellow-800) !important;
+}

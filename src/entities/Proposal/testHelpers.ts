@@ -110,6 +110,18 @@ export function createTestTender(id: string, linkedProposalId: string, status?: 
   }
 }
 
+export function createTestBid(id: string, linkedProposalId: string, status?: ProposalStatus): ProposalAttributes {
+  return {
+    id: id,
+    type: ProposalType.Bid,
+    configuration: { linked_proposal_id: linkedProposalId },
+    required_to_pass: 1,
+    title: `Test Bid-${id}`,
+    status: status || ProposalStatus.Active,
+    ...BASIC_ATTRIBUTES,
+  }
+}
+
 const BASIC_ATTRIBUTES = {
   user: TEST_PROPOSAL_USER,
   description: 'Test proposal description',

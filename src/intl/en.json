@@ -301,6 +301,32 @@
       "deliverables_too_large": "Deliverables is too large",
       "target_release_quarter_empty": "Target release quarter is empty",
       "submission_vp_not_met": "This action requires at least 100 VP."
+    },
+    "bid": {
+      "funding": {
+        "invalid": "*Funding is invalid*",
+        "too_low": "*Funding is too low.*\n\n*Minimum is 100 USD*",
+        "too_big": "*Funding is too big.*\n\n*Maximum is 240000 USD*"
+      },
+      "delivery_date_empty": "Delivery date is empty",
+      "delivery_date_future": "Delivery date must be in the future",
+      "general_info": {
+        "team_name_empty": "Team name is empty",
+        "team_name_too_large": "Team name is too large",
+        "team_name_too_short": "Team name is too short",
+        "deliverables_empty": "Deliverables is empty",
+        "deliverables_too_large": "Deliverables is too large",
+        "deliverables_too_short": "Deliverables is too short",
+        "beneficiary_empty": "Beneficiary is empty",
+        "beneficiary_invalid": "Beneficiary is invalid",
+        "email_empty": "Email address is empty",
+        "email_invalid": "Email address is invalid",
+        "roadmap_empty": "Roadmap is empty",
+        "roadmap_too_large": "Roadmap is too large",
+        "roadmap_too_short": "Roadmap is too short"
+      },
+      "submission_finished": "Submission period for this tender has finished",
+      "user_has_placed_bid": "You has already placed a bid for this tender"
     }
   },
   "category": {
@@ -352,6 +378,8 @@
     "pitch_description": "Validate ideas to spawn new projects",
     "tender_title": "Tender Proposal",
     "tender_description": "Refine a previously passed Pitch Proposal",
+    "bid_title": "Bid Proposal",
+    "bid_description": "Choose a team to execute a project that solves a previously passed Tender",
     "all_grants_title": "All grants",
     "core_unit_title": "Core Unit",
     "platform_title": "Platform",
@@ -544,6 +572,19 @@
       "title": "Proposal successfully submitted",
       "description": "Thanks for taking part in the DAO"
     },
+    "proposal_pending": {
+      "tender_title": "Proposal published",
+      "tender_description": "Your proposal is now published. When the Tender submission period ends, it will be open for voting.",
+      "tender_calendar_title": "Tender \"{title}\" voting available",
+      "tender_calendar_details": "Your Tender proposal titled: {title} is now open for voting. The voting period will remain open for 30 days. Use this link to check and share the proposal: {url}",
+      "helper": "Set a reminder in your Calendar for when the voting period begins.",
+      "bid_title": "Bid submitted but not published",
+      "bid_description": "Your bid has been successfully submitted and stored. It will remain private until the voting period starts. It will only be published for voting if at least one competing bid for the same Tender exists.",
+      "bid_calendar_title": "Your Bid proposal is open for voting",
+      "bid_calendar_details": "If the Tender proposal received more than 1 bid, the voting period is starting today. The voting period will remain open for 30 days. Use this link to check the status and share the proposal: {url}",
+      "add_to_calendar": "Add to calendar",
+      "voting_begins": "Voting begins: {date}"
+    },
     "update_success": {
       "title": "Thanks for sharing your Grant Update",
       "description": "Now go make some noise and let the\n\ncommunity know about your progress."
@@ -635,6 +676,11 @@
       "change_chain": "switch to {expectedChainName}",
       "separator": " or ",
       "unknown_chain": "Unknown"
+    },
+    "bid_voting": {
+      "title": "There's still more reviewing to do",
+      "description": "The best way to vote is from consciousness.\n\nPlease, make sure you go through all {amount} proposals.",
+      "action": "Vote \"{vote}\" anyway"
     }
   },
   "component": {
@@ -693,6 +739,7 @@
         "ending_soon": "Ending soon",
         "by_user": "By ",
         "votes": "{total} {total, plural, one {vote} other {votes}}",
+        "leading_vp": "{total} VP in {choice}",
         "comments": "{total} {total, plural, one {comment} other {comments}}",
         "starts_date": "Starts {value}",
         "ends_date": "Ends {value}",
@@ -763,6 +810,19 @@
       "4_panel_description": "Click New Proposal and select the correct category. The form provided for each category is different, so be careful to select the correct one. Finish by filling out the provided form.\n\nThe DAO will post a new thread on the Forum automatically where the community can discuss your proposal. The DAO will then post your proposal on Snapshot, the decentralized voting tool used to record votes. Keep tabs on your proposal’s status from the My Proposals tab."
     },
     "proposal_view": {
+      "bid": {
+        "header": "Should funds from the DAO Treasury be allocated to finance a new community-led project addressing issues outlined herein?",
+        "linked_tender_title": "Linked Tender Proposal",
+        "budget_title": "Budget",
+        "budget_body": "{amount} USD",
+        "duration_title": "Project duration",
+        "duration_body": "{duration} {duration, plural, one {month} other {months}}",
+        "delivery_date_title": "Delivery date",
+        "beneficiary_title": "Beneficiary address",
+        "email_title": "Email address",
+        "deliverables_title": "Deliverables",
+        "roadmap_title": "Roadmap and milestones"
+      },
       "grant": {
         "header": "Should the following **{value}** grant in the **{category}** category be approved?",
         "abstract_title": "Abstract",
@@ -785,6 +845,7 @@
     "proposal_bidding_tendering": {
       "get_involved_question": "Should the problem/opportunity outlined be refined and taken to the next level?",
       "escalated_tender_proposals": "Escalated Tender Proposals",
+      "submitted_bid_proposals": "Submitted Bid Proposals",
       "title": "About the bidding and tendering process",
       "pitch_proposal_title": "Validate by pitching",
       "pitch_proposal_description": "Relevant topics may spawn initiatives eligible for being funded by the DAO",
@@ -795,11 +856,15 @@
       "tender_proposal_submitted": "**{total} tender {total, plural, one {proposal} other {proposals}} submitted**",
       "open_for_bids_title": "Open for Bids",
       "open_for_bids_description": "Teams submit projects they think would match the Tender",
-      "open_for_bids_soon": "**Bidding Begins Soon**",
+      "open_for_bids_begins": "**Bidding begins** {date}",
       "open_for_bids_requires": "**Requires Tender to Pass**",
+      "open_for_bids_open": "Submissions pending",
+      "open_for_bids_closed": "**Submissions closed** {date}",
       "project_assignation_title": "Project assignation",
       "project_assignation_description": "Funding allocated to the proposal accumulating the most VP",
-      "voting_starts": "**Voting starts** {proposalEndDate}",
+      "project_assignation_passed": "**Project passed**",
+      "project_assignation_failed": "**Project rejected**",
+      "voting_starts": "**Voting starts** {date}",
       "voting_ends": "**Voting ends** {proposalEndDate}",
       "initiative_passed": "**This initiative passed** {proposalEndDate}",
       "initiative_passed_title": "**{title}** passed {date}",
@@ -939,7 +1004,8 @@
       "details_coauthor_accepted_helper": "This user has accepted the co-author request",
       "details_coauthor_rejected_helper": "This user has declined the co-author request",
       "details_coauthor_pending_helper": "This user has a pending co-author request",
-      "details_created_label": "Created",
+      "details_submitted_label": "Submitted",
+      "details_published_label": "Published",
       "details_start_label": "Voting begins",
       "details_finish_label": "Voting ends",
       "details_snapshot_label": "Snapshot",
@@ -963,14 +1029,19 @@
       },
       "promotion": {
         "opportunity_label": "Opportunity",
+        "open_for_tenders_label": "Open for tenders",
+        "open_for_bids_label": "Open for bids",
         "coming_soon_label": "Coming Soon",
         "draft_text": "**Given this initiative has passed,** it is eligible for being drafted.",
         "governance_text": "**Given this draft has passed,** it is elegible for being turned into\na Binding Governance Proposal.",
-        "tender_text": "**Given this pitch has passed,** it is elegible for being turned into\na Tender Proposal.",
+        "tender_text": "**Propose a solution.** Calling all community members.",
+        "submit_tender_label": "Submit Tender PRoposal",
         "info_text": "Why does this matter? [More info](https://forum.decentraland.org/t/dao-qmsjxh1-dao-governance-proposal-stages/3584)",
-        "submit_bid_proposal_text": "**This issue has to be addressed.** Calling all professional teams",
+        "submit_bid_proposal_text": "**This issues has to be addressed.** Calling all professional teams",
         "submit_bid_proposal_label": "Submit Bid Proposal",
+        "submitted_bid_proposal_label": "Bid Proposal Submitted",
         "submit_bid_info": "Bidding begins **soon**",
+        "submit_countdown": "Submissions closes in {value}",
         "promote_to_draft_label": "Promote to Draft",
         "promote_to_governance_label": "Escalate Proposal",
         "promote_to_tender_label": "Escalate to Tender"
@@ -978,6 +1049,10 @@
       "competing_tenders": {
         "show_sidebar_label": "This proposal is contesting with {amount} {amount, plural, one {other} other {others}}",
         "sidebar_title": "Competing tender proposals"
+      },
+      "competing_bids": {
+        "show_sidebar_label": "This proposal is contesting with {amount} {amount, plural, one {other} other {others}}",
+        "sidebar_title": "Competing bid proposals"
       },
       "grant": {
         "requested_budget": {
@@ -1752,6 +1827,37 @@
       "target_release_quarter_label": "Target release quarter",
       "target_release_quarter_placeholder": "Select a target release quarter",
       "target_release_quarter_description": "State the anticipated release date for the community. Please note that this is not binding, and execution teams may propose a new date in their bid proposals."
+    },
+    "submit_bid": {
+      "title": "Submit Bid proposal",
+      "description": "Part of the Bidding & Tendering process, bid proposals are meant for professional teams to scope and propose a project out of their own understanding of one given issue or desire outlined by the Community based on the two preceding instances that would have passed. Only one Bid Proposal per a given Tender Proposal will be funded.",
+      "cancel": "Cancel",
+      "parent_pitch": "Parent Pitch",
+      "parent_tender": "Parent Tender",
+      "parent_vp": "Passed with **{votingPower} VP** {date}",
+      "funding_section": {
+        "title": "Funding",
+        "budget_label": "Budget",
+        "project_duration_label": "Project duration",
+        "project_duration_unit": "Months",
+        "delivery_date_label": "Delivery date"
+      },
+      "general_info": {
+        "title": "General information",
+        "team_name_label": "Team Name",
+        "deliverables_label": "Deliverables",
+        "deliverables_detail": "Be as specific as possible. Describe the entire scope of the project and the actual work you are going to deliver to the DAO.",
+        "beneficiary_label": "Beneficiary address",
+        "beneficiary_detail": "The address that will receive the grant funds. This must be an Ethereum address! Entering a non-Ethereum address that cannot receive MANA may result in a permanent loss of funds.",
+        "roadmap_label": "Roadmap and milestones",
+        "roadmap_detail": "Describe the roadmap of your project, making sure to include any relevant milestones that the community should be aware of and how you will share progress you have made. Clearly communicating progress for long-term projects funded by vesting contracts will help prevent the removal of your funding.",
+        "roadmap_placeholder": "Your estimated timeline and key milestones. Include your plan for reporting progress to the community.",
+        "email_label": "Contact Email Address",
+        "email_detail": "This email address will be used by the Grant Support teams to contact you to check the progress of the grant, set up meetings and maintain an open communication channel.",
+        "email_placeholder": "Enter your email address",
+        "email_error_message": "Please enter a valid email",
+        "email_note": "Note: The address will be published in the proposal and publicly visible. If you want to keep your anonymity consider using an email address without personal identifiable information."
+      }
     },
     "subscription_banner": {
       "title": "Stay in the loop",

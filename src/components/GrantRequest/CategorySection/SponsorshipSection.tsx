@@ -100,8 +100,8 @@ export default function SponsorshipSection({ onValidation, isFormDisabled }: Pro
   )
 
   return (
-    <div className="GrantRequestSection__Content">
-      <ContentSection className="GrantRequestSection__Field">
+    <div>
+      <ContentSection className="ProjectRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.sponsorship.event_type.label')}</Label>
         <Controller
           name="eventType"
@@ -145,7 +145,7 @@ export default function SponsorshipSection({ onValidation, isFormDisabled }: Pro
           }
         }}
       />
-      <ContentSection className="GrantRequestSection__Field">
+      <ContentSection className="ProjectRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.sponsorship.primary_source_funding_label')}</Label>
         <Controller
           name="primarySourceFunding"
@@ -163,7 +163,7 @@ export default function SponsorshipSection({ onValidation, isFormDisabled }: Pro
           )}
         />
       </ContentSection>
-      <ContentSection className="GrantRequestSection__Field">
+      <ContentSection className="ProjectRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.sponsorship.total_events_label')}</Label>
         <Field
           name="totalEvents"
@@ -176,7 +176,7 @@ export default function SponsorshipSection({ onValidation, isFormDisabled }: Pro
           rules={getNumberFieldRules('totalEvents')}
         />
       </ContentSection>
-      <ContentSection className="GrantRequestSection__Field">
+      <ContentSection className="ProjectRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.sponsorship.total_attendance_label')}</Label>
         <Field
           name="totalAttendance"
@@ -189,7 +189,7 @@ export default function SponsorshipSection({ onValidation, isFormDisabled }: Pro
           rules={getNumberFieldRules('totalAttendance')}
         />
       </ContentSection>
-      <ContentSection className="GrantRequestSection__Field">
+      <ContentSection className="ProjectRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.sponsorship.audience_relevance_label')}</Label>
         <MarkdownField
           name="audienceRelevance"
@@ -207,7 +207,7 @@ export default function SponsorshipSection({ onValidation, isFormDisabled }: Pro
           rules={getMarkdownFieldRules('audienceRelevance')}
         />
       </ContentSection>
-      <ContentSection className="GrantRequestSection__Field">
+      <ContentSection className="ProjectRequestSection__Field">
         <Label>{t('page.submit_grant.category_assessment.sponsorship.showcase_label')}</Label>
         <MarkdownField
           name="showcase"

@@ -1,0 +1,15 @@
+.ProposalPendingModal__Content {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.ProposalPendingModal__Description {
+  margin-bottom: 10px;
+}
+
+.ProposalPendingModal__Button {
+  margin-top: 14px !important;
+  margin-bottom: 12px !important;
+}

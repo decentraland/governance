@@ -9,7 +9,7 @@ import { BUDGETING_START_DATE } from '../Grant/constants'
 import { NewGrantCategory } from '../Grant/types'
 import { getQuarterEndDate } from '../QuarterBudget/utils'
 
-import { finishProposal, getFinishableTenderProposals } from './jobs'
+import { finishProposal, getFinishabledLinkedProposals } from './jobs'
 import ProposalModel from './model'
 import * as calculateOutcome from './outcome'
 import * as routes from './routes'
@@ -25,6 +25,7 @@ import {
   JOB_CONTEXT_MOCK,
   POI_PROPOSAL,
   REJECTED_OUTCOME,
+  createTestBid,
   createTestProposal,
   createTestTender,
   getTestBudgetWithAvailableSize,
@@ -323,13 +324,15 @@ describe('finishProposals', () => {
   })
 })
 
-describe('getFinishableTenderProposals', () => {
+describe('getFinishabledLinkedProposals', () => {
   const pendingProposals: ProposalAttributes<any>[] = [
     createTestTender('1', '123'),
     createTestTender('2', '123'),
     createTestTender('3', '123'),
     createTestTender('4', '456'),
     createTestTender('7', '789'),
+    createTestBid('8', '1231'),
+    createTestBid('9', '1231'),
     createTestProposal(ProposalType.Grant, ProposalStatus.Active, 200, NewGrantCategory.Accelerator),
   ]
 
@@ -338,8 +341,11 @@ describe('getFinishableTenderProposals', () => {
     createTestTender('5', '456'),
     createTestTender('6', '456'),
     createTestTender('8', '789'),
+    createTestBid('10', '1231'),
+    createTestBid('11', '1231'),
   ]
-  beforeAll(() => {
+
+  it('does not return duplicate proposals to tender type proposals', async () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     jest.spyOn(ProposalModel, 'getProposalList').mockImplementation((filter: any) => {
@@ -347,10 +353,21 @@ describe('getFinishableTenderProposals', () => {
         return p.configuration.linked_proposal_id === filter.linkedProposalId && p.type === ProposalType.Tender
       })
     })
+
+    const finishableTenderProposals = await getFinishabledLinkedProposals(pendingProposals, ProposalType.Tender)
+    expect(finishableTenderProposals.length).toEqual(8)
   })
 
-  it('does not return duplicate proposals', async () => {
-    const finishableTenderProposals = await getFinishableTenderProposals(pendingProposals)
-    expect(finishableTenderProposals.length).toEqual(8)
+  it('does not return duplicate proposals to bid type proposals', async () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    jest.spyOn(ProposalModel, 'getProposalList').mockImplementation((filter: any) => {
+      return proposalsList.filter((p) => {
+        return p.configuration.linked_proposal_id === filter.linkedProposalId && p.type === ProposalType.Bid
+      })
+    })
+
+    const finishableBidProposals = await getFinishabledLinkedProposals(pendingProposals, ProposalType.Bid)
+    expect(finishableBidProposals.length).toEqual(4)
   })
 })

@@ -120,7 +120,8 @@
 }
 
 .CategoryBanner--pitch.CategoryBanner--active,
-.CategoryBanner--tender.CategoryBanner--active {
+.CategoryBanner--tender.CategoryBanner--active,
+.CategoryBanner--bid.CategoryBanner--active {
   background-color: var(--background-pitch);
 }
 

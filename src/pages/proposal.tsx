@@ -18,8 +18,11 @@ import { SnapshotApi } from '../clients/SnapshotApi'
 import CategoryPill from '../components/Category/CategoryPill'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
+import BidSubmittedModal from '../components/Modal/BidSubmittedModal'
+import BidVotingModal from '../components/Modal/BidVotingModal/BidVotingModal'
 import { DeleteProposalModal } from '../components/Modal/DeleteProposalModal/DeleteProposalModal'
 import ProposalSuccessModal from '../components/Modal/ProposalSuccessModal'
+import TenderPublishedModal from '../components/Modal/TenderPublishedModal'
 import { UpdateProposalStatusModal } from '../components/Modal/UpdateProposalStatusModal/UpdateProposalStatusModal'
 import UpdateSuccessModal from '../components/Modal/UpdateSuccessModal'
 import { VoteRegisteredModal } from '../components/Modal/Votes/VoteRegisteredModal'
@@ -31,18 +34,18 @@ import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
 import ProposalSidebar from '../components/Proposal/ProposalSidebar'
 import SurveyResults from '../components/Proposal/SentimentSurvey/SurveyResults'
 import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
-import BiddingAndTenderingProcess from '../components/Proposal/View/BiddingAndTenderingProcess'
+import BiddingAndTendering from '../components/Proposal/View/BiddingAndTendering'
 import ProposalBudget from '../components/Proposal/View/Budget/ProposalBudget'
+import BidProposalView from '../components/Proposal/View/Categories/BidProposalView'
 import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
-import CompetingTenders from '../components/Proposal/View/CompetingTenders'
+import CompetingBiddingAndTendering from '../components/Proposal/View/CompetingBiddingAndTendering'
 import GovernanceProcess from '../components/Proposal/View/GovernanceProcess'
 import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
 import ProposalMarkdown from '../components/Proposal/View/ProposalMarkdown'
-import TenderProposals from '../components/Proposal/View/TenderProposals'
 import StatusPill from '../components/Status/StatusPill'
 import { VOTES_VP_THRESHOLD } from '../constants'
 import { OldGrantCategory } from '../entities/Grant/types'
-import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
+import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { isBiddingAndTenderingProposal, isGovernanceProcessProposal } from '../entities/Proposal/utils'
 import { Survey } from '../entities/SurveyTopic/types'
 import { SurveyEncoder } from '../entities/SurveyTopic/utils'
@@ -59,7 +62,6 @@ import useProposal from '../hooks/useProposal'
 import useProposalUpdates from '../hooks/useProposalUpdates'
 import useProposalVotes from '../hooks/useProposalVotes'
 import useSurveyTopics from '../hooks/useSurveyTopics'
-import { useTenderProposals } from '../hooks/useTenderProposals'
 import useURLSearchParams from '../hooks/useURLSearchParams'
 import { ErrorCategory } from '../utils/errorCategories'
 import locations, { navigate } from '../utils/locations'
@@ -79,8 +81,11 @@ export type ProposalPageState = {
   confirmStatusUpdate: ProposalStatus | false
   showVotesList: boolean
   showProposalSuccessModal: boolean
+  showTenderPublishedModal: boolean
+  showBidSubmittedModal: boolean
   showUpdateSuccessModal: boolean
   showVotingModal: boolean
+  showBidVotingModal: boolean
   showVotingError: boolean
   showSnapshotRedirect: boolean
   retryTimer: number
@@ -123,6 +128,17 @@ function formatDescription(description: string) {
   return position > 0 ? value.slice(0, position).trim() : value
 }
 
+function getProposalView(proposal: ProposalAttributes | null) {
+  switch (proposal?.type) {
+    case ProposalType.Grant:
+      return <GrantProposalView config={proposal.configuration} />
+    case ProposalType.Bid:
+      return <BidProposalView config={proposal.configuration} />
+    default:
+      return <ProposalMarkdown text={proposal?.description || ''} />
+  }
+}
+
 export default function ProposalPage() {
   const t = useFormatMessage()
   const params = useURLSearchParams()
@@ -133,8 +149,11 @@ export default function ProposalPage() {
     confirmStatusUpdate: false,
     showVotesList: false,
     showProposalSuccessModal: false,
+    showTenderPublishedModal: false,
+    showBidSubmittedModal: false,
     showUpdateSuccessModal: false,
     showVotingModal: false,
+    showBidVotingModal: false,
     showVotingError: false,
     showSnapshotRedirect: false,
     retryTimer: SECONDS_FOR_VOTING_RETRY,
@@ -162,7 +181,6 @@ export default function ProposalPage() {
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })
   const { budgetWithContestants, isLoadingBudgetWithContestants } = useBudgetWithContestants(proposal?.id)
-  const { tenderProposals } = useTenderProposals(proposal?.id, proposal?.type)
 
   const { publicUpdates, pendingUpdates, nextUpdate, currentUpdate, refetchUpdates } = useProposalUpdates(proposal?.id)
   const showProposalUpdates =
@@ -184,6 +202,7 @@ export default function ProposalPage() {
           updatePageState({
             changingVote: false,
             showVotingModal: false,
+            showBidVotingModal: false,
             showVotingError: false,
             confirmSubscription: !votes![account!],
           })
@@ -245,6 +264,14 @@ export default function ProposalPage() {
   }, [params])
 
   useEffect(() => {
+    updatePageStateRef.current({ showTenderPublishedModal: params.get('pending') === 'true' })
+  }, [params])
+
+  useEffect(() => {
+    updatePageStateRef.current({ showBidSubmittedModal: params.get('bid') === 'true' })
+  }, [params])
+
+  useEffect(() => {
     const isNewUpdate = params.get('newUpdate') === 'true'
     if (isNewUpdate) {
       refetchUpdates()
@@ -302,9 +329,10 @@ export default function ProposalPage() {
     proposal?.type === ProposalType.Grant &&
     !isLegacyGrantCategory(proposal.configuration.category) &&
     !isLoadingBudgetWithContestants
-  const showTenderProposals =
-    proposal?.type === ProposalType.Pitch && tenderProposals?.data && tenderProposals?.total > 0
-  const showCompetingTenders = !!proposal && proposal.type === ProposalType.Tender
+  const showCompetingBiddingAndTendering =
+    proposal &&
+    proposal?.status === ProposalStatus.Active &&
+    (proposal?.type === ProposalType.Tender || proposal?.type === ProposalType.Bid)
 
   return (
     <>
@@ -331,21 +359,12 @@ export default function ProposalPage() {
             <Grid.Column tablet="12" className="ProposalDetailPage__Description">
               <Loader active={isLoadingProposal} />
               {showProposalBudget && <ProposalBudget proposal={proposal} budget={budgetWithContestants} />}
-              {showCompetingTenders && <CompetingTenders proposal={proposal} />}
+              {showCompetingBiddingAndTendering && <CompetingBiddingAndTendering proposal={proposal} />}
               {proposal?.type === ProposalType.POI && <ProposalHeaderPoi configuration={proposal?.configuration} />}
               {showImagesPreview && <ProposalImagesPreview imageUrls={proposal.configuration.image_previews} />}
-              <div className="ProposalDetailPage__Body">
-                {proposal?.type === ProposalType.Grant ? (
-                  <GrantProposalView config={proposal.configuration} />
-                ) : (
-                  <ProposalMarkdown text={proposal?.description || ''} />
-                )}
-              </div>
+              <div className="ProposalDetailPage__Body">{getProposalView(proposal)}</div>
               {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
-              {showTenderProposals && <TenderProposals proposals={tenderProposals.data} />}
-              {proposal && isBiddingAndTenderingProposal(proposal.type) && (
-                <BiddingAndTenderingProcess proposal={proposal} tenderProposalsTotal={tenderProposals?.total} />
-              )}
+              {proposal && isBiddingAndTenderingProposal(proposal?.type) && <BiddingAndTendering proposal={proposal} />}
               {proposal && isGovernanceProcessProposal(proposal.type) && (
                 <GovernanceProcess proposalType={proposal.type} />
               )}
@@ -383,6 +402,7 @@ export default function ProposalPage() {
                 castingVote={castingVote}
                 castVote={castVote}
                 voteWithSurvey={voteWithSurvey}
+                voteOnBid={proposal?.type === ProposalType.Bid && !proposalPageState.changingVote}
                 subscribing={isUpdatingSubscription}
                 subscribe={updateSubscription}
                 subscriptions={subscriptions ?? []}
@@ -412,6 +432,19 @@ export default function ProposalPage() {
           proposalPageState={proposalPageState}
         />
       )}
+      {proposal && proposal.type === ProposalType.Bid && (
+        <BidVotingModal
+          proposal={proposal}
+          onCastVote={castVote}
+          castingVote={castingVote}
+          linkedTenderId={proposal.configuration.linked_proposal_id}
+          proposalPageState={proposalPageState}
+          onClose={() => {
+            setErrorCounter(0)
+            updatePageState({ showBidVotingModal: false, showSnapshotRedirect: false })
+          }}
+        />
+      )}
       <VotesListModal
         open={proposalPageState.showVotesList}
         proposal={proposal}
@@ -439,13 +472,35 @@ export default function ProposalPage() {
         proposalKey={proposalKey}
         onClose={() => updatePageState({ confirmStatusUpdate: false })}
       />
-      <ProposalSuccessModal
-        open={proposalPageState.showProposalSuccessModal}
-        onDismiss={closeProposalSuccessModal}
-        onClose={closeProposalSuccessModal}
-        proposal={proposal}
-        loading={isLoadingProposal}
-      />
+      {proposal && (
+        <>
+          <ProposalSuccessModal
+            open={proposalPageState.showProposalSuccessModal}
+            onDismiss={closeProposalSuccessModal}
+            onClose={closeProposalSuccessModal}
+            proposal={proposal}
+            loading={isLoadingProposal}
+          />
+          {proposal.type === ProposalType.Tender && (
+            <>
+              <TenderPublishedModal
+                open={proposalPageState.showTenderPublishedModal}
+                onDismiss={closeProposalSuccessModal}
+                onClose={closeProposalSuccessModal}
+                proposal={proposal}
+                loading={isLoadingProposal}
+              />
+              <BidSubmittedModal
+                open={proposalPageState.showBidSubmittedModal}
+                onDismiss={closeProposalSuccessModal}
+                onClose={closeProposalSuccessModal}
+                proposal={proposal}
+                loading={isLoadingProposal}
+              />
+            </>
+          )}
+        </>
+      )}
       <UpdateSuccessModal
         open={proposalPageState.showUpdateSuccessModal}
         onDismiss={closeUpdateSuccessModal}

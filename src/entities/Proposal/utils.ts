@@ -125,8 +125,8 @@ export function governanceUrl(pathname = '') {
   return target.toString()
 }
 
-export function proposalUrl(proposal: Pick<ProposalAttributes, 'id'>) {
-  const params = new URLSearchParams({ id: proposal.id })
+export function proposalUrl(id: ProposalAttributes['id']) {
+  const params = new URLSearchParams({ id })
   const target = new URL(GOVERNANCE_API)
   target.pathname = '/proposal/'
   target.search = '?' + params.toString()
@@ -150,7 +150,7 @@ export function isGovernanceProcessProposal(type: ProposalType) {
 }
 
 export function isBiddingAndTenderingProposal(type: ProposalType) {
-  return type === ProposalType.Pitch || type === ProposalType.Tender
+  return type === ProposalType.Pitch || type === ProposalType.Tender || type === ProposalType.Bid
 }
 
 export function isProposalStatus(value: string | null | undefined): boolean {
@@ -219,6 +219,18 @@ export function hasTenderProcessFinished(tenderProposals: ProposalAttributes[]) 
   )
 }
 
-export function hasTenderProcessStarted(tenderProposals: ProposalAttributes[]) {
-  return tenderProposals.length > 0 && Time(tenderProposals[0].start_at).isBefore(Time())
+export function hasTenderProcessStarted(tenderProposals?: ProposalAttributes[]) {
+  return !!tenderProposals && tenderProposals.length > 0 && Time(tenderProposals[0].start_at).isBefore(Time())
+}
+
+export function getBudget(proposal: ProposalAttributes) {
+  const { type, configuration } = proposal
+  switch (type) {
+    case ProposalType.Grant:
+      return Number(configuration.size)
+    case ProposalType.Bid:
+      return Number(configuration.funding)
+    default:
+      return null
+  }
 }

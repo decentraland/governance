@@ -37,6 +37,7 @@ import { asNumber, isGrantProposalSubmitEnabled, userModifiedForm } from '../../
 import { toNewGrantCategory } from '../../entities/QuarterCategoryBudget/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
+import useProjectRequestSectionNumber from '../../hooks/useProjectRequestSectionNumber'
 import locations, { navigate } from '../../utils/locations'
 
 import './grant.css'
@@ -127,12 +128,7 @@ export default function SubmitGrant() {
   const isCategorySelected = grantRequest.category !== null
   const preventNavigation = useRef(false)
   const [submitError, setSubmitError] = useState<string | undefined>(undefined)
-  let sectionNumber = 0
-
-  const getSectionNumber = () => {
-    sectionNumber++
-    return sectionNumber
-  }
+  const { getSectionNumber } = useProjectRequestSectionNumber()
 
   useEffect(() => {
     preventNavigation.current = userModifiedForm(grantRequest, initialState)
@@ -223,12 +219,12 @@ export default function SubmitGrant() {
           {t('page.submit_grant.cancel')}
         </Button>
       </Container>
-      <Container className="GrantRequestSection__Container">
+      <Container className="ProjectRequestSection__Container">
         <Markdown componentsClassNames={{ p: 'GrantRequest__HeaderDescription' }}>{description}</Markdown>
       </Container>
 
       {!isCategorySelected && (
-        <Container className="GrantRequestSection__Container">
+        <Container className="ProjectRequestSection__Container">
           <CategorySelector
             onCategoryClick={(value: NewGrantCategory) => {
               patchGrantRequest((prevState) => ({ ...prevState, category: value }))
@@ -268,7 +264,6 @@ export default function SubmitGrant() {
           />
 
           <GrantRequestTeamSection
-            funding={grantRequest.funding}
             onValidation={(data, sectionValid) => {
               patchGrantRequest((prevState) => ({ ...prevState, ...data }))
               patchValidationState({ teamSectionValid: sectionValid })
@@ -277,7 +272,7 @@ export default function SubmitGrant() {
           />
 
           <GrantRequestDueDiligenceSection
-            funding={grantRequest.funding}
+            funding={Number(grantRequest.funding)}
             onValidation={(data, sectionValid) => {
               patchGrantRequest((prevState) => ({ ...prevState, ...data }))
               patchValidationState({ dueDiligenceSectionValid: sectionValid })
@@ -303,9 +298,14 @@ export default function SubmitGrant() {
           />
 
           <Container className="ContentLayout__Container">
-            <ContentSection className="GrantRequestSection__Content">
+            <ContentSection className="ProjectRequestSection__Content">
               <div>
-                <Button primary disabled={!allSectionsValid} loading={isFormDisabled} onClick={() => submit()}>
+                <Button
+                  primary
+                  disabled={!allSectionsValid || isFormDisabled}
+                  loading={isFormDisabled}
+                  onClick={submit}
+                >
                   {t('page.submit.button_submit')}
                 </Button>
               </div>

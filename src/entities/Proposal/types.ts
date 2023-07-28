@@ -21,6 +21,7 @@ import {
   MAX_NAME_SIZE,
   MIN_NAME_SIZE,
   VOTING_POWER_TO_PASS_BAN_NAME,
+  VOTING_POWER_TO_PASS_BID,
   VOTING_POWER_TO_PASS_CATALYST,
   VOTING_POWER_TO_PASS_DRAFT,
   VOTING_POWER_TO_PASS_GOVERNANCE,
@@ -89,6 +90,7 @@ export enum ProposalType {
   Governance = 'governance',
   Pitch = 'pitch',
   Tender = 'tender',
+  Bid = 'bid',
 }
 
 export enum PoiType {
@@ -652,6 +654,7 @@ export const ProposalRequiredVP = {
   [ProposalType.Governance]: requiredVotingPower(VOTING_POWER_TO_PASS_GOVERNANCE, 0),
   [ProposalType.Pitch]: requiredVotingPower(VOTING_POWER_TO_PASS_PITCH, 0),
   [ProposalType.Tender]: requiredVotingPower(VOTING_POWER_TO_PASS_TENDER, 0),
+  [ProposalType.Bid]: requiredVotingPower(VOTING_POWER_TO_PASS_BID, 0),
 }
 
 export type GrantProposalConfiguration = GrantRequestGeneralInfo &

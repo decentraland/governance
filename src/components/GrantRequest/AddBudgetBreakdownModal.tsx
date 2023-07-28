@@ -9,11 +9,11 @@ import Field from '../Common/Form/Field'
 import TextArea from '../Common/Form/TextArea'
 import Label from '../Common/Typography/Label'
 import { ContentSection } from '../Layout/ContentLayout'
+import BudgetInput from '../ProjectRequest/BudgetInput'
+import NumberSelector from '../ProjectRequest/NumberSelector'
 
 import AddModal from './AddModal'
 import './AddModal.css'
-import BudgetInput from './BudgetInput'
-import NumberSelector from './NumberSelector'
 
 const INITIAL_BUDGET_BREAKDOWN_CONCEPT: BudgetBreakdownConcept = {
   concept: '',
@@ -97,7 +97,7 @@ export default function AddBudgetBreakdownModal({
       onPrimaryClick={handleSubmit(onSubmitForm)}
       onSecondaryClick={selectedConcept ? onDelete : undefined}
     >
-      <ContentSection className="GrantRequestSection__Field">
+      <ContentSection className="ProjectRequestSection__Field">
         <Label>{t('page.submit_grant.due_diligence.budget_breakdown_modal.concept_label')}</Label>
         <Field
           name="concept"
@@ -125,7 +125,7 @@ export default function AddBudgetBreakdownModal({
           }}
         />
       </ContentSection>
-      <ContentSection className="GrantRequestSection__FieldRow">
+      <ContentSection className="ProjectRequestSection__FieldRow">
         <BudgetInput
           {...register('estimatedBudget', {
             min: {
@@ -163,7 +163,7 @@ export default function AddBudgetBreakdownModal({
           subtitle={t('page.submit_grant.due_diligence.budget_breakdown_modal.duration_subtitle')}
         />
       </ContentSection>
-      <ContentSection className="GrantRequestSection__Field">
+      <ContentSection className="ProjectRequestSection__Field">
         <Label>{t('page.submit_grant.due_diligence.budget_breakdown_modal.about_this_label')}</Label>
         <TextArea
           name="aboutThis"
@@ -187,7 +187,7 @@ export default function AddBudgetBreakdownModal({
           }}
         />
       </ContentSection>
-      <ContentSection className="GrantRequestSection__Field">
+      <ContentSection className="ProjectRequestSection__Field">
         <div className="LabelContainer">
           <Label>{t('page.submit_grant.due_diligence.budget_breakdown_modal.relevant_link_label')}</Label>
           <span className="Optional">{t('page.submit_grant.due_diligence.budget_breakdown_modal.optional_label')}</span>

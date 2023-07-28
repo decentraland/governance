@@ -19,6 +19,7 @@ const useProposalVotes = (proposalId?: ProposalAttributes['id']) => {
       return Governance.get().getProposalCachedVotes(proposalId)
     },
     staleTime: FIVE_MINUTES_MS,
+    enabled: !!proposalId,
   })
 
   return { votes: votes ?? null, isLoadingVotes, reloadVotes }

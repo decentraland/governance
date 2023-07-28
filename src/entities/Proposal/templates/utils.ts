@@ -2,6 +2,7 @@ import markdown from 'remark-parse'
 import stringify from 'remark-stringify'
 import unified from 'unified'
 
+import Time from '../../../utils/date/Time'
 import ProposalModel from '../model'
 import { ProposalAttributes } from '../types'
 import { proposalUrl } from '../utils'
@@ -22,7 +23,7 @@ export function template(raw: TemplateStringsArray, ...subs: any[]) {
 }
 
 export async function formatLinkedProposal(linked_proposal_id: string) {
-  const url = proposalUrl({ id: linked_proposal_id })
+  const url = proposalUrl(linked_proposal_id)
   const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: linked_proposal_id, deleted: false })
   return `[${proposal?.title}](${url})` || ''
 }
@@ -50,3 +51,5 @@ function formatMarkdownAST(node: Node): Node {
       }
   }
 }
+
+export const formatDate = (date: Date | string) => Time.from(date).format('MMM DD, YYYY')
