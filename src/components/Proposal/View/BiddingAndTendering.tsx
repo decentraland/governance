@@ -15,9 +15,9 @@ interface Props {
 }
 
 export default function BiddingAndTendering({ proposal }: Props) {
-  const { id, type, configuration } = proposal
+  const { id, type } = proposal
   const { tenderProposals } = useTenderProposals(id, type)
-  const { bidProposals } = useBidProposals(configuration.linked_proposal_id, type)
+  const { bidProposals } = useBidProposals(id, type)
 
   const showTenderProposals =
     proposal.type === ProposalType.Pitch && tenderProposals?.data && tenderProposals?.total > 0
