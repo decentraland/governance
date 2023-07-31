@@ -697,6 +697,13 @@
       "like": "Like!",
       "neutral": "Neutral",
       "concerned": "Concerned"
+    },
+    "addresses_select": {
+      "placeholder": "Enter a wallet address",
+      "count": "{amount}/{maxAmount} addresses added",
+      "error": "Invalid wallet address",
+      "duplicated_error": "It looks like this address has already been added.",
+      "max_error": "The maximum number of addresses was exceeded."
     }
   },
   "page": {

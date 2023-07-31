@@ -54,19 +54,21 @@ export class BadgesService {
     return ipfsLink.replace('ipfs://', 'https://ipfs.io/ipfs/')
   }
 
-  public static async grantBadgeToUsers(badgeCid: string, users: any[]) {
+  public static async grantBadgeToUsers(badgeCid: string, users: any[]): Promise<string> {
     const badgeOwners = await OtterspaceSubgraph.get().getBadgeOwners(badgeCid)
 
+    console.log('badgeOwners', badgeOwners)
     const usersWithoutBadge = users.filter((user) => {
       return !badgeOwners.includes(user.toLowerCase())
     })
 
     const recipients = usersWithoutBadge.join(',')
 
-    await this.airdropWithRetry(badgeCid, recipients)
+    return await this.airdropWithRetry(badgeCid, recipients)
   }
 
-  private static async airdropWithRetry(badgeCid: string, recipients: string, retries = 3) {
+  private static async airdropWithRetry(badgeCid: string, recipients: string, retries = 3): Promise<string> {
+    console.log('airdropping')
     try {
       const hre = require('hardhat')
       await hre.run('airdrop', {
@@ -74,15 +76,16 @@ export class BadgesService {
         badgeCid,
         recipients,
       })
-      console.log('Airdrop successful!')
+      return `Airdropped ${badgeCid} to ${recipients}`
     } catch (error) {
       console.error('Airdrop failed:', error)
       if (retries > 0) {
         console.log(`Retrying airdrop... Attempts left: ${retries}`)
-        await this.airdropWithRetry(badgeCid, recipients, retries - 1)
+        return await this.airdropWithRetry(badgeCid, recipients, retries - 1)
       } else {
         console.error('Airdrop failed after maximum retries.')
-        // You can handle the failure accordingly, like logging an error or notifying someone.
+        return `Airdrop failed: ${error}`
+        //TODO: handle failure accordingly
       }
     }
   }
