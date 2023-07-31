@@ -19,4 +19,8 @@ export default class DclRpcService {
     const networkName = network.name === 'homestead' ? 'mainnet' : network.name
     return process.env.RPC_PROVIDER_URL + networkName
   }
+
+  public static polygon() {
+    return new JsonRpcProvider(process.env.RPC_PROVIDER_URL + 'polygon')
+  }
 }

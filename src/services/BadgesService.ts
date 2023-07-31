@@ -1,7 +1,7 @@
 import { OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgraph'
 import { Badge, BadgeStatus, BadgeStatusReason, UserBadges, toBadgeStatus } from '../entities/Badges/types'
+import { airdrop } from '../entities/Badges/utils'
 import { ErrorCategory } from '../utils/errorCategories'
-import { isProdEnv } from '../utils/governanceEnvs'
 
 import { ErrorService } from './ErrorService'
 
@@ -57,25 +57,21 @@ export class BadgesService {
   public static async grantBadgeToUsers(badgeCid: string, users: any[]): Promise<string> {
     const badgeOwners = await OtterspaceSubgraph.get().getBadgeOwners(badgeCid)
 
-    console.log('badgeOwners', badgeOwners)
     const usersWithoutBadge = users.filter((user) => {
       return !badgeOwners.includes(user.toLowerCase())
     })
 
-    const recipients = usersWithoutBadge.join(',')
-
-    return await this.airdropWithRetry(badgeCid, recipients)
+    if (usersWithoutBadge.length > 0) {
+      return await this.airdropWithRetry(badgeCid, usersWithoutBadge)
+    } else {
+      return 'All recipients already have this badge'
+    }
   }
 
-  private static async airdropWithRetry(badgeCid: string, recipients: string, retries = 3): Promise<string> {
+  private static async airdropWithRetry(badgeCid: string, recipients: string[], retries = 3): Promise<string> {
     console.log('airdropping')
     try {
-      const hre = require('hardhat')
-      await hre.run('airdrop', {
-        network: isProdEnv() ? 'polygon' : 'polytest',
-        badgeCid,
-        recipients,
-      })
+      await airdrop(badgeCid, recipients)
       return `Airdropped ${badgeCid} to ${recipients}`
     } catch (error) {
       console.error('Airdrop failed:', error)
