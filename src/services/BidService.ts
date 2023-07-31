@@ -160,4 +160,8 @@ export default class BidService {
       publish_at: pendingBids[0]?.publish_at,
     }
   }
+
+  static async removeAllPendingBids() {
+    await UnpublishedBidModel.removeAllPendingBids()
+  }
 }

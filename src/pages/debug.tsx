@@ -9,6 +9,7 @@ import BudgetsUpdate from '../components/Debug/BudgetsUpdate'
 import EnvStatus from '../components/Debug/EnvStatus'
 import ErrorReporting from '../components/Debug/ErrorReporting'
 import HttpStatus from '../components/Debug/HttpStatus'
+import RemoveBids from '../components/Debug/RemoveBids'
 import SnapshotStatus from '../components/Debug/SnapshotStatus'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import LogIn from '../components/User/LogIn'
@@ -36,6 +37,7 @@ export default function DebugPage() {
       <SnapshotStatus className="DebugPage__Section" />
       <EnvStatus className="DebugPage__Section" />
       <ErrorReporting className="DebugPage__Section" />
+      <RemoveBids className="DebugPage__Section" />
     </Container>
   )
 }
