@@ -19,7 +19,7 @@
     "project": ["tsconfig.json"]
   },
   "plugins": ["react", "@typescript-eslint", "react-hooks", "prettier"],
-  "ignorePatterns": ["gatsby-*.js", "hardhat.config.js"],
+  "ignorePatterns": ["gatsby-*.js"],
   "rules": {
     "react/prop-types": "off",
     "react-hooks/rules-of-hooks": "error",
