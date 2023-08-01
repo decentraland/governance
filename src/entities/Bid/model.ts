@@ -3,10 +3,10 @@ import { SQL, join, table } from 'decentraland-gatsby/dist/entities/Database/uti
 
 import { BidStatus, UnpublishedBidAttributes } from './types'
 
-const DB_ENCRYPTION_KEY = process.env.DB_ENCRYPTION_KEY
+const DB_ENCRYPTION_KEY = String(process.env.DB_ENCRYPTION_KEY || '')
 
 function checkEncryptionKey() {
-  if (!DB_ENCRYPTION_KEY) throw new Error('DB_ENCRYPTION_KEY is not set')
+  if (!DB_ENCRYPTION_KEY || DB_ENCRYPTION_KEY.length === 0) throw new Error('DB_ENCRYPTION_KEY is not set')
 }
 
 export default class UnpublishedBidModel extends Model<UnpublishedBidAttributes> {
@@ -28,7 +28,7 @@ export default class UnpublishedBidModel extends Model<UnpublishedBidAttributes>
     VALUES (
       ${linked_proposal_id}, 
       ${author_address.toLowerCase()}, 
-      pgp_sym_encrypt(${bid_proposal_data}, ${DB_ENCRYPTION_KEY}), 
+      pgp_sym_encrypt(${bid_proposal_data}, ${DB_ENCRYPTION_KEY}::text), 
       ${publish_at},
       now(),
       ${status}
@@ -54,7 +54,7 @@ export default class UnpublishedBidModel extends Model<UnpublishedBidAttributes>
     checkEncryptionKey()
 
     const query = SQL`
-    SELECT id, created_at, author_address, publish_at, linked_proposal_id, pgp_sym_decrypt(bid_proposal_data::bytea, ${DB_ENCRYPTION_KEY}) as bid_proposal_data 
+    SELECT id, created_at, author_address, publish_at, linked_proposal_id, pgp_sym_decrypt(bid_proposal_data::bytea, ${DB_ENCRYPTION_KEY}::text) as bid_proposal_data 
     FROM ${table(this)} 
     WHERE publish_at <= now() AND status = ${BidStatus.Pending}`
 
@@ -74,7 +74,7 @@ export default class UnpublishedBidModel extends Model<UnpublishedBidAttributes>
     checkEncryptionKey()
 
     const decryptedBidsToRejectQuery = SQL`
-    SELECT id, pgp_sym_decrypt(bid_proposal_data::bytea, ${DB_ENCRYPTION_KEY}) as bid_proposal_data
+    SELECT id, pgp_sym_decrypt(bid_proposal_data::bytea, ${DB_ENCRYPTION_KEY}::text) as bid_proposal_data
     FROM ${table(this)}
     WHERE linked_proposal_id IN (${join(
       linked_proposal_ids.map((id) => SQL`${id}`),
