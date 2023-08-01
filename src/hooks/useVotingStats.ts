@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
 import { Governance } from '../clients/Governance'
-import { SnapshotGraphql, getQueryTimestamp } from '../clients/SnapshotGraphql'
+import { getQueryTimestamp } from '../clients/SnapshotGraphql'
 import { SnapshotProposal, SnapshotVote } from '../clients/SnapshotGraphqlTypes'
 import { calculateMatch, getChecksumAddress, outcomeMatch } from '../entities/Snapshot/utils'
 import { getFormattedPercentage } from '../helpers'
@@ -53,7 +53,7 @@ export default function useVotingStats(address: string, userAddress: string | nu
   const { data: last30DaysProposals, isLoading: isLoadingProposals } = useQuery({
     queryKey: [`last30DaysProposals#${aMonthAgo.getTime()}`],
     queryFn: async () => {
-      return await SnapshotGraphql.get().getProposals(aMonthAgo, now, ['id', 'choices', 'scores'])
+      return await Governance.get().getSnapshotProposals(aMonthAgo, now, ['id', 'choices', 'scores'])
     },
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })

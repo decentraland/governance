@@ -232,7 +232,7 @@ export class SnapshotGraphql extends API {
     return result?.data?.votes
   }
 
-  async getVotes(start: Date, end: Date) {
+  async getAllVotesBetweenDates(start: Date, end: Date): Promise<SnapshotVote[]> {
     const query = `
       query getVotes($space: String!, $start: Int!, $end: Int!, $first: Int!) {
         votes(where: {space: $space, created_gte: $start, created_lt: $end}, orderBy: "created", orderDirection: asc, first: $first) {
