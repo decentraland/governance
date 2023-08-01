@@ -510,10 +510,6 @@ export class Governance extends API {
     return response.data
   }
 
-  async removeAllPendingBids() {
-    return await this.fetch<ApiResponse<null>>(`/bids`, this.options().method('DELETE').authorization({ sign: true }))
-  }
-
   async getAllVotesBetweenDates(start: Date, end: Date) {
     const response = await this.fetch<ApiResponse<SnapshotVote[]>>(
       `/snapshot/votes/all`,
