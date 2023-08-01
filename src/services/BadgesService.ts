@@ -5,6 +5,8 @@ import { ErrorCategory } from '../utils/errorCategories'
 
 import { ErrorService } from './ErrorService'
 
+const TRANSACTION_UNDERPRICED = -32000
+
 export class BadgesService {
   public static async getBadges(address: string): Promise<UserBadges> {
     const otterspaceBadges: OtterspaceBadge[] = await OtterspaceSubgraph.get().getBadgesForAddress(address)
@@ -68,21 +70,37 @@ export class BadgesService {
     }
   }
 
-  private static async airdropWithRetry(badgeCid: string, recipients: string[], retries = 3): Promise<string> {
-    console.log('airdropping')
+  private static async airdropWithRetry(
+    badgeCid: string,
+    recipients: string[],
+    retries = 3,
+    pumpGas = false
+  ): Promise<string> {
+    console.log(`Airdropping, pumping gas ${pumpGas}`)
     try {
-      await airdrop(badgeCid, recipients)
+      await airdrop(badgeCid, recipients, pumpGas)
       return `Airdropped ${badgeCid} to ${recipients}`
-    } catch (error) {
+    } catch (error: any) {
       console.error('Airdrop failed:', error)
       if (retries > 0) {
         console.log(`Retrying airdrop... Attempts left: ${retries}`)
-        return await this.airdropWithRetry(badgeCid, recipients, retries - 1)
+        const pumpGas = this.isTransactionUnderpricedError(error)
+        return await this.airdropWithRetry(badgeCid, recipients, retries - 1, pumpGas)
       } else {
         console.error('Airdrop failed after maximum retries.')
         return `Airdrop failed: ${error}`
         //TODO: handle failure accordingly
       }
+    }
+  }
+
+  private static isTransactionUnderpricedError(error: any) {
+    try {
+      const errorParsed = JSON.parse(error.body)
+      const errorCode = errorParsed?.error?.code
+      return errorCode === TRANSACTION_UNDERPRICED
+    } catch (e) {
+      return false
     }
   }
 }
