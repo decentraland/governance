@@ -192,16 +192,16 @@ async function categorizeProposals(
 }
 
 export async function finishProposal(context: JobContext) {
-  const pendingProposals = await ProposalModel.getFinishableProposals()
-  if (pendingProposals.length === 0) {
+  const finishableProposals = await ProposalModel.getFinishableProposals()
+  if (finishableProposals.length === 0) {
     return
   }
 
-  const currentBudgets = await BudgetService.getBudgetsForProposals(pendingProposals)
+  const currentBudgets = await BudgetService.getBudgetsForProposals(finishableProposals)
 
-  context.log(`Updating ${pendingProposals.length} proposals...`)
+  context.log(`Updating ${finishableProposals.length} proposals...`)
   const { finishedProposals, acceptedProposals, outOfBudgetProposals, rejectedProposals, updatedBudgets } =
-    await categorizeProposals(pendingProposals, currentBudgets, context)
+    await categorizeProposals(finishableProposals, currentBudgets, context)
 
   await updateFinishedProposals(finishedProposals, context)
   await updateAcceptedProposals(acceptedProposals, context)
