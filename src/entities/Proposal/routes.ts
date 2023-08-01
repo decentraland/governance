@@ -9,6 +9,7 @@ import { Request } from 'express'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
+import { validateAddress } from '../../back/utils/validations'
 import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { getVestingContractData } from '../../clients/VestingData'
@@ -644,9 +645,7 @@ async function getGrants(): Promise<CategorizedGrants> {
 async function getGrantsByUser(req: Request): ReturnType<typeof getGrants> {
   const address = req.params.address
   const isCoauthoring = req.query.coauthor === 'true'
-  if (!address || !isEthereumAddress(address)) {
-    throw new RequestError('Invalid address', RequestError.BadRequest)
-  }
+  validateAddress(address)
 
   let coauthoringProposalIds = new Set<string>()
 
