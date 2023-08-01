@@ -105,12 +105,4 @@ export default class UnpublishedBidModel extends Model<UnpublishedBidAttributes>
 
     return await this.namedQuery('remove_pending_bid', query)
   }
-
-  static async removeAllPendingBids() {
-    const query = SQL`
-    DELETE FROM ${table(this)} 
-    WHERE status = ${BidStatus.Pending}`
-
-    return await this.namedQuery('remove_all_pending_bids', query)
-  }
 }

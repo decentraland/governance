@@ -506,8 +506,4 @@ export class Governance extends API {
     )
     return response.data
   }
-
-  async removeAllPendingBids() {
-    return await this.fetch<ApiResponse<null>>(`/bids`, this.options().method('DELETE').authorization({ sign: true }))
-  }
 }
