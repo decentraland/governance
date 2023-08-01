@@ -1,5 +1,6 @@
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
+import isUUID from 'validator/lib/isUUID'
 
 import { SnapshotProposal } from '../../clients/SnapshotGraphqlTypes'
 
@@ -44,10 +45,10 @@ export function validateFields(fields: unknown) {
 }
 
 export function validateProposalId(id?: string, required?: 'optional') {
-  if (!id && required !== 'optional') {
+  if (required !== 'optional' && (!id || !isUUID(id))) {
     throw new RequestError('Invalid proposal id', RequestError.BadRequest)
   }
-  if (id?.trim().length === 0) {
+  if (id && !isUUID(id)) {
     throw new RequestError('Invalid proposal id', RequestError.BadRequest)
   }
 }

@@ -7,7 +7,7 @@ import validate from 'decentraland-gatsby/dist/entities/Route/validate'
 import schema from 'decentraland-gatsby/dist/entities/Schema'
 import { Request } from 'express'
 
-import { validateAddress } from '../../back/routes/validations'
+import { validateAddress } from '../../back/utils/validations'
 import ProposalModel from '../Proposal/model'
 import { ProposalAttributes } from '../Proposal/types'
 

@@ -4,8 +4,7 @@ import { Request } from 'express'
 
 import { SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
 import { SnapshotService } from '../../services/SnapshotService'
-
-import { validateAddress, validateDates, validateFields, validateProposalId } from './validations'
+import { validateAddress, validateDates, validateFields, validateProposalId } from '../utils/validations'
 
 export default routes((router) => {
   router.get('/snapshot/status-space/:spaceName', handleAPI(getStatusAndSpace))

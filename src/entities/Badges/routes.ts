@@ -2,7 +2,7 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
-import { validateAddress } from '../../back/routes/validations'
+import { validateAddress } from '../../back/utils/validations'
 import { BadgesService } from '../../services/BadgesService'
 
 import { UserBadges } from './types'

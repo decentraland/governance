@@ -9,7 +9,7 @@ import { Request } from 'express'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
-import { validateAddress } from '../../back/routes/validations'
+import { validateAddress } from '../../back/utils/validations'
 import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { getVestingContractData } from '../../clients/VestingData'
