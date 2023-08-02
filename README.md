@@ -295,7 +295,7 @@ this project runs gatsby as front-end and a nodejs server as back-end both conne
 
 **front-end** routes are defined using [gatsby routes](https://www.gatsbyjs.com/docs/reference/routing/creating-routes/#define-routes-in-srcpages) + [gatsby-plugin-intl](https://www.gatsbyjs.com/plugins/gatsby-plugin-intl/?=gatsby-plugin-intl), you can find each page in the `src/pages` directory
 
-**back-end** routes are defined using `express` you can find each route in `src/entities/{Entity}/routes.ts` and those are imported at `src/server.ts`
+**back-end** routes are defined using `express` you can find each route in `src/back/routes` and those are imported at `src/server.ts`
 
 ### Types and Utils
 

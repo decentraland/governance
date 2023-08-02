@@ -3,15 +3,14 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
-import { validateAddress } from '../../back/utils/validations'
+import { isSameAddress } from '../../entities/Snapshot/utils'
+import { GATSBY_DISCOURSE_CONNECT_THREAD, MESSAGE_TIMEOUT_TIME } from '../../entities/User/constants'
+import UserModel from '../../entities/User/model'
+import { ValidationMessage } from '../../entities/User/types'
+import { formatValidationMessage, getValidationComment, validateComment } from '../../entities/User/utils'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
-import { isSameAddress } from '../Snapshot/utils'
-
-import { GATSBY_DISCOURSE_CONNECT_THREAD, MESSAGE_TIMEOUT_TIME } from './constants'
-import UserModel from './model'
-import { ValidationMessage } from './types'
-import { formatValidationMessage, getValidationComment, validateComment } from './utils'
+import { validateAddress } from '../utils/validations'
 
 export default routes((route) => {
   const withAuth = auth()

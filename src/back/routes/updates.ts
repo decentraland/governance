@@ -4,22 +4,21 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
-import { DiscordService } from '../../services/DiscordService'
-import Time from '../../utils/date/Time'
-import CoauthorModel from '../Coauthor/model'
-import { CoauthorStatus } from '../Coauthor/types'
-import ProposalModel from '../Proposal/model'
-import { ProposalAttributes } from '../Proposal/types'
-
-import UpdateModel from './model'
-import { UpdateAttributes, UpdateStatus } from './types'
+import CoauthorModel from '../../entities/Coauthor/model'
+import { CoauthorStatus } from '../../entities/Coauthor/types'
+import ProposalModel from '../../entities/Proposal/model'
+import { ProposalAttributes } from '../../entities/Proposal/types'
+import UpdateModel from '../../entities/Updates/model'
+import { UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
 import {
   getCurrentUpdate,
   getNextPendingUpdate,
   getPendingUpdates,
   getPublicUpdates,
   isBetweenLateThresholdDate,
-} from './utils'
+} from '../../entities/Updates/utils'
+import { DiscordService } from '../../services/DiscordService'
+import Time from '../../utils/date/Time'
 
 // TODO: Move to backend-only Coauthors utils or service
 const isCoauthor = async (proposalId: string, address: string): Promise<boolean> => {

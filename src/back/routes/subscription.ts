@@ -3,10 +3,10 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
-import { getProposal } from '../Proposal/routes'
+import SubscriptionModel from '../../entities/Subscription/model'
+import { SubscriptionAttributes } from '../../entities/Subscription/types'
 
-import SubscriptionModel from './model'
-import { SubscriptionAttributes } from './types'
+import { getProposal } from './proposal'
 
 export default routes((route) => {
   const withAuth = auth()
