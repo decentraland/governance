@@ -1104,7 +1104,7 @@
         "next_update_due_date": "Next one due in **{date}**",
         "vesting_label": "Grant beneficiary",
         "vesting_description": "**Funded by the Decentraland DAO**, enabled by its Community.",
-        "vesting_button": "View vesting contract",
+        "vesting_dropdown": "View vesting contracts",
         "category_assessment": {
           "accelerator": {
             "revenue_label": "Revenue Generation Model",
