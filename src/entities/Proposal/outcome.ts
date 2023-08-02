@@ -85,7 +85,10 @@ export function getWinnerBiddingAndTenderingProposal(
   type: ProposalType.Tender | ProposalType.Bid
 ) {
   const proposals = pendingProposalsWithOutcome.filter(
-    (item) => item.type === type && item.configuration.linked_proposal_id === linkedProposalId
+    (item) =>
+      item.type === type &&
+      item.configuration.linked_proposal_id === linkedProposalId &&
+      item.outcomeStatus === ProposalOutcome.ACCEPTED
   )
 
   const sortedProposals = orderBy(proposals, 'winnerVotingPower', 'desc')

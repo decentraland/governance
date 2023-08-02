@@ -135,38 +135,6 @@ export default function SubmitPitchProposal() {
         </ContentSection>
         <ContentSection>
           <Label>
-            {t('page.submit_pitch.target_audience_label')}
-            <MarkdownNotice />
-          </Label>
-          <SubLabel>{t('page.submit_pitch.target_audience_detail')}</SubLabel>
-          <MarkdownField
-            control={control}
-            name="target_audience"
-            rules={{
-              required: { value: true, message: t('error.pitch.target_audience_empty') },
-              minLength: {
-                value: schema.target_audience.minLength,
-                message: t('error.pitch.target_audience_too_short'),
-              },
-              maxLength: {
-                value: schema.target_audience.maxLength,
-                message: t('error.pitch.target_audience_too_large'),
-              },
-            }}
-            disabled={submissionVpNotMet || formDisabled}
-            error={!!errors.target_audience}
-            message={
-              (errors.target_audience?.message || '') +
-              ' ' +
-              t('page.submit.character_counter', {
-                current: watch('target_audience').length,
-                limit: schema.target_audience.maxLength,
-              })
-            }
-          />
-        </ContentSection>
-        <ContentSection>
-          <Label>
             {t('page.submit_pitch.problem_statement_label')}
             <MarkdownNotice />
           </Label>
@@ -225,6 +193,38 @@ export default function SubmitPitchProposal() {
               t('page.submit.character_counter', {
                 current: watch('proposed_solution').length,
                 limit: schema.proposed_solution.maxLength,
+              })
+            }
+          />
+        </ContentSection>
+        <ContentSection>
+          <Label>
+            {t('page.submit_pitch.target_audience_label')}
+            <MarkdownNotice />
+          </Label>
+          <SubLabel>{t('page.submit_pitch.target_audience_detail')}</SubLabel>
+          <MarkdownField
+            control={control}
+            name="target_audience"
+            rules={{
+              required: { value: true, message: t('error.pitch.target_audience_empty') },
+              minLength: {
+                value: schema.target_audience.minLength,
+                message: t('error.pitch.target_audience_too_short'),
+              },
+              maxLength: {
+                value: schema.target_audience.maxLength,
+                message: t('error.pitch.target_audience_too_large'),
+              },
+            }}
+            disabled={submissionVpNotMet || formDisabled}
+            error={!!errors.target_audience}
+            message={
+              (errors.target_audience?.message || '') +
+              ' ' +
+              t('page.submit.character_counter', {
+                current: watch('target_audience').length,
+                limit: schema.target_audience.maxLength,
               })
             }
           />

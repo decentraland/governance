@@ -34,7 +34,7 @@ import { Vote, VotedProposal } from '../entities/Votes/types'
 import Time from '../utils/date/Time'
 
 import { TransparencyBudget } from './DclData'
-import { SnapshotSpace, SnapshotStatus, SnapshotVote } from './SnapshotGraphqlTypes'
+import { SnapshotProposal, SnapshotSpace, SnapshotStatus, SnapshotVote, VpDistribution } from './SnapshotGraphqlTypes'
 
 type NewProposalMap = {
   [`/proposals/poll`]: NewProposalPoll
@@ -67,6 +67,8 @@ export type GetProposalsFilter = {
   snapshotIds?: string
   linkedProposalId?: string
 }
+
+type PendingProposalsQuery = { start: Date; end: Date; fields: (keyof SnapshotProposal)[]; limit: number }
 
 const getGovernanceApiUrl = () => {
   if (process.env.GATSBY_HEROKU_APP_NAME) {
@@ -483,6 +485,7 @@ export class Governance extends API {
     >(`/bids/${tenderId}/get-user-bid`, this.options().method('GET').authorization({ sign: true }))
     return response.data
   }
+
   async getSnapshotStatusAndSpace(spaceName?: string) {
     const response = await this.fetch<ApiResponse<{ status: SnapshotStatus; space: SnapshotSpace }>>(
       `/snapshot/status-space/${spaceName}`,
@@ -501,9 +504,40 @@ export class Governance extends API {
 
   async getProposalVotes(proposalId: string) {
     const response = await this.fetch<ApiResponse<SnapshotVote[]>>(
-      `/snapshot/proposal-votes/${proposalId}`,
+      `/snapshot/votes/${proposalId}`,
       this.options().method('GET')
     )
+    return response.data
+  }
+
+  async getAllVotesBetweenDates(start: Date, end: Date) {
+    const response = await this.fetch<ApiResponse<SnapshotVote[]>>(
+      `/snapshot/votes/all`,
+      this.options().method('POST').json({ start, end })
+    )
+    return response.data
+  }
+
+  async getSnapshotProposals(start: Date, end: Date, fields: (keyof SnapshotProposal)[]) {
+    const response = await this.fetch<ApiResponse<Partial<SnapshotProposal>[]>>(
+      `/snapshot/proposals`,
+      this.options().method('POST').json({ start, end, fields })
+    )
+    return response.data
+  }
+
+  async getPendingProposals(query: PendingProposalsQuery) {
+    const response = await this.fetch<ApiResponse<Partial<SnapshotProposal>[]>>(
+      `/snapshot/proposals/pending`,
+      this.options().method('POST').json(query)
+    )
+    return response.data
+  }
+
+  async getVpDistribution(address: string, proposalSnapshotId?: string) {
+    const snapshotId = proposalSnapshotId ? `/${proposalSnapshotId}` : ''
+    const url = `/snapshot/vp-distribution/${address}${snapshotId}`
+    const response = await this.fetch<ApiResponse<VpDistribution>>(url, this.options().method('GET'))
     return response.data
   }
 }
