@@ -21,6 +21,7 @@ import {
   NewProposalPitch,
   NewProposalPoll,
   NewProposalTender,
+  PendingProposalsQuery,
   ProposalAttributes,
   ProposalCommentsInDiscourse,
   ProposalStatus,
@@ -67,8 +68,6 @@ export type GetProposalsFilter = {
   snapshotIds?: string
   linkedProposalId?: string
 }
-
-type PendingProposalsQuery = { start: Date; end: Date; fields: (keyof SnapshotProposal)[]; limit: number }
 
 const getGovernanceApiUrl = () => {
   if (process.env.GATSBY_HEROKU_APP_NAME) {
