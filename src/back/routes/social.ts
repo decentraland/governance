@@ -8,9 +8,9 @@ import { Request } from 'express'
 import { resolve } from 'path'
 import isUUID from 'validator/lib/isUUID'
 
+import ProposalModel from '../../entities/Proposal/model'
+import { ProposalAttributes } from '../../entities/Proposal/types'
 import intl from '../../intl/en.json'
-import ProposalModel from '../Proposal/model'
-import { ProposalAttributes } from '../Proposal/types'
 
 const GOVERNANCE_API = requiredEnv('GOVERNANCE_API')
 const DEFAULT_URL = new URL(GOVERNANCE_API)

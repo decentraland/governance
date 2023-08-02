@@ -9,35 +9,22 @@ import { Request } from 'express'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
-import { validateAddress } from '../../back/utils/validations'
 import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { getVestingContractData } from '../../clients/VestingData'
-import { inBackground } from '../../helpers'
-import BidService from '../../services/BidService'
-import { DiscourseService } from '../../services/DiscourseService'
-import { ErrorService } from '../../services/ErrorService'
-import { GrantsService } from '../../services/GrantsService'
-import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
-import { getProfile } from '../../utils/Catalyst'
-import Time from '../../utils/date/Time'
-import { ErrorCategory } from '../../utils/errorCategories'
-import { BidRequest, BidRequestSchema } from '../Bid/types'
-import CoauthorModel from '../Coauthor/model'
-import { CoauthorStatus } from '../Coauthor/types'
-import isDAOCommittee from '../Committee/isDAOCommittee'
-import { hasOpenSlots } from '../Committee/utils'
-import { GrantRequest, getGrantRequestSchema } from '../Grant/types'
-import { SNAPSHOT_DURATION } from '../Snapshot/constants'
-import UpdateModel from '../Updates/model'
-import UserModel from '../User/model'
-import { filterComments } from '../User/utils'
-import { getVotes } from '../Votes/routes'
-
-import { getUpdateMessage } from './templates/messages'
-
-import { SUBMISSION_THRESHOLD_PITCH, SUBMISSION_THRESHOLD_POLL, SUBMISSION_THRESHOLD_TENDER } from './constants'
-import ProposalModel from './model'
+import { BidRequest, BidRequestSchema } from '../../entities/Bid/types'
+import CoauthorModel from '../../entities/Coauthor/model'
+import { CoauthorStatus } from '../../entities/Coauthor/types'
+import isDAOCommittee from '../../entities/Committee/isDAOCommittee'
+import { hasOpenSlots } from '../../entities/Committee/utils'
+import { GrantRequest, getGrantRequestSchema } from '../../entities/Grant/types'
+import {
+  SUBMISSION_THRESHOLD_PITCH,
+  SUBMISSION_THRESHOLD_POLL,
+  SUBMISSION_THRESHOLD_TENDER,
+} from '../../entities/Proposal/constants'
+import ProposalModel from '../../entities/Proposal/model'
+import { getUpdateMessage } from '../../entities/Proposal/templates/messages'
 import {
   CatalystType,
   CategorizedGrants,
@@ -72,7 +59,7 @@ import {
   newProposalPollScheme,
   newProposalTenderScheme,
   updateProposalStatusScheme,
-} from './types'
+} from '../../entities/Proposal/types'
 import {
   DEFAULT_CHOICES,
   MAX_PROPOSAL_LIMIT,
@@ -87,7 +74,23 @@ import {
   isValidName,
   isValidPointOfInterest,
   isValidUpdateProposalStatus,
-} from './utils'
+} from '../../entities/Proposal/utils'
+import { SNAPSHOT_DURATION } from '../../entities/Snapshot/constants'
+import UpdateModel from '../../entities/Updates/model'
+import UserModel from '../../entities/User/model'
+import { filterComments } from '../../entities/User/utils'
+import { inBackground } from '../../helpers'
+import BidService from '../../services/BidService'
+import { DiscourseService } from '../../services/DiscourseService'
+import { ErrorService } from '../../services/ErrorService'
+import { GrantsService } from '../../services/GrantsService'
+import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
+import { getProfile } from '../../utils/Catalyst'
+import Time from '../../utils/date/Time'
+import { ErrorCategory } from '../../utils/errorCategories'
+import { validateAddress } from '../utils/validations'
+
+import { getVotes } from './votes'
 
 export default routes((route) => {
   const withAuth = auth()

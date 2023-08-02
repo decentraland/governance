@@ -2,9 +2,8 @@ import { WithAuth, auth } from 'decentraland-gatsby/dist/entities/Auth/middlewar
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 
+import { DEBUG_ADDRESSES } from '../../entities/Debug/isDebugAddress'
 import { ErrorService } from '../../services/ErrorService'
-
-import { DEBUG_ADDRESSES } from './isDebugAddress'
 
 export default routes((router) => {
   const withAuth = auth()
