@@ -3,14 +3,14 @@ import React, { useEffect, useMemo, useState } from 'react'
 import classNames from 'classnames'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
-import { ProposalCommentsInDiscourse } from '../../../entities/Proposal/types'
-import { forumUrl } from '../../../entities/Proposal/utils'
-import useFormatMessage from '../../../hooks/useFormatMessage'
-import Empty from '../../Common/Empty'
-import Section from '../View/Section'
+import { ProposalCommentsInDiscourse } from '../../entities/Proposal/types'
+import { forumUrl } from '../../entities/Proposal/utils'
+import useFormatMessage from '../../hooks/useFormatMessage'
+import Comment from '../Comments/Comment'
+import Empty from '../Common/Empty'
+import Section from '../Proposal/View/Section'
 
 import './Comments.css'
-import ProposalComment from './ProposalComment'
 
 const DEFAULT_SHOWN_COMMENTS = 5
 
@@ -71,7 +71,7 @@ export default function Comments({ comments, topicId, topicSlug, isLoading, topi
           )}
           {renderedComments &&
             renderedComments.map((comment, index) => (
-              <ProposalComment
+              <Comment
                 key={'comment_' + index}
                 avatarUrl={comment.avatar_url}
                 user={comment.username}

@@ -2,7 +2,7 @@ import React from 'react'
 
 import { UpdateAttributes } from '../../entities/Updates/types'
 import useUpdateComments from '../../hooks/useUpdateComments'
-import Comments from '../Proposal/Comments/Comments'
+import Comments from '../Comments/Comments'
 
 type UpdateComments = {
   update: UpdateAttributes
