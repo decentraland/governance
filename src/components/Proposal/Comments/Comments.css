@@ -1,4 +1,4 @@
-.ProposalComments {
+.Comments {
   margin-top: 36px;
 }
 
@@ -6,34 +6,34 @@
   margin-left: 4px;
 }
 
-.ProposalComments.ProposalComments--loading > * {
+.Comments.Comments--loading > * {
   opacity: 0.5;
   pointer-events: none;
 }
 
-.ui.active.loader.ProposalComments__Loader {
+.ui.active.loader.Comments__Loader {
   top: 25%;
 }
 
-.ProposalComments .ProposalComments__Content + .ProposalComments__Content {
+.Comments .Comments__Content + .Comments__Content {
   border-top: 1px solid var(--black-400);
 }
 
-.ProposalComments .ui.button {
+.Comments .ui.button {
   font-size: 15px;
 }
 
-.ProposalComments .ui.button.ProposalComments__ReadMore {
+.Comments .ui.button.Comments__ReadMore {
   background-color: var(--background);
   border: 1px solid var(--black-400);
   width: 100%;
 }
 
 @media only screen and (max-width: 425px) {
-  .ProposalComments .ui.button {
+  .Comments .ui.button {
     font-size: 14px;
   }
-  .ProposalComments .ui.header {
+  .Comments .ui.header {
     font-size: 17px;
   }
 }

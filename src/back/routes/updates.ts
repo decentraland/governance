@@ -1,4 +1,5 @@
 import { WithAuth, auth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
+import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
@@ -18,7 +19,10 @@ import {
   isBetweenLateThresholdDate,
 } from '../../entities/Updates/utils'
 import { DiscordService } from '../../services/DiscordService'
+import { DiscourseService } from '../../services/DiscourseService'
 import Time from '../../utils/date/Time'
+import { ErrorCategory } from '../../utils/errorCategories'
+import { UpdateService } from '../services/update'
 
 // TODO: Move to backend-only Coauthors utils or service
 const isCoauthor = async (proposalId: string, address: string): Promise<boolean> => {
@@ -30,6 +34,7 @@ export default routes((route) => {
   const withAuth = auth()
   route.get('/proposals/:proposal/updates', handleAPI(getProposalUpdates))
   route.get('/proposals/:update/update', handleAPI(getProposalUpdate))
+  route.get('/proposals/:update_id/update/comments', handleAPI(getProposalUpdateComments))
   route.post('/proposals/:proposal/update', withAuth, handleAPI(createProposalUpdate))
   route.patch('/proposals/:proposal/update', withAuth, handleAPI(updateProposalUpdate))
   route.delete('/proposals/:proposal/update', withAuth, handleAPI(deleteProposalUpdate))
@@ -72,6 +77,34 @@ async function getProposalUpdates(req: Request<{ proposal: string }>) {
   }
 }
 
+async function getProposalUpdateComments(req: Request<{ update_id: string }>) {
+  const update = await UpdateService.getById(req.params.update_id)
+  console.log('u', req.params.update_id, update)
+  if (!update) {
+    throw new RequestError('Update not found', RequestError.NotFound)
+  }
+
+  const { id, discourse_topic_id } = update
+  if (!discourse_topic_id) {
+    throw new RequestError('No Discourse topic for this update', RequestError.NotFound)
+  }
+
+  try {
+    return await DiscourseService.getPostComments(discourse_topic_id)
+  } catch (error) {
+    logger.log('Error fetching discourse topic', {
+      error,
+      discourseTopicId: discourse_topic_id,
+      updateId: id,
+      category: ErrorCategory.Discourse,
+    })
+    return {
+      comments: [],
+      totalComments: 0,
+    }
+  }
+}
+
 async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
   const { author, health, introduction, highlights, blockers, next_steps, additional_notes } = req.body
 
@@ -97,7 +130,7 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     throw new RequestError(`Updates pending for this proposal`, RequestError.BadRequest)
   }
 
-  const update = await UpdateModel.createUpdate({
+  const data = {
     proposal_id: proposal.id,
     author,
     health,
@@ -106,8 +139,10 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     blockers,
     next_steps,
     additional_notes,
-  })
+  }
+  const update = await UpdateModel.createUpdate(data)
 
+  DiscourseService.createUpdate(data, update.id)
   DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
 
   return update

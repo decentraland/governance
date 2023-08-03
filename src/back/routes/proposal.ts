@@ -113,7 +113,7 @@ export default routes((route) => {
   route.get('/proposals/:proposal', handleAPI(getProposal))
   route.patch('/proposals/:proposal', withAuth, handleAPI(updateProposalStatus))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
-  route.get('/proposals/:proposal/comments', handleAPI(proposalComments))
+  route.get('/proposals/:proposal/comments', handleAPI(getProposalComments))
   route.get('/proposals/linked-wearables/image', handleAPI(checkImage))
 })
 
@@ -588,15 +588,10 @@ export async function removeProposal(req: WithAuth<Request<{ proposal: string }>
   return await ProposalService.removeProposal(proposal, user, updated_at, id)
 }
 
-export async function proposalComments(req: Request<{ proposal: string }>): Promise<ProposalCommentsInDiscourse> {
+export async function getProposalComments(req: Request<{ proposal: string }>): Promise<ProposalCommentsInDiscourse> {
   const proposal = await getProposal(req)
   try {
-    const allComments = await DiscourseService.fetchAllComments(proposal.discourse_topic_id)
-    const userIds = new Set(allComments.map((comment) => comment.user_id))
-    const users = await UserModel.getAddressesByForumId(Array.from(userIds))
-    const filteredComments = filterComments(allComments, users)
-
-    return filteredComments
+    return await DiscourseService.getPostComments(proposal.discourse_topic_id)
   } catch (error) {
     logger.log('Error fetching discourse topic', {
       error,

@@ -58,15 +58,15 @@ async function checkValidationMessage(req: WithAuth) {
 
     const { address, timestamp } = messageProperties
 
-    const comments = await DiscourseService.fetchAllComments(Number(GATSBY_DISCOURSE_CONNECT_THREAD))
-    const validationComment = getValidationComment(comments, address, timestamp)
+    const comments = await DiscourseService.getPostComments(Number(GATSBY_DISCOURSE_CONNECT_THREAD))
+    const validationComment = getValidationComment(comments.comments, address, timestamp)
 
     if (validationComment) {
       if (!isSameAddress(address, user) || !validateComment(validationComment, address, timestamp)) {
         throw new Error('Validation failed')
       }
 
-      await UserModel.createForumConnection(user, validationComment.user_id)
+      await UserModel.createForumConnection(user, validationComment.user_forum_id)
       clearValidationInProgress(user)
     }
 

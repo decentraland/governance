@@ -62,7 +62,7 @@ export function formatValidationMessage(address: string, timestamp: string) {
   return `By signing and posting this message I'm linking my Decentraland DAO account ${address} with this Discourse forum account\n\nDate: ${timestamp}`
 }
 
-export function getValidationComment(comments: DiscoursePostInTopic[], address: string, timestamp: string) {
+export function getValidationComment(comments: ProposalComment[], address: string, timestamp: string) {
   const timeWindow = new Date(new Date().getTime() - MESSAGE_TIMEOUT_TIME)
 
   const filteredComments = comments.filter((comment) => new Date(comment.created_at) > timeWindow)
@@ -75,7 +75,7 @@ export function getValidationComment(comments: DiscoursePostInTopic[], address: 
   })
 }
 
-export function validateComment(validationComment: DiscoursePostInTopic, address: string, timestamp: string) {
+export function validateComment(validationComment: ProposalComment, address: string, timestamp: string) {
   const signatureRegex = /0x([a-fA-F\d]{130})/
   const signature = '0x' + validationComment.cooked.match(signatureRegex)?.[1]
   const recoveredAddress = recoverAddress(hashMessage(formatValidationMessage(address, timestamp)), signature)

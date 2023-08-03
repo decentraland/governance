@@ -540,4 +540,9 @@ export class Governance extends API {
     const response = await this.fetch<ApiResponse<VpDistribution>>(url, this.options().method('GET'))
     return response.data
   }
+
+  async getUpdateComments(update_id: string) {
+    const result = await this.fetch<ApiResponse<ProposalCommentsInDiscourse>>(`/proposals/${update_id}/update/comments`)
+    return result.data
+  }
 }
