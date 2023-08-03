@@ -12,8 +12,9 @@ interface Props {
 
 export default function ProposalSuccessModal({ proposal, ...props }: Props & SuccessModalProps) {
   const t = useFormatMessage()
-  const linkToProposal = (proposal && proposalUrl(proposal.id)) || ''
-  const linkToForum = (proposal && forumUrl(proposal)) || ''
+  const { id, discourse_topic_id, discourse_topic_slug } = proposal
+  const linkToProposal = (proposal && proposalUrl(id)) || ''
+  const linkToForum = (proposal && forumUrl(discourse_topic_slug, discourse_topic_id)) || ''
 
   return (
     <SuccessModal
