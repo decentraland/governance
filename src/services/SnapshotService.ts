@@ -104,8 +104,8 @@ export class SnapshotService {
     return await SnapshotGraphql.get().getAddressesVotes(addresses)
   }
 
-  static async getProposalVotes(proposalId: string): Promise<SnapshotVote[]> {
-    return await SnapshotGraphql.get().getProposalVotes(proposalId)
+  static async getProposalVotes(proposalSnapshotId: string): Promise<SnapshotVote[]> {
+    return await SnapshotGraphql.get().getProposalVotes(proposalSnapshotId)
   }
 
   static async getAllVotesBetweenDates(start: Date, end: Date): Promise<SnapshotVote[]> {
@@ -120,7 +120,7 @@ export class SnapshotService {
     return await SnapshotGraphql.get().getPendingProposals(start, end, fields, limit)
   }
 
-  static async getVpDistribution(address: string, proposalId?: string): Promise<VpDistribution> {
-    return await SnapshotGraphql.get().getVpDistribution(address, proposalId)
+  static async getVpDistribution(address: string, proposalSnapshotId?: string): Promise<VpDistribution> {
+    return await SnapshotGraphql.get().getVpDistribution(address, proposalSnapshotId)
   }
 }
