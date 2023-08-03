@@ -1,3 +1,4 @@
+import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
@@ -28,7 +29,9 @@ async function getAddressesVotes(req: Request) {
 
 async function getProposalVotes(req: Request<{ id?: string }>) {
   const { id } = req.params
-  validateProposalId(id)
+  if (!id || id.length === 0) {
+    throw new RequestError('Invalid snapshot id')
+  }
 
   return await SnapshotService.getProposalVotes(id!)
 }
