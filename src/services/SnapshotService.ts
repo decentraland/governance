@@ -120,7 +120,7 @@ export class SnapshotService {
     return await SnapshotGraphql.get().getPendingProposals(start, end, fields, limit)
   }
 
-  static async getVpDistribution(address: string, proposalId?: string): Promise<VpDistribution> {
-    return await SnapshotGraphql.get().getVpDistribution(address, proposalId)
+  static async getVpDistribution(address: string, proposalSnapshotId?: string): Promise<VpDistribution> {
+    return await SnapshotGraphql.get().getVpDistribution(address, proposalSnapshotId)
   }
 }
