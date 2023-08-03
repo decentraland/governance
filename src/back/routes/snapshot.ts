@@ -5,7 +5,7 @@ import { Request } from 'express'
 
 import { SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
 import { SnapshotService } from '../../services/SnapshotService'
-import { validateAddress, validateDates, validateFields, validateProposalId } from '../utils/validations'
+import { validateAddress, validateDates, validateFields } from '../utils/validations'
 
 export default routes((router) => {
   router.get('/snapshot/status-space/:spaceName', handleAPI(getStatusAndSpace))
@@ -62,7 +62,6 @@ async function getPendingProposals(req: Request) {
 async function getVpDistribution(req: Request<{ address: string; proposalSnapshotId?: string }>) {
   const { address, proposalSnapshotId } = req.params
   validateAddress(address)
-  validateProposalId(proposalSnapshotId, 'optional')
 
   return await SnapshotService.getVpDistribution(address, proposalSnapshotId)
 }
