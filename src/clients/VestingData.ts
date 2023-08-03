@@ -14,12 +14,13 @@ export type VestingDates = {
   vestingFinishAt: string
 }
 
-type VestingLog = {
+export type VestingLog = {
   topic: string
   timestamp: string
 }
 
 export type VestingInfo = VestingDates & {
+  address: string
   logs: VestingLog[]
 }
 
@@ -111,7 +112,8 @@ export async function getVestingContractData(
     const [dates, logs] = await Promise.all([datesPromise, logsPromise])
     return {
       ...dates,
-      logs,
+      logs: logs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()),
+      address: vestingAddress,
     }
   } catch (errorV2) {
     try {
@@ -120,7 +122,8 @@ export async function getVestingContractData(
       const [dates, logs] = await Promise.all([datesPromise, logsPromise])
       return {
         ...dates,
-        logs,
+        logs: logs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()),
+        address: vestingAddress,
       }
     } catch (errorV1) {
       ErrorClient.report('Unable to fetch vesting contract data', {

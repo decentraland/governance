@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { getVestingContractData } from '../clients/VestingData'
+import { Governance } from '../clients/Governance'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
-function useVestingContractData(vestingAddress: string) {
+function useVestingContractData(vestingAddresses: string[]) {
   const { data: vestingData, isLoading } = useQuery({
-    queryKey: [`vestingContractData#${vestingAddress}`],
-    queryFn: () => getVestingContractData(vestingAddress),
+    queryKey: [`vestingContractData#${vestingAddresses.join(',')}`],
+    queryFn: () => Governance.get().getVestingContractData(vestingAddresses),
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 

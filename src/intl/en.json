@@ -1105,6 +1105,13 @@
         "vesting_label": "Grant beneficiary",
         "vesting_description": "**Funded by the Decentraland DAO**, enabled by its Community.",
         "vesting_dropdown": "View vesting contracts",
+        "vesting_dropdown_item_title": "Contract #{number}",
+        "vesting_status": {
+          "active": "Active",
+          "paused": "Paused",
+          "revoked": "Revoked"
+        },
+        "vesting_enacted_date": "Enacted {date}",
         "category_assessment": {
           "accelerator": {
             "revenue_label": "Revenue Generation Model",
