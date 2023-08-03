@@ -24,7 +24,6 @@ export default function BadgesAdmin({ className }: Props) {
 
   async function handleAirdropBadge() {
     if (badgeCid && recipients) {
-      console.log('submiting!')
       await submit(
         async () => Governance.get().airdropBadge(badgeCid, recipients),
         (result) => setResult(result)

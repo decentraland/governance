@@ -541,12 +541,10 @@ export class Governance extends API {
   }
 
   async airdropBadge(badgeSpecCid: string, recipients: string[]) {
-    console.log('recipients', recipients)
     const data = {
       badgeSpecCid,
       recipients,
     }
-    console.log('data', data)
     const response = await this.fetch<ApiResponse<string>>(
       `/badges/airdrop/`,
       this.options().method('POST').authorization({ sign: true }).json(data)

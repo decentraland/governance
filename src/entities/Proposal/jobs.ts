@@ -40,7 +40,7 @@ async function updateAcceptedProposals(acceptedProposals: ProposalWithOutcome[],
       ProposalStatus.Passed
     )
 
-    await grantLegislatorBadges(acceptedProposals)
+    grantLegislatorBadges(acceptedProposals)
   }
 }
 

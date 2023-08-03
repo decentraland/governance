@@ -3,7 +3,7 @@ import { BadgesService } from '../../services/BadgesService'
 
 const LEGISLATOR_BADGE_SPEC_CID = process.env.LEGISLATOR_BADGE_SPEC_CID || ''
 
-//TODO: error handling in this mofo
+//TODO: this should enqueue the airdrop job instead of calling the service
 export async function grantLegislatorBadges(acceptedProposals: ProposalAttributes[]) {
   const authorsAndCoauthors = acceptedProposals.flatMap((acceptedProposal) => {
     if (acceptedProposal.type === ProposalType.Governance) {
