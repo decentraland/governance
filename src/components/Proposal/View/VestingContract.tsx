@@ -47,7 +47,7 @@ function VestingContract({ vestingAddresses }: Props) {
 
   return (
     <>
-      {vestingData && (
+      {vestingData && vestingData.length > 0 && (
         <div className="VestingContract DetailsSection DetailsSection--shiny">
           <div className="DetailsSection__Content">
             <Pill color="green" style="shiny" size="sm">

@@ -106,9 +106,11 @@ export default function ProposalSidebar({
     !(proposal.status === ProposalStatus.Passed)
   )
 
+  const showVestingContract = proposal?.vesting_addresses && proposal?.vesting_addresses.length > 0
+
   return (
     <>
-      {!!proposal?.vesting_addresses && <VestingContract vestingAddresses={proposal.vesting_addresses} />}
+      {showVestingContract && <VestingContract vestingAddresses={proposal.vesting_addresses} />}
       {proposal && <ProposalCoAuthorStatus proposalId={proposal.id} proposalFinishDate={proposal.finish_at} />}
       <div className="ProposalSidebar">
         {showProposalUpdatesActions && proposal && (
