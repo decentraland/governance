@@ -892,51 +892,84 @@
     "address": "0xed0E0cb94F60F72ec94beF848f5dF4Cbd365aF1D",
     "bio": "Greetings! I am a passionate 3D artist and content creator with a unique background, I was raised by Decentraland itself! I have honed my skills in creating and coding scenes for the Metaverse, and now I’m seeking your support. As a delegate, I will use my expertise to create exceptional experiences and contribute to the growth of DCL’s vibrant community. With a proven track record as a Twitch streamer. I am confident that I can help shape the future of the Metaverse. Join me on this exciting journey and let’s make DCL the best it can be!",
     "links": ["https://linktr.ee/injesterr"],
-    "relevant_skills": [
-      "Project manager", 
-      "3D Artist", 
-      "Moderator", 
-      "Content Creator", 
-      "Supporter"
-    ],
+    "relevant_skills": ["Project manager", "3D Artist", "Moderator", "Content Creator", "Supporter"],
     "involvement": "As a Twitch streamer and content creator, I’ve had the opportunity to engage with the Decentraland community in a unique way. From showcasing my 3D art skills to creating immersive experiences for my viewers, I’ve always been passionate about sharing my love for DCL with others. During my time on Twitch, I had one of the fastest-growing channels in 2021, and although I may not have been the biggest, I had an incredible following that made the experience truly special. I onboarded and supported many known Decentraland creators, I used my platform to connect the right people with each other and gave my 100% to boost engagement for small projects. I did nearly 20.000+ giveaways manually back in the day and got many people their first 1.000 followers on Twitter, their first 400 members on Discord and help boosting their DCL sales.",
     "motivation": "Recently since end 2022 I also became familiar with the DCL DAO and have contributed my opinions ever since, at one point early in my DAO days I even got a grant for $10,000 but unfortunately I screwed up, Talking from experience I think its important to learn from mistakes and use it as experience for the future, I want to become a delegate to make sure your voting power is used in the right way.",
     "vision": "I am creating and working on a Project called Duel Arena, and in these upcoming 5 years I want to have this big project to represent Decentraland in the best way possible. I think that many more projects in DCL strive to represent Decentraland in this way so I believe that if we support the right projects with grants, and give the right parcels POI, make the right DAO decisions, only then Decentraland will become the biggest MetaVerse in 5 years from now.",
     "most_important_issue": "The biggest issue in Decentraland is people not understanding the concept of a Decentralized MetaVerse, people coming into this space think that they can't build and everything is done by some developers and 3D artists, but in the meanwhile, they don't realize how much there simplest idea can change the entire space."
   },
-   {
+  {
     "address": "0xe1951cEca2Cca5F7EbEB23b1DfDb8eB383f2EB1F",
     "bio": "I am a crypto research analyst, working in a crypto investment fund with $10M AUM. Of course I have no access to that fund hahaha.",
     "links": ["https://twitter.com/AkasyaEth", "https://akasya.xyz/", "https://app.ens.domains/akasya.eth"],
-    "relevant_skills": ["Web 3", 
-      "Research", 
-      "Technical Analysis", 
-      "Fundamental Analysis", 
-      "Equity", "Crypto", 
-      "Forex", 
-      "Regulatory Landscape", 
-      "Macroeconomics", 
-      "Economics", 
-      "Husband and a Father of 1"  
+    "relevant_skills": [
+      "Web 3",
+      "Research",
+      "Technical Analysis",
+      "Fundamental Analysis",
+      "Equity",
+      "Crypto",
+      "Forex",
+      "Regulatory Landscape",
+      "Macroeconomics",
+      "Economics",
+      "Husband and a Father of 1"
     ],
     "involvement": "I own Decentraland estate 77,-101 and 77, -102. Lend it to the market but still own the 4k VP.",
     "motivation": "As investor, I want DCL to grow in terms of revenue stuff. Of course, this will be effective if we can spend the DAO budget properly and not for accelerating projects that has little to no impact to DCL. As an estate/landowner, I want the user experience to improve without sacrificing the core principle of the project. Although we can see the project improve with DCL editor and other stuff, having enough VP (from Delegation) can help builders to have a proper and honest vote. Using my expertise, I believe honest opinions can be raised, which will lead the DCL project towards its intended goal.",
-     "vision":"My 5-year vision for Decentraland is it can host millions of users with a very low barrier of entry. This can be achieved if the DAO can decide a proper pathway, and NOT for temporary traffic.",
+    "vision": "My 5-year vision for Decentraland is it can host millions of users with a very low barrier of entry. This can be achieved if the DAO can decide a proper pathway, and NOT for temporary traffic.",
     "most_important_issue": "I believe the most important issue for DCL is the barrier of entry. The pain points in my perspective are: Users need to have a superb computer so that they can access our metaverse. Land utilization is low. Low adoption rate. User experience is good but needs to be competitive enough as more metaverse projects emerged. Decentraland (MANA) as security (US SEC). Decentralization health is questionable as the DAO and the Decentraland Foundation power is imbalanced."
   },
-   {
+  {
     "address": "0x8B257B97C0e07E527B073b6513ba8Ea659279b61",
     "bio": "Its’a me, Morphbot - Focused on bringing interoperability and VR development ideas to the space. I believe whole-heartedly that DCL is about decentralization, and enabling the creator community via open source initiatives.",
     "links": ["https://twitter.com/morph_bot", "https://www.twitch.tv/morphbottv", "https://kick.com/morph-bot"],
-    "relevant_skills": ["Full-stack engineer", 
-      "post-graduate degree in Computer Science", 
-      "Technical architecture consultation at double-digit Fortune companies", 
-      "Crypto since '17", 
+    "relevant_skills": [
+      "Full-stack engineer",
+      "post-graduate degree in Computer Science",
+      "Technical architecture consultation at double-digit Fortune companies",
+      "Crypto since '17",
       "VTuber & interoperablity researcher"
     ],
     "involvement": "I properly dove in around 2021, when NFTs were heating up and I was looking into 3D asset ownership, I saw a need for 3D platforms/frameworks, and went out to create a 3D VTuber from assets purchased off the Ethereum marketplace. This journey brought me quite literally ‘across the metaverse’ and full circle to conclude DCL as the greatest customizable and open avatar platform that exists today, a spark that I’ve tried my best to push on to others, advocating for .VRM and interoperability for the ‘general metaverse’ ever since my first successful DCL avatar export w/ full face tracking and mouth/eye movement (~Feb/March 2022) Moving on from this technology, I seeked out .VRM compatible experiences, which drove me to my first VR hardware purchase since the Oculus DK1 - As the metaverse was a concept I’ve always loved, but never felt was really within reach - until now. It was only when I was finally able to put these ideas together, alongside with the original Decentraland vision built on top of JanusVR to one day be an interoperable, web-driven, VR world - that I truly began to understand what Decentraland would be.",
     "motivation": "There is too much toxic-positivity in the DAO hoping for grants to work out, many people without proof of concepts, or solid real world experience attempt to garner support for ideas that often can be invalidated before they even begin. I don’t believe the DAO exists to fund startups that are too risky, or too low quality to receive VC investment, and until opportunities that are of a certain quality arrive, we should protect the funds to our best diligence. Every DAO-printed mana that is sold is a tax to all DCL citizens, investors & users, many of whom have worked tirelessly to provide and contribute to the open source environment and DCL platform - we have a duty to protect the treasury from those that wish to pilfer it for their own income, with no viable plan or intention to help return value that outperforms the investment given.",
-     "vision":"I see Decentraland as the backend of the metaverse, all of our clients (desktop/browser/VR) are merely interpretations of the DCL data and ecosystem for our users to connect. Through native technology and platform improvements, we live in a time where the original vision of DCL, being a browser-driven, VR, interoperable metaverse platform is possible - with the right planning and hiring of competent devs who have already built provable concepts implementing these ideas, we can push forward the native metaverse: DCL characters in every game that wishes to implement them, kicking off a wave of personalized VR avatars that causes a flourishing of market activity both for the DAO and the platforms creators, enabling shapekey & jiggle bones improvements to bring the market place to a competitive level. Users interoperably jumping between worlds of various platforms in their VR headset alongside friends, increasing the value of DCL overworld & platform, acting as a place to centralize logic for seamless exploration between even different metaverses! Don’t you wish you could wave your arms around, or talk/hangout with your friends while the actual avatar mouth moves from voice chat, with your eyes/head movement based on where you’re looking and facial micro expressions that make it feel like you are actually IN Decentraland and physically spending time with people?",
+    "vision": "I see Decentraland as the backend of the metaverse, all of our clients (desktop/browser/VR) are merely interpretations of the DCL data and ecosystem for our users to connect. Through native technology and platform improvements, we live in a time where the original vision of DCL, being a browser-driven, VR, interoperable metaverse platform is possible - with the right planning and hiring of competent devs who have already built provable concepts implementing these ideas, we can push forward the native metaverse: DCL characters in every game that wishes to implement them, kicking off a wave of personalized VR avatars that causes a flourishing of market activity both for the DAO and the platforms creators, enabling shapekey & jiggle bones improvements to bring the market place to a competitive level. Users interoperably jumping between worlds of various platforms in their VR headset alongside friends, increasing the value of DCL overworld & platform, acting as a place to centralize logic for seamless exploration between even different metaverses! Don’t you wish you could wave your arms around, or talk/hangout with your friends while the actual avatar mouth moves from voice chat, with your eyes/head movement based on where you’re looking and facial micro expressions that make it feel like you are actually IN Decentraland and physically spending time with people?",
     "most_important_issue": "I believe the DAO simply lacks direction on what the optimal use of funds could be, or what to do with funds during a bearmarket while we lack that direction, we need to have larger conversations about how the DAO can enforce a certain level of impact to ensure grants benefit all DCL users at large. Given that VR has been removed from the foundation roadmap, it becomes clear that we as a DAO must figure out a legitimate path towards VR implementations within our platform, not just at the interface level, but by supporting native VR interfaces at the platform level that any developers can connect to (such as WebXR). This concept would not only add great value to our platform, it would unlock a massive number of business use cases and improvements for all metaverse native businesses. What challenges will we face in the next 12 to 24 months? The bear market has been rough, after a 90% slide-down in mana it is clear there is a growing concern of what the future holds. I want to be clear, this is normal procedure in crypto, and while we may want to prepare ourselves for future cycles, we must be very careful about acting rash in a time of such negative average price disparity. What we can do, is rally together, cut spending, and unify on ideas that will multiply the value of the DCL platform for all involved - That’s why I’m here, even though I hate politics and would much rather be working on my avatar ecosystem."
+  },
+  {
+    "address": "0x3429CbFf7EB34e4C9dD9D7E41041fd7b2a01FdB0",
+    "bio": "Decentraland Verified Partner and founder of the DCL Brasil community.",
+    "links": [
+      "https://x.com/atrovenado",
+      "https://www.instagram.com/decentraland.brasil",
+      "https://linktr.ee/decentralandbrasil"
+    ],
+    "relevant_skills": ["Project management"],
+    "involvement": "I’ve been a Decentraland citizen since 2021. Since then I released several wearables, founded the DCL Brasil community, thrown lots of events and connected/onboarded lots of users",
+    "motivation": "The community has voiced their wish to delegate me recently, so I’m just formalizing the request",
+    "vision": "Stronger and active communities",
+    "most_important_issue": "I believe our biggest priority is to improve software performance. Also onboarding and engaging new and old users"
+  },
+  {
+    "address": "0xD1759165409B64fb4e58CEa071424Fd28fC963cf",
+    "bio": "I’m experienced marketing specialist, content creator, 3D/VR educator and currently serves in the Strategic Relations role for the Decentraland DAO Facilitation Squad. I have over 15 years of experience teaching Digital arts in visual art centers and have worked as an educator with various STEM programs for over 10 years",
+    "links": ["https://twitter.com/Fractilians7"],
+    "relevant_skills": [
+      "Marketing",
+      "Content Creator",
+      "Premiere Pro",
+      "Illustrator",
+      "Photoshop",
+      "Web Developer",
+      "3D modeler",
+      "Unity",
+      "Cross metaverse Builder",
+      "Wearable Creator",
+      "Community Engagement"
+    ],
+    "involvement": "In early 2021, I joined Decentraland and fell in love with the creative possibilities and community. As an art curator, event coordinator, and member of the DCL Reporter crew, I interviewed creators and builders and did tutorials for a year. I also participated in a tier 6 grant with IRL Art as a builder, wearable creator, and event coordinator. For the past year, I’ve been a member of the Decentraland DAO facilitation squad with a Strategic Comms focus. Additionally, I’m honored to be one of the artists invited to the upcoming Beta Launch of the MESH art show. As a builder and creator at heart, I’m dedicated to serving and supporting the community",
+    "motivation": "I love creativity, learning, collaboration and building. Those are all the things that originally led me down the rabbit hole to Decentraland and those are the reasons driving me wanting to be a delegate. Since the first day I entered Decentraland I have been fascinated and inspired by the community of builders working diligently to make the amazing experiences and builds in Decentraland. I have built and been a part of various grants, learned from many different creators, interviewed and hosted countless events and for the past year I have been serving the community as a member of the Facilitation Squad. I want to help be a positive voice for the builders and creators and feel that all that I have contributed to DCL so far has really given me a good understanding of the heart of this community. I would love the opportunity to help that amazing heart grow",
+    "vision": "I see it as the central hub of collaboration and creativity across all Metaverses. It will continue to grow and become known as the playground for innovative experiences. Educators, students, brands, entrepreneurs , universities, business incubators creators will cross-polinnate and build together. Since I started as a DAO facilitator, I’ve been serving the community and attempting to share the light and innovation in this community. I want to continue to build pathways for that story to be told to the community and to all others. I want to see more collaboration and less destructive behavior. I hope to promote that and hope that this simple idea of sharing the positive, will help light a pathway to that positive collaboration",
+    "most_important_issue": "One of the most important/challenging issues is with VP distribution and the lack of incentives to participate and engage in votings and the decision making process. I don’t really see challenges as challenges but as opportunities. I don’t see we have competitors I think we have amazing opportunities for collaborations. I think growth and onboarding which are seen as challenges will be where we see the most innovation and creativity"
   }
 ]

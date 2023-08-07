@@ -27,7 +27,7 @@ export class DiscourseService {
     snapshotId: string
   ) {
     try {
-      const discoursePost = await this.getProposalPost(data, profile, proposalId, snapshotUrl, snapshotId)
+      const discoursePost = await this.getPost(data, profile, proposalId, snapshotUrl, snapshotId)
       const discourseProposal = await Discourse.get().createPost(discoursePost)
       this.logPostCreation(discourseProposal)
       return discourseProposal
@@ -49,7 +49,7 @@ export class DiscourseService {
     }
   }
 
-  private static async getProposalPost(
+  private static async getPost(
     data: ProposalInCreation,
     profile: Avatar | null,
     proposalId: string,
@@ -136,5 +136,14 @@ export class DiscourseService {
     const users = await UserModel.getAddressesByForumId(Array.from(userIds))
 
     return filterComments(allComments, users)
+  }
+
+  static async getUserById(id: number) {
+    try {
+      return await Discourse.get().getUserById(id)
+    } catch (error) {
+      console.error(`Error getting Discourse user: ${id}`, error)
+      return null
+    }
   }
 }

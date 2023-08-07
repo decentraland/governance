@@ -121,6 +121,12 @@ export function forumUrl(
   return target.toString()
 }
 
+export function forumUserUrl(username: string) {
+  const target = new URL(DISCOURSE_API || '')
+  target.pathname = `/u/${username}`
+  return target.toString()
+}
+
 export function governanceUrl(pathname = '') {
   const target = new URL(GOVERNANCE_API)
   target.pathname = pathname
