@@ -6,6 +6,7 @@ import { ContractVersion, TopicsByVersion } from '../../../utils/contracts'
 import Time from '../../../utils/date/Time'
 import { env } from '../../../utils/env'
 import Link from '../../Common/Typography/Link'
+import ChevronRight from '../../Icon/ChevronRight'
 
 import './VestingContractItem.css'
 
@@ -36,26 +37,29 @@ function VestingContractItem({ address, itemNumber, logs, vestingStartAt }: Prop
   const url = VESTING_DASHBOARD_URL.replace('%23', '#').concat(address.toLowerCase())
   return (
     <Link className="VestingContractItem" target="_blank" href={url}>
-      <div className="VestingContractItem__title">
-        {t('page.proposal_detail.grant.vesting_dropdown_item_title', { number: itemNumber })}
+      <div>
+        <div className="VestingContractItem__title">
+          {t('page.proposal_detail.grant.vesting_dropdown_item_title', { number: itemNumber })}
+        </div>
+        <div className="VestingContractItem__Details">
+          {isVestingActive ? (
+            <>
+              <span className="VestingContractItem__DetailsActive">
+                {t('page.proposal_detail.grant.vesting_status.active')}
+              </span>
+              <span>{' · '}</span>
+              <span>{t('page.proposal_detail.grant.vesting_enacted_date', { date: formatDate(vestingStartAt) })}</span>
+            </>
+          ) : (
+            <>
+              <span>{t(STATUS_KEYS[lastLog.topic])}</span>
+              <span> </span>
+              <span>{formatDate(lastLog.timestamp)}</span>
+            </>
+          )}
+        </div>
       </div>
-      <div className="VestingContractItem__Details">
-        {isVestingActive ? (
-          <>
-            <span className="VestingContractItem__DetailsActive">
-              {t('page.proposal_detail.grant.vesting_status.active')}
-            </span>
-            <span>{' · '}</span>
-            <span>{t('page.proposal_detail.grant.vesting_enacted_date', { date: formatDate(vestingStartAt) })}</span>
-          </>
-        ) : (
-          <>
-            <span>{t(STATUS_KEYS[lastLog.topic])}</span>
-            <span> </span>
-            <span>{formatDate(lastLog.timestamp)}</span>
-          </>
-        )}
-      </div>
+      <ChevronRight color="var(--black-400)" />
     </Link>
   )
 }

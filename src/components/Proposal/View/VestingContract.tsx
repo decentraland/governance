@@ -22,11 +22,20 @@ function getDropdownItems(vestingData: VestingInfo[] | undefined) {
     return undefined
   }
 
+  const vestingsAmount = vestingData.length
+
   return vestingData.map((vestingInfo, idx) => {
     const { logs, vestingStartAt, address } = vestingInfo
     return {
       key: address,
-      text: <VestingContractItem address={address} itemNumber={idx + 1} logs={logs} vestingStartAt={vestingStartAt} />,
+      text: (
+        <VestingContractItem
+          address={address}
+          itemNumber={vestingsAmount - idx}
+          logs={logs}
+          vestingStartAt={vestingStartAt}
+        />
+      ),
     }
   })
 }
@@ -34,15 +43,7 @@ function getDropdownItems(vestingData: VestingInfo[] | undefined) {
 function VestingContract({ vestingAddresses }: Props) {
   const t = useFormatMessage()
 
-  // Agregar divider y arrow
-
-  const vestingAddressesExample = [
-    '0x37cdfc5e4e9b9642648948568f8a4b2563719d48',
-    '0x0BB8270345bf29c2Bb57c84E454830C4a0A6BaF4',
-    '0x142FD01F8433361E068D26d112769806a118D095',
-  ]
-
-  const { vestingData } = useVestingContractData(vestingAddressesExample)
+  const { vestingData } = useVestingContractData(vestingAddresses)
 
   return (
     <>

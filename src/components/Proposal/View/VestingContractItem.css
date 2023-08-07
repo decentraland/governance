@@ -1,5 +1,8 @@
 .VestingContractItem,
 .VestingContractItem:hover {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   color: var(--white-900);
   line-height: 24px;
 }
