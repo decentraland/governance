@@ -9,9 +9,14 @@ const HealthEmoji = {
 }
 
 const HealthText = {
-  [ProjectHealth.OnTrack]: 'On track',
-  [ProjectHealth.AtRisk]: 'At risk',
-  [ProjectHealth.OffTrack]: 'Off track',
+  [ProjectHealth.OnTrack]: 'On Track',
+  [ProjectHealth.AtRisk]: 'At Risk',
+  [ProjectHealth.OffTrack]: 'Off Track',
+}
+
+const StatusText = {
+  [UpdateStatus.Done]: 'On Time',
+  [UpdateStatus.Late]: 'Late',
 }
 
 export type ForumTemplate = {
@@ -35,7 +40,7 @@ export const forumDescription = ({
 }: ForumTemplate) => template`
 
 Author: ${author}
-${status === UpdateStatus.Late ? 'This project is late.' : ''}
+${status === UpdateStatus.Done || status === UpdateStatus.Late ? `Update Status: ${StatusText[status]}` : ''}
 ${health ? `Project Health: ${HealthEmoji[health]} ${HealthText[health]}` : ''}
 
 ## Introduction 
