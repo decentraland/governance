@@ -7,7 +7,7 @@ import * as proposalTemplates from '../entities/Proposal/templates'
 import { forumUrl, proposalUrl } from '../entities/Proposal/utils'
 import * as updateTemplates from '../entities/Updates/templates'
 import { UpdateAttributes } from '../entities/Updates/types'
-import { getUpdateUrl } from '../entities/Updates/utils'
+import { getPublicUpdates, getUpdateUrl } from '../entities/Updates/utils'
 import UserModel from '../entities/User/model'
 import { filterComments } from '../entities/User/utils'
 import { inBackground } from '../helpers'
@@ -15,8 +15,6 @@ import { Avatar } from '../utils/Catalyst/types'
 
 import { ProposalInCreation } from './ProposalService'
 import { SnapshotService } from './SnapshotService'
-
-type Update = Omit<UpdateAttributes, 'id' | 'status' | 'due_date' | 'completion_date' | 'created_at' | 'updated_at'>
 
 export class DiscourseService {
   static async createProposal(
@@ -37,9 +35,12 @@ export class DiscourseService {
     }
   }
 
-  static async createUpdate(data: Update, updateId: string) {
+  static async createUpdate(data: UpdateAttributes, updateId: string, proposalTitle: string) {
     try {
-      const discoursePost = this.getUpdatePost(data, updateId)
+      const updates = await UpdateService.getAllByProposalId(data.proposal_id)
+      const publicUpdates = getPublicUpdates(updates)
+      const updateIndex = publicUpdates.length
+      const discoursePost = this.getUpdatePost(data, updateId, updateIndex, proposalTitle)
       const discourseUpdate = await Discourse.get().createPost(discoursePost)
       await UpdateService.update(updateId, discourseUpdate)
       this.logPostCreation(discourseUpdate)
@@ -73,12 +74,13 @@ export class DiscourseService {
     }
   }
 
-  private static getUpdatePost(data: Update, update_id: string) {
+  private static getUpdatePost(data: UpdateAttributes, update_id: string, updateIndex: number, proposalTitle: string) {
+    const { author, proposal_id } = data
     const template: updateTemplates.ForumTemplate = {
-      user: data.author || '',
-      title: `${update_id} for proposal ${data.proposal_id}`,
-      update_id,
-      update_url: getUpdateUrl(update_id, data.proposal_id),
+      author: author || '',
+      title: `Update #${updateIndex} for proposal "${proposalTitle}"`,
+      update_url: getUpdateUrl(update_id, proposal_id),
+      ...data,
     }
 
     return {

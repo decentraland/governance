@@ -56,7 +56,7 @@ async function getProposalUpdates(req: Request<{ proposal: string }>) {
     throw new RequestError(`Proposal not found: "${proposal_id}"`, RequestError.NotFound)
   }
 
-  const updates = await UpdateModel.find<UpdateAttributes>({ proposal_id })
+  const updates = await UpdateService.getAllByProposalId(proposal_id)
   const publicUpdates = getPublicUpdates(updates)
   const nextUpdate = getNextPendingUpdate(updates)
   const currentUpdate = getCurrentUpdate(updates)
@@ -134,8 +134,7 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     additional_notes,
   }
   const update = await UpdateModel.createUpdate(data)
-
-  DiscourseService.createUpdate(data, update.id)
+  DiscourseService.createUpdate(update, update.id, proposal.title)
   DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
 
   return update
