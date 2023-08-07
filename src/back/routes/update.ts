@@ -133,7 +133,7 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     additional_notes,
   }
   const update = await UpdateModel.createUpdate(data)
-  DiscourseService.createUpdate(update, proposal.title)
+  await DiscourseService.createUpdate(update, proposal.title)
   DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
 
   return update

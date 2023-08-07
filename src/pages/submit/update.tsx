@@ -228,7 +228,7 @@ export default function Update({ isEdit }: Props) {
     }
   }
 
-  if (accountState.loading || isLoadingUpdate) {
+  if (accountState.loading || (updateId && isLoadingUpdate)) {
     return <LoadingView />
   }
 
