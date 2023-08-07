@@ -221,7 +221,7 @@ export class ProposalService {
     inBackground(async () => {
       const updatedProposal: ProposalAttributes | undefined = await ProposalModel.findOne<ProposalAttributes>({ id })
       if (!updatedProposal) {
-        logger.error('Invalid proposal id for discourse update', { id: id })
+        logger.error('Invalid proposal id for discourse update', { id })
         return
       }
       const votes = await VoteService.getVotes(updatedProposal.id)

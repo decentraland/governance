@@ -72,7 +72,6 @@ async function getProposalUpdates(req: Request<{ proposal: string }>) {
 
 async function getProposalUpdateComments(req: Request<{ update_id: string }>) {
   const update = await UpdateService.getById(req.params.update_id)
-  console.log('u', req.params.update_id, update)
   if (!update) {
     throw new RequestError('Update not found', RequestError.NotFound)
   }
@@ -134,7 +133,7 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     additional_notes,
   }
   const update = await UpdateModel.createUpdate(data)
-  DiscourseService.createUpdate(update, update.id, proposal.title)
+  DiscourseService.createUpdate(update, proposal.title)
   DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
 
   return update
@@ -142,7 +141,7 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
 
 async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
   const { id, author, health, introduction, highlights, blockers, next_steps, additional_notes } = req.body
-  const update = await UpdateModel.findOne(id)
+  const update = await UpdateModel.findOne<UpdateAttributes>(id)
   const proposalId = req.params.proposal
 
   if (!update) {
@@ -186,8 +185,14 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     { id }
   )
 
-  if (!completion_date) {
-    DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
+  const updatedUpdate = await UpdateService.getById(id)
+  if (updatedUpdate) {
+    if (!completion_date) {
+      DiscourseService.createUpdate(updatedUpdate, proposal.title)
+      DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
+    } else {
+      UpdateService.commentUpdateEditInDiscourse(updatedUpdate)
+    }
   }
 
   return true
@@ -233,6 +238,8 @@ async function deleteProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
       { id: update.id }
     )
   }
+
+  UpdateService.commentUpdateDeleteInDiscourse(update)
 
   return true
 }

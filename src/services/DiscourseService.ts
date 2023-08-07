@@ -35,14 +35,14 @@ export class DiscourseService {
     }
   }
 
-  static async createUpdate(data: UpdateAttributes, updateId: string, proposalTitle: string) {
+  static async createUpdate(data: UpdateAttributes, proposalTitle: string) {
     try {
       const updates = await UpdateService.getAllByProposalId(data.proposal_id)
       const publicUpdates = getPublicUpdates(updates)
       const updateIndex = publicUpdates.length
-      const discoursePost = this.getUpdatePost(data, updateId, updateIndex, proposalTitle)
+      const discoursePost = this.getUpdatePost(data, data.id, updateIndex, proposalTitle)
       const discourseUpdate = await Discourse.get().createPost(discoursePost)
-      await UpdateService.update(updateId, discourseUpdate)
+      await UpdateService.updateWithDiscoursePost(data.id, discourseUpdate)
       this.logPostCreation(discourseUpdate)
       return discourseUpdate
     } catch (error: any) {
