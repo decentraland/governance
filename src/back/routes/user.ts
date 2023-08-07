@@ -111,7 +111,7 @@ async function getProfile(req: Request) {
     }
   } catch (error) {
     const message = 'Error while fetching profile data'
-    ErrorService.report(message, { error })
+    ErrorService.report(message, { address, error })
     throw new Error(`${message}. ${error}`)
   }
 }
