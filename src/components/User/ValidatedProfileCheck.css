@@ -1,0 +1,10 @@
+.ValidatedProfileCheck {
+  display: flex;
+  position: relative;
+  width: 24px;
+}
+
+.ValidatedProfileCheck__Icon {
+  width: 100%;
+  height: 100%;
+}
