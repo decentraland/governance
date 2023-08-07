@@ -465,6 +465,15 @@ export class Governance extends API {
     return result.data
   }
 
+  async getUserProfile(address: string) {
+    const result = await this.fetch<ApiResponse<{ forum_id: number | null; forum_username: string | null }>>(
+      `/user/${address}`,
+      this.options().method('GET')
+    )
+
+    return result.data
+  }
+
   async getBadges(address: string) {
     const response = await this.fetch<ApiResponse<UserBadges>>(`/badges/${address}`)
     return response.data
