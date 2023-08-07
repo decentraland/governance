@@ -25,6 +25,7 @@ export async function getProposalVotes(req: Request<{ proposal: string }>) {
   const refresh = req.query.refresh === 'true'
 
   const proposal = await getProposal(req)
+  // TODO: Replace lines 29-32 with VoteService.getVotes
   let latestVotes = await VotesModel.getVotes(proposal.id)
   if (!latestVotes) {
     latestVotes = await VotesModel.createEmpty(proposal.id)
@@ -72,11 +73,6 @@ export async function getCachedVotes(req: Request) {
     result[vote.proposal_id] = vote.votes
     return result
   }, {} as Record<string, Record<string, Vote>>)
-}
-
-export async function getVotes(proposal_id: string) {
-  const proposalVotes: VoteAttributes | null = await VotesModel.getVotes(proposal_id)
-  return proposalVotes?.votes ? proposalVotes.votes : await VotesModel.createEmpty(proposal_id)
 }
 
 async function getAddressVotesWithProposals(req: Request) {
