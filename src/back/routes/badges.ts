@@ -26,7 +26,7 @@ async function airdropBadges(req: WithAuth): Promise<string> {
   const recipients: string[] = req.body.recipients
   const badgeSpecCId = req.body.badgeSpecCid
 
-  if (!user || !isDebugAddress(user)) {
+  if (!isDebugAddress(user)) {
     throw new RequestError('Invalid user', RequestError.Unauthorized)
   }
 

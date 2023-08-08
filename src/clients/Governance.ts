@@ -552,6 +552,7 @@ export class Governance extends API {
     return response.data
   }
 
+  //TODO: implement and test what happens if airdropping to a user with revoked badge
   async revokeBadge(badgeSpecCid: string, recipients: string[]) {
     console.log('badgeSpecCid', badgeSpecCid)
     console.log('recipients', recipients)
