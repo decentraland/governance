@@ -5,6 +5,7 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
 import Heading from '../components/Common/Typography/Heading'
 import Text from '../components/Common/Typography/Text'
+import BadgesAdmin from '../components/Debug/BadgesAdmin'
 import BudgetsUpdate from '../components/Debug/BudgetsUpdate'
 import EnvStatus from '../components/Debug/EnvStatus'
 import ErrorReporting from '../components/Debug/ErrorReporting'
@@ -33,6 +34,7 @@ export default function DebugPage() {
       <Text>{process.env.GATSBY_VERSION_NUMBER}</Text>
       <BudgetsUpdate className="DebugPage__Section" />
       <HttpStatus className="DebugPage__Section" />
+      <BadgesAdmin className="DebugPage__Section" />
       <SnapshotStatus className="DebugPage__Section" />
       <EnvStatus className="DebugPage__Section" />
       <ErrorReporting className="DebugPage__Section" />

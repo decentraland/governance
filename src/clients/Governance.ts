@@ -21,6 +21,7 @@ import {
   NewProposalPitch,
   NewProposalPoll,
   NewProposalTender,
+  PendingProposalsQuery,
   ProposalAttributes,
   ProposalCommentsInDiscourse,
   ProposalStatus,
@@ -67,8 +68,6 @@ export type GetProposalsFilter = {
   snapshotIds?: string
   linkedProposalId?: string
 }
-
-type PendingProposalsQuery = { start: Date; end: Date; fields: (keyof SnapshotProposal)[]; limit: number }
 
 const getGovernanceApiUrl = () => {
   if (process.env.GATSBY_HEROKU_APP_NAME) {
@@ -548,5 +547,24 @@ export class Governance extends API {
     const url = `/snapshot/vp-distribution/${address}${snapshotId}`
     const response = await this.fetch<ApiResponse<VpDistribution>>(url, this.options().method('GET'))
     return response.data
+  }
+
+  async airdropBadge(badgeSpecCid: string, recipients: string[]) {
+    const data = {
+      badgeSpecCid,
+      recipients,
+    }
+    const response = await this.fetch<ApiResponse<string>>(
+      `/badges/airdrop/`,
+      this.options().method('POST').authorization({ sign: true }).json(data)
+    )
+    return response.data
+  }
+
+  //TODO: implement and test what happens if airdropping to a user with revoked badge
+  async revokeBadge(badgeSpecCid: string, recipients: string[]) {
+    console.log('badgeSpecCid', badgeSpecCid)
+    console.log('recipients', recipients)
+    return `Revoke ${badgeSpecCid} from ${recipients}`
   }
 }
