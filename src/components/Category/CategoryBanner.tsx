@@ -100,7 +100,7 @@ export default function CategoryBanner({ active = true, isNew, type, onClick, hr
       </div>
       <div>
         <div className="CategoryBanner__TitleContainer">
-          <Text className="CategoryBanner__Title" size="lg" weight="semi-bold">
+          <Text className="CategoryBanner__Title" size="lg" weight="medium">
             {t(`category.${type}_title`)}
           </Text>
           {isNew && <span className="CategoryBanner__Badge NewBadge">{t(`category.new`)}</span>}
@@ -110,7 +110,7 @@ export default function CategoryBanner({ active = true, isNew, type, onClick, hr
             </span>
           )}
         </div>
-        <Text>{t(`category.${type}_description`)}</Text>
+        <Text weight="normal">{t(`category.${type}_description`)}</Text>
         {!active && (
           <Markdown componentsClassNames={{ p: 'CategoryBanner__PausedText' }}>{t(`category.${type}_paused`)}</Markdown>
         )}

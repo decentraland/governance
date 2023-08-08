@@ -79,3 +79,7 @@
   gap: 10px;
   margin-bottom: 10px;
 }
+
+.SubmitPage__Header {
+  text-transform: uppercase;
+}

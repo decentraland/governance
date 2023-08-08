@@ -9,7 +9,7 @@ const DEFAULT_FONT_WEIGHT: FontWeight = 'normal'
 const DEFAULT_FONT_SIZE: FontSize = 'md'
 const DEFAULT_FONT_STYLE: FontStyle = 'normal'
 export type FontSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
-export type FontWeight = 'bold' | 'semi-bold' | 'normal'
+export type FontWeight = 'bold' | 'semi-bold' | 'normal' | 'medium' | 'light'
 type TextColor = 'default' | 'primary' | 'secondary' | 'error'
 type FontStyle = 'normal' | 'italic'
 
