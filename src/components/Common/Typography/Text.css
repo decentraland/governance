@@ -28,12 +28,20 @@
   line-height: 1.81px;
 }
 
-.Text.Text--weight-normal {
+.Text.Text--weight-light {
   font-weight: var(--weight-light);
 }
 
-.Text.Text--weight-semi-bold {
+.Text.Text--weight-normal {
   font-weight: var(--weight-normal);
+}
+
+.Text.Text--weight-medium {
+  font-weight: var(--weight-medium);
+}
+
+.Text.Text--weight-semi-bold {
+  font-weight: var(--weight-semi-bold);
 }
 
 .Text.Text--weight-bold {

@@ -65,13 +65,15 @@ export default function NewProposalPage() {
       />
       <ContentLayout className="ProposalDetailPage">
         <ContentSection>
-          <Header size="huge">{t('page.submit.title')} &nbsp;</Header>
-          <Text size="xl">{t('page.submit.description') || ''}</Text>
+          <Header size="huge">{t('page.submit.title')}</Header>
+          <Text size="lg" weight="normal">
+            {t('page.submit.description') || ''}
+          </Text>
         </ContentSection>
         <ContentSection>
-          <Header sub className="ProposalDetailPage_SubHeader">
+          <Text className="SubmitPage__Header" size="sm" weight="semi-bold" color="secondary">
             {t('page.submit.common_actions')}
-          </Header>
+          </Text>
           <CategoryBanner
             type={ProposalType.Catalyst}
             onClick={() => setProposalModalProps({ ...CATALYST_MODAL_PROPS, open: true })}
@@ -90,15 +92,15 @@ export default function NewProposalPage() {
           <CategoryBanner isNew type={ProposalType.Hiring} onClick={setHiringModalProps} />
         </ContentSection>
         <ContentSection>
-          <Header sub className="ProposalDetailPage_SubHeader">
+          <Text className="SubmitPage__Header" size="sm" weight="semi-bold" color="secondary">
             {t('page.submit.bidding_tendering_process')}
-          </Header>
+          </Text>
           <CategoryBanner isNew type={ProposalType.Pitch} href={locations.submit(ProposalType.Pitch)} />
         </ContentSection>
         <ContentSection>
-          <Header sub className="ProposalDetailPage_SubHeader">
+          <Text className="SubmitPage__Header" size="sm" weight="semi-bold" color="secondary">
             {t('page.submit.governance_process')}
-          </Header>
+          </Text>
           <CategoryBanner type={ProposalType.Poll} href={locations.submit(ProposalType.Poll)} />
         </ContentSection>
       </ContentLayout>

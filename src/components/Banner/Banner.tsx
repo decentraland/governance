@@ -51,7 +51,7 @@ function Banner({
           <div className="Banner__Icon">{icon}</div>
           <div className="Banner__Content">
             <div className="Banner__Description">
-              <Text size="lg" weight="semi-bold">
+              <Text weight="medium" size="lg">
                 {title}
               </Text>
               <Text>{description}</Text>

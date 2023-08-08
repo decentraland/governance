@@ -1,23 +1,24 @@
 import React, { useEffect, useState } from 'react'
 
 import classNames from 'classnames'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
+
+import Text from '../Common/Typography/Text'
 
 import './CollapsibleFilter.css'
 
-type CollapsibleFilterProps = {
+type Props = {
   title: string
   startOpen?: boolean
   children: React.ReactNode
   onChange?: (open: boolean) => void
 }
 
-function CollapsibleFilter({ title, children, startOpen, onChange }: CollapsibleFilterProps) {
+function CollapsibleFilter({ title, children, startOpen, onChange }: Props) {
   const [open, setOpen] = useState(!!startOpen)
 
   useEffect(() => {
     onChange && onChange(open)
-  }, [])
+  }, [onChange, open])
 
   const toggleHandler = () => {
     setOpen(!open)
@@ -25,11 +26,11 @@ function CollapsibleFilter({ title, children, startOpen, onChange }: Collapsible
   }
 
   return (
-    <div className={'CollapsibleFilter'}>
-      <div className={'FilterHeader'} onClick={toggleHandler}>
-        <Header sub className={'FilterHeader__Title'}>
+    <div className="CollapsibleFilter">
+      <div className="FilterHeader" onClick={toggleHandler}>
+        <Text className="FilterHeader__Title" size="sm" weight="semi-bold" color="secondary">
           {title}
-        </Header>
+        </Text>
         <div className="PlusMinusContainer">
           <div className={classNames('PlusMinus', !open && 'PlusMinus--closed')} />
           <div className="PlusMinus" />
@@ -40,4 +41,4 @@ function CollapsibleFilter({ title, children, startOpen, onChange }: Collapsible
   )
 }
 
-export default React.memo(CollapsibleFilter)
+export default CollapsibleFilter
