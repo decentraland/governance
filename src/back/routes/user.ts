@@ -110,8 +110,6 @@ async function getProfile(req: Request) {
       forum_username: forum_id ? (await DiscourseService.getUserById(forum_id))?.username : null,
     }
   } catch (error) {
-    const message = 'Error while fetching profile data'
-    ErrorService.report(message, { address, error })
-    throw new Error(`${message}. ${error}`)
+    throw new Error(`Error while fetching profile data. ${error}`)
   }
 }
