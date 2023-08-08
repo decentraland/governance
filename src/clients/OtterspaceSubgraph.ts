@@ -1,6 +1,7 @@
 import fetch from 'isomorphic-fetch'
 
 import { OTTERSPACE_DAO_RAFT_ID, OTTERSPACE_QUERY_ENDPOINT } from '../entities/Snapshot/constants'
+import { isProdEnv } from '../utils/governanceEnvs'
 
 import { inBatches, trimLastForwardSlash } from './utils'
 
@@ -35,11 +36,24 @@ query Badges($raft_id: String!, $address: Bytes!, $first: Int!, $skip: Int!) {
   }
 }`
 
+const BADGE_SPEC_OWNERS_QUERY = `
+query Badges($badgeCid: String!) {
+    badges: badges(
+        where: {spec: $badgeCid}
+        ){
+           id
+            owner {
+                id
+            }
+           }
+       }`
+
 export type OtterspaceBadge = {
   id: string
   createdAt: number
   status: string
   statusReason: string
+  owner?: { id: string }
   spec: {
     id: string
     metadata: {
@@ -80,7 +94,7 @@ export class OtterspaceSubgraph {
   }
 
   private static getQueryEndpoint() {
-    if (!OTTERSPACE_QUERY_ENDPOINT) {
+    if (isProdEnv() && !OTTERSPACE_QUERY_ENDPOINT) {
       throw new Error(
         'Failed to determine otterspace query endpoint. Please check OTTERSPACE_QUERY_ENDPOINT env is defined'
       )
@@ -110,5 +124,28 @@ export class OtterspaceSubgraph {
     )
 
     return badges
+  }
+
+  async getBadgeOwners(badgeCid: string) {
+    const badges: OtterspaceBadge[] = await inBatches(
+      async (vars, skip, first) => {
+        const response = await fetch(this.queryEndpoint, {
+          method: 'post',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query: BADGE_SPEC_OWNERS_QUERY,
+            variables: { ...vars, skip, first },
+            operationName: 'Badges',
+            extensions: { headers: null },
+          }),
+        })
+
+        const body = await response.json()
+        return body?.data?.badges || []
+      },
+      { badgeCid }
+    )
+
+    return badges.map((badge) => badge.owner?.id.toLowerCase()).filter(Boolean)
   }
 }

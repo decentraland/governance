@@ -4,6 +4,7 @@
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
 import { CommitteeName } from '../../clients/DclData'
+import { SnapshotProposal } from '../../clients/SnapshotGraphqlTypes'
 import {
   CategoryAssessmentQuestions,
   GrantRequestDueDiligence,
@@ -826,3 +827,5 @@ export type CategorizedGrants = {
   past: GrantWithUpdate[]
   total: number
 }
+
+export type PendingProposalsQuery = { start: Date; end: Date; fields: (keyof SnapshotProposal)[]; limit: number }
