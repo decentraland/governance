@@ -24,7 +24,6 @@ export class UpdateService {
   }
 
   static commentUpdateEditInDiscourse(update: UpdateAttributes) {
-    console.log('uuuu', update)
     inBackground(async () => {
       if (!update.discourse_topic_id) {
         logger.error('No discourse topic associated to this update', { id: update.id })
