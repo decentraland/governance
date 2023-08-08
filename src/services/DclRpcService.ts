@@ -20,7 +20,7 @@ export default class DclRpcService {
     return process.env.RPC_PROVIDER_URL + networkName
   }
 
-  public static polygon() {
+  public static getPolygonProvider() {
     return new JsonRpcProvider(process.env.RPC_PROVIDER_URL + 'polygon')
   }
 }

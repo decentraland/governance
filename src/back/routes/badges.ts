@@ -3,7 +3,6 @@ import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
-import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { UserBadges } from '../../entities/Badges/types'
 import isDebugAddress from '../../entities/Debug/isDebugAddress'
@@ -32,9 +31,7 @@ async function airdropBadges(req: WithAuth): Promise<string> {
   }
 
   recipients.map((address) => {
-    if (!address || !isEthereumAddress(address)) {
-      throw new RequestError('Invalid address', RequestError.BadRequest)
-    }
+    validateAddress(address)
   })
 
   return await BadgesService.grantBadgeToUsers(badgeSpecCId, recipients)
