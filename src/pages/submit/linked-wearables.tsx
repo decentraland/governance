@@ -42,7 +42,7 @@ type LinkedWearablesState = {
   image_previews: Record<string, string>
   links: Record<string, string>
   nft_collections: string
-  items: number
+  items: string
   smart_contract: Record<string, string>
   governance: string
   motivation: string
@@ -69,7 +69,7 @@ const initialState: LinkedWearablesState = {
     '0': '',
   },
   nft_collections: '',
-  items: 1,
+  items: '1',
   smart_contract: {
     '0': '',
   },
@@ -262,6 +262,7 @@ export default function SubmitLinkedWearables() {
     try {
       const proposal = await Governance.get().createProposalLinkedWearables({
         ...data,
+        items: Number(data.items),
         links: removeEmptyStrings(Object.values(data.links)),
         smart_contract: removeEmptyStrings(Object.values(data.smart_contract)),
         managers: removeEmptyStrings(Object.values(data.managers)),
