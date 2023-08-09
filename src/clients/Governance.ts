@@ -459,6 +459,15 @@ export class Governance extends API {
     return result.data
   }
 
+  async getUserProfile(address: string) {
+    const result = await this.fetch<ApiResponse<{ forum_id: number | null; forum_username: string | null }>>(
+      `/user/${address}`,
+      this.options().method('GET')
+    )
+
+    return result.data
+  }
+
   async getBadges(address: string) {
     const response = await this.fetch<ApiResponse<UserBadges>>(`/badges/${address}`)
     return response.data
@@ -540,5 +549,10 @@ export class Governance extends API {
       this.options().method('POST').json({ addresses })
     )
     return response.data
+  }
+
+  async getUpdateComments(update_id: string) {
+    const result = await this.fetch<ApiResponse<ProposalCommentsInDiscourse>>(`/proposals/${update_id}/update/comments`)
+    return result.data
   }
 }

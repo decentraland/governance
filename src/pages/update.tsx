@@ -8,6 +8,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import Link from '../components/Common/Typography/Link'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import LoadingView from '../components/Layout/LoadingView'
+import UpdateComments from '../components/Updates/UpdateComments'
 import UpdateMarkdownView from '../components/Updates/UpdateMarkdownView'
 import { getUpdateNumber } from '../entities/Updates/utils'
 import useFormatMessage from '../hooks/useFormatMessage'
@@ -60,7 +61,12 @@ export default function UpdateDetail() {
           </span>
           <Header size="huge">{t('page.update_detail.title', { index })}</Header>
         </ContentSection>
-        {update && <UpdateMarkdownView update={update} author={update.author} />}
+        {update && (
+          <>
+            <UpdateMarkdownView update={update} author={update.author} />
+            <UpdateComments update={update} />
+          </>
+        )}
       </ContentLayout>
     </>
   )

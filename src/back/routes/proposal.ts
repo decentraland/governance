@@ -9,7 +9,6 @@ import { Request } from 'express'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
-import { Discourse, DiscourseComment } from '../../clients/Discourse'
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { getVestingContractData } from '../../clients/VestingData'
 import { BidRequest, BidRequestSchema } from '../../entities/Bid/types'
@@ -24,7 +23,6 @@ import {
   SUBMISSION_THRESHOLD_TENDER,
 } from '../../entities/Proposal/constants'
 import ProposalModel from '../../entities/Proposal/model'
-import { getUpdateMessage } from '../../entities/Proposal/templates/messages'
 import {
   CatalystType,
   CategorizedGrants,
@@ -77,9 +75,6 @@ import {
 } from '../../entities/Proposal/utils'
 import { SNAPSHOT_DURATION } from '../../entities/Snapshot/constants'
 import UpdateModel from '../../entities/Updates/model'
-import UserModel from '../../entities/User/model'
-import { filterComments } from '../../entities/User/utils'
-import { inBackground } from '../../helpers'
 import BidService from '../../services/BidService'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
@@ -89,8 +84,6 @@ import { getProfile } from '../../utils/Catalyst'
 import Time from '../../utils/date/Time'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { validateAddress } from '../utils/validations'
-
-import { getVotes } from './votes'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -113,7 +106,7 @@ export default routes((route) => {
   route.get('/proposals/:proposal', handleAPI(getProposal))
   route.patch('/proposals/:proposal', withAuth, handleAPI(updateProposalStatus))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
-  route.get('/proposals/:proposal/comments', handleAPI(proposalComments))
+  route.get('/proposals/:proposal/comments', handleAPI(getProposalComments))
   route.get('/proposals/linked-wearables/image', handleAPI(checkImage))
 })
 
@@ -505,24 +498,6 @@ export async function getProposal(req: Request<{ proposal: string }>) {
 
 const updateProposalStatusValidator = schema.compile(updateProposalStatusScheme)
 
-export function commentProposalUpdateInDiscourse(id: string) {
-  inBackground(async () => {
-    const updatedProposal: ProposalAttributes | undefined = await ProposalModel.findOne<ProposalAttributes>({ id })
-    if (!updatedProposal) {
-      logger.error('Invalid proposal id for discourse update', { id: id })
-      return
-    }
-    const votes = await getVotes(updatedProposal.id)
-    const updateMessage = getUpdateMessage(updatedProposal, votes)
-    const discourseComment: DiscourseComment = {
-      topic_id: updatedProposal.discourse_topic_id,
-      raw: updateMessage,
-      created_at: new Date().toJSON(),
-    }
-    await Discourse.get().commentOnPost(discourseComment)
-  })
-}
-
 export async function updateProposalStatus(req: WithAuth<Request<{ proposal: string }>>) {
   const user = req.auth!
   const id = req.params.proposal
@@ -574,7 +549,7 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
 
   await ProposalModel.update<ProposalAttributes>(update, { id })
 
-  commentProposalUpdateInDiscourse(id)
+  ProposalService.commentProposalUpdateInDiscourse(id)
 
   return {
     ...proposal,
@@ -591,15 +566,10 @@ export async function removeProposal(req: WithAuth<Request<{ proposal: string }>
   return await ProposalService.removeProposal(proposal, user, updated_at, id)
 }
 
-export async function proposalComments(req: Request<{ proposal: string }>): Promise<ProposalCommentsInDiscourse> {
+export async function getProposalComments(req: Request<{ proposal: string }>): Promise<ProposalCommentsInDiscourse> {
   const proposal = await getProposal(req)
   try {
-    const allComments = await DiscourseService.fetchAllComments(proposal.discourse_topic_id)
-    const userIds = new Set(allComments.map((comment) => comment.user_id))
-    const users = await UserModel.getAddressesByForumId(Array.from(userIds))
-    const filteredComments = filterComments(allComments, users)
-
-    return filteredComments
+    return await DiscourseService.getPostComments(proposal.discourse_topic_id)
   } catch (error) {
     logger.log('Error fetching discourse topic', {
       error,

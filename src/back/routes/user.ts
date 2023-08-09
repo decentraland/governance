@@ -1,4 +1,5 @@
 import { WithAuth, auth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
+import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
@@ -6,7 +7,7 @@ import { Request } from 'express'
 import { isSameAddress } from '../../entities/Snapshot/utils'
 import { GATSBY_DISCOURSE_CONNECT_THREAD, MESSAGE_TIMEOUT_TIME } from '../../entities/User/constants'
 import UserModel from '../../entities/User/model'
-import { ValidationMessage } from '../../entities/User/types'
+import { UserAttributes, ValidationMessage } from '../../entities/User/types'
 import { formatValidationMessage, getValidationComment, validateComment } from '../../entities/User/utils'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
@@ -15,6 +16,7 @@ import { validateAddress } from '../utils/validations'
 export default routes((route) => {
   const withAuth = auth()
   route.get('/user/:address/is-validated', handleAPI(isValidated))
+  route.get('/user/:address', handleAPI(getProfile))
   route.get('/user/validate', withAuth, handleAPI(getValidationMessage))
   route.post('/user/validate', withAuth, handleAPI(checkValidationMessage))
 })
@@ -58,15 +60,15 @@ async function checkValidationMessage(req: WithAuth) {
 
     const { address, timestamp } = messageProperties
 
-    const comments = await DiscourseService.fetchAllComments(Number(GATSBY_DISCOURSE_CONNECT_THREAD))
-    const validationComment = getValidationComment(comments, address, timestamp)
+    const comments = await DiscourseService.getPostComments(Number(GATSBY_DISCOURSE_CONNECT_THREAD))
+    const validationComment = getValidationComment(comments.comments, address, timestamp)
 
     if (validationComment) {
       if (!isSameAddress(address, user) || !validateComment(validationComment, address, timestamp)) {
         throw new Error('Validation failed')
       }
 
-      await UserModel.createForumConnection(user, validationComment.user_id)
+      await UserModel.createForumConnection(user, validationComment.user_forum_id)
       clearValidationInProgress(user)
     }
 
@@ -87,5 +89,27 @@ async function isValidated(req: Request) {
     const message = 'Error while fetching validation data'
     ErrorService.report(message, { error })
     throw new Error(`${message}. ${error}`)
+  }
+}
+
+async function getProfile(req: Request) {
+  const address = req.params.address
+  validateAddress(address)
+
+  try {
+    const user = await UserModel.findOne<UserAttributes>({ address: address.toLowerCase() })
+
+    if (!user) {
+      throw new RequestError('User not found', RequestError.NotFound)
+    }
+
+    const { forum_id } = user
+
+    return {
+      forum_id,
+      forum_username: forum_id ? (await DiscourseService.getUserById(forum_id))?.username : null,
+    }
+  } catch (error) {
+    throw new Error(`Error while fetching profile data. ${error}`)
   }
 }

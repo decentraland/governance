@@ -1,7 +1,6 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { ethers } from 'ethers'
 
-import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import {
   Delegation,
   DelegationResult,
@@ -194,6 +193,7 @@ export function getChecksumAddress(address: string) {
   return ethers.utils.getAddress(address.toLowerCase())
 }
 
+// TODO: Move to non-snapshot-related file
 export function isSameAddress(userAddress?: string | null, address?: string | null) {
   return (
     !!userAddress &&

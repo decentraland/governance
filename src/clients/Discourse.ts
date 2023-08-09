@@ -272,6 +272,10 @@ export type DiscoursePostInTopic = {
   reviewable_score_pending_count?: number
 }
 
+type DiscourseUser = {
+  username: string
+}
+
 export class Discourse extends API {
   static Url = DISCOURSE_API || 'https://meta.discourse.org/'
 
@@ -367,5 +371,9 @@ export class Discourse extends API {
       `/t/${topic_id}/posts.json` + query,
       this.withAuth(this.options().method('GET'))
     )
+  }
+
+  async getUserById(id: number) {
+    return this.fetch<DiscourseUser>(`/admin/users/${id}.json`, this.withAuth(this.options().method('GET')))
   }
 }

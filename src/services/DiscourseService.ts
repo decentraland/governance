@@ -1,9 +1,15 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 
+import { UpdateService } from '../back/services/update'
 import { Discourse, DiscoursePost, DiscoursePostInTopic } from '../clients/Discourse'
-import * as templates from '../entities/Proposal/templates'
+import * as proposalTemplates from '../entities/Proposal/templates'
 import { forumUrl, proposalUrl } from '../entities/Proposal/utils'
+import * as updateTemplates from '../entities/Updates/templates'
+import { UpdateAttributes } from '../entities/Updates/types'
+import { getPublicUpdates, getUpdateUrl } from '../entities/Updates/utils'
+import UserModel from '../entities/User/model'
+import { filterComments } from '../entities/User/utils'
 import { inBackground } from '../helpers'
 import { Avatar } from '../utils/Catalyst/types'
 
@@ -19,9 +25,9 @@ export class DiscourseService {
     snapshotId: string
   ) {
     try {
-      const discoursePost = await this.getDiscoursePost(data, profile, proposalId, snapshotUrl, snapshotId)
+      const discoursePost = await this.getPost(data, profile, proposalId, snapshotUrl, snapshotId)
       const discourseProposal = await Discourse.get().createPost(discoursePost)
-      this.logProposalCreation(discourseProposal)
+      this.logPostCreation(discourseProposal)
       return discourseProposal
     } catch (error: any) {
       SnapshotService.dropSnapshotProposal(snapshotId)
@@ -29,14 +35,29 @@ export class DiscourseService {
     }
   }
 
-  private static async getDiscoursePost(
+  static async createUpdate(data: UpdateAttributes, proposalTitle: string) {
+    try {
+      const updates = await UpdateService.getAllByProposalId(data.proposal_id)
+      const publicUpdates = getPublicUpdates(updates)
+      const updateIndex = publicUpdates.length
+      const discoursePost = this.getUpdatePost(data, data.id, updateIndex, proposalTitle)
+      const discourseUpdate = await Discourse.get().createPost(discoursePost)
+      await UpdateService.updateWithDiscoursePost(data.id, discourseUpdate)
+      this.logPostCreation(discourseUpdate)
+      return discourseUpdate
+    } catch (error: any) {
+      throw new Error(`Forum error: ${error.body?.errors.join(', ')}`, error)
+    }
+  }
+
+  private static async getPost(
     data: ProposalInCreation,
     profile: Avatar | null,
     proposalId: string,
     snapshotUrl: string,
     snapshotId: string
   ) {
-    const discourseTemplateProps: templates.ForumTemplateProps = {
+    const template: proposalTemplates.ForumTemplate = {
       type: data.type,
       configuration: data.configuration,
       user: data.user,
@@ -48,8 +69,24 @@ export class DiscourseService {
 
     return {
       category: this.getCategory(),
-      title: templates.forumTitle(discourseTemplateProps),
-      raw: await templates.forumDescription(discourseTemplateProps),
+      title: proposalTemplates.forumTitle(template),
+      raw: await proposalTemplates.forumDescription(template),
+    }
+  }
+
+  private static getUpdatePost(data: UpdateAttributes, update_id: string, updateIndex: number, proposalTitle: string) {
+    const { author, proposal_id } = data
+    const template: updateTemplates.ForumTemplate = {
+      author: author || '',
+      title: `Update #${updateIndex} for proposal "${proposalTitle}"`,
+      update_url: getUpdateUrl(update_id, proposal_id),
+      ...data,
+    }
+
+    return {
+      category: this.getCategory(),
+      title: updateTemplates.forumTitle(template),
+      raw: updateTemplates.forumDescription(template),
     }
   }
 
@@ -58,13 +95,10 @@ export class DiscourseService {
     return DISCOURSE_CATEGORY ? Number(DISCOURSE_CATEGORY) : undefined
   }
 
-  private static logProposalCreation(discourseProposal: DiscoursePost) {
-    logger.log('Discourse proposal created', {
-      forum_url: forumUrl({
-        discourse_topic_slug: discourseProposal.topic_slug,
-        discourse_topic_id: discourseProposal.topic_id,
-      }),
-      discourse_proposal: JSON.stringify(discourseProposal),
+  private static logPostCreation(post: DiscoursePost) {
+    logger.log('Discourse post created', {
+      forum_url: forumUrl(post.topic_slug, post.topic_id),
+      discourse_proposal: JSON.stringify(post),
     })
   }
 
@@ -75,7 +109,7 @@ export class DiscourseService {
     })
   }
 
-  static async fetchAllComments(discourseTopicId: number) {
+  static async getPostComments(discourseTopicId: number) {
     const DISCOURSE_BATCH_SIZE = 20
     const topic = await Discourse.get().getTopic(discourseTopicId)
     let allComments: DiscoursePostInTopic[] = topic.post_stream.posts //first 20
@@ -85,7 +119,7 @@ export class DiscourseService {
       try {
         while (hasNext) {
           const postIds = topic.post_stream.stream.slice(skip, skip + DISCOURSE_BATCH_SIZE)
-          if (postIds.length === 0) return allComments
+          if (postIds.length === 0) break
           const newPostsResponse = await Discourse.get().getPosts(discourseTopicId, postIds)
           const newComments = newPostsResponse.post_stream.posts
           allComments = [...allComments, ...newComments]
@@ -99,6 +133,19 @@ export class DiscourseService {
         console.error(`Error while fetching discourse posts in batches: `, error)
       }
     }
-    return allComments
+
+    const userIds = new Set(allComments.map((comment) => comment.user_id))
+    const users = await UserModel.getAddressesByForumId(Array.from(userIds))
+
+    return filterComments(allComments, users)
+  }
+
+  static async getUserById(id: number) {
+    try {
+      return await Discourse.get().getUserById(id)
+    } catch (error) {
+      console.error(`Error getting Discourse user: ${id}`, error)
+      return null
+    }
   }
 }

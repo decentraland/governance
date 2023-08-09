@@ -18,7 +18,7 @@ export default function ForumButton({ loading, proposal }: ForumButtonProps) {
     <SidebarLinkButton
       loading={loading}
       disabled={!proposal}
-      href={(proposal && forumUrl(proposal)) || ''}
+      href={(proposal && forumUrl(proposal.discourse_topic_slug, proposal.discourse_topic_id)) || ''}
       icon={<Forum size={20} />}
     >
       {t('page.proposal_detail.forum_button')}

@@ -27,7 +27,7 @@ import snapshot from './back/routes/snapshot'
 import social from './back/routes/social'
 import subscription from './back/routes/subscription'
 import proposalSurveyTopics from './back/routes/surveyTopics'
-import updates from './back/routes/updates'
+import update from './back/routes/update'
 import users from './back/routes/user'
 import vestings from './back/routes/vestings'
 import score from './back/routes/votes'
@@ -63,7 +63,7 @@ app.use('/api', [
   proposalSurveyTopics,
   score,
   subscription,
-  updates,
+  update,
   coauthor,
   budget,
   badges,

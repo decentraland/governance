@@ -7,6 +7,7 @@ import { BidStatus } from '../entities/Bid/types'
 const STATUS_TYPE = 'bid_status_type'
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
+  pgm.createExtension('pgcrypto', { ifNotExists: true })
   pgm.createType(STATUS_TYPE, Object.values(BidStatus))
   pgm.createTable(Model.tableName, {
     id: {
