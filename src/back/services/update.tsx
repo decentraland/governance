@@ -32,7 +32,7 @@ export class UpdateService {
 
       await Discourse.get().commentOnPost({
         topic_id: update.discourse_topic_id,
-        raw: `This project update has been edited by the author. Please check the latest status on the [Governance dApp](${getUpdateUrl(
+        raw: `This project update has been edited by the author. Please check the latest version on the [Governance dApp](${getUpdateUrl(
           update.id,
           update.proposal_id
         )}).`,
