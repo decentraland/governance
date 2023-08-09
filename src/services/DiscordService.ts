@@ -10,6 +10,9 @@ import { UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates, getUpdateNumber, getUpdateUrl } from '../entities/Updates/utils'
 import { capitalizeFirstLetter, inBackground } from '../helpers'
 import { getProfile } from '../utils/Catalyst'
+import { ErrorCategory } from '../utils/errorCategories'
+
+import { ErrorService } from './ErrorService'
 
 const CHANNEL_ID = process.env.DISCORD_CHANNEL_ID
 const TOKEN = process.env.DISCORD_TOKEN
@@ -248,7 +251,11 @@ export class DiscordService {
           await this.sendMessages([message])
           return { action, proposalId: id }
         } catch (error) {
-          throw new Error(`[Error sending message to Discord - Finish proposal] ID ${id}, Error: ${error}`)
+          ErrorService.report(`Error sending finish proposal message to Discord`, {
+            proposalId: id,
+            error,
+            category: ErrorCategory.Discord,
+          })
         }
       })
     }
