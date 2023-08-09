@@ -181,31 +181,25 @@ function requiredVotingPower(value: string | undefined | null, defaultValue: num
 
 export type UpdateProposalStatusProposal = {
   status: ProposalStatus.Rejected | ProposalStatus.Passed | ProposalStatus.Enacted
-  vesting_address: string | null
-  enacting_tx: string | null
-  description: string
+  vesting_addresses?: string[]
 }
 
 export const updateProposalStatusScheme = {
   type: 'object',
   additionalProperties: false,
-  required: ['status', 'description'],
+  required: ['status'],
   properties: {
     status: {
       type: 'string',
       enum: [ProposalStatus.Rejected, ProposalStatus.Passed, ProposalStatus.Enacted],
     },
-    vesting_address: {
-      type: ['string', 'null'],
-      format: 'address',
-    },
-    enacting_tx: {
-      type: ['string', 'null'],
-      minLength: 66,
-      maxLength: 66,
-    },
-    description: {
-      type: ['string', 'null'],
+    vesting_addresses: {
+      type: 'array',
+      items: {
+        type: 'string',
+        minLength: 42,
+        maxLength: 42,
+      },
     },
   },
 }

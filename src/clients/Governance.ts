@@ -213,20 +213,12 @@ export class Governance extends API {
     return result.data
   }
 
-  async updateProposalStatus(
-    proposal_id: string,
-    status: ProposalStatus,
-    vesting_address: string | null,
-    enacting_tx: string | null,
-    description: string | null = null
-  ) {
+  async updateProposalStatus(proposal_id: string, status: ProposalStatus, vesting_addresses?: string[]) {
     const result = await this.fetch<ApiResponse<ProposalAttributes>>(
       `/proposals/${proposal_id}`,
       this.options().method('PATCH').authorization({ sign: true }).json({
         status,
-        vesting_address,
-        enacting_tx,
-        description,
+        vesting_addresses,
       })
     )
 

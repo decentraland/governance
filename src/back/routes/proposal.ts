@@ -548,26 +548,28 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
   if (update.status === ProposalStatus.Enacted) {
     update.enacted = true
     update.enacted_by = user
-    update.enacted_description = configuration.description || null
     if (proposal.type == ProposalType.Grant) {
-      const { vesting_address, enacting_tx } = configuration
-      update.vesting_addresses = vesting_address ? [vesting_address] : []
-      update.enacting_tx = enacting_tx
+      const { vesting_addresses } = configuration
+      if (!vesting_addresses || vesting_addresses.length === 0) {
+        throw new RequestError('Vesting addresses are required for grant proposals', RequestError.BadRequest)
+      }
+      if (vesting_addresses.some((address) => !isEthereumAddress(address))) {
+        throw new RequestError('Some vesting address is invalid', RequestError.BadRequest)
+      }
+      update.vesting_addresses = vesting_addresses
       update.textsearch = ProposalModel.textsearch(
         proposal.title,
         proposal.description,
         proposal.user,
         update.vesting_addresses
       )
-      const vestingContractData = await getVestingContractData(configuration.vesting_address, id)
+      const vestingContractData = await getVestingContractData(vesting_addresses[vesting_addresses.length - 1], id)
       await UpdateModel.createPendingUpdates(id, vestingContractData, proposal.configuration.vestingStartDate)
     }
   } else if (update.status === ProposalStatus.Passed) {
     update.passed_by = user
-    update.passed_description = configuration.description || null
   } else if (update.status === ProposalStatus.Rejected) {
     update.rejected_by = user
-    update.rejected_description = configuration.description || null
   }
 
   await ProposalModel.update<ProposalAttributes>(update, { id })

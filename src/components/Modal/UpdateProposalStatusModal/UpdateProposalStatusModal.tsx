@@ -1,21 +1,19 @@
-import React, { useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
+import React, { useEffect, useMemo, useState } from 'react'
+import { SubmitHandler, useForm, useWatch } from 'react-hook-form'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import classNames from 'classnames'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
+import { Field as DCLField } from 'decentraland-ui/dist/components/Field/Field'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
+import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { Governance } from '../../../clients/Governance'
-import { GrantTier } from '../../../entities/Grant/GrantTier'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
-import { isValidTransactionHash } from '../../../entities/Proposal/utils'
 import useFormatMessage from '../../../hooks/useFormatMessage'
-import Field from '../../Common/Form/Field'
-import MarkdownField from '../../Common/Form/MarkdownField'
 import Label from '../../Common/Typography/Label'
 import Markdown from '../../Common/Typography/Markdown'
 import ErrorMessage from '../../Error/ErrorMessage'
@@ -24,24 +22,12 @@ import '../ProposalModal.css'
 import './UpdateProposalStatusModal.css'
 
 type UpdateProposalState = {
-  proposal: ProposalAttributes | null
-  vestingAddress: string
-  enactingTx: string
-  description: string
+  vestingAddresses: string[]
 }
 
 type UpdateData = {
   status: ProposalStatus
-  vestingContract: string | null
-  enactingTx: string | null
-  description: string
-}
-
-const initialUpdateProposalState: UpdateProposalState = {
-  proposal: null,
-  vestingAddress: '',
-  enactingTx: '',
-  description: '',
+  vestingContracts: string[]
 }
 
 type Props = Omit<ModalProps, 'children'> & {
@@ -76,43 +62,85 @@ export function UpdateProposalStatusModal({
   ...props
 }: Props) {
   const t = useFormatMessage()
-  const isOneTimePaymentProposalTier = GrantTier.isOneTimePaymentTier(proposal?.configuration.tier)
   const queryClient = useQueryClient()
+  const { vesting_addresses } = proposal || {}
+  const DEFAULT_VALUES = useMemo(
+    () => (vesting_addresses && vesting_addresses.length > 0 ? vesting_addresses : ['']),
+    [vesting_addresses]
+  )
 
   const onClose = () => {
     setError('')
+    setValue('vestingAddresses', DEFAULT_VALUES)
     props.onClose()
   }
 
-  const {
-    handleSubmit,
-    formState: { isSubmitting, errors },
-    control,
-  } = useForm<UpdateProposalState>({ defaultValues: initialUpdateProposalState, mode: 'onTouched' })
+  const { handleSubmit, control, setValue } = useForm<UpdateProposalState>({
+    defaultValues: { vestingAddresses: DEFAULT_VALUES },
+    mode: 'onTouched',
+  })
 
   const [error, setError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const values = useWatch({ control })
+
+  const isGrantProposal = proposal?.type === ProposalType.Grant
+  const hasValues = values.vestingAddresses && values.vestingAddresses.filter((value) => value.length > 0).length > 0
+
+  useEffect(() => {
+    setValue('vestingAddresses', DEFAULT_VALUES)
+  }, [DEFAULT_VALUES, setValue])
+
+  const handleRemoveOption = (idx: number) => {
+    const newOptions = [...(values.vestingAddresses || [])]
+    newOptions.splice(idx, 1)
+    if (newOptions.length === 0) {
+      newOptions.push('')
+    }
+    setValue('vestingAddresses', newOptions)
+  }
+
+  const handleAddOption = () => {
+    const newOptions = [...(values.vestingAddresses || [])]
+    newOptions.push('')
+    setValue('vestingAddresses', newOptions)
+  }
+
+  const handleEditOption = (idx: number, value: string) => {
+    const newOptions = [...(values.vestingAddresses || [])]
+    newOptions[idx] = value
+    setValue('vestingAddresses', newOptions)
+  }
 
   const { mutate: updateProposal } = useMutation({
     mutationFn: async (updateData: UpdateData) => {
-      const { status, vestingContract, enactingTx, description } = updateData
+      setIsSubmitting(true)
+      const { status, vestingContracts } = updateData
+      const filteredVestingContracts = vestingContracts.filter((address) => address.length > 0)
       if (proposal && isDAOCommittee) {
+        if (filteredVestingContracts.some((address) => !isEthereumAddress(address))) {
+          setError('modal.update_status_proposal.invalid_vesting_address')
+          setIsSubmitting(false)
+          return
+        }
         setError('')
         try {
           const updateProposal = await Governance.get().updateProposalStatus(
             proposal.id,
             status,
-            vestingContract,
-            enactingTx,
-            description
+            isGrantProposal ? filteredVestingContracts : undefined
           )
           onClose()
           return updateProposal
         } catch (err: any) {
+          setIsSubmitting(false)
           setError(err.body?.error || err.message)
         }
       }
     },
     onSuccess: (proposal) => {
+      setIsSubmitting(false)
       if (proposal) {
         queryClient.setQueryData([proposalKey], proposal)
       }
@@ -122,11 +150,9 @@ export function UpdateProposalStatusModal({
 
   const onSubmit: SubmitHandler<UpdateProposalState> = async (data) => {
     if (status) {
-      updateProposal({
+      await updateProposal({
         status,
-        vestingContract: data.vestingAddress ? data.vestingAddress : null,
-        enactingTx: data.enactingTx ? data.enactingTx : null,
-        description: data.description,
+        vestingContracts: data.vestingAddresses,
       })
     }
   }
@@ -147,52 +173,35 @@ export function UpdateProposalStatusModal({
             <Markdown size="lg">{t('modal.update_status_proposal.description', { status }) || ''}</Markdown>
           </div>
 
-          {proposal && proposal.type === ProposalType.Grant && (
+          {proposal && isGrantProposal && (
             <div className="ProposalModal__GrantTransaction">
-              {!isOneTimePaymentProposalTier && (
-                <>
-                  <Label>{t('modal.update_status_proposal.grant_vesting_address')}</Label>
-                  <Field
-                    control={control}
-                    name="vestingAddress"
-                    type="address"
-                    message={errors.vestingAddress?.message}
-                    error={!!errors.vestingAddress}
-                    rules={{
-                      validate: (value: string) => {
-                        if (!isEthereumAddress(value)) {
-                          return t('error.update_status_proposal.grant_vesting_address_invalid')
-                        }
-                      },
-                    }}
-                  />
-                </>
-              )}
-              {isOneTimePaymentProposalTier && (
-                <>
-                  <Label>{t('modal.update_status_proposal.grant_enacting_tx')}</Label>
-                  <Field
-                    control={control}
-                    name="enactingTx"
-                    type="address"
-                    message={errors.enactingTx?.message}
-                    error={!!errors.enactingTx}
-                    rules={{
-                      validate: (value: string) => {
-                        if (!isValidTransactionHash(value)) {
-                          return t('error.update_status_proposal.grant_enacting_tx_invalid')
-                        }
-                      },
-                    }}
-                  />
-                </>
-              )}
+              <Label>{t('modal.update_status_proposal.grant_vesting_addresses')}</Label>
+              {values.vestingAddresses?.map((address, idx) => (
+                <DCLField
+                  key={`contract-${idx}`}
+                  placeholder="0x..."
+                  value={address}
+                  action={<Icon name="x" />}
+                  onAction={(e) => {
+                    e.preventDefault()
+                    handleRemoveOption(idx)
+                  }}
+                  onChange={(_, { value }) => handleEditOption(idx, value)}
+                  disabled={isSubmitting}
+                />
+              ))}
+              <Button
+                basic
+                fluid
+                onClick={(e) => {
+                  e.preventDefault()
+                  handleAddOption()
+                }}
+              >
+                {t('modal.update_status_proposal.add_vesting_contract')}
+              </Button>
             </div>
           )}
-          <div className="ProposalModal__Form">
-            <Label>{t('modal.update_status_proposal.comments')}</Label>
-            <MarkdownField control={control} name="description" />
-          </div>
           <div className="ProposalModal__Actions">
             {error && (
               <ErrorMessage
@@ -202,7 +211,13 @@ export function UpdateProposalStatusModal({
                 verticalHeader
               />
             )}
-            <Button type="submit" primary fluid disabled={isSubmitting} loading={loading && isSubmitting}>
+            <Button
+              type="submit"
+              primary
+              fluid
+              disabled={isSubmitting || (isGrantProposal && !hasValues)}
+              loading={loading && isSubmitting}
+            >
               {t(getPrimaryButtonTextKey(status))}
             </Button>
             <Button
