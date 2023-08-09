@@ -26,7 +26,7 @@ export default function BadgesAdmin({ className }: Props) {
     if (badgeCid && recipients) {
       await submit(
         async () => Governance.get().airdropBadge(badgeCid, recipients),
-        (result) => setResult(result)
+        (result) => setResult(JSON.stringify(result))
       )
     }
   }

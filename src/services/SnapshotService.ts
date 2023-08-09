@@ -10,8 +10,8 @@ import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { inBackground } from '../helpers'
 import { Avatar } from '../utils/Catalyst/types'
 
-import DclRpcService from './DclRpcService'
 import { ProposalInCreation, ProposalLifespan } from './ProposalService'
+import RpcService from './RpcService'
 
 export class SnapshotService {
   static async createProposal(
@@ -20,7 +20,7 @@ export class SnapshotService {
     profile: Avatar | null,
     proposalLifespan: ProposalLifespan
   ) {
-    const blockNumber: number = await DclRpcService.getBlockNumber()
+    const blockNumber: number = await RpcService.getBlockNumber()
     const { proposalTitle, proposalBody } = await this.getProposalTitleAndBody(proposalInCreation, profile, proposalId)
 
     const proposalCreationReceipt: SnapshotReceipt = await SnapshotApi.get().createProposal(

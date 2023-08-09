@@ -7,6 +7,7 @@ import { Request } from 'express'
 import { UserBadges } from '../../entities/Badges/types'
 import isDebugAddress from '../../entities/Debug/isDebugAddress'
 import { BadgesService } from '../../services/BadgesService'
+import { AirdropOutcome } from '../models/AirdropJob'
 import { validateAddress } from '../utils/validations'
 
 export default routes((router) => {
@@ -21,7 +22,7 @@ async function getBadges(req: Request<{ address: string }>): Promise<UserBadges>
   return await BadgesService.getBadges(address)
 }
 
-async function airdropBadges(req: WithAuth): Promise<string> {
+async function airdropBadges(req: WithAuth): Promise<AirdropOutcome> {
   const user = req.auth!
   const recipients: string[] = req.body.recipients
   const badgeSpecCId = req.body.badgeSpecCid
@@ -34,5 +35,5 @@ async function airdropBadges(req: WithAuth): Promise<string> {
     validateAddress(address)
   })
 
-  return await BadgesService.grantBadgeToUsers(badgeSpecCId, recipients)
+  return await BadgesService.giveBadgeToUsers(badgeSpecCId, recipients)
 }
