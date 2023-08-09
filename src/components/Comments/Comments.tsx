@@ -35,12 +35,12 @@ export default function Comments({ comments, topicId, topicSlug, isLoading, topi
   }, [comments])
 
   const renderedComments = useMemo(() => {
-    if (comments && comments.totalComments > 0) {
+    if (renderComments) {
       return showAllComments ? comments!.comments : comments!.comments.slice(0, DEFAULT_SHOWN_COMMENTS)
     } else {
       return null
     }
-  }, [comments, showAllComments])
+  }, [comments, showAllComments, renderComments])
 
   return (
     <Section
