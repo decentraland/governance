@@ -19,6 +19,7 @@ export default function useProposalUpdate(updateId?: string | null) {
       return Governance.get().getProposalUpdate(updateId)
     },
     staleTime: DEFAULT_QUERY_STALE_TIME,
+    enabled: !!updateId,
   })
 
   return {

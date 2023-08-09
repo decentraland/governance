@@ -13,6 +13,8 @@ export type UpdateAttributes = {
   completion_date?: Date
   created_at: Date
   updated_at: Date
+  discourse_topic_id?: number
+  discourse_topic_slug?: string
 }
 
 export type IndexedUpdate = UpdateAttributes & {

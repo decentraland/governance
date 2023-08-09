@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { cloneDeep } from 'lodash'
 
-import * as routes from '../../back/routes/proposal'
 import { BudgetService } from '../../services/BudgetService'
 import { DiscordService } from '../../services/DiscordService'
 import { DiscourseService } from '../../services/DiscourseService'
+import { ProposalService } from '../../services/ProposalService'
 import Time from '../../utils/date/Time'
 import { BUDGETING_START_DATE } from '../Grant/constants'
 import { NewGrantCategory } from '../Grant/types'
@@ -39,7 +39,7 @@ jest.mock('../../constants', () => ({
 describe('finishProposals', () => {
   beforeAll(() => {
     jest.spyOn(ProposalModel, 'finishProposal')
-    jest.spyOn(routes, 'commentProposalUpdateInDiscourse').mockImplementation(() => {})
+    jest.spyOn(ProposalService, 'commentProposalUpdateInDiscourse').mockImplementation(() => {})
     jest.spyOn(DiscordService, 'init').mockImplementation(() => {})
     jest.spyOn(DiscordService, 'finishProposal').mockImplementation(() => {})
     jest.spyOn(DiscordService, 'newProposal').mockImplementation(() => {})

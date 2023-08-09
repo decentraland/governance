@@ -9,6 +9,7 @@ import { getTile } from '../../utils/Land'
 import Time from '../../utils/date/Time'
 import { env } from '../../utils/env'
 import { SNAPSHOT_SPACE, SNAPSHOT_URL } from '../Snapshot/constants'
+import { UpdateAttributes } from '../Updates/types'
 import { DISCOURSE_API } from '../User/utils'
 
 import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
@@ -111,9 +112,12 @@ export function snapshotProposalUrl(proposal: Pick<ProposalAttributes, 'snapshot
   return snapshotUrl(`#/${proposal.snapshot_space}/proposal/${proposal.snapshot_id}`)
 }
 
-export function forumUrl(proposal: Pick<ProposalAttributes, 'discourse_topic_id' | 'discourse_topic_slug'>) {
+export function forumUrl(
+  discourse_topic_slug: ProposalAttributes['discourse_topic_slug'] | UpdateAttributes['discourse_topic_slug'],
+  discourse_topic_id: ProposalAttributes['discourse_topic_id'] | UpdateAttributes['discourse_topic_id']
+) {
   const target = new URL(DISCOURSE_API || '')
-  target.pathname = `/t/${proposal.discourse_topic_slug}/${proposal.discourse_topic_id}`
+  target.pathname = `/t/${discourse_topic_slug}/${discourse_topic_id}`
   return target.toString()
 }
 

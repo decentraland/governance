@@ -127,7 +127,7 @@ ${
 
 `
 
-export type ForumTemplateProps = {
+export type ForumTemplate = {
   type: ProposalType
   configuration: NewConfiguration
   user: string
@@ -137,7 +137,7 @@ export type ForumTemplateProps = {
   snapshot_id: string
 }
 
-export const forumTitle = ({ type, configuration, snapshot_id }: ForumTemplateProps) =>
+export const forumTitle = ({ type, configuration, snapshot_id }: ForumTemplate) =>
   `[DAO:${snapshot_id.slice(snapshot_id.length - 7, snapshot_id.length)}] ` + title({ type, configuration })
 
 export const forumDescription = async ({
@@ -147,7 +147,7 @@ export const forumDescription = async ({
   profile,
   proposal_url,
   snapshot_url,
-}: ForumTemplateProps) => template`
+}: ForumTemplate) => template`
 
 > by ${user + (profile?.name ? ` (${profile.name})` : '')}
 
