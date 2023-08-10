@@ -1,3 +1,4 @@
+// eslint-disable @typescript-eslint/no-explicit-any
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 import { v1 as uuid } from 'uuid'
 
@@ -7,7 +8,7 @@ import { GrantTier } from '../Grant/GrantTier'
 import { NewGrantCategory, VestingStartDate } from '../Grant/types'
 
 import { ProposalOutcome } from './outcome'
-import { ProposalAttributes, ProposalRequiredVP, ProposalStatus, ProposalType } from './types'
+import { NewProposalGovernance, ProposalAttributes, ProposalRequiredVP, ProposalStatus, ProposalType } from './types'
 import { DEFAULT_CHOICES } from './utils'
 
 const start = new Date('2023-02-01T00:00:00.000Z')
@@ -38,6 +39,19 @@ export const POI_PROPOSAL_CONFIGURATION = {
   choices: DEFAULT_CHOICES,
 }
 
+export const GOVERNANCE_PROPOSAL_CONFIGURATION: NewProposalGovernance = {
+  linked_proposal_id: 'draft-id',
+  title: 'Governance Test Proposal',
+  summary: 'Governance Test Proposal Summary',
+  abstract: 'Governance Test Proposal Abstract',
+  motivation: 'Governance Test Proposal Motivation',
+  specification: 'Governance Test Proposal specification',
+  impacts: 'Governance Test Proposal impacts',
+  implementation_pathways: 'Governance Test Proposal implementation',
+  conclusion: 'Governance Test Proposal conclusion',
+  coAuthors: undefined,
+}
+
 function getGrantConfiguration(grantSize: number, grantCategory: NewGrantCategory) {
   return {
     abstract: '',
@@ -64,6 +78,9 @@ function getTestProposalConfiguration(
 ): any {
   if (proposalType === ProposalType.POI) {
     return POI_PROPOSAL_CONFIGURATION
+  }
+  if (proposalType === ProposalType.Governance) {
+    return GOVERNANCE_PROPOSAL_CONFIGURATION
   }
   return getGrantConfiguration(size || TEST_GRANT_SIZE, grantCategory)
 }
