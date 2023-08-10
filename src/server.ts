@@ -42,7 +42,7 @@ jobs.cron('@eachMinute', finishProposal)
 jobs.cron('@eachMinute', activateProposals)
 jobs.cron('@eachMinute', publishBids)
 jobs.cron('@daily', updateGovernanceBudgets)
-jobs.cron('@eachMinute', runAirdropJobs)
+jobs.cron('@daily', runAirdropJobs)
 
 const file = readFileSync('static/api.yaml', 'utf8')
 const swaggerDocument = YAML.parse(file)

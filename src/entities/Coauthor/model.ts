@@ -1,5 +1,7 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
-import { SQL, columns, conditional, objectValues, table } from 'decentraland-gatsby/dist/entities/Database/utils'
+import { SQL, columns, conditional, join, objectValues, table } from 'decentraland-gatsby/dist/entities/Database/utils'
+
+import { ProposalAttributes } from '../Proposal/types'
 
 import { CoauthorAttributes, CoauthorStatus } from './types'
 
@@ -40,5 +42,20 @@ export default class CoauthorModel extends Model<CoauthorAttributes> {
         ${objectValues(cols, coauthors)}
     `
     await this.query(query)
+  }
+
+  static async findAllCoauthors(proposals: ProposalAttributes[], status?: CoauthorStatus): Promise<string[]> {
+    const query = SQL`
+        SELECT address
+        FROM ${table(this)}
+        WHERE proposal_id IN (${join(
+          proposals.map((proposal) => SQL`${proposal.id}`),
+          SQL`, `
+        )})
+            ${conditional(!!status, SQL` AND status = ${status}`)}
+    `
+
+    const result = await this.query(query)
+    return result.map((row) => row.address)
   }
 }

@@ -6,6 +6,7 @@ import { BudgetService } from '../../services/BudgetService'
 import { DiscordService } from '../../services/DiscordService'
 import { DiscourseService } from '../../services/DiscourseService'
 import Time from '../../utils/date/Time'
+import CoauthorModel from '../Coauthor/model'
 import { BUDGETING_START_DATE } from '../Grant/constants'
 import { NewGrantCategory } from '../Grant/types'
 import { getQuarterEndDate } from '../QuarterBudget/utils'
@@ -39,6 +40,7 @@ jest.mock('../../constants', () => ({
 describe('finishProposals', () => {
   beforeAll(() => {
     jest.spyOn(ProposalModel, 'finishProposal')
+    jest.spyOn(CoauthorModel, 'findAllCoauthors').mockResolvedValue([])
     jest.spyOn(routes, 'commentProposalUpdateInDiscourse').mockImplementation(() => {})
     jest.spyOn(DiscordService, 'init').mockImplementation(() => {})
     jest.spyOn(DiscordService, 'finishProposal').mockImplementation(() => {})

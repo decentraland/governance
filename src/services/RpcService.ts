@@ -21,6 +21,6 @@ export default class RpcService {
   }
 
   public static getPolygonProvider() {
-    return new JsonRpcProvider(process.env.ALCHEMY_POLYGON_RPC)
+    return new JsonRpcProvider(process.env.POLYGON_RPC)
   }
 }

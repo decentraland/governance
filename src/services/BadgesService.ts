@@ -6,7 +6,10 @@ import { OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgra
 import { LEGISLATOR_BADGE_SPEC_CID } from '../constants'
 import { Badge, BadgeStatus, BadgeStatusReason, UserBadges, toBadgeStatus } from '../entities/Badges/types'
 import { airdrop } from '../entities/Badges/utils'
+import CoauthorModel from '../entities/Coauthor/model'
+import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalAttributes, ProposalType } from '../entities/Proposal/types'
+import { getChecksumAddress } from '../entities/Snapshot/utils'
 import { ErrorCategory } from '../utils/errorCategories'
 
 import { ErrorService } from './ErrorService'
@@ -111,13 +114,11 @@ export class BadgesService {
   }
 
   static async giveLegislatorBadges(acceptedProposals: ProposalAttributes[]) {
-    const authorsAndCoauthors = acceptedProposals.flatMap((acceptedProposal) => {
-      if (acceptedProposal.type === ProposalType.Governance) {
-        return [acceptedProposal.user, ...acceptedProposal.configuration.coAuthors]
-      }
-      return []
-    })
-    await this.queueAirdropJob(LEGISLATOR_BADGE_SPEC_CID, authorsAndCoauthors)
+    const governanceProposals = acceptedProposals.filter((proposal) => proposal.type === ProposalType.Governance)
+    const coauthors = await CoauthorModel.findAllCoauthors(governanceProposals, CoauthorStatus.APPROVED)
+    const authors = governanceProposals.map((proposal) => proposal.user)
+    const authorsAndCoauthors = new Set([...authors.map(getChecksumAddress), ...coauthors.map(getChecksumAddress)])
+    await this.queueAirdropJob(LEGISLATOR_BADGE_SPEC_CID, Array.from(authorsAndCoauthors))
   }
 
   private static async queueAirdropJob(badgeSpec: string, recipients: string[]) {

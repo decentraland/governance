@@ -11,6 +11,7 @@ import { getPublicUpdates, getUpdateNumber, getUpdateUrl } from '../entities/Upd
 import { capitalizeFirstLetter, inBackground } from '../helpers'
 import { getProfile } from '../utils/Catalyst'
 import { ErrorCategory } from '../utils/errorCategories'
+import { isProdEnv } from '../utils/governanceEnvs'
 
 import { ErrorService } from './ErrorService'
 
@@ -251,11 +252,13 @@ export class DiscordService {
           await this.sendMessages([message])
           return { action, proposalId: id }
         } catch (error) {
-          ErrorService.report(`Error sending finish proposal message to Discord`, {
-            proposalId: id,
-            error,
-            category: ErrorCategory.Discord,
-          })
+          if (isProdEnv()) {
+            ErrorService.report(`Error sending finish proposal message to Discord`, {
+              proposalId: id,
+              error,
+              category: ErrorCategory.Discord,
+            })
+          }
         }
       })
     }
