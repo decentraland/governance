@@ -1,6 +1,15 @@
+import logger from 'decentraland-gatsby/dist/entities/Development/logger'
+import { v1 as uuid } from 'uuid'
+
+import AirdropJobModel, { AirdropJobStatus, AirdropOutcome } from '../back/models/AirdropJob'
 import { OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgraph'
+import { LEGISLATOR_BADGE_SPEC_CID } from '../constants'
 import { Badge, BadgeStatus, BadgeStatusReason, UserBadges, toBadgeStatus } from '../entities/Badges/types'
 import { airdrop } from '../entities/Badges/utils'
+import CoauthorModel from '../entities/Coauthor/model'
+import { CoauthorStatus } from '../entities/Coauthor/types'
+import { ProposalAttributes, ProposalType } from '../entities/Proposal/types'
+import { getChecksumAddress } from '../entities/Snapshot/utils'
 import { ErrorCategory } from '../utils/errorCategories'
 
 import { ErrorService } from './ErrorService'
@@ -56,17 +65,20 @@ export class BadgesService {
     return ipfsLink.replace('ipfs://', 'https://ipfs.io/ipfs/')
   }
 
-  public static async grantBadgeToUsers(badgeCid: string, users: any[]): Promise<string> {
-    const badgeOwners = await OtterspaceSubgraph.get().getBadgeOwners(badgeCid)
+  public static async giveBadgeToUsers(badgeCid: string, users: string[]): Promise<AirdropOutcome> {
+    try {
+      const badgeOwners = await OtterspaceSubgraph.get().getBadgeOwners(badgeCid)
+      const usersWithoutBadge = users.filter((user) => {
+        return !badgeOwners.includes(user.toLowerCase())
+      })
 
-    const usersWithoutBadge = users.filter((user) => {
-      return !badgeOwners.includes(user.toLowerCase())
-    })
-
-    if (usersWithoutBadge.length > 0) {
-      return await this.airdropWithRetry(badgeCid, usersWithoutBadge)
-    } else {
-      return 'All recipients already have this badge'
+      if (usersWithoutBadge.length > 0) {
+        return await this.airdropWithRetry(badgeCid, usersWithoutBadge)
+      } else {
+        return { status: AirdropJobStatus.FAILED, error: 'All recipients already have this badge' }
+      }
+    } catch (e) {
+      return { status: AirdropJobStatus.FAILED, error: JSON.stringify(e) }
     }
   }
 
@@ -75,21 +87,18 @@ export class BadgesService {
     recipients: string[],
     retries = 3,
     pumpGas = false
-  ): Promise<string> {
-    console.log(`Airdropping, pumping gas ${pumpGas}`)
+  ): Promise<AirdropOutcome> {
     try {
       await airdrop(badgeCid, recipients, pumpGas)
-      return `Airdropped ${badgeCid} to ${recipients}`
+      return { status: AirdropJobStatus.FINISHED, error: '' }
     } catch (error: any) {
-      console.error('Airdrop failed:', error)
       if (retries > 0) {
-        console.log(`Retrying airdrop... Attempts left: ${retries}`)
+        logger.log(`Retrying airdrop... Attempts left: ${retries}`, error)
         const pumpGas = this.isTransactionUnderpricedError(error)
         return await this.airdropWithRetry(badgeCid, recipients, retries - 1, pumpGas)
       } else {
-        console.error('Airdrop failed after maximum retries.')
-        return `Airdrop failed: ${error}`
-        //TODO: handle failure accordingly
+        logger.error('Airdrop failed after maximum retries', error)
+        return { status: AirdropJobStatus.FAILED, error: JSON.stringify(error) }
       }
     }
   }
@@ -101,6 +110,28 @@ export class BadgesService {
       return errorCode === TRANSACTION_UNDERPRICED
     } catch (e) {
       return false
+    }
+  }
+
+  static async giveLegislatorBadges(acceptedProposals: ProposalAttributes[]) {
+    const governanceProposals = acceptedProposals.filter((proposal) => proposal.type === ProposalType.Governance)
+    const coauthors = await CoauthorModel.findAllCoauthors(governanceProposals, CoauthorStatus.APPROVED)
+    const authors = governanceProposals.map((proposal) => proposal.user)
+    const authorsAndCoauthors = new Set([...authors.map(getChecksumAddress), ...coauthors.map(getChecksumAddress)])
+    await this.queueAirdropJob(LEGISLATOR_BADGE_SPEC_CID, Array.from(authorsAndCoauthors))
+  }
+
+  private static async queueAirdropJob(badgeSpec: string, recipients: string[]) {
+    logger.log(`Enqueueing airdrop job`, { badgeSpec, recipients })
+    try {
+      await AirdropJobModel.create({ id: uuid(), badge_spec: badgeSpec, recipients })
+    } catch (error) {
+      ErrorService.report('Unable to create AirdropJob', {
+        error,
+        category: ErrorCategory.Badges,
+        badgeSpec,
+        recipients,
+      })
     }
   }
 }

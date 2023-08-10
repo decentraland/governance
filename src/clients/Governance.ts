@@ -3,6 +3,7 @@ import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
 import env from 'decentraland-gatsby/dist/utils/env'
 import snakeCase from 'lodash/snakeCase'
 
+import { AirdropOutcome } from '../back/models/AirdropJob'
 import { GOVERNANCE_API } from '../constants'
 import { UserBadges } from '../entities/Badges/types'
 import { BidRequest, UnpublishedBidAttributes } from '../entities/Bid/types'
@@ -559,7 +560,7 @@ export class Governance extends API {
       badgeSpecCid,
       recipients,
     }
-    const response = await this.fetch<ApiResponse<string>>(
+    const response = await this.fetch<ApiResponse<AirdropOutcome>>(
       `/badges/airdrop/`,
       this.options().method('POST').authorization({ sign: true }).json(data)
     )

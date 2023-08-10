@@ -3,7 +3,7 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { abi as BadgesAbi } from '@otterspace-xyz/contracts/out/Badges.sol/Badges.json'
 import { ethers } from 'ethers'
 
-import DclRpcService from '../../services/DclRpcService'
+import RpcService from '../../services/RpcService'
 
 const RAFT_OWNER_PK = process.env.RAFT_OWNER_PK || ''
 const POLYGON_BADGES_CONTRACT_ADDRESS = process.env.POLYGON_BADGES_CONTRACT_ADDRESS || ''
@@ -31,11 +31,12 @@ export async function estimateGas(
 }
 
 export async function airdrop(badgeCid: string, recipients: string[], pumpGas = false) {
-  const provider = DclRpcService.getPolygonProvider()
+  const provider = RpcService.getPolygonProvider()
   const raftOwner = new ethers.Wallet(RAFT_OWNER_PK, provider)
   const contract = new ethers.Contract(POLYGON_BADGES_CONTRACT_ADDRESS, BadgesAbi, raftOwner)
   const ipfsAddress = `ipfs://${badgeCid}/metadata.json`
   const formattedRecipients = checksumAddresses(recipients)
+  console.log(`Airdropping, pumping gas ${pumpGas}`)
   let txn
   if (pumpGas) {
     const gasConfig = await estimateGas(contract, formattedRecipients, ipfsAddress, provider)
@@ -48,7 +49,7 @@ export async function airdrop(badgeCid: string, recipients: string[], pumpGas = 
 }
 
 export async function checkBalance() {
-  const provider = DclRpcService.getPolygonProvider()
+  const provider = RpcService.getPolygonProvider()
   const raftOwner = await new ethers.Wallet(RAFT_OWNER_PK, provider)
   const balance = await raftOwner.getBalance()
   const balanceInEther = ethers.utils.formatEther(balance)

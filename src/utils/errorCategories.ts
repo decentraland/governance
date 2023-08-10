@@ -10,4 +10,5 @@ export enum ErrorCategory {
   Transparency = 'Transparency',
   Vesting = 'Vesting',
   Voting = 'Voting',
+  Discord = 'Discord',
 }
