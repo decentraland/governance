@@ -1,7 +1,7 @@
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 import snakeCase from 'lodash/snakeCase'
 
-import { grantLegislatorBadges } from '../../back/jobs/grantLegislatorBadges'
+import { giveLegislatorBadges } from '../../back/jobs/BadgeAirdrop'
 import { commentProposalUpdateInDiscourse } from '../../back/routes/proposal'
 import BidService from '../../services/BidService'
 import { BudgetService } from '../../services/BudgetService'
@@ -41,7 +41,7 @@ async function updateAcceptedProposals(acceptedProposals: ProposalWithOutcome[],
       ProposalStatus.Passed
     )
 
-    grantLegislatorBadges(acceptedProposals)
+    giveLegislatorBadges(acceptedProposals)
   }
 }
 
