@@ -5,12 +5,13 @@ import AirdropJobModel, { AirdropJobAttributes, AirdropOutcome } from '../models
 
 export async function runAirdropJobs() {
   const pendingJobs: AirdropJobAttributes[] = await AirdropJobModel.getPending()
-  if (pendingJobs.length > 0) {
-    logger.log(`Running ${pendingJobs} airdrop jobs`)
+  if (pendingJobs.length === 0) {
+    return
   }
+  logger.log(`Running ${pendingJobs} airdrop jobs`)
   pendingJobs.map(async (pendingJob) => {
     const { id, badge_spec, recipients } = pendingJob
-    const airdropOutcome: AirdropOutcome = await BadgesService.giveBadgeToUsers(badge_spec, recipients)
+    const airdropOutcome = await BadgesService.giveBadgeToUsers(badge_spec, recipients)
     logger.log('Airdrop Outcome', airdropOutcome)
     await AirdropJobModel.update<AirdropJobAttributes>(
       {

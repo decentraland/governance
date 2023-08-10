@@ -55,7 +55,7 @@ export default class CoauthorModel extends Model<CoauthorAttributes> {
             ${conditional(!!status, SQL` AND status = ${status}`)}
     `
 
-    const result = await this.query(query)
+    const result = await this.namedQuery('find_all_coauthors', query)
     return result.map((row) => row.address)
   }
 }

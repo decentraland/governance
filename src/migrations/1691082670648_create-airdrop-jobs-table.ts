@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { ColumnDefinitions, MigrationBuilder } from "node-pg-migrate"
-import { AirdropJobStatus } from "../back/models/AirdropJob"
-import { Model } from "decentraland-gatsby/dist/entities/Database/model"
+import AirdropJobModel, { AirdropJobStatus } from "../back/models/AirdropJob"
 
 export const shorthands: ColumnDefinitions | undefined = undefined
 
@@ -9,7 +8,6 @@ const STATUS_TYPE = 'airdrop_job_status'
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
   pgm.createType(STATUS_TYPE, Object.values(AirdropJobStatus))
-
   const columns: ColumnDefinitions = {
     id: {
       type: 'TEXT',
@@ -44,10 +42,10 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
     },
   }
 
-  pgm.createTable(Model.tableName, columns)
+  pgm.createTable(AirdropJobModel.tableName, columns)
 }
 
 export async function down(pgm: MigrationBuilder): Promise<void> {
-  pgm.dropTable(Model.tableName)
+  pgm.dropTable(AirdropJobModel.tableName)
   pgm.dropType(STATUS_TYPE)
 }
