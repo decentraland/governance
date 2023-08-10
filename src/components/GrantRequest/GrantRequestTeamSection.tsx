@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 
 import isEmpty from 'lodash/isEmpty'
 
-import { GrantRequest, GrantRequestTeam, TeamMember } from '../../entities/Grant/types'
+import { GrantRequestTeam, TeamMember } from '../../entities/Grant/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import SubLabel from '../Common/SubLabel'
@@ -11,7 +11,7 @@ import ProjectRequestSection from '../ProjectRequest/ProjectRequestSection'
 
 import AddBox from './AddBox'
 import AddTeamMemberModal from './AddTeamMemberModal'
-import TeamMemberItem from './TeamMemberItem'
+import BreakdownItem from './BreakdownItem'
 
 export const INITIAL_GRANT_REQUEST_TEAM_STATE: GrantRequestTeam = {
   members: [],
@@ -76,9 +76,10 @@ export default function GrantRequestTeamSection({ sectionNumber, onValidation, i
       <Label>{t('page.submit_grant.team.members_label')}</Label>
       <SubLabel>{t('page.submit_grant.team.members_detail')}</SubLabel>
       {teamState.members.map((item, index) => (
-        <TeamMemberItem
+        <BreakdownItem
           key={`${item.name}-${index}`}
-          item={item}
+          title={item.name}
+          subtitle={item.role}
           onClick={() => {
             setSelectedTeamMember(item)
             setModalOpen(true)
