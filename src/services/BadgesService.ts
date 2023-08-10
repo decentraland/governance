@@ -3,6 +3,7 @@ import { v1 as uuid } from 'uuid'
 
 import AirdropJobModel, { AirdropJobStatus, AirdropOutcome } from '../back/models/AirdropJob'
 import { OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgraph'
+import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 import { LEGISLATOR_BADGE_SPEC_CID } from '../constants'
 import { Badge, BadgeStatus, BadgeStatusReason, UserBadges, toBadgeStatus } from '../entities/Badges/types'
 import { airdrop } from '../entities/Badges/utils'
@@ -67,19 +68,33 @@ export class BadgesService {
 
   public static async giveBadgeToUsers(badgeCid: string, users: string[]): Promise<AirdropOutcome> {
     try {
-      const badgeOwners = await OtterspaceSubgraph.get().getBadgeOwners(badgeCid)
-      const usersWithoutBadge = users.filter((user) => {
-        return !badgeOwners.includes(user.toLowerCase())
-      })
-
-      if (usersWithoutBadge.length > 0) {
-        return await this.airdropWithRetry(badgeCid, usersWithoutBadge)
-      } else {
+      const usersWithoutBadge = await this.getUsersWithoutBadge(badgeCid, users)
+      if (usersWithoutBadge.length === 0) {
         return { status: AirdropJobStatus.FAILED, error: 'All recipients already have this badge' }
       }
+      const usersWhoVoted = await this.getUsersWhoVoted(usersWithoutBadge)
+      if (usersWhoVoted.length === 0) {
+        return { status: AirdropJobStatus.FAILED, error: 'Recipients have never voted' }
+      }
+      return await this.airdropWithRetry(badgeCid, usersWithoutBadge)
     } catch (e) {
       return { status: AirdropJobStatus.FAILED, error: JSON.stringify(e) }
     }
+  }
+
+  private static async getUsersWhoVoted(usersWithoutBadge: string[]) {
+    const voteResults = await Promise.all(
+      usersWithoutBadge.map(async (user) => ({
+        address: user,
+        hasVoted: await SnapshotGraphql.get().hasVoted(user),
+      }))
+    )
+    return voteResults.filter((result) => result.hasVoted).map((result) => result.address)
+  }
+
+  private static async getUsersWithoutBadge(badgeCid: string, users: string[]) {
+    const badgeOwners = await OtterspaceSubgraph.get().getBadgeOwners(badgeCid)
+    return users.filter((user) => !badgeOwners.includes(user.toLowerCase()))
   }
 
   private static async airdropWithRetry(
