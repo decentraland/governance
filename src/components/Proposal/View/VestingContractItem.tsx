@@ -2,7 +2,7 @@ import React from 'react'
 
 import { VestingLog } from '../../../clients/VestingData'
 import useFormatMessage from '../../../hooks/useFormatMessage'
-import { ContractVersion, TopicsByVersion } from '../../../utils/contracts'
+import { ContractVersion, TopicsByVersion } from '../../../utils/contracts/vesting'
 import Time from '../../../utils/date/Time'
 import { env } from '../../../utils/env'
 import Link from '../../Common/Typography/Link'
@@ -52,9 +52,9 @@ function VestingContractItem({ address, itemNumber, logs, vestingStartAt }: Prop
             </>
           ) : (
             <>
-              <span>{t(STATUS_KEYS[lastLog.topic])}</span>
-              <span> </span>
-              <span>{formatDate(lastLog.timestamp)}</span>
+              <span>
+                {t(STATUS_KEYS[lastLog.topic])} {formatDate(lastLog.timestamp)}
+              </span>
             </>
           )}
         </div>

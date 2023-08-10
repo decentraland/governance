@@ -2,9 +2,9 @@ import Web3 from 'web3'
 import { AbiItem } from 'web3-utils'
 
 import DclRpcService from '../services/DclRpcService'
-import { ContractVersion, TopicsByVersion } from '../utils/contracts'
 import VESTING_ABI from '../utils/contracts/abi/vesting/vesting.json'
 import VESTING_V2_ABI from '../utils/contracts/abi/vesting/vesting_v2.json'
+import { ContractVersion, TopicsByVersion } from '../utils/contracts/vesting'
 import { ErrorCategory } from '../utils/errorCategories'
 
 import { ErrorClient } from './ErrorClient'
@@ -41,7 +41,7 @@ async function getVestingContractLogs(vestingAddress: string, web3: Web3, versio
   const eth = web3.eth
   const web3Logs = await eth.getPastLogs({
     address: vestingAddress,
-    fromBlock: 0,
+    fromBlock: 13916992, // 01/01/2022
     toBlock: 'latest',
   })
 
@@ -55,15 +55,16 @@ async function getVestingContractLogs(vestingAddress: string, web3: Web3, versio
   })
 
   for (const idx in web3Logs) {
+    const eventTimestamp = Number(blocks[idx].timestamp)
     switch (web3Logs[idx].topics[0]) {
       case topics.REVOKE:
-        logs.push(getLog(Number(blocks[idx].timestamp), topics.REVOKE))
+        logs.push(getLog(eventTimestamp, topics.REVOKE))
         break
       case topics.PAUSED:
-        logs.push(getLog(Number(blocks[idx].timestamp), topics.PAUSED))
+        logs.push(getLog(eventTimestamp, topics.PAUSED))
         break
       case topics.UNPAUSED:
-        logs.push(getLog(Number(blocks[idx].timestamp), topics.UNPAUSED))
+        logs.push(getLog(eventTimestamp, topics.UNPAUSED))
         break
       default:
         break
