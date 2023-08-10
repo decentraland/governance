@@ -137,6 +137,13 @@ export class BadgesService {
   }
 
   private static async queueAirdropJob(badgeSpec: string, recipients: string[]) {
+    if (!LEGISLATOR_BADGE_SPEC_CID || LEGISLATOR_BADGE_SPEC_CID.length === 0) {
+      ErrorService.report('Unable to create AirdropJob. LEGISLATOR_BADGE_SPEC_CID missing.', {
+        category: ErrorCategory.Badges,
+        recipients,
+      })
+      return
+    }
     logger.log(`Enqueueing airdrop job`, { badgeSpec, recipients })
     try {
       await AirdropJobModel.create({ id: uuid(), badge_spec: badgeSpec, recipients })
