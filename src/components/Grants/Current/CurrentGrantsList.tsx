@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { navigate } from '@reach/router'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import filter from 'lodash/filter'
 import isEmpty from 'lodash/isEmpty'
 import orderBy from 'lodash/orderBy'
@@ -124,11 +123,11 @@ const CurrentGrantsList = ({ grants, category, status, counter }: Props) => {
             actionType={ActionType.BUTTON}
           />
         )}
-        <Container className="CurrentGrants__Container">
+        <div className="CurrentGrants__Container">
           {filteredCurrentGrants?.map((grant) => (
             <GrantCard key={`CurrentGrantCard_${grant.id}`} grant={grant} />
           ))}
-        </Container>
+        </div>
         {showLoadMoreCurrentGrantsButton && (
           <FullWidthButton onClick={handleLoadMoreCurrentGrantsClick}>
             {t('page.grants.load_more_button')}

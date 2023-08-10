@@ -1,5 +1,7 @@
 .CurrentGrantsList {
-  margin-bottom: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
 }
 
 .CurrentGrants__TitleContainer {
@@ -37,23 +39,28 @@
 }
 
 .CurrentGrants__Container {
+  display: grid;
+  grid-gap: 14px;
   flex-wrap: wrap;
-  margin-bottom: 24px;
-  margin-top: 15px;
-  display: grid !important;
-  grid-template-columns: 100%;
-  grid-row-gap: 16px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 @media (min-width: 992px) {
   .CurrentGrants__Container {
-    grid-template-columns: 48.49% 48.49% !important;
-    grid-column-gap: 24px;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: subgrid;
+    grid-gap: 22px;
   }
 }
 
 .ui.container.CurrentGrants__Container {
+  width: 100% !important;
   margin-left: 0 !important;
   margin-right: 0 !important;
-  width: 100% !important;
+}
+
+.CurrentGrantsList__Wrapper {
+  display: flex;
+  width: 100%;
 }

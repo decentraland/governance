@@ -27,7 +27,7 @@ function getAllInitiativesCount(counter: Counter) {
   return Object.values(counter).reduce((acc, curr) => acc + curr, 0)
 }
 
-function BudgetBanner({ category, status, counter }: Props) {
+export default function BudgetBanner({ category, status, counter }: Props) {
   const t = useFormatMessage()
   const intl = useIntl()
   const {
@@ -79,5 +79,3 @@ function BudgetBanner({ category, status, counter }: Props) {
     </div>
   )
 }
-
-export default BudgetBanner

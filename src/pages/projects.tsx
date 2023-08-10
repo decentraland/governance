@@ -89,14 +89,14 @@ export default function GrantsPage() {
             <CurrentGrantsBanner />
             <Grid stackable>
               <Grid.Row>
-                <Grid.Column tablet="4">
+                <Grid.Column tablet="3">
                   <NotMobile>
                     <CategoryFilter filterType={NewGrantCategory} categoryCount={newGrantsCounter} startOpen />
                     <StatusFilter statusType={GrantStatus} startOpen />
                     <RequestBanner />
                   </NotMobile>
                 </Grid.Column>
-                <Grid.Column tablet="12">
+                <Grid.Column tablet="13">
                   <CurrentGrantsList
                     grants={displayableGrants}
                     category={toProposalGrantCategory(type)}

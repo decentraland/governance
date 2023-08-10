@@ -3,7 +3,6 @@
   background: var(--background-banner-gradient);
   border: 1px solid #e8e8e8;
   border-radius: 6px;
-  margin-top: 13px;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;

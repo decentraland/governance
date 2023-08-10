@@ -1,6 +1,5 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 
-import { useLocation } from '@reach/router'
 import isEqual from 'lodash/isEqual'
 import toSnakeCase from 'lodash/snakeCase'
 
@@ -8,6 +7,7 @@ import { NewGrantCategory, OldGrantCategory, SubtypeAlternativeOptions } from '.
 import { ProposalType, toProposalType } from '../../entities/Proposal/types'
 import { getUrlFilters } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
+import useURLSearchParams from '../../hooks/useURLSearchParams'
 import CategoryOption from '../Category/CategoryOption'
 
 import './CategoryFilter.css'
@@ -30,47 +30,37 @@ function isCounterValid(counter: Counter, filterType: FilterType) {
   return isEqual(counterKeys, filterKeys)
 }
 
-export default React.memo(function CategoryFilter({
+export default function CategoryFilter({
   filterType,
   onChange,
   startOpen,
   categoryCount,
 }: FilterProps & { filterType: FilterType }) {
   const t = useFormatMessage()
-  const location = useLocation()
-  const params = useMemo(() => new URLSearchParams(location.search), [location.search])
-  const filters: string[] = Object.values(filterType)
+  const params = useURLSearchParams()
+  const filters = Object.values(filterType)
   const type = params.get(FILTER_KEY)
   const isProposalsFilter = isEqual(filterType, ProposalType)
-  const isLegacyGrantsFilter = isEqual(filterType, OldGrantCategory)
   const isCounter = !!categoryCount && isCounterValid(categoryCount, filterType)
 
   return (
-    <CollapsibleFilter
-      title={t(
-        isLegacyGrantsFilter ? 'navigation.search.legacy_filter_title' : 'navigation.search.category_filter_title'
-      )}
-      startOpen={!!startOpen}
-      onChange={onChange}
-    >
-      {!isLegacyGrantsFilter && (
-        <CategoryOption
-          type={isProposalsFilter ? 'all_proposals' : 'all_grants'}
-          href={getUrlFilters(FILTER_KEY, params)}
-          active={!type}
-          className={'CategoryFilter__CategoryOption'}
-        />
-      )}
+    <CollapsibleFilter title={t('navigation.search.category_filter_title')} startOpen={!!startOpen} onChange={onChange}>
+      <CategoryOption
+        type={isProposalsFilter ? 'all_proposals' : 'all_grants'}
+        href={getUrlFilters(FILTER_KEY, params)}
+        active={!type}
+        className="CategoryFilter__CategoryOption"
+      />
       {filters.map((filterType, index) => {
         const label = toSnakeCase(filterType)
-        const isGrantType = toProposalType(filterType) === ProposalType.Grant
+        const isGrantType = toProposalType(filterType) === ProposalType.Grant || filterType === 'Grants'
         return (
           <CategoryOption
             key={'category_filter' + index}
             type={label}
             href={getUrlFilters(FILTER_KEY, params, label)}
             active={type === label}
-            className={'CategoryFilter__CategoryOption'}
+            className="CategoryFilter__CategoryOption"
             count={isCounter ? categoryCount[filterType as keyof Counter] : undefined}
             subtypes={
               isGrantType
@@ -86,4 +76,4 @@ export default React.memo(function CategoryFilter({
       })}
     </CollapsibleFilter>
   )
-})
+}
