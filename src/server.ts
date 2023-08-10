@@ -15,6 +15,7 @@ import { register } from 'prom-client'
 import swaggerUi from 'swagger-ui-express'
 import YAML from 'yaml'
 
+import { runAirdropJobs } from './back/jobs/BadgeAirdrop'
 import badges from './back/routes/badges'
 import budget from './back/routes/budget'
 import coauthor from './back/routes/coauthor'
@@ -38,9 +39,10 @@ import filesystem from './utils/filesystem'
 
 const jobs = manager()
 jobs.cron('@eachMinute', finishProposal)
-jobs.cron('@daily', updateGovernanceBudgets)
 jobs.cron('@eachMinute', activateProposals)
 jobs.cron('@eachMinute', publishBids)
+jobs.cron('@daily', updateGovernanceBudgets)
+jobs.cron('@daily', runAirdropJobs)
 
 const file = readFileSync('static/api.yaml', 'utf8')
 const swaggerDocument = YAML.parse(file)
