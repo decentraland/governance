@@ -119,7 +119,7 @@ const CurrentGrantsList = ({ grants, category, status, counter }: Props) => {
             className="CurrentGrants__Empty"
             icon={<Watermelon />}
             description={t('page.grants.empty.description')}
-            onLinkClick={() => navigate(locations.grants())}
+            onLinkClick={() => navigate(locations.projects())}
             linkText={t('page.grants.empty.button')}
             actionType={ActionType.BUTTON}
           />

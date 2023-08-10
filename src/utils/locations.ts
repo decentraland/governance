@@ -68,7 +68,7 @@ export default {
   debug: () => url('/debug/'),
   welcome: () => url('/welcome/', {}),
   update: (id: string) => url('/update/', { id }),
-  grants: () => url('/grants/', {}),
+  projects: () => url('/projects/', {}),
   edit: {
     update: (id: string) => url('edit/update/', { id }),
   },
@@ -79,4 +79,8 @@ export function navigate(to: string, options?: NavigateOptions<any>) {
     return
   }
   gatsbyNavigate(to, options)
+}
+
+export function isProjectPath(pathname: string) {
+  return pathname.includes('/projects')
 }

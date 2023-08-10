@@ -50,9 +50,9 @@ function MobileNavigation({ activeTab }: NavigationProps) {
           size="small"
           {...getButtonProps(NavigationTab.Grants, activeTab)}
           as={Link}
-          href={locations.grants()}
+          href={locations.projects()}
         >
-          {t('navigation.grants')}
+          {t('navigation.projects')}
         </Button>
         <Button
           className="Browse__Button"

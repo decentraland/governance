@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
+import { useLocation } from '@reach/router'
+import classNames from 'classnames'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
@@ -9,7 +11,7 @@ import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useIsDebugAddress from '../../hooks/useIsDebugAddress'
 import useIsProfileValidated from '../../hooks/useIsProfileValidated'
-import locations from '../../utils/locations'
+import locations, { isProjectPath } from '../../utils/locations'
 import Link from '../Common/Typography/Link'
 import Dot from '../Icon/Dot'
 import SearchInput from '../Search/SearchInput'
@@ -40,6 +42,7 @@ type DismissState = {
 const Navigation = ({ activeTab }: NavigationProps) => {
   const t = useFormatMessage()
   const [user] = useAuthContext()
+  const location = useLocation()
 
   const { isDebugAddress } = useIsDebugAddress(user)
   const { isProfileValidated, validationChecked } = useIsProfileValidated(user)
@@ -65,7 +68,7 @@ const Navigation = ({ activeTab }: NavigationProps) => {
   const showDot = validationChecked && !isProfileValidated
 
   return (
-    <div className="Navigation">
+    <div className={classNames('Navigation', isProjectPath(location.pathname) && 'WiderNavigation')}>
       <Tabs>
         <Tabs.Left>
           <Link href={locations.home()}>
@@ -74,8 +77,8 @@ const Navigation = ({ activeTab }: NavigationProps) => {
           <Link href={locations.proposals()}>
             <Tabs.Tab active={activeTab === NavigationTab.Proposals}>{t('navigation.proposals')}</Tabs.Tab>
           </Link>
-          <Link href={locations.grants()}>
-            <Tabs.Tab active={activeTab === NavigationTab.Grants}>{t('navigation.grants')}</Tabs.Tab>
+          <Link href={locations.projects()}>
+            <Tabs.Tab active={activeTab === NavigationTab.Grants}>{t('navigation.projects')}</Tabs.Tab>
           </Link>
           {user && (
             <Link href={locations.profile({ address: user })}>

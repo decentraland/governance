@@ -2,12 +2,12 @@ import React, { useMemo } from 'react'
 
 import { useLocation } from '@reach/router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 import isEmpty from 'lodash/isEmpty'
 import toSnakeCase from 'lodash/snakeCase'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
+import WiderContainer from '../components/Common/WiderContainer'
 import CurrentGrantsBanner from '../components/Grants/Current/CurrentGrantsBanner'
 import CurrentGrantsList from '../components/Grants/Current/CurrentGrantsList'
 import RequestBanner from '../components/Grants/RequestBanner'
@@ -85,14 +85,13 @@ export default function GrantsPage() {
       {isLoading && <LoadingView withNavigation />}
       {!isLoading && (
         <BurgerMenuLayout navigationOnly activeTab={NavigationTab.Grants}>
-          <Container>
+          <WiderContainer>
             <CurrentGrantsBanner />
             <Grid stackable>
               <Grid.Row>
                 <Grid.Column tablet="4">
                   <NotMobile>
                     <CategoryFilter filterType={NewGrantCategory} categoryCount={newGrantsCounter} startOpen />
-                    <CategoryFilter filterType={OldGrantCategory} categoryCount={oldGrantsCounter} />
                     <StatusFilter statusType={GrantStatus} startOpen />
                     <RequestBanner />
                   </NotMobile>
@@ -111,7 +110,7 @@ export default function GrantsPage() {
                 </Grid.Column>
               </Grid.Row>
             </Grid>
-          </Container>
+          </WiderContainer>
         </BurgerMenuLayout>
       )}
     </>

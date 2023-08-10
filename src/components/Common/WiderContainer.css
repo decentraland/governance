@@ -1,0 +1,10 @@
+.ui.container.WiderContainer {
+  width: unset !important;
+  max-width: 1440px !important;
+}
+
+@media (min-width: 768px) {
+  .ui.container.WiderContainer {
+    padding: 0 24px;
+  }
+}

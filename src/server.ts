@@ -90,6 +90,15 @@ app.get(
   })
 )
 
+// Grants to project redirect to preserve previous URL
+app.get(
+  '/grants',
+  handleRaw(async (req, res) => {
+    const websiteUrl = process.env.GATSBY_GOVERNANCE_API?.replace('/api', '')
+    return res.redirect(`${websiteUrl}/projects`)
+  })
+)
+
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 app.use(
