@@ -83,7 +83,7 @@ import { ProposalInCreation, ProposalService } from '../../services/ProposalServ
 import { getProfile } from '../../utils/Catalyst'
 import Time from '../../utils/date/Time'
 import { ErrorCategory } from '../../utils/errorCategories'
-import { validateAddress } from '../utils/validations'
+import { validateAddress, validateUniqueAddresses } from '../utils/validations'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -530,6 +530,9 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
       }
       if (vesting_addresses.some((address) => !isEthereumAddress(address))) {
         throw new RequestError('Some vesting address is invalid', RequestError.BadRequest)
+      }
+      if (!validateUniqueAddresses(vesting_addresses)) {
+        throw new RequestError('Vesting addresses must be unique', RequestError.BadRequest)
       }
       update.vesting_addresses = vesting_addresses
       update.textsearch = ProposalModel.textsearch(

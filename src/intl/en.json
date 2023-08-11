@@ -447,11 +447,12 @@
       "reject": "Cancel"
     },
     "update_status_proposal": {
-      "title": "Confirmation",
-      "description": "Are you sure you want to set this proposal as **{status}**? This action may not be undone.",
+      "title": "Proposal Enactment",
+      "description": "Mark this proposal as **{status}**, add vesting contracts, or edit enactment data using this tool.",
       "grant_vesting_addresses": "Vesting Contract Addresses",
       "add_vesting_contract": "Add vesting contract",
       "invalid_vesting_address": "Some address is invalid",
+      "duplicated_vesting_address": "Some address is duplicated",
       "update_status_description_label": "Description",
       "update_status_description_placeholder": "Add any useful details for user",
       "accept": "Save",

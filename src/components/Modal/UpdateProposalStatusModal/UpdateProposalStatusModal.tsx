@@ -11,6 +11,7 @@ import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
+import { validateUniqueAddresses } from '../../../back/utils/validations'
 import { Governance } from '../../../clients/Governance'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
@@ -31,17 +32,17 @@ type UpdateData = {
 }
 
 type Props = Omit<ModalProps, 'children'> & {
-  proposal?: ProposalAttributes | null
-  status?: ProposalStatus | null
+  proposal: ProposalAttributes | null
+  status: ProposalStatus | null
   loading?: boolean
   isDAOCommittee: boolean
   proposalKey: string
 }
 
-const getPrimaryButtonTextKey = (status?: ProposalStatus | null) => {
+const getPrimaryButtonTextKey = (status: ProposalStatus | null, isEdit: boolean) => {
   switch (status) {
     case ProposalStatus.Enacted:
-      return 'page.proposal_detail.enact'
+      return isEdit ? 'page.proposal_detail.edit_enacted_data' : 'page.proposal_detail.enact'
     case ProposalStatus.Passed:
       return 'page.proposal_detail.pass'
     case ProposalStatus.Rejected:
@@ -64,21 +65,21 @@ export function UpdateProposalStatusModal({
   const t = useFormatMessage()
   const queryClient = useQueryClient()
   const { vesting_addresses } = proposal || {}
-  const DEFAULT_VALUES = useMemo(
-    () => (vesting_addresses && vesting_addresses.length > 0 ? vesting_addresses : ['']),
+  const defaultValues = useMemo(
+    () => ({ vestingAddresses: vesting_addresses && vesting_addresses.length > 0 ? vesting_addresses : [''] }),
     [vesting_addresses]
   )
 
-  const onClose = () => {
-    setError('')
-    setValue('vestingAddresses', DEFAULT_VALUES)
-    props.onClose()
-  }
-
-  const { handleSubmit, control, setValue } = useForm<UpdateProposalState>({
-    defaultValues: { vestingAddresses: DEFAULT_VALUES },
+  const { handleSubmit, control, setValue, reset } = useForm<UpdateProposalState>({
+    defaultValues,
     mode: 'onTouched',
   })
+
+  const onClose = () => {
+    setError('')
+    reset(defaultValues)
+    props.onClose()
+  }
 
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -86,11 +87,12 @@ export function UpdateProposalStatusModal({
   const values = useWatch({ control })
 
   const isGrantProposal = proposal?.type === ProposalType.Grant
+  const showAddButton = isGrantProposal && !!vesting_addresses && vesting_addresses.length > 0
   const hasValues = values.vestingAddresses && values.vestingAddresses.filter((value) => value.length > 0).length > 0
 
   useEffect(() => {
-    setValue('vestingAddresses', DEFAULT_VALUES)
-  }, [DEFAULT_VALUES, setValue])
+    setValue('vestingAddresses', defaultValues.vestingAddresses)
+  }, [defaultValues, setValue])
 
   const handleRemoveOption = (idx: number) => {
     const newOptions = [...(values.vestingAddresses || [])]
@@ -118,6 +120,11 @@ export function UpdateProposalStatusModal({
       setIsSubmitting(true)
       const { status, vestingContracts } = updateData
       const filteredVestingContracts = vestingContracts.filter((address) => address.length > 0)
+      if (!validateUniqueAddresses(filteredVestingContracts)) {
+        setError('modal.update_status_proposal.duplicated_vesting_address')
+        setIsSubmitting(false)
+        return
+      }
       if (proposal && isDAOCommittee) {
         if (filteredVestingContracts.some((address) => !isEthereumAddress(address))) {
           setError('modal.update_status_proposal.invalid_vesting_address')
@@ -190,16 +197,18 @@ export function UpdateProposalStatusModal({
                   disabled={isSubmitting}
                 />
               ))}
-              <Button
-                basic
-                fluid
-                onClick={(e) => {
-                  e.preventDefault()
-                  handleAddOption()
-                }}
-              >
-                {t('modal.update_status_proposal.add_vesting_contract')}
-              </Button>
+              {showAddButton && (
+                <Button
+                  basic
+                  fluid
+                  onClick={(e) => {
+                    e.preventDefault()
+                    handleAddOption()
+                  }}
+                >
+                  {t('modal.update_status_proposal.add_vesting_contract')}
+                </Button>
+              )}
             </div>
           )}
           <div className="ProposalModal__Actions">
@@ -218,7 +227,7 @@ export function UpdateProposalStatusModal({
               disabled={isSubmitting || (isGrantProposal && !hasValues)}
               loading={loading && isSubmitting}
             >
-              {t(getPrimaryButtonTextKey(status))}
+              {t(getPrimaryButtonTextKey(status, showAddButton))}
             </Button>
             <Button
               className="cancel"
