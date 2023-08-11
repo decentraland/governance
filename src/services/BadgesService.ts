@@ -15,7 +15,7 @@ import { ErrorCategory } from '../utils/errorCategories'
 
 import { ErrorService } from './ErrorService'
 
-const TRANSACTION_UNDERPRICED = -32000
+const TRANSACTION_UNDERPRICED_ERROR_CODE = -32000
 
 export class BadgesService {
   public static async getBadges(address: string): Promise<UserBadges> {
@@ -122,7 +122,7 @@ export class BadgesService {
     try {
       const errorParsed = JSON.parse(error.body)
       const errorCode = errorParsed?.error?.code
-      return errorCode === TRANSACTION_UNDERPRICED
+      return errorCode === TRANSACTION_UNDERPRICED_ERROR_CODE
     } catch (e) {
       return false
     }
@@ -130,7 +130,7 @@ export class BadgesService {
 
   static async giveLegislatorBadges(acceptedProposals: ProposalAttributes[]) {
     const governanceProposals = acceptedProposals.filter((proposal) => proposal.type === ProposalType.Governance)
-    const coauthors = await CoauthorModel.findAllCoauthors(governanceProposals, CoauthorStatus.APPROVED)
+    const coauthors = await CoauthorModel.findAllByProposals(governanceProposals, CoauthorStatus.APPROVED)
     const authors = governanceProposals.map((proposal) => proposal.user)
     const authorsAndCoauthors = new Set([...authors.map(getChecksumAddress), ...coauthors.map(getChecksumAddress)])
     await this.queueAirdropJob(LEGISLATOR_BADGE_SPEC_CID, Array.from(authorsAndCoauthors))

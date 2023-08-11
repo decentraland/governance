@@ -15,7 +15,7 @@ describe('giveLegislatorBadges', () => {
   beforeAll(() => {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     jest.spyOn(AirdropJobModel, 'create').mockResolvedValue(async () => {})
-    jest.spyOn(CoauthorModel, 'findAllCoauthors').mockResolvedValue(COAUTHORS)
+    jest.spyOn(CoauthorModel, 'findAllByProposals').mockResolvedValue(COAUTHORS)
   })
 
   it('should call queueAirdropJob with correct arguments for governance proposals', async () => {

@@ -44,7 +44,7 @@ export default class CoauthorModel extends Model<CoauthorAttributes> {
     await this.query(query)
   }
 
-  static async findAllCoauthors(proposals: ProposalAttributes[], status?: CoauthorStatus): Promise<string[]> {
+  static async findAllByProposals(proposals: ProposalAttributes[], status?: CoauthorStatus): Promise<string[]> {
     const query = SQL`
         SELECT address
         FROM ${table(this)}
