@@ -77,7 +77,9 @@ const VestingProgress = ({ grant, basic }: Props) => {
           </div>
           {contract?.finish_at && (
             <div className="VestingProgress__VestedAt">
-              <span>{t('page.grants.end_date')}</span>
+              <span>
+                {Time(contract.finish_at).isBefore(Time()) ? t('page.grants.ended_date') : t('page.grants.end_date')}
+              </span>
               <span className="VestingProgress__VestedDate">{Time.unix(contract.finish_at).fromNow()}</span>
             </div>
           )}

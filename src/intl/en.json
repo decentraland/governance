@@ -1207,6 +1207,7 @@
       "started_date": "Started",
       "starts_date": "Starts",
       "end_date": "Ends",
+      "ended_date": "Ended",
       "transaction_date": "Transaction made",
       "past_funded": {
         "title": "Past, successfully funded initiatives",
