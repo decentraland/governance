@@ -1,10 +1,10 @@
 import React from 'react'
 
 import { VestingLog } from '../../../clients/VestingData'
+import { getVestingContractUrl } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import { ContractVersion, TopicsByVersion } from '../../../utils/contracts/vesting'
 import Time from '../../../utils/date/Time'
-import { env } from '../../../utils/env'
 import Link from '../../Common/Typography/Link'
 import ChevronRight from '../../Icon/ChevronRight'
 
@@ -28,15 +28,12 @@ const STATUS_KEYS: Record<string, string> = {
 
 const formatDate = (date: string) => Time.from(date).format('DD/MM/YY')
 
-const VESTING_DASHBOARD_URL = env('GATSBY_VESTING_DASHBOARD_URL')
-
 function VestingContractItem({ address, itemNumber, logs, vestingStartAt }: Props) {
   const t = useFormatMessage()
   const lastLog = logs[0]
   const isVestingActive = logs.length === 0 || lastLog.topic === TOPICS_V2.UNPAUSED
-  const url = VESTING_DASHBOARD_URL.replace('%23', '#').concat(address.toLowerCase())
   return (
-    <Link className="VestingContractItem" target="_blank" href={url}>
+    <Link className="VestingContractItem" target="_blank" href={getVestingContractUrl(address)}>
       <div>
         <div className="VestingContractItem__title">
           {t('page.proposal_detail.grant.vesting_dropdown_item_title', { number: itemNumber })}

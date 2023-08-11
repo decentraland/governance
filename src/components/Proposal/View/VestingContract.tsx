@@ -1,9 +1,11 @@
 import React from 'react'
 
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 import Menu from 'semantic-ui-react/dist/commonjs/collections/Menu'
 
 import { VestingInfo } from '../../../clients/VestingData'
+import { getVestingContractUrl } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useVestingContractData from '../../../hooks/useVestingContractData'
 import Pill from '../../Common/Pill'
@@ -59,15 +61,27 @@ function VestingContract({ vestingAddresses }: Props) {
             >
               {t('page.proposal_detail.grant.vesting_description')}
             </Markdown>
-            <Menu className="VestingContract__Menu">
-              <Dropdown
-                className="VestingContract__Dropdown"
-                text={t('page.proposal_detail.grant.vesting_dropdown')}
-                options={getDropdownItems(vestingData)}
-                simple
-                item
-              />
-            </Menu>
+            {vestingData.length > 1 ? (
+              <Menu className="VestingContract__Menu">
+                <Dropdown
+                  className="VestingContract__Dropdown"
+                  text={t('page.proposal_detail.grant.vesting_dropdown', { amount: vestingData.length })}
+                  options={getDropdownItems(vestingData)}
+                  simple
+                  item
+                />
+              </Menu>
+            ) : (
+              <Button
+                href={getVestingContractUrl(vestingData[0].address)}
+                target="_blank"
+                rel="noopener noreferrer"
+                primary
+                size="small"
+              >
+                {t('page.proposal_detail.grant.vesting_dropdown', { amount: vestingData.length })}
+              </Button>
+            )}
           </div>
         </div>
       )}
