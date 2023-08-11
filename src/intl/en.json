@@ -447,7 +447,7 @@
       "reject": "Cancel"
     },
     "update_status_proposal": {
-      "title": "Proposal Enactment",
+      "title": "Confirm Proposal Enactment",
       "description": "Mark this proposal as **{status}**, add vesting contracts, or edit enactment data using this tool.",
       "grant_vesting_addresses": "Vesting Contract Addresses",
       "add_vesting_contract": "Add vesting contract",
