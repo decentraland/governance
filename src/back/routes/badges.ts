@@ -37,7 +37,7 @@ async function airdropBadges(req: WithAuth): Promise<AirdropOutcome> {
   })
 
   if (!badgeSpecCid || badgeSpecCid.length === 0) {
-    throw new RequestError('Invalid Badge Spec Cid', RequestError.Unauthorized)
+    throw new RequestError('Invalid Badge Spec Cid', RequestError.BadRequest)
   }
 
   return await BadgesService.giveBadgeToUsers(badgeSpecCid, recipients)
@@ -57,12 +57,12 @@ async function revokeBadge(req: WithAuth): Promise<string> {
   })
 
   if (!badgeSpecCid || badgeSpecCid.length === 0) {
-    throw new RequestError('Invalid Badge Spec Cid', RequestError.Unauthorized)
+    throw new RequestError('Invalid Badge Spec Cid', RequestError.BadRequest)
   }
 
   const validatedReason = reason
     ? toOtterspaceRevokeReason(reason, (reason) => {
-        throw new RequestError(`Invalid revoke reason ${reason}`, RequestError.Unauthorized)
+        throw new RequestError(`Invalid revoke reason ${reason}`, RequestError.BadRequest)
       })
     : undefined
   try {

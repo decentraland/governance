@@ -1,5 +1,6 @@
 import { Contract } from '@ethersproject/contracts'
 import { abi as BadgesAbi } from '@otterspace-xyz/contracts/out/Badges.sol/Badges.json'
+import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { ethers } from 'ethers'
 
 import RpcService from '../../services/RpcService'
@@ -19,9 +20,7 @@ export async function estimateGas(
   estimateFunction: (...args: any[]) => Promise<any>
 ): Promise<GasConfig> {
   const provider = RpcService.getPolygonProvider()
-  console.log('estimating gas limit')
   const gasLimit = await estimateFunction()
-  console.log('gasLimit', gasLimit)
   const gasPrice = await provider.getGasPrice()
   const adjustedGasPrice = gasPrice.mul(GAS_MULTIPLIER)
   return {
@@ -36,7 +35,7 @@ export async function airdrop(badgeCid: string, recipients: string[], pumpGas = 
   const contract = new ethers.Contract(POLYGON_BADGES_CONTRACT_ADDRESS, BadgesAbi, raftOwner)
   const ipfsAddress = `ipfs://${badgeCid}/metadata.json`
   const formattedRecipients = checksumAddresses(recipients)
-  console.log(`Airdropping, pumping gas ${pumpGas}`)
+  logger.log(`Airdropping, pumping gas ${pumpGas}`)
   let txn
   if (pumpGas) {
     const gasConfig = await estimateGas(contract, async () =>
@@ -47,7 +46,7 @@ export async function airdrop(badgeCid: string, recipients: string[], pumpGas = 
     txn = await contract.connect(raftOwner).airdrop(formattedRecipients, ipfsAddress)
   }
   await txn.wait()
-  console.log('Airdropped badge with txn hash:', txn.hash)
+  logger.log('Airdropped badge with txn hash:', txn.hash)
 }
 
 export async function revokeBadge(badgeId: string, reason: number) {

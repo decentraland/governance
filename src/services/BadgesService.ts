@@ -171,8 +171,6 @@ export class BadgesService {
     addresses: string[],
     reason = OtterspaceRevokeReason.TenureEnded
   ): Promise<RevocationResult[]> {
-    console.log('badgeCid', badgeCid)
-    console.log('addresses', addresses)
     const badgeOwnerships = await OtterspaceSubgraph.get().getRecipientsBadgeIds(badgeCid, addresses)
     if (!badgeOwnerships || badgeOwnerships.length === 0) {
       return []
