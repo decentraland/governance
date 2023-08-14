@@ -14,6 +14,7 @@ export default routes((router) => {
   const withAuth = auth()
   router.get('/badges/:address/', handleAPI(getBadges))
   router.post('/badges/airdrop/', withAuth, handleAPI(airdropBadges))
+  router.post('/badges/revoke/', withAuth, handleAPI(revokeBadge))
 })
 
 async function getBadges(req: Request<{ address: string }>): Promise<UserBadges> {
@@ -36,4 +37,17 @@ async function airdropBadges(req: WithAuth): Promise<AirdropOutcome> {
   })
 
   return await BadgesService.giveBadgeToUsers(badgeSpecCId, recipients)
+}
+
+async function revokeBadge(req: WithAuth): Promise<string> {
+  const user = req.auth!
+  const { badgeId, reason } = req.body
+
+  if (!isDebugAddress(user)) {
+    throw new RequestError('Invalid user', RequestError.Unauthorized)
+  }
+
+  if (!badgeId || badgeId.length === 0) return 'Invalid Badge Id'
+
+  return await BadgesService.revokeBadge(badgeId, reason)
 }
