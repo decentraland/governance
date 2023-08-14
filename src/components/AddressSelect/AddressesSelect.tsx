@@ -41,6 +41,7 @@ interface Props {
   isDisabled?: boolean
 }
 
+// TODO: extract common logic with CoauthorSelect
 function AddressesSelect({ setUsersAddresses, isDisabled, maxAddressesAmount, allowLoggedUserAccount = false }: Props) {
   const [state, setState] = useState<State>({
     inputValue: '',
