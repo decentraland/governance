@@ -6,7 +6,7 @@ import { OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgra
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 import { LEGISLATOR_BADGE_SPEC_CID } from '../constants'
 import { Badge, BadgeStatus, BadgeStatusReason, UserBadges, toBadgeStatus } from '../entities/Badges/types'
-import { airdrop } from '../entities/Badges/utils'
+import { airdrop, revokeBadge } from '../entities/Badges/utils'
 import CoauthorModel from '../entities/Coauthor/model'
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalAttributes, ProposalType } from '../entities/Proposal/types'
@@ -155,5 +155,11 @@ export class BadgesService {
         recipients,
       })
     }
+  }
+
+  static async revokeBadge(badgeId, reason?: string) {
+    const DEFAULT_REASON = TENURE_ENDED
+    const revokingReason = reason || OTTERSPACE_REVOKE_REASON.TENURE_ENDED
+    return revokeBadge(badgeId, reason)
   }
 }
