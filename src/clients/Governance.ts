@@ -35,6 +35,7 @@ import Time from '../utils/date/Time'
 
 import { TransparencyBudget } from './DclData'
 import { SnapshotProposal, SnapshotSpace, SnapshotStatus, SnapshotVote, VpDistribution } from './SnapshotGraphqlTypes'
+import { VestingInfo } from './VestingData'
 
 type NewProposalMap = {
   [`/proposals/poll`]: NewProposalPoll
@@ -212,20 +213,12 @@ export class Governance extends API {
     return result.data
   }
 
-  async updateProposalStatus(
-    proposal_id: string,
-    status: ProposalStatus,
-    vesting_address: string | null,
-    enacting_tx: string | null,
-    description: string | null = null
-  ) {
+  async updateProposalStatus(proposal_id: string, status: ProposalStatus, vesting_addresses?: string[]) {
     const result = await this.fetch<ApiResponse<ProposalAttributes>>(
       `/proposals/${proposal_id}`,
       this.options().method('PATCH').authorization({ sign: true }).json({
         status,
-        vesting_address,
-        enacting_tx,
-        description,
+        vesting_addresses,
       })
     )
 
@@ -547,6 +540,14 @@ export class Governance extends API {
     const snapshotId = proposalSnapshotId ? `/${proposalSnapshotId}` : ''
     const url = `/snapshot/vp-distribution/${address}${snapshotId}`
     const response = await this.fetch<ApiResponse<VpDistribution>>(url, this.options().method('GET'))
+    return response.data
+  }
+
+  async getVestingContractData(addresses: string[]) {
+    const response = await this.fetch<ApiResponse<VestingInfo[]>>(
+      `/vesting`,
+      this.options().method('POST').json({ addresses })
+    )
     return response.data
   }
 

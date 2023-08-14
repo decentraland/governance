@@ -427,12 +427,14 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     }
   }
 
-  static textsearch(title: string, description: string, user: string, vesting_address: string | null) {
+  static textsearch(title: string, description: string, user: string, vesting_addresses: string[]) {
+    const addressExpressions = vesting_addresses.map((address) => SQL`setweight(to_tsvector(${address}), 'B')`)
+
     return SQL`(${join(
       [
         SQL`setweight(to_tsvector(${title}), 'A')`,
         SQL`setweight(to_tsvector(${user}), 'B')`,
-        SQL`setweight(to_tsvector(${vesting_address || ''}), 'B')`,
+        ...addressExpressions,
         SQL`setweight(to_tsvector(${description || ''}), 'C')`,
       ],
       SQL` || `

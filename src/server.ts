@@ -29,6 +29,7 @@ import subscription from './back/routes/subscription'
 import proposalSurveyTopics from './back/routes/surveyTopics'
 import update from './back/routes/update'
 import users from './back/routes/user'
+import vestings from './back/routes/vestings'
 import score from './back/routes/votes'
 import bids from './entities/Bid/routes'
 import { updateGovernanceBudgets } from './entities/Budget/jobs'
@@ -69,6 +70,7 @@ app.use('/api', [
   common,
   bids,
   snapshot,
+  vestings,
   handle(async () => {
     throw new RequestError('NotFound', RequestError.NotFound)
   }),
