@@ -96,13 +96,13 @@ async function getProfile(req: Request) {
   const address = req.params.address
   validateAddress(address)
 
+  const user = await UserModel.findOne<UserAttributes>({ address: address.toLowerCase() })
+
+  if (!user) {
+    throw new RequestError('User not found', RequestError.NotFound)
+  }
+
   try {
-    const user = await UserModel.findOne<UserAttributes>({ address: address.toLowerCase() })
-
-    if (!user) {
-      throw new RequestError('User not found', RequestError.NotFound)
-    }
-
     const { forum_id } = user
 
     return {

@@ -1,9 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-import { ErrorClient } from '../clients/ErrorClient'
 import { createDefaultAvatar, getProfile } from '../utils/Catalyst'
-import { ErrorCategory } from '../utils/errorCategories'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
@@ -15,7 +13,6 @@ export default function useProfile(address?: string | null) {
       const profile = await getProfile(address)
       return { profile: profile || createDefaultAvatar(address), isDefaultProfile: !profile }
     } catch (error) {
-      ErrorClient.report('Error getting profile', { error, address, category: ErrorCategory.Profile })
       return null
     }
   }
