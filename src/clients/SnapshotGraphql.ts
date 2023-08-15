@@ -27,6 +27,7 @@ export const getQueryTimestamp = (dateTimestamp: number) => Math.round(dateTimes
 
 const GRAPHQL_ENDPOINT = `/graphql`
 const BATCH_SIZE = 1000
+const OLDEST_PROPOSAL_TIMESTAMP = 1621036800
 
 export class SnapshotGraphql extends API {
   static Url = SNAPSHOT_API || 'https://hub.snapshot.org/'
@@ -440,5 +441,25 @@ export class SnapshotGraphql extends API {
     )
 
     return result?.data?.proposal
+  }
+
+  async hasVoted(address: string) {
+    const query = `query HasVoted($space: String!, $address: String!, $created: Int!) {
+      votes(
+          where: { space: $space, voter: $address, created_gt: $created}
+          first: 1
+      ) {
+        voter  
+      }
+    }
+    `
+    const result = await this.fetch<SnapshotQueryResponse<{ votes: Pick<SnapshotVote, 'voter'>[] }>>(
+      GRAPHQL_ENDPOINT,
+      this.options()
+        .method('POST')
+        .json({ query, variables: { address, space: SNAPSHOT_SPACE, created: OLDEST_PROPOSAL_TIMESTAMP } })
+    )
+
+    return result?.data?.votes.length > 0
   }
 }

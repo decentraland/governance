@@ -3,6 +3,7 @@ import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
 import env from 'decentraland-gatsby/dist/utils/env'
 import snakeCase from 'lodash/snakeCase'
 
+import { AirdropOutcome } from '../back/models/AirdropJob'
 import { GOVERNANCE_API } from '../constants'
 import { UserBadges } from '../entities/Badges/types'
 import { BidRequest, UnpublishedBidAttributes } from '../entities/Bid/types'
@@ -21,6 +22,7 @@ import {
   NewProposalPitch,
   NewProposalPoll,
   NewProposalTender,
+  PendingProposalsQuery,
   ProposalAttributes,
   ProposalCommentsInDiscourse,
   ProposalStatus,
@@ -68,8 +70,6 @@ export type GetProposalsFilter = {
   snapshotIds?: string
   linkedProposalId?: string
 }
-
-type PendingProposalsQuery = { start: Date; end: Date; fields: (keyof SnapshotProposal)[]; limit: number }
 
 const getGovernanceApiUrl = () => {
   if (process.env.GATSBY_HEROKU_APP_NAME) {
@@ -554,5 +554,24 @@ export class Governance extends API {
   async getUpdateComments(update_id: string) {
     const result = await this.fetch<ApiResponse<ProposalCommentsInDiscourse>>(`/proposals/${update_id}/update/comments`)
     return result.data
+  }
+
+  async airdropBadge(badgeSpecCid: string, recipients: string[]) {
+    const data = {
+      badgeSpecCid,
+      recipients,
+    }
+    const response = await this.fetch<ApiResponse<AirdropOutcome>>(
+      `/badges/airdrop/`,
+      this.options().method('POST').authorization({ sign: true }).json(data)
+    )
+    return response.data
+  }
+
+  //TODO: implement and test what happens if airdropping to a user with revoked badge
+  async revokeBadge(badgeSpecCid: string, recipients: string[]) {
+    console.log('badgeSpecCid', badgeSpecCid)
+    console.log('recipients', recipients)
+    return `Revoke ${badgeSpecCid} from ${recipients}`
   }
 }

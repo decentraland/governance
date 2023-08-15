@@ -1,0 +1,38 @@
+import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
+import { SQL, table } from 'decentraland-gatsby/dist/entities/Database/utils'
+
+export type AirdropJobAttributes = {
+  id: string
+  badge_spec: string
+  recipients: string[]
+  status: AirdropJobStatus
+  error?: string
+  created_at: Date
+  updated_at: Date
+}
+
+export enum AirdropJobStatus {
+  PENDING = 'pending',
+  FINISHED = 'finished',
+  FAILED = 'failed',
+}
+
+export type AirdropOutcome = Pick<AirdropJobAttributes, 'status' | 'error'>
+
+export default class AirdropJobModel extends Model<AirdropJobAttributes> {
+  static tableName = 'airdrop_jobs'
+  static withTimestamps = false
+  static primaryKey = 'id'
+
+  static async getPending() {
+    const query = SQL`
+        SELECT *
+        FROM ${table(AirdropJobModel)}
+        WHERE 
+          "status" IN (${AirdropJobStatus.PENDING})
+    `
+
+    const result = await this.query(query)
+    return result
+  }
+}

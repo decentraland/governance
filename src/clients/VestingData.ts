@@ -1,7 +1,7 @@
 import Web3 from 'web3'
 import { AbiItem } from 'web3-utils'
 
-import DclRpcService from '../services/DclRpcService'
+import RpcService from '../services/RpcService'
 import VESTING_ABI from '../utils/contracts/abi/vesting/vesting.json'
 import VESTING_V2_ABI from '../utils/contracts/abi/vesting/vesting_v2.json'
 import { ContractVersion, TopicsByVersion } from '../utils/contracts/vesting'
@@ -106,7 +106,7 @@ export async function getVestingContractData(
     throw new Error('Unable to fetch vesting data for empty contract address')
   }
 
-  const web3 = new Web3(DclRpcService.getRpcUrl())
+  const web3 = new Web3(RpcService.getRpcUrl())
   try {
     const datesPromise = getVestingContractDataV2(vestingAddress, web3)
     const logsPromise = getVestingContractLogs(vestingAddress, web3, ContractVersion.V2)

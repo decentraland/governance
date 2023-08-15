@@ -55,7 +55,7 @@ export function validateProposalId(id?: string, required?: 'optional') {
 
 export function validateAddress(address: string) {
   if (!address || !isEthereumAddress(address)) {
-    throw new RequestError('Invalid address', RequestError.BadRequest)
+    throw new RequestError(`Invalid address ${address}`, RequestError.BadRequest)
   }
 }
 
