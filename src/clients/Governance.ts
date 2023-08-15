@@ -567,12 +567,12 @@ export class Governance extends API {
     return response.data
   }
 
-  //TODO: implement and test what happens if airdropping to a user with revoked badge
-  async revokeBadge(badgeId: string, reason?: string) {
+  async revokeBadge(badgeSpecCid: string, recipients: string[], reason?: string) {
     const response = await this.fetch<ApiResponse<string>>(
       `/badges/revoke/`,
       this.options().method('POST').authorization({ sign: true }).json({
-        badgeId,
+        badgeSpecCid,
+        recipients,
         reason,
       })
     )

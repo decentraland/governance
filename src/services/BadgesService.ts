@@ -5,8 +5,17 @@ import AirdropJobModel, { AirdropJobStatus, AirdropOutcome } from '../back/model
 import { OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgraph'
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 import { LEGISLATOR_BADGE_SPEC_CID } from '../constants'
-import { Badge, BadgeStatus, BadgeStatusReason, UserBadges, toBadgeStatus } from '../entities/Badges/types'
-import { airdrop, revokeBadge } from '../entities/Badges/utils'
+import {
+  Badge,
+  BadgeStatus,
+  BadgeStatusReason,
+  OtterspaceRevokeReason,
+  RevocationResult,
+  RevocationStatus,
+  UserBadges,
+  toBadgeStatus,
+} from '../entities/Badges/types'
+import { airdrop, revokeBadge, trimOtterspaceId } from '../entities/Badges/utils'
 import CoauthorModel from '../entities/Coauthor/model'
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalAttributes, ProposalType } from '../entities/Proposal/types'
@@ -157,9 +166,51 @@ export class BadgesService {
     }
   }
 
-  static async revokeBadge(badgeId, reason?: string) {
-    const DEFAULT_REASON = TENURE_ENDED
-    const revokingReason = reason || OTTERSPACE_REVOKE_REASON.TENURE_ENDED
-    return revokeBadge(badgeId, reason)
+  static async revokeBadge(
+    badgeCid: string,
+    addresses: string[],
+    reason = OtterspaceRevokeReason.TenureEnded
+  ): Promise<RevocationResult[]> {
+    console.log('badgeCid', badgeCid)
+    console.log('addresses', addresses)
+    const badgeOwnerships = await OtterspaceSubgraph.get().getRecipientsBadgeIds(badgeCid, addresses)
+    if (!badgeOwnerships || badgeOwnerships.length === 0) {
+      return []
+    }
+
+    const revocationResults = await Promise.all(
+      badgeOwnerships.map(async (badgeOwnership) => {
+        const trimmedId = trimOtterspaceId(badgeOwnership.id)
+
+        if (trimmedId === '') {
+          return {
+            status: RevocationStatus.Failed,
+            address: badgeOwnership.address,
+            badgeId: badgeOwnership.id,
+            error: 'Invalid badge ID',
+          }
+        }
+
+        try {
+          await revokeBadge(trimmedId, Number(reason))
+          return {
+            status: RevocationStatus.Success,
+            address: badgeOwnership.address,
+            badgeId: trimmedId,
+          }
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+        } catch (error: any) {
+          return {
+            status: RevocationStatus.Failed,
+            address: badgeOwnership.address,
+            badgeId: trimmedId,
+            error: JSON.stringify(error?.reason || error),
+          }
+        }
+      })
+    )
+
+    return revocationResults
   }
 }
