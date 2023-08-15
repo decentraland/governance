@@ -15,7 +15,7 @@ import BurgerMenuLayout from '../components/Layout/BurgerMenu/BurgerMenuLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
-import CategoryFilter, { Counter, FilterType } from '../components/Search/CategoryFilter'
+import CategoryFilter, { Counter, FilterType, ProjectCategoryFilter } from '../components/Search/CategoryFilter'
 import StatusFilter from '../components/Search/StatusFilter'
 import { GrantStatus, NewGrantCategory, OldGrantCategory } from '../entities/Grant/types'
 import { toGrantStatus, toProposalGrantCategory } from '../entities/Grant/utils'
@@ -91,7 +91,7 @@ export default function GrantsPage() {
               <Grid.Row>
                 <Grid.Column tablet="3">
                   <NotMobile>
-                    <CategoryFilter filterType={NewGrantCategory} categoryCount={newGrantsCounter} startOpen />
+                    <CategoryFilter filterType={ProjectCategoryFilter} categoryCount={newGrantsCounter} startOpen />
                     <StatusFilter statusType={GrantStatus} startOpen />
                     <RequestBanner />
                   </NotMobile>

@@ -13,7 +13,16 @@ import CategoryOption from '../Category/CategoryOption'
 import './CategoryFilter.css'
 import CollapsibleFilter from './CollapsibleFilter'
 
-export type FilterType = typeof ProposalType | typeof NewGrantCategory | typeof OldGrantCategory
+export enum ProjectCategoryFilter {
+  Grants = 'grants',
+  BiddingAndTendering = 'bidding_and_tendering',
+}
+
+export type FilterType =
+  | typeof ProposalType
+  | typeof NewGrantCategory
+  | typeof OldGrantCategory
+  | typeof ProjectCategoryFilter
 export type Counter = Record<any, number>
 export type FilterProps = {
   onChange?: (open: boolean) => void
@@ -46,14 +55,16 @@ export default function CategoryFilter({
   return (
     <CollapsibleFilter title={t('navigation.search.category_filter_title')} startOpen={!!startOpen} onChange={onChange}>
       <CategoryOption
-        type={isProposalsFilter ? 'all_proposals' : 'all_grants'}
+        type={isProposalsFilter ? 'all_proposals' : 'all_projects'}
         href={getUrlFilters(FILTER_KEY, params)}
         active={!type}
         className="CategoryFilter__CategoryOption"
       />
       {filters.map((filterType, index) => {
         const label = toSnakeCase(filterType)
-        const isGrantType = toProposalType(filterType) === ProposalType.Grant || filterType === 'Grants'
+        const isGrantType =
+          toProposalType(filterType) === ProposalType.Grant || filterType === ProjectCategoryFilter.Grants
+
         return (
           <CategoryOption
             key={'category_filter' + index}

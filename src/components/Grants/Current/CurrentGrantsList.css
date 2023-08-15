@@ -42,8 +42,6 @@
   display: grid;
   grid-gap: 14px;
   flex-wrap: wrap;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 @media (min-width: 992px) {

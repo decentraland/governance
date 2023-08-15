@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import classNames from 'classnames'
 import isNumber from 'lodash/isNumber'
@@ -6,7 +6,7 @@ import toSnakeCase from 'lodash/snakeCase'
 
 import { NewGrantCategory, SubtypeAlternativeOptions, SubtypeOptions, toGrantSubtype } from '../../entities/Grant/types'
 import { getNewGrantsCategoryIcon } from '../../entities/Grant/utils'
-import { ProposalType, toProposalType } from '../../entities/Proposal/types'
+import { ProposalType } from '../../entities/Proposal/types'
 import { CategoryIconVariant } from '../../helpers/styles'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useURLSearchParams from '../../hooks/useURLSearchParams'
@@ -15,7 +15,9 @@ import Text from '../Common/Typography/Text'
 import Arrow from '../Icon/Arrow'
 import All from '../Icon/ProposalCategories/All'
 import Grant from '../Icon/ProposalCategories/Grant'
+import Tender from '../Icon/ProposalCategories/Tender'
 import SubItem from '../Icon/SubItem'
+import { ProjectCategoryFilter } from '../Search/CategoryFilter'
 
 import { categoryIcons } from './CategoryBanner'
 import './CategoryOption.css'
@@ -25,15 +27,18 @@ type Props = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'children'> & {
   type: string
   count?: number
   subtypes?: SubtypeOptions[]
+  onClick?: () => void
 }
 
 const icons: Record<string, any> = {
   all_proposals: All,
-  all_grants: All,
+  all_projects: All,
   community: Grant,
   content_creator: Grant,
   gaming: Grant,
   platform_contributor: Grant,
+  grants: Grant,
+  bidding_and_tendering: Tender,
   ...categoryIcons,
 }
 
@@ -51,51 +56,54 @@ export const getCategoryIcon = (type: string, variant?: CategoryIconVariant, siz
   return <Icon size="24" />
 }
 
-export default React.memo(function CategoryOption({ active, type, className, count, subtypes, ...props }: Props) {
+const getHref = (href: string | undefined, subtype: SubtypeOptions) => {
+  const url = new URL(href || '/', 'http://localhost') // Create a URL object using a dummy URL
+  if (subtype === SubtypeAlternativeOptions.All) {
+    url.searchParams.delete('subtype')
+  } else {
+    url.searchParams.set('subtype', subtype)
+  }
+  const newHref = url.pathname + '?' + url.searchParams.toString()
+  return newHref
+}
+
+export default function CategoryOption({ active, type, className, count, subtypes, onClick, ...props }: Props) {
   const t = useFormatMessage()
   const params = useURLSearchParams()
-  const currentType = useMemo(() => toProposalType(params.get('type')), [params])
+  const currentType = useMemo(() => params.get('type'), [params])
   const currentSubtype = useMemo(() => toGrantSubtype(params.get('subtype')), [params])
 
-  function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
-    if (props.onClick) {
-      props.onClick(e)
-    }
-  }
+  const handleClick = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>) => {
+      if (onClick) {
+        onClick(e)
+      }
+    },
+    [onClick]
+  )
 
-  const getHref = (subtype: SubtypeOptions) => {
-    const { href } = props
-    const url = new URL(href || '/', 'http://localhost') // Create a URL object using a dummy URL
-    if (subtype === SubtypeAlternativeOptions.All) {
-      url.searchParams.delete('subtype')
-    } else {
-      url.searchParams.set('subtype', subtype)
-    }
-    const newHref = url.pathname + '?' + url.searchParams.toString()
-    return newHref
-  }
-  const isGrant = currentType === ProposalType.Grant
+  const isGrant = currentType === ProposalType.Grant || currentType === ProjectCategoryFilter.Grants
   const hasSubtypes = !!subtypes && subtypes.length > 0
   const [isSubtypesOpen, setIsSubtypesOpen] = useState(isGrant)
 
   useEffect(() => {
+    console.log('i', isGrant, currentType)
     setIsSubtypesOpen(isGrant)
-  }, [isGrant])
+  }, [isGrant, currentType])
 
-  const isSubtypeActive = (subtype: SubtypeOptions) => {
-    if (params.get('type') !== toSnakeCase(ProposalType.Grant)) {
-      return false
-    }
+  const isSubtypeActive = useCallback(
+    (subtype: SubtypeOptions) => {
+      if (subtype === SubtypeAlternativeOptions.All && !currentSubtype) {
+        return true
+      }
 
-    if (subtype === SubtypeAlternativeOptions.All && !currentSubtype) {
-      return true
-    }
-
-    return toSnakeCase(subtype) === toSnakeCase(currentSubtype)
-  }
+      return toSnakeCase(subtype) === toSnakeCase(currentSubtype)
+    },
+    [currentSubtype]
+  )
 
   return (
-    <Fragment>
+    <>
       <Link
         {...props}
         href={props.href || undefined}
@@ -145,7 +153,7 @@ export default React.memo(function CategoryOption({ active, type, className, cou
                   isSubtypeActive(subtype) && 'CategoryOption__SubcategoryItem--active'
                 )}
                 key={subtype + `-${index}`}
-                href={getHref(subtype)}
+                href={getHref(props.href, subtype)}
               >
                 <SubItem />
                 {t(`category.${toSnakeCase(subtype)}_title`)}
@@ -154,6 +162,6 @@ export default React.memo(function CategoryOption({ active, type, className, cou
           })}
         </div>
       )}
-    </Fragment>
+    </>
   )
-})
+}

@@ -380,7 +380,8 @@
     "tender_description": "Refine a previously passed Pitch Proposal",
     "bid_title": "Bid Proposal",
     "bid_description": "Choose a team to execute a project that solves a previously passed Tender",
-    "all_grants_title": "All grants",
+    "all_grants_title": "All Grants",
+    "all_projects_title": "All projects",
     "core_unit_title": "Core Unit",
     "platform_title": "Platform",
     "documentation_title": "Documentation",
@@ -392,7 +393,9 @@
     "community_title": "Community",
     "content_creator_title": "Content Creator",
     "gaming_title": "Gaming",
-    "platform_contributor_title": "Platform Contributor"
+    "platform_contributor_title": "Platform Contributor",
+    "grants_title": "Grants",
+    "bidding_and_tendering_title": "Bidding and Tendering"
   },
   "survey": {
     "topics_title": "Topics",
