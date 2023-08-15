@@ -180,14 +180,14 @@ export class ProposalService {
       enacted_by: null,
       enacted_description: null,
       enacting_tx: null,
-      vesting_address: null,
+      vesting_addresses: [],
       passed_by: null,
       passed_description: null,
       rejected_by: null,
       rejected_description: null,
       created_at: proposalLifespan.created.toJSON() as any,
       updated_at: proposalLifespan.created.toJSON() as any,
-      textsearch: ProposalModel.textsearch(title, description, data.user, null),
+      textsearch: ProposalModel.textsearch(title, description, data.user, []),
     }
 
     try {

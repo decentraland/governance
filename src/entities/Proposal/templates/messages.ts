@@ -14,8 +14,8 @@ export function getUpdateMessage(proposal: ProposalAttributes, votes: Record<str
       throw Error("Proposal can't be enacted without an enacting user")
     }
     let description: string | null = ''
-    if (proposal.vesting_address) {
-      description += 'Vesting Contract Address: ' + proposal.vesting_address
+    if (proposal.vesting_addresses.length > 0) {
+      description += 'Vesting Contract Addresses: ' + proposal.vesting_addresses
     }
     if (proposal.enacted_description) {
       description += description === '' ? '' : '\n'

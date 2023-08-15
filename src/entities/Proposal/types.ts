@@ -4,6 +4,7 @@
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
 import { CommitteeName } from '../../clients/DclData'
+import { SnapshotProposal } from '../../clients/SnapshotGraphqlTypes'
 import {
   CategoryAssessmentQuestions,
   GrantRequestDueDiligence,
@@ -56,7 +57,7 @@ export type ProposalAttributes<C extends Record<string, unknown> = any> = {
   enacted_by: string | null
   enacted_description: string | null
   enacting_tx: string | null
-  vesting_address: string | null
+  vesting_addresses: string[]
   passed_by: string | null
   passed_description: string | null
   rejected_by: string | null
@@ -181,31 +182,25 @@ function requiredVotingPower(value: string | undefined | null, defaultValue: num
 
 export type UpdateProposalStatusProposal = {
   status: ProposalStatus.Rejected | ProposalStatus.Passed | ProposalStatus.Enacted
-  vesting_address: string | null
-  enacting_tx: string | null
-  description: string
+  vesting_addresses?: string[]
 }
 
 export const updateProposalStatusScheme = {
   type: 'object',
   additionalProperties: false,
-  required: ['status', 'description'],
+  required: ['status'],
   properties: {
     status: {
       type: 'string',
       enum: [ProposalStatus.Rejected, ProposalStatus.Passed, ProposalStatus.Enacted],
     },
-    vesting_address: {
-      type: ['string', 'null'],
-      format: 'address',
-    },
-    enacting_tx: {
-      type: ['string', 'null'],
-      minLength: 66,
-      maxLength: 66,
-    },
-    description: {
-      type: ['string', 'null'],
+    vesting_addresses: {
+      type: 'array',
+      items: {
+        type: 'string',
+        minLength: 42,
+        maxLength: 42,
+      },
     },
   },
 }
@@ -826,3 +821,5 @@ export type CategorizedGrants = {
   past: GrantWithUpdate[]
   total: number
 }
+
+export type PendingProposalsQuery = { start: Date; end: Date; fields: (keyof SnapshotProposal)[]; limit: number }

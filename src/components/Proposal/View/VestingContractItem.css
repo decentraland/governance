@@ -1,0 +1,25 @@
+.VestingContractItem,
+.VestingContractItem:hover {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--white-900);
+  line-height: 24px;
+}
+
+.VestingContractItem__title {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.VestingContractItem__Details {
+  text-transform: uppercase;
+  color: var(--black-400);
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.VestingContractItem__DetailsActive {
+  color: var(--white-900);
+  font-weight: 600;
+}

@@ -15,6 +15,7 @@ import { register } from 'prom-client'
 import swaggerUi from 'swagger-ui-express'
 import YAML from 'yaml'
 
+import { runAirdropJobs } from './back/jobs/BadgeAirdrop'
 import badges from './back/routes/badges'
 import budget from './back/routes/budget'
 import coauthor from './back/routes/coauthor'
@@ -29,6 +30,7 @@ import subscription from './back/routes/subscription'
 import proposalSurveyTopics from './back/routes/surveyTopics'
 import update from './back/routes/update'
 import users from './back/routes/user'
+import vestings from './back/routes/vestings'
 import score from './back/routes/votes'
 import bids from './entities/Bid/routes'
 import { updateGovernanceBudgets } from './entities/Budget/jobs'
@@ -38,9 +40,10 @@ import filesystem from './utils/filesystem'
 
 const jobs = manager()
 jobs.cron('@eachMinute', finishProposal)
-jobs.cron('@daily', updateGovernanceBudgets)
 jobs.cron('@eachMinute', activateProposals)
 jobs.cron('@eachMinute', publishBids)
+jobs.cron('@daily', updateGovernanceBudgets)
+jobs.cron('@daily', runAirdropJobs)
 
 const file = readFileSync('static/api.yaml', 'utf8')
 const swaggerDocument = YAML.parse(file)
@@ -69,6 +72,7 @@ app.use('/api', [
   common,
   bids,
   snapshot,
+  vestings,
   handle(async () => {
     throw new RequestError('NotFound', RequestError.NotFound)
   }),

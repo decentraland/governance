@@ -8,6 +8,7 @@ import {
   GrantRequestDueDiligence,
 } from '../../entities/Grant/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'
+import { CURRENCY_FORMAT_OPTIONS } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import SubLabel from '../Common/SubLabel'
 import Label from '../Common/Typography/Label'
@@ -15,7 +16,7 @@ import ProjectRequestSection from '../ProjectRequest/ProjectRequestSection'
 
 import AddBox from './AddBox'
 import AddBudgetBreakdownModal from './AddBudgetBreakdownModal'
-import BudgetBreakdownConcept from './BudgetBreakdownConcept'
+import BreakdownItem from './BreakdownItem'
 import './GrantRequestDueDiligenceSection.css'
 
 export const INITIAL_GRANT_REQUEST_DUE_DILIGENCE_STATE: GrantRequestDueDiligence = {
@@ -97,9 +98,11 @@ export default function GrantRequestDueDiligenceSection({
         {t('page.submit_grant.due_diligence.budget_breakdown_detail', { value: fundingLeftToDisclose })}
       </SubLabel>
       {dueDiligenceState.budgetBreakdown.map((item, index) => (
-        <BudgetBreakdownConcept
+        <BreakdownItem
           key={`${item.concept}-${index}`}
-          item={item}
+          title={item.concept}
+          subtitle={t('page.proposal_view.grant.breakdown_subtitle', { duration: item.duration })}
+          extra={Number(item.estimatedBudget).toLocaleString(undefined, CURRENCY_FORMAT_OPTIONS)}
           onClick={() => {
             setSelectedBudgetBreakdownConcept(item)
             setModalOpen(true)

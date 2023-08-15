@@ -1,6 +1,7 @@
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 import snakeCase from 'lodash/snakeCase'
 
+import { BadgesService } from '../../services/BadgesService'
 import BidService from '../../services/BidService'
 import { BudgetService } from '../../services/BudgetService'
 import { DiscordService } from '../../services/DiscordService'
@@ -38,6 +39,8 @@ async function updateAcceptedProposals(acceptedProposals: ProposalWithOutcome[],
       acceptedProposals.map(({ id }) => id),
       ProposalStatus.Passed
     )
+
+    await BadgesService.giveLegislatorBadges(acceptedProposals)
   }
 }
 

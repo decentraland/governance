@@ -55,6 +55,12 @@ export function validateProposalId(id?: string, required?: 'optional') {
 
 export function validateAddress(address: string) {
   if (!address || !isEthereumAddress(address)) {
-    throw new RequestError('Invalid address', RequestError.BadRequest)
+    throw new RequestError(`Invalid address ${address}`, RequestError.BadRequest)
   }
+}
+
+export function validateUniqueAddresses(addresses: string[]): boolean {
+  const uniqueSet = new Set(addresses.map((address) => address.toLowerCase()))
+
+  return uniqueSet.size === addresses.length
 }

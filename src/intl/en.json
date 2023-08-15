@@ -450,11 +450,12 @@
       "reject": "Cancel"
     },
     "update_status_proposal": {
-      "title": "Confirmation",
-      "description": "Are you sure you want to set this proposal as **{status}**? This action may not be undone.",
-      "grant_vesting_address": "Vesting Contract Address",
-      "grant_enacting_tx": "Enacting Transaction Hash",
-      "comments": "Comments",
+      "title": "Confirm Proposal Enactment",
+      "description": "Mark this proposal as **{status}**, add vesting contracts, or edit enactment data using this tool.",
+      "grant_vesting_addresses": "Vesting Contract Addresses",
+      "add_vesting_contract": "Add vesting contract",
+      "invalid_vesting_address": "Some address is invalid",
+      "duplicated_vesting_address": "Some address is duplicated",
       "update_status_description_label": "Description",
       "update_status_description_placeholder": "Add any useful details for user",
       "accept": "Save",
@@ -700,6 +701,13 @@
       "like": "Like!",
       "neutral": "Neutral",
       "concerned": "Concerned"
+    },
+    "addresses_select": {
+      "placeholder": "Enter a wallet address",
+      "count": "{amount}/{maxAmount} addresses added",
+      "error": "Invalid wallet address",
+      "duplicated_error": "It looks like this address has already been added.",
+      "max_error": "The maximum number of addresses was exceeded."
     }
   },
   "page": {
@@ -1107,7 +1115,14 @@
         "next_update_due_date": "Next one due in **{date}**",
         "vesting_label": "Grant beneficiary",
         "vesting_description": "**Funded by the Decentraland DAO**, enabled by its Community.",
-        "vesting_button": "View vesting contract",
+        "vesting_dropdown": "View vesting {amount, plural, one {contract} other {contracts}}",
+        "vesting_dropdown_item_title": "Contract #{number}",
+        "vesting_status": {
+          "active": "Active",
+          "paused": "Paused",
+          "revoked": "Revoked"
+        },
+        "vesting_enacted_date": "Enacted {date}",
         "category_assessment": {
           "accelerator": {
             "revenue_label": "Revenue Generation Model",
