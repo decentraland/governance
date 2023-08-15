@@ -4,7 +4,7 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
-import { UserBadges } from '../../entities/Badges/types'
+import { UserBadges, toOtterspaceRevokeReason } from '../../entities/Badges/types'
 import isDebugAddress from '../../entities/Debug/isDebugAddress'
 import { BadgesService } from '../../services/BadgesService'
 import { AirdropOutcome } from '../models/AirdropJob'
@@ -26,7 +26,7 @@ async function getBadges(req: Request<{ address: string }>): Promise<UserBadges>
 async function airdropBadges(req: WithAuth): Promise<AirdropOutcome> {
   const user = req.auth!
   const recipients: string[] = req.body.recipients
-  const badgeSpecCId = req.body.badgeSpecCid
+  const badgeSpecCid = req.body.badgeSpecCid
 
   if (!isDebugAddress(user)) {
     throw new RequestError('Invalid user', RequestError.Unauthorized)
@@ -36,18 +36,39 @@ async function airdropBadges(req: WithAuth): Promise<AirdropOutcome> {
     validateAddress(address)
   })
 
-  return await BadgesService.giveBadgeToUsers(badgeSpecCId, recipients)
+  if (!badgeSpecCid || badgeSpecCid.length === 0) {
+    throw new RequestError('Invalid Badge Spec Cid', RequestError.Unauthorized)
+  }
+
+  return await BadgesService.giveBadgeToUsers(badgeSpecCid, recipients)
 }
 
 async function revokeBadge(req: WithAuth): Promise<string> {
   const user = req.auth!
-  const { badgeId, reason } = req.body
+  const { badgeSpecCid, reason } = req.body
+  const recipients: string[] = req.body.recipients
 
   if (!isDebugAddress(user)) {
     throw new RequestError('Invalid user', RequestError.Unauthorized)
   }
 
-  if (!badgeId || badgeId.length === 0) return 'Invalid Badge Id'
+  recipients.map((address) => {
+    validateAddress(address)
+  })
 
-  return await BadgesService.revokeBadge(badgeId, reason)
+  if (!badgeSpecCid || badgeSpecCid.length === 0) {
+    throw new RequestError('Invalid Badge Spec Cid', RequestError.Unauthorized)
+  }
+
+  const validatedReason = reason
+    ? toOtterspaceRevokeReason(reason, (reason) => {
+        throw new RequestError(`Invalid revoke reason ${reason}`, RequestError.Unauthorized)
+      })
+    : undefined
+  try {
+    const revocationResults = await BadgesService.revokeBadge(badgeSpecCid, recipients, validatedReason)
+    return `Revocation results: ${JSON.stringify(revocationResults)}`
+  } catch (e) {
+    return `Failed to revoke badges ${JSON.stringify(e)}`
+  }
 }

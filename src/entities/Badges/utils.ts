@@ -1,33 +1,27 @@
 import { Contract } from '@ethersproject/contracts'
 import { abi as BadgesAbi } from '@otterspace-xyz/contracts/out/Badges.sol/Badges.json'
-import { BigNumber, ethers } from 'ethers'
+import { ethers } from 'ethers'
 
 import RpcService from '../../services/RpcService'
 import { OTTERSPACE_DAO_RAFT_ID } from '../Snapshot/constants'
 
+import { GAS_MULTIPLIER, GasConfig } from './types'
+
 const RAFT_OWNER_PK = process.env.RAFT_OWNER_PK || ''
 const POLYGON_BADGES_CONTRACT_ADDRESS = process.env.POLYGON_BADGES_CONTRACT_ADDRESS || ''
-
-enum OTTERSPACE_REVOKE_REASON {
-  ABUSE = 0,
-  LEFT_COMMUNITY = 1,
-  TENURE_ENDED = 2,
-  OTHER = 3,
-}
 
 function checksumAddresses(addresses: string[]): string[] {
   return addresses.map((address) => ethers.utils.getAddress(address))
 }
 
-const GAS_MULTIPLIER = 2
-type GasConfig = { gasPrice: ethers.BigNumber; gasLimit: ethers.BigNumber }
-
 export async function estimateGas(
   contract: Contract,
-  estimateFunction: (...args: any[]) => Promise<BigNumber>
+  estimateFunction: (...args: any[]) => Promise<any>
 ): Promise<GasConfig> {
   const provider = RpcService.getPolygonProvider()
+  console.log('estimating gas limit')
   const gasLimit = await estimateFunction()
+  console.log('gasLimit', gasLimit)
   const gasPrice = await provider.getGasPrice()
   const adjustedGasPrice = gasPrice.mul(GAS_MULTIPLIER)
   return {
@@ -56,15 +50,17 @@ export async function airdrop(badgeCid: string, recipients: string[], pumpGas = 
   console.log('Airdropped badge with txn hash:', txn.hash)
 }
 
-export async function revokeBadge(badgeId: string, reason: string) {
+export async function revokeBadge(badgeId: string, reason: number) {
   const provider = RpcService.getPolygonProvider()
   const raftOwner = new ethers.Wallet(RAFT_OWNER_PK, provider)
   const contract = new ethers.Contract(POLYGON_BADGES_CONTRACT_ADDRESS, BadgesAbi, raftOwner)
+  const trimmedOtterspaceId = trimOtterspaceId(OTTERSPACE_DAO_RAFT_ID)
 
-  const gasConfig = await estimateGas(contract, async () =>
-    contract.estimateGas.revoke(OTTERSPACE_DAO_RAFT_ID, badgeId, reason)
-  )
-  const txn = await contract.connect(raftOwner).revokeBadge(OTTERSPACE_DAO_RAFT_ID, badgeId, reason, gasConfig)
+  const gasConfig = await estimateGas(contract, async () => {
+    return contract.estimateGas.revokeBadge(trimmedOtterspaceId, badgeId, reason)
+  })
+
+  const txn = await contract.connect(raftOwner).revokeBadge(trimmedOtterspaceId, badgeId, reason, gasConfig)
   await txn.wait()
   return `Revoked badge with txn hash: ${txn.hash}`
 }
@@ -76,4 +72,12 @@ export async function checkBalance() {
   const balanceInEther = ethers.utils.formatEther(balance)
   const balanceBigNumber = ethers.BigNumber.from(balance)
   console.log(`Balance of ${raftOwner.address}: ${balanceInEther} ETH = ${balanceBigNumber}`)
+}
+
+export function trimOtterspaceId(rawId: string) {
+  const parts = rawId.split(':')
+  if (parts.length === 2) {
+    return parts[1]
+  }
+  return ''
 }
