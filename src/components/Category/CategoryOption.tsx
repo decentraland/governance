@@ -87,7 +87,6 @@ export default function CategoryOption({ active, type, className, count, subtype
   const [isSubtypesOpen, setIsSubtypesOpen] = useState(isGrant)
 
   useEffect(() => {
-    console.log('i', isGrant, currentType)
     setIsSubtypesOpen(isGrant)
   }, [isGrant, currentType])
 

@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react'
 
-import { useLocation } from '@reach/router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import { NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 import isEmpty from 'lodash/isEmpty'
@@ -22,16 +21,26 @@ import { toGrantStatus, toProposalGrantCategory } from '../entities/Grant/utils'
 import { GrantWithUpdate } from '../entities/Proposal/types'
 import useFormatMessage from '../hooks/useFormatMessage'
 import useGrants from '../hooks/useGrants'
+import useURLSearchParams from '../hooks/useURLSearchParams'
 import { isUnderMaintenance } from '../utils/maintenance'
 
-function filterDisplayableGrants(grants: GrantWithUpdate[], type: string | null, status: string | null) {
-  return status || type
-    ? grants.filter(
-        (grant) =>
-          (type ? toSnakeCase(grant.configuration.category) === toSnakeCase(type) : true) &&
-          (status ? toSnakeCase(grant.status) === toSnakeCase(status) : true)
-      )
-    : grants
+function filterDisplayableGrants(
+  grants: GrantWithUpdate[],
+  type: string | null,
+  subtype: string | null,
+  status: string | null
+) {
+  if (!type || type === ProjectCategoryFilter.Grants) {
+    return status || subtype
+      ? grants.filter(
+          (grant) =>
+            (subtype ? toSnakeCase(grant.configuration.category) === toSnakeCase(subtype) : true) &&
+            (status ? toSnakeCase(grant.status) === toSnakeCase(status) : true)
+        )
+      : grants
+  }
+
+  return []
 }
 
 function getCounter(allGrants: GrantWithUpdate[], filterType: FilterType, status: string | null) {
@@ -41,23 +50,26 @@ function getCounter(allGrants: GrantWithUpdate[], filterType: FilterType, status
 
   const counter = {} as Record<string, number>
   for (const filter of Object.values(filterType)) {
-    const grants = filterDisplayableGrants(allGrants, filter, status)
+    const grants = filterDisplayableGrants(allGrants, filter, null, status)
     counter[filter] = grants.length
   }
 
   return counter as Counter
 }
 
-export default function GrantsPage() {
+export default function ProjectsPage() {
   const t = useFormatMessage()
   const { grants, isLoadingGrants } = useGrants()
-  const location = useLocation()
-  const params = new URLSearchParams(location.search)
+  const params = useURLSearchParams()
   const type = params.get('type')
+  const subtype = params.get('subtype')
   const status = params.get('status')
 
   const allGrants = useMemo(() => (grants ? [...grants.current, ...grants.past] : []), [grants])
-  const displayableGrants = useMemo(() => filterDisplayableGrants(allGrants, type, status), [allGrants, type, status])
+  const displayableGrants = useMemo(
+    () => filterDisplayableGrants(allGrants, type, subtype, status),
+    [allGrants, type, subtype, status]
+  )
 
   const newGrantsCounter = useMemo(() => getCounter(allGrants, NewGrantCategory, status), [allGrants, status])
   const oldGrantsCounter = useMemo(() => getCounter(allGrants, OldGrantCategory, status), [allGrants, status])

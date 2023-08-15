@@ -1,4 +1,5 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
+import { Request } from 'express'
 import filter from 'lodash/filter'
 import isNil from 'lodash/isNil'
 
@@ -15,7 +16,13 @@ import {
   ProposalStatus,
   ProposalType,
 } from '../entities/Proposal/types'
-import { DEFAULT_CHOICES, asNumber, getProposalEndDate } from '../entities/Proposal/utils'
+import {
+  DEFAULT_CHOICES,
+  MAX_PROPOSAL_LIMIT,
+  MIN_PROPOSAL_OFFSET,
+  asNumber,
+  getProposalEndDate,
+} from '../entities/Proposal/utils'
 import UpdateModel from '../entities/Updates/model'
 import { IndexedUpdate, UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates } from '../entities/Updates/utils'
@@ -26,7 +33,44 @@ import { isProdEnv } from '../utils/governanceEnvs'
 import { BudgetService } from './BudgetService'
 import { ProposalInCreation } from './ProposalService'
 
-export class GrantsService {
+export class ProjectService {
+  public static async getProjects(req: Request) {
+    const query = req.query
+    const type = query.type && String(query.type)
+    const subtype = query.subtype && String(query.subtype)
+    const status = query.status && String(query.status)
+    const search = query.search && String(query.search)
+    const timeFrame = query.timeFrame && String(query.timeFrame)
+    const timeFrameKey = query.timeFrameKey && String(query.timeFrameKey)
+    const order = query.order && String(query.order) === 'ASC' ? 'ASC' : 'DESC'
+    const offset = query.offset && Number.isFinite(Number(query.offset)) ? Number(query.offset) : MIN_PROPOSAL_OFFSET
+    const limit = query.limit && Number.isFinite(Number(query.limit)) ? Number(query.limit) : MAX_PROPOSAL_LIMIT
+
+    const [total, data] = await Promise.all([
+      ProposalModel.getProposalTotal({
+        type: `${ProposalType.Grant},${ProposalType.Bid}`,
+        subtype,
+        status,
+        search,
+        timeFrame,
+        timeFrameKey,
+      }),
+      ProposalModel.getProposalList({
+        type,
+        subtype,
+        status,
+        search,
+        timeFrame,
+        timeFrameKey,
+        order,
+        offset,
+        limit,
+      }),
+    ])
+
+    return { ok: true, total, data }
+  }
+
   public static async getGrants() {
     const grants = await DclData.get().getGrants()
     const enactedGrants = filter(grants, (item) => item.status === ProposalStatus.Enacted)
@@ -196,7 +240,7 @@ export class GrantsService {
       user,
       type: ProposalType.Grant,
       required_to_pass: GrantTier.getVPThreshold(grantSize),
-      finish_at: this.getGrantProposalEndDate(),
+      finish_at: getProposalEndDate(asNumber(GRANT_PROPOSAL_DURATION_IN_SECONDS)),
       configuration,
     }
 
@@ -213,10 +257,6 @@ export class GrantsService {
       grantRequest.sponsorship ||
       grantRequest.platform
     )
-  }
-
-  private static getGrantProposalEndDate() {
-    return getProposalEndDate(asNumber(GRANT_PROPOSAL_DURATION_IN_SECONDS))
   }
 
   private static isCurrentGrant(status?: GrantStatus) {
