@@ -10,9 +10,9 @@ import {
   GrantRequestDueDiligence,
   GrantRequestGeneralInfo,
   GrantRequestTeam,
-  GrantStatus,
   GrantTierType,
   PaymentToken,
+  ProjectStatus,
   ProposalGrantCategory,
   VestingStartDate,
 } from '../Grant/types'
@@ -797,12 +797,13 @@ export type Grant = {
   title: string
   user: string
   size: number
+  type: ProposalType
   created_at: number
   configuration: {
     category: ProposalGrantCategory
     tier: string
   }
-  status?: GrantStatus
+  status?: ProjectStatus
   contract?: VestingContractData
   enacting_tx?: string
   token?: string

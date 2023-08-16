@@ -4,8 +4,9 @@ import { useIntl } from 'react-intl'
 import classNames from 'classnames'
 import snakeCase from 'lodash/snakeCase'
 
-import { GrantStatus, ProposalGrantCategory } from '../../../entities/Grant/types'
+import { ProjectStatus, SubtypeOptions, isGrantSubtype } from '../../../entities/Grant/types'
 import { PROPOSAL_GRANT_CATEGORY_ALL } from '../../../entities/Proposal/types'
+import { toNewGrantCategory } from '../../../entities/QuarterCategoryBudget/utils'
 import { CURRENCY_FORMAT_OPTIONS } from '../../../helpers'
 import { CategoryIconVariant } from '../../../helpers/styles'
 import useBudgetByCategory from '../../../hooks/useBudgetByCategory'
@@ -18,35 +19,33 @@ import './BudgetBanner.css'
 import BudgetBannerItem from './BudgetBannerItem'
 
 interface Props {
-  category: ProposalGrantCategory | typeof PROPOSAL_GRANT_CATEGORY_ALL
-  status?: GrantStatus | null
+  category?: SubtypeOptions
+  status?: ProjectStatus | null
   counter?: Counter
-}
-
-function getAllInitiativesCount(counter: Counter) {
-  return Object.values(counter).reduce((acc, curr) => acc + curr, 0)
 }
 
 export default function BudgetBanner({ category, status, counter }: Props) {
   const t = useFormatMessage()
   const intl = useIntl()
+  const selectedCategory = isGrantSubtype(category)
+    ? toNewGrantCategory(category?.toLowerCase() || '')
+    : PROPOSAL_GRANT_CATEGORY_ALL
   const {
     allocatedPercentage: percentage,
     allocated: currentAmount,
     total: totalBudget,
-  } = useBudgetByCategory(category)
+  } = useBudgetByCategory(selectedCategory)
 
   const initiativesCount = useMemo(
-    () =>
-      (counter && (category !== PROPOSAL_GRANT_CATEGORY_ALL ? counter[category] : getAllInitiativesCount(counter))) ||
-      0,
+    () => (counter && category && counter[category.toLowerCase()]) || 0,
     [category, counter]
   )
-  const showProgress = !status || status === GrantStatus.InProgress
+  const showProgress = !status || status === ProjectStatus.InProgress
+
   return (
     <div className={classNames('BudgetBanner', !showProgress && 'BudgetBanner--start')}>
       <div className="BudgetBanner__LabelWithIcon">
-        {category !== PROPOSAL_GRANT_CATEGORY_ALL && (
+        {category && isGrantSubtype(category) && (
           <span>{getCategoryIcon(snakeCase(category), CategoryIconVariant.Circled, 48)}</span>
         )}
         <BudgetBannerItem

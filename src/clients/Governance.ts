@@ -9,9 +9,10 @@ import { UserBadges } from '../entities/Badges/types'
 import { BidRequest, UnpublishedBidAttributes } from '../entities/Bid/types'
 import { Budget, BudgetWithContestants, CategoryBudget } from '../entities/Budget/types'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
-import { GrantRequest, ProposalGrantCategory, SubtypeOptions } from '../entities/Grant/types'
+import { GrantRequest, ProjectStatus, ProposalGrantCategory, SubtypeOptions } from '../entities/Grant/types'
 import {
   CategorizedGrants,
+  GrantWithUpdate,
   NewProposalBanName,
   NewProposalCatalyst,
   NewProposalDraft,
@@ -69,6 +70,18 @@ export type GetProposalsFilter = {
   offset: number
   snapshotIds?: string
   linkedProposalId?: string
+}
+
+export type GetProjectsFilter = {
+  user: string
+  type: ProposalType.Bid | ProposalType.Grant | `${ProposalType.Bid},${ProposalType.Grant}`
+  subtype?: SubtypeOptions
+  status?: ProjectStatus
+  timeFrame?: string | null
+  timeFrameKey?: string | null
+  order?: 'ASC' | 'DESC'
+  limit: number
+  offset: number
 }
 
 const getGovernanceApiUrl = () => {
@@ -137,6 +150,21 @@ export class Governance extends API {
   async getGrants() {
     const proposals = await this.fetch<ApiResponse<CategorizedGrants>>('/proposals/grants')
     return proposals.data
+  }
+
+  async getProjects(filters: Partial<GetProjectsFilter> = {}) {
+    const params = new URLSearchParams(filters as never)
+    let query = params.toString()
+    if (query) {
+      query = '?' + query
+    }
+
+    const proposals = await this.fetch<ApiResponse<GrantWithUpdate[]> & { total: number }>(
+      `/projects${query}`,
+      this.options().method('GET')
+    )
+
+    return proposals
   }
 
   async getGrantsByUser(user: string, coauthoring?: boolean) {

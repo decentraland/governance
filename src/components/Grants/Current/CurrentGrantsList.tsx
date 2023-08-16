@@ -1,23 +1,19 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import { navigate } from '@reach/router'
-import filter from 'lodash/filter'
 import isEmpty from 'lodash/isEmpty'
-import orderBy from 'lodash/orderBy'
 
-import { GrantStatus, NewGrantCategory, OldGrantCategory, ProposalGrantCategory } from '../../../entities/Grant/types'
-import { GrantWithUpdate, PROPOSAL_GRANT_CATEGORY_ALL } from '../../../entities/Proposal/types'
-import { useCurrentGrantsFilteredByCategory } from '../../../hooks/useCurrentsGrantsFilteredByCategory'
+import { NewGrantCategory, OldGrantCategory, ProjectStatus, SubtypeOptions } from '../../../entities/Grant/types'
+import { GrantWithUpdate } from '../../../entities/Proposal/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import locations from '../../../utils/locations'
 import Empty, { ActionType } from '../../Common/Empty'
 import FullWidthButton from '../../Common/FullWidthButton'
 import Watermelon from '../../Icon/Watermelon'
-import { Counter } from '../../Search/CategoryFilter'
+import { Counter, ProjectCategoryFilter } from '../../Search/CategoryFilter'
 import GrantCard from '../GrantCard/GrantCard'
 
 import BudgetBanner from './BudgetBanner'
-import { GrantCategoryFilter } from './CurrentGrantsCategoryFilters'
 import './CurrentGrantsList.css'
 import CurrentGrantsSortingMenu, { SortingKey } from './CurrentGrantsSortingMenu'
 
@@ -25,13 +21,15 @@ const CURRENT_GRANTS_PER_PAGE = 8
 
 interface Props {
   grants: GrantWithUpdate[]
-  category: ProposalGrantCategory | null
-  status: GrantStatus | null
+  selectedType: any // TODO: Type this correctly
+  selectedSubtype?: SubtypeOptions
+  status?: ProjectStatus
   counter?: Counter
 }
 
-const CATEGORY_KEYS: Record<GrantCategoryFilter, string> = {
-  [PROPOSAL_GRANT_CATEGORY_ALL]: 'page.grants.category_filters.all',
+const CATEGORY_KEYS: Record<any, string> = {
+  [ProjectCategoryFilter.BiddingAndTendering]: 'page.grants.category_filters.bidding_and_tendering',
+  [ProjectCategoryFilter.Grants]: 'page.grants.category_filters.all',
   [NewGrantCategory.Accelerator]: 'category.accelerator_title',
   [NewGrantCategory.CoreUnit]: 'category.core_unit_title',
   [NewGrantCategory.Documentation]: 'category.documentation_title',
@@ -45,56 +43,35 @@ const CATEGORY_KEYS: Record<GrantCategoryFilter, string> = {
   [OldGrantCategory.PlatformContributor]: 'category.platform_contributor_title',
 }
 
-const GRANTS_STATUS_KEYS: Record<GrantStatus, string> = {
-  [GrantStatus.Pending]: 'grant_status.pending',
-  [GrantStatus.InProgress]: 'grant_status.in_progress',
-  [GrantStatus.Finished]: 'grant_status.finished',
-  [GrantStatus.Paused]: 'grant_status.paused',
-  [GrantStatus.Revoked]: 'grant_status.revoked',
+const GRANTS_STATUS_KEYS: Record<ProjectStatus, string> = {
+  [ProjectStatus.Pending]: 'grant_status.pending',
+  [ProjectStatus.InProgress]: 'grant_status.in_progress',
+  [ProjectStatus.Finished]: 'grant_status.finished',
+  [ProjectStatus.Paused]: 'grant_status.paused',
+  [ProjectStatus.Revoked]: 'grant_status.revoked',
 }
 
-const CurrentGrantsList = ({ grants, category, status, counter }: Props) => {
+const CurrentGrantsList = ({ grants, selectedSubtype, selectedType, status, counter }: Props) => {
   const t = useFormatMessage()
-  const [selectedCategory, setSelectedCategory] = useState<GrantCategoryFilter>(PROPOSAL_GRANT_CATEGORY_ALL)
-  const [sortingKey, setSortingKey] = useState<SortingKey>(SortingKey.UpdateTimestamp)
-  const sortedCurrentGrants = useMemo(() => orderBy(grants, [sortingKey], ['desc']), [grants, sortingKey])
+  const [sortingKey, setSortingKey] = useState<SortingKey>(SortingKey.UpdateTimestamp) // TODO: Move sorting key to query param
   const [filteredCurrentGrants, setFilteredCurrentGrants] = useState<GrantWithUpdate[]>([])
-  const currentGrantsFilteredByCategory = useCurrentGrantsFilteredByCategory(sortedCurrentGrants)
 
   useEffect(() => {
-    setSelectedCategory(category || PROPOSAL_GRANT_CATEGORY_ALL)
     if (!isEmpty(grants)) {
-      setFilteredCurrentGrants(sortedCurrentGrants.slice(0, CURRENT_GRANTS_PER_PAGE))
+      setFilteredCurrentGrants(grants.slice(0, CURRENT_GRANTS_PER_PAGE))
     } else {
       setFilteredCurrentGrants([])
     }
-  }, [category, grants, sortedCurrentGrants])
-
-  useEffect(() => {
-    if (!isEmpty(sortedCurrentGrants) && selectedCategory) {
-      const newGrants =
-        selectedCategory === PROPOSAL_GRANT_CATEGORY_ALL
-          ? sortedCurrentGrants.slice(0, CURRENT_GRANTS_PER_PAGE)
-          : filter(sortedCurrentGrants, (item) => item.configuration.category === selectedCategory).slice(
-              0,
-              CURRENT_GRANTS_PER_PAGE
-            )
-      setFilteredCurrentGrants(newGrants)
-    }
-  }, [sortedCurrentGrants, selectedCategory])
+  }, [grants])
 
   const handleLoadMoreCurrentGrantsClick = useCallback(() => {
     if (grants) {
-      const newCurrentGrants = currentGrantsFilteredByCategory[selectedCategory].slice(
-        0,
-        filteredCurrentGrants.length + CURRENT_GRANTS_PER_PAGE
-      )
+      const newCurrentGrants = grants.slice(0, filteredCurrentGrants.length + CURRENT_GRANTS_PER_PAGE)
       setFilteredCurrentGrants(newCurrentGrants)
     }
-  }, [grants, currentGrantsFilteredByCategory, selectedCategory, filteredCurrentGrants])
+  }, [grants, filteredCurrentGrants])
 
-  const showLoadMoreCurrentGrantsButton =
-    filteredCurrentGrants?.length !== currentGrantsFilteredByCategory[selectedCategory]?.length
+  const showLoadMoreCurrentGrantsButton = filteredCurrentGrants?.length !== grants?.length
 
   return (
     <>
@@ -102,9 +79,9 @@ const CurrentGrantsList = ({ grants, category, status, counter }: Props) => {
         <div className="CurrentGrants__TitleContainer">
           <div>
             <h2 className="CurrentGrants__Title">
-              {t('page.grants.grants_category_title', {
+              {t('page.grants.projects_category_title', {
                 status: status ? `${t(GRANTS_STATUS_KEYS[status])} ` : '',
-                category: t(CATEGORY_KEYS[selectedCategory]),
+                category: t(CATEGORY_KEYS[selectedSubtype || selectedType] || 'page.grants.category_filters.all'),
               })}
             </h2>
           </div>
@@ -112,7 +89,9 @@ const CurrentGrantsList = ({ grants, category, status, counter }: Props) => {
             <CurrentGrantsSortingMenu sortingKey={sortingKey} onSortingKeyChange={setSortingKey} />
           </div>
         </div>
-        <BudgetBanner category={selectedCategory} counter={counter} status={status} />
+        {selectedType === ProjectCategoryFilter.Grants && (
+          <BudgetBanner category={selectedSubtype} counter={counter} status={status} />
+        )}
         {isEmpty(grants) && (
           <Empty
             className="CurrentGrants__Empty"

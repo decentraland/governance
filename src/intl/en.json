@@ -1193,7 +1193,7 @@
         "approved_rate_title": "{value}% Approval",
         "approved_rate_description": "Rate of approved Grant proposals"
       },
-      "grants_category_title": "{status}{category} Grants",
+      "projects_category_title": "{status}{category} Projects",
       "budget_banner": {
         "budget_label": "Quarterly budget",
         "progress_label": "Initiatives",
@@ -1201,6 +1201,7 @@
       },
       "category_filters": {
         "all": "All",
+        "bidding_and_tendering": "Bidding and tendering",
         "community": "Community",
         "content": "Content",
         "gaming": "Gaming",

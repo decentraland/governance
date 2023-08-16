@@ -32,13 +32,6 @@ export type FilterProps = {
 
 const FILTER_KEY = 'type'
 
-function isCounterValid(counter: Counter, filterType: FilterType) {
-  const counterKeys = Object.keys(counter)
-  const filterKeys = Object.values(filterType)
-
-  return isEqual(counterKeys, filterKeys)
-}
-
 export default function CategoryFilter({
   filterType,
   onChange,
@@ -50,7 +43,6 @@ export default function CategoryFilter({
   const filters = Object.values(filterType)
   const type = params.get(FILTER_KEY)
   const isProposalsFilter = isEqual(filterType, ProposalType)
-  const isCounter = !!categoryCount && isCounterValid(categoryCount, filterType)
 
   return (
     <CollapsibleFilter title={t('navigation.search.category_filter_title')} startOpen={!!startOpen} onChange={onChange}>
@@ -59,11 +51,11 @@ export default function CategoryFilter({
         href={getUrlFilters(FILTER_KEY, params)}
         active={!type}
         className="CategoryFilter__CategoryOption"
+        count={categoryCount?.['all_projects']}
       />
-      {filters.map((filterType, index) => {
-        const label = toSnakeCase(filterType)
-        const isGrantType =
-          toProposalType(filterType) === ProposalType.Grant || filterType === ProjectCategoryFilter.Grants
+      {filters.map((filter, index) => {
+        const label = toSnakeCase(filter)
+        const isGrantType = toProposalType(filter) === ProposalType.Grant || filter === ProjectCategoryFilter.Grants
 
         return (
           <CategoryOption
@@ -72,7 +64,7 @@ export default function CategoryFilter({
             href={getUrlFilters(FILTER_KEY, params, label)}
             active={type === label}
             className="CategoryFilter__CategoryOption"
-            count={isCounter ? categoryCount[filterType as keyof Counter] : undefined}
+            count={categoryCount?.[filter]}
             subtypes={
               isGrantType
                 ? [

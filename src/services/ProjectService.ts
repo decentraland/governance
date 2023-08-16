@@ -3,10 +3,10 @@ import { Request } from 'express'
 import filter from 'lodash/filter'
 import isNil from 'lodash/isNil'
 
-import { DclData, TransparencyGrant } from '../clients/DclData'
+import { DclData, TransparencyGrant, TransparencyVesting } from '../clients/DclData'
 import { GrantTier } from '../entities/Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../entities/Grant/constants'
-import { GrantRequest, GrantStatus } from '../entities/Grant/types'
+import { GrantRequest, ProjectStatus } from '../entities/Grant/types'
 import ProposalModel from '../entities/Proposal/model'
 import {
   Grant,
@@ -38,8 +38,6 @@ export class ProjectService {
     const query = req.query
     const type = query.type && String(query.type)
     const subtype = query.subtype && String(query.subtype)
-    const status = query.status && String(query.status)
-    const search = query.search && String(query.search)
     const timeFrame = query.timeFrame && String(query.timeFrame)
     const timeFrameKey = query.timeFrameKey && String(query.timeFrameKey)
     const order = query.order && String(query.order) === 'ASC' ? 'ASC' : 'DESC'
@@ -48,18 +46,16 @@ export class ProjectService {
 
     const [total, data] = await Promise.all([
       ProposalModel.getProposalTotal({
-        type: `${ProposalType.Grant},${ProposalType.Bid}`,
+        type,
         subtype,
-        status,
-        search,
+        status: ProposalStatus.Enacted, // TODO: get pending and enacted here
         timeFrame,
         timeFrameKey,
       }),
       ProposalModel.getProposalList({
         type,
         subtype,
-        status,
-        search,
+        status: ProposalStatus.Enacted, // TODO: get pending and enacted here
         timeFrame,
         timeFrameKey,
         order,
@@ -68,7 +64,88 @@ export class ProjectService {
       }),
     ])
 
-    return { ok: true, total, data }
+    const vestings = await DclData.get().getVestings()
+    const projects: GrantWithUpdate[] = []
+
+    await Promise.all(
+      data.map(async (proposal: ProposalAttributes) => {
+        try {
+          const proposalVestings = vestings
+            .filter((item) => item.proposal_id === proposal.id)
+            .sort(function compare(a, b) {
+              const dateA = new Date(a.vesting_start_at).getTime()
+              const dateB = new Date(b.vesting_start_at).getTime()
+              return dateB - dateA
+            })
+          const latestVesting = proposalVestings[0]
+
+          const project: Grant = {
+            id: proposal.id,
+            title: proposal.title,
+            user: proposal.user,
+            type: proposal.type,
+            size: proposal.configuration.size,
+            created_at: proposal.created_at.getTime(),
+            configuration: {
+              category: proposal.configuration.category || proposal.type,
+              tier: proposal.configuration.tier,
+            },
+            ...this.getProjectVestingData(latestVesting),
+          }
+
+          try {
+            const update = await this.getGrantLatestUpdate(project.id)
+            const projectWithUpdate: GrantWithUpdate = {
+              ...project,
+              ...this.getUpdateData(update),
+            }
+
+            return projects.push(projectWithUpdate)
+          } catch (error) {
+            logger.error(`Failed to fetch grant update data from proposal ${project.id}`, formatError(error as Error))
+          }
+        } catch (error) {
+          if (isProdEnv()) {
+            logger.error(`Failed to get data for ${proposal.id}`, formatError(error as Error))
+          }
+        }
+      })
+    )
+
+    return {
+      data: projects,
+      total,
+    }
+  }
+
+  private static getProjectVestingData(vesting: TransparencyVesting) {
+    if (!vesting) {
+      return null
+    }
+
+    const {
+      token,
+      vesting_start_at,
+      vesting_finish_at,
+      vesting_total_amount,
+      vesting_releasable,
+      vesting_released,
+      vesting_status,
+    } = vesting
+
+    return {
+      status: vesting_status,
+      token: token,
+      enacted_at: Time(vesting_start_at).unix(),
+      contract: {
+        vesting_total_amount: Math.round(vesting_total_amount),
+        vestedAmount: Math.round(vesting_released + vesting_releasable),
+        releasable: Math.round(vesting_releasable),
+        released: Math.round(vesting_released),
+        start_at: Time(vesting_start_at).unix(),
+        finish_at: Time(vesting_finish_at).unix(),
+      },
+    }
   }
 
   public static async getGrants() {
@@ -128,12 +205,13 @@ export class ProjectService {
       id,
       title,
       user,
+      type: ProposalType.Grant,
       size: configuration.size,
       configuration: {
         category: configuration.category,
         tier: configuration.tier,
       },
-      status: GrantStatus.Pending,
+      status: ProjectStatus.Pending,
       created_at: created_at.getTime(),
       token: undefined,
       enacted_at: undefined,
@@ -152,6 +230,7 @@ export class ProjectService {
         category,
         tier,
       },
+      type: ProposalType.Grant,
       status: vesting_status,
       user,
       title,
@@ -198,6 +277,7 @@ export class ProjectService {
     }
   }
 
+  // TODO: Remove after deprecation of grants
   private static async getCreationDate(grant: TransparencyGrant) {
     const proposal = await ProposalModel.findOne<ProposalAttributes>(grant.id)
     if (!proposal) {
@@ -259,7 +339,7 @@ export class ProjectService {
     )
   }
 
-  private static isCurrentGrant(status?: GrantStatus) {
-    return status === GrantStatus.InProgress || status === GrantStatus.Paused || status === GrantStatus.Pending
+  private static isCurrentGrant(status?: ProjectStatus) {
+    return status === ProjectStatus.InProgress || status === ProjectStatus.Paused || status === ProjectStatus.Pending
   }
 }

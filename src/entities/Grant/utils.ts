@@ -11,9 +11,9 @@ import Sponsorship from '../../components/Icon/Grants/Sponsorship'
 import {
   GRANT_PROPOSAL_MAX_BUDGET,
   GRANT_PROPOSAL_MIN_BUDGET,
-  GrantStatus,
   NewGrantCategory,
   OldGrantCategory,
+  ProjectStatus,
   ProposalGrantCategory,
 } from './types'
 
@@ -43,14 +43,14 @@ export function getNewGrantsCategoryIcon(category: NewGrantCategory) {
 
 export function toProposalGrantCategory(category?: string | null): ProposalGrantCategory | null {
   const categories = [...Object.values(NewGrantCategory), ...Object.values(OldGrantCategory)]
-  const idx = categories.map(toSnakeCase).indexOf(toSnakeCase(category || undefined))
+  const index = categories.map(toSnakeCase).indexOf(toSnakeCase(category || undefined))
 
-  return idx !== -1 ? categories[idx] : null
+  return index !== -1 ? categories[index] : null
 }
 
-export function toGrantStatus(status?: string | null): GrantStatus | null {
-  const statuses = Object.values(GrantStatus)
-  const idx = statuses.map(toSnakeCase).indexOf(toSnakeCase(status || undefined))
+export function toProjectStatus(status?: string | null): ProjectStatus | undefined {
+  const statuses = Object.values(ProjectStatus)
+  const index = statuses.map(toSnakeCase).indexOf(toSnakeCase(status || undefined))
 
-  return idx !== -1 ? statuses[idx] : null
+  return index !== -1 ? statuses[index] : undefined
 }

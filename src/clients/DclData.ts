@@ -1,6 +1,6 @@
 import API from 'decentraland-gatsby/dist/utils/api/API'
 
-import { GrantStatus, GrantTierType, ProposalGrantCategory } from '../entities/Grant/types'
+import { GrantTierType, ProjectStatus, ProposalGrantCategory } from '../entities/Grant/types'
 import { ProposalStatus } from '../entities/Proposal/types'
 import { TokenInWallet } from '../entities/Transparency/types'
 import { ProjectHealth, UpdateStatus } from '../entities/Updates/types'
@@ -91,7 +91,7 @@ export type TransparencyGrant = {
   vesting_finish_at?: number
   vesting_token_contract_balance?: number
   vesting_total_amount?: number
-  vesting_status?: GrantStatus
+  vesting_status?: ProjectStatus
   next_update?: number
 }
 export type TransparencyGrants = TransparencyGrant[]
@@ -112,6 +112,20 @@ export type TransparencyBudget = {
   start_date: string
   total: number
   category_percentages: Record<string, number>
+}
+
+export type TransparencyVesting = {
+  proposal_id: string
+  token: string
+  vesting_address: string
+  vesting_released: number
+  vesting_releasable: number
+  vesting_start_at: string
+  vesting_finish_at: string
+  vesting_contract_token_balance: number
+  vesting_total_amount: number
+  vesting_status: ProjectStatus
+  duration_in_months: number
 }
 
 const EMPTY_API: TransparencyData = {
@@ -169,5 +183,9 @@ export class DclData extends API {
 
   async getBudgets() {
     return this.trycatch(() => this.fetch<TransparencyBudget[]>('/budgets.json', this.options().method('GET')), [])
+  }
+
+  async getVestings() {
+    return this.trycatch(() => this.fetch<TransparencyVesting[]>('/vestings.json', this.options().method('GET')), [])
   }
 }

@@ -20,7 +20,7 @@ const GrantCardHeader = ({ grant }: GrantCardHeaderProps) => {
   return (
     <div className="GrantCardHeader">
       <div className="GrantCardHeader__ConfigurationInfo">
-        <GrantPill type={configuration.category} />
+        {configuration.category && <GrantPill type={configuration.category} />}
         <div className="GrantCardHeader__SizeContainer GrantCardHeader__SizeContainerSlim">
           <p className="GrantCardHeader__Size">{`${t('component.grant_card.size')}: $${intl.formatNumber(
             size
