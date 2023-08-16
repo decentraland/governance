@@ -48,6 +48,23 @@ query Badges($badgeCid: String!) {
            }
        }`
 
+const RECIPIENTS_BADGE_ID_QUERY = `
+query Badges($badgeCid: String!, $addresses: [String]!, $first: Int!, $skip: Int!) {
+  badges: badges(
+    where:{
+      spec: $badgeCid,
+      owner_in: $addresses
+    },
+    first: $first, skip: $skip,
+     ) {
+      id  
+    owner {
+      id
+    }
+  }
+}
+`
+
 export type OtterspaceBadge = {
   id: string
   createdAt: number
@@ -71,6 +88,8 @@ export type OtterspaceBadge = {
     }
   }
 }
+
+type BadgeOwnership = { id: string; address: string }
 
 export class OtterspaceSubgraph {
   static Cache = new Map<string, OtterspaceSubgraph>()
@@ -147,5 +166,30 @@ export class OtterspaceSubgraph {
     )
 
     return badges.map((badge) => badge.owner?.id.toLowerCase()).filter(Boolean)
+  }
+
+  async getRecipientsBadgeIds(badgeCid: string, addresses: string[]): Promise<BadgeOwnership[]> {
+    const badges: Pick<OtterspaceBadge, 'id' | 'owner'>[] = await inBatches(
+      async (vars, skip, first) => {
+        const response = await fetch(this.queryEndpoint, {
+          method: 'post',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query: RECIPIENTS_BADGE_ID_QUERY,
+            variables: { ...vars, skip, first },
+            operationName: 'Badges',
+            extensions: { headers: null },
+          }),
+        })
+
+        const body = await response.json()
+        return body?.data?.badges || []
+      },
+      { badgeCid, addresses }
+    )
+
+    return badges.map((badge) => {
+      return { id: badge.id, address: badge.owner?.id || '' }
+    })
   }
 }
