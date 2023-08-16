@@ -28,4 +28,8 @@ DELETE FROM "public".jobs WHERE run_at < '$DATE';
 DELETE FROM "public".proposals WHERE created_at < '$DATE';
 
 SELECT count(*) FROM "public".proposals;
+
+DELETE FROM "public".users;
+
+DELETE FROM "public".unpublished_bids;
 EOF
