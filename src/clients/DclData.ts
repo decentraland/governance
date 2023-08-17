@@ -147,6 +147,26 @@ const EMPTY_API: TransparencyData = {
   committees: [],
 }
 
+type MemberVP = {
+  totalVP: number
+  manaVP: number
+  landVP: number
+  namesVP: number
+  delegatedVP: number
+  l1WearablesVP: number
+  rentalVP: number
+}
+
+export type TransparencyMember = MemberVP & {
+  address: string
+  avatarPreview: string
+  hasDelegated: boolean
+  hasDelegators: boolean
+  delegate?: string
+  delegators?: string[]
+  delegatorsAmount: number
+}
+
 export class DclData extends API {
   static Url = process.env.GATSBY_DCL_DATA_API || 'https://data.decentraland.vote/'
 
@@ -187,5 +207,9 @@ export class DclData extends API {
 
   async getVestings() {
     return this.trycatch(() => this.fetch<TransparencyVesting[]>('/vestings.json', this.options().method('GET')), [])
+  }
+
+  async getMembers() {
+    return this.trycatch(() => this.fetch<TransparencyMember[]>('/members.json', this.options().method('GET')), [])
   }
 }
