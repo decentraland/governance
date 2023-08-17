@@ -17,7 +17,7 @@ import locations from '../../../utils/locations'
 import Empty, { ActionType } from '../../Common/Empty'
 import FullWidthButton from '../../Common/FullWidthButton'
 import Watermelon from '../../Icon/Watermelon'
-import { Counter, ProjectCategoryFilter } from '../../Search/CategoryFilter'
+import { ProjectTypeFilter } from '../../Search/CategoryFilter'
 import GrantCard from '../GrantCard/GrantCard'
 
 import BudgetBanner from './BudgetBanner'
@@ -28,15 +28,14 @@ const CURRENT_GRANTS_PER_PAGE = 8
 
 interface Props {
   projects: GrantWithUpdate[]
-  selectedType?: ProjectCategoryFilter
+  selectedType?: ProjectTypeFilter
   selectedSubtype?: SubtypeOptions
   status?: ProjectStatus
-  counter?: Counter
 }
 
 const CATEGORY_KEYS: Record<any, string> = {
-  [ProjectCategoryFilter.BiddingAndTendering]: 'page.grants.category_filters.bidding_and_tendering',
-  [ProjectCategoryFilter.Grants]: 'page.grants.category_filters.all',
+  [ProjectTypeFilter.BiddingAndTendering]: 'page.grants.category_filters.bidding_and_tendering',
+  [ProjectTypeFilter.Grants]: 'page.grants.category_filters.grants',
   [NewGrantCategory.Accelerator]: 'category.accelerator_title',
   [NewGrantCategory.CoreUnit]: 'category.core_unit_title',
   [NewGrantCategory.Documentation]: 'category.documentation_title',
@@ -63,7 +62,7 @@ const GRANTS_STATUS_KEYS: Record<ProjectStatus, string> = {
   [ProjectStatus.Revoked]: 'grant_status.revoked',
 }
 
-export default function CurrentProjectsList({ projects, selectedSubtype, selectedType, status, counter }: Props) {
+export default function CurrentProjectsList({ projects, selectedSubtype, selectedType, status }: Props) {
   const t = useFormatMessage()
   const [selectedCategory, setSelectedCategory] = useState('all_projects')
   const [sortingKey, setSortingKey] = useState<SortingKey>(SortingKey.UpdateTimestamp)
@@ -95,47 +94,49 @@ export default function CurrentProjectsList({ projects, selectedSubtype, selecte
     filteredCurrentGrants?.length !== (currentGrantsFilteredByCategory as any)[selectedCategory]?.length
 
   return (
-    <>
-      <div className="CurrentGrantsList">
-        <div className="CurrentGrants__TitleContainer">
-          <div>
-            {
-              <h2 className="CurrentGrants__Title">
-                {t('page.grants.projects_category_title', {
-                  status: status ? `${t(GRANTS_STATUS_KEYS[status])} ` : '',
-                  category: t(getCategoryKey(selectedSubtype || selectedType)),
-                })}
-              </h2>
-            }
-          </div>
-          <div className="CurrentGrants__Filters">
-            <CurrentGrantsSortingMenu sortingKey={sortingKey} onSortingKeyChange={setSortingKey} />
-          </div>
+    <div className="CurrentGrantsList">
+      <div className="CurrentGrants__TitleContainer">
+        <div>
+          {
+            <h2 className="CurrentGrants__Title">
+              {t('page.grants.projects_category_title', {
+                status: status ? `${t(GRANTS_STATUS_KEYS[status])} ` : '',
+                category: t(getCategoryKey(selectedSubtype || selectedType)),
+              })}
+            </h2>
+          }
         </div>
-        {selectedType === ProjectCategoryFilter.Grants && selectedSubtype !== SubtypeAlternativeOptions.Legacy && (
-          <BudgetBanner category={selectedSubtype || 'all_grants'} counter={counter} status={status} />
-        )}
-        {isEmpty(projects) && (
-          <Empty
-            className="CurrentGrants__Empty"
-            icon={<Watermelon />}
-            description={t('page.grants.empty.description')}
-            onLinkClick={() => navigate(locations.projects())}
-            linkText={t('page.grants.empty.button')}
-            actionType={ActionType.BUTTON}
-          />
-        )}
-        <div className="CurrentGrants__Container">
-          {filteredCurrentGrants?.map((grant) => (
-            <GrantCard key={`CurrentGrantCard_${grant.id}`} grant={grant} />
-          ))}
+        <div className="CurrentGrants__Filters">
+          <CurrentGrantsSortingMenu sortingKey={sortingKey} onSortingKeyChange={setSortingKey} />
         </div>
-        {showLoadMoreCurrentGrantsButton && (
-          <FullWidthButton onClick={handleLoadMoreCurrentGrantsClick}>
-            {t('page.grants.load_more_button')}
-          </FullWidthButton>
-        )}
       </div>
-    </>
+      {selectedType === ProjectTypeFilter.Grants && (
+        <BudgetBanner
+          category={selectedSubtype || SubtypeAlternativeOptions.All}
+          initiativesCount={projects.length}
+          status={status}
+        />
+      )}
+      {isEmpty(projects) && (
+        <Empty
+          className="CurrentGrants__Empty"
+          icon={<Watermelon />}
+          description={t('page.grants.empty.description')}
+          onLinkClick={() => navigate(locations.projects())}
+          linkText={t('page.grants.empty.button')}
+          actionType={ActionType.BUTTON}
+        />
+      )}
+      <div className="CurrentGrants__Container">
+        {filteredCurrentGrants?.map((grant) => (
+          <GrantCard key={`CurrentGrantCard_${grant.id}`} grant={grant} />
+        ))}
+      </div>
+      {showLoadMoreCurrentGrantsButton && (
+        <FullWidthButton onClick={handleLoadMoreCurrentGrantsClick}>
+          {t('page.grants.load_more_button')}
+        </FullWidthButton>
+      )}
+    </div>
   )
 }

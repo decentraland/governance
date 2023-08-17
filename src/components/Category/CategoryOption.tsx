@@ -17,7 +17,7 @@ import All from '../Icon/ProposalCategories/All'
 import Grant from '../Icon/ProposalCategories/Grant'
 import Tender from '../Icon/ProposalCategories/Tender'
 import SubItem from '../Icon/SubItem'
-import { ProjectCategoryFilter } from '../Search/CategoryFilter'
+import { ProjectTypeFilter } from '../Search/CategoryFilter'
 
 import { categoryIcons } from './CategoryBanner'
 import './CategoryOption.css'
@@ -39,6 +39,7 @@ const icons: Record<string, any> = {
   platform_contributor: Grant,
   grants: Grant,
   bidding_and_tendering: Tender,
+  legacy: Grant,
   ...categoryIcons,
 }
 
@@ -82,7 +83,7 @@ export default function CategoryOption({ active, type, className, count, subtype
     [onClick]
   )
 
-  const isGrant = currentType === ProposalType.Grant || currentType === ProjectCategoryFilter.Grants
+  const isGrant = currentType === ProposalType.Grant || currentType === ProjectTypeFilter.Grants
   const hasSubtypes = !!subtypes && subtypes.length > 0
   const [isSubtypesOpen, setIsSubtypesOpen] = useState(isGrant)
 

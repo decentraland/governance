@@ -4,8 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import toSnakeCase from 'lodash/snakeCase'
 
 import { Governance } from '../clients/Governance'
-import { ProposalGrantCategory } from '../entities/Grant/types'
-import { PROPOSAL_GRANT_CATEGORY_ALL } from '../entities/Proposal/types'
+import { SubtypeAlternativeOptions, SubtypeOptions } from '../entities/Grant/types'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
@@ -25,9 +24,9 @@ function convertPercentageToInt(percentage: number): number {
   return Math.ceil(percentage * 100)
 }
 
-export default function useBudgetByCategory(category: ProposalGrantCategory | typeof PROPOSAL_GRANT_CATEGORY_ALL) {
+export default function useBudgetByCategory(category: SubtypeOptions) {
   const { data: currentBudget } = useQuery({
-    queryKey: [`budget`],
+    queryKey: ['budget'],
     queryFn: () => Governance.get().getCurrentBudget(),
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })
@@ -36,7 +35,7 @@ export default function useBudgetByCategory(category: ProposalGrantCategory | ty
   useEffect(() => {
     if (currentBudget) {
       const { categories, allocated, total } = currentBudget
-      if (category === PROPOSAL_GRANT_CATEGORY_ALL) {
+      if (category === SubtypeAlternativeOptions.All) {
         setBudget({
           allocatedPercentage: convertPercentageToInt(allocated / total),
           allocated,

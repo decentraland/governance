@@ -636,8 +636,6 @@ export const newProposalTenderScheme = {
   },
 }
 
-export const PROPOSAL_GRANT_CATEGORY_ALL = 'All'
-
 export const ProposalRequiredVP = {
   [ProposalType.LinkedWearables]: requiredVotingPower(VOTING_POWER_TO_PASS_LINKED_WEARABLES, 0),
   [ProposalType.Catalyst]: requiredVotingPower(VOTING_POWER_TO_PASS_CATALYST, 0),

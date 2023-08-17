@@ -4,45 +4,38 @@ import { useIntl } from 'react-intl'
 import classNames from 'classnames'
 import snakeCase from 'lodash/snakeCase'
 
-import { ProjectStatus, SubtypeOptions, isGrantSubtype } from '../../../entities/Grant/types'
-import { PROPOSAL_GRANT_CATEGORY_ALL } from '../../../entities/Proposal/types'
-import { toNewGrantCategory } from '../../../entities/QuarterCategoryBudget/utils'
+import { ProjectStatus, SubtypeAlternativeOptions, SubtypeOptions, isGrantSubtype } from '../../../entities/Grant/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../../helpers'
 import { CategoryIconVariant } from '../../../helpers/styles'
 import useBudgetByCategory from '../../../hooks/useBudgetByCategory'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import { getCategoryIcon } from '../../Category/CategoryOption'
 import ProgressBar from '../../Common/ProgressBar'
-import { Counter } from '../../Search/CategoryFilter'
 
 import './BudgetBanner.css'
 import BudgetBannerItem from './BudgetBannerItem'
 
 interface Props {
-  category?: SubtypeOptions
+  category: SubtypeOptions
   status?: ProjectStatus | null
-  counter?: Counter
+  initiativesCount?: number
 }
 
-export default function BudgetBanner({ category, status, counter }: Props) {
+export default function BudgetBanner({ category, status, initiativesCount }: Props) {
   const t = useFormatMessage()
   const intl = useIntl()
-  const selectedCategory = isGrantSubtype(category)
-    ? toNewGrantCategory(category?.toLowerCase() || '')
-    : PROPOSAL_GRANT_CATEGORY_ALL
   const {
     allocatedPercentage: percentage,
     allocated: currentAmount,
     total: totalBudget,
-  } = useBudgetByCategory(selectedCategory)
+  } = useBudgetByCategory(category)
 
-  const initiativesCount = (counter && category && counter[snakeCase(category)]) || 0
   const showProgress = !status || status === ProjectStatus.InProgress
 
   return (
     <div className={classNames('BudgetBanner', !showProgress && 'BudgetBanner--start')}>
       <div className="BudgetBanner__LabelWithIcon">
-        {category && isGrantSubtype(category) && (
+        {category && (isGrantSubtype(category) || category === SubtypeAlternativeOptions.Legacy) && (
           <span>{getCategoryIcon(snakeCase(category), CategoryIconVariant.Circled, 48)}</span>
         )}
         <BudgetBannerItem

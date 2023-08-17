@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 
 import useFormatMessage from '../../hooks/useFormatMessage'
-import { useProposalsSearchParams } from '../../hooks/useSearchParams'
+import { useProposalsSearchParams } from '../../hooks/useProposalsSearchParams'
 import locations, { navigate } from '../../utils/locations'
 
 import './SearchInput.css'

@@ -85,7 +85,9 @@ export class ProjectService {
 
   private static getProjectVestingData(vesting: TransparencyVesting) {
     if (!vesting) {
-      return null
+      return {
+        status: ProjectStatus.Pending,
+      }
     }
 
     const {

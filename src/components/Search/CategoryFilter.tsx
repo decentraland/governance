@@ -13,7 +13,7 @@ import CategoryOption from '../Category/CategoryOption'
 import './CategoryFilter.css'
 import CollapsibleFilter from './CollapsibleFilter'
 
-export enum ProjectCategoryFilter {
+export enum ProjectTypeFilter {
   Grants = 'grants',
   BiddingAndTendering = 'bidding_and_tendering',
 }
@@ -22,7 +22,7 @@ export type FilterType =
   | typeof ProposalType
   | typeof NewGrantCategory
   | typeof OldGrantCategory
-  | typeof ProjectCategoryFilter
+  | typeof ProjectTypeFilter
 export type Counter = Record<string, number | undefined>
 export type FilterProps = {
   onChange?: (open: boolean) => void
@@ -55,7 +55,7 @@ export default function CategoryFilter({
       />
       {filters.map((filter, index) => {
         const label = toSnakeCase(filter)
-        const isGrantType = toProposalType(filter) === ProposalType.Grant || filter === ProjectCategoryFilter.Grants
+        const isGrantType = toProposalType(filter) === ProposalType.Grant || filter === ProjectTypeFilter.Grants
 
         return (
           <CategoryOption

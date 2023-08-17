@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import filter from 'lodash/filter'
 
-import { ProjectCategoryFilter } from '../components/Search/CategoryFilter'
+import { ProjectTypeFilter } from '../components/Search/CategoryFilter'
 import { NewGrantCategory, OldGrantCategory } from '../entities/Grant/types'
 import { GrantWithUpdate, ProposalType } from '../entities/Proposal/types'
 
@@ -16,8 +16,8 @@ export function useCurrentGrantsFilteredByCategory(projects: GrantWithUpdate[]) 
           item.type === ProposalType.Grant &&
           Object.values(OldGrantCategory).includes(item.configuration.category as OldGrantCategory)
       ),
-      [ProjectCategoryFilter.Grants]: filter(projects, (item) => item.type === ProposalType.Grant),
-      [ProjectCategoryFilter.BiddingAndTendering]: filter(projects, (item) => item.type === ProposalType.Bid),
+      [ProjectTypeFilter.Grants]: filter(projects, (item) => item.type === ProposalType.Grant),
+      [ProjectTypeFilter.BiddingAndTendering]: filter(projects, (item) => item.type === ProposalType.Bid),
       [NewGrantCategory.Accelerator]: filter(
         projects,
         (item) => item.configuration.category === NewGrantCategory.Accelerator

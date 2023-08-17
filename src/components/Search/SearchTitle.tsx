@@ -6,7 +6,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import useFormatMessage from '../../hooks/useFormatMessage'
-import { useProposalsSearchParams } from '../../hooks/useSearchParams'
+import { useProposalsSearchParams } from '../../hooks/useProposalsSearchParams'
 import locations, { navigate } from '../../utils/locations'
 
 import './SearchTitle.css'

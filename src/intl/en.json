@@ -1197,6 +1197,7 @@
       },
       "category_filters": {
         "all": "All",
+        "grants": "Grants",
         "bidding_and_tendering": "Bidding and tendering",
         "community": "Community",
         "content": "Content",

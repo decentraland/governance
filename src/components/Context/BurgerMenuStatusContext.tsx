@@ -1,6 +1,6 @@
 import React, { createContext, useState } from 'react'
 
-import { useProposalsSearchParams } from '../../hooks/useSearchParams'
+import { useProposalsSearchParams } from '../../hooks/useProposalsSearchParams'
 
 type BurgerMenuStatusContextProps = {
   children: React.ReactNode
