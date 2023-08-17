@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { useIntl } from 'react-intl'
 
 import classNames from 'classnames'
@@ -36,10 +36,7 @@ export default function BudgetBanner({ category, status, counter }: Props) {
     total: totalBudget,
   } = useBudgetByCategory(selectedCategory)
 
-  const initiativesCount = useMemo(
-    () => (counter && category && counter[category.toLowerCase()]) || 0,
-    [category, counter]
-  )
+  const initiativesCount = (counter && category && counter[category.toLowerCase()]) || 0
   const showProgress = !status || status === ProjectStatus.InProgress
 
   return (

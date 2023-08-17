@@ -25,6 +25,7 @@ import { isUnderMaintenance } from '../utils/maintenance'
 function getCounter(allGrants: GrantWithUpdate[] | undefined) {
   return {
     all_projects: allGrants?.length || 0,
+    all_grants: allGrants?.length || 0,
     bidding_and_tendering: allGrants?.filter((item) => item.type === ProposalType.Bid).length || 0,
     grants: allGrants?.filter((item) => item.type === ProposalType.Grant).length || 0,
     accelerator: 100, // TODO: Get counter for all grant categories

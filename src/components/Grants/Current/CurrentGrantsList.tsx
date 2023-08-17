@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { navigate } from '@reach/router'
+import { filter, orderBy } from 'lodash'
 import isEmpty from 'lodash/isEmpty'
 
 import { NewGrantCategory, OldGrantCategory, ProjectStatus, SubtypeOptions } from '../../../entities/Grant/types'
@@ -54,15 +55,29 @@ const GRANTS_STATUS_KEYS: Record<ProjectStatus, string> = {
 const CurrentGrantsList = ({ grants, selectedSubtype, selectedType, status, counter }: Props) => {
   const t = useFormatMessage()
   const [sortingKey, setSortingKey] = useState<SortingKey>(SortingKey.UpdateTimestamp) // TODO: Move sorting key to query param
+  const sortedCurrentGrants = useMemo(() => orderBy(grants, [sortingKey], ['desc']), [grants, sortingKey])
   const [filteredCurrentGrants, setFilteredCurrentGrants] = useState<GrantWithUpdate[]>([])
 
   useEffect(() => {
     if (!isEmpty(grants)) {
-      setFilteredCurrentGrants(grants.slice(0, CURRENT_GRANTS_PER_PAGE))
+      setFilteredCurrentGrants(sortedCurrentGrants.slice(0, CURRENT_GRANTS_PER_PAGE))
     } else {
       setFilteredCurrentGrants([])
     }
-  }, [grants])
+  }, [grants, sortedCurrentGrants])
+
+  useEffect(() => {
+    if (!isEmpty(sortedCurrentGrants)) {
+      const newGrants =
+        selectedType === 'grants'
+          ? sortedCurrentGrants.slice(0, CURRENT_GRANTS_PER_PAGE)
+          : filter(sortedCurrentGrants, (item) => item.configuration.category === selectedSubtype).slice(
+              0,
+              CURRENT_GRANTS_PER_PAGE
+            )
+      setFilteredCurrentGrants(newGrants)
+    }
+  }, [sortedCurrentGrants, selectedSubtype, selectedType])
 
   const handleLoadMoreCurrentGrantsClick = useCallback(() => {
     if (grants) {
@@ -90,7 +105,7 @@ const CurrentGrantsList = ({ grants, selectedSubtype, selectedType, status, coun
           </div>
         </div>
         {selectedType === ProjectCategoryFilter.Grants && (
-          <BudgetBanner category={selectedSubtype} counter={counter} status={status} />
+          <BudgetBanner category={selectedSubtype || 'all_grants'} counter={counter} status={status} />
         )}
         {isEmpty(grants) && (
           <Empty
