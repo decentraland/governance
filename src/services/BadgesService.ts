@@ -2,9 +2,10 @@ import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { v1 as uuid } from 'uuid'
 
 import AirdropJobModel, { AirdropJobStatus, AirdropOutcome } from '../back/models/AirdropJob'
+import { DclData } from '../clients/DclData'
 import { OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgraph'
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
-import { LEGISLATOR_BADGE_SPEC_CID } from '../constants'
+import { LAND_OWNER_BADGE_SPEC_CID, LEGISLATOR_BADGE_SPEC_CID } from '../constants'
 import {
   Badge,
   BadgeStatus,
@@ -143,6 +144,29 @@ export class BadgesService {
     const authors = governanceProposals.map((proposal) => proposal.user)
     const authorsAndCoauthors = new Set([...authors.map(getChecksumAddress), ...coauthors.map(getChecksumAddress)])
     await this.queueAirdropJob(LEGISLATOR_BADGE_SPEC_CID, Array.from(authorsAndCoauthors))
+  }
+
+  static async giveAndRevokeLandOwnerBadges() {
+    type DividedMembers = { landOwners: string[]; nonLandOwners: string[] }
+    const members = await DclData.get().getMembers()
+    const dividedMembers = members.reduce<DividedMembers>(
+      (acc, member) => {
+        if (member.landVP > 0) {
+          acc.landOwners.push(member.address)
+        } else {
+          acc.nonLandOwners.push(member.address)
+        }
+        return acc
+      },
+      { landOwners: [], nonLandOwners: [] }
+    )
+    const { landOwners, nonLandOwners } = dividedMembers
+    if (landOwners.length > 0) {
+      await this.giveBadgeToUsers(LAND_OWNER_BADGE_SPEC_CID, landOwners)
+    }
+    if (nonLandOwners.length > 0) {
+      await this.revokeBadge(LAND_OWNER_BADGE_SPEC_CID, nonLandOwners, OtterspaceRevokeReason.TenureEnded)
+    }
   }
 
   private static async queueAirdropJob(badgeSpec: string, recipients: string[]) {

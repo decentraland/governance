@@ -1,10 +1,10 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 
 import { BadgesService } from '../../services/BadgesService'
-import AirdropJobModel, { AirdropJobAttributes, AirdropOutcome } from '../models/AirdropJob'
+import AirdropJobModel, { AirdropJobAttributes } from '../models/AirdropJob'
 
 export async function runAirdropJobs() {
-  const pendingJobs: AirdropJobAttributes[] = await AirdropJobModel.getPending()
+  const pendingJobs = await AirdropJobModel.getPending()
   if (pendingJobs.length === 0) {
     return
   }

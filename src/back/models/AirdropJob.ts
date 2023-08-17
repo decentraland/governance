@@ -32,7 +32,7 @@ export default class AirdropJobModel extends Model<AirdropJobAttributes> {
           "status" IN (${AirdropJobStatus.PENDING})
     `
 
-    const result = await this.query(query)
+    const result = await this.namedQuery<AirdropJobAttributes>('get_pending_airdrop_jobs', query)
     return result
   }
 }
