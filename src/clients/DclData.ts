@@ -114,6 +114,20 @@ export type TransparencyBudget = {
   category_percentages: Record<string, number>
 }
 
+export type TransparencyVesting = {
+  proposal_id: string
+  token: string
+  vesting_address: string
+  vesting_released: number
+  vesting_releasable: number
+  vesting_start_at: string
+  vesting_finish_at: string
+  vesting_contract_token_balance: number
+  vesting_total_amount: number
+  vesting_status: GrantStatus
+  duration_in_months: number
+}
+
 const EMPTY_API: TransparencyData = {
   balances: [],
   income: {
@@ -169,5 +183,9 @@ export class DclData extends API {
 
   async getBudgets() {
     return this.trycatch(() => this.fetch<TransparencyBudget[]>('/budgets.json', this.options().method('GET')), [])
+  }
+
+  async getVestings() {
+    return this.trycatch(() => this.fetch<TransparencyVesting[]>('/vestings.json', this.options().method('GET')), [])
   }
 }

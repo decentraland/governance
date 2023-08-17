@@ -2,7 +2,7 @@ import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import filter from 'lodash/filter'
 import isNil from 'lodash/isNil'
 
-import { DclData, TransparencyGrant } from '../clients/DclData'
+import { DclData, TransparencyGrant, TransparencyVesting } from '../clients/DclData'
 import { GrantTier } from '../entities/Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../entities/Grant/constants'
 import { GrantRequest, GrantStatus } from '../entities/Grant/types'
@@ -29,6 +29,7 @@ import { ProposalInCreation } from './ProposalService'
 export class GrantsService {
   public static async getGrants() {
     const grants = await DclData.get().getGrants()
+    const vestings = await DclData.get().getVestings()
     const enactedGrants = filter(grants, (item) => item.status === ProposalStatus.Enacted)
 
     const current: GrantWithUpdate[] = []
@@ -36,15 +37,16 @@ export class GrantsService {
 
     await Promise.all(
       enactedGrants.map(async (grant: TransparencyGrant) => {
-        if (!grant.vesting_address && !grant.enacting_tx) {
-          return
-        }
         try {
           //TODO: we could findAll and iterate in memory
           const createdAt = await this.getCreationDate(grant)
-          const newGrant: Grant = this.parseTransparencyGrant(grant, createdAt)
+          const vesting = vestings.find((item) => item.proposal_id === grant.id)
+          if (!vesting) {
+            return
+          }
 
-          Object.assign(newGrant, this.getVestingData(grant))
+          const newGrant: Grant = this.parseTransparencyGrant(grant, createdAt, vesting)
+          Object.assign(newGrant, this.getVestingData(grant, vesting))
 
           try {
             const update = await this.getGrantLatestUpdate(grant.id)
@@ -98,8 +100,9 @@ export class GrantsService {
     }
   }
 
-  private static parseTransparencyGrant(grant: TransparencyGrant, createdAt: Date) {
-    const { id, size, category, tier, vesting_status, user, title, token } = grant
+  private static parseTransparencyGrant(grant: TransparencyGrant, createdAt: Date, vesting: TransparencyVesting) {
+    const { id, size, category, tier, user, title } = grant
+    const { vesting_status, token } = vesting
 
     return {
       id,
@@ -113,12 +116,12 @@ export class GrantsService {
       title,
       token,
       created_at: Time(createdAt).unix(),
-      enacted_at: this.getEnactedDate(grant),
+      enacted_at: this.getEnactedDate(grant, vesting),
     }
   }
 
-  private static getEnactedDate(grant: TransparencyGrant) {
-    return grant.tx_date ? Time(grant.tx_date).unix() : Time(grant.vesting_start_at).unix()
+  private static getEnactedDate(grant: TransparencyGrant, vesting: TransparencyVesting) {
+    return grant.tx_date ? Time(grant.tx_date).unix() : Time(vesting.vesting_start_at).unix()
   }
 
   private static getUpdateData(update: (UpdateAttributes & { index: number }) | null) {
@@ -128,14 +131,15 @@ export class GrantsService {
     }
   }
 
-  private static getVestingData(grant: TransparencyGrant) {
+  private static getVestingData(grant: TransparencyGrant, vesting: TransparencyVesting) {
     if (grant.tx_date) {
       return {
         enacting_tx: grant.enacting_tx,
         tx_amount: grant.tx_amount,
       }
     } else {
-      const { vesting_total_amount, vesting_released, vesting_releasable } = grant
+      const { vesting_total_amount, vesting_released, vesting_releasable, vesting_start_at, vesting_finish_at } =
+        vesting
 
       if (isNil(vesting_total_amount) || isNil(vesting_released) || isNil(vesting_releasable)) {
         throw new Error('Missing vesting data')
@@ -147,8 +151,8 @@ export class GrantsService {
           vestedAmount: Math.round(vesting_released + vesting_releasable),
           releasable: Math.round(vesting_releasable),
           released: Math.round(vesting_released),
-          start_at: Time(grant.vesting_start_at).unix(),
-          finish_at: Time(grant.vesting_finish_at).unix(),
+          start_at: Time(vesting_start_at).unix(),
+          finish_at: Time(vesting_finish_at).unix(),
         },
       }
     }
