@@ -2,8 +2,10 @@ import React, { useState } from 'react'
 
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
+import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
 
 import { Governance } from '../../clients/Governance'
+import { OtterspaceRevokeReason } from '../../entities/Badges/types'
 import AddressesSelect from '../AddressSelect/AddressesSelect'
 import Heading from '../Common/Typography/Heading'
 import Label from '../Common/Typography/Label'
@@ -15,11 +17,31 @@ interface Props {
   className?: string
 }
 
+const REVOKE_REASON_OPTIONS = [
+  {
+    text: 'Abuse',
+    value: OtterspaceRevokeReason.Abuse,
+  },
+  {
+    text: 'Left Community',
+    value: OtterspaceRevokeReason.LeftCommunity,
+  },
+  {
+    text: 'Tenure Ended',
+    value: OtterspaceRevokeReason.TenureEnded,
+  },
+  {
+    text: 'Other',
+    value: OtterspaceRevokeReason.Other,
+  },
+]
+
 export default function BadgesAdmin({ className }: Props) {
-  const [recipients, setRecipients] = useState<string[] | undefined>([])
+  const [recipients, setRecipients] = useState<string[]>([])
   const [badgeCid, setBadgeCid] = useState<string | undefined>()
+  const [reason, setReason] = useState<string>(OtterspaceRevokeReason.TenureEnded)
   const [result, setResult] = useState<string | null>()
-  const [errorMessage, setErrorMessage] = useState<any>()
+  const [errorMessage, setErrorMessage] = useState<string | undefined | null>()
   const [formDisabled, setFormDisabled] = useState(false)
 
   async function handleAirdropBadge() {
@@ -34,7 +56,7 @@ export default function BadgesAdmin({ className }: Props) {
   async function handleRevokeBadge() {
     if (badgeCid && recipients) {
       await submit(
-        async () => Governance.get().revokeBadge(badgeCid, recipients),
+        async () => Governance.get().revokeBadge(badgeCid, recipients, reason),
         (result) => setResult(result)
       )
     }
@@ -63,28 +85,40 @@ export default function BadgesAdmin({ className }: Props) {
       <ContentSection>
         <Heading size="sm">{'Badges'}</Heading>
         <div>
-          <Button className="Debug__SectionButton" primary disabled={formDisabled} onClick={() => handleAirdropBadge()}>
-            {'Airdrop'}
-          </Button>
-          <Button className="Debug__SideButton" primary disabled={formDisabled} onClick={() => handleRevokeBadge()}>
-            {'Revoke'}
-          </Button>
-        </div>
-        <Label>{'Badge Spec Cid'}</Label>
-        <Field value={badgeCid} onChange={(_, { value }) => setBadgeCid(value)} />
-        <div>
+          <div>
+            <Button
+              className="Debug__SectionButton"
+              primary
+              disabled={formDisabled}
+              onClick={() => handleAirdropBadge()}
+            >
+              {'Airdrop'}
+            </Button>
+            <Button className="Debug__SideButton" primary disabled={formDisabled} onClick={() => handleRevokeBadge()}>
+              {'Revoke'}
+            </Button>
+          </div>
+          <Label>{'Badge Spec Cid'}</Label>
+          <Field value={badgeCid} onChange={(_, { value }) => setBadgeCid(value)} />
           <Label>{'Recipients'}</Label>
           <AddressesSelect
-            setUsersAddresses={(addresses?: string[]) => setRecipients(addresses)}
+            setUsersAddresses={(addresses?: string[]) => setRecipients(addresses || [])}
             isDisabled={formDisabled}
             maxAddressesAmount={20}
             allowLoggedUserAccount={true}
+          />
+          <Label>{'Revoke Reason'}</Label>
+          <SelectField
+            value={reason}
+            onChange={(_, { value }) => setReason(value as string)}
+            options={REVOKE_REASON_OPTIONS}
+            disabled={formDisabled}
           />
         </div>
         {result && (
           <>
             <Label>{'Result'}</Label>
-            <Text>{result}</Text>
+            <Text className="Debug__Result">{result}</Text>
           </>
         )}
       </ContentSection>
