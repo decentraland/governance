@@ -17,11 +17,7 @@ type StatusType = typeof ProposalStatus | typeof ProjectStatus
 
 const FILTER_KEY = 'status'
 
-export default React.memo(function StatusFilter({
-  onChange,
-  startOpen,
-  statusType,
-}: FilterProps & { statusType: StatusType }) {
+export default function StatusFilter({ onChange, startOpen, statusType }: FilterProps & { statusType: StatusType }) {
   const t = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
@@ -46,4 +42,4 @@ export default React.memo(function StatusFilter({
       })}
     </CollapsibleFilter>
   )
-})
+}

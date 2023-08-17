@@ -250,6 +250,10 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       return 0
     }
 
+    if (type && !isProposalType(type)) {
+      return 0
+    }
+
     if (subtype && !isGrantSubtype(subtype)) {
       return 0
     }
@@ -266,18 +270,10 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     const timeFrameKey = filter.timeFrameKey || 'created_at'
     const sqlSnapshotIds = snapshotIds ? snapshotIds?.split(',').map((id) => SQL`${id}`) : null
     const sqlSnapshotIdsJoin = sqlSnapshotIds ? join(sqlSnapshotIds) : null
-    const types = type ? type?.split(',') : []
 
     if (!VALID_TIMEFRAME_KEYS.includes(timeFrameKey)) {
       return 0
     }
-
-    if (types && !types.every(isProposalType)) {
-      return 0
-    }
-
-    const sqlTypes = types ? types.map((id) => SQL`${id}`) : null
-    const sqlTypesJoin = sqlTypes ? join(sqlTypes) : null
 
     const result = await this.query(SQL`
     SELECT COUNT(*) as "total"
@@ -301,7 +297,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         !!coauthor && !!user,
         SQL`AND lower(c."address") = lower(${user}) AND (CASE WHEN p."finish_at" < NOW() THEN c."status" IN (${CoauthorStatus.APPROVED}, ${CoauthorStatus.REJECTED}) ELSE TRUE END)`
       )}
-      ${conditional(!!types && types.length > 0, SQL`AND "type" IN (${sqlTypesJoin})`)} 
+      ${conditional(!!type, SQL`AND "type" = ${type}`)} 
       ${conditional(!!subtype, SQL`AND (${this.getSubtypeQuery(subtype || '')})`)}
       ${conditional(!!linkedProposalId, SQL`AND (${this.getLinkedProposalQuery(linkedProposalId || '')})`)}
       ${conditional(!!status, SQL`AND "status" = ${status}`)} 
@@ -342,6 +338,10 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       return []
     }
 
+    if (type && !isProposalType(type)) {
+      return []
+    }
+
     if (subtype && !isGrantSubtype(subtype)) {
       return []
     }
@@ -367,14 +367,6 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     const sqlSnapshotIds = snapshotIds?.split(',').map((id) => SQL`${id}`)
     const sqlSnapshotIdsJoin = sqlSnapshotIds ? join(sqlSnapshotIds) : null
 
-    const types = type ? type?.split(',') : []
-    if (types && !types.every(isProposalType)) {
-      return []
-    }
-
-    const sqlTypes = types ? types.map((id) => SQL`${id}`) : null
-    const sqlTypesJoin = sqlTypes ? join(sqlTypes) : null
-
     const proposals = await this.query(SQL`
     SELECT p.*${conditional(!!coauthor && !user, SQL`, c."coauthors"`)}
     FROM ${table(ProposalModel)} p
@@ -397,7 +389,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       !!coauthor && !!user,
       SQL`AND lower(c."address") = lower(${user}) AND (CASE WHEN p."finish_at" < NOW() THEN c."status" IN (${CoauthorStatus.APPROVED}, ${CoauthorStatus.REJECTED}) ELSE TRUE END)`
     )} 
-    ${conditional(!!types && types.length > 0, SQL`AND "type" IN (${sqlTypesJoin})`)} 
+    ${conditional(!!type, SQL`AND "type" = ${type}`)} 
     ${conditional(!!status, SQL`AND "status" = ${status}`)} 
     ${conditional(!!subscribed, SQL`AND s."user" = ${subscribed}`)} 
     ${conditional(!!timeFrame && timeFrameKey === 'created_at', SQL`AND p."created_at" > ${timeFrame}`)} 
@@ -415,6 +407,25 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       max: 100,
       defaultValue: 100,
     })} ${offsetQuery(offset)}`)
+
+    return proposals.map(this.parse)
+  }
+
+  static async getProjectList(): Promise<ProposalAttributes[]> {
+    const status = [ProposalStatus.Passed, ProposalStatus.Enacted].map((id) => SQL`${id}`)
+    const types = [ProposalType.Bid, ProposalType.Grant].map((id) => SQL`${id}`)
+
+    const proposals = await this.namedQuery(
+      'get_project_list',
+      SQL`
+        SELECT *
+        FROM ${table(ProposalModel)}
+        WHERE "deleted" = FALSE
+          AND "type" IN (${join(types)})
+          AND "status" IN (${join(status)})
+          ORDER BY "created_at" DESC 
+    `
+    )
 
     return proposals.map(this.parse)
   }

@@ -36,7 +36,7 @@ export default function BudgetBanner({ category, status, counter }: Props) {
     total: totalBudget,
   } = useBudgetByCategory(selectedCategory)
 
-  const initiativesCount = (counter && category && counter[category.toLowerCase()]) || 0
+  const initiativesCount = (counter && category && counter[snakeCase(category)]) || 0
   const showProgress = !status || status === ProjectStatus.InProgress
 
   return (

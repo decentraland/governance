@@ -1,11 +1,17 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { navigate } from '@reach/router'
-import { filter, orderBy } from 'lodash'
 import isEmpty from 'lodash/isEmpty'
+import orderBy from 'lodash/orderBy'
 
-import { NewGrantCategory, OldGrantCategory, ProjectStatus, SubtypeOptions } from '../../../entities/Grant/types'
+import {
+  NewGrantCategory,
+  ProjectStatus,
+  SubtypeAlternativeOptions,
+  SubtypeOptions,
+} from '../../../entities/Grant/types'
 import { GrantWithUpdate } from '../../../entities/Proposal/types'
+import { useCurrentGrantsFilteredByCategory } from '../../../hooks/useCurrentGrantsFilteredByCategory'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import locations from '../../../utils/locations'
 import Empty, { ActionType } from '../../Common/Empty'
@@ -21,8 +27,8 @@ import CurrentGrantsSortingMenu, { SortingKey } from './CurrentGrantsSortingMenu
 const CURRENT_GRANTS_PER_PAGE = 8
 
 interface Props {
-  grants: GrantWithUpdate[]
-  selectedType: any // TODO: Type this correctly
+  projects: GrantWithUpdate[]
+  selectedType?: ProjectCategoryFilter
   selectedSubtype?: SubtypeOptions
   status?: ProjectStatus
   counter?: Counter
@@ -38,10 +44,15 @@ const CATEGORY_KEYS: Record<any, string> = {
   [NewGrantCategory.Platform]: 'category.platform_title',
   [NewGrantCategory.SocialMediaContent]: 'category.social_media_content_title',
   [NewGrantCategory.Sponsorship]: 'category.sponsorship_title',
-  [OldGrantCategory.Community]: 'category.community_title',
-  [OldGrantCategory.Gaming]: 'category.gaming_title',
-  [OldGrantCategory.ContentCreator]: 'category.content_creator_title',
-  [OldGrantCategory.PlatformContributor]: 'category.platform_contributor_title',
+  [SubtypeAlternativeOptions.Legacy]: 'category.legacy_title',
+}
+
+function getCategoryKey(type?: string) {
+  if (!type) {
+    return 'page.grants.category_filters.all'
+  }
+
+  return CATEGORY_KEYS[type]
 }
 
 const GRANTS_STATUS_KEYS: Record<ProjectStatus, string> = {
@@ -52,62 +63,59 @@ const GRANTS_STATUS_KEYS: Record<ProjectStatus, string> = {
   [ProjectStatus.Revoked]: 'grant_status.revoked',
 }
 
-const CurrentGrantsList = ({ grants, selectedSubtype, selectedType, status, counter }: Props) => {
+export default function CurrentProjectsList({ projects, selectedSubtype, selectedType, status, counter }: Props) {
   const t = useFormatMessage()
-  const [sortingKey, setSortingKey] = useState<SortingKey>(SortingKey.UpdateTimestamp) // TODO: Move sorting key to query param
-  const sortedCurrentGrants = useMemo(() => orderBy(grants, [sortingKey], ['desc']), [grants, sortingKey])
+  const [selectedCategory, setSelectedCategory] = useState('all_projects')
+  const [sortingKey, setSortingKey] = useState<SortingKey>(SortingKey.UpdateTimestamp)
+  const sortedCurrentGrants = useMemo(() => orderBy(projects, [sortingKey], ['desc']), [projects, sortingKey])
   const [filteredCurrentGrants, setFilteredCurrentGrants] = useState<GrantWithUpdate[]>([])
+  // TODO: Fix typing of currentGrantsFilteredByCategory indexing
+  const currentGrantsFilteredByCategory = useCurrentGrantsFilteredByCategory(sortedCurrentGrants)
 
   useEffect(() => {
-    if (!isEmpty(grants)) {
+    setSelectedCategory(selectedSubtype || selectedType || 'all_projects')
+    if (!isEmpty(projects)) {
       setFilteredCurrentGrants(sortedCurrentGrants.slice(0, CURRENT_GRANTS_PER_PAGE))
     } else {
       setFilteredCurrentGrants([])
     }
-  }, [grants, sortedCurrentGrants])
-
-  useEffect(() => {
-    if (!isEmpty(sortedCurrentGrants)) {
-      const newGrants =
-        selectedType === 'grants'
-          ? sortedCurrentGrants.slice(0, CURRENT_GRANTS_PER_PAGE)
-          : filter(sortedCurrentGrants, (item) => item.configuration.category === selectedSubtype).slice(
-              0,
-              CURRENT_GRANTS_PER_PAGE
-            )
-      setFilteredCurrentGrants(newGrants)
-    }
-  }, [sortedCurrentGrants, selectedSubtype, selectedType])
+  }, [selectedSubtype, selectedType, projects, sortedCurrentGrants])
 
   const handleLoadMoreCurrentGrantsClick = useCallback(() => {
-    if (grants) {
-      const newCurrentGrants = grants.slice(0, filteredCurrentGrants.length + CURRENT_GRANTS_PER_PAGE)
+    if (projects) {
+      const newCurrentGrants = (currentGrantsFilteredByCategory as any)[selectedCategory].slice(
+        0,
+        filteredCurrentGrants.length + CURRENT_GRANTS_PER_PAGE
+      )
       setFilteredCurrentGrants(newCurrentGrants)
     }
-  }, [grants, filteredCurrentGrants])
+  }, [projects, currentGrantsFilteredByCategory, selectedCategory, filteredCurrentGrants])
 
-  const showLoadMoreCurrentGrantsButton = filteredCurrentGrants?.length !== grants?.length
+  const showLoadMoreCurrentGrantsButton =
+    filteredCurrentGrants?.length !== (currentGrantsFilteredByCategory as any)[selectedCategory]?.length
 
   return (
     <>
       <div className="CurrentGrantsList">
         <div className="CurrentGrants__TitleContainer">
           <div>
-            <h2 className="CurrentGrants__Title">
-              {t('page.grants.projects_category_title', {
-                status: status ? `${t(GRANTS_STATUS_KEYS[status])} ` : '',
-                category: t(CATEGORY_KEYS[selectedSubtype || selectedType] || 'page.grants.category_filters.all'),
-              })}
-            </h2>
+            {
+              <h2 className="CurrentGrants__Title">
+                {t('page.grants.projects_category_title', {
+                  status: status ? `${t(GRANTS_STATUS_KEYS[status])} ` : '',
+                  category: t(getCategoryKey(selectedSubtype || selectedType)),
+                })}
+              </h2>
+            }
           </div>
           <div className="CurrentGrants__Filters">
             <CurrentGrantsSortingMenu sortingKey={sortingKey} onSortingKeyChange={setSortingKey} />
           </div>
         </div>
-        {selectedType === ProjectCategoryFilter.Grants && (
-          <BudgetBanner category={selectedSubtype || 'all_grants'} counter={counter} status={status} />
+        {selectedType === ProjectCategoryFilter.Grants && selectedSubtype !== SubtypeAlternativeOptions.Legacy && (
+          <BudgetBanner category={selectedSubtype || 'grants'} counter={counter} status={status} />
         )}
-        {isEmpty(grants) && (
+        {isEmpty(projects) && (
           <Empty
             className="CurrentGrants__Empty"
             icon={<Watermelon />}
@@ -131,5 +139,3 @@ const CurrentGrantsList = ({ grants, selectedSubtype, selectedType, status, coun
     </>
   )
 }
-
-export default CurrentGrantsList

@@ -1,5 +1,4 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
-import { Request } from 'express'
 import filter from 'lodash/filter'
 import isNil from 'lodash/isNil'
 
@@ -16,13 +15,7 @@ import {
   ProposalStatus,
   ProposalType,
 } from '../entities/Proposal/types'
-import {
-  DEFAULT_CHOICES,
-  MAX_PROPOSAL_LIMIT,
-  MIN_PROPOSAL_OFFSET,
-  asNumber,
-  getProposalEndDate,
-} from '../entities/Proposal/utils'
+import { DEFAULT_CHOICES, asNumber, getProposalEndDate } from '../entities/Proposal/utils'
 import UpdateModel from '../entities/Updates/model'
 import { IndexedUpdate, UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates } from '../entities/Updates/utils'
@@ -34,35 +27,8 @@ import { BudgetService } from './BudgetService'
 import { ProposalInCreation } from './ProposalService'
 
 export class ProjectService {
-  public static async getProjects(req: Request) {
-    const query = req.query
-    const type = query.type && String(query.type)
-    const subtype = query.subtype && String(query.subtype)
-    const timeFrame = query.timeFrame && String(query.timeFrame)
-    const timeFrameKey = query.timeFrameKey && String(query.timeFrameKey)
-    const order = query.order && String(query.order) === 'ASC' ? 'ASC' : 'DESC'
-    const offset = query.offset && Number.isFinite(Number(query.offset)) ? Number(query.offset) : MIN_PROPOSAL_OFFSET
-    const limit = query.limit && Number.isFinite(Number(query.limit)) ? Number(query.limit) : MAX_PROPOSAL_LIMIT
-
-    const [total, data] = await Promise.all([
-      ProposalModel.getProposalTotal({
-        type,
-        subtype,
-        status: ProposalStatus.Enacted, // TODO: get pending and enacted here
-        timeFrame,
-        timeFrameKey,
-      }),
-      ProposalModel.getProposalList({
-        type,
-        subtype,
-        status: ProposalStatus.Enacted, // TODO: get pending and enacted here
-        timeFrame,
-        timeFrameKey,
-        order,
-        offset,
-        limit,
-      }),
-    ])
+  public static async getProjects() {
+    const data = await ProposalModel.getProjectList()
 
     const vestings = await DclData.get().getVestings()
     const projects: GrantWithUpdate[] = []
@@ -84,7 +50,7 @@ export class ProjectService {
             title: proposal.title,
             user: proposal.user,
             type: proposal.type,
-            size: proposal.configuration.size,
+            size: proposal.configuration.size || proposal.configuration.funding,
             created_at: proposal.created_at.getTime(),
             configuration: {
               category: proposal.configuration.category || proposal.type,
@@ -114,7 +80,6 @@ export class ProjectService {
 
     return {
       data: projects,
-      total,
     }
   }
 

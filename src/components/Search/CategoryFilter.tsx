@@ -23,7 +23,7 @@ export type FilterType =
   | typeof NewGrantCategory
   | typeof OldGrantCategory
   | typeof ProjectCategoryFilter
-export type Counter = Record<any, number>
+export type Counter = Record<string, number | undefined>
 export type FilterProps = {
   onChange?: (open: boolean) => void
   startOpen?: boolean

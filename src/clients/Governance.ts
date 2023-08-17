@@ -72,18 +72,6 @@ export type GetProposalsFilter = {
   linkedProposalId?: string
 }
 
-export type GetProjectsFilter = {
-  user: string
-  type: ProposalType.Bid | ProposalType.Grant | `${ProposalType.Bid},${ProposalType.Grant}`
-  subtype?: SubtypeOptions
-  status?: ProjectStatus
-  timeFrame?: string | null
-  timeFrameKey?: string | null
-  order?: 'ASC' | 'DESC'
-  limit: number
-  offset: number
-}
-
 const getGovernanceApiUrl = () => {
   if (process.env.GATSBY_HEROKU_APP_NAME) {
     return `https://${process.env.GATSBY_HEROKU_APP_NAME}.herokuapp.com/api`
@@ -152,17 +140,8 @@ export class Governance extends API {
     return proposals.data
   }
 
-  async getProjects(filters: Partial<GetProjectsFilter> = {}) {
-    const params = new URLSearchParams(filters as never)
-    let query = params.toString()
-    if (query) {
-      query = '?' + query
-    }
-
-    const proposals = await this.fetch<ApiResponse<GrantWithUpdate[]> & { total: number }>(
-      `/projects${query}`,
-      this.options().method('GET')
-    )
+  async getProjects() {
+    const proposals = await this.fetch<ApiResponse<GrantWithUpdate[]>>(`/projects`, this.options().method('GET'))
 
     return proposals
   }
