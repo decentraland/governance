@@ -113,7 +113,7 @@ export default function CurrentProjectsList({ projects, selectedSubtype, selecte
           </div>
         </div>
         {selectedType === ProjectCategoryFilter.Grants && selectedSubtype !== SubtypeAlternativeOptions.Legacy && (
-          <BudgetBanner category={selectedSubtype || 'grants'} counter={counter} status={status} />
+          <BudgetBanner category={selectedSubtype || 'all_grants'} counter={counter} status={status} />
         )}
         {isEmpty(projects) && (
           <Empty

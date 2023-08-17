@@ -41,7 +41,7 @@ export enum NewGrantCategory {
 }
 
 export enum SubtypeAlternativeOptions {
-  All = 'grants',
+  All = 'all_grants',
   Legacy = 'legacy',
 }
 
