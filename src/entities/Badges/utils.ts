@@ -1,9 +1,12 @@
 import { Contract } from '@ethersproject/contracts'
 import { abi as BadgesAbi } from '@otterspace-xyz/contracts/out/Badges.sol/Badges.json'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
+import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
 import { ethers } from 'ethers'
 
+import { ErrorService } from '../../services/ErrorService'
 import RpcService from '../../services/RpcService'
+import { ErrorCategory } from '../../utils/errorCategories'
 import { OTTERSPACE_DAO_RAFT_ID } from '../Snapshot/constants'
 
 import { GAS_MULTIPLIER, GasConfig } from './types'
@@ -79,4 +82,18 @@ export function trimOtterspaceId(rawId: string) {
     return parts[1]
   }
   return ''
+}
+
+export async function getLandOwnerAddresses(): Promise<string[]> {
+  const LAND_API_URL = 'https://api.decentraland.org/v2/tiles?include=owner&type=owned'
+  type LandOwner = { owner: string }
+  try {
+    const response: ApiResponse<{ [coordinates: string]: LandOwner }> = await (await fetch(LAND_API_URL)).json()
+    const { data: landOwnersMap } = response
+    const landOwnersAddresses = new Set(Object.values(landOwnersMap).map((landOwner) => landOwner.owner.toLowerCase()))
+    return Array.from(landOwnersAddresses)
+  } catch (error) {
+    ErrorService.report("Couldn't fetch land owners", { error, category: ErrorCategory.Badges })
+    return []
+  }
 }

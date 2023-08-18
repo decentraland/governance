@@ -2,7 +2,6 @@ import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { v1 as uuid } from 'uuid'
 
 import AirdropJobModel, { AirdropJobStatus, AirdropOutcome } from '../back/models/AirdropJob'
-import { DclData } from '../clients/DclData'
 import { OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgraph'
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 import { LAND_OWNER_BADGE_SPEC_CID, LEGISLATOR_BADGE_SPEC_CID } from '../constants'
@@ -16,7 +15,7 @@ import {
   UserBadges,
   toBadgeStatus,
 } from '../entities/Badges/types'
-import { airdrop, revokeBadge, trimOtterspaceId } from '../entities/Badges/utils'
+import { airdrop, getLandOwnerAddresses, revokeBadge, trimOtterspaceId } from '../entities/Badges/utils'
 import CoauthorModel from '../entities/Coauthor/model'
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalAttributes, ProposalType } from '../entities/Proposal/types'
@@ -26,6 +25,12 @@ import { ErrorCategory } from '../utils/errorCategories'
 import { ErrorService } from './ErrorService'
 
 const TRANSACTION_UNDERPRICED_ERROR_CODE = -32000
+
+enum ErrorReason {
+  NoUserWithoutBadge = 'All recipients already have this badge',
+  NoUserHasVoted = 'Recipients have never voted',
+  InvalidBadgeId = 'Invalid badge ID',
+}
 
 export class BadgesService {
   public static async getBadges(address: string): Promise<UserBadges> {
@@ -80,11 +85,11 @@ export class BadgesService {
     try {
       const usersWithoutBadge = await this.getUsersWithoutBadge(badgeCid, users)
       if (usersWithoutBadge.length === 0) {
-        return { status: AirdropJobStatus.FAILED, error: 'All recipients already have this badge' }
+        return { status: AirdropJobStatus.FAILED, error: ErrorReason.NoUserWithoutBadge }
       }
       const usersWhoVoted = await this.getUsersWhoVoted(usersWithoutBadge)
       if (usersWhoVoted.length === 0) {
-        return { status: AirdropJobStatus.FAILED, error: 'Recipients have never voted' }
+        return { status: AirdropJobStatus.FAILED, error: ErrorReason.NoUserHasVoted }
       }
       return await this.airdropWithRetry(badgeCid, usersWithoutBadge)
     } catch (e) {
@@ -147,25 +152,36 @@ export class BadgesService {
   }
 
   static async giveAndRevokeLandOwnerBadges() {
-    type DividedMembers = { landOwners: string[]; nonLandOwners: string[] }
-    const members = await DclData.get().getMembers()
-    const dividedMembers = members.reduce<DividedMembers>(
-      (acc, member) => {
-        if (member.landVP > 0) {
-          acc.landOwners.push(member.address)
-        } else {
-          acc.nonLandOwners.push(member.address)
-        }
-        return acc
-      },
-      { landOwners: [], nonLandOwners: [] }
-    )
-    const { landOwners, nonLandOwners } = dividedMembers
-    if (landOwners.length > 0) {
-      await this.giveBadgeToUsers(LAND_OWNER_BADGE_SPEC_CID, landOwners)
+    // const landOwnerAddresses = await getLandOwnerAddresses()
+    const landOwnerAddresses = ['0x6cd7694d30c10bdab1e644fc1964043a95ceea5f']
+    const { status, error } = await BadgesService.giveBadgeToUsers(LAND_OWNER_BADGE_SPEC_CID, landOwnerAddresses)
+    if (
+      status === AirdropJobStatus.FAILED &&
+      error !== ErrorReason.NoUserWithoutBadge &&
+      error !== ErrorReason.NoUserHasVoted
+    ) {
+      console.error('Unable to give LandOwner badges', error)
+
+      ErrorService.report('Unable to give LandOwner badges', {
+        category: ErrorCategory.Badges,
+        error,
+      })
     }
-    if (nonLandOwners.length > 0) {
-      await this.revokeBadge(LAND_OWNER_BADGE_SPEC_CID, nonLandOwners, OtterspaceRevokeReason.TenureEnded)
+
+    const badgeHolders = await OtterspaceSubgraph.get().getBadgeOwners(LAND_OWNER_BADGE_SPEC_CID)
+    console.log('badgeHolders', badgeHolders)
+    // const landOwnerAddressesSet = new Set(landOwnerAddresses)
+    const landOwnerAddressesSet = new Set([''])
+    const addressesToRevoke = badgeHolders.filter((address) => !landOwnerAddressesSet.has(address))
+    console.log('addressesToRevoke', addressesToRevoke)
+    const revocationResults = await BadgesService.revokeBadge(LAND_OWNER_BADGE_SPEC_CID, addressesToRevoke)
+    const failedRevocations = revocationResults.filter((result) => result.status === RevocationStatus.Failed)
+    if (failedRevocations.length > 0) {
+      console.error('Unable to revoke LandOwner badges', failedRevocations)
+      // ErrorService.report('Unable to revoke LandOwner badges', {
+      //   category: ErrorCategory.Badges,
+      //   failedRevocations,
+      // })
     }
   }
 
@@ -200,7 +216,7 @@ export class BadgesService {
       return []
     }
 
-    const revocationResults = await Promise.all(
+    const revocationResults = await Promise.all<RevocationResult>(
       badgeOwnerships.map(async (badgeOwnership) => {
         const trimmedId = trimOtterspaceId(badgeOwnership.id)
 
@@ -209,7 +225,7 @@ export class BadgesService {
             status: RevocationStatus.Failed,
             address: badgeOwnership.address,
             badgeId: badgeOwnership.id,
-            error: 'Invalid badge ID',
+            error: ErrorReason.InvalidBadgeId,
           }
         }
 

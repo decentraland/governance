@@ -35,6 +35,7 @@ import score from './back/routes/votes'
 import bids from './entities/Bid/routes'
 import { updateGovernanceBudgets } from './entities/Budget/jobs'
 import { activateProposals, finishProposal, publishBids } from './entities/Proposal/jobs'
+import { BadgesService } from './services/BadgesService'
 import { DiscordService } from './services/DiscordService'
 import filesystem from './utils/filesystem'
 
@@ -42,6 +43,7 @@ const jobs = manager()
 jobs.cron('@eachMinute', finishProposal)
 jobs.cron('@eachMinute', activateProposals)
 jobs.cron('@eachMinute', publishBids)
+// jobs.cron('@eachMinute', BadgesService.giveAndRevokeLandOwnerBadges)
 jobs.cron('@daily', updateGovernanceBudgets)
 jobs.cron('@daily', runAirdropJobs)
 

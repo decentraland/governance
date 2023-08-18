@@ -145,7 +145,7 @@ export class OtterspaceSubgraph {
     return badges
   }
 
-  async getBadgeOwners(badgeCid: string) {
+  async getBadgeOwners(badgeCid: string): Promise<string[]> {
     const badges: OtterspaceBadge[] = await inBatches(
       async (vars, skip, first) => {
         const response = await fetch(this.queryEndpoint, {
@@ -165,7 +165,7 @@ export class OtterspaceSubgraph {
       { badgeCid }
     )
 
-    return badges.map((badge) => badge.owner?.id.toLowerCase()).filter(Boolean)
+    return badges.filter((badge) => badge.owner !== undefined).map((badge) => badge.owner!.id.toLowerCase())
   }
 
   async getRecipientsBadgeIds(badgeCid: string, addresses: string[]): Promise<BadgeOwnership[]> {
