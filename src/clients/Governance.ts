@@ -9,7 +9,7 @@ import { UserBadges } from '../entities/Badges/types'
 import { BidRequest, UnpublishedBidAttributes } from '../entities/Bid/types'
 import { Budget, BudgetWithContestants, CategoryBudget } from '../entities/Budget/types'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
-import { GrantRequest, ProjectStatus, ProposalGrantCategory, SubtypeOptions } from '../entities/Grant/types'
+import { GrantRequest, ProposalGrantCategory, SubtypeOptions } from '../entities/Grant/types'
 import {
   CategorizedGrants,
   GrantWithUpdate,
