@@ -10,12 +10,11 @@ import { ProposalAttributes } from '../../entities/Proposal/types'
 import VotesModel from '../../entities/Votes/model'
 import { Vote, VoteAttributes } from '../../entities/Votes/types'
 import { createVotes, toProposalIds } from '../../entities/Votes/utils'
+import { ProposalService } from '../../services/ProposalService'
 import { SnapshotService } from '../../services/SnapshotService'
 import Time from '../../utils/date/Time'
 import { VoteService } from '../services/vote'
-import { validateAddress, validateDates } from '../utils/validations'
-
-import { getProposal } from './proposal'
+import { validateAddress, validateDates, validateProposalId } from '../utils/validations'
 
 export default routes((route) => {
   route.get('/proposals/:proposal/votes', handleAPI(getProposalVotes))
@@ -26,13 +25,12 @@ export default routes((route) => {
 
 export async function getProposalVotes(req: Request<{ proposal: string }>) {
   const refresh = req.query.refresh === 'true'
+  const id = req.params.proposal
 
-  const proposal = await getProposal(req)
-  // TODO: Replace lines 29-32 with VoteService.getVotes
-  let latestVotes = await VotesModel.getVotes(proposal.id)
-  if (!latestVotes) {
-    latestVotes = await VotesModel.createEmpty(proposal.id)
-  }
+  validateProposalId(id)
+
+  const proposal = await ProposalService.getProposal(id)
+  const latestVotes = await VoteService.getVotes(id)
 
   if (!!latestVotes.hash && Time.date(proposal.finish_at).getTime() + Time.Hour < Date.now() && !refresh) {
     return latestVotes.votes

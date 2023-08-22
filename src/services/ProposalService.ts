@@ -1,7 +1,6 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import { v1 as uuid } from 'uuid'
-import isUUID from 'validator/lib/isUUID'
 
 import { VoteService } from '../back/services/vote'
 import { Discourse, DiscourseComment, DiscoursePost } from '../clients/Discourse'
@@ -205,10 +204,6 @@ export class ProposalService {
   }
 
   static async getProposal(id: string) {
-    if (!isUUID(id || '')) {
-      throw new Error(`Invalid proposal id: "${id}"`)
-    }
-
     const proposal = await ProposalModel.findOne<ProposalAttributes>({ id, deleted: false })
     if (!proposal) {
       throw new Error(`Proposal not found: "${id}"`)
