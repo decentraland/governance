@@ -38,7 +38,7 @@ function GrantProposalView({ config }: Props) {
   const hasBudgetBreakdown = budgetBreakdown && budgetBreakdown.length > 0
   const hasMembers = members && members.length > 0
 
-  const amount = intl.formatNumber(size, CURRENCY_FORMAT_OPTIONS as any)
+  const amount = intl.formatNumber(size, CURRENCY_FORMAT_OPTIONS)
 
   return (
     <div>

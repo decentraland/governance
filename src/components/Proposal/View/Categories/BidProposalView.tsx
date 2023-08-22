@@ -42,7 +42,7 @@ function BidProposalView({ config }: Props) {
     linked_proposal_id,
   } = config
 
-  const amount = intl.formatNumber(Number(funding), CURRENCY_FORMAT_OPTIONS as any)
+  const amount = intl.formatNumber(Number(funding), CURRENCY_FORMAT_OPTIONS)
   const { proposal: linkedProposal } = useProposal(linked_proposal_id)
 
   return (

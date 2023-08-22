@@ -23,7 +23,8 @@ import GrantCard from '../GrantCard/GrantCard'
 import BudgetBanner from './BudgetBanner'
 import './CurrentGrantsList.css'
 import CurrentGrantsSortingMenu, { SortingKey } from './CurrentGrantsSortingMenu'
-import Stats from './Stats'
+import StatsAllProjects from './StatsAllProjects'
+import StatsBiddingAndTendering from './StatsBiddingAndTendering'
 
 const CURRENT_GRANTS_PER_PAGE = 8
 
@@ -112,8 +113,9 @@ export default function CurrentProjectsList({ projects, selectedSubtype, selecte
         </div>
       </div>
       {selectedType !== ProjectTypeFilter.Grants && selectedType !== ProjectTypeFilter.BiddingAndTendering && (
-        <Stats projects={projects} status={status} />
+        <StatsAllProjects projects={projects} />
       )}
+      {selectedType === ProjectTypeFilter.BiddingAndTendering && <StatsBiddingAndTendering projects={projects} />}
       {selectedType === ProjectTypeFilter.Grants && (
         <BudgetBanner
           category={selectedSubtype || SubtypeAlternativeOptions.All}
