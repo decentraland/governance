@@ -44,7 +44,7 @@ const jobs = manager()
 jobs.cron('@eachMinute', finishProposal)
 jobs.cron('@eachMinute', activateProposals)
 jobs.cron('@eachMinute', publishBids)
-// jobs.cron('@eachMinute', BadgesService.giveAndRevokeLandOwnerBadges)
+jobs.cron('@daily', BadgesService.giveAndRevokeLandOwnerBadges)
 jobs.cron('@daily', updateGovernanceBudgets)
 jobs.cron('@daily', runAirdropJobs)
 
