@@ -32,7 +32,7 @@ import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { Topic } from '../entities/SurveyTopic/types'
 import { ProjectHealth, UpdateAttributes, UpdateResponse } from '../entities/Updates/types'
-import { Vote, VotedProposal } from '../entities/Votes/types'
+import { Vote, VotedProposal, Voter } from '../entities/Votes/types'
 import Time from '../utils/date/Time'
 
 import { TransparencyBudget } from './DclData'
@@ -299,6 +299,14 @@ export class Governance extends API {
 
   async getAddressVotesWithProposals(address: string, first?: number, skip?: number) {
     const result = await this.fetch<ApiResponse<VotedProposal[]>>(`/votes/${address}?first=${first}&skip=${skip}`)
+    return result.data
+  }
+
+  async getTopVoters(start: Date, end: Date, limit?: number) {
+    const result = await this.fetch<ApiResponse<Voter[]>>(
+      `/votes/top-voters`,
+      this.options().method('POST').json({ start, end, limit })
+    )
     return result.data
   }
 

@@ -1,6 +1,7 @@
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
+import isNumber from 'lodash/isNumber'
 
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
@@ -11,7 +12,8 @@ import { Vote, VoteAttributes } from '../../entities/Votes/types'
 import { createVotes, toProposalIds } from '../../entities/Votes/utils'
 import { SnapshotService } from '../../services/SnapshotService'
 import Time from '../../utils/date/Time'
-import { validateAddress } from '../utils/validations'
+import { VoteService } from '../services/vote'
+import { validateAddress, validateDates } from '../utils/validations'
 
 import { getProposal } from './proposal'
 
@@ -19,6 +21,7 @@ export default routes((route) => {
   route.get('/proposals/:proposal/votes', handleAPI(getProposalVotes))
   route.get('/votes', handleAPI(getCachedVotes))
   route.get('/votes/:address', handleAPI(getAddressVotesWithProposals))
+  route.get('/votes/top-voters', handleAPI(getTopVoters))
 })
 
 export async function getProposalVotes(req: Request<{ proposal: string }>) {
@@ -112,4 +115,12 @@ async function getAddressVotesWithProposals(req: Request) {
   }
 
   return votesWithProposalData.sort((a, b) => b.created - a.created)
+}
+
+async function getTopVoters(req: Request) {
+  const { start, end, limit } = req.body
+  validateDates(start, end)
+  const validLimit = isNumber(limit) ? limit : undefined
+
+  return await VoteService.getTopVoters(start, end, validLimit)
 }
