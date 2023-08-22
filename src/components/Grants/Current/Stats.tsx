@@ -22,7 +22,9 @@ export default function Stats({ projects }: Props) {
     return finishAt.isAfter(Time()) && finishAt.isBefore(Time().add(1, 'week'))
   })
 
-  // TODO: Also filter by current Q
+  const currentQuarter = Time().quarter()
+  const currentQuarterStartDate = Time().startOf('quarter')
+
   const currentProjects = useMemo(
     () =>
       projects.filter(
@@ -31,13 +33,17 @@ export default function Stats({ projects }: Props) {
       ),
     [projects]
   )
+  const currentProjectsThisQuarter = useMemo(
+    () => currentProjects.filter((item) => Time(item.contract?.start_at).isAfter(currentQuarterStartDate)),
+    [currentProjects, currentQuarterStartDate]
+  )
   const currentBidProjects = useMemo(
-    () => currentProjects.filter((item) => item.type === ProposalType.Bid),
-    [currentProjects]
+    () => currentProjectsThisQuarter.filter((item) => item.type === ProposalType.Bid),
+    [currentProjectsThisQuarter]
   )
   const currentGrantProjects = useMemo(
-    () => currentProjects.filter((item) => item.type === ProposalType.Grant),
-    [currentProjects]
+    () => currentProjectsThisQuarter.filter((item) => item.type === ProposalType.Grant),
+    [currentProjectsThisQuarter]
   )
   const totalBidFunding = useMemo(
     () => currentBidProjects.reduce((total, obj) => total + obj.size, 0),
@@ -60,7 +66,7 @@ export default function Stats({ projects }: Props) {
       />
       <MetricsCard
         variant="dark"
-        category="Project funding for Q3"
+        category={`Project funding for Q${currentQuarter}`}
         title={`${formatFundingValue(totalBidFunding + totalGrantFunding)}`}
         description={`Grants: ${formattedTotalGrantFunding}; B&T: ${formattedTotalBidFunding}`}
       />
