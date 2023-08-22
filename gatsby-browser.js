@@ -28,7 +28,7 @@ import BurgerMenuStatusContextProvider from './src/components/Context/BurgerMenu
 import ExternalLinkWarningModal from './src/components/Modal/ExternalLinkWarningModal/ExternalLinkWarningModal'
 import IdentityConnectModal from './src/components/Modal/IdentityConnectModal/IdentityConnectModal'
 import Segment from "decentraland-gatsby/dist/components/Development/Segment"
-import { SEGMENT_KEY } from "./src/constants"
+import { SEGMENT_KEY, SSO_URL } from "./src/constants"
 import { flattenMessages } from "./src/utils/intl"
 import en from "./src/intl/en.json"
 
@@ -36,7 +36,7 @@ const queryClient = new QueryClient()
 
 export const wrapRootElement = ({ element }) => {
   return (
-    <AuthProvider>
+    <AuthProvider sso={SSO_URL}>
       <FeatureFlagProvider applicationName={["dao", "dapps"]}>{element}</FeatureFlagProvider>
       {SEGMENT_KEY && <Segment key="segment" segmentKey={SEGMENT_KEY} />}
     </AuthProvider>
