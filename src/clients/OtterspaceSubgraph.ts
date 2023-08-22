@@ -147,7 +147,7 @@ export class OtterspaceSubgraph {
     return badges
   }
 
-  async getBadgeOwners(badgeCid: string) {
+  async getBadges(badgeCid: string) {
     return await inBatches(
       async (vars, skip, first) => {
         const response = await fetch(this.queryEndpoint, {
@@ -162,7 +162,7 @@ export class OtterspaceSubgraph {
         })
 
         const body = await response.json()
-        return (body?.data?.badges || []) as OtterspaceBadge[]
+        return (body?.data?.badges || []) as Pick<OtterspaceBadge, 'id' | 'owner' | 'status' | 'statusReason'>[]
       },
       { badgeCid }
     )

@@ -110,12 +110,12 @@ export class BadgesService {
   }
 
   private static async getUsersWithoutBadge(badgeCid: string, users: string[]) {
-    const badgeOwners = await OtterspaceSubgraph.get().getBadgeOwners(badgeCid)
+    const badges = await OtterspaceSubgraph.get().getBadges(badgeCid)
     const usersWithBadgesToReinstate: string[] = []
     const usersWithoutBadge: string[] = []
 
     for (const user of users) {
-      const userBadge = badgeOwners.find((badge) => badge.owner?.id === user.toLowerCase())
+      const userBadge = badges.find((badge) => badge.owner?.id === user.toLowerCase())
       if (!userBadge) {
         usersWithoutBadge.push(user)
         continue
@@ -186,10 +186,10 @@ export class BadgesService {
       })
     }
 
-    const badgeHolders = await OtterspaceSubgraph.get().getBadgeOwners(LAND_OWNER_BADGE_SPEC_CID)
+    const badges = await OtterspaceSubgraph.get().getBadges(LAND_OWNER_BADGE_SPEC_CID)
     const landOwnerAddressesSet = new Set(landOwnerAddresses)
 
-    const addressesToRevoke = badgeHolders
+    const addressesToRevoke = badges
       .filter(
         (badge) =>
           (badge.status === BadgeStatus.Minted || badge.status === BadgeStatus.Reinstated) &&
