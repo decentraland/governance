@@ -32,8 +32,8 @@ function CoAuthors({ setCoAuthors, isDisabled }: CoAuthorProps) {
         setUsersAddresses={setCoAuthors}
         isDisabled={isDisabled}
         maxAddressesAmount={MAX_COAUTHORS_AMOUNT}
-        addressAlias={'Co-author'}
-        addressesAlias={'Co-authors'}
+        addressAlias={t('page.submit.co_author_alias')}
+        addressesAlias={t('page.submit.co_author_plural')}
         loggedUserIsInvalid
         loggedUserInvalidKey={'page.submit.co_author_as_author_error'}
       />

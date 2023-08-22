@@ -1407,12 +1407,9 @@
       "co_author_label": "Co-authors",
       "optional_tooltip": " (optional)",
       "co_author_description": "If you co-authored this proposal with someone else, you can add their wallet addresses to acknowledge their work. After you publish the proposal, co-authors will be asked to confirm or reject the request. Only if they confirm, they will be listed publicly on the proposal page.",
-      "co_author_placeholder": "Enter their wallet address",
-      "co_author_count": "{amount}/{maxAmount} Co-authors added",
-      "co_author_error": "Invalid wallet address",
       "co_author_as_author_error": "This wallet address cannot be added since it belongs to the proposal's author.",
-      "co_author_duplicated_error": "It looks like this co-author's wallet address has already been added.",
-      "co_author_max_error": "The maximum number of co-authors was exceeded.",
+      "co_author_alias": "Co-author",
+      "co_author_plural": "Co-authors",
       "error_label": "There was an error while trying to create the proposal, please try again later."
     },
     "submit_poll": {
