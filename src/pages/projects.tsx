@@ -6,8 +6,8 @@ import toSnakeCase from 'lodash/snakeCase'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import WiderContainer from '../components/Common/WiderContainer'
-import CurrentGrantsBanner from '../components/Grants/Current/CurrentGrantsBanner'
 import CurrentGrantsList from '../components/Grants/Current/CurrentGrantsList'
+import GrantsBanner from '../components/Grants/Current/GrantsBanner'
 import RequestBanner from '../components/Grants/RequestBanner'
 import BurgerMenuLayout from '../components/Layout/BurgerMenu/BurgerMenuLayout'
 import LoadingView from '../components/Layout/LoadingView'
@@ -117,7 +117,7 @@ export default function ProjectsPage() {
       {!isLoadingProjects && (
         <BurgerMenuLayout navigationOnly activeTab={NavigationTab.Grants}>
           <WiderContainer>
-            <CurrentGrantsBanner />
+            <GrantsBanner />
             <Grid stackable>
               <Grid.Row>
                 <Grid.Column tablet="3">

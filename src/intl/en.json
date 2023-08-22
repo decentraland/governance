@@ -1169,7 +1169,7 @@
         "description": "Decentraland could be the means to realize that project of yours",
         "button": "Request a Grant"
       },
-      "current_banner": {
+      "banner": {
         "title": "Initiatives making the Decentraland Ecosystem grow",
         "description": "Every quarter, our Community defines Treasury funding allocation and distribution and projects to award Grants to. Keep browsing to see their goals, progress and how they are making an impact in our community.",
         "budget_title": "Budget Definition",
@@ -1178,16 +1178,6 @@
         "transparency_description": "How the Grants System is performing",
         "faq_title": "FAQ",
         "faq_description": "Learn more about our Grants System"
-      },
-      "past_banner": {
-        "title": "See what the Community already achieved",
-        "description": "Check already finished Grant projects. Do your own due diligence, see how they performed and the value they added to Decentraland.",
-        "completed_grants_title": "{value} Projects",
-        "completed_grants_description": "Successfully completed Grants",
-        "total_funding_title": "${value} USD",
-        "total_funding_description": "Total funding for past initiatives",
-        "approved_rate_title": "{value}% Approval",
-        "approved_rate_description": "Rate of approved Grant proposals"
       },
       "projects_category_title": "{status}{category} Projects",
       "budget_banner": {
