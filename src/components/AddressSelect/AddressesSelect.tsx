@@ -3,12 +3,15 @@ import { InputActionMeta, OnChangeValue } from 'react-select'
 import CreatableSelect from 'react-select/creatable'
 
 import classNames from 'classnames'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Username from '../User/Username'
 
 import './AddressesSelect.css'
+
+const DEFAULT_MAX_ADDRESSES_AMOUNT = 20
 
 interface UserAddress {
   readonly label: JSX.Element
@@ -35,20 +38,31 @@ const createUserAddress = (address: string): UserAddress => ({
 })
 
 interface Props {
-  maxAddressesAmount: number
-  allowLoggedUserAccount?: boolean
   setUsersAddresses: (addresses?: string[]) => void
+  maxAddressesAmount?: number
+  loggedUserIsInvalid?: boolean
   isDisabled?: boolean
+  addressAlias?: string
+  addressesAlias?: string
+  loggedUserInvalidKey?: string
 }
 
-// TODO: extract common logic with CoauthorSelect
-function AddressesSelect({ setUsersAddresses, isDisabled, maxAddressesAmount, allowLoggedUserAccount = false }: Props) {
+function AddressesSelect({
+  setUsersAddresses,
+  isDisabled,
+  maxAddressesAmount = DEFAULT_MAX_ADDRESSES_AMOUNT,
+  loggedUserIsInvalid,
+  addressAlias = 'address',
+  addressesAlias = 'addresses',
+  loggedUserInvalidKey,
+}: Props) {
   const [state, setState] = useState<State>({
     inputValue: '',
     value: [],
   })
 
   const t = useFormatMessage()
+  const [account] = useAuthContext()
 
   useEffect(() => {
     if (state.value.length > 0) {
@@ -90,14 +104,16 @@ function AddressesSelect({ setUsersAddresses, isDisabled, maxAddressesAmount, al
       )
     }
 
-    const checkAmount = () => {
+    const maxCount = () => {
       const total = state.value.length + userAddresses.length + 1
       return total <= maxAddressesAmount
     }
 
+    const isAuthor = (address: string): boolean => !!account && account.toLowerCase() === address.toLowerCase()
+
     const validations: Validation[] = [
       {
-        validate: checkAmount,
+        validate: maxCount,
         errorKey: 'component.addresses_select.max_error',
       },
       {
@@ -107,6 +123,10 @@ function AddressesSelect({ setUsersAddresses, isDisabled, maxAddressesAmount, al
       {
         validate: (address) => !isDuplicate(address),
         errorKey: 'component.addresses_select.duplicated_error',
+      },
+      {
+        validate: (address) => (loggedUserIsInvalid ? !isAuthor(address) : true),
+        errorKey: loggedUserInvalidKey || 'component.addresses_select.logged_user_invalid',
       },
     ]
 
@@ -159,8 +179,12 @@ function AddressesSelect({ setUsersAddresses, isDisabled, maxAddressesAmount, al
         classNamePrefix="AddressesSelect"
       />
       <p className="message">
-        {t('component.addresses_select.count', { amount: state.value.length, maxAmount: maxAddressesAmount })}
-        {!!state.errorKey && ` - ${t(state.errorKey)}`}
+        {t('component.addresses_select.count', {
+          amount: state.value.length,
+          maxAmount: maxAddressesAmount,
+          addressesAlias,
+        })}
+        {!!state.errorKey && ` - ${t(state.errorKey, { addressAlias, addressesAlias })}`}
       </p>
     </div>
   )
