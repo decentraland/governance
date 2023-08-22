@@ -20,7 +20,7 @@ import ProgressBarTooltip from './GrantCard/ProgressBarTooltip'
 import VestingProgress from './GrantCard/VestingProgress'
 
 import './GrantBeneficiaryItem.css'
-import GrantPill from './GrantPill'
+import ProjectPill from './ProjectPill'
 
 interface Props {
   grant: Grant
@@ -62,7 +62,7 @@ function GrantBeneficiaryItem({ grant }: Props) {
           </div>
           <div className="GrantBeneficiaryItem__CategorySection">
             <div className="GrantBeneficiaryItem__PillContainer">
-              <GrantPill type={grant.configuration.category} />
+              <ProjectPill type={grant.configuration.category} />
             </div>
             <div className="GrantBeneficiaryItem__VestingProgressContainer">
               <ProgressBarTooltip grant={grant} isInCliff={proposalInCliffPeriod}>
@@ -83,7 +83,7 @@ function GrantBeneficiaryItem({ grant }: Props) {
             <div className="GrantBeneficiaryItem__GrantInfo">
               <h3 className="GrantBeneficiaryItem__Title">{title}</h3>
               <div className="GrantBeneficiaryItem__Details">
-                <GrantPill type={grant.configuration.category} />
+                <ProjectPill type={grant.configuration.category} />
                 {formattedEnactedDate && (
                   <Markdown
                     size="xs"

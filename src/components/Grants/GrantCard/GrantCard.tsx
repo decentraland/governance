@@ -20,7 +20,7 @@ interface Props {
 }
 
 const GrantCard = ({ grant, hoverable = false }: Props) => {
-  const { id, enacted_at } = grant
+  const { id, enacted_at, update } = grant
   const [expanded, setExpanded] = useState(!hoverable)
   const proposalInCliffPeriod = !!enacted_at && isProposalInCliffPeriod(enacted_at)
 
@@ -37,13 +37,7 @@ const GrantCard = ({ grant, hoverable = false }: Props) => {
         {proposalInCliffPeriod ? <CliffProgress enactedAt={enacted_at} /> : <VestingProgress grant={grant} />}
       </div>
       <div className="GrantCard__UpdateContainer">
-        <ProposalUpdate
-          proposal={grant}
-          update={grant.update}
-          expanded={false}
-          index={grant.update?.index}
-          isLinkable={false}
-        />
+        <ProposalUpdate proposal={grant} update={update} expanded={false} index={update?.index} isLinkable={false} />
       </div>
     </Link>
   )

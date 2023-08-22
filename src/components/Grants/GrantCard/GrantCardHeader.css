@@ -16,12 +16,8 @@
 
 .GrantCardHeader__SizeContainer {
   display: inline-flex;
-  text-transform: uppercase;
-  font-style: normal;
-  font-size: 13px;
-  line-height: 18px;
-  letter-spacing: 0;
   align-items: center;
+  color: var(--black-600);
 }
 
 .GrantCardHeader__Username {
@@ -52,17 +48,16 @@
   }
 }
 
-.GrantCardHeader__SizeContainerSlim {
-  font-weight: var(--weight-medium) !important;
-  font-size: 11px !important;
-  color: var(--black-600);
-}
-
 .GrantCardHeader__Size {
   color: var(--black-600);
   padding-right: 3px;
   margin-bottom: 0;
   font-weight: var(--weight-normal);
+  line-height: 18px;
+  font-style: normal;
+  font-size: 11px !important;
+  text-transform: uppercase;
+  letter-spacing: 0;
 }
 
 .GrantCardHeader__SizeNumber {

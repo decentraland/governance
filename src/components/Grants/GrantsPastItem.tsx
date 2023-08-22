@@ -9,8 +9,8 @@ import Time from '../../utils/date/Time'
 import locations, { navigate } from '../../utils/locations'
 import ChevronRight from '../Icon/ChevronRight'
 
-import GrantPill from './GrantPill'
 import './GrantsPastItem.css'
+import ProjectPill from './ProjectPill'
 
 interface Props {
   grant: Grant
@@ -33,7 +33,7 @@ const GrantsPastItem = ({ grant, showSeparator }: Props) => {
       >
         <Table.Cell className="GrantsPastItem__Cell GrantsPastItem__FirstCell">{title}</Table.Cell>
         <Table.Cell className="GrantsPastItem__Cell">
-          <GrantPill type={configuration.category as ProposalGrantCategory} />
+          <ProjectPill type={configuration.category as ProposalGrantCategory} />
         </Table.Cell>
         <Table.Cell className="GrantsPastItem__Cell GrantsPastItem__Text">
           {enacted_at ? Time.unix(enacted_at).format('MMMM DD, YYYY') : ''}

@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl'
 import { GrantWithUpdate } from '../../../entities/Proposal/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Username from '../../User/Username'
-import GrantPill from '../GrantPill'
+import ProjectPill from '../ProjectPill'
 
 import './GrantCardHeader.css'
 
@@ -20,8 +20,8 @@ const GrantCardHeader = ({ grant }: GrantCardHeaderProps) => {
   return (
     <div className="GrantCardHeader">
       <div className="GrantCardHeader__ConfigurationInfo">
-        {configuration.category && <GrantPill type={configuration.category} />}
-        <div className="GrantCardHeader__SizeContainer GrantCardHeader__SizeContainerSlim">
+        {configuration.category && <ProjectPill type={configuration.category} />}
+        <div className="GrantCardHeader__SizeContainer">
           <p className="GrantCardHeader__Size">{`${t('component.grant_card.size')}: $${intl.formatNumber(
             size
           )} USD`}</p>
