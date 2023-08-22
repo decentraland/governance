@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl'
 import { ProjectStatus } from '../../../entities/Grant/types'
 import { GrantWithUpdate, ProposalType } from '../../../entities/Proposal/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../../helpers'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import Time from '../../../utils/date/Time'
 import MetricsCard from '../../Home/MetricsCard'
 
@@ -16,6 +17,7 @@ interface Props {
 
 export default function Stats({ projects }: Props) {
   const intl = useIntl()
+  const t = useFormatMessage()
   const formatFundingValue = (value: number) => intl.formatNumber(value, CURRENCY_FORMAT_OPTIONS as any)
   const endingThisWeekProjects = projects.filter((item) => {
     const finishAt = Time(item.contract?.finish_at)
@@ -60,21 +62,24 @@ export default function Stats({ projects }: Props) {
     <div className="Stats">
       <MetricsCard
         variant="dark"
-        category="ONGOING"
-        title={`${currentProjects.length} projects`}
-        description={`${endingThisWeekProjects.length} ending this week`}
+        category={t('page.grants.stats.projects.category')}
+        title={t('page.grants.stats.projects.total', { total: currentProjects.length })}
+        description={t('page.grants.stats.projects.ending_this_week', { total: endingThisWeekProjects.length })}
       />
       <MetricsCard
         variant="dark"
-        category={`Project funding for Q${currentQuarter}`}
+        category={t('page.grants.stats.funding.category', { quarter: currentQuarter })}
         title={`${formatFundingValue(totalBidFunding + totalGrantFunding)}`}
-        description={`Grants: ${formattedTotalGrantFunding}; B&T: ${formattedTotalBidFunding}`}
+        description={t('page.grants.stats.funding.total', {
+          grants: formattedTotalGrantFunding,
+          bids: formattedTotalBidFunding,
+        })}
       />
       <MetricsCard
         variant="dark"
-        category="Opportunities"
-        title={`1 tender open`}
-        description="Bid submissions end in 15 days"
+        category={t('page.grants.stats.opportunities.category')}
+        title={t('page.grants.stats.opportunities.total', { total: 1 })}
+        description={t('page.grants.stats.opportunities.ending_soon', { value: '15 days' })}
       />
     </div>
   )

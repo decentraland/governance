@@ -1185,6 +1185,22 @@
         "progress_label": "Initiatives",
         "spent_label": "Quarterly spend: "
       },
+      "stats": {
+        "projects": {
+          "category": "Ongoing",
+          "total": "{total} projects",
+          "ending_this_week": "{total} ending this week"
+        },
+        "funding": {
+          "category": "Project funding for Q{quarter}",
+          "total": "Grants: {grants}; B&T: {bids}"
+        },
+        "opportunities": {
+          "category": "opportunities",
+          "total": "{total} tender open",
+          "ending_soon": "Bid submissions end in {value}"
+        }
+      },
       "category_filters": {
         "all": "All",
         "grants": "Grants",
