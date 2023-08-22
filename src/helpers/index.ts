@@ -1,5 +1,3 @@
-import { FormatNumberOptions } from 'react-intl'
-
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isURL from 'validator/lib/isURL'
@@ -10,7 +8,7 @@ export const CURRENCY_FORMAT_OPTIONS = {
   style: 'currency',
   currency: 'USD',
   maximumFractionDigits: 0,
-} as FormatNumberOptions
+} as any
 
 export function inBackground(fun: () => Promise<any>) {
   Promise.resolve()
