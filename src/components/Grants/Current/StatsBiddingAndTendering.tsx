@@ -5,6 +5,7 @@ import { ProjectStatus } from '../../../entities/Grant/types'
 import { GrantWithUpdate, ProposalType } from '../../../entities/Proposal/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'
+import useOpenTendersTotal from '../../../hooks/useOpenTendersTotal'
 import Time from '../../../utils/date/Time'
 import locations from '../../../utils/locations'
 import MetricsCard from '../../Home/MetricsCard'
@@ -44,24 +45,26 @@ export default function StatsBiddingAndTendering({ projects }: Props) {
     [currentBidProjects]
   )
 
+  const { total: totalOpenTenders } = useOpenTendersTotal()
+
   return (
     <StatsContainer>
       <MetricsCard
         variant="dark"
         category={t('page.grants.bidding_and_tendering_stats.funding.category', { quarter: currentQuarter })}
-        title={`${formatFundingValue(totalBidFunding)}`}
+        title={formatFundingValue(totalBidFunding)}
+      />
+      <MetricsCard
+        variant="dark"
+        href={locations.proposals({ type: ProposalType.Pitch })}
+        category={t('page.grants.bidding_and_tendering_stats.tender_opportunities.category')}
+        title={t('page.grants.bidding_and_tendering_stats.tender_opportunities.total', { total: totalOpenTenders })}
       />
       <MetricsCard
         variant="dark"
         href={locations.proposals({ type: ProposalType.Tender })}
-        category={t('page.grants.bidding_and_tendering_stats.tender_opportunities.category')}
-        title={t('page.grants.bidding_and_tendering_stats.tender_opportunities.total', { total: 1 })}
-      />
-      <MetricsCard
-        variant="dark"
-        href={locations.proposals({ type: ProposalType.Bid })}
         category={t('page.grants.bidding_and_tendering_stats.bid_opportunities.category')}
-        title={t('page.grants.bidding_and_tendering_stats.bid_opportunities.total', { total: 1 })}
+        title={t('page.grants.bidding_and_tendering_stats.bid_opportunities.total', { total: totalOpenTenders })}
       />
     </StatsContainer>
   )

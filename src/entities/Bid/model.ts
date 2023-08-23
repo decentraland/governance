@@ -105,4 +105,12 @@ export default class UnpublishedBidModel extends Model<UnpublishedBidAttributes>
 
     return await this.namedQuery('remove_pending_bid', query)
   }
+
+  static async getOpenTendersTotal() {
+    const query = SQL`
+    SELECT COUNT(DISTINCT linked_proposal_id) AS total
+    FROM ${table(this)} WHERE status = ${BidStatus.Pending};`
+
+    return (await this.namedQuery('get_tenders_count', query))[0]
+  }
 }

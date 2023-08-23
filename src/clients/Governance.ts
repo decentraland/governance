@@ -495,6 +495,10 @@ export class Governance extends API {
     return response.data
   }
 
+  async getOpenTendersTotal() {
+    return await this.fetch<{ total: number }>(`/bids/tenders-count`, this.options().method('GET'))
+  }
+
   async getSnapshotStatusAndSpace(spaceName?: string) {
     const response = await this.fetch<ApiResponse<{ status: SnapshotStatus; space: SnapshotSpace }>>(
       `/snapshot/status-space/${spaceName}`,

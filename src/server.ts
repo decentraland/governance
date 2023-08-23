@@ -17,6 +17,7 @@ import YAML from 'yaml'
 
 import { runAirdropJobs } from './back/jobs/BadgeAirdrop'
 import badges from './back/routes/badges'
+import bid from './back/routes/bid'
 import budget from './back/routes/budget'
 import coauthor from './back/routes/coauthor'
 import committee from './back/routes/committee'
@@ -33,7 +34,6 @@ import update from './back/routes/update'
 import users from './back/routes/user'
 import vestings from './back/routes/vestings'
 import score from './back/routes/votes'
-import bids from './entities/Bid/routes'
 import { updateGovernanceBudgets } from './entities/Budget/jobs'
 import { activateProposals, finishProposal, publishBids } from './entities/Proposal/jobs'
 import { DiscordService } from './services/DiscordService'
@@ -71,7 +71,7 @@ app.use('/api', [
   budget,
   badges,
   common,
-  bids,
+  bid,
   snapshot,
   vestings,
   project,

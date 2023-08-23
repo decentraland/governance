@@ -6,6 +6,7 @@ import { GrantWithUpdate, ProposalType } from '../../../entities/Proposal/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Time from '../../../utils/date/Time'
+import locations from '../../../utils/locations'
 import MetricsCard from '../../Home/MetricsCard'
 
 import StatsContainer from './StatsContainer'
@@ -78,9 +79,9 @@ export default function StatsAllProjects({ projects }: Props) {
       />
       <MetricsCard
         variant="dark"
+        href={locations.proposals({ type: ProposalType.Tender })}
         category={t('page.grants.all_projects_stats.opportunities.category')}
         title={t('page.grants.all_projects_stats.opportunities.total', { total: 1 })}
-        description={t('page.grants.all_projects_stats.opportunities.ending_soon', { value: '15 days' })}
       />
     </StatsContainer>
   )
