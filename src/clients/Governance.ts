@@ -146,6 +146,14 @@ export class Governance extends API {
     return proposals
   }
 
+  async getOpenPitchsTotal() {
+    return await this.fetch<{ total: number }>(`/projects/pitchs-count`, this.options().method('GET'))
+  }
+
+  async getOpenTendersTotal() {
+    return await this.fetch<{ total: number }>(`/projects/tenders-count`, this.options().method('GET'))
+  }
+
   async getGrantsByUser(user: string, coauthoring?: boolean) {
     const grants = await this.fetch<ApiResponse<CategorizedGrants>>(
       `/proposals/grants/${user}?coauthoring=${!!coauthoring}`
@@ -493,10 +501,6 @@ export class Governance extends API {
       ApiResponse<Pick<UnpublishedBidAttributes, 'author_address' | 'publish_at' | 'created_at'> | null>
     >(`/bids/${tenderId}/get-user-bid`, this.options().method('GET').authorization({ sign: true }))
     return response.data
-  }
-
-  async getOpenTendersTotal() {
-    return await this.fetch<{ total: number }>(`/bids/tenders-count`, this.options().method('GET'))
   }
 
   async getSnapshotStatusAndSpace(spaceName?: string) {

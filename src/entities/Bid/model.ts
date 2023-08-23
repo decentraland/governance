@@ -111,6 +111,6 @@ export default class UnpublishedBidModel extends Model<UnpublishedBidAttributes>
     SELECT COUNT(DISTINCT linked_proposal_id) AS total
     FROM ${table(this)} WHERE status = ${BidStatus.Pending};`
 
-    return (await this.namedQuery('get_tenders_count', query))[0]
+    return (await this.namedQuery('get_open_tenders_count', query))[0]
   }
 }

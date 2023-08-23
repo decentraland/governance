@@ -3,6 +3,7 @@ import filter from 'lodash/filter'
 import isNil from 'lodash/isNil'
 
 import { DclData, TransparencyGrant, TransparencyVesting } from '../clients/DclData'
+import UnpublishedBidModel from '../entities/Bid/model'
 import { GrantTier } from '../entities/Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../entities/Grant/constants'
 import { GrantRequest, ProjectStatus } from '../entities/Grant/types'
@@ -312,5 +313,21 @@ export class ProjectService {
 
   private static isCurrentGrant(status?: ProjectStatus) {
     return status === ProjectStatus.InProgress || status === ProjectStatus.Paused || status === ProjectStatus.Pending
+  }
+
+  static async getOpenPitchsTotal() {
+    const data = await ProposalModel.getOpenPitchsTotal()
+
+    return {
+      total: Number(data.total),
+    }
+  }
+
+  static async getOpenTendersTotal() {
+    const data = await UnpublishedBidModel.getOpenTendersTotal()
+
+    return {
+      total: Number(data.total),
+    }
   }
 }

@@ -5,6 +5,7 @@ import { ProjectStatus } from '../../../entities/Grant/types'
 import { GrantWithUpdate, ProposalType } from '../../../entities/Proposal/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'
+import useOpenTendersTotal from '../../../hooks/useOpenTendersTotal'
 import Time from '../../../utils/date/Time'
 import locations from '../../../utils/locations'
 import MetricsCard from '../../Home/MetricsCard'
@@ -58,6 +59,8 @@ export default function StatsAllProjects({ projects }: Props) {
   const formattedTotalBidFunding = formatFundingValue(totalBidFunding)
   const formattedTotalGrantFunding = formatFundingValue(totalGrantFunding)
 
+  const { total: totalOpenTenders } = useOpenTendersTotal()
+
   return (
     <StatsContainer>
       <MetricsCard
@@ -81,7 +84,7 @@ export default function StatsAllProjects({ projects }: Props) {
         variant="dark"
         href={locations.proposals({ type: ProposalType.Tender })}
         category={t('page.grants.all_projects_stats.opportunities.category')}
-        title={t('page.grants.all_projects_stats.opportunities.total', { total: 1 })}
+        title={t('page.grants.all_projects_stats.opportunities.total', { total: totalOpenTenders })}
       />
     </StatsContainer>
   )

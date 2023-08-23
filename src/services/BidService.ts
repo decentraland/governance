@@ -160,12 +160,4 @@ export default class BidService {
       publish_at: pendingBids[0]?.publish_at,
     }
   }
-
-  static async getOpenTendersTotal() {
-    const data = await UnpublishedBidModel.getOpenTendersTotal()
-
-    return {
-      total: Number(data.total),
-    }
-  }
 }
