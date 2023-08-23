@@ -23,3 +23,4 @@ export const DISCORD_SERVICE_ENABLED = getBooleanStringVar('DISCORD_SERVICE_ENAB
 export const VOTES_VP_THRESHOLD = 5
 export const LEGISLATOR_BADGE_SPEC_CID = process.env.LEGISLATOR_BADGE_SPEC_CID || ''
 export const LAND_OWNER_BADGE_SPEC_CID = process.env.LAND_OWNER_BADGE_SPEC_CID || ''
+export const SSO_URL = env('GATSBY_SSO_URL') ?? undefined

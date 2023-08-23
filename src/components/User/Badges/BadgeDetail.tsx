@@ -13,7 +13,17 @@ interface Props {
 }
 
 function addNewLinesAfterFirstDot(text: string): string {
-  const dotIndex = text.indexOf('.')
+  const urlRegex = /https?:\/\/[^\s)]+/g
+
+  let dotIndex = text.indexOf('.')
+  let match: RegExpExecArray | null = null
+
+  while ((match = urlRegex.exec(text)) !== null) {
+    if (dotIndex > match.index && dotIndex < match.index + match[0].length) {
+      dotIndex = text.indexOf('.', match.index + match[0].length)
+    }
+  }
+
   if (dotIndex === -1) return text
 
   const firstPart = text.substring(0, dotIndex + 1)
