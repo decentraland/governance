@@ -14,6 +14,7 @@ import './CategoryFilter.css'
 import CollapsibleFilter from './CollapsibleFilter'
 
 export enum ProjectTypeFilter {
+  All = 'all_projects',
   Grants = 'grants',
   BiddingAndTendering = 'bidding_and_tendering',
 }
@@ -37,22 +38,23 @@ export default function CategoryFilter({
   onChange,
   startOpen,
   categoryCount,
-}: FilterProps & { filterType: FilterType }) {
+  showAllFilter = true,
+}: FilterProps & { filterType: FilterType; showAllFilter?: boolean }) {
   const t = useFormatMessage()
   const params = useURLSearchParams()
   const filters = Object.values(filterType)
   const type = params.get(FILTER_KEY)
-  const isProposalsFilter = isEqual(filterType, ProposalType)
 
   return (
     <CollapsibleFilter title={t('navigation.search.category_filter_title')} startOpen={!!startOpen} onChange={onChange}>
-      <CategoryOption
-        type={isProposalsFilter ? 'all_proposals' : 'all_projects'}
-        href={getUrlFilters(FILTER_KEY, params)}
-        active={!type}
-        className="CategoryFilter__CategoryOption"
-        count={categoryCount?.['all_projects']}
-      />
+      {showAllFilter && (
+        <CategoryOption
+          type="all_proposals"
+          href={getUrlFilters(FILTER_KEY, params)}
+          active={!type}
+          className="CategoryFilter__CategoryOption"
+        />
+      )}
       {filters.map((filter, index) => {
         const label = toSnakeCase(filter)
         const isGrantType = toProposalType(filter) === ProposalType.Grant || filter === ProjectTypeFilter.Grants
@@ -61,7 +63,7 @@ export default function CategoryFilter({
           <CategoryOption
             key={'category_filter' + index}
             type={label}
-            href={getUrlFilters(FILTER_KEY, params, label)}
+            href={getUrlFilters(FILTER_KEY, params, filter === ProjectTypeFilter.All ? undefined : label)}
             active={type === label}
             className="CategoryFilter__CategoryOption"
             count={categoryCount?.[filter]}

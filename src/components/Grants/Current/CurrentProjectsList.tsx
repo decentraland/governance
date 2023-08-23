@@ -11,7 +11,6 @@ import {
   SubtypeOptions,
 } from '../../../entities/Grant/types'
 import { GrantWithUpdate } from '../../../entities/Proposal/types'
-import { useCurrentGrantsFilteredByCategory } from '../../../hooks/useCurrentGrantsFilteredByCategory'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import locations from '../../../utils/locations'
 import Empty, { ActionType } from '../../Common/Empty'
@@ -21,8 +20,8 @@ import { ProjectTypeFilter } from '../../Search/CategoryFilter'
 import GrantCard from '../GrantCard/GrantCard'
 
 import BudgetBanner from './BudgetBanner'
-import './CurrentGrantsList.css'
 import CurrentGrantsSortingMenu, { SortingKey } from './CurrentGrantsSortingMenu'
+import './CurrentProjectsList.css'
 import StatsAllProjects from './StatsAllProjects'
 import StatsBiddingAndTendering from './StatsBiddingAndTendering'
 
@@ -66,15 +65,11 @@ const GRANTS_STATUS_KEYS: Record<ProjectStatus, string> = {
 
 export default function CurrentProjectsList({ projects, selectedSubtype, selectedType, status }: Props) {
   const t = useFormatMessage()
-  const [selectedCategory, setSelectedCategory] = useState('all_projects')
   const [sortingKey, setSortingKey] = useState<SortingKey>(SortingKey.UpdateTimestamp)
   const sortedCurrentGrants = useMemo(() => orderBy(projects, [sortingKey], ['desc']), [projects, sortingKey])
   const [filteredCurrentGrants, setFilteredCurrentGrants] = useState<GrantWithUpdate[]>([])
-  // TODO: Fix typing of currentGrantsFilteredByCategory indexing
-  const currentGrantsFilteredByCategory = useCurrentGrantsFilteredByCategory(sortedCurrentGrants)
 
   useEffect(() => {
-    setSelectedCategory(selectedSubtype || selectedType || 'all_projects')
     if (!isEmpty(projects)) {
       setFilteredCurrentGrants(sortedCurrentGrants.slice(0, CURRENT_GRANTS_PER_PAGE))
     } else {
@@ -83,30 +78,24 @@ export default function CurrentProjectsList({ projects, selectedSubtype, selecte
   }, [selectedSubtype, selectedType, projects, sortedCurrentGrants])
 
   const handleLoadMoreCurrentGrantsClick = useCallback(() => {
-    if (projects) {
-      const newCurrentGrants = (currentGrantsFilteredByCategory as any)[selectedCategory].slice(
-        0,
-        filteredCurrentGrants.length + CURRENT_GRANTS_PER_PAGE
-      )
-      setFilteredCurrentGrants(newCurrentGrants)
+    if (sortedCurrentGrants) {
+      const newProjects = sortedCurrentGrants.slice(0, filteredCurrentGrants.length + CURRENT_GRANTS_PER_PAGE)
+      setFilteredCurrentGrants(newProjects)
     }
-  }, [projects, currentGrantsFilteredByCategory, selectedCategory, filteredCurrentGrants])
+  }, [sortedCurrentGrants, filteredCurrentGrants])
 
-  const showLoadMoreCurrentGrantsButton =
-    filteredCurrentGrants?.length !== (currentGrantsFilteredByCategory as any)[selectedCategory]?.length
+  const showLoadMoreCurrentGrantsButton = filteredCurrentGrants?.length !== projects?.length
 
   return (
-    <div className="CurrentGrantsList">
+    <div className="CurrentProjectsList">
       <div className="CurrentGrants__TitleContainer">
         <div>
-          {
-            <h2 className="CurrentGrants__Title">
-              {t('page.grants.projects_category_title', {
-                status: status ? `${t(GRANTS_STATUS_KEYS[status])} ` : '',
-                category: t(getCategoryKey(selectedSubtype || selectedType)),
-              })}
-            </h2>
-          }
+          <h2 className="CurrentGrants__Title">
+            {t('page.grants.projects_category_title', {
+              status: status ? `${t(GRANTS_STATUS_KEYS[status])} ` : '',
+              category: t(getCategoryKey(selectedSubtype || selectedType)),
+            })}
+          </h2>
         </div>
         <div className="CurrentGrants__Filters">
           <CurrentGrantsSortingMenu sortingKey={sortingKey} onSortingKeyChange={setSortingKey} />

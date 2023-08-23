@@ -6,7 +6,7 @@ import toSnakeCase from 'lodash/snakeCase'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import WiderContainer from '../components/Common/WiderContainer'
-import CurrentGrantsList from '../components/Grants/Current/CurrentGrantsList'
+import CurrentProjectsList from '../components/Grants/Current/CurrentProjectsList'
 import GrantsBanner from '../components/Grants/Current/GrantsBanner'
 import RequestBanner from '../components/Grants/RequestBanner'
 import BurgerMenuLayout from '../components/Layout/BurgerMenu/BurgerMenuLayout'
@@ -122,14 +122,19 @@ export default function ProjectsPage() {
               <Grid.Row>
                 <Grid.Column tablet="3">
                   <NotMobile>
-                    <CategoryFilter filterType={ProjectTypeFilter} categoryCount={counter} startOpen />
+                    <CategoryFilter
+                      filterType={ProjectTypeFilter}
+                      categoryCount={counter}
+                      startOpen
+                      showAllFilter={false}
+                    />
                     <StatusFilter statusType={ProjectStatus} startOpen />
                     <RequestBanner />
                   </NotMobile>
                 </Grid.Column>
                 <Grid.Column tablet="13">
                   {displayableProjects && (
-                    <CurrentGrantsList
+                    <CurrentProjectsList
                       projects={displayableProjects}
                       selectedType={type}
                       selectedSubtype={subtype}

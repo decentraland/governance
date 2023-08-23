@@ -1,4 +1,4 @@
-.CurrentGrantsList {
+.CurrentProjectsList {
   display: flex;
   flex-direction: column;
   gap: 22px;
@@ -58,7 +58,7 @@
   margin-right: 0 !important;
 }
 
-.CurrentGrantsList__Wrapper {
+.CurrentProjectsList__Wrapper {
   display: flex;
   width: 100%;
 }
