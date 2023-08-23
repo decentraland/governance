@@ -193,7 +193,7 @@ export class BadgesService {
       .filter(
         (badge) =>
           (badge.status === BadgeStatus.Minted || badge.status === BadgeStatus.Reinstated) &&
-          !landOwnerAddressesSet.has(badge.owner?.id || '')
+          !landOwnerAddressesSet.has(badge.owner?.id?.toLowerCase() || '')
       )
       .map((badge) => badge.owner!.id)
 
