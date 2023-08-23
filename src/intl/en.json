@@ -1207,11 +1207,11 @@
         },
         "tender_opportunities": {
           "category": "opportunities",
-          "total": "{total} tender submissions open"
+          "total": "{total} tender {total, plural, one {submission} other {submissions}} open"
         },
         "bid_opportunities": {
           "category": "opportunities",
-          "total": "{total} bid submissions open"
+          "total": "{total} bid {total, plural, one {submission} other {submissions}} open"
         }
       },
       "category_filters": {
