@@ -159,8 +159,8 @@ export default function AddBudgetBreakdownModal({
           max={projectDuration}
           onChange={(value) => setValue('duration', Number(value))}
           label={t('page.submit_grant.due_diligence.budget_breakdown_modal.duration_label')}
-          unitLabel={t('page.submit_grant.due_diligence.budget_breakdown_modal.duration_unit_label')}
           subtitle={t('page.submit_grant.due_diligence.budget_breakdown_modal.duration_subtitle')}
+          unit="months"
         />
       </ContentSection>
       <ContentSection className="ProjectRequestSection__Field">

@@ -1,5 +1,5 @@
-.NumberSelector {
-  max-width: 210px;
+.NumberSelectorContainer {
+  max-width: fit-content;
 }
 
 .NumberSelector__InputContainer {
@@ -21,6 +21,23 @@
   letter-spacing: -0.2px;
   color: var(--black-600);
   border-left: 1px solid var(--alpha-black-400);
+}
+
+.ui.dropdown.NumberSelector__Dropdown {
+  min-width: unset;
+  border: unset;
+  border-left: 1px solid var(--alpha-black-400);
+}
+
+.ui.dropdown.NumberSelector__Dropdown .text,
+.ui.dropdown.active.NumberSelector__Dropdown .text {
+  text-transform: unset;
+  font-weight: var(--weight-normal);
+  color: var(--black-600) !important;
+}
+
+.ui.dropdown.NumberSelector__Dropdown > .dropdown.icon {
+  color: var(--black-600);
 }
 
 .NumberSelector__Input {

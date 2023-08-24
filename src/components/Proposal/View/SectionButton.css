@@ -19,13 +19,14 @@
 
 .SectionButton.SectionButton--disabled span,
 .SectionButton.SectionButton--disabled img,
+.SectionButton.SectionButton--disabled svg,
 .SectionButton.SectionButton--loading span,
+.SectionButton.SectionButton--loading svg,
 .SectionButton.SectionButton--loading img {
   opacity: 0.5;
 }
 
-.SectionButton.SectionButton--disabled span,
-.SectionButton.SectionButton--disabled img {
+.SectionButton.SectionButton--disabled {
   pointer-events: none;
 }
 

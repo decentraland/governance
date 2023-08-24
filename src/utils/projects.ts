@@ -19,7 +19,7 @@ export function getGoogleCalendarUrl({
   const startAtDate = Time.from(startAt, { utc: true })
   const dates = [
     startAtDate.format(Time.Formats.GoogleCalendar),
-    Time.from(startAt, { utc: true }).add(1, 'hour').format(Time.Formats.GoogleCalendar),
+    Time.from(startAt, { utc: true }).add(15, 'minutes').format(Time.Formats.GoogleCalendar),
   ]
   params.set('dates', dates.join('/'))
 

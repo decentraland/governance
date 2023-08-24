@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 
@@ -10,7 +10,9 @@ import { isProposalStatusWithUpdates } from '../../entities/Updates/utils'
 import { SelectedVoteChoice, Vote } from '../../entities/Votes/types'
 import { calculateResult } from '../../entities/Votes/utils'
 import { ProposalPageState } from '../../pages/proposal'
+import CalendarAlertModal from '../Modal/CalendarAlertModal'
 
+import CalendarAlertButton from './View/CalendarAlertButton'
 import ForumButton from './View/ForumButton'
 import ProposalCoAuthorStatus from './View/ProposalCoAuthorStatus'
 import ProposalDetailSection from './View/ProposalDetailSection'
@@ -80,6 +82,8 @@ export default function ProposalSidebar({
   const choices: string[] = proposal?.snapshot_proposal?.choices || EMPTY_VOTE_CHOICES
   const partialResults = useMemo(() => calculateResult(choices, highQualityVotes || {}), [choices, highQualityVotes])
 
+  const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false)
+
   const handleVoteClick = (selectedChoice: SelectedVoteChoice) => {
     if (voteWithSurvey) {
       updatePageState({
@@ -107,6 +111,7 @@ export default function ProposalSidebar({
   )
 
   const showVestingContract = proposal?.vesting_addresses && proposal?.vesting_addresses.length > 0
+  const showCalendarAlertButton = !!proposal && proposal.status === ProposalStatus.Active
 
   return (
     <>
@@ -145,8 +150,22 @@ export default function ProposalSidebar({
           subscribed={subscribed}
           onClick={() => subscribe(!subscribed)}
         />
+        {showCalendarAlertButton && (
+          <CalendarAlertButton
+            loading={proposalLoading}
+            disabled={!proposal}
+            onClick={() => setIsCalendarModalOpen(true)}
+          />
+        )}
         {proposal && <ProposalDetailSection proposal={proposal} />}
         {proposal && <ProposalActions proposal={proposal} deleting={deleting} updatePageState={updatePageState} />}
+        {proposal && (
+          <CalendarAlertModal
+            proposal={proposal}
+            open={isCalendarModalOpen}
+            onClose={() => setIsCalendarModalOpen(false)}
+          />
+        )}
       </div>
     </>
   )

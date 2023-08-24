@@ -1,5 +1,9 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 
+import { UnitTypeLongPlural } from 'dayjs'
+import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
+
+import useFormatMessage from '../../hooks/useFormatMessage'
 import Label from '../Common/Typography/Label'
 import Markdown from '../Common/Typography/Markdown'
 import Add from '../Icon/Add'
@@ -13,11 +17,13 @@ interface Props {
   min: number
   max: number
   label: string
-  unitLabel: string
+  unit: UnitTypeLongPlural | UnitTypeLongPlural[]
   subtitle?: string
+  onUnitChange?: (unit: UnitTypeLongPlural) => void
 }
 
-const NumberSelector = ({ value, onChange, min, max, label, unitLabel, subtitle }: Props) => {
+const NumberSelector = ({ value, onChange, min, max, label, unit, onUnitChange, subtitle }: Props) => {
+  const t = useFormatMessage()
   const handleAddClick = useCallback(() => {
     if (value === max) {
       return
@@ -34,10 +40,30 @@ const NumberSelector = ({ value, onChange, min, max, label, unitLabel, subtitle 
     onChange(value - 1)
   }, [onChange, min, value])
 
+  const handleUnitChange = useCallback(
+    (unit: UnitTypeLongPlural) => {
+      if (onUnitChange) {
+        onUnitChange(unit)
+      }
+    },
+    [onUnitChange]
+  )
+  const isUnitArray = Array.isArray(unit)
+
+  useEffect(() => {
+    if (isUnitArray && unit.length > 0) {
+      handleUnitChange(unit[0])
+    }
+  }, [handleUnitChange, isUnitArray, unit])
+
+  const getUnitLabel = (unit: UnitTypeLongPlural) => t(`general.time_units.${unit}`)
+  const getUnitOptions = (units: UnitTypeLongPlural[]) =>
+    units.map((unit) => ({ key: unit, value: unit, text: getUnitLabel(unit) }))
+
   return (
     <div className="NumberSelector">
       <Label>{label}</Label>
-      <div>
+      <div className="NumberSelectorContainer">
         <div className="NumberSelector__InputContainer">
           <div className="NumberSelector__Input">
             <button className="NumberSelector__Button" onClick={handleRemoveClick}>
@@ -48,7 +74,17 @@ const NumberSelector = ({ value, onChange, min, max, label, unitLabel, subtitle 
               <Add />
             </button>
           </div>
-          <div className="NumberSelector__Description">{unitLabel}</div>
+          {!isUnitArray ? (
+            <div className="NumberSelector__Description">{getUnitLabel(unit)}</div>
+          ) : (
+            <Dropdown
+              className="NumberSelector__Dropdown"
+              selection
+              defaultValue={unit[0]}
+              options={getUnitOptions(unit)}
+              onChange={(_, { value }) => handleUnitChange(value as UnitTypeLongPlural)}
+            />
+          )}
         </div>
       </div>
       {subtitle && (
