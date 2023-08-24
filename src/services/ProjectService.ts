@@ -315,8 +315,8 @@ export class ProjectService {
     return status === ProjectStatus.InProgress || status === ProjectStatus.Paused || status === ProjectStatus.Pending
   }
 
-  static async getOpenPitchsTotal() {
-    const data = await ProposalModel.getOpenPitchsTotal()
+  static async getOpenPitchesTotal() {
+    const data = await ProposalModel.getOpenPitchesTotal()
 
     return {
       total: Number(data.total),

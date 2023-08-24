@@ -5,7 +5,7 @@ import { ProjectStatus } from '../../../entities/Grant/types'
 import { GrantWithUpdate, ProposalType } from '../../../entities/Proposal/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'
-import useOpenPitchsTotal from '../../../hooks/useOpenPitchsTotal'
+import useOpenPitchesTotal from '../../../hooks/useOpenPitchesTotal'
 import useOpenTendersTotal from '../../../hooks/useOpenTendersTotal'
 import Time from '../../../utils/date/Time'
 import locations from '../../../utils/locations'
@@ -46,7 +46,7 @@ export default function StatsBiddingAndTendering({ projects }: Props) {
     [currentBidProjects]
   )
 
-  const { total: totalOpenPitchs } = useOpenPitchsTotal()
+  const { total: totalOpenPitches } = useOpenPitchesTotal()
   const { total: totalOpenTenders } = useOpenTendersTotal()
 
   return (
@@ -60,7 +60,7 @@ export default function StatsBiddingAndTendering({ projects }: Props) {
         variant="dark"
         href={locations.proposals({ type: ProposalType.Pitch })}
         category={t('page.grants.bidding_and_tendering_stats.tender_opportunities.category')}
-        title={t('page.grants.bidding_and_tendering_stats.tender_opportunities.total', { total: totalOpenPitchs })}
+        title={t('page.grants.bidding_and_tendering_stats.tender_opportunities.total', { total: totalOpenPitches })}
       />
       <MetricsCard
         variant="dark"

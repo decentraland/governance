@@ -5,16 +5,16 @@ import { ProjectService } from '../../services/ProjectService'
 
 export default routes((route) => {
   route.get('/projects', handleJSON(getProjects))
-  route.get('/projects/pitchs-total', handleJSON(getOpenPitchsTotal))
-  route.get('/projects/tenders-count', handleJSON(getOpenTendersTotal))
+  route.get('/projects/pitches-total', handleJSON(getOpenPitchesTotal))
+  route.get('/projects/tenders-total', handleJSON(getOpenTendersTotal))
 })
 
 async function getProjects() {
   return await ProjectService.getProjects()
 }
 
-async function getOpenPitchsTotal() {
-  return await ProjectService.getOpenPitchsTotal()
+async function getOpenPitchesTotal() {
+  return await ProjectService.getOpenPitchesTotal()
 }
 
 async function getOpenTendersTotal() {

@@ -146,12 +146,12 @@ export class Governance extends API {
     return proposals
   }
 
-  async getOpenPitchsTotal() {
-    return await this.fetch<{ total: number }>(`/projects/pitchs-count`, this.options().method('GET'))
+  async getOpenPitchesTotal() {
+    return await this.fetch<{ total: number }>(`/projects/pitches-total`, this.options().method('GET'))
   }
 
   async getOpenTendersTotal() {
-    return await this.fetch<{ total: number }>(`/projects/tenders-count`, this.options().method('GET'))
+    return await this.fetch<{ total: number }>(`/projects/tenders-total`, this.options().method('GET'))
   }
 
   async getGrantsByUser(user: string, coauthoring?: boolean) {

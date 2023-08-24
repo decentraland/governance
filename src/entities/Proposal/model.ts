@@ -460,7 +460,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     )})`
   }
 
-  static async getOpenPitchsTotal() {
+  static async getOpenPitchesTotal() {
     const query = SQL`
     SELECT COUNT(DISTINCT (configuration->>'linked_proposal_id')) AS total
     FROM ${table(this)} WHERE type = ${ProposalType.Tender} AND status = ${ProposalStatus.Pending};`
