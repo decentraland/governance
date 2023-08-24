@@ -105,7 +105,6 @@ export default function BadgesAdmin({ className }: Props) {
             setUsersAddresses={(addresses?: string[]) => setRecipients(addresses || [])}
             isDisabled={formDisabled}
             maxAddressesAmount={20}
-            allowLoggedUserAccount={true}
           />
           <Label>{'Revoke Reason'}</Label>
           <SelectField

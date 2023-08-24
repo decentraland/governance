@@ -79,7 +79,8 @@ You can create a DB from scratch, or you can use the `import-db.sh` script to cr
 ### Importing DB dump
 
 ```bash
-bash scripts/import-db.sh USERNAME [DATABASE_NAME] [DUMP_FILE]
+cd scripts/
+bash ./import-db.sh USERNAME [DATABASE_NAME] [DUMP_FILE]
 ```
 
 If no DATABASE_NAME and DUMP_FILE arguments are given, the script will use the default values and create a `governance` db using the `development.dump` dump.
