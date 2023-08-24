@@ -19,7 +19,7 @@ import { airdrop, getLandOwnerAddresses, reinstateBadge, revokeBadge, trimOtters
 import CoauthorModel from '../entities/Coauthor/model'
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalAttributes, ProposalType } from '../entities/Proposal/types'
-import { getChecksumAddress } from '../entities/Snapshot/utils'
+import { getChecksumAddress, isSameAddress } from '../entities/Snapshot/utils'
 import { inBackground } from '../helpers'
 import { ErrorCategory } from '../utils/errorCategories'
 
@@ -115,7 +115,7 @@ export class BadgesService {
     const usersWithoutBadge: string[] = []
 
     for (const user of users) {
-      const userBadge = badges.find((badge) => badge.owner?.id === user.toLowerCase())
+      const userBadge = badges.find((badge) => isSameAddress(user, badge.owner?.id))
       if (!userBadge) {
         usersWithoutBadge.push(user)
         continue
