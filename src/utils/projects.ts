@@ -1,3 +1,5 @@
+import { ProjectStatus } from '../entities/Grant/types'
+
 import Time from './date/Time'
 
 export function getHighBudgetVpThreshold(budget: number) {
@@ -24,4 +26,13 @@ export function getGoogleCalendarUrl({
   params.set('dates', dates.join('/'))
 
   return `https://calendar.google.com/calendar/r/eventedit?${params.toString()}`
+}
+
+export function isCurrentProject(status?: ProjectStatus) {
+  return status === ProjectStatus.InProgress || status === ProjectStatus.Paused || status === ProjectStatus.Pending
+}
+
+export function isCurrentQuarterProject(startAt?: number) {
+  const currentQuarterStartDate = Time().startOf('quarter')
+  return Time(startAt).isAfter(currentQuarterStartDate)
 }

@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
-import { Grant, ProposalAttributes } from '../../../entities/Proposal/types'
+import { Project, ProposalAttributes } from '../../../entities/Proposal/types'
 import { UpdateAttributes, UpdateStatus } from '../../../entities/Updates/types'
 import { isBetweenLateThresholdDate } from '../../../entities/Updates/utils'
 import useFormatMessage from '../../../hooks/useFormatMessage'
@@ -19,7 +19,7 @@ import './ProposalUpdate.css'
 import UpdateMenu from './UpdateMenu'
 
 interface Props {
-  proposal: ProposalAttributes | Grant
+  proposal: ProposalAttributes | Project
   update: UpdateAttributes
   index?: number
   isCoauthor?: boolean

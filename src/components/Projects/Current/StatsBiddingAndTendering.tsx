@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 import { useIntl } from 'react-intl'
 
-import { ProjectStatus } from '../../../entities/Grant/types'
 import { ProjectWithUpdate, ProposalType } from '../../../entities/Proposal/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'
@@ -9,6 +8,7 @@ import useOpenPitchesTotal from '../../../hooks/useOpenPitchesTotal'
 import useOpenTendersTotal from '../../../hooks/useOpenTendersTotal'
 import Time from '../../../utils/date/Time'
 import locations from '../../../utils/locations'
+import { isCurrentProject, isCurrentQuarterProject } from '../../../utils/projects'
 import MetricsCard from '../../Home/MetricsCard'
 
 import StatsContainer from './StatsContainer'
@@ -23,19 +23,10 @@ export default function StatsBiddingAndTendering({ projects }: Props) {
   const formatFundingValue = (value: number) => intl.formatNumber(value, CURRENCY_FORMAT_OPTIONS)
 
   const currentQuarter = Time().quarter()
-  const currentQuarterStartDate = Time().startOf('quarter')
-
-  const currentProjects = useMemo(
-    () =>
-      projects.filter(
-        ({ status }) =>
-          status === ProjectStatus.InProgress || status === ProjectStatus.Paused || status === ProjectStatus.Pending
-      ),
-    [projects]
-  )
+  const currentProjects = useMemo(() => projects.filter(({ status }) => isCurrentProject(status)), [projects])
   const currentProjectsThisQuarter = useMemo(
-    () => currentProjects.filter((item) => Time(item.contract?.start_at).isAfter(currentQuarterStartDate)),
-    [currentProjects, currentQuarterStartDate]
+    () => currentProjects.filter((item) => isCurrentQuarterProject(item.contract?.start_at)),
+    [currentProjects]
   )
   const currentBidProjects = useMemo(
     () => currentProjectsThisQuarter.filter((item) => item.type === ProposalType.Bid),

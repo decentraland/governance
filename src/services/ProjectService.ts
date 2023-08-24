@@ -23,6 +23,7 @@ import { getPublicUpdates } from '../entities/Updates/utils'
 import { formatError } from '../helpers'
 import Time from '../utils/date/Time'
 import { isProdEnv } from '../utils/governanceEnvs'
+import { isCurrentProject } from '../utils/projects'
 
 import { BudgetService } from './BudgetService'
 import { ProposalInCreation } from './ProposalService'
@@ -144,7 +145,7 @@ export class ProjectService {
               ...this.getUpdateData(update),
             }
 
-            return this.isCurrentGrant(newGrant.status) ? current.push(ProjectWithUpdate) : past.push(ProjectWithUpdate)
+            return isCurrentProject(newGrant.status) ? current.push(ProjectWithUpdate) : past.push(ProjectWithUpdate)
           } catch (error) {
             logger.error(`Failed to fetch grant update data from proposal ${grant.id}`, formatError(error as Error))
           }
@@ -309,10 +310,6 @@ export class ProjectService {
       grantRequest.sponsorship ||
       grantRequest.platform
     )
-  }
-
-  private static isCurrentGrant(status?: ProjectStatus) {
-    return status === ProjectStatus.InProgress || status === ProjectStatus.Paused || status === ProjectStatus.Pending
   }
 
   static async getOpenPitchesTotal() {
