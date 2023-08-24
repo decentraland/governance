@@ -111,7 +111,7 @@ export default function ProposalSidebar({
   )
 
   const showVestingContract = proposal?.vesting_addresses && proposal?.vesting_addresses.length > 0
-  const showCalendarAlertButton = !!proposal && proposal.status === ProposalStatus.Active
+  const isCalendarButtonDisabled = !proposal || proposal.status !== ProposalStatus.Active
 
   return (
     <>
@@ -150,13 +150,11 @@ export default function ProposalSidebar({
           subscribed={subscribed}
           onClick={() => subscribe(!subscribed)}
         />
-        {showCalendarAlertButton && (
-          <CalendarAlertButton
-            loading={proposalLoading}
-            disabled={!proposal}
-            onClick={() => setIsCalendarModalOpen(true)}
-          />
-        )}
+        <CalendarAlertButton
+          loading={proposalLoading}
+          disabled={isCalendarButtonDisabled}
+          onClick={() => setIsCalendarModalOpen(true)}
+        />
         {proposal && <ProposalDetailSection proposal={proposal} />}
         {proposal && <ProposalActions proposal={proposal} deleting={deleting} updatePageState={updatePageState} />}
         {proposal && (
