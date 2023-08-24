@@ -6,7 +6,7 @@ import useFormatMessage from '../../hooks/useFormatMessage'
 import useGrants from '../../hooks/useProjects'
 import locations from '../../utils/locations'
 import FullWidthButton from '../Common/FullWidthButton'
-import GrantCard from '../Grants/GrantCard/GrantCard'
+import ProjectCard from '../Projects/ProjectCard/ProjectCard'
 
 import './ActiveCommunityGrants.css'
 import HomeLoader from './HomeLoader'
@@ -37,7 +37,7 @@ const ActiveCommunityGrants = () => {
                 className={classNames('HoverableCardContainer', index <= 1 && 'HoverableCardContainer__FirstRow')}
                 key={`HoverableCard__${project.id}`}
               >
-                <GrantCard grant={project} hoverable />
+                <ProjectCard project={project} hoverable />
               </div>
             ))}
         </div>
