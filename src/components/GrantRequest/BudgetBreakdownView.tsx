@@ -24,7 +24,7 @@ function BudgetBreakdownView({ breakdown }: Props) {
         subtitle: t('page.proposal_view.grant.breakdown_subtitle', { duration }),
         description: aboutThis,
         url: relevantLink,
-        value: intl.formatNumber(toNumber(estimatedBudget), CURRENCY_FORMAT_OPTIONS as any),
+        value: intl.formatNumber(toNumber(estimatedBudget), CURRENCY_FORMAT_OPTIONS),
       })),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [breakdown]

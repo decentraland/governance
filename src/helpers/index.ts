@@ -8,7 +8,7 @@ export const CURRENCY_FORMAT_OPTIONS = {
   style: 'currency',
   currency: 'USD',
   maximumFractionDigits: 0,
-}
+} as any
 
 export function inBackground(fun: () => Promise<any>) {
   Promise.resolve()

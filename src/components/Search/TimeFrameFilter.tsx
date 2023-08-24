@@ -1,18 +1,16 @@
 import React, { useMemo } from 'react'
 
-import { useLocation } from '@reach/router'
-
 import useFormatMessage from '../../hooks/useFormatMessage'
+import useURLSearchParams from '../../hooks/useURLSearchParams'
 import locations from '../../utils/locations'
 
 import { FilterProps } from './CategoryFilter'
 import CollapsibleFilter from './CollapsibleFilter'
 import FilterLabel from './FilterLabel'
 
-export default React.memo(function TimeFrameFilter({ onChange }: FilterProps) {
+export default function TimeFrameFilter({ onChange }: FilterProps) {
   const t = useFormatMessage()
-  const location = useLocation()
-  const params = useMemo(() => new URLSearchParams(location.search), [location.search])
+  const params = useURLSearchParams()
   const timeFrame = useMemo(() => params.get('timeFrame') || null, [params])
 
   function handleTimeFrameFilter(timeFrame: string | null) {
@@ -50,4 +48,4 @@ export default React.memo(function TimeFrameFilter({ onChange }: FilterProps) {
       />
     </CollapsibleFilter>
   )
-})
+}

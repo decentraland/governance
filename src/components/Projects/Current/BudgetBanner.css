@@ -1,0 +1,57 @@
+.BudgetBanner {
+  box-sizing: border-box;
+  background: var(--background-banner-gradient);
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 21px 25px;
+}
+
+.BudgetBanner.BudgetBanner--start {
+  justify-content: flex-start;
+}
+
+.BudgetBanner.BudgetBanner--start > div {
+  margin-right: auto;
+}
+
+.BudgetBanner__ProgressContainer {
+  display: flex;
+  width: 40%;
+  align-content: flex-start;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.BudgetBanner__ProgressContainer .ProgressBar__Container {
+  margin-bottom: 8px;
+}
+
+.BudgetBanner__ProgressLabel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.BudgetBanner__ProgressLabel div {
+  font-style: normal;
+  font-weight: var(--weight-normal);
+  font-size: 11px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--black-600);
+}
+
+.BudgetBanner__ProgressLabel .BudgetBanner__Amount,
+.BudgetBanner__ProgressLabel .BudgetBanner__Percentage {
+  font-weight: var(--weight-semi-bold);
+}
+
+.BudgetBanner__LabelWithIcon {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  height: 50px;
+}

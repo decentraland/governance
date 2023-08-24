@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 
 import { Governance } from '../../../clients/Governance'
-import { Grant, ProposalAttributes } from '../../../entities/Proposal/types'
+import { Project, ProposalAttributes } from '../../../entities/Proposal/types'
 import { isSameAddress } from '../../../entities/Snapshot/utils'
 import { ProjectHealth, UpdateAttributes } from '../../../entities/Updates/types'
 import locations, { navigate } from '../../../utils/locations'
@@ -19,7 +19,7 @@ import ExpandedProposalUpdate from './ExpandedProposalUpdate'
 import './ProposalUpdate.css'
 
 interface Props {
-  proposal: ProposalAttributes | Grant
+  proposal: ProposalAttributes | Project
   update?: UpdateAttributes | null
   expanded: boolean
   index?: number

@@ -10,9 +10,9 @@ import {
   GrantRequestDueDiligence,
   GrantRequestGeneralInfo,
   GrantRequestTeam,
-  GrantStatus,
   GrantTierType,
   PaymentToken,
+  ProjectStatus,
   ProposalGrantCategory,
   VestingStartDate,
 } from '../Grant/types'
@@ -636,8 +636,6 @@ export const newProposalTenderScheme = {
   },
 }
 
-export const PROPOSAL_GRANT_CATEGORY_ALL = 'All'
-
 export const ProposalRequiredVP = {
   [ProposalType.LinkedWearables]: requiredVotingPower(VOTING_POWER_TO_PASS_LINKED_WEARABLES, 0),
   [ProposalType.Catalyst]: requiredVotingPower(VOTING_POWER_TO_PASS_CATALYST, 0),
@@ -792,17 +790,18 @@ type VestingContractData = {
   vesting_total_amount: number
 }
 
-export type Grant = {
+export type Project = {
   id: string
   title: string
   user: string
   size: number
+  type: ProposalType
   created_at: number
   configuration: {
     category: ProposalGrantCategory
     tier: string
   }
-  status?: GrantStatus
+  status?: ProjectStatus
   contract?: VestingContractData
   enacting_tx?: string
   token?: string
@@ -811,14 +810,14 @@ export type Grant = {
   tx_date?: number
 }
 
-export type GrantWithUpdate = Grant & {
+export type ProjectWithUpdate = Project & {
   update?: IndexedUpdate | null
   update_timestamp?: number
 }
 
 export type CategorizedGrants = {
-  current: GrantWithUpdate[]
-  past: GrantWithUpdate[]
+  current: ProjectWithUpdate[]
+  past: ProjectWithUpdate[]
   total: number
 }
 

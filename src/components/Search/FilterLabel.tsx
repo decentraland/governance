@@ -12,7 +12,7 @@ export type FilterLabelProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement
   label: string
 }
 
-export default React.memo(function FilterLabel({ active, label, className, ...props }: FilterLabelProps) {
+export default function FilterLabel({ active, label, className, ...props }: FilterLabelProps) {
   function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
     if (props.onClick) {
       props.onClick(e)
@@ -34,8 +34,10 @@ export default React.memo(function FilterLabel({ active, label, className, ...pr
       className={classNames('FilterLabel', active && 'FilterLabel--active', className)}
     >
       <span>
-        <Text className="FilterLabel__Text">{label}</Text>
+        <Text weight="medium" className="FilterLabel__Text">
+          {label}
+        </Text>
       </span>
     </a>
   )
-})
+}

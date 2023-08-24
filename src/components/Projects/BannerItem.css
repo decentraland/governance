@@ -1,0 +1,34 @@
+.ProjectsBannerItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ProjectsBannerItem--noUrl {
+  cursor: default;
+  pointer-events: none;
+}
+
+.ProjectsBannerItem__Title {
+  font-style: normal;
+  font-weight: var(--weight-semi-bold);
+  font-size: 16px;
+  line-height: 19px;
+  color: var(--white-900);
+  margin-bottom: 3px;
+}
+
+.ProjectsBannerItem__Description {
+  font-style: normal;
+  font-weight: var(--weight-normal);
+  font-size: 14px;
+  line-height: 17px;
+  color: var(--white-900);
+}
+
+.ProjectsBanner__ItemsDivider {
+  opacity: 0.3;
+  width: auto;
+  border: 1px solid var(--white-900);
+}

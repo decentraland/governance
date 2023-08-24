@@ -41,3 +41,14 @@
   margin-bottom: 0;
   padding-left: 0;
 }
+
+.WiderNavigation .dcl.tabs .ui.container {
+  width: 100%;
+  max-width: 1440px !important;
+}
+
+@media (min-width: 768px) {
+  .WiderNavigation .dcl.tabs .ui.container {
+    padding: 0 24px;
+  }
+}

@@ -26,7 +26,6 @@ import ProposalModel from '../../entities/Proposal/model'
 import {
   CatalystType,
   CategorizedGrants,
-  GrantWithUpdate,
   HiringType,
   INVALID_PROPOSAL_POLL_OPTIONS,
   NewProposalBanName,
@@ -40,6 +39,7 @@ import {
   NewProposalPoll,
   NewProposalTender,
   PoiType,
+  ProjectWithUpdate,
   ProposalAttributes,
   ProposalCommentsInDiscourse,
   ProposalRequiredVP,
@@ -78,7 +78,7 @@ import UpdateModel from '../../entities/Updates/model'
 import BidService from '../../services/BidService'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
-import { GrantsService } from '../../services/GrantsService'
+import { ProjectService } from '../../services/ProjectService'
 import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
 import { getProfile } from '../../utils/Catalyst'
 import Time from '../../utils/date/Time'
@@ -101,8 +101,8 @@ export default routes((route) => {
   route.post('/proposals/tender', withAuth, handleAPI(createProposalTender))
   route.post('/proposals/bid', withAuth, handleAPI(createProposalBid))
   route.post('/proposals/hiring', withAuth, handleAPI(createProposalHiring))
-  route.get('/proposals/grants', handleAPI(getGrants))
-  route.get('/proposals/grants/:address', handleAPI(getGrantsByUser))
+  route.get('/proposals/grants', handleAPI(getGrants)) // TODO: Deprecate
+  route.get('/proposals/grants/:address', handleAPI(getGrantsByUser)) // TODO: Deprecate
   route.get('/proposals/:proposal', handleAPI(getProposal))
   route.patch('/proposals/:proposal', withAuth, handleAPI(updateProposalStatus))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
@@ -376,7 +376,7 @@ export async function createProposalGrant(req: WithAuth) {
   const newProposalGrantValidator = schema.compile(grantRequestSchema)
   const user = req.auth!
   const grantRequest = validate<GrantRequest>(newProposalGrantValidator, req.body || {})
-  const grantInCreation = await GrantsService.getGrantInCreation(grantRequest, user)
+  const grantInCreation = await ProjectService.getGrantInCreation(grantRequest, user)
   return createProposal(grantInCreation)
 }
 
@@ -617,10 +617,12 @@ async function validateSubmissionThreshold(user: string, submissionThreshold?: s
   }
 }
 
+// TODO: Remove. Deprecated.
 async function getGrants(): Promise<CategorizedGrants> {
-  return await GrantsService.getGrants()
+  return await ProjectService.getGrants()
 }
 
+// TODO: Still in use by user profile page.
 async function getGrantsByUser(req: Request): ReturnType<typeof getGrants> {
   const address = req.params.address
   const isCoauthoring = req.query.coauthor === 'true'
@@ -635,7 +637,7 @@ async function getGrantsByUser(req: Request): ReturnType<typeof getGrants> {
 
   const grantsResult = await getGrants()
 
-  const filterGrants = (grants: GrantWithUpdate[]) => {
+  const filterGrants = (grants: ProjectWithUpdate[]) => {
     return grants.filter(
       (grant) => grant.user.toLowerCase() === address.toLowerCase() || coauthoringProposalIds.has(grant.id)
     )

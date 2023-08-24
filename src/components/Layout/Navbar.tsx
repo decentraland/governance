@@ -6,7 +6,7 @@ import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import BurgerMenu from './BurgerMenu/BurgerMenu'
 
-const BURGER_MENU_LOCATIONS = ['/', '/proposals/', '/transparency/', '/grants/', '/profile/']
+const BURGER_MENU_LOCATIONS = ['/', '/proposals/', '/transparency/', '/projects/', '/profile/']
 
 function Navbar(props: UserMenuProps) {
   const location = useLocation()
@@ -26,4 +26,4 @@ function Navbar(props: UserMenuProps) {
   )
 }
 
-export default React.memo(Navbar)
+export default Navbar

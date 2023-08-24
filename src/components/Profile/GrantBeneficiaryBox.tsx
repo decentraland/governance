@@ -4,8 +4,8 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useGrantsByUser from '../../hooks/useGrantsByUser'
-import GrantBeneficiaryList from '../Grants/GrantBeneficiaryList'
 
+import GrantBeneficiaryList from './GrantBeneficiaryList'
 import { ProfileBox } from './ProfileBox'
 
 interface Props {

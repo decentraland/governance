@@ -6,7 +6,7 @@ import { Close } from 'decentraland-ui/dist/components/Close/Close'
 
 import { useBurgerMenu } from '../../hooks/useBurgerMenu'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import { useProposalsSearchParams } from '../../hooks/useSearchParams'
+import { useProposalsSearchParams } from '../../hooks/useProposalsSearchParams'
 
 import { handleSearch } from './SearchInput'
 import './SearchInputMobile.css'

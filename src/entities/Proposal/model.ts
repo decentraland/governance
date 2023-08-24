@@ -388,7 +388,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     ${conditional(
       !!coauthor && !!user,
       SQL`AND lower(c."address") = lower(${user}) AND (CASE WHEN p."finish_at" < NOW() THEN c."status" IN (${CoauthorStatus.APPROVED}, ${CoauthorStatus.REJECTED}) ELSE TRUE END)`
-    )}
+    )} 
     ${conditional(!!type, SQL`AND "type" = ${type}`)} 
     ${conditional(!!status, SQL`AND "status" = ${status}`)} 
     ${conditional(!!subscribed, SQL`AND s."user" = ${subscribed}`)} 
@@ -407,6 +407,25 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       max: 100,
       defaultValue: 100,
     })} ${offsetQuery(offset)}`)
+
+    return proposals.map(this.parse)
+  }
+
+  static async getProjectList(): Promise<ProposalAttributes[]> {
+    const status = [ProposalStatus.Passed, ProposalStatus.Enacted].map((status) => SQL`${status}`)
+    const types = [ProposalType.Bid, ProposalType.Grant].map((type) => SQL`${type}`)
+
+    const proposals = await this.namedQuery(
+      'get_project_list',
+      SQL`
+        SELECT *
+        FROM ${table(ProposalModel)}
+        WHERE "deleted" = FALSE
+          AND "type" IN (${join(types)})
+          AND "status" IN (${join(status)})
+          ORDER BY "created_at" DESC 
+    `
+    )
 
     return proposals.map(this.parse)
   }
@@ -439,5 +458,13 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       ],
       SQL` || `
     )})`
+  }
+
+  static async getOpenPitchesTotal() {
+    const query = SQL`
+    SELECT COUNT(DISTINCT (configuration->>'linked_proposal_id')) AS total
+    FROM ${table(this)} WHERE type = ${ProposalType.Tender} AND status = ${ProposalStatus.Pending};`
+
+    return (await this.namedQuery('get_open_pitches_total', query))[0]
   }
 }

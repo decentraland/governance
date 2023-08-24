@@ -1,0 +1,65 @@
+.ProjectCardHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-content: center;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 6px;
+}
+
+.ProjectCardHeader__ConfigurationInfo {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.ProjectCardHeader__SizeContainer {
+  display: inline-flex;
+  align-items: center;
+  color: var(--black-600);
+}
+
+.ProjectCardHeader__Username {
+  display: none;
+}
+
+@media (min-width: 425px) {
+  .ProjectCardHeader__ConfigurationInfo {
+    display: flex;
+    justify-content: flex-start;
+    gap: 9px;
+    width: auto;
+  }
+
+  .ProjectCardHeader__Username {
+    display: flex !important;
+    color: var(--black-600);
+    text-transform: uppercase;
+    gap: 3px;
+    align-items: center;
+    font-weight: var(--weight-semi-bold);
+    font-size: 11px;
+    line-height: 18px;
+  }
+
+  .ProjectCardHeader__Username .dcl.address {
+    color: var(--black-600);
+  }
+}
+
+.ProjectCardHeader__Size {
+  color: var(--black-600);
+  padding-right: 3px;
+  margin-bottom: 0;
+  font-weight: var(--weight-normal);
+  line-height: 18px;
+  font-style: normal;
+  font-size: 11px !important;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+.ProjectCardHeader__SizeNumber {
+  font-weight: var(--weight-semi-bold);
+}

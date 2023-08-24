@@ -23,6 +23,7 @@ import {
   NewProposalPoll,
   NewProposalTender,
   PendingProposalsQuery,
+  ProjectWithUpdate,
   ProposalAttributes,
   ProposalCommentsInDiscourse,
   ProposalStatus,
@@ -137,6 +138,20 @@ export class Governance extends API {
   async getGrants() {
     const proposals = await this.fetch<ApiResponse<CategorizedGrants>>('/proposals/grants')
     return proposals.data
+  }
+
+  async getProjects() {
+    const proposals = await this.fetch<ApiResponse<ProjectWithUpdate[]>>(`/projects`, this.options().method('GET'))
+
+    return proposals
+  }
+
+  async getOpenPitchesTotal() {
+    return await this.fetch<{ total: number }>(`/projects/pitches-total`, this.options().method('GET'))
+  }
+
+  async getOpenTendersTotal() {
+    return await this.fetch<{ total: number }>(`/projects/tenders-total`, this.options().method('GET'))
   }
 
   async getGrantsByUser(user: string, coauthoring?: boolean) {

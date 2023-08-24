@@ -1,6 +1,6 @@
 import API from 'decentraland-gatsby/dist/utils/api/API'
 
-import { GrantStatus, GrantTierType, ProposalGrantCategory } from '../entities/Grant/types'
+import { GrantTierType, ProjectStatus, ProposalGrantCategory } from '../entities/Grant/types'
 import { ProposalStatus } from '../entities/Proposal/types'
 import { TokenInWallet } from '../entities/Transparency/types'
 import { ProjectHealth, UpdateStatus } from '../entities/Updates/types'
@@ -91,7 +91,7 @@ export type TransparencyGrant = {
   vesting_finish_at?: number
   vesting_token_contract_balance?: number
   vesting_total_amount?: number
-  vesting_status?: GrantStatus
+  vesting_status?: ProjectStatus
   next_update?: number
 }
 export type TransparencyGrants = TransparencyGrant[]
@@ -124,7 +124,7 @@ export type TransparencyVesting = {
   vesting_finish_at: string
   vesting_contract_token_balance: number
   vesting_total_amount: number
-  vesting_status: GrantStatus
+  vesting_status: ProjectStatus
   duration_in_months: number
 }
 

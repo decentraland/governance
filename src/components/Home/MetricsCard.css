@@ -11,6 +11,24 @@
   margin: 0;
 }
 
+.MetricsCard--full-width.ui.card {
+  width: 100%;
+}
+
+.MetricsCard--static.ui.card {
+  box-shadow: none;
+}
+
+.MetricsCard--static.ui.card:hover {
+  transform: none;
+  box-shadow: none;
+  cursor: unset;
+}
+
+.MetricsCard--dark.ui.card {
+  background-color: var(--black-700) !important;
+}
+
 .MetricsCard__Container {
   width: 200px;
 }
@@ -35,12 +53,20 @@
   margin: 0 0 8px 0;
 }
 
+.MetricsCard__Category--dark {
+  color: var(--black-400);
+}
+
 .MetricsCard__Title {
   font-weight: var(--weight-semi-bold);
   font-size: 20px;
   line-height: 24px;
   color: var(--black-800);
   margin: 0 0 8px 0;
+}
+
+.MetricsCard__Title--dark {
+  color: var(--white-900);
 }
 
 .MetricsCard__Description {
@@ -50,4 +76,8 @@
   text-transform: uppercase;
   color: var(--black-600);
   margin: 0;
+}
+
+.MetricsCard__Description--dark {
+  color: var(--black-400);
 }

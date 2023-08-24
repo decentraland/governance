@@ -29,7 +29,7 @@ export default function GetInvolvedQuestion({ proposal }: { proposal: ProposalAt
     return (
       <Markdown componentsClassNames={{ p: 'GetInvolvedQuestion__Text' }}>
         {t('page.proposal_detail.get_involved_grant', {
-          value: intl.formatNumber(configuration.size, CURRENCY_FORMAT_OPTIONS as any),
+          value: intl.formatNumber(configuration.size, CURRENCY_FORMAT_OPTIONS),
           category: configuration.category,
         })}
       </Markdown>

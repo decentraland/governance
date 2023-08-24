@@ -17,11 +17,13 @@ import YAML from 'yaml'
 
 import { runAirdropJobs } from './back/jobs/BadgeAirdrop'
 import badges from './back/routes/badges'
+import bid from './back/routes/bid'
 import budget from './back/routes/budget'
 import coauthor from './back/routes/coauthor'
 import committee from './back/routes/committee'
 import common from './back/routes/common'
 import debug from './back/routes/debug'
+import project from './back/routes/project'
 import proposal from './back/routes/proposal'
 import sitemap from './back/routes/sitemap'
 import snapshot from './back/routes/snapshot'
@@ -32,7 +34,6 @@ import update from './back/routes/update'
 import users from './back/routes/user'
 import vestings from './back/routes/vestings'
 import score from './back/routes/votes'
-import bids from './entities/Bid/routes'
 import { updateGovernanceBudgets } from './entities/Budget/jobs'
 import { activateProposals, finishProposal, publishBids } from './entities/Proposal/jobs'
 import { DiscordService } from './services/DiscordService'
@@ -70,9 +71,10 @@ app.use('/api', [
   budget,
   badges,
   common,
-  bids,
+  bid,
   snapshot,
   vestings,
+  project,
   handle(async () => {
     throw new RequestError('NotFound', RequestError.NotFound)
   }),
@@ -91,6 +93,15 @@ app.get(
     const websiteUrl = process.env.GATSBY_GOVERNANCE_API?.replace('/api', '')
     const addressParam = address ? `?address=${address}` : ''
     return res.redirect(`${websiteUrl}/profile/${addressParam}`)
+  })
+)
+
+// Grants to project redirect to preserve previous URL
+app.get(
+  '/grants',
+  handleRaw(async (req, res) => {
+    const websiteUrl = process.env.GATSBY_GOVERNANCE_API?.replace('/api', '')
+    return res.redirect(`${websiteUrl}/projects`)
   })
 )
 
