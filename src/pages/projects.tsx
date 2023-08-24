@@ -67,9 +67,9 @@ function filterDisplayableProjects(
 
 function getCounter(projects: ProjectWithUpdate[] | undefined) {
   return {
-    all_projects: projects?.length || 0,
-    grants: projects?.filter((item) => item.type === ProposalType.Grant).length || 0,
-    bidding_and_tendering: projects?.filter((item) => item.type === ProposalType.Bid).length || 0,
+    [ProjectTypeFilter.All]: projects?.length || 0,
+    [ProjectTypeFilter.Grants]: projects?.filter((item) => item.type === ProposalType.Grant).length || 0,
+    [ProjectTypeFilter.BiddingAndTendering]: projects?.filter((item) => item.type === ProposalType.Bid).length || 0,
   }
 }
 
