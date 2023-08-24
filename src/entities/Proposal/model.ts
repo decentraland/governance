@@ -465,6 +465,6 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     SELECT COUNT(DISTINCT (configuration->>'linked_proposal_id')) AS total
     FROM ${table(this)} WHERE type = ${ProposalType.Tender} AND status = ${ProposalStatus.Pending};`
 
-    return (await this.namedQuery('get_open_pitchs_total', query))[0]
+    return (await this.namedQuery('get_open_pitches_total', query))[0]
   }
 }
