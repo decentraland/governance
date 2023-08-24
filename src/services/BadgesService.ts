@@ -84,11 +84,7 @@ export class BadgesService {
 
   public static async giveBadgeToUsers(badgeCid: string, users: string[]): Promise<AirdropOutcome> {
     try {
-      const usersWhoVoted = await this.getUsersWhoVoted(users)
-      if (usersWhoVoted.length === 0) {
-        return { status: AirdropJobStatus.FAILED, error: ErrorReason.NoUserHasVoted }
-      }
-      const { usersWithoutBadge, usersWithBadgesToReinstate } = await this.getUsersWithoutBadge(badgeCid, usersWhoVoted)
+      const { usersWithoutBadge, usersWithBadgesToReinstate } = await this.getUsersWithoutBadge(badgeCid, users)
       if (usersWithBadgesToReinstate.length > 0) {
         inBackground(async () => {
           return await this.reinstateBadge(badgeCid, usersWithBadgesToReinstate)
@@ -98,7 +94,11 @@ export class BadgesService {
       if (usersWithoutBadge.length === 0) {
         return { status: AirdropJobStatus.FAILED, error: ErrorReason.NoUserWithoutBadge }
       }
-      return await this.airdropWithRetry(badgeCid, usersWithoutBadge)
+      const usersWhoVoted = await this.getUsersWhoVoted(usersWithoutBadge)
+      if (usersWhoVoted.length === 0) {
+        return { status: AirdropJobStatus.FAILED, error: ErrorReason.NoUserHasVoted }
+      }
+      return await this.airdropWithRetry(badgeCid, usersWhoVoted)
     } catch (e) {
       return { status: AirdropJobStatus.FAILED, error: JSON.stringify(e) }
     }
