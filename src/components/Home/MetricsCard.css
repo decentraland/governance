@@ -11,6 +11,10 @@
   margin: 0;
 }
 
+.MetricsCard--full-width.ui.card {
+  width: 100%;
+}
+
 .MetricsCard--static.ui.card {
   box-shadow: none;
 }

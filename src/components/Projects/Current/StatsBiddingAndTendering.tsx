@@ -44,17 +44,20 @@ export default function StatsBiddingAndTendering({ projects }: Props) {
     <StatsContainer>
       <MetricsCard
         variant="dark"
+        fullWidth
         category={t('page.grants.bidding_and_tendering_stats.funding.category', { quarter: currentQuarter })}
         title={formatFundingValue(totalBidFunding)}
       />
       <MetricsCard
         variant="dark"
+        fullWidth
         href={locations.proposals({ type: ProposalType.Pitch })}
         category={t('page.grants.bidding_and_tendering_stats.tender_opportunities.category')}
         title={t('page.grants.bidding_and_tendering_stats.tender_opportunities.total', { total: totalOpenPitches })}
       />
       <MetricsCard
         variant="dark"
+        fullWidth
         href={locations.proposals({ type: ProposalType.Tender })}
         category={t('page.grants.bidding_and_tendering_stats.bid_opportunities.category')}
         title={t('page.grants.bidding_and_tendering_stats.bid_opportunities.total', { total: totalOpenTenders })}

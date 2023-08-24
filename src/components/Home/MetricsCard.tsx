@@ -15,6 +15,7 @@ interface Props {
   title: string
   description?: string
   loadingLabel?: string
+  fullWidth?: boolean
   variant?: 'light' | 'dark'
 }
 
@@ -26,12 +27,18 @@ export default function MetricsCard({
   isLoading,
   loadingLabel,
   variant = 'light',
+  fullWidth = false,
 }: Props) {
   return (
     <Card
       as={Link}
       href={href}
-      className={classNames('MetricsCard', variant && `MetricsCard--${variant}`, !href && `MetricsCard--static`)}
+      className={classNames(
+        'MetricsCard',
+        variant && `MetricsCard--${variant}`,
+        !href && `MetricsCard--static`,
+        fullWidth && `MetricsCard--full-width`
+      )}
     >
       {!isLoading && (
         <div className="MetricsCard__Container">

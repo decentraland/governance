@@ -56,6 +56,7 @@ export default function StatsAllProjects({ projects }: Props) {
     <StatsContainer>
       <MetricsCard
         variant="dark"
+        fullWidth
         category={t('page.grants.all_projects_stats.projects.category')}
         title={t('page.grants.all_projects_stats.projects.total', { total: currentProjects.length })}
         description={t('page.grants.all_projects_stats.projects.ending_this_week', {
@@ -64,6 +65,7 @@ export default function StatsAllProjects({ projects }: Props) {
       />
       <MetricsCard
         variant="dark"
+        fullWidth
         category={t('page.grants.all_projects_stats.funding.category', { quarter: currentQuarter })}
         title={`${formatFundingValue(totalBidFunding + totalGrantFunding)}`}
         description={t('page.grants.all_projects_stats.funding.total', {
@@ -73,6 +75,7 @@ export default function StatsAllProjects({ projects }: Props) {
       />
       <MetricsCard
         variant="dark"
+        fullWidth
         href={locations.proposals({ type: ProposalType.Tender })}
         category={t('page.grants.all_projects_stats.opportunities.category')}
         title={t('page.grants.all_projects_stats.opportunities.total', { total: totalOpenTenders })}
