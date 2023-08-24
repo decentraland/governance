@@ -1,4 +1,4 @@
-.GrantCardHeadline {
+.ProjectCardHeadline {
   display: inline-flex;
   align-items: center;
   margin-bottom: 0;
@@ -7,11 +7,11 @@
   gap: 16px;
 }
 
-.GrantCardHeadline__Slim {
+.ProjectCardHeadline__Slim {
   max-height: 61px;
 }
 
-.ui.header.GrantCardHeadline__Title {
+.ui.header.ProjectCardHeadline__Title {
   min-height: 54px;
   font-size: 15px;
   line-height: 24px;
@@ -22,30 +22,30 @@
   font-weight: var(--weight-semi-bold);
 }
 
-.GrantCardHeadline__Avatar {
+.ProjectCardHeadline__Avatar {
   display: none;
 }
 
 @media (min-width: 425px) {
-  .GrantCardHeadline {
+  .ProjectCardHeadline {
     margin-bottom: 9px !important;
   }
 
-  .GrantCardHeadline__Avatar {
+  .ProjectCardHeadline__Avatar {
     display: flex !important;
   }
 
-  span.Username.GrantCardHeadline__Avatar > canvas.dcl.blockie {
+  span.Username.ProjectCardHeadline__Avatar > canvas.dcl.blockie {
     margin-right: 0 !important;
   }
 
-  .GrantCardHeadline__Avatar .Avatar,
+  .ProjectCardHeadline__Avatar .Avatar,
   .Avatar.Avatar--medium {
     width: 44px;
     margin-right: 0;
   }
 
-  .ui.header.GrantCardHeadline__Title {
+  .ui.header.ProjectCardHeadline__Title {
     margin-top: 5px !important;
     min-height: 56px !important;
     font-size: 20px;
@@ -53,7 +53,7 @@
   }
 }
 
-.GrantCardHeadline__TwoLineEllipsis {
+.ProjectCardHeadline__TwoLineEllipsis {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;

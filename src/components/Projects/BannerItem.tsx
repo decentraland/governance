@@ -19,13 +19,13 @@ const BannerItem = ({ title, description, url, showDivider }: Props) => {
       <a
         href={url || ''}
         target="_blank"
-        className={classNames(!url && 'GrantsBannerItem--noUrl')}
+        className={classNames(!url && 'ProjectsBannerItem--noUrl')}
         rel="noopener noreferrer"
       >
-        <div className="GrantsBannerItem">
+        <div className="ProjectsBannerItem">
           <div>
-            <h3 className="GrantsBannerItem__Title">{title}</h3>
-            <p className="GrantsBannerItem__Description">{description}</p>
+            <h3 className="ProjectsBannerItem__Title">{title}</h3>
+            <p className="ProjectsBannerItem__Description">{description}</p>
           </div>
           {url && (
             <div>
@@ -34,7 +34,7 @@ const BannerItem = ({ title, description, url, showDivider }: Props) => {
           )}
         </div>
       </a>
-      {showDivider && <div className="GrantsBanner__ItemsDivider" />}
+      {showDivider && <div className="ProjectsBanner__ItemsDivider" />}
     </>
   )
 }

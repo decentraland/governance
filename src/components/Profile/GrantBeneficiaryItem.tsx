@@ -5,7 +5,7 @@ import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { TransparencyGrantsTiers } from '../../clients/DclData'
-import { Grant } from '../../entities/Proposal/types'
+import { Project } from '../../entities/Proposal/types'
 import { isProposalInCliffPeriod } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import { abbreviateTimeDifference, formatDate } from '../../utils/date/Time'
@@ -13,17 +13,16 @@ import locations from '../../utils/locations'
 import Link from '../Common/Typography/Link'
 import Markdown from '../Common/Typography/Markdown'
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
+import CliffProgress from '../Projects/ProjectCard/CliffProgress'
+import ProgressBarTooltip from '../Projects/ProjectCard/ProgressBarTooltip'
+import VestingProgress from '../Projects/ProjectCard/VestingProgress'
+import ProjectPill from '../Projects/ProjectPill'
 import Username from '../User/Username'
 
-import CliffProgress from './GrantCard/CliffProgress'
-import ProgressBarTooltip from './GrantCard/ProgressBarTooltip'
-import VestingProgress from './GrantCard/VestingProgress'
-
 import './GrantBeneficiaryItem.css'
-import ProjectPill from './ProjectPill'
 
 interface Props {
-  grant: Grant
+  grant: Project
 }
 
 function GrantBeneficiaryItem({ grant }: Props) {
@@ -70,7 +69,7 @@ function GrantBeneficiaryItem({ grant }: Props) {
                   {proposalInCliffPeriod ? (
                     <CliffProgress enactedAt={enacted_at} basic />
                   ) : (
-                    <VestingProgress grant={grant} basic />
+                    <VestingProgress project={grant} basic />
                   )}
                 </div>
               </ProgressBarTooltip>

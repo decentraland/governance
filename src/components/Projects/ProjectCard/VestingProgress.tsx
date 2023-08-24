@@ -2,7 +2,7 @@ import React from 'react'
 
 import classNames from 'classnames'
 
-import { Grant } from '../../../entities/Proposal/types'
+import { Project } from '../../../entities/Proposal/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Time from '../../../utils/date/Time'
 import '../../Modal/VotingPowerDelegationDetail/VotingPowerDistribution.css'
@@ -11,15 +11,15 @@ import PercentageLabel from './PercentageLabel'
 import './VestingProgress.css'
 
 type Props = {
-  grant: Grant
+  project: Project
   basic?: boolean
 }
 
 const getRoundedPercentage = (value: number, total: number) => Math.min(Math.round((value * 100) / total), 100)
 
-const VestingProgress = ({ grant, basic }: Props) => {
+const VestingProgress = ({ project, basic }: Props) => {
   const t = useFormatMessage()
-  const { contract, enacting_tx, tx_amount, token, enacted_at } = grant
+  const { contract, enacting_tx, tx_amount, token, enacted_at } = project
   if (!enacted_at) return null
 
   const total = contract?.vesting_total_amount || 100

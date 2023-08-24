@@ -12,7 +12,6 @@ import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
 import { GrantRequest, ProposalGrantCategory, SubtypeOptions } from '../entities/Grant/types'
 import {
   CategorizedGrants,
-  GrantWithUpdate,
   NewProposalBanName,
   NewProposalCatalyst,
   NewProposalDraft,
@@ -24,6 +23,7 @@ import {
   NewProposalPoll,
   NewProposalTender,
   PendingProposalsQuery,
+  ProjectWithUpdate,
   ProposalAttributes,
   ProposalCommentsInDiscourse,
   ProposalStatus,
@@ -141,7 +141,7 @@ export class Governance extends API {
   }
 
   async getProjects() {
-    const proposals = await this.fetch<ApiResponse<GrantWithUpdate[]>>(`/projects`, this.options().method('GET'))
+    const proposals = await this.fetch<ApiResponse<ProjectWithUpdate[]>>(`/projects`, this.options().method('GET'))
 
     return proposals
   }

@@ -6,13 +6,13 @@ import toSnakeCase from 'lodash/snakeCase'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import WiderContainer from '../components/Common/WiderContainer'
-import CurrentProjectsList from '../components/Grants/Current/CurrentProjectsList'
-import GrantsBanner from '../components/Grants/Current/GrantsBanner'
-import RequestBanner from '../components/Grants/RequestBanner'
 import BurgerMenuLayout from '../components/Layout/BurgerMenu/BurgerMenuLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
+import CurrentProjectsList from '../components/Projects/Current/CurrentProjectsList'
+import ProjectsBanner from '../components/Projects/Current/ProjectsBanner'
+import RequestBanner from '../components/Projects/RequestBanner'
 import CategoryFilter, { ProjectTypeFilter } from '../components/Search/CategoryFilter'
 import StatusFilter from '../components/Search/StatusFilter'
 import {
@@ -23,14 +23,14 @@ import {
   toGrantSubtype,
 } from '../entities/Grant/types'
 import { toProjectStatus } from '../entities/Grant/utils'
-import { GrantWithUpdate, ProposalType } from '../entities/Proposal/types'
+import { ProjectWithUpdate, ProposalType } from '../entities/Proposal/types'
 import useFormatMessage from '../hooks/useFormatMessage'
 import useProjects from '../hooks/useProjects'
 import useURLSearchParams from '../hooks/useURLSearchParams'
 import { isUnderMaintenance } from '../utils/maintenance'
 
 function filterDisplayableProjects(
-  projects: GrantWithUpdate[] | undefined,
+  projects: ProjectWithUpdate[] | undefined,
   type: string | undefined,
   subtype: SubtypeOptions | undefined,
   status: ProjectStatus | undefined
@@ -65,7 +65,7 @@ function filterDisplayableProjects(
   }
 }
 
-function getCounter(projects: GrantWithUpdate[] | undefined) {
+function getCounter(projects: ProjectWithUpdate[] | undefined) {
   return {
     all_projects: projects?.length || 0,
     grants: projects?.filter((item) => item.type === ProposalType.Grant).length || 0,
@@ -117,7 +117,7 @@ export default function ProjectsPage() {
       {!isLoadingProjects && (
         <BurgerMenuLayout navigationOnly activeTab={NavigationTab.Grants}>
           <WiderContainer>
-            <GrantsBanner />
+            <ProjectsBanner />
             <Grid stackable>
               <Grid.Row>
                 <Grid.Column tablet="3">

@@ -4,14 +4,14 @@
   gap: 22px;
 }
 
-.CurrentGrants__TitleContainer {
+.CurrentProjects__TitleContainer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 6px;
 }
 
-.CurrentGrants__Title {
+.CurrentProjects__Title {
   font-style: normal;
   font-weight: var(--weight-semi-bold);
   font-size: 13px;
@@ -21,38 +21,38 @@
   margin-bottom: 13px;
 }
 
-.CurrentGrants__Filters {
+.CurrentProjects__Filters {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
 @media (min-width: 768px) {
-  .CurrentGrants__Filters {
+  .CurrentProjects__Filters {
     flex-direction: row;
     align-items: center;
   }
 
-  .CurrentGrants__Empty {
+  .CurrentProjects__Empty {
     margin-top: 185px;
   }
 }
 
-.CurrentGrants__Container {
+.CurrentProjects__Container {
   display: grid;
   grid-gap: 14px;
   flex-wrap: wrap;
 }
 
 @media (min-width: 992px) {
-  .CurrentGrants__Container {
+  .CurrentProjects__Container {
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: subgrid;
     grid-gap: 22px;
   }
 }
 
-.ui.container.CurrentGrants__Container {
+.ui.container.CurrentProjects__Container {
   width: 100% !important;
   margin-left: 0 !important;
   margin-right: 0 !important;

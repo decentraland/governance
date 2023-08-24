@@ -790,7 +790,7 @@ type VestingContractData = {
   vesting_total_amount: number
 }
 
-export type Grant = {
+export type Project = {
   id: string
   title: string
   user: string
@@ -810,14 +810,14 @@ export type Grant = {
   tx_date?: number
 }
 
-export type GrantWithUpdate = Grant & {
+export type ProjectWithUpdate = Project & {
   update?: IndexedUpdate | null
   update_timestamp?: number
 }
 
 export type CategorizedGrants = {
-  current: GrantWithUpdate[]
-  past: GrantWithUpdate[]
+  current: ProjectWithUpdate[]
+  past: ProjectWithUpdate[]
   total: number
 }
 

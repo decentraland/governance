@@ -8,7 +8,7 @@ interface Props {
   type: ProposalGrantCategory
 }
 
-const PROPOSAL_GRANT_CATEGORY_COLORS: Record<ProposalGrantCategory | ProposalType.Tender, PillColor> = {
+const PROJECT_CATEGORY_COLORS: Record<ProposalGrantCategory | ProposalType.Tender, PillColor> = {
   [OldGrantCategory.Community]: PillColor.Green,
   [OldGrantCategory.ContentCreator]: PillColor.Orange,
   [OldGrantCategory.PlatformContributor]: PillColor.Purple,
@@ -35,9 +35,9 @@ function getProjectCategory(
   return category
 }
 
-export default function GrantPill({ type }: Props) {
+export default function ProjectPill({ type }: Props) {
   return (
-    <Pill size="sm" color={PROPOSAL_GRANT_CATEGORY_COLORS[type]}>
+    <Pill size="sm" color={PROJECT_CATEGORY_COLORS[type]}>
       {getProjectCategory(type).split(' ')[0]}
     </Pill>
   )

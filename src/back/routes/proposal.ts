@@ -26,7 +26,6 @@ import ProposalModel from '../../entities/Proposal/model'
 import {
   CatalystType,
   CategorizedGrants,
-  GrantWithUpdate,
   HiringType,
   INVALID_PROPOSAL_POLL_OPTIONS,
   NewProposalBanName,
@@ -40,6 +39,7 @@ import {
   NewProposalPoll,
   NewProposalTender,
   PoiType,
+  ProjectWithUpdate,
   ProposalAttributes,
   ProposalCommentsInDiscourse,
   ProposalRequiredVP,
@@ -622,7 +622,7 @@ async function getGrants(): Promise<CategorizedGrants> {
   return await ProjectService.getGrants()
 }
 
-// TODO: Remove. Deprecated.
+// TODO: Still in use by user profile page.
 async function getGrantsByUser(req: Request): ReturnType<typeof getGrants> {
   const address = req.params.address
   const isCoauthoring = req.query.coauthor === 'true'
@@ -637,7 +637,7 @@ async function getGrantsByUser(req: Request): ReturnType<typeof getGrants> {
 
   const grantsResult = await getGrants()
 
-  const filterGrants = (grants: GrantWithUpdate[]) => {
+  const filterGrants = (grants: ProjectWithUpdate[]) => {
     return grants.filter(
       (grant) => grant.user.toLowerCase() === address.toLowerCase() || coauthoringProposalIds.has(grant.id)
     )

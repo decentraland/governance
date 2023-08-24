@@ -1,4 +1,4 @@
-.GrantsBanner {
+.ProjectsBanner {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -13,20 +13,20 @@
 }
 
 @media (min-width: 992px) {
-  .GrantsBanner {
+  .ProjectsBanner {
     flex-direction: row;
   }
 
-  .GrantsBanner__Items {
+  .ProjectsBanner__Items {
     width: auto;
   }
 
-  .GrantsBanner__ItemsDivider {
+  .ProjectsBanner__ItemsDivider {
     width: 293px !important;
   }
 }
 
-.GrantsBanner__Title {
+.ProjectsBanner__Title {
   font-style: normal;
   font-weight: var(--weight-semi-bold);
   font-size: 28px;
@@ -35,7 +35,7 @@
   color: var(--white-900);
 }
 
-.GrantsBanner__Description {
+.ProjectsBanner__Description {
   font-style: normal;
   font-weight: var(--weight-semi-bold);
   font-size: 20px;
@@ -44,7 +44,7 @@
   color: var(--white-900);
 }
 
-.GrantsBanner__Items {
+.ProjectsBanner__Items {
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -52,7 +52,7 @@
   width: 100%;
 }
 
-.GrantsBannerItem_Text {
+.ProjectsBannerItem_Text {
   display: flex;
   flex-direction: column;
 }

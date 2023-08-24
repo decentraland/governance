@@ -1,16 +1,16 @@
-.GrantsBannerItem {
+.ProjectsBannerItem {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
 }
 
-.GrantsBannerItem--noUrl {
+.ProjectsBannerItem--noUrl {
   cursor: default;
   pointer-events: none;
 }
 
-.GrantsBannerItem__Title {
+.ProjectsBannerItem__Title {
   font-style: normal;
   font-weight: var(--weight-semi-bold);
   font-size: 16px;
@@ -19,7 +19,7 @@
   margin-bottom: 3px;
 }
 
-.GrantsBannerItem__Description {
+.ProjectsBannerItem__Description {
   font-style: normal;
   font-weight: var(--weight-normal);
   font-size: 14px;
@@ -27,7 +27,7 @@
   color: var(--white-900);
 }
 
-.GrantsBanner__ItemsDivider {
+.ProjectsBanner__ItemsDivider {
   opacity: 0.3;
   width: auto;
   border: 1px solid var(--white-900);

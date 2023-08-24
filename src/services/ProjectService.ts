@@ -9,9 +9,9 @@ import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../entities/Grant/constants'
 import { GrantRequest, ProjectStatus } from '../entities/Grant/types'
 import ProposalModel from '../entities/Proposal/model'
 import {
-  Grant,
   GrantProposalConfiguration,
-  GrantWithUpdate,
+  Project,
+  ProjectWithUpdate,
   ProposalAttributes,
   ProposalStatus,
   ProposalType,
@@ -32,7 +32,7 @@ export class ProjectService {
     const data = await ProposalModel.getProjectList()
 
     const vestings = await DclData.get().getVestings()
-    const projects: GrantWithUpdate[] = []
+    const projects: ProjectWithUpdate[] = []
 
     await Promise.all(
       data.map(async (proposal: ProposalAttributes) => {
@@ -46,7 +46,7 @@ export class ProjectService {
             })
           const latestVesting = proposalVestings[0]
 
-          const project: Grant = {
+          const project: Project = {
             id: proposal.id,
             title: proposal.title,
             user: proposal.user,
@@ -62,7 +62,7 @@ export class ProjectService {
 
           try {
             const update = await this.getGrantLatestUpdate(project.id)
-            const projectWithUpdate: GrantWithUpdate = {
+            const projectWithUpdate: ProjectWithUpdate = {
               ...project,
               ...this.getUpdateData(update),
             }
@@ -121,8 +121,8 @@ export class ProjectService {
     const vestings = await DclData.get().getVestings()
     const enactedGrants = filter(grants, (item) => item.status === ProposalStatus.Enacted)
 
-    const current: GrantWithUpdate[] = []
-    const past: GrantWithUpdate[] = []
+    const current: ProjectWithUpdate[] = []
+    const past: ProjectWithUpdate[] = []
 
     await Promise.all(
       enactedGrants.map(async (grant: TransparencyGrant) => {
@@ -134,17 +134,17 @@ export class ProjectService {
             return
           }
 
-          const newGrant: Grant = this.parseTransparencyGrant(grant, createdAt, vesting)
+          const newGrant: Project = this.parseTransparencyGrant(grant, createdAt, vesting)
           Object.assign(newGrant, this.getVestingData(grant, vesting))
 
           try {
             const update = await this.getGrantLatestUpdate(grant.id)
-            const grantWithUpdate: GrantWithUpdate = {
+            const ProjectWithUpdate: ProjectWithUpdate = {
               ...newGrant,
               ...this.getUpdateData(update),
             }
 
-            return this.isCurrentGrant(newGrant.status) ? current.push(grantWithUpdate) : past.push(grantWithUpdate)
+            return this.isCurrentGrant(newGrant.status) ? current.push(ProjectWithUpdate) : past.push(ProjectWithUpdate)
           } catch (error) {
             logger.error(`Failed to fetch grant update data from proposal ${grant.id}`, formatError(error as Error))
           }
@@ -168,7 +168,7 @@ export class ProjectService {
     }
   }
 
-  private static toPendingGovernanceGrant(proposal: ProposalAttributes): GrantWithUpdate {
+  private static toPendingGovernanceGrant(proposal: ProposalAttributes): ProjectWithUpdate {
     const { id, configuration, user, title, created_at } = proposal
 
     return {

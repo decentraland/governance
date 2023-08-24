@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import BannerItem from '../BannerItem'
 
-import './GrantsBanner.css'
+import './ProjectsBanner.css'
 
 type BannerItem = {
   title: string
@@ -13,7 +13,7 @@ type BannerItem = {
   url?: string
 }
 
-export default function CurrentGrantsBanner() {
+export default function ProjectsBanner() {
   const t = useFormatMessage()
   const title = t('page.grants.banner.title')
   const description = t('page.grants.banner.description')
@@ -39,12 +39,12 @@ export default function CurrentGrantsBanner() {
   )
 
   return (
-    <div className={classNames('GrantsBanner', `GrantsBanner--current`)}>
-      <div className="GrantsBannerItem_Text">
-        <h2 className="GrantsBanner__Title">{title}</h2>
-        <p className="GrantsBanner__Description">{description}</p>
+    <div className={classNames('ProjectsBanner', `ProjectsBanner--current`)}>
+      <div className="ProjectsBannerItem_Text">
+        <h2 className="ProjectsBanner__Title">{title}</h2>
+        <p className="ProjectsBanner__Description">{description}</p>
       </div>
-      <div className="GrantsBanner__Items">
+      <div className="ProjectsBanner__Items">
         {items.map((item, index) => (
           <BannerItem
             key={item.title}

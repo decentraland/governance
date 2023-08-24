@@ -10,25 +10,25 @@ import {
   SubtypeAlternativeOptions,
   SubtypeOptions,
 } from '../../../entities/Grant/types'
-import { GrantWithUpdate } from '../../../entities/Proposal/types'
+import { ProjectWithUpdate } from '../../../entities/Proposal/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import locations from '../../../utils/locations'
 import Empty, { ActionType } from '../../Common/Empty'
 import FullWidthButton from '../../Common/FullWidthButton'
 import Watermelon from '../../Icon/Watermelon'
 import { ProjectTypeFilter } from '../../Search/CategoryFilter'
-import GrantCard from '../GrantCard/GrantCard'
+import ProjectCard from '../ProjectCard/ProjectCard'
 
 import BudgetBanner from './BudgetBanner'
-import CurrentGrantsSortingMenu, { SortingKey } from './CurrentGrantsSortingMenu'
 import './CurrentProjectsList.css'
+import CurrentProjectsSortingMenu, { SortingKey } from './CurrentProjectsSortingMenu'
 import StatsAllProjects from './StatsAllProjects'
 import StatsBiddingAndTendering from './StatsBiddingAndTendering'
 
 const CURRENT_GRANTS_PER_PAGE = 8
 
 interface Props {
-  projects: GrantWithUpdate[]
+  projects: ProjectWithUpdate[]
   selectedType?: ProjectTypeFilter
   selectedSubtype?: SubtypeOptions
   status?: ProjectStatus
@@ -67,7 +67,7 @@ export default function CurrentProjectsList({ projects, selectedSubtype, selecte
   const t = useFormatMessage()
   const [sortingKey, setSortingKey] = useState<SortingKey>(SortingKey.UpdateTimestamp)
   const sortedCurrentGrants = useMemo(() => orderBy(projects, [sortingKey], ['desc']), [projects, sortingKey])
-  const [filteredCurrentGrants, setFilteredCurrentGrants] = useState<GrantWithUpdate[]>([])
+  const [filteredCurrentGrants, setFilteredCurrentGrants] = useState<ProjectWithUpdate[]>([])
 
   useEffect(() => {
     if (!isEmpty(projects)) {
@@ -88,17 +88,17 @@ export default function CurrentProjectsList({ projects, selectedSubtype, selecte
 
   return (
     <div className="CurrentProjectsList">
-      <div className="CurrentGrants__TitleContainer">
+      <div className="CurrentProjects__TitleContainer">
         <div>
-          <h2 className="CurrentGrants__Title">
+          <h2 className="CurrentProjects__Title">
             {t('page.grants.projects_category_title', {
               status: status ? `${t(GRANTS_STATUS_KEYS[status])} ` : '',
               category: t(getCategoryKey(selectedSubtype || selectedType)),
             })}
           </h2>
         </div>
-        <div className="CurrentGrants__Filters">
-          <CurrentGrantsSortingMenu sortingKey={sortingKey} onSortingKeyChange={setSortingKey} />
+        <div className="CurrentProjects__Filters">
+          <CurrentProjectsSortingMenu sortingKey={sortingKey} onSortingKeyChange={setSortingKey} />
         </div>
       </div>
       {selectedType !== ProjectTypeFilter.Grants && selectedType !== ProjectTypeFilter.BiddingAndTendering && (
@@ -114,7 +114,7 @@ export default function CurrentProjectsList({ projects, selectedSubtype, selecte
       )}
       {isEmpty(projects) && (
         <Empty
-          className="CurrentGrants__Empty"
+          className="CurrentProjects__Empty"
           icon={<Watermelon />}
           description={t('page.grants.empty.description')}
           onLinkClick={() => navigate(locations.projects())}
@@ -122,9 +122,9 @@ export default function CurrentProjectsList({ projects, selectedSubtype, selecte
           actionType={ActionType.BUTTON}
         />
       )}
-      <div className="CurrentGrants__Container">
-        {filteredCurrentGrants?.map((grant) => (
-          <GrantCard key={`CurrentGrantCard_${grant.id}`} grant={grant} />
+      <div className="CurrentProjects__Container">
+        {filteredCurrentGrants?.map((project) => (
+          <ProjectCard key={`CurrentProjectCard_${project.id}`} project={project} />
         ))}
       </div>
       {showLoadMoreCurrentGrantsButton && (

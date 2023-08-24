@@ -3,13 +3,13 @@ import { useIntl } from 'react-intl'
 
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
-import { Grant } from '../../../entities/Proposal/types'
+import { Project } from '../../../entities/Proposal/types'
 import { CLIFF_PERIOD_IN_DAYS } from '../../../entities/Proposal/utils'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Time, { formatDate } from '../../../utils/date/Time'
 
 interface Props {
-  grant: Grant
+  grant: Project
   isInCliff: boolean
   children: React.ReactNode
 }

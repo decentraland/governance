@@ -1,4 +1,4 @@
-.GrantCardHeader {
+.ProjectCardHeader {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -8,31 +8,31 @@
   margin-bottom: 6px;
 }
 
-.GrantCardHeader__ConfigurationInfo {
+.ProjectCardHeader__ConfigurationInfo {
   display: flex;
   justify-content: space-between;
   width: 100%;
 }
 
-.GrantCardHeader__SizeContainer {
+.ProjectCardHeader__SizeContainer {
   display: inline-flex;
   align-items: center;
   color: var(--black-600);
 }
 
-.GrantCardHeader__Username {
+.ProjectCardHeader__Username {
   display: none;
 }
 
 @media (min-width: 425px) {
-  .GrantCardHeader__ConfigurationInfo {
+  .ProjectCardHeader__ConfigurationInfo {
     display: flex;
     justify-content: flex-start;
     gap: 9px;
     width: auto;
   }
 
-  .GrantCardHeader__Username {
+  .ProjectCardHeader__Username {
     display: flex !important;
     color: var(--black-600);
     text-transform: uppercase;
@@ -43,12 +43,12 @@
     line-height: 18px;
   }
 
-  .GrantCardHeader__Username .dcl.address {
+  .ProjectCardHeader__Username .dcl.address {
     color: var(--black-600);
   }
 }
 
-.GrantCardHeader__Size {
+.ProjectCardHeader__Size {
   color: var(--black-600);
   padding-right: 3px;
   margin-bottom: 0;
@@ -60,6 +60,6 @@
   letter-spacing: 0;
 }
 
-.GrantCardHeader__SizeNumber {
+.ProjectCardHeader__SizeNumber {
   font-weight: var(--weight-semi-bold);
 }

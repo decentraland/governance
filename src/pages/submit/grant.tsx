@@ -26,10 +26,10 @@ import GrantRequestGeneralInfoSection, {
 import GrantRequestTeamSection, {
   INITIAL_GRANT_REQUEST_TEAM_STATE,
 } from '../../components/GrantRequest/GrantRequestTeamSection'
-import CategorySelector from '../../components/Grants/CategorySelector'
 import DecentralandLogo from '../../components/Icon/DecentralandLogo'
 import { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
+import CategorySelector from '../../components/Projects/CategorySelector'
 import LogIn from '../../components/User/LogIn'
 import { GrantRequest, GrantRequestCategoryAssessment, NewGrantCategory } from '../../entities/Grant/types'
 import { ProposalType } from '../../entities/Proposal/types'

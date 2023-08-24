@@ -1,4 +1,4 @@
-.GrantCard {
+.ProjectCard {
   padding: 12px 10px;
   color: var(--white-900);
   border: 1px solid var(--black-100);
@@ -13,30 +13,30 @@
   min-width: 0;
 }
 
-.CurrentGrants__Container .GrantCard i.icon.chevron.right:before {
+.CurrentProjects__Container .ProjectCard i.icon.chevron.right:before {
   top: -5px;
   position: relative;
 }
 
-.CurrentGrants__Container .GrantCard:hover {
+.CurrentProjects__Container .ProjectCard:hover {
   box-shadow: var(--shadow-2);
   transform: translateY(-4px);
   cursor: pointer;
 }
 
-.GrantCard__Expanded {
+.ProjectCard__Expanded {
   overflow: hidden;
   transition: all 0.2s ease 0s;
   z-index: 100;
 }
 
-.GrantCard__Expanded:hover {
+.ProjectCard__Expanded:hover {
   transform: scale(1.1);
   height: 237px;
   box-shadow: 0 5px 30px 0 #0000003d;
 }
 
-.GrantCard__Header {
+.ProjectCard__Header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -44,7 +44,7 @@
   width: 100%;
 }
 
-.ui.header.GrantCard__Title {
+.ui.header.ProjectCard__Title {
   min-height: 52px;
   margin-top: 5px;
   line-height: 28px;
@@ -52,35 +52,35 @@
   font-size: 20px;
 }
 
-.GrantCard .ProposalUpdate {
+.ProjectCard .ProposalUpdate {
   border: none;
   border-top: 1px solid var(--black-100);
   border-radius: 0px;
 }
-.GrantCard .ProposalUpdate:last-child {
+.ProjectCard .ProposalUpdate:last-child {
   margin-bottom: 0;
 }
 
 @media (min-width: 425px) {
-  .GrantCard {
+  .ProjectCard {
     padding: 0 !important;
   }
 
-  .GrantCard > div:first-child {
+  .ProjectCard > div:first-child {
     padding: 16px 16px 0 16px;
   }
 
-  .GrantCard__Expanded {
+  .ProjectCard__Expanded {
     height: 188px;
   }
 }
 
-.GrantCard__UpdateContainer {
+.ProjectCard__UpdateContainer {
   display: none;
 }
 
 @media (min-width: 425px) {
-  .GrantCard__UpdateContainer {
+  .ProjectCard__UpdateContainer {
     display: block !important;
   }
 }
