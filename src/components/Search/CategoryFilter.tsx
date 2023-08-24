@@ -1,6 +1,5 @@
 import React from 'react'
 
-import isEqual from 'lodash/isEqual'
 import toSnakeCase from 'lodash/snakeCase'
 
 import { NewGrantCategory, OldGrantCategory, SubtypeAlternativeOptions } from '../../entities/Grant/types'

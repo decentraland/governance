@@ -412,8 +412,8 @@ export default class ProposalModel extends Model<ProposalAttributes> {
   }
 
   static async getProjectList(): Promise<ProposalAttributes[]> {
-    const status = [ProposalStatus.Passed, ProposalStatus.Enacted].map((id) => SQL`${id}`)
-    const types = [ProposalType.Bid, ProposalType.Grant].map((id) => SQL`${id}`)
+    const status = [ProposalStatus.Passed, ProposalStatus.Enacted].map((status) => SQL`${status}`)
+    const types = [ProposalType.Bid, ProposalType.Grant].map((type) => SQL`${type}`)
 
     const proposals = await this.namedQuery(
       'get_project_list',
