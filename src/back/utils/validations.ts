@@ -8,6 +8,13 @@ export function validateDates(start?: string, end?: string) {
   if (!start || !(start.length > 0) || !end || !(end.length > 0)) {
     throw new RequestError('Invalid dates', RequestError.BadRequest)
   }
+
+  const startDate = new Date(start)
+  const endDate = new Date(end)
+
+  if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+    throw new RequestError('Invalid date formats', RequestError.BadRequest)
+  }
 }
 
 export function validateFields(fields: unknown) {
