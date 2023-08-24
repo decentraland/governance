@@ -36,9 +36,11 @@ function getProjectCategory(
 }
 
 export default function ProjectPill({ type }: Props) {
+  const categoryType = getProjectCategory(type)
+
   return (
-    <Pill size="sm" color={PROJECT_CATEGORY_COLORS[type]}>
-      {getProjectCategory(type).split(' ')[0]}
+    <Pill size="sm" color={PROJECT_CATEGORY_COLORS[categoryType]}>
+      {categoryType.split(' ')[0]}
     </Pill>
   )
 }

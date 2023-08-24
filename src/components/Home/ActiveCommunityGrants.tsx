@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import classNames from 'classnames'
 
+import { ProposalType } from '../../entities/Proposal/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import useGrants from '../../hooks/useProjects'
+import useProjects from '../../hooks/useProjects'
 import locations from '../../utils/locations'
 import FullWidthButton from '../Common/FullWidthButton'
 import ProjectCard from '../Projects/ProjectCard/ProjectCard'
@@ -12,11 +13,12 @@ import './ActiveCommunityGrants.css'
 import HomeLoader from './HomeLoader'
 import HomeSectionHeader from './HomeSectionHeader'
 
-const CURRENT_GRANTS_PER_PAGE = 4
+const GRANTS_TO_SHOW = 4
 
 const ActiveCommunityGrants = () => {
   const t = useFormatMessage()
-  const { projects, isLoadingProjects } = useGrants()
+  const { projects, isLoadingProjects } = useProjects()
+  const grants = useMemo(() => projects?.data.filter((item) => item.type === ProposalType.Grant), [projects])
 
   return (
     <div className="ActiveCommunityGrants">
@@ -31,8 +33,8 @@ const ActiveCommunityGrants = () => {
       )}
       {!isLoadingProjects && (
         <div className="ActiveCommunityGrants__Container">
-          {projects &&
-            projects.data.slice(0, CURRENT_GRANTS_PER_PAGE).map((project, index) => (
+          {grants &&
+            grants.slice(0, GRANTS_TO_SHOW).map((project, index) => (
               <div
                 className={classNames('HoverableCardContainer', index <= 1 && 'HoverableCardContainer__FirstRow')}
                 key={`HoverableCard__${project.id}`}
