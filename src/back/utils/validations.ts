@@ -5,16 +5,20 @@ import isUUID from 'validator/lib/isUUID'
 import { SnapshotProposal } from '../../clients/SnapshotGraphqlTypes'
 
 export function validateDates(start?: string, end?: string) {
-  if (!start || !(start.length > 0) || !end || !(end.length > 0)) {
-    throw new RequestError('Invalid dates', RequestError.BadRequest)
-  }
+  validateDate(start)
+  validateDate(end)
+}
 
-  const startDate = new Date(start)
-  const endDate = new Date(end)
-
-  if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-    throw new RequestError('Invalid date formats', RequestError.BadRequest)
+export function validateDate(date?: string, required?: 'optional') {
+  if ((required !== 'optional' && !(date && isValidDate(date))) || (date && !isValidDate(date))) {
+    throw new RequestError('Invalid date', RequestError.BadRequest)
   }
+}
+
+function isValidDate(date: string) {
+  if (date.length === 0) return false
+  const parsedDate = new Date(date)
+  return !isNaN(parsedDate.getTime())
 }
 
 export function validateFields(fields: unknown) {
@@ -70,4 +74,10 @@ export function validateUniqueAddresses(addresses: string[]): boolean {
   const uniqueSet = new Set(addresses.map((address) => address.toLowerCase()))
 
   return uniqueSet.size === addresses.length
+}
+
+export function validateStringNotEmpty(fieldName: string, someString?: string) {
+  if (!someString || someString.length === 0) {
+    throw new RequestError(`Invalid ${fieldName}`, RequestError.BadRequest)
+  }
 }

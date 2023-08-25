@@ -13,6 +13,8 @@ import Text from '../Common/Typography/Text'
 import ErrorMessage from '../Error/ErrorMessage'
 import { ContentSection } from '../Layout/ContentLayout'
 
+import UploadAndMint from './UploadAndMint'
+
 interface Props {
   className?: string
 }
@@ -85,6 +87,7 @@ export default function BadgesAdmin({ className }: Props) {
       <ContentSection>
         <Heading size="sm">{'Badges'}</Heading>
         <div>
+          <Heading size="xs">{'Airdrop and Revoke'}</Heading>
           <div>
             <Button
               className="Debug__SectionButton"
@@ -113,15 +116,16 @@ export default function BadgesAdmin({ className }: Props) {
             options={REVOKE_REASON_OPTIONS}
             disabled={formDisabled}
           />
+          {result && (
+            <>
+              <Label>{'Result'}</Label>
+              <Text className="Debug__Result">{result}</Text>
+            </>
+          )}
         </div>
-        {result && (
-          <>
-            <Label>{'Result'}</Label>
-            <Text className="Debug__Result">{result}</Text>
-          </>
-        )}
+        <UploadAndMint />
       </ContentSection>
-      {!!errorMessage && <ErrorMessage label={'Budgets Error'} errorMessage={errorMessage} />}
+      {!!errorMessage && <ErrorMessage label={'Badges Error'} errorMessage={errorMessage} />}
     </div>
   )
 }

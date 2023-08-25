@@ -4,6 +4,7 @@ import env from 'decentraland-gatsby/dist/utils/env'
 import snakeCase from 'lodash/snakeCase'
 
 import { AirdropOutcome } from '../back/models/AirdropJob'
+import { SpecState } from '../components/Debug/UploadAndMint'
 import { GOVERNANCE_API } from '../constants'
 import { UserBadges } from '../entities/Badges/types'
 import { BidRequest, UnpublishedBidAttributes } from '../entities/Bid/types'
@@ -598,6 +599,14 @@ export class Governance extends API {
         recipients,
         reason,
       })
+    )
+    return response.data
+  }
+
+  async uploadAndMint(spec: SpecState) {
+    const response = await this.fetch<ApiResponse<string>>(
+      `/badges/upload/`,
+      this.options().method('POST').authorization({ sign: true }).json(spec)
     )
     return response.data
   }
