@@ -5,6 +5,7 @@ import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
 import { ActionStatus, UserBadges, toOtterspaceRevokeReason } from '../../entities/Badges/types'
+import { storeBadgeSpec } from '../../entities/Badges/utils'
 import isDebugAddress from '../../entities/Debug/isDebugAddress'
 import { BadgesService } from '../../services/BadgesService'
 import { AirdropOutcome } from '../models/AirdropJob'
@@ -81,11 +82,16 @@ async function uploadBadge(req: WithAuth): Promise<UploadResult> {
     throw new RequestError('Invalid user', RequestError.Unauthorized)
   }
 
-  const { title, description, expiresAt, imgUrl } = req.body
-  validateStringNotEmpty(title, 'title')
-  validateStringNotEmpty(description, 'description')
+  const { title, description, imgUrl, expiresAt } = req.body
+  validateStringNotEmpty('title', title) //TODO: refactor so it's one method call that validates chosen fields
+  validateStringNotEmpty('description', description)
+  validateStringNotEmpty('imgUrl', imgUrl)
   validateDate(expiresAt)
-  validateStringNotEmpty(imgUrl, 'imgUrl')
 
-  return { status: ActionStatus.Success, badgeCid: 'BADGE CID!' }
+  try {
+    const result = await storeBadgeSpec(title, description, imgUrl, expiresAt)
+    return { status: ActionStatus.Success, ...result }
+  } catch (e) {
+    return { status: ActionStatus.Failed, badgeCid: JSON.stringify(e) }
+  }
 }

@@ -15,7 +15,14 @@ import {
   UserBadges,
   toBadgeStatus,
 } from '../entities/Badges/types'
-import { airdrop, getLandOwnerAddresses, reinstateBadge, revokeBadge, trimOtterspaceId } from '../entities/Badges/utils'
+import {
+  airdrop,
+  getLandOwnerAddresses,
+  reinstateBadge,
+  revokeBadge,
+  storeBadgeSpec,
+  trimOtterspaceId,
+} from '../entities/Badges/utils'
 import CoauthorModel from '../entities/Coauthor/model'
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalAttributes, ProposalType } from '../entities/Proposal/types'
@@ -289,5 +296,9 @@ export class BadgesService {
     return await this.performBadgeAction(badgeCid, addresses, async (badgeId) => {
       await reinstateBadge(badgeId)
     })
+  }
+
+  static async uploadBadge(title: string, description: string, imgUrl: string, expiresAt?: string) {
+    return await storeBadgeSpec(title, description, imgUrl, expiresAt)
   }
 }
