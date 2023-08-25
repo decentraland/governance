@@ -1235,7 +1235,7 @@
         "button": "View all Projects"
       },
       "vested": "vested",
-      "transferred": "transferred",
+      "transferred": "Transferred",
       "one_time_payment": "One-time payment",
       "one_month_cliff": "1-month Cliff Period",
       "cliff_remaining": "{count} {count, plural, one {day} other {days}} to go",

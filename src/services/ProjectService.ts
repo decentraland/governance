@@ -31,7 +31,6 @@ import { ProposalInCreation } from './ProposalService'
 export class ProjectService {
   public static async getProjects() {
     const data = await ProposalModel.getProjectList()
-
     const vestings = await DclData.get().getVestings()
     const projects: ProjectWithUpdate[] = []
 
@@ -58,7 +57,8 @@ export class ProjectService {
               category: proposal.configuration.category || proposal.type,
               tier: proposal.configuration.tier,
             },
-            ...this.getProjectVestingData(latestVesting),
+
+            ...this.getProjectVestingData(proposal, latestVesting),
           }
 
           try {
@@ -85,7 +85,15 @@ export class ProjectService {
     }
   }
 
-  private static getProjectVestingData(vesting: TransparencyVesting) {
+  private static getProjectVestingData(proposal: ProposalAttributes, vesting: TransparencyVesting) {
+    if (proposal.enacting_tx) {
+      return {
+        status: ProjectStatus.Finished,
+        enacting_tx: proposal.enacting_tx,
+        enacted_at: Time(proposal.updated_at).unix(),
+      }
+    }
+
     if (!vesting) {
       return {
         status: ProjectStatus.Pending,
@@ -104,7 +112,7 @@ export class ProjectService {
 
     return {
       status: vesting_status,
-      token: token,
+      token,
       enacted_at: Time(vesting_start_at).unix(),
       contract: {
         vesting_total_amount: Math.round(vesting_total_amount),
