@@ -23,7 +23,6 @@
     "postinstall": "patch-package"
   },
   "jest": {
-    "preset": "ts-jest",
     "watchman": false,
     "setupFiles": [
       "dotenv/config.js"
@@ -34,7 +33,12 @@
     "moduleNameMapper": {
       "\\.(css|less|sass|scss|gif|ttf|eot|svg)$": "<rootDir>/src/__mocks__/files.ts",
       "^gatsby-page-utils/(.*)$": "gatsby-page-utils/dist/$1"
-    }
+    },
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "testEnvironment": "node",
+    "resolver": "<rootDir>/export-maps-resolver.js"
   },
   "repository": {
     "type": "git",
@@ -79,6 +83,7 @@
     "gatsby-transformer-sharp": "^4.10.0",
     "keccak": "^3.0.1",
     "lodash": "^4.17.21",
+    "nft.storage": "^7.1.1",
     "node-pg-migrate": "^6.2.1",
     "numeral": "^2.0.6",
     "patch-package": "^6.4.7",
@@ -128,6 +133,7 @@
     "@typescript-eslint/parser": "^5.25.0",
     "bdd-lazy-var": "^2.6.1",
     "concurrently": "^6.0.0",
+    "enhanced-resolve": "^5.15.0",
     "eslint": "^8.15.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
