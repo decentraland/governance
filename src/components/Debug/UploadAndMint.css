@@ -1,0 +1,4 @@
+.UploadAndMint__ExpirationDate > i.icon,
+.UploadAndMint__ExpirationDate > i.calendar.icon {
+  top: 0 !important;
+}
