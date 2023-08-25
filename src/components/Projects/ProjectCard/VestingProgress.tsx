@@ -19,15 +19,17 @@ const getRoundedPercentage = (value: number, total: number) => Math.min(Math.rou
 
 const VestingProgress = ({ project, basic }: Props) => {
   const t = useFormatMessage()
-  const { contract, enacting_tx, tx_amount, token, enacted_at } = project
+  const { contract, enacting_tx, token, enacted_at } = project
   if (!enacted_at) return null
 
   const total = contract?.vesting_total_amount || 100
   const vestedPercentage = contract ? getRoundedPercentage(contract.vestedAmount, total) : 100
   const releasedPercentage = contract ? getRoundedPercentage(contract.released, total) : null
-  const vestedAmountText = `${t(`general.number`, {
-    value: contract ? contract.vestedAmount : tx_amount || 0,
-  })} ${token}`
+  const vestedAmountText = contract
+    ? `${t(`general.number`, {
+        value: contract.vestedAmount || 0,
+      })} ${token}`
+    : null
   const releasedText = contract
     ? `${t(`general.number`, { value: contract.released })} ${token} ${t('page.grants.released')}`
     : t('page.grants.one_time_payment')
@@ -38,7 +40,9 @@ const VestingProgress = ({ project, basic }: Props) => {
       {!basic && (
         <div className="VestingProgress__Labels">
           <div className="VestingProgress__VestedInfo">
-            <span className="VestingProgress__Bold VestingProgress__Ellipsis">{vestedAmountText}</span>
+            {vestedAmountText && (
+              <span className="VestingProgress__Bold VestingProgress__Ellipsis">{vestedAmountText}</span>
+            )}
             <span className="VestingProgress__Ellipsis">
               {enacting_tx ? t('page.grants.transferred') : t('page.grants.vested')}
             </span>
