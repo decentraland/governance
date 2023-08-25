@@ -1,27 +1,24 @@
 import React, { useMemo } from 'react'
 
+import { Member } from '../../clients/DclData'
+import locations from '../../utils/locations'
 import Avatar from '../Common/Avatar'
+import Link from '../Common/Typography/Link'
 
 import './MemberCard.css'
 
-export type MemberCardProps = React.HTMLAttributes<HTMLDivElement> & {
-  member: {
-    avatar: string
-    name: string
-  }
+interface Props {
+  member: Member
 }
 
-export default function MemberCard({ member }: MemberCardProps) {
-  const color = useMemo(
-    () => (member.name.split('').reduce((a, b) => a + b.charCodeAt(0), 0) % 16).toString(16),
-    [member.name]
-  )
+export default function MemberCard({ member }: Props) {
+  const { name, address, avatar } = member
+  const color = useMemo(() => (name.split('').reduce((a, b) => a + b.charCodeAt(0), 0) % 16).toString(16), [name])
+
   return (
-    <div className="MemberCard">
-      <Avatar src={member.avatar} size="medium" address={'0x' + color} />
-      <div className="MemberCard_description">
-        <span>{member.name}</span>
-      </div>
-    </div>
+    <Link className="MemberCard" href={locations.profile({ address })}>
+      <Avatar src={avatar} size="medium" address={'0x' + color} />
+      <div className="MemberCard__Description">{name}</div>
+    </Link>
   )
 }
