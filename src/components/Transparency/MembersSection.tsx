@@ -37,13 +37,8 @@ export default function MembersSection({ title, description, members }: Props) {
         />
       </Header>
       <div className="MembersContainer">
-        {members.map((member, index) => {
-          return (
-            <MemberCard
-              key={[title.trim(), member.name.trim(), index].join('::')}
-              member={{ avatar: member.avatar, name: member.name }}
-            />
-          )
+        {members.map((member) => {
+          return <MemberCard key={member.address} member={member} />
         })}
       </div>
     </Card.Content>
