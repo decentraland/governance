@@ -39,7 +39,7 @@ export default function UploadAndMint({ className }: Props) {
   const [formDisabled, setFormDisabled] = useState(false)
   const [submitError, setSubmitError] = useState('')
   const [badgeCid, setBadgeCid] = useState<string | undefined>()
-  const [result, setResult] = useState<string | null>()
+  const [result, setResult] = useState<any>()
 
   const {
     handleSubmit,
@@ -59,8 +59,8 @@ export default function UploadAndMint({ className }: Props) {
     try {
       const result: any = await Governance.get().uploadAndMint(data)
       console.log('result', result)
-      setResult(JSON.stringify(result))
-      setBadgeCid(result)
+      setResult(result)
+      setBadgeCid(result.badgeCid)
       setFormDisabled(false)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -134,7 +134,9 @@ export default function UploadAndMint({ className }: Props) {
         {result && (
           <>
             <Label>{'Result'}</Label>
-            <Text className="Debug__Result">{watch('title')}</Text>
+            <Text className="Debug__Result">{result.badgeCid}</Text>
+            <Text className="Debug__Result">{result.metadataUrl}</Text>
+            <Text className="Debug__Result">{result.ipfsAddress}</Text>
           </>
         )}
         {submitError && (
