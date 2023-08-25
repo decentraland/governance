@@ -63,7 +63,7 @@ const NumberSelector = ({ value, onChange, min, max, label, unit, onUnitChange, 
   return (
     <div className="NumberSelector">
       <Label>{label}</Label>
-      <div className="NumberSelectorContainer">
+      <div className="NumberSelector__Container">
         <div className="NumberSelector__InputContainer">
           <div className="NumberSelector__Input">
             <button className="NumberSelector__Button" onClick={handleRemoveClick}>

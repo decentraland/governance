@@ -20,6 +20,7 @@ type CalendarAlertModalProps = Omit<ModalProps, 'children'> & {
 }
 
 const UNITS: UnitTypeLongPlural[] = ['seconds', 'minutes', 'hours', 'days']
+const MAX_TIME_VALUE = 300
 
 function getAlertDate(finishAt: ProposalAttributes['finish_at'], value: number, unit: UnitTypeLongPlural): Date | null {
   const proposalFinishDate = Time.from(finishAt)
@@ -34,17 +35,20 @@ function getAlertDate(finishAt: ProposalAttributes['finish_at'], value: number, 
 function CalendarAlertModal({ proposal, onClose, ...props }: CalendarAlertModalProps) {
   const t = useFormatMessage()
   const { finish_at, title, id } = proposal
-  const [value, setValue] = useState(0)
+  const [timeValue, setTimeValue] = useState(0)
   const [unit, setUnit] = useState<UnitTypeLongPlural | undefined>()
   const [isDisabled, setIsDisabled] = useState(false)
 
-  const handleOnClose = () => {
+  const handleClose = () => {
     onClose()
-    setValue(0)
+    setTimeValue(0)
     setUnit(undefined)
   }
 
-  const alertDate = useMemo(() => (unit ? getAlertDate(finish_at, value, unit) : null), [finish_at, unit, value])
+  const alertDate = useMemo(
+    () => (unit ? getAlertDate(finish_at, timeValue, unit) : null),
+    [finish_at, unit, timeValue]
+  )
 
   useEffect(() => {
     setIsDisabled(!alertDate)
@@ -60,17 +64,17 @@ function CalendarAlertModal({ proposal, onClose, ...props }: CalendarAlertModalP
   })
 
   return (
-    <Modal {...props} onClose={handleOnClose} size="tiny" closeIcon={<Close />}>
+    <Modal {...props} onClose={handleClose} size="tiny" closeIcon={<Close />}>
       <Modal.Content>
         <div className="ProposalModal__Title">
           <Header>{t('modal.calendar_alert.title')}</Header>
         </div>
         <div className="CalendarAlertModal__SelectorContainer">
           <NumberSelector
-            value={value}
+            value={timeValue}
             min={0}
-            max={300}
-            onChange={setValue}
+            max={MAX_TIME_VALUE}
+            onChange={setTimeValue}
             label={t('modal.calendar_alert.label')}
             unit={UNITS}
             onUnitChange={setUnit}
@@ -80,7 +84,7 @@ function CalendarAlertModal({ proposal, onClose, ...props }: CalendarAlertModalP
           <Button fluid primary disabled={isDisabled} as="a" href={alertUrl} target="_blank">
             {t('modal.calendar_alert.add_to_calendar')}
           </Button>
-          <Button className="CalendarAlertModal__CancelButton" fluid basic onClick={handleOnClose}>
+          <Button className="CalendarAlertModal__CancelButton" fluid basic onClick={handleClose}>
             {t('modal.calendar_alert.cancel')}
           </Button>
         </div>
