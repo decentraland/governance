@@ -4,17 +4,18 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
-import { UserBadges, toOtterspaceRevokeReason } from '../../entities/Badges/types'
+import { ActionStatus, UserBadges, toOtterspaceRevokeReason } from '../../entities/Badges/types'
 import isDebugAddress from '../../entities/Debug/isDebugAddress'
 import { BadgesService } from '../../services/BadgesService'
 import { AirdropOutcome } from '../models/AirdropJob'
-import { validateAddress } from '../utils/validations'
+import { validateAddress, validateDate, validateStringNotEmpty } from '../utils/validations'
 
 export default routes((router) => {
   const withAuth = auth()
   router.get('/badges/:address/', handleAPI(getBadges))
   router.post('/badges/airdrop/', withAuth, handleAPI(airdropBadges))
   router.post('/badges/revoke/', withAuth, handleAPI(revokeBadge))
+  router.post('/badges/upload/', withAuth, handleAPI(uploadBadge))
 })
 
 async function getBadges(req: Request<{ address: string }>): Promise<UserBadges> {
@@ -71,4 +72,20 @@ async function revokeBadge(req: WithAuth): Promise<string> {
   } catch (e) {
     return `Failed to revoke badges ${JSON.stringify(e)}`
   }
+}
+
+export type UploadResult = { status: ActionStatus; badgeCid: string; error?: string }
+async function uploadBadge(req: WithAuth): Promise<UploadResult> {
+  const user = req.auth!
+  if (!isDebugAddress(user)) {
+    throw new RequestError('Invalid user', RequestError.Unauthorized)
+  }
+
+  const { title, description, expiresAt, imgUrl } = req.body
+  validateStringNotEmpty(title, 'title')
+  validateStringNotEmpty(description, 'description')
+  validateDate(expiresAt)
+  validateStringNotEmpty(imgUrl, 'imgUrl')
+
+  return { status: ActionStatus.Success, badgeCid: 'BADGE CID!' }
 }
