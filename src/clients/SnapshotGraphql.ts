@@ -70,6 +70,7 @@ export class SnapshotGraphql extends API {
           strategies {
             name
             params
+            network
           }
         }
       }
