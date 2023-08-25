@@ -5,18 +5,18 @@ import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
 import { ethers } from 'ethers'
 import { NFTStorage } from 'nft.storage'
 
+import {
+  NFT_STORAGE_API_KEY,
+  POLYGON_BADGES_CONTRACT_ADDRESS,
+  POLYGON_RAFTS_CONTRACT_ADDRESS,
+  RAFT_OWNER_PK,
+  TRIMMED_OTTERSPACE_RAFT_ID,
+} from '../../constants'
 import { ErrorService } from '../../services/ErrorService'
 import RpcService from '../../services/RpcService'
 import { ErrorCategory } from '../../utils/errorCategories'
-import { OTTERSPACE_DAO_RAFT_ID } from '../Snapshot/constants'
 
 import { GAS_MULTIPLIER, GasConfig } from './types'
-
-const RAFT_OWNER_PK = process.env.RAFT_OWNER_PK || ''
-const POLYGON_BADGES_CONTRACT_ADDRESS = process.env.POLYGON_BADGES_CONTRACT_ADDRESS || ''
-const POLYGON_RAFTS_CONTRACT_ADDRESS = process.env.POLYGON_RAFTS_CONTRACT_ADDRESS || ''
-const NFT_STORAGE_API_KEY = process.env.NFT_STORAGE_API_KEY || ''
-const TRIMMED_OTTERSPACE_RAFT_ID = trimOtterspaceId(OTTERSPACE_DAO_RAFT_ID)
 
 function checksumAddresses(addresses: string[]): string[] {
   return addresses.map((address) => ethers.utils.getAddress(address))
