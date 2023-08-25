@@ -1,23 +1,26 @@
 import React from 'react'
 
+import Link from '../../Common/Typography/Link'
+
 import './Action.css'
 
 export interface ActionProps {
   icon: JSX.Element
   title: string
   description: string
-  url: string
+  url?: string
+  onClick?: () => void
 }
 
-function Action({ icon, title, description, url }: ActionProps) {
+function Action({ icon, title, description, url, onClick }: ActionProps) {
   return (
-    <a href={url} target="_blank" rel="noreferrer" className="Action">
+    <Link href={url} onClick={onClick} target="_blank" rel="noreferrer" className="Action">
       <div className="Action__Icon">{icon}</div>
       <div>
         <div className="Action__Title">{title}</div>
         <div className="Action__Description">{description}</div>
       </div>
-    </a>
+    </Link>
   )
 }
 
