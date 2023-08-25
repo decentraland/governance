@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { getScores } from '../entities/Votes/utils'
+import { Governance } from '../clients/Governance'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
@@ -9,7 +9,7 @@ export default function useVotingPowerBalanceList(addresses: string[]) {
     queryKey: [`votingPower#${JSON.stringify(addresses)}`],
     queryFn: async () => {
       if (addresses.length < 1) return {}
-      return await getScores(addresses)
+      return await Governance.get().getScores(addresses)
     },
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })

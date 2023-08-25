@@ -15,6 +15,7 @@ export default routes((router) => {
   router.post('/snapshot/proposals', handleAPI(getProposals))
   router.post('/snapshot/proposals/pending', handleAPI(getPendingProposals))
   router.get('/snapshot/vp-distribution/:address/:proposalSnapshotId?', handleAPI(getVpDistribution))
+  router.post('/snapshot/scores', handleAPI(getScores))
 })
 
 async function getStatusAndSpace(req: Request<{ spaceName?: string }>) {
@@ -64,4 +65,13 @@ async function getVpDistribution(req: Request<{ address: string; proposalSnapsho
   validateAddress(address)
 
   return await SnapshotService.getVpDistribution(address, proposalSnapshotId)
+}
+
+async function getScores(req: Request) {
+  const addresses = req.body.addresses
+  if (!addresses || addresses.length === 0) {
+    throw new RequestError('Addresses missing', RequestError.BadRequest)
+  }
+
+  return await SnapshotService.getScores(addresses)
 }

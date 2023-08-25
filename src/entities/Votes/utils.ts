@@ -1,13 +1,10 @@
 import isUUID from 'validator/lib/isUUID'
 
-import { SnapshotApi } from '../../clients/SnapshotApi'
-import { DetailedScores, SnapshotStrategy, SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
-import { isSameAddress } from '../Snapshot/utils'
+import { SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
 
 import { ChoiceColor, Vote } from './types'
 
 export type Scores = Record<string, number>
-const DELEGATION_STRATEGY_NAME = 'delegation'
 
 export function toProposalIds(ids?: undefined | null | string | string[]) {
   if (!ids) {
@@ -165,45 +162,4 @@ export function abbreviateNumber(vp: number) {
 
 function getFloorOrZero(number?: number) {
   return Math.floor(number || 0)
-}
-
-export async function getScores(
-  addresses: string[],
-  block?: string | number,
-  space?: string,
-  networkId?: string,
-  proposalStrategies?: SnapshotStrategy[]
-) {
-  const formattedAddresses = addresses.map((addr) => addr.toLowerCase())
-  const { scores, strategies } = await SnapshotApi.get().getScores(
-    formattedAddresses,
-    block,
-    space,
-    networkId,
-    proposalStrategies
-  )
-
-  const result: DetailedScores = {}
-  const delegationScores = scores[strategies.findIndex((s) => s.name === DELEGATION_STRATEGY_NAME)] || {}
-  for (const addr of formattedAddresses) {
-    result[addr] = {
-      ownVp: 0,
-      delegatedVp:
-        Math.round(delegationScores[Object.keys(delegationScores).find((key) => isSameAddress(key, addr)) || '']) || 0,
-      totalVp: 0,
-    }
-  }
-
-  for (const score of scores) {
-    for (const addr of Object.keys(score)) {
-      const address = addr.toLowerCase()
-      result[address].totalVp = (result[address].totalVp || 0) + Math.floor(score[addr] || 0)
-    }
-  }
-
-  for (const address of Object.keys(result)) {
-    result[address].ownVp = result[address].totalVp - result[address].delegatedVp
-  }
-
-  return result
 }

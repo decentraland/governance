@@ -14,6 +14,7 @@ const useProposalOutcome = (snapshotId: ProposalAttributes['snapshot_id'], choic
         return null
       }
 
+      // TODO: Move this to backend scores/proposal/:snapshotId
       return SnapshotGraphql.get().getProposalScores(snapshotId)
     },
     staleTime: FIVE_MINUTES_MS,
