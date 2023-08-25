@@ -1,10 +1,14 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 
 import { BadgesService } from '../../services/BadgesService'
-import AirdropJobModel, { AirdropJobAttributes, AirdropOutcome } from '../models/AirdropJob'
+import AirdropJobModel, { AirdropJobAttributes } from '../models/AirdropJob'
 
 export async function runAirdropJobs() {
-  const pendingJobs: AirdropJobAttributes[] = await AirdropJobModel.getPending()
+  await Promise.all([runQueuedAirdropJobs(), giveAndRevokeLandOwnerBadges()])
+}
+
+async function runQueuedAirdropJobs() {
+  const pendingJobs = await AirdropJobModel.getPending()
   if (pendingJobs.length === 0) {
     return
   }
@@ -21,4 +25,8 @@ export async function runAirdropJobs() {
       { id }
     )
   })
+}
+
+async function giveAndRevokeLandOwnerBadges() {
+  await BadgesService.giveAndRevokeLandOwnerBadges()
 }

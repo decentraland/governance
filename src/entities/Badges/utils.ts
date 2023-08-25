@@ -1,9 +1,12 @@
 import { Contract } from '@ethersproject/contracts'
 import { abi as BadgesAbi } from '@otterspace-xyz/contracts/out/Badges.sol/Badges.json'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
+import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
 import { ethers } from 'ethers'
 
+import { ErrorService } from '../../services/ErrorService'
 import RpcService from '../../services/RpcService'
+import { ErrorCategory } from '../../utils/errorCategories'
 import { OTTERSPACE_DAO_RAFT_ID } from '../Snapshot/constants'
 
 import { GAS_MULTIPLIER, GasConfig } from './types'
@@ -49,6 +52,21 @@ export async function airdrop(badgeCid: string, recipients: string[], pumpGas = 
   logger.log('Airdropped badge with txn hash:', txn.hash)
 }
 
+export async function reinstateBadge(badgeId: string) {
+  const provider = RpcService.getPolygonProvider()
+  const raftOwner = new ethers.Wallet(RAFT_OWNER_PK, provider)
+  const contract = new ethers.Contract(POLYGON_BADGES_CONTRACT_ADDRESS, BadgesAbi, raftOwner)
+  const trimmedOtterspaceId = trimOtterspaceId(OTTERSPACE_DAO_RAFT_ID)
+
+  const gasConfig = await estimateGas(contract, async () => {
+    return contract.estimateGas.reinstateBadge(trimmedOtterspaceId, badgeId)
+  })
+
+  const txn = await contract.connect(raftOwner).reinstateBadge(trimmedOtterspaceId, badgeId, gasConfig)
+  await txn.wait()
+  return `Reinstated badge with txn hash: ${txn.hash}`
+}
+
 export async function revokeBadge(badgeId: string, reason: number) {
   const provider = RpcService.getPolygonProvider()
   const raftOwner = new ethers.Wallet(RAFT_OWNER_PK, provider)
@@ -79,4 +97,18 @@ export function trimOtterspaceId(rawId: string) {
     return parts[1]
   }
   return ''
+}
+
+export async function getLandOwnerAddresses(): Promise<string[]> {
+  const LAND_API_URL = 'https://api.decentraland.org/v2/tiles?include=owner&type=owned'
+  type LandOwner = { owner: string }
+  try {
+    const response: ApiResponse<{ [coordinates: string]: LandOwner }> = await (await fetch(LAND_API_URL)).json()
+    const { data: landOwnersMap } = response
+    const landOwnersAddresses = new Set(Object.values(landOwnersMap).map((landOwner) => landOwner.owner.toLowerCase()))
+    return Array.from(landOwnersAddresses)
+  } catch (error) {
+    ErrorService.report("Couldn't fetch land owners", { error, category: ErrorCategory.Badges })
+    return []
+  }
 }

@@ -30,12 +30,12 @@ export enum OtterspaceRevokeReason {
   Other = '3',
 }
 
-export enum RevocationStatus {
+export enum ActionStatus {
   Failed = 'Failed',
   Success = 'Success',
 }
 
-export type RevocationResult = { status: RevocationStatus; address: string; badgeId: string; error?: string }
+export type ActionResult = { status: ActionStatus; address: string; badgeId: string; error?: string }
 export const GAS_MULTIPLIER = 2
 export type GasConfig = { gasPrice: ethers.BigNumber; gasLimit: ethers.BigNumber }
 

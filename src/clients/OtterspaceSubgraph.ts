@@ -43,9 +43,11 @@ query Badges($badgeCid: String!) {
         ){
            id
             owner {
-                id
+              id
             }
-           }
+            status
+            statusReason
+          }
        }`
 
 const RECIPIENTS_BADGE_ID_QUERY = `
@@ -145,8 +147,8 @@ export class OtterspaceSubgraph {
     return badges
   }
 
-  async getBadgeOwners(badgeCid: string) {
-    const badges: OtterspaceBadge[] = await inBatches(
+  async getBadges(badgeCid: string) {
+    return await inBatches(
       async (vars, skip, first) => {
         const response = await fetch(this.queryEndpoint, {
           method: 'post',
@@ -160,12 +162,10 @@ export class OtterspaceSubgraph {
         })
 
         const body = await response.json()
-        return body?.data?.badges || []
+        return (body?.data?.badges || []) as Pick<OtterspaceBadge, 'id' | 'owner' | 'status' | 'statusReason'>[]
       },
       { badgeCid }
     )
-
-    return badges.map((badge) => badge.owner?.id.toLowerCase()).filter(Boolean)
   }
 
   async getRecipientsBadgeIds(badgeCid: string, addresses: string[]): Promise<BadgeOwnership[]> {
