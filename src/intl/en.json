@@ -1198,7 +1198,7 @@
         },
         "opportunities": {
           "category": "opportunities",
-          "total": "{total} bid submissions open"
+          "total": "{total} Bid submissions open"
         }
       },
       "bidding_and_tendering_stats": {
@@ -1208,11 +1208,11 @@
         },
         "tender_opportunities": {
           "category": "opportunities",
-          "total": "{total} tender {total, plural, one {submission} other {submissions}} open"
+          "total": "{total} Tender {total, plural, one {submission} other {submissions}} open"
         },
         "bid_opportunities": {
           "category": "opportunities",
-          "total": "{total} bid {total, plural, one {submission} other {submissions}} open"
+          "total": "{total} Bid {total, plural, one {submission} other {submissions}} open"
         }
       },
       "category_filters": {
