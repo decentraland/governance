@@ -92,7 +92,7 @@ export default function BidRequestFundingSection({ onValidation, isFormDisabled,
               max={schema.projectDuration.maximum}
               onChange={(value) => setValue('projectDuration', Number(value))}
               label={t('page.submit_bid.funding_section.project_duration_label')}
-              unitLabel={t('page.submit_bid.funding_section.project_duration_unit')}
+              unit="months"
             />
           </div>
         </div>

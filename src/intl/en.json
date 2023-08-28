@@ -5,7 +5,16 @@
     "count_votes": "{count} {count, plural, one {vote} other {votes}}",
     "sign_in": "sign in to vote",
     "jump_in": "jump in",
-    "cancel": "cancel"
+    "cancel": "cancel",
+    "time_units": {
+      "milliseconds": "Milliseconds",
+      "seconds": "Seconds",
+      "minutes": "Minutes",
+      "hours": "Hours",
+      "days": "Days",
+      "months": "Months",
+      "years": "Years"
+    }
   },
   "navigation": {
     "home": "DAO Home",
@@ -444,6 +453,14 @@
       "description": "Are you sure you want to delete this proposal? This action cannot be undone.",
       "accept": "Delete",
       "reject": "Cancel"
+    },
+    "calendar_alert": {
+      "title": "Setting a calendar alert",
+      "label": "Notify me this long before voting ends",
+      "add_to_calendar": "Add to calendar",
+      "cancel": "Cancel",
+      "calendar_title": "Proposal \"{title}\" is about to end",
+      "calendar_details": "The voting period will finish on {finish_date}.\n\nCheck the current status at {url}"
     },
     "update_status_proposal": {
       "title": "Confirm Proposal Enactment",
@@ -940,6 +957,7 @@
       "forum_button": "Discuss in the forum",
       "subscribe_button": "Add to my Watchlist",
       "subscribed_button": "Remove from my Watchlist",
+      "calendar_button": "Set calendar alert",
       "leading_option_label": "Leading: ",
       "finished_result_label": "Result: ",
       "your_vote_label": "Your vote: ",

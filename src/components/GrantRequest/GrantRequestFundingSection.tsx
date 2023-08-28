@@ -210,7 +210,7 @@ export default function GrantRequestFundingSection({
             max={availableDurations[availableDurations.length - 1]}
             onChange={(value) => setValue('projectDuration', Number(value))}
             label={t('page.submit_grant.funding_section.project_duration_title')}
-            unitLabel={t('page.submit_grant.funding_section.project_duration_unit')}
+            unit="months"
           />
         </div>
       </div>

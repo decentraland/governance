@@ -1,0 +1,7 @@
+.CalendarAlertModal__SelectorContainer {
+  margin-bottom: 25px;
+}
+
+.ui.button.basic.CalendarAlertModal__CancelButton {
+  color: var(--black-600) !important;
+}
