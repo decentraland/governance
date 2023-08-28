@@ -634,6 +634,10 @@ export class Governance extends API {
     return response.data
   }
 
+  async mint(badgeCid: string | undefined) {
+    return badgeCid
+  }
+
   async subscribeToNewsletter(email: string) {
     const response = await this.fetch<ApiResponse<string>>(
       `/newsletter-subscribe`,

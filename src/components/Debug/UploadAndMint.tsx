@@ -37,6 +37,7 @@ const initialState: SpecState = {
 export default function UploadAndMint({ className }: Props) {
   const t = useFormatMessage()
   const [formDisabled, setFormDisabled] = useState(false)
+  const [isMinting, setIsMinting] = useState(false)
   const [submitError, setSubmitError] = useState('')
   const [badgeCid, setBadgeCid] = useState<string | undefined>()
   const [result, setResult] = useState<any>()
@@ -45,36 +46,51 @@ export default function UploadAndMint({ className }: Props) {
     handleSubmit,
     formState: { isSubmitting, errors },
     control,
-    watch,
     setError,
     clearErrors,
     setValue,
   } = useForm<SpecState>({ defaultValues: initialState, mode: 'onTouched' })
 
   const onSubmit: SubmitHandler<SpecState> = async (data) => {
-    setFormDisabled(true)
     setResult(null)
     setSubmitError('')
+    setFormDisabled(true)
     console.log('submitting data', JSON.stringify(data))
     try {
       const result: any = await Governance.get().uploadAndMint(data)
       console.log('result', result)
       setResult(result)
       setBadgeCid(result.badgeCid)
-      setFormDisabled(false)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err, { ...err })
       setSubmitError(err.body?.error || err.message)
-      setFormDisabled(false)
     }
+    setFormDisabled(false)
+  }
+
+  const onMint = async () => {
+    setResult(null)
+    setSubmitError('')
+    setFormDisabled(true)
+    setIsMinting(true)
+    try {
+      const result: any = await Governance.get().mint(badgeCid)
+      console.log('result', result)
+      setResult(result)
+    } catch (err: any) {
+      console.error(err, { ...err })
+      setSubmitError(err.body?.error || err.message)
+    }
+    setFormDisabled(false)
+    setIsMinting(false)
   }
 
   return (
     <div className={className}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <ContentSection>
-          <Heading size="xs">{'Upload & Mint'}</Heading>
+          <Heading size="xs">{'Upload and Mint'}</Heading>
           <Label>{'Title'}</Label>
           <Field
             control={control}
@@ -130,6 +146,15 @@ export default function UploadAndMint({ className }: Props) {
 
         <Button type="submit" className="Debug__SectionButton" primary disabled={formDisabled} loading={isSubmitting}>
           {'Upload Spec'}
+        </Button>
+        <Button
+          className="Debug__SectionButton"
+          primary
+          disabled={!badgeCid || badgeCid.length === 0}
+          loading={isMinting}
+          onClick={onMint}
+        >
+          {'Mint'}
         </Button>
         {result && (
           <>
