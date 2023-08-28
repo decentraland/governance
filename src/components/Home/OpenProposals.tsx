@@ -72,7 +72,9 @@ const OpenProposals = ({ endingSoonProposals, isLoadingProposals }: Props) => {
             {!isLoadingProposalsByParticipatingVp &&
               proposalsByParticipatingVP &&
               proposalsByParticipatingVP.map((proposal) => <OpenProposal key={proposal.id} proposal={proposal} />)}
-            {isLoadingProposalsByParticipatingVp && <HomeLoader>{t('page.home.open_proposals.loading')}</HomeLoader>}
+            {isLoadingProposalsByParticipatingVp && (
+              <HomeLoader className="OpenProposals__Loader">{t('page.home.open_proposals.loading')}</HomeLoader>
+            )}
             {!isLoadingProposalsByParticipatingVp && isEmpty(proposalsByParticipatingVP) && (
               <Empty className="OpenProposals__Empty" description="No proposals" />
             )}
