@@ -20,7 +20,7 @@ export default routes((route) => {
   route.get('/proposals/:proposal/votes', handleAPI(getProposalVotes))
   route.get('/votes', handleAPI(getCachedVotes))
   route.get('/votes/:address', handleAPI(getAddressVotesWithProposals))
-  route.get('/votes/top-voters', handleAPI(getTopVoters))
+  route.post('/votes/top-voters', handleAPI(getTopVoters))
 })
 
 export async function getProposalVotes(req: Request<{ proposal: string }>) {
