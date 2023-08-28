@@ -558,6 +558,14 @@ export class Governance extends API {
     return response.data
   }
 
+  async getProposalScores(proposalSnapshotId: string) {
+    const response = await this.fetch<ApiResponse<number[]>>(
+      `/snapshot/proposal-scores/${proposalSnapshotId}`,
+      this.options().method('GET')
+    )
+    return response.data
+  }
+
   async getVpDistribution(address: string, proposalSnapshotId?: string) {
     const snapshotId = proposalSnapshotId ? `/${proposalSnapshotId}` : ''
     const url = `/snapshot/vp-distribution/${address}${snapshotId}`

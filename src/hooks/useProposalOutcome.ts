@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { SnapshotGraphql } from '../clients/SnapshotGraphql'
+import { Governance } from '../clients/Governance'
 import { calculateWinnerChoice, getScoresResult } from '../entities/Proposal/outcomeUtils'
 import { ProposalAttributes } from '../entities/Proposal/types'
 
@@ -9,14 +9,7 @@ import { FIVE_MINUTES_MS } from './constants'
 const useProposalOutcome = (snapshotId: ProposalAttributes['snapshot_id'], choices: string[]) => {
   const { data: scores, isLoading } = useQuery({
     queryKey: [`proposalScores#${snapshotId}`],
-    queryFn: async () => {
-      if (!snapshotId) {
-        return null
-      }
-
-      // TODO: Move this to backend scores/proposal/:snapshotId
-      return SnapshotGraphql.get().getProposalScores(snapshotId)
-    },
+    queryFn: async () => Governance.get().getProposalScores(snapshotId),
     staleTime: FIVE_MINUTES_MS,
     enabled: !!snapshotId && !!choices,
   })

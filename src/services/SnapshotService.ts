@@ -156,4 +156,8 @@ export class SnapshotService {
 
     return result
   }
+
+  static async getProposalScores(proposalSnapshotId: string): Promise<number[]> {
+    return await SnapshotGraphql.get().getProposalScores(proposalSnapshotId)
+  }
 }
