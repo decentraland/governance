@@ -64,3 +64,9 @@ export function validateUniqueAddresses(addresses: string[]): boolean {
 
   return uniqueSet.size === addresses.length
 }
+
+export function validateProposalSnapshotId(proposalSnapshotId?: string) {
+  if (!proposalSnapshotId || proposalSnapshotId.length === 0) {
+    throw new RequestError('Invalid snapshot id')
+  }
+}

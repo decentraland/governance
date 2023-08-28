@@ -3,15 +3,18 @@ import isNumber from 'lodash/isNumber'
 
 import { SnapshotApi, SnapshotReceipt } from '../clients/SnapshotApi'
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
-import { SnapshotProposal, SnapshotVote, VpDistribution } from '../clients/SnapshotGraphqlTypes'
+import { DetailedScores, SnapshotProposal, SnapshotVote, VpDistribution } from '../clients/SnapshotGraphqlTypes'
 import * as templates from '../entities/Proposal/templates'
 import { proposalUrl, snapshotProposalUrl } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
+import { isSameAddress } from '../entities/Snapshot/utils'
 import { inBackground } from '../helpers'
 import { Avatar } from '../utils/Catalyst/types'
 
 import { ProposalInCreation, ProposalLifespan } from './ProposalService'
 import RpcService from './RpcService'
+
+const DELEGATION_STRATEGY_NAME = 'delegation'
 
 export class SnapshotService {
   static async createProposal(
@@ -122,5 +125,39 @@ export class SnapshotService {
 
   static async getVpDistribution(address: string, proposalSnapshotId?: string): Promise<VpDistribution> {
     return await SnapshotGraphql.get().getVpDistribution(address, proposalSnapshotId)
+  }
+
+  static async getScores(addresses: string[]) {
+    const formattedAddresses = addresses.map((addr) => addr.toLowerCase())
+    const { scores, strategies } = await SnapshotApi.get().getScores(formattedAddresses)
+
+    const result: DetailedScores = {}
+    const delegationScores = scores[strategies.findIndex((s) => s.name === DELEGATION_STRATEGY_NAME)] || {}
+    for (const addr of formattedAddresses) {
+      result[addr] = {
+        ownVp: 0,
+        delegatedVp:
+          Math.round(delegationScores[Object.keys(delegationScores).find((key) => isSameAddress(key, addr)) || '']) ||
+          0,
+        totalVp: 0,
+      }
+    }
+
+    for (const score of scores) {
+      for (const addr of Object.keys(score)) {
+        const address = addr.toLowerCase()
+        result[address].totalVp = (result[address].totalVp || 0) + Math.floor(score[addr] || 0)
+      }
+    }
+
+    for (const address of Object.keys(result)) {
+      result[address].ownVp = result[address].totalVp - result[address].delegatedVp
+    }
+
+    return result
+  }
+
+  static async getProposalScores(proposalSnapshotId: string): Promise<number[]> {
+    return await SnapshotGraphql.get().getProposalScores(proposalSnapshotId)
   }
 }

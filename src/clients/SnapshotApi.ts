@@ -6,14 +6,18 @@ import { CancelProposal, ProposalType, Vote } from '@snapshot-labs/snapshot.js/d
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import env from 'decentraland-gatsby/dist/utils/env'
 
-import { SNAPSHOT_ADDRESS, SNAPSHOT_PRIVATE_KEY, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
+import {
+  SNAPSHOT_ADDRESS,
+  SNAPSHOT_API_KEY,
+  SNAPSHOT_PRIVATE_KEY,
+  SNAPSHOT_SPACE,
+} from '../entities/Snapshot/constants'
 import { getChecksumAddress } from '../entities/Snapshot/utils'
 import { ProposalInCreation, ProposalLifespan } from '../services/ProposalService'
 import Time from '../utils/date/Time'
 import { getEnvironmentChainId } from '../utils/votes/utils'
 
 import { SnapshotGraphql } from './SnapshotGraphql'
-import { SnapshotStrategy } from './SnapshotGraphqlTypes'
 import { trimLastForwardSlash } from './utils'
 
 const SNAPSHOT_PROPOSAL_TYPE: ProposalType = 'single-choice' // Each voter may select only one choice
@@ -150,29 +154,32 @@ export class SnapshotApi {
     return (await this.client.vote(account, address, voteMessage)) as SnapshotReceipt
   }
 
-  async getScores(
-    addresses: string[],
-    blockNumber?: number | string,
-    space?: string,
-    networkId?: string,
-    proposalStrategies?: SnapshotStrategy[]
-  ) {
+  async getScores(addresses: string[]) {
     const formattedAddresses = addresses.map((address) => getChecksumAddress(address))
-    const network = networkId && networkId.length > 0 ? networkId : getEnvironmentChainId().toString()
-    const spaceName = space && space.length > 0 ? space : SnapshotApi.getSpaceName()
-    const strategies = proposalStrategies || (await SnapshotGraphql.get().getSpace(spaceName)).strategies
+    const spaceName = SnapshotApi.getSpaceName()
+    const network = getEnvironmentChainId().toString()
+    const strategies = (await SnapshotGraphql.get().getSpace(spaceName)).strategies
+    const scoreApiUrl = `https://score.snapshot.org/?apiKey=${SNAPSHOT_API_KEY}`
 
     try {
-      const scores = await snapshot.utils.getScores(spaceName, strategies, network, formattedAddresses, blockNumber)
+      const scores = await snapshot.utils.getScores(
+        spaceName,
+        strategies,
+        network,
+        formattedAddresses,
+        undefined,
+        scoreApiUrl
+      )
+
       return {
-        scores: scores,
-        strategies: strategies,
+        scores,
+        strategies,
       }
     } catch (e) {
       logger.log(
         `Space: ${spaceName}, Strategies: ${JSON.stringify(
           strategies
-        )}, Network: ${network}, Addresses: ${formattedAddresses}, Block: ${blockNumber}`
+        )}, Network: ${network}, Addresses: ${formattedAddresses}`
       )
       throw new Error('Error fetching proposal scores', e as Error)
     }

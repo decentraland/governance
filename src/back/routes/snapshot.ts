@@ -5,16 +5,18 @@ import { Request } from 'express'
 
 import { SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
 import { SnapshotService } from '../../services/SnapshotService'
-import { validateAddress, validateDates, validateFields } from '../utils/validations'
+import { validateAddress, validateDates, validateFields, validateProposalSnapshotId } from '../utils/validations'
 
 export default routes((router) => {
   router.get('/snapshot/status-space/:spaceName', handleAPI(getStatusAndSpace))
   router.post('/snapshot/votes', handleAPI(getAddressesVotes))
-  router.get('/snapshot/votes/:id', handleAPI(getProposalVotes))
+  router.get('/snapshot/votes/:proposalSnapshotId', handleAPI(getProposalVotes))
   router.post('/snapshot/votes/all', handleAPI(getAllVotesBetweenDates))
   router.post('/snapshot/proposals', handleAPI(getProposals))
   router.post('/snapshot/proposals/pending', handleAPI(getPendingProposals))
   router.get('/snapshot/vp-distribution/:address/:proposalSnapshotId?', handleAPI(getVpDistribution))
+  router.post('/snapshot/scores', handleAPI(getScores))
+  router.get('/snapshot/proposal-scores/:proposalSnapshotId', handleAPI(getProposalScores))
 })
 
 async function getStatusAndSpace(req: Request<{ spaceName?: string }>) {
@@ -27,13 +29,11 @@ async function getAddressesVotes(req: Request) {
   return await SnapshotService.getAddressesVotes(addresses)
 }
 
-async function getProposalVotes(req: Request<{ id?: string }>) {
-  const { id } = req.params
-  if (!id || id.length === 0) {
-    throw new RequestError('Invalid snapshot id')
-  }
+async function getProposalVotes(req: Request<{ proposalSnapshotId?: string }>) {
+  const { proposalSnapshotId } = req.params
+  validateProposalSnapshotId(proposalSnapshotId)
 
-  return await SnapshotService.getProposalVotes(id!)
+  return await SnapshotService.getProposalVotes(proposalSnapshotId!)
 }
 
 async function getAllVotesBetweenDates(req: Request): Promise<SnapshotVote[]> {
@@ -64,4 +64,20 @@ async function getVpDistribution(req: Request<{ address: string; proposalSnapsho
   validateAddress(address)
 
   return await SnapshotService.getVpDistribution(address, proposalSnapshotId)
+}
+
+async function getScores(req: Request) {
+  const addresses = req.body.addresses
+  if (!addresses || addresses.length === 0) {
+    throw new RequestError('Addresses missing', RequestError.BadRequest)
+  }
+
+  return await SnapshotService.getScores(addresses)
+}
+
+async function getProposalScores(req: Request<{ proposalSnapshotId?: string }>) {
+  const { proposalSnapshotId } = req.params
+  validateProposalSnapshotId(proposalSnapshotId)
+
+  return await SnapshotService.getProposalScores(proposalSnapshotId!)
 }
