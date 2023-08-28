@@ -13,7 +13,7 @@ import Text from '../Common/Typography/Text'
 import ErrorMessage from '../Error/ErrorMessage'
 import { ContentSection } from '../Layout/ContentLayout'
 
-import UploadAndMint from './UploadAndMint'
+import UploadSpec from './UploadSpec'
 
 interface Props {
   className?: string
@@ -40,9 +40,9 @@ const REVOKE_REASON_OPTIONS = [
 
 export default function BadgesAdmin({ className }: Props) {
   const [recipients, setRecipients] = useState<string[]>([])
-  const [badgeCid, setBadgeCid] = useState<string | undefined>()
+  const [badgeCid, setBadgeCid] = useState<string>('')
   const [reason, setReason] = useState<string>(OtterspaceRevokeReason.TenureEnded)
-  const [result, setResult] = useState<string | null>()
+  const [result, setResult] = useState<string>('')
   const [errorMessage, setErrorMessage] = useState<string | undefined | null>()
   const [formDisabled, setFormDisabled] = useState(false)
 
@@ -59,7 +59,16 @@ export default function BadgesAdmin({ className }: Props) {
     if (badgeCid && recipients) {
       await submit(
         async () => Governance.get().revokeBadge(badgeCid, recipients, reason),
-        (result) => setResult(result)
+        (result) => setResult(JSON.stringify(result))
+      )
+    }
+  }
+
+  async function handleMintBadge() {
+    if (badgeCid) {
+      await submit(
+        async () => Governance.get().mint(badgeCid),
+        (result) => setResult(JSON.stringify(result))
       )
     }
   }
@@ -100,6 +109,9 @@ export default function BadgesAdmin({ className }: Props) {
             <Button className="Debug__SideButton" primary disabled={formDisabled} onClick={() => handleRevokeBadge()}>
               {'Revoke'}
             </Button>
+            <Button className="Debug__SideButton" primary disabled={formDisabled} onClick={() => handleMintBadge()}>
+              {'Mint'}
+            </Button>
           </div>
           <Label>{'Badge Spec Cid'}</Label>
           <Field value={badgeCid} onChange={(_, { value }) => setBadgeCid(value)} />
@@ -123,7 +135,7 @@ export default function BadgesAdmin({ className }: Props) {
             </>
           )}
         </div>
-        <UploadAndMint />
+        <UploadSpec />
       </ContentSection>
       {!!errorMessage && <ErrorMessage label={'Badges Error'} errorMessage={errorMessage} />}
     </div>

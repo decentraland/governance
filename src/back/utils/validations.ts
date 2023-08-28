@@ -82,8 +82,16 @@ export function validateProposalSnapshotId(proposalSnapshotId?: string) {
   }
 }
 
-export function validateStringNotEmpty(fieldName: string, someString?: string) {
-  if (!someString || someString.length === 0) {
+export function validateRequiredString(fieldName: string, value?: string) {
+  if (!value || value.length === 0) {
     throw new RequestError(`Invalid ${fieldName}`, RequestError.BadRequest)
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function validateRequiredStrings(fieldNames: string[], requestBody: Record<string, any>) {
+  for (const fieldName of fieldNames) {
+    const fieldValue = requestBody[fieldName]
+    validateRequiredString(fieldName, fieldValue)
   }
 }

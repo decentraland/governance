@@ -4,6 +4,7 @@ import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
 import { ethers } from 'ethers'
 import { NFTStorage } from 'nft.storage'
 
+import { ErrorClient } from '../../clients/ErrorClient'
 import {
   NFT_STORAGE_API_KEY,
   POLYGON_BADGES_CONTRACT_ADDRESS,
@@ -11,7 +12,6 @@ import {
   RAFT_OWNER_PK,
   TRIMMED_OTTERSPACE_RAFT_ID,
 } from '../../constants'
-import { ErrorService } from '../../services/ErrorService'
 import RpcService from '../../services/RpcService'
 import { ErrorCategory } from '../../utils/errorCategories'
 
@@ -104,12 +104,13 @@ export async function getLandOwnerAddresses(): Promise<string[]> {
     const landOwnersAddresses = new Set(Object.values(landOwnersMap).map((landOwner) => landOwner.owner.toLowerCase()))
     return Array.from(landOwnersAddresses)
   } catch (error) {
-    ErrorService.report("Couldn't fetch land owners", { error, category: ErrorCategory.Badges })
+    ErrorClient.report("Couldn't fetch land owners", { error, category: ErrorCategory.Badges })
     return []
   }
 }
 
 const blobToFile = (theBlob: Blob, fileName: string): File => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const b: any = theBlob
   b.lastModifiedDate = new Date()
   b.name = fileName
@@ -124,7 +125,6 @@ function getImageInfoFromUrl(url: string): { imageName: string; extension: strin
 }
 
 const fetchImageAndCreateFile = async (imgUrl: string) => {
-  console.log('imgUrl', imgUrl)
   const { imageName, extension } = getImageInfoFromUrl(imgUrl)
 
   try {
@@ -141,6 +141,12 @@ const fetchImageAndCreateFile = async (imgUrl: string) => {
   }
 }
 
+function convertToISODate(dateString: string): string {
+  const [year, month, day] = dateString.split('-')
+  const isoDateString = `${year}-${month}-${day}T00:00:00.000Z`
+  return isoDateString
+}
+
 export async function storeBadgeSpec(title: string, description: string, imgUrl: string, expiresAt?: string) {
   const client = new NFTStorage({ token: NFT_STORAGE_API_KEY })
   const raftOwner = new ethers.Wallet(RAFT_OWNER_PK)
@@ -154,16 +160,32 @@ export async function storeBadgeSpec(title: string, description: string, imgUrl:
       raftTokenId: TRIMMED_OTTERSPACE_RAFT_ID,
       raftContractAddress: POLYGON_RAFTS_CONTRACT_ADDRESS,
       createdByAddress: raftOwner.address,
-      expiresAt: expiresAt ? expiresAt : null,
+      expiresAt: expiresAt ? convertToISODate(expiresAt) : '',
     },
     image: file,
   }
 
   const metadata = await client.store(badgeSpec)
-
   const cid = metadata.ipnft
 
   const metadataUrl = `https://ipfs.io/ipfs/${cid}/metadata.json`
   const ipfsAddress = `ipfs://${cid}/metadata.json`
   return { badgeCid: cid, metadataUrl, ipfsAddress }
+}
+
+export async function mintBadge(badgeCid: string) {
+  const provider = RpcService.getPolygonProvider()
+  const raftOwner = new ethers.Wallet(RAFT_OWNER_PK, provider)
+  const contract = new ethers.Contract(POLYGON_BADGES_CONTRACT_ADDRESS, BadgesAbi, raftOwner)
+  const ipfsAddress = `ipfs://${badgeCid}/metadata.json`
+  console.log('Minting...')
+
+  const gasConfig = await estimateGas(async () => {
+    return contract.estimateGas.createSpec(ipfsAddress, TRIMMED_OTTERSPACE_RAFT_ID)
+  })
+
+  const txn = await contract.connect(raftOwner).createSpec(ipfsAddress, TRIMMED_OTTERSPACE_RAFT_ID, gasConfig)
+  const result = await txn.wait()
+  console.log('tx hash: ', result.hash)
+  return result
 }

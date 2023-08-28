@@ -8,13 +8,14 @@ import { Governance } from '../../clients/Governance'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Time from '../../utils/date/Time'
 import Field from '../Common/Form/Field'
+import SubLabel from '../Common/SubLabel'
 import Heading from '../Common/Typography/Heading'
 import Label from '../Common/Typography/Label'
 import Text from '../Common/Typography/Text'
 import ErrorMessage from '../Error/ErrorMessage'
 import { ContentSection } from '../Layout/ContentLayout'
 
-import './UploadAndMint.css'
+import './UploadSpec.css'
 
 interface Props {
   className?: string
@@ -34,12 +35,10 @@ const initialState: SpecState = {
   title: '',
 }
 
-export default function UploadAndMint({ className }: Props) {
+export default function UploadSpec({ className }: Props) {
   const t = useFormatMessage()
   const [formDisabled, setFormDisabled] = useState(false)
-  const [isMinting, setIsMinting] = useState(false)
   const [submitError, setSubmitError] = useState('')
-  const [badgeCid, setBadgeCid] = useState<string | undefined>()
   const [result, setResult] = useState<any>()
 
   const {
@@ -55,42 +54,23 @@ export default function UploadAndMint({ className }: Props) {
     setResult(null)
     setSubmitError('')
     setFormDisabled(true)
-    console.log('submitting data', JSON.stringify(data))
     try {
-      const result: any = await Governance.get().uploadAndMint(data)
-      console.log('result', result)
+      const result: any = await Governance.get().upload(data)
       setResult(result)
-      setBadgeCid(result.badgeCid)
+      setFormDisabled(false)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err, { ...err })
       setSubmitError(err.body?.error || err.message)
+      setFormDisabled(false)
     }
-    setFormDisabled(false)
-  }
-
-  const onMint = async () => {
-    setResult(null)
-    setSubmitError('')
-    setFormDisabled(true)
-    setIsMinting(true)
-    try {
-      const result: any = await Governance.get().mint(badgeCid)
-      console.log('result', result)
-      setResult(result)
-    } catch (err: any) {
-      console.error(err, { ...err })
-      setSubmitError(err.body?.error || err.message)
-    }
-    setFormDisabled(false)
-    setIsMinting(false)
   }
 
   return (
     <div className={className}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <ContentSection>
-          <Heading size="xs">{'Upload and Mint'}</Heading>
+          <Heading size="xs">{'Upload Badge Spec'}</Heading>
           <Label>{'Title'}</Label>
           <Field
             control={control}
@@ -144,23 +124,17 @@ export default function UploadAndMint({ className }: Props) {
           />
         </ContentSection>
 
-        <Button type="submit" className="Debug__SectionButton" primary disabled={formDisabled} loading={isSubmitting}>
-          {'Upload Spec'}
-        </Button>
-        <Button
-          className="Debug__SectionButton"
-          primary
-          disabled={!badgeCid || badgeCid.length === 0}
-          loading={isMinting}
-          onClick={onMint}
-        >
-          {'Mint'}
-        </Button>
+        <div>
+          <Button type="submit" className="Debug__SectionButton" primary disabled={formDisabled} loading={isSubmitting}>
+            {'Upload Spec'}
+          </Button>
+        </div>
         {result && (
           <>
             <Label>{'Result'}</Label>
+            <SubLabel>{'Badge Cid'}</SubLabel>
             <Text className="Debug__Result">{result.badgeCid}</Text>
-            <Text className="Debug__Result">{result.metadataUrl}</Text>
+            <SubLabel>{'IPFS Address'}</SubLabel>
             <Text className="Debug__Result">{result.ipfsAddress}</Text>
           </>
         )}

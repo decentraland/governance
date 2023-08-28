@@ -40,7 +40,7 @@ const CONSTANTS: Record<string, any> = {
 
 export default function EnvStatus({ className }: Props) {
   const [envName, setEnvName] = useState<string>('')
-  const [envValue, setEnvValue] = useState<any>()
+  const [envValue, setEnvValue] = useState<any>('')
   const [errorMessage, setErrorMessage] = useState<any>()
 
   async function handleReadVar() {
