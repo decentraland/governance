@@ -11,4 +11,5 @@ export enum ErrorCategory {
   Vesting = 'Vesting',
   Voting = 'Voting',
   Discord = 'Discord',
+  Newsletter = 'Newsletter',
 }

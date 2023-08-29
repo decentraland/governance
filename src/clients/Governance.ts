@@ -616,4 +616,14 @@ export class Governance extends API {
     )
     return response.data
   }
+
+  async subscribeToNewsletter(email: string) {
+    const response = await this.fetch<ApiResponse<string>>(
+      `/newsletter-subscribe`,
+      this.options().method('POST').json({
+        email,
+      })
+    )
+    return response.data
+  }
 }

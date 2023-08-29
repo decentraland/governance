@@ -9,7 +9,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 import isEmail from 'validator/lib/isEmail'
 
-import { Decentraland } from '../../../clients/Decentraland'
+import { Governance } from '../../../clients/Governance'
 import useAsyncTask from '../../../hooks/useAsyncTask'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import { ANONYMOUS_USR_SUBSCRIPTION, NEWSLETTER_SUBSCRIPTION_KEY } from '../../Banner/Subscription/SubscriptionBanner'
@@ -26,33 +26,29 @@ type NewsletterSubscriptionResult = {
   details: string | null
 }
 
-export type NewsletterSubscriptionModalProps = Omit<ModalProps, 'children'> & {
+type Props = Omit<ModalProps, 'children'> & {
   onSubscriptionSuccess?: () => void
   subscribed: boolean
 }
 
 async function subscribe(email: string) {
   try {
-    await Decentraland.get().subscribe(email!)
+    await Governance.get().subscribeToNewsletter(email)
     return {
-      email: email,
+      email,
       error: false,
       details: null,
     }
   } catch (err) {
     return {
-      email: email,
+      email,
       error: true,
       details: (err as any).body.detail,
     }
   }
 }
 
-export function NewsletterSubscriptionModal({
-  onSubscriptionSuccess,
-  subscribed,
-  ...props
-}: NewsletterSubscriptionModalProps) {
+export function NewsletterSubscriptionModal({ onSubscriptionSuccess, subscribed, ...props }: Props) {
   const [account] = useAuthContext()
   const t = useFormatMessage()
   const [state, setState] = useState<{ isValid: boolean; message: string; email: string }>({
