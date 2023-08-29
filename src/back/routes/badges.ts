@@ -4,17 +4,32 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
-import { UserBadges, toOtterspaceRevokeReason } from '../../entities/Badges/types'
-import isDebugAddress from '../../entities/Debug/isDebugAddress'
+import { storeBadgeSpec } from '../../entities/Badges/storeBadgeSpec'
+import {
+  ActionResult,
+  ActionStatus,
+  BadgeCreationResult,
+  UserBadges,
+  toOtterspaceRevokeReason,
+} from '../../entities/Badges/types'
+import { createSpec } from '../../entities/Badges/utils'
 import { BadgesService } from '../../services/BadgesService'
 import { AirdropOutcome } from '../models/AirdropJob'
-import { validateAddress } from '../utils/validations'
+import {
+  validateAddress,
+  validateDate,
+  validateDebugAddress,
+  validateRequiredString,
+  validateRequiredStrings,
+} from '../utils/validations'
 
 export default routes((router) => {
   const withAuth = auth()
   router.get('/badges/:address/', handleAPI(getBadges))
-  router.post('/badges/airdrop/', withAuth, handleAPI(airdropBadges))
-  router.post('/badges/revoke/', withAuth, handleAPI(revokeBadge))
+  router.post('/badges/airdrop/', withAuth, handleAPI(airdrop))
+  router.post('/badges/revoke/', withAuth, handleAPI(revoke))
+  router.post('/badges/upload-badge-spec/', withAuth, handleAPI(uploadBadgeSpec))
+  router.post('/badges/create-badge-spec/', withAuth, handleAPI(createBadgeSpec))
 })
 
 async function getBadges(req: Request<{ address: string }>): Promise<UserBadges> {
@@ -23,14 +38,12 @@ async function getBadges(req: Request<{ address: string }>): Promise<UserBadges>
   return await BadgesService.getBadges(address)
 }
 
-async function airdropBadges(req: WithAuth): Promise<AirdropOutcome> {
+async function airdrop(req: WithAuth): Promise<AirdropOutcome> {
   const user = req.auth!
   const recipients: string[] = req.body.recipients
   const badgeSpecCid = req.body.badgeSpecCid
 
-  if (!isDebugAddress(user)) {
-    throw new RequestError('Invalid user', RequestError.Unauthorized)
-  }
+  validateDebugAddress(user)
 
   recipients.map((address) => {
     validateAddress(address)
@@ -43,14 +56,12 @@ async function airdropBadges(req: WithAuth): Promise<AirdropOutcome> {
   return await BadgesService.giveBadgeToUsers(badgeSpecCid, recipients)
 }
 
-async function revokeBadge(req: WithAuth): Promise<string> {
+async function revoke(req: WithAuth): Promise<ActionResult[]> {
   const user = req.auth!
   const { badgeSpecCid, reason } = req.body
   const recipients: string[] = req.body.recipients
 
-  if (!isDebugAddress(user)) {
-    throw new RequestError('Invalid user', RequestError.Unauthorized)
-  }
+  validateDebugAddress(user)
 
   recipients.map((address) => {
     validateAddress(address)
@@ -65,10 +76,36 @@ async function revokeBadge(req: WithAuth): Promise<string> {
         throw new RequestError(`Invalid revoke reason ${reason}`, RequestError.BadRequest)
       })
     : undefined
+  return await BadgesService.revokeBadge(badgeSpecCid, recipients, validatedReason)
+}
+
+async function uploadBadgeSpec(req: WithAuth): Promise<BadgeCreationResult> {
+  const user = req.auth
+  validateDebugAddress(user)
+
+  const { title, description, imgUrl, expiresAt } = req.body
+  validateRequiredStrings(['title', 'description', 'imgUrl'], req.body)
+  validateDate(expiresAt)
+
   try {
-    const revocationResults = await BadgesService.revokeBadge(badgeSpecCid, recipients, validatedReason)
-    return `Revocation results: ${JSON.stringify(revocationResults)}`
+    const result = await storeBadgeSpec(title, description, imgUrl, expiresAt)
+    return { status: ActionStatus.Success, badgeCid: result.badgeCid }
   } catch (e) {
-    return `Failed to revoke badges ${JSON.stringify(e)}`
+    return { status: ActionStatus.Failed, error: JSON.stringify(e) }
+  }
+}
+
+async function createBadgeSpec(req: WithAuth): Promise<BadgeCreationResult> {
+  const user = req.auth
+  validateDebugAddress(user)
+
+  const { badgeCid } = req.body
+  validateRequiredString('badgeCid', badgeCid)
+
+  try {
+    const result = await createSpec(badgeCid)
+    return { status: ActionStatus.Success, badgeCid: JSON.stringify(result) }
+  } catch (e) {
+    return { status: ActionStatus.Failed, error: JSON.stringify(e) }
   }
 }

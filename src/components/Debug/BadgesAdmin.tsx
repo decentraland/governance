@@ -13,6 +13,8 @@ import Text from '../Common/Typography/Text'
 import ErrorMessage from '../Error/ErrorMessage'
 import { ContentSection } from '../Layout/ContentLayout'
 
+import UploadBadgeSpec from './UploadBadgeSpec'
+
 interface Props {
   className?: string
 }
@@ -38,9 +40,9 @@ const REVOKE_REASON_OPTIONS = [
 
 export default function BadgesAdmin({ className }: Props) {
   const [recipients, setRecipients] = useState<string[]>([])
-  const [badgeCid, setBadgeCid] = useState<string | undefined>()
+  const [badgeCid, setBadgeCid] = useState<string>('')
   const [reason, setReason] = useState<string>(OtterspaceRevokeReason.TenureEnded)
-  const [result, setResult] = useState<string | null>()
+  const [result, setResult] = useState<string>('')
   const [errorMessage, setErrorMessage] = useState<string | undefined | null>()
   const [formDisabled, setFormDisabled] = useState(false)
 
@@ -57,7 +59,16 @@ export default function BadgesAdmin({ className }: Props) {
     if (badgeCid && recipients) {
       await submit(
         async () => Governance.get().revokeBadge(badgeCid, recipients, reason),
-        (result) => setResult(result)
+        (result) => setResult(JSON.stringify(result))
+      )
+    }
+  }
+
+  async function handleCreateBadgeSpec() {
+    if (badgeCid) {
+      await submit(
+        async () => Governance.get().createBadgeSpec(badgeCid),
+        (result) => setResult(JSON.stringify(result))
       )
     }
   }
@@ -85,7 +96,16 @@ export default function BadgesAdmin({ className }: Props) {
       <ContentSection>
         <Heading size="sm">{'Badges'}</Heading>
         <div>
+          <Heading size="xs">{'Create, Airdrop, Revoke'}</Heading>
           <div>
+            <Button
+              className="Debug__SideButton"
+              primary
+              disabled={formDisabled}
+              onClick={() => handleCreateBadgeSpec()}
+            >
+              {'Create Badge Spec'}
+            </Button>
             <Button
               className="Debug__SectionButton"
               primary
@@ -113,15 +133,16 @@ export default function BadgesAdmin({ className }: Props) {
             options={REVOKE_REASON_OPTIONS}
             disabled={formDisabled}
           />
+          {result && (
+            <>
+              <Label>{'Result'}</Label>
+              <Text className="Debug__Result">{result}</Text>
+            </>
+          )}
         </div>
-        {result && (
-          <>
-            <Label>{'Result'}</Label>
-            <Text className="Debug__Result">{result}</Text>
-          </>
-        )}
+        <UploadBadgeSpec />
       </ContentSection>
-      {!!errorMessage && <ErrorMessage label={'Budgets Error'} errorMessage={errorMessage} />}
+      {!!errorMessage && <ErrorMessage label={'Badges Error'} errorMessage={errorMessage} />}
     </div>
   )
 }

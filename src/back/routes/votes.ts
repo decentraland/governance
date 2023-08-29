@@ -1,6 +1,7 @@
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
+import isNumber from 'lodash/isNumber'
 
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
@@ -9,27 +10,27 @@ import { ProposalAttributes } from '../../entities/Proposal/types'
 import VotesModel from '../../entities/Votes/model'
 import { Vote, VoteAttributes } from '../../entities/Votes/types'
 import { createVotes, toProposalIds } from '../../entities/Votes/utils'
+import { ProposalService } from '../../services/ProposalService'
 import { SnapshotService } from '../../services/SnapshotService'
 import Time from '../../utils/date/Time'
-import { validateAddress } from '../utils/validations'
-
-import { getProposal } from './proposal'
+import { VoteService } from '../services/vote'
+import { validateAddress, validateDates, validateProposalId } from '../utils/validations'
 
 export default routes((route) => {
   route.get('/proposals/:proposal/votes', handleAPI(getProposalVotes))
   route.get('/votes', handleAPI(getCachedVotes))
   route.get('/votes/:address', handleAPI(getAddressVotesWithProposals))
+  route.post('/votes/top-voters', handleAPI(getTopVoters))
 })
 
 export async function getProposalVotes(req: Request<{ proposal: string }>) {
   const refresh = req.query.refresh === 'true'
+  const id = req.params.proposal
 
-  const proposal = await getProposal(req)
-  // TODO: Replace lines 29-32 with VoteService.getVotes
-  let latestVotes = await VotesModel.getVotes(proposal.id)
-  if (!latestVotes) {
-    latestVotes = await VotesModel.createEmpty(proposal.id)
-  }
+  validateProposalId(id)
+
+  const proposal = await ProposalService.getProposal(id)
+  const latestVotes = await VoteService.getVotes(id)
 
   if (!!latestVotes.hash && Time.date(proposal.finish_at).getTime() + Time.Hour < Date.now() && !refresh) {
     return latestVotes.votes
@@ -112,4 +113,12 @@ async function getAddressVotesWithProposals(req: Request) {
   }
 
   return votesWithProposalData.sort((a, b) => b.created - a.created)
+}
+
+async function getTopVoters(req: Request) {
+  const { start, end, limit } = req.body
+  validateDates(start, end)
+  const validLimit = isNumber(limit) ? limit : undefined
+
+  return await VoteService.getTopVoters(start, end, validLimit)
 }

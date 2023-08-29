@@ -22,7 +22,7 @@ const start = new Date(now.getFullYear(), now.getMonth() - 1, now.getDay())
 
 function TopVoters() {
   const t = useFormatMessage()
-  const { topVoters, isLoadingTopVoters } = useTopVoters(start, now, 5)
+  const { topVoters, isLoadingTopVoters } = useTopVoters(start, now)
 
   return (
     <Card className="TopVoters">

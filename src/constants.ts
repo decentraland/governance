@@ -1,3 +1,5 @@
+import { trimOtterspaceId } from './entities/Badges/utils'
+import { OTTERSPACE_DAO_RAFT_ID } from './entities/Snapshot/constants'
 import Candidates from './utils/delegates/candidates.json'
 import { env } from './utils/env'
 
@@ -20,6 +22,11 @@ export const TEST_ENV_VAR = env('GATSBY_TEST_ENV_VAR') || ''
 export const PROD_ENV_VAR = env('GATSBY_PROD_ENV_VAR') || ''
 export const DISCORD_SERVICE_ENABLED = getBooleanStringVar('DISCORD_SERVICE_ENABLED', true)
 export const VOTES_VP_THRESHOLD = 5
+export const SSO_URL = env('GATSBY_SSO_URL') ?? undefined
+export const RAFT_OWNER_PK = process.env.RAFT_OWNER_PK || ''
+export const POLYGON_BADGES_CONTRACT_ADDRESS = process.env.POLYGON_BADGES_CONTRACT_ADDRESS || ''
+export const POLYGON_RAFTS_CONTRACT_ADDRESS = process.env.POLYGON_RAFTS_CONTRACT_ADDRESS || '' //TODO: add to definitions
+export const NFT_STORAGE_API_KEY = process.env.NFT_STORAGE_API_KEY || '' //TODO: add to definitions
 export const LEGISLATOR_BADGE_SPEC_CID = process.env.LEGISLATOR_BADGE_SPEC_CID || ''
 export const LAND_OWNER_BADGE_SPEC_CID = process.env.LAND_OWNER_BADGE_SPEC_CID || ''
-export const SSO_URL = env('GATSBY_SSO_URL') ?? undefined
+export const TRIMMED_OTTERSPACE_RAFT_ID = trimOtterspaceId(OTTERSPACE_DAO_RAFT_ID)

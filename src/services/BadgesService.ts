@@ -5,6 +5,7 @@ import AirdropJobModel, { AirdropJobStatus, AirdropOutcome } from '../back/model
 import { OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgraph'
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 import { LAND_OWNER_BADGE_SPEC_CID, LEGISLATOR_BADGE_SPEC_CID } from '../constants'
+import { storeBadgeSpec } from '../entities/Badges/storeBadgeSpec'
 import {
   ActionResult,
   ActionStatus,

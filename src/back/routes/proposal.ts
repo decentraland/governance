@@ -83,7 +83,7 @@ import { ProposalInCreation, ProposalService } from '../../services/ProposalServ
 import { getProfile } from '../../utils/Catalyst'
 import Time from '../../utils/date/Time'
 import { ErrorCategory } from '../../utils/errorCategories'
-import { validateAddress, validateUniqueAddresses } from '../utils/validations'
+import { validateAddress, validateProposalId, validateUniqueAddresses } from '../utils/validations'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -489,6 +489,7 @@ export async function createProposal(proposalInCreation: ProposalInCreation) {
 
 export async function getProposal(req: Request<{ proposal: string }>) {
   const id = req.params.proposal
+  validateProposalId(id)
   try {
     return await ProposalService.getProposal(id)
   } catch (e) {

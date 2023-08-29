@@ -3,11 +3,23 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
 import { SnapshotProposal } from '../../clients/SnapshotGraphqlTypes'
+import isDebugAddress from '../../entities/Debug/isDebugAddress'
 
 export function validateDates(start?: string, end?: string) {
-  if (!start || !(start.length > 0) || !end || !(end.length > 0)) {
-    throw new RequestError('Invalid dates', RequestError.BadRequest)
+  validateDate(start)
+  validateDate(end)
+}
+
+export function validateDate(date?: string, required?: 'optional') {
+  if ((required !== 'optional' && !(date && isValidDate(date))) || (date && !isValidDate(date))) {
+    throw new RequestError('Invalid date', RequestError.BadRequest)
   }
+}
+
+function isValidDate(date: string) {
+  if (date.length === 0) return false
+  const parsedDate = new Date(date)
+  return !isNaN(parsedDate.getTime())
 }
 
 export function validateFields(fields: unknown) {
@@ -68,5 +80,25 @@ export function validateUniqueAddresses(addresses: string[]): boolean {
 export function validateProposalSnapshotId(proposalSnapshotId?: string) {
   if (!proposalSnapshotId || proposalSnapshotId.length === 0) {
     throw new RequestError('Invalid snapshot id')
+  }
+}
+
+export function validateRequiredString(fieldName: string, value?: string) {
+  if (!value || value.length === 0) {
+    throw new RequestError(`Invalid ${fieldName}`, RequestError.BadRequest)
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function validateRequiredStrings(fieldNames: string[], requestBody: Record<string, any>) {
+  for (const fieldName of fieldNames) {
+    const fieldValue = requestBody[fieldName]
+    validateRequiredString(fieldName, fieldValue)
+  }
+}
+
+export function validateDebugAddress(user: string | undefined) {
+  if (!isDebugAddress(user)) {
+    throw new RequestError('Invalid user', RequestError.Unauthorized)
   }
 }

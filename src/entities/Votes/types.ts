@@ -31,3 +31,8 @@ export type VotedProposal = SnapshotVote & {
 export type ChoiceColor = 'approve' | 'reject' | number
 
 export type SelectedVoteChoice = { choice?: string; choiceIndex?: number }
+
+export type Voter = {
+  address: string
+  votes: number
+}

@@ -4,8 +4,9 @@ import env from 'decentraland-gatsby/dist/utils/env'
 import snakeCase from 'lodash/snakeCase'
 
 import { AirdropOutcome } from '../back/models/AirdropJob'
+import { SpecState } from '../components/Debug/UploadBadgeSpec'
 import { GOVERNANCE_API } from '../constants'
-import { UserBadges } from '../entities/Badges/types'
+import { ActionResult, BadgeCreationResult, UserBadges } from '../entities/Badges/types'
 import { BidRequest, UnpublishedBidAttributes } from '../entities/Bid/types'
 import { Budget, BudgetWithContestants, CategoryBudget } from '../entities/Budget/types'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
@@ -33,7 +34,7 @@ import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { Topic } from '../entities/SurveyTopic/types'
 import { ProjectHealth, UpdateAttributes, UpdateResponse } from '../entities/Updates/types'
-import { Vote, VotedProposal } from '../entities/Votes/types'
+import { Vote, VotedProposal, Voter } from '../entities/Votes/types'
 import Time from '../utils/date/Time'
 
 import { TransparencyBudget } from './DclData'
@@ -324,6 +325,14 @@ export class Governance extends API {
     return result.data
   }
 
+  async getTopVoters(start: Date, end: Date, limit?: number) {
+    const result = await this.fetch<ApiResponse<Voter[]>>(
+      `/votes/top-voters`,
+      this.options().method('POST').json({ start, end, limit })
+    )
+    return result.data
+  }
+
   async getUserSubscriptions() {
     const result = await this.fetch<ApiResponse<SubscriptionAttributes[]>>(
       `/subscriptions`,
@@ -606,13 +615,29 @@ export class Governance extends API {
   }
 
   async revokeBadge(badgeSpecCid: string, recipients: string[], reason?: string) {
-    const response = await this.fetch<ApiResponse<string>>(
+    const response = await this.fetch<ApiResponse<ActionResult[]>>(
       `/badges/revoke/`,
       this.options().method('POST').authorization({ sign: true }).json({
         badgeSpecCid,
         recipients,
         reason,
       })
+    )
+    return response.data
+  }
+
+  async uploadBadgeSpec(spec: SpecState) {
+    const response = await this.fetch<ApiResponse<BadgeCreationResult>>(
+      `/badges/upload-badge-spec/`,
+      this.options().method('POST').authorization({ sign: true }).json(spec)
+    )
+    return response.data
+  }
+
+  async createBadgeSpec(badgeCid: string) {
+    const response = await this.fetch<ApiResponse<string>>(
+      `/badges/create-badge-spec/`,
+      this.options().method('POST').authorization({ sign: true }).json({ badgeCid })
     )
     return response.data
   }

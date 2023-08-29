@@ -21,26 +21,6 @@ export const isValidGrantBudget = (size: number) => {
   return !(size < GRANT_PROPOSAL_MIN_BUDGET || size > GRANT_PROPOSAL_MAX_BUDGET)
 }
 
-export function getNewGrantsCategoryIcon(category: NewGrantCategory) {
-  switch (category) {
-    case NewGrantCategory.Accelerator:
-      return Accelerator
-    case NewGrantCategory.CoreUnit:
-      return CoreUnit
-    case NewGrantCategory.Documentation:
-      return Documentation
-    case NewGrantCategory.InWorldContent:
-      return InWorldContent
-    case NewGrantCategory.Platform:
-      return Platform
-    case NewGrantCategory.SocialMediaContent:
-      return SocialMediaContent
-    case NewGrantCategory.Sponsorship:
-    default:
-      return Sponsorship
-  }
-}
-
 export function toProposalGrantCategory(category?: string | null): ProposalGrantCategory | null {
   const categories = [...Object.values(NewGrantCategory), ...Object.values(OldGrantCategory)]
   const index = categories.map(toSnakeCase).indexOf(toSnakeCase(category || undefined))

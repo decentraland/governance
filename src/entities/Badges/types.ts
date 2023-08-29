@@ -36,8 +36,10 @@ export enum ActionStatus {
 }
 
 export type ActionResult = { status: ActionStatus; address: string; badgeId: string; error?: string }
-export const GAS_MULTIPLIER = 2
+export type BadgeCreationResult = { status: ActionStatus; badgeCid?: string; error?: string }
+
 export type GasConfig = { gasPrice: ethers.BigNumber; gasLimit: ethers.BigNumber }
+export const GAS_MULTIPLIER = 2
 
 export function isBadgeStatus(value: string | null | undefined): boolean {
   return !!value && new Set<string>(Object.values(BadgeStatus)).has(value)

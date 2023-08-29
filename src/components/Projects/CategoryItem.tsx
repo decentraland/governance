@@ -4,9 +4,9 @@ import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import snakeCase from 'lodash/snakeCase'
 
 import { NewGrantCategory } from '../../entities/Grant/types'
-import { getNewGrantsCategoryIcon } from '../../entities/Grant/utils'
 import { CategoryIconVariant } from '../../helpers/styles'
 import useFormatMessage from '../../hooks/useFormatMessage'
+import { getNewGrantsCategoryIcon } from '../Icon/NewGrantsCategoryIcons'
 
 interface Props {
   category: NewGrantCategory
