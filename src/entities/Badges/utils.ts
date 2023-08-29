@@ -109,7 +109,7 @@ export async function getLandOwnerAddresses(): Promise<string[]> {
   }
 }
 
-export async function mintBadge(badgeCid: string) {
+export async function createSpec(badgeCid: string) {
   const provider = RpcService.getPolygonProvider()
   const raftOwner = new ethers.Wallet(RAFT_OWNER_PK, provider)
   const contract = new ethers.Contract(POLYGON_BADGES_CONTRACT_ADDRESS, BadgesAbi, raftOwner)
@@ -121,6 +121,6 @@ export async function mintBadge(badgeCid: string) {
 
   const txn = await contract.connect(raftOwner).createSpec(ipfsAddress, TRIMMED_OTTERSPACE_RAFT_ID, gasConfig)
   await txn.wait()
-  logger.log('Minted badge with txn hash:', txn.hash)
+  logger.log('Create badge spec with txn hash:', txn.hash)
   return txn.hash
 }

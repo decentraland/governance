@@ -25,7 +25,7 @@ function getImageInfoFromUrl(url: string): { imageName: string; extension: strin
   return { imageName, extension }
 }
 
-const fetchImageAndCreateFile = async (imgUrl: string) => {
+const getImageFileFromUrl = async (imgUrl: string) => {
   const { imageName, extension } = getImageInfoFromUrl(imgUrl)
 
   try {
@@ -51,7 +51,7 @@ function convertToISODate(dateString: string): string {
 export async function storeBadgeSpec(title: string, description: string, imgUrl: string, expiresAt?: string) {
   const client = new NFTStorage({ token: NFT_STORAGE_API_KEY })
   const raftOwner = new ethers.Wallet(RAFT_OWNER_PK)
-  const file = await fetchImageAndCreateFile(imgUrl)
+  const file = await getImageFileFromUrl(imgUrl)
 
   const badgeSpec = {
     schema: 'https://api.otterspace.xyz/schemas/badge/1.0.1.json',

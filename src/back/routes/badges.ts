@@ -12,7 +12,7 @@ import {
   UserBadges,
   toOtterspaceRevokeReason,
 } from '../../entities/Badges/types'
-import { mintBadge } from '../../entities/Badges/utils'
+import { createSpec } from '../../entities/Badges/utils'
 import { BadgesService } from '../../services/BadgesService'
 import { AirdropOutcome } from '../models/AirdropJob'
 import {
@@ -28,8 +28,8 @@ export default routes((router) => {
   router.get('/badges/:address/', handleAPI(getBadges))
   router.post('/badges/airdrop/', withAuth, handleAPI(airdrop))
   router.post('/badges/revoke/', withAuth, handleAPI(revoke))
-  router.post('/badges/upload-spec/', withAuth, handleAPI(uploadSpec))
-  router.post('/badges/mint-spec/', withAuth, handleAPI(mintSpec))
+  router.post('/badges/upload-badge-spec/', withAuth, handleAPI(uploadBadgeSpec))
+  router.post('/badges/create-badge-spec/', withAuth, handleAPI(createBadgeSpec))
 })
 
 async function getBadges(req: Request<{ address: string }>): Promise<UserBadges> {
@@ -79,7 +79,7 @@ async function revoke(req: WithAuth): Promise<ActionResult[]> {
   return await BadgesService.revokeBadge(badgeSpecCid, recipients, validatedReason)
 }
 
-async function uploadSpec(req: WithAuth): Promise<BadgeCreationResult> {
+async function uploadBadgeSpec(req: WithAuth): Promise<BadgeCreationResult> {
   const user = req.auth
   validateDebugAddress(user)
 
@@ -95,7 +95,7 @@ async function uploadSpec(req: WithAuth): Promise<BadgeCreationResult> {
   }
 }
 
-async function mintSpec(req: WithAuth): Promise<BadgeCreationResult> {
+async function createBadgeSpec(req: WithAuth): Promise<BadgeCreationResult> {
   const user = req.auth
   validateDebugAddress(user)
 
@@ -103,7 +103,7 @@ async function mintSpec(req: WithAuth): Promise<BadgeCreationResult> {
   validateRequiredString('badgeCid', badgeCid)
 
   try {
-    const result = await mintBadge(badgeCid)
+    const result = await createSpec(badgeCid)
     return { status: ActionStatus.Success, badgeCid: JSON.stringify(result) }
   } catch (e) {
     return { status: ActionStatus.Failed, error: JSON.stringify(e) }

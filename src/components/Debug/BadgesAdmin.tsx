@@ -13,7 +13,7 @@ import Text from '../Common/Typography/Text'
 import ErrorMessage from '../Error/ErrorMessage'
 import { ContentSection } from '../Layout/ContentLayout'
 
-import UploadSpec from './UploadSpec'
+import UploadBadgeSpec from './UploadBadgeSpec'
 
 interface Props {
   className?: string
@@ -64,10 +64,10 @@ export default function BadgesAdmin({ className }: Props) {
     }
   }
 
-  async function handleMintBadge() {
+  async function handleCreateBadgeSpec() {
     if (badgeCid) {
       await submit(
-        async () => Governance.get().mintSpec(badgeCid),
+        async () => Governance.get().createBadgeSpec(badgeCid),
         (result) => setResult(JSON.stringify(result))
       )
     }
@@ -96,8 +96,16 @@ export default function BadgesAdmin({ className }: Props) {
       <ContentSection>
         <Heading size="sm">{'Badges'}</Heading>
         <div>
-          <Heading size="xs">{'Airdrop and Revoke'}</Heading>
+          <Heading size="xs">{'Create, Airdrop, Revoke'}</Heading>
           <div>
+            <Button
+              className="Debug__SideButton"
+              primary
+              disabled={formDisabled}
+              onClick={() => handleCreateBadgeSpec()}
+            >
+              {'Create Badge Spec'}
+            </Button>
             <Button
               className="Debug__SectionButton"
               primary
@@ -108,9 +116,6 @@ export default function BadgesAdmin({ className }: Props) {
             </Button>
             <Button className="Debug__SideButton" primary disabled={formDisabled} onClick={() => handleRevokeBadge()}>
               {'Revoke'}
-            </Button>
-            <Button className="Debug__SideButton" primary disabled={formDisabled} onClick={() => handleMintBadge()}>
-              {'Mint'}
             </Button>
           </div>
           <Label>{'Badge Spec Cid'}</Label>
@@ -135,7 +140,7 @@ export default function BadgesAdmin({ className }: Props) {
             </>
           )}
         </div>
-        <UploadSpec />
+        <UploadBadgeSpec />
       </ContentSection>
       {!!errorMessage && <ErrorMessage label={'Badges Error'} errorMessage={errorMessage} />}
     </div>

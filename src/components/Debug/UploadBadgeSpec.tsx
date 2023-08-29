@@ -16,7 +16,7 @@ import Text from '../Common/Typography/Text'
 import ErrorMessage from '../Error/ErrorMessage'
 import { ContentSection } from '../Layout/ContentLayout'
 
-import './UploadSpec.css'
+import './UploadBadgeSpec.css'
 
 interface Props {
   className?: string
@@ -36,7 +36,7 @@ const initialState: SpecState = {
   title: '',
 }
 
-export default function UploadSpec({ className }: Props) {
+export default function UploadBadgeSpec({ className }: Props) {
   const t = useFormatMessage()
   const [formDisabled, setFormDisabled] = useState(false)
   const [submitError, setSubmitError] = useState('')
@@ -56,7 +56,7 @@ export default function UploadSpec({ className }: Props) {
     setSubmitError('')
     setFormDisabled(true)
     try {
-      const result: any = await Governance.get().uploadSpec(data)
+      const result: any = await Governance.get().uploadBadgeSpec(data)
       setResult(result)
       setFormDisabled(false)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
