@@ -13,10 +13,15 @@ import {
   toOtterspaceRevokeReason,
 } from '../../entities/Badges/types'
 import { mintBadge } from '../../entities/Badges/utils'
-import isDebugAddress from '../../entities/Debug/isDebugAddress'
 import { BadgesService } from '../../services/BadgesService'
 import { AirdropOutcome } from '../models/AirdropJob'
-import { validateAddress, validateDate, validateRequiredString, validateRequiredStrings } from '../utils/validations'
+import {
+  validateAddress,
+  validateDate,
+  validateDebugAddress,
+  validateRequiredString,
+  validateRequiredStrings,
+} from '../utils/validations'
 
 export default routes((router) => {
   const withAuth = auth()
@@ -38,9 +43,7 @@ async function airdrop(req: WithAuth): Promise<AirdropOutcome> {
   const recipients: string[] = req.body.recipients
   const badgeSpecCid = req.body.badgeSpecCid
 
-  if (!isDebugAddress(user)) {
-    throw new RequestError('Invalid user', RequestError.Unauthorized)
-  }
+  validateDebugAddress(user)
 
   recipients.map((address) => {
     validateAddress(address)
@@ -58,9 +61,7 @@ async function revoke(req: WithAuth): Promise<ActionResult[]> {
   const { badgeSpecCid, reason } = req.body
   const recipients: string[] = req.body.recipients
 
-  if (!isDebugAddress(user)) {
-    throw new RequestError('Invalid user', RequestError.Unauthorized)
-  }
+  validateDebugAddress(user)
 
   recipients.map((address) => {
     validateAddress(address)
@@ -80,9 +81,7 @@ async function revoke(req: WithAuth): Promise<ActionResult[]> {
 
 async function uploadSpec(req: WithAuth): Promise<BadgeCreationResult> {
   const user = req.auth
-  if (!isDebugAddress(user)) {
-    throw new RequestError('Invalid user', RequestError.Unauthorized)
-  }
+  validateDebugAddress(user)
 
   const { title, description, imgUrl, expiresAt } = req.body
   validateRequiredStrings(['title', 'description', 'imgUrl'], req.body)
@@ -98,9 +97,7 @@ async function uploadSpec(req: WithAuth): Promise<BadgeCreationResult> {
 
 async function mintSpec(req: WithAuth): Promise<BadgeCreationResult> {
   const user = req.auth
-  if (!isDebugAddress(user)) {
-    throw new RequestError('Invalid user', RequestError.Unauthorized)
-  }
+  validateDebugAddress(user)
 
   const { badgeCid } = req.body
   validateRequiredString('badgeCid', badgeCid)

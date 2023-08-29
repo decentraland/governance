@@ -3,6 +3,7 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
 import { SnapshotProposal } from '../../clients/SnapshotGraphqlTypes'
+import isDebugAddress from '../../entities/Debug/isDebugAddress'
 
 export function validateDates(start?: string, end?: string) {
   validateDate(start)
@@ -93,5 +94,11 @@ export function validateRequiredStrings(fieldNames: string[], requestBody: Recor
   for (const fieldName of fieldNames) {
     const fieldValue = requestBody[fieldName]
     validateRequiredString(fieldName, fieldValue)
+  }
+}
+
+export function validateDebugAddress(user: string | undefined) {
+  if (!isDebugAddress(user)) {
+    throw new RequestError('Invalid user', RequestError.Unauthorized)
   }
 }

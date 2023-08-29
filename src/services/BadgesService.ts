@@ -291,8 +291,4 @@ export class BadgesService {
       await reinstateBadge(badgeId)
     })
   }
-
-  static async uploadBadge(title: string, description: string, imgUrl: string, expiresAt?: string) {
-    return await storeBadgeSpec(title, description, imgUrl, expiresAt)
-  }
 }
