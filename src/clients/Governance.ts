@@ -6,7 +6,7 @@ import snakeCase from 'lodash/snakeCase'
 import { AirdropOutcome } from '../back/models/AirdropJob'
 import { SpecState } from '../components/Debug/UploadSpec'
 import { GOVERNANCE_API } from '../constants'
-import { UserBadges } from '../entities/Badges/types'
+import { ActionResult, BadgeCreationResult, UserBadges } from '../entities/Badges/types'
 import { BidRequest, UnpublishedBidAttributes } from '../entities/Bid/types'
 import { Budget, BudgetWithContestants, CategoryBudget } from '../entities/Budget/types'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
@@ -615,7 +615,7 @@ export class Governance extends API {
   }
 
   async revokeBadge(badgeSpecCid: string, recipients: string[], reason?: string) {
-    const response = await this.fetch<ApiResponse<string>>(
+    const response = await this.fetch<ApiResponse<ActionResult[]>>(
       `/badges/revoke/`,
       this.options().method('POST').authorization({ sign: true }).json({
         badgeSpecCid,
@@ -626,17 +626,17 @@ export class Governance extends API {
     return response.data
   }
 
-  async upload(spec: SpecState) {
-    const response = await this.fetch<ApiResponse<string>>(
-      `/badges/upload/`,
+  async uploadSpec(spec: SpecState) {
+    const response = await this.fetch<ApiResponse<BadgeCreationResult>>(
+      `/badges/upload-spec/`,
       this.options().method('POST').authorization({ sign: true }).json(spec)
     )
     return response.data
   }
 
-  async mint(badgeCid: string) {
+  async mintSpec(badgeCid: string) {
     const response = await this.fetch<ApiResponse<string>>(
-      `/badges/mint/`,
+      `/badges/mint-spec/`,
       this.options().method('POST').authorization({ sign: true }).json({ badgeCid })
     )
     return response.data

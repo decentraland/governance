@@ -36,7 +36,8 @@ export enum ActionStatus {
 }
 
 export type ActionResult = { status: ActionStatus; address: string; badgeId: string; error?: string }
-export type UploadResult = { status: ActionStatus; badgeCid: string; error?: string }
+export type BadgeCreationResult = { status: ActionStatus; badgeCid?: string; error?: string }
+
 export type GasConfig = { gasPrice: ethers.BigNumber; gasLimit: ethers.BigNumber }
 export const GAS_MULTIPLIER = 2
 

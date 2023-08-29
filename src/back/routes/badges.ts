@@ -4,8 +4,15 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
-import { ActionStatus, UploadResult, UserBadges, toOtterspaceRevokeReason } from '../../entities/Badges/types'
-import { mintBadge, storeBadgeSpec } from '../../entities/Badges/utils'
+import { storeBadgeSpec } from '../../entities/Badges/storeBadgeSpec'
+import {
+  ActionResult,
+  ActionStatus,
+  BadgeCreationResult,
+  UserBadges,
+  toOtterspaceRevokeReason,
+} from '../../entities/Badges/types'
+import { mintBadge } from '../../entities/Badges/utils'
 import isDebugAddress from '../../entities/Debug/isDebugAddress'
 import { BadgesService } from '../../services/BadgesService'
 import { AirdropOutcome } from '../models/AirdropJob'
@@ -16,8 +23,8 @@ export default routes((router) => {
   router.get('/badges/:address/', handleAPI(getBadges))
   router.post('/badges/airdrop/', withAuth, handleAPI(airdrop))
   router.post('/badges/revoke/', withAuth, handleAPI(revoke))
-  router.post('/badges/upload/', withAuth, handleAPI(upload))
-  router.post('/badges/mint/', withAuth, handleAPI(mint))
+  router.post('/badges/upload-spec/', withAuth, handleAPI(uploadSpec))
+  router.post('/badges/mint-spec/', withAuth, handleAPI(mintSpec))
 })
 
 async function getBadges(req: Request<{ address: string }>): Promise<UserBadges> {
@@ -46,7 +53,7 @@ async function airdrop(req: WithAuth): Promise<AirdropOutcome> {
   return await BadgesService.giveBadgeToUsers(badgeSpecCid, recipients)
 }
 
-async function revoke(req: WithAuth): Promise<string> {
+async function revoke(req: WithAuth): Promise<ActionResult[]> {
   const user = req.auth!
   const { badgeSpecCid, reason } = req.body
   const recipients: string[] = req.body.recipients
@@ -68,15 +75,10 @@ async function revoke(req: WithAuth): Promise<string> {
         throw new RequestError(`Invalid revoke reason ${reason}`, RequestError.BadRequest)
       })
     : undefined
-  try {
-    const revocationResults = await BadgesService.revokeBadge(badgeSpecCid, recipients, validatedReason)
-    return `Revocation results: ${JSON.stringify(revocationResults)}`
-  } catch (e) {
-    return `Failed to revoke badges ${JSON.stringify(e)}`
-  }
+  return await BadgesService.revokeBadge(badgeSpecCid, recipients, validatedReason)
 }
 
-async function upload(req: WithAuth): Promise<UploadResult> {
+async function uploadSpec(req: WithAuth): Promise<BadgeCreationResult> {
   const user = req.auth
   if (!isDebugAddress(user)) {
     throw new RequestError('Invalid user', RequestError.Unauthorized)
@@ -88,14 +90,13 @@ async function upload(req: WithAuth): Promise<UploadResult> {
 
   try {
     const result = await storeBadgeSpec(title, description, imgUrl, expiresAt)
-    return { status: ActionStatus.Success, ...result }
+    return { status: ActionStatus.Success, badgeCid: result.badgeCid }
   } catch (e) {
-    console.log('e', e)
-    return { status: ActionStatus.Failed, badgeCid: JSON.stringify(e) }
+    return { status: ActionStatus.Failed, error: JSON.stringify(e) }
   }
 }
 
-async function mint(req: WithAuth): Promise<UploadResult> {
+async function mintSpec(req: WithAuth): Promise<BadgeCreationResult> {
   const user = req.auth
   if (!isDebugAddress(user)) {
     throw new RequestError('Invalid user', RequestError.Unauthorized)
@@ -108,7 +109,6 @@ async function mint(req: WithAuth): Promise<UploadResult> {
     const result = await mintBadge(badgeCid)
     return { status: ActionStatus.Success, badgeCid: JSON.stringify(result) }
   } catch (e) {
-    console.log('e', e)
-    return { status: ActionStatus.Failed, badgeCid: JSON.stringify(e) }
+    return { status: ActionStatus.Failed, error: JSON.stringify(e) }
   }
 }

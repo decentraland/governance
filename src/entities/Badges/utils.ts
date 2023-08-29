@@ -2,16 +2,9 @@ import { abi as BadgesAbi } from '@otterspace-xyz/contracts/out/Badges.sol/Badge
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
 import { ethers } from 'ethers'
-import { NFTStorage } from 'nft.storage'
 
 import { ErrorClient } from '../../clients/ErrorClient'
-import {
-  NFT_STORAGE_API_KEY,
-  POLYGON_BADGES_CONTRACT_ADDRESS,
-  POLYGON_RAFTS_CONTRACT_ADDRESS,
-  RAFT_OWNER_PK,
-  TRIMMED_OTTERSPACE_RAFT_ID,
-} from '../../constants'
+import { POLYGON_BADGES_CONTRACT_ADDRESS, RAFT_OWNER_PK, TRIMMED_OTTERSPACE_RAFT_ID } from '../../constants'
 import RpcService from '../../services/RpcService'
 import { ErrorCategory } from '../../utils/errorCategories'
 
@@ -49,6 +42,7 @@ export async function airdrop(badgeCid: string, recipients: string[], pumpGas = 
   }
   await txn.wait()
   logger.log('Airdropped badge with txn hash:', txn.hash)
+  return txn.hash
 }
 
 export async function reinstateBadge(badgeId: string) {
@@ -61,7 +55,8 @@ export async function reinstateBadge(badgeId: string) {
 
   const txn = await contract.connect(raftOwner).reinstateBadge(TRIMMED_OTTERSPACE_RAFT_ID, badgeId, gasConfig)
   await txn.wait()
-  return `Reinstated badge with txn hash: ${txn.hash}`
+  logger.log('Reinstated badge with txn hash:', txn.hash)
+  return txn.hash
 }
 
 export async function revokeBadge(badgeId: string, reason: number) {
@@ -75,7 +70,8 @@ export async function revokeBadge(badgeId: string, reason: number) {
 
   const txn = await contract.connect(raftOwner).revokeBadge(TRIMMED_OTTERSPACE_RAFT_ID, badgeId, reason, gasConfig)
   await txn.wait()
-  return `Revoked badge with txn hash: ${txn.hash}`
+  logger.log('Revoked badge with txn hash:', txn.hash)
+  return txn.hash
 }
 
 export async function checkBalance() {
@@ -95,6 +91,10 @@ export function trimOtterspaceId(rawId: string) {
   return ''
 }
 
+export function getIpfsAddress(badgeCid: string) {
+  return `ipfs://${badgeCid}/metadata.json`
+}
+
 export async function getLandOwnerAddresses(): Promise<string[]> {
   const LAND_API_URL = 'https://api.decentraland.org/v2/tiles?include=owner&type=owned'
   type LandOwner = { owner: string }
@@ -109,83 +109,18 @@ export async function getLandOwnerAddresses(): Promise<string[]> {
   }
 }
 
-const blobToFile = (theBlob: Blob, fileName: string): File => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const b: any = theBlob
-  b.lastModifiedDate = new Date()
-  b.name = fileName
-  return b as File
-}
-
-function getImageInfoFromUrl(url: string): { imageName: string; extension: string } {
-  const urlParts = url.split('/')
-  const rawFileName = urlParts[urlParts.length - 1].split('?')[0]
-  const [imageName, extension] = rawFileName.split('.')
-  return { imageName, extension }
-}
-
-const fetchImageAndCreateFile = async (imgUrl: string) => {
-  const { imageName, extension } = getImageInfoFromUrl(imgUrl)
-
-  try {
-    const response = await fetch(imgUrl)
-    if (!response.ok) {
-      throw new Error('Failed to fetch image')
-    }
-    const imageBlob = await response.blob()
-    const file = blobToFile(imageBlob, `${imageName}.${extension}`)
-    return file
-  } catch (error) {
-    console.error('Error fetching image:', error)
-    throw error
-  }
-}
-
-function convertToISODate(dateString: string): string {
-  const [year, month, day] = dateString.split('-')
-  const isoDateString = `${year}-${month}-${day}T00:00:00.000Z`
-  return isoDateString
-}
-
-export async function storeBadgeSpec(title: string, description: string, imgUrl: string, expiresAt?: string) {
-  const client = new NFTStorage({ token: NFT_STORAGE_API_KEY })
-  const raftOwner = new ethers.Wallet(RAFT_OWNER_PK)
-  const file = await fetchImageAndCreateFile(imgUrl)
-
-  const badgeSpec = {
-    schema: 'https://api.otterspace.xyz/schemas/badge/1.0.1.json',
-    name: title,
-    description: description,
-    properties: {
-      raftTokenId: TRIMMED_OTTERSPACE_RAFT_ID,
-      raftContractAddress: POLYGON_RAFTS_CONTRACT_ADDRESS,
-      createdByAddress: raftOwner.address,
-      expiresAt: expiresAt ? convertToISODate(expiresAt) : '',
-    },
-    image: file,
-  }
-
-  const metadata = await client.store(badgeSpec)
-  const cid = metadata.ipnft
-
-  const metadataUrl = `https://ipfs.io/ipfs/${cid}/metadata.json`
-  const ipfsAddress = `ipfs://${cid}/metadata.json`
-  return { badgeCid: cid, metadataUrl, ipfsAddress }
-}
-
 export async function mintBadge(badgeCid: string) {
   const provider = RpcService.getPolygonProvider()
   const raftOwner = new ethers.Wallet(RAFT_OWNER_PK, provider)
   const contract = new ethers.Contract(POLYGON_BADGES_CONTRACT_ADDRESS, BadgesAbi, raftOwner)
   const ipfsAddress = `ipfs://${badgeCid}/metadata.json`
-  console.log('Minting...')
 
   const gasConfig = await estimateGas(async () => {
     return contract.estimateGas.createSpec(ipfsAddress, TRIMMED_OTTERSPACE_RAFT_ID)
   })
 
   const txn = await contract.connect(raftOwner).createSpec(ipfsAddress, TRIMMED_OTTERSPACE_RAFT_ID, gasConfig)
-  const result = await txn.wait()
-  console.log('tx hash: ', result.hash)
-  return result
+  await txn.wait()
+  logger.log('Minted badge with txn hash:', txn.hash)
+  return txn.hash
 }

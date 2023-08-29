@@ -5,6 +5,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Field as DCLField } from 'decentraland-ui/dist/components/Field/Field'
 
 import { Governance } from '../../clients/Governance'
+import { getIpfsAddress } from '../../entities/Badges/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Time from '../../utils/date/Time'
 import Field from '../Common/Form/Field'
@@ -55,7 +56,7 @@ export default function UploadSpec({ className }: Props) {
     setSubmitError('')
     setFormDisabled(true)
     try {
-      const result: any = await Governance.get().upload(data)
+      const result: any = await Governance.get().uploadSpec(data)
       setResult(result)
       setFormDisabled(false)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -135,7 +136,7 @@ export default function UploadSpec({ className }: Props) {
             <SubLabel>{'Badge Cid'}</SubLabel>
             <Text className="Debug__Result">{result.badgeCid}</Text>
             <SubLabel>{'IPFS Address'}</SubLabel>
-            <Text className="Debug__Result">{result.ipfsAddress}</Text>
+            <Text className="Debug__Result">{getIpfsAddress(result.badgeCid)}</Text>
           </>
         )}
         {submitError && (

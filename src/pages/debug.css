@@ -24,6 +24,7 @@
 
 .Debug__Result {
   line-break: anywhere;
+  margin-bottom: 16px !important;
 }
 
 .EnvName__Section {

@@ -67,7 +67,7 @@ export default function BadgesAdmin({ className }: Props) {
   async function handleMintBadge() {
     if (badgeCid) {
       await submit(
-        async () => Governance.get().mint(badgeCid),
+        async () => Governance.get().mintSpec(badgeCid),
         (result) => setResult(JSON.stringify(result))
       )
     }

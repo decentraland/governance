@@ -5,6 +5,7 @@ import AirdropJobModel, { AirdropJobStatus, AirdropOutcome } from '../back/model
 import { OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgraph'
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 import { LAND_OWNER_BADGE_SPEC_CID, LEGISLATOR_BADGE_SPEC_CID } from '../constants'
+import { storeBadgeSpec } from '../entities/Badges/storeBadgeSpec'
 import {
   ActionResult,
   ActionStatus,
@@ -15,14 +16,7 @@ import {
   UserBadges,
   toBadgeStatus,
 } from '../entities/Badges/types'
-import {
-  airdrop,
-  getLandOwnerAddresses,
-  reinstateBadge,
-  revokeBadge,
-  storeBadgeSpec,
-  trimOtterspaceId,
-} from '../entities/Badges/utils'
+import { airdrop, getLandOwnerAddresses, reinstateBadge, revokeBadge, trimOtterspaceId } from '../entities/Badges/utils'
 import CoauthorModel from '../entities/Coauthor/model'
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalAttributes, ProposalType } from '../entities/Proposal/types'
