@@ -21,6 +21,12 @@ export type Badge = {
   createdAt: number
 }
 
+export enum ErrorReason {
+  NoUserWithoutBadge = 'All recipients already have this badge',
+  NoUserHasVoted = 'Recipients have never voted',
+  InvalidBadgeId = 'Invalid badge ID',
+}
+
 export type UserBadges = { currentBadges: Badge[]; expiredBadges: Badge[]; total: number }
 
 export enum OtterspaceRevokeReason {

@@ -3,36 +3,36 @@ import { v1 as uuid } from 'uuid'
 
 import AirdropJobModel, { AirdropJobStatus, AirdropOutcome } from '../back/models/AirdropJob'
 import { OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgraph'
-import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 import { LAND_OWNER_BADGE_SPEC_CID, LEGISLATOR_BADGE_SPEC_CID } from '../constants'
-import { storeBadgeSpec } from '../entities/Badges/storeBadgeSpec'
 import {
   ActionResult,
   ActionStatus,
   Badge,
   BadgeStatus,
   BadgeStatusReason,
+  ErrorReason,
   OtterspaceRevokeReason,
   UserBadges,
   toBadgeStatus,
 } from '../entities/Badges/types'
-import { airdrop, getLandOwnerAddresses, reinstateBadge, revokeBadge, trimOtterspaceId } from '../entities/Badges/utils'
+import {
+  airdrop,
+  getLandOwnerAddresses,
+  getValidatedUsersForBadge,
+  reinstateBadge,
+  revokeBadge,
+  trimOtterspaceId,
+} from '../entities/Badges/utils'
 import CoauthorModel from '../entities/Coauthor/model'
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalAttributes, ProposalType } from '../entities/Proposal/types'
-import { getChecksumAddress, isSameAddress } from '../entities/Snapshot/utils'
+import { getChecksumAddress } from '../entities/Snapshot/utils'
 import { inBackground, splitArray } from '../helpers'
 import { ErrorCategory } from '../utils/errorCategories'
 
 import { ErrorService } from './ErrorService'
 
 const TRANSACTION_UNDERPRICED_ERROR_CODE = -32000
-
-enum ErrorReason {
-  NoUserWithoutBadge = 'All recipients already have this badge',
-  NoUserHasVoted = 'Recipients have never voted',
-  InvalidBadgeId = 'Invalid badge ID',
-}
 
 export class BadgesService {
   public static async getBadges(address: string): Promise<UserBadges> {
@@ -85,50 +85,20 @@ export class BadgesService {
 
   public static async giveBadgeToUsers(badgeCid: string, users: string[]): Promise<AirdropOutcome> {
     try {
-      const { usersWithoutBadge, usersWithBadgesToReinstate } = await this.getUsersWithoutBadge(badgeCid, users)
+      const { eligibleUsers, usersWithBadgesToReinstate, error } = await getValidatedUsersForBadge(badgeCid, users)
       if (usersWithBadgesToReinstate.length > 0) {
         inBackground(async () => {
           return await this.reinstateBadge(badgeCid, usersWithBadgesToReinstate)
         })
       }
 
-      if (usersWithoutBadge.length === 0) {
-        return { status: AirdropJobStatus.FAILED, error: ErrorReason.NoUserWithoutBadge }
+      if (error) {
+        return { status: AirdropJobStatus.FAILED, error }
       }
-      const usersWhoVoted = await this.getUsersWhoVoted(usersWithoutBadge)
-      if (usersWhoVoted.length === 0) {
-        return { status: AirdropJobStatus.FAILED, error: ErrorReason.NoUserHasVoted }
-      }
-      return await this.airdropWithRetry(badgeCid, usersWhoVoted)
+
+      return await this.airdropWithRetry(badgeCid, eligibleUsers)
     } catch (e) {
       return { status: AirdropJobStatus.FAILED, error: JSON.stringify(e) }
-    }
-  }
-
-  private static async getUsersWhoVoted(usersWithoutBadge: string[]) {
-    const votesFromUsers = await SnapshotGraphql.get().getAddressesVotes(usersWithoutBadge)
-    return Array.from(new Set(votesFromUsers.map((vote) => vote.voter.toLowerCase())))
-  }
-
-  private static async getUsersWithoutBadge(badgeCid: string, users: string[]) {
-    const badges = await OtterspaceSubgraph.get().getBadges(badgeCid)
-    const usersWithBadgesToReinstate: string[] = []
-    const usersWithoutBadge: string[] = []
-
-    for (const user of users) {
-      const userBadge = badges.find((badge) => isSameAddress(user, badge.owner?.id))
-      if (!userBadge) {
-        usersWithoutBadge.push(user)
-        continue
-      }
-      if (userBadge.status === BadgeStatus.Revoked && userBadge.statusReason === BadgeStatusReason.TenureEnded) {
-        usersWithBadgesToReinstate.push(user)
-      }
-    }
-
-    return {
-      usersWithoutBadge,
-      usersWithBadgesToReinstate,
     }
   }
 
@@ -173,24 +143,37 @@ export class BadgesService {
 
   static async giveAndRevokeLandOwnerBadges() {
     const landOwnerAddresses = await getLandOwnerAddresses()
-    const outcomes = await Promise.all(
-      splitArray(landOwnerAddresses, 50).map((addresses) =>
-        BadgesService.giveBadgeToUsers(LAND_OWNER_BADGE_SPEC_CID, addresses)
-      )
+    const { eligibleUsers, usersWithBadgesToReinstate, error } = await getValidatedUsersForBadge(
+      LAND_OWNER_BADGE_SPEC_CID,
+      landOwnerAddresses
     )
-    const failedOutcomes = outcomes.filter(
-      ({ status, error }) =>
-        status === AirdropJobStatus.FAILED &&
-        error !== ErrorReason.NoUserWithoutBadge &&
-        error !== ErrorReason.NoUserHasVoted
-    )
-    if (failedOutcomes.length > 0) {
-      console.error('Unable to give LandOwner badges', failedOutcomes)
 
+    if (error && error !== ErrorReason.NoUserWithoutBadge && error !== ErrorReason.NoUserHasVoted) {
+      console.error('Unable to give LandOwner badges', error)
       ErrorService.report('Unable to give LandOwner badges', {
         category: ErrorCategory.Badges,
-        failedOutcomes,
+        error,
       })
+    } else {
+      const outcomes = await Promise.all(
+        splitArray([...eligibleUsers, ...usersWithBadgesToReinstate], 50).map((addresses) =>
+          BadgesService.giveBadgeToUsers(LAND_OWNER_BADGE_SPEC_CID, addresses)
+        )
+      )
+      const failedOutcomes = outcomes.filter(
+        ({ status, error }) =>
+          status === AirdropJobStatus.FAILED &&
+          error !== ErrorReason.NoUserWithoutBadge &&
+          error !== ErrorReason.NoUserHasVoted
+      )
+      if (failedOutcomes.length > 0) {
+        console.error('Unable to give LandOwner badges', failedOutcomes)
+
+        ErrorService.report('Unable to give LandOwner badges', {
+          category: ErrorCategory.Badges,
+          failedOutcomes,
+        })
+      }
     }
 
     const badges = await OtterspaceSubgraph.get().getBadges(LAND_OWNER_BADGE_SPEC_CID)
