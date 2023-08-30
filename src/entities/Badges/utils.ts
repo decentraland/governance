@@ -4,11 +4,13 @@ import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
 import { ethers } from 'ethers'
 
 import { ErrorClient } from '../../clients/ErrorClient'
+import { OtterspaceSubgraph } from '../../clients/OtterspaceSubgraph'
 import { POLYGON_BADGES_CONTRACT_ADDRESS, RAFT_OWNER_PK, TRIMMED_OTTERSPACE_RAFT_ID } from '../../constants'
 import RpcService from '../../services/RpcService'
 import { ErrorCategory } from '../../utils/errorCategories'
+import { getUsersWhoVoted, isSameAddress } from '../Snapshot/utils'
 
-import { GAS_MULTIPLIER, GasConfig } from './types'
+import { BadgeStatus, BadgeStatusReason, ErrorReason, GAS_MULTIPLIER, GasConfig } from './types'
 
 function checksumAddresses(addresses: string[]): string[] {
   return addresses.map((address) => ethers.utils.getAddress(address))
@@ -123,4 +125,52 @@ export async function createSpec(badgeCid: string) {
   await txn.wait()
   logger.log('Create badge spec with txn hash:', txn.hash)
   return txn.hash
+}
+
+export async function getUsersWithoutBadge(badgeCid: string, users: string[]) {
+  const badges = await OtterspaceSubgraph.get().getBadges(badgeCid)
+  const usersWithBadgesToReinstate: string[] = []
+  const usersWithoutBadge: string[] = []
+
+  for (const user of users) {
+    const userBadge = badges.find((badge) => isSameAddress(user, badge.owner?.id))
+    if (!userBadge) {
+      usersWithoutBadge.push(user)
+      continue
+    }
+    if (userBadge.status === BadgeStatus.Revoked && userBadge.statusReason === BadgeStatusReason.TenureEnded) {
+      usersWithBadgesToReinstate.push(user)
+    }
+  }
+
+  return {
+    usersWithoutBadge,
+    usersWithBadgesToReinstate,
+  }
+}
+
+type ValidatedUsers = {
+  eligibleUsers: string[]
+  usersWithBadgesToReinstate: string[]
+  error?: string
+}
+
+export async function getValidatedUsersForBadge(badgeCid: string, addresses: string[]): Promise<ValidatedUsers> {
+  try {
+    const { usersWithoutBadge, usersWithBadgesToReinstate } = await getUsersWithoutBadge(badgeCid, addresses)
+    const usersWhoVoted = usersWithoutBadge.length > 0 ? await getUsersWhoVoted(usersWithoutBadge) : []
+    const result = {
+      eligibleUsers: usersWhoVoted,
+      usersWithBadgesToReinstate,
+    }
+    if (usersWithoutBadge.length === 0) {
+      return { ...result, error: ErrorReason.NoUserWithoutBadge }
+    }
+    if (usersWhoVoted.length === 0) {
+      return { ...result, error: ErrorReason.NoUserHasVoted }
+    }
+    return result
+  } catch (error) {
+    return { eligibleUsers: [], usersWithBadgesToReinstate: [], error: JSON.stringify(error) }
+  }
 }

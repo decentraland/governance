@@ -1,6 +1,7 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 
 import { BadgesService } from '../../services/BadgesService'
+import { isProdEnv } from '../../utils/governanceEnvs'
 import AirdropJobModel, { AirdropJobAttributes } from '../models/AirdropJob'
 
 export async function runAirdropJobs() {
@@ -28,5 +29,7 @@ async function runQueuedAirdropJobs() {
 }
 
 async function giveAndRevokeLandOwnerBadges() {
-  await BadgesService.giveAndRevokeLandOwnerBadges()
+  if (isProdEnv()) {
+    await BadgesService.giveAndRevokeLandOwnerBadges()
+  }
 }

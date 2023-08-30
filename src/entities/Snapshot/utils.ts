@@ -1,6 +1,7 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { ethers } from 'ethers'
 
+import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import {
   Delegation,
   DelegationResult,
@@ -202,4 +203,9 @@ export function isSameAddress(userAddress?: string | null, address?: string | nu
     address.length > 0 &&
     getChecksumAddress(userAddress) === getChecksumAddress(address)
   )
+}
+
+export async function getUsersWhoVoted(users: string[]) {
+  const votesFromUsers = await SnapshotGraphql.get().getAddressesVotes(users)
+  return Array.from(new Set(votesFromUsers.map((vote) => vote.voter.toLowerCase())))
 }

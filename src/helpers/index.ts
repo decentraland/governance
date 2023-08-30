@@ -101,3 +101,9 @@ export function getVestingContractUrl(address: string) {
   const VESTING_DASHBOARD_URL = env('GATSBY_VESTING_DASHBOARD_URL')
   return VESTING_DASHBOARD_URL.replace('%23', '#').concat(address.toLowerCase())
 }
+
+export function splitArray<Type>(array: Type[], chunkSize: number): Type[][] {
+  return Array.from({ length: Math.ceil(array.length / chunkSize) }, (_, index) =>
+    array.slice(index * chunkSize, (index + 1) * chunkSize)
+  )
+}
