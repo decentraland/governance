@@ -71,12 +71,6 @@ export function validateAddress(address: string) {
   }
 }
 
-export function validateUniqueAddresses(addresses: string[]): boolean {
-  const uniqueSet = new Set(addresses.map((address) => address.toLowerCase()))
-
-  return uniqueSet.size === addresses.length
-}
-
 export function validateProposalSnapshotId(proposalSnapshotId?: string) {
   if (!proposalSnapshotId || proposalSnapshotId.length === 0) {
     throw new RequestError('Invalid snapshot id')

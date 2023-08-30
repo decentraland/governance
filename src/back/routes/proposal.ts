@@ -74,6 +74,7 @@ import {
   isValidUpdateProposalStatus,
 } from '../../entities/Proposal/utils'
 import { SNAPSHOT_DURATION } from '../../entities/Snapshot/constants'
+import { validateUniqueAddresses } from '../../entities/Transparency/utils'
 import UpdateModel from '../../entities/Updates/model'
 import BidService from '../../services/BidService'
 import { DiscourseService } from '../../services/DiscourseService'
@@ -83,7 +84,7 @@ import { ProposalInCreation, ProposalService } from '../../services/ProposalServ
 import { getProfile } from '../../utils/Catalyst'
 import Time from '../../utils/date/Time'
 import { ErrorCategory } from '../../utils/errorCategories'
-import { validateAddress, validateProposalId, validateUniqueAddresses } from '../utils/validations'
+import { validateAddress, validateProposalId } from '../utils/validations'
 
 export default routes((route) => {
   const withAuth = auth()
