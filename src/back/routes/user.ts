@@ -15,10 +15,10 @@ import { validateAddress } from '../utils/validations'
 
 export default routes((route) => {
   const withAuth = auth()
-  route.get('/user/:address/is-validated', handleAPI(isValidated))
-  route.get('/user/:address', handleAPI(getProfile))
   route.get('/user/validate', withAuth, handleAPI(getValidationMessage))
   route.post('/user/validate', withAuth, handleAPI(checkValidationMessage))
+  route.get('/user/:address/is-validated', handleAPI(isValidated))
+  route.get('/user/:address', handleAPI(getProfile))
 })
 
 const VALIDATIONS_IN_PROGRESS: Record<string, ValidationMessage> = {}
