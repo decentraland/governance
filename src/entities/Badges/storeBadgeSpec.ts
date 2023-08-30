@@ -1,14 +1,13 @@
 import { ethers } from 'ethers'
 import { NFTStorage } from 'nft.storage'
 
+import { getIpfsAddress } from '../../back/utils/contractInteractions'
 import {
   NFT_STORAGE_API_KEY,
   POLYGON_RAFTS_CONTRACT_ADDRESS,
   RAFT_OWNER_PK,
   TRIMMED_OTTERSPACE_RAFT_ID,
 } from '../../constants'
-
-import { getIpfsAddress } from './utils'
 
 const blobToFile = (theBlob: Blob, fileName: string): File => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -48,7 +47,14 @@ function convertToISODate(dateString: string): string {
   return isoDateString
 }
 
-export async function storeBadgeSpec(title: string, description: string, imgUrl: string, expiresAt?: string) {
+interface BadgeSpec {
+  title: string
+  description: string
+  imgUrl: string
+  expiresAt?: string
+}
+
+export async function storeBadgeSpec({ title, description, imgUrl, expiresAt }: BadgeSpec) {
   const client = new NFTStorage({ token: NFT_STORAGE_API_KEY })
   const raftOwner = new ethers.Wallet(RAFT_OWNER_PK)
   const file = await getImageFileFromUrl(imgUrl)

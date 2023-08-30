@@ -35,11 +35,6 @@ async function giveAndRevokeLandOwnerBadges() {
 }
 
 export async function giveTopVoterBadges() {
-  const badgeCiId = await BadgesService.createTopVotersBadge()
-  await BadgesService.queueTopVopVoterAirdrops(badgeCiId)
-}
-
-export async function giveTopVoterBadges() {
-  const badgeCiId = await BadgesService.createTopVotersBadge()
-  await BadgesService.queueTopVopVoterAirdrops(badgeCiId)
+  const badgeCid = await BadgesService.createTopVotersBadge()
+  await BadgesService.queueTopVopVoterAirdrops(badgeCid)
 }

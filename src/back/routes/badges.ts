@@ -12,9 +12,9 @@ import {
   UserBadges,
   toOtterspaceRevokeReason,
 } from '../../entities/Badges/types'
-import { createSpec } from '../../entities/Badges/utils'
 import { BadgesService } from '../../services/BadgesService'
 import { AirdropOutcome } from '../models/AirdropJob'
+import { createSpec } from '../utils/contractInteractions'
 import {
   validateAddress,
   validateDate,
@@ -88,7 +88,12 @@ async function uploadBadgeSpec(req: WithAuth): Promise<BadgeCreationResult> {
   validateDate(expiresAt)
 
   try {
-    const result = await storeBadgeSpec(title, description, imgUrl, expiresAt)
+    const result = await storeBadgeSpec({
+      title,
+      description,
+      imgUrl,
+      expiresAt,
+    })
     return { status: ActionStatus.Success, badgeCid: result.badgeCid }
   } catch (e) {
     return { status: ActionStatus.Failed, error: JSON.stringify(e) }
