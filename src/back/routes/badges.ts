@@ -6,9 +6,9 @@ import { Request } from 'express'
 
 import { storeBadgeSpec } from '../../entities/Badges/storeBadgeSpec'
 import {
-  ActionResult,
   ActionStatus,
   BadgeCreationResult,
+  RevokeOrReinstateResult,
   UserBadges,
   toOtterspaceRevokeReason,
 } from '../../entities/Badges/types'
@@ -56,7 +56,7 @@ async function airdrop(req: WithAuth): Promise<AirdropOutcome> {
   return await BadgesService.giveBadgeToUsers(badgeSpecCid, recipients)
 }
 
-async function revoke(req: WithAuth): Promise<ActionResult[]> {
+async function revoke(req: WithAuth): Promise<RevokeOrReinstateResult[]> {
   const user = req.auth!
   const { badgeSpecCid, reason } = req.body
   const recipients: string[] = req.body.recipients

@@ -3,7 +3,7 @@ import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { ethers } from 'ethers'
 
 import { POLYGON_BADGES_CONTRACT_ADDRESS, RAFT_OWNER_PK, TRIMMED_OTTERSPACE_RAFT_ID } from '../../constants'
-import { GAS_MULTIPLIER, GasConfig } from '../../entities/Badges/types'
+import { ActionStatus, BadgeCreationResult, GAS_MULTIPLIER, GasConfig } from '../../entities/Badges/types'
 import RpcService from '../../services/RpcService'
 import { AirdropJobStatus, AirdropOutcome } from '../models/AirdropJob'
 
@@ -127,6 +127,21 @@ export async function airdropWithRetry(
     } else {
       logger.error('Airdrop failed after maximum retries', error)
       return { status: AirdropJobStatus.FAILED, error: JSON.stringify(error) }
+    }
+  }
+}
+
+export async function createSpecWithRetry(badgeCid: string, retries = 3): Promise<BadgeCreationResult> {
+  try {
+    await createSpec(badgeCid)
+    return { status: ActionStatus.Success }
+  } catch (error: any) {
+    if (retries > 0) {
+      logger.log(`Retrying create spec... Attempts left: ${retries}`, error)
+      return await createSpecWithRetry(badgeCid, retries - 1)
+    } else {
+      logger.error('Create spec failed after maximum retries', error)
+      return { status: ActionStatus.Failed, error, badgeCid }
     }
   }
 }

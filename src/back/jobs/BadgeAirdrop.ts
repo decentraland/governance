@@ -1,6 +1,9 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 
+import { ActionStatus } from '../../entities/Badges/types'
 import { BadgesService } from '../../services/BadgesService'
+import { ErrorService } from '../../services/ErrorService'
+import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
 import AirdropJobModel, { AirdropJobAttributes } from '../models/AirdropJob'
 
@@ -35,6 +38,10 @@ async function giveAndRevokeLandOwnerBadges() {
 }
 
 export async function giveTopVoterBadges() {
-  const badgeCid = await BadgesService.createTopVotersBadge()
-  !!badgeCid && (await BadgesService.queueTopVopVoterAirdrops(badgeCid))
+  const { status, badgeCid, badgeTitle, error } = await BadgesService.createTopVotersBadge()
+  if (status === ActionStatus.Failed) {
+    ErrorService.report(error!, { category: ErrorCategory.Badges, badgeTitle, badgeCid })
+  } else {
+    await BadgesService.queueTopVopVoterAirdrops(badgeCid!)
+  }
 }

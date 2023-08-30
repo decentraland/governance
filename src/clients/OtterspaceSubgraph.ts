@@ -85,7 +85,7 @@ query BadgeSpecTitles($raft_id: String! $name: String!, $first: Int!, $skip: Int
   }
 }`
 
-type OtterspaceBadgeSpec = {
+export type OtterspaceBadgeSpec = {
   id: string
   metadata: {
     name: string

@@ -5,22 +5,23 @@ import AirdropJobModel, { AirdropJobStatus, AirdropOutcome } from '../back/model
 import { VoteService } from '../back/services/vote'
 import {
   airdropWithRetry,
-  createSpec,
+  createSpecWithRetry,
   reinstateBadge,
   revokeBadge,
   trimOtterspaceId,
 } from '../back/utils/contractInteractions'
 import { OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgraph'
 import { LAND_OWNER_BADGE_SPEC_CID, LEGISLATOR_BADGE_SPEC_CID, TOP_VOTERS_PER_MONTH } from '../constants'
-import { storeBadgeSpec } from '../entities/Badges/storeBadgeSpec'
+import { storeBadgeSpecWithRetry } from '../entities/Badges/storeBadgeSpec'
 import {
-  ActionResult,
   ActionStatus,
   Badge,
+  BadgeCreationResult,
   BadgeStatus,
   BadgeStatusReason,
   ErrorReason,
   OtterspaceRevokeReason,
+  RevokeOrReinstateResult,
   UserBadges,
   toBadgeStatus,
 } from '../entities/Badges/types'
@@ -198,7 +199,7 @@ export class BadgesService {
       return []
     }
 
-    const actionResults = await Promise.all<ActionResult>(
+    const actionResults = await Promise.all<RevokeOrReinstateResult>(
       badgeOwnerships.map(async (badgeOwnership) => {
         const trimmedId = trimOtterspaceId(badgeOwnership.id)
 
@@ -218,8 +219,7 @@ export class BadgesService {
             address: badgeOwnership.address,
             badgeId: trimmedId,
           }
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
+          // eslint-disable-next-line
         } catch (error: any) {
           return {
             status: ActionStatus.Failed,
@@ -238,7 +238,7 @@ export class BadgesService {
     badgeCid: string,
     addresses: string[],
     reason = OtterspaceRevokeReason.TenureEnded
-  ): Promise<ActionResult[]> {
+  ): Promise<RevokeOrReinstateResult[]> {
     return await this.performBadgeAction(badgeCid, addresses, async (badgeId) => {
       await revokeBadge(badgeId, Number(reason))
     })
@@ -250,16 +250,16 @@ export class BadgesService {
     })
   }
 
-  static async createTopVotersBadge() {
+  static async createTopVotersBadge(): Promise<BadgeCreationResult> {
     const badgeSpec = getTopVotersBadgeSpec()
 
     if (await isSpecAlreadyCreated(badgeSpec.title)) {
-      ErrorService.report('Top Voter badge already exists', { category: ErrorCategory.Badges, badgeSpec })
-      return
+      return { status: ActionStatus.Failed, error: `Top Voter badge already exists`, badgeTitle: badgeSpec.title }
     }
-    const { badgeCid } = await storeBadgeSpec(badgeSpec)
-    await createSpec(badgeCid) // TODO: create with retries
-    return badgeCid
+    const result = await storeBadgeSpecWithRetry(badgeSpec)
+
+    if (result.status === ActionStatus.Failed) return result
+    return await createSpecWithRetry(result.badgeCid!)
   }
 
   static async queueTopVopVoterAirdrops(badgeCid: string) {

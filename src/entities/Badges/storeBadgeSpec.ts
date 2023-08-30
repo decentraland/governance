@@ -1,3 +1,4 @@
+import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { ethers } from 'ethers'
 import { NFTStorage } from 'nft.storage'
 
@@ -8,6 +9,8 @@ import {
   RAFT_OWNER_PK,
   TRIMMED_OTTERSPACE_RAFT_ID,
 } from '../../constants'
+
+import { ActionStatus, BadgeCreationResult } from './types'
 
 const blobToFile = (theBlob: Blob, fileName: string): File => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -78,4 +81,20 @@ export async function storeBadgeSpec({ title, description, imgUrl, expiresAt }: 
   const metadataUrl = `https://ipfs.io/ipfs/${badgeCid}/metadata.json`
   const ipfsAddress = getIpfsAddress(badgeCid)
   return { badgeCid: badgeCid, metadataUrl, ipfsAddress }
+}
+
+export async function storeBadgeSpecWithRetry(badgeSpec: BadgeSpec, retries = 3): Promise<BadgeCreationResult> {
+  const badgeTitle = badgeSpec.title
+  try {
+    const { badgeCid } = await storeBadgeSpec(badgeSpec)
+    return { status: ActionStatus.Success, badgeCid, badgeTitle }
+  } catch (error: any) {
+    if (retries > 0) {
+      logger.log(`Retrying upload spec... Attempts left: ${retries}`, error)
+      return await storeBadgeSpecWithRetry(badgeSpec, retries - 1)
+    } else {
+      logger.error('Upload spec failed after maximum retries', error)
+      return { status: ActionStatus.Failed, error, badgeTitle }
+    }
+  }
 }
