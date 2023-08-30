@@ -47,3 +47,8 @@ export async function giveTopVoterBadges() {
   }
   await BadgesService.queueTopVopVoterAirdrops(badgeCid!)
 }
+
+export async function giveTopVoterBadges() {
+  const badgeCiId = await BadgesService.createTopVotersBadge()
+  await BadgesService.queueTopVopVoterAirdrops(badgeCiId)
+}
