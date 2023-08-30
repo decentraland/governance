@@ -24,7 +24,12 @@ import {
   UserBadges,
   toBadgeStatus,
 } from '../entities/Badges/types'
-import { getLandOwnerAddresses, getTopVotersBadgeSpec, getValidatedUsersForBadge } from '../entities/Badges/utils'
+import {
+  getLandOwnerAddresses,
+  getTopVotersBadgeSpec,
+  getValidatedUsersForBadge,
+  isSpecAlreadyCreated,
+} from '../entities/Badges/utils'
 import CoauthorModel from '../entities/Coauthor/model'
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalAttributes, ProposalType } from '../entities/Proposal/types'
@@ -246,8 +251,13 @@ export class BadgesService {
   }
 
   static async createTopVotersBadge() {
-    const result = await storeBadgeSpec(getTopVotersBadgeSpec())
-    const { badgeCid } = result
+    const badgeSpec = getTopVotersBadgeSpec()
+
+    if (await isSpecAlreadyCreated(badgeSpec.title)) {
+      ErrorService.report('Top Voter badge already exists', { category: ErrorCategory.Badges, badgeSpec })
+      return
+    }
+    const { badgeCid } = await storeBadgeSpec(badgeSpec)
     await createSpec(badgeCid) // TODO: create with retries
     return badgeCid
   }
@@ -256,7 +266,6 @@ export class BadgesService {
     const today = Time.utc().toDate()
     const { start, end } = getPreviousMonthStartAndEnd(today)
     const recipients = await VoteService.getTopVoters(start, end, TOP_VOTERS_PER_MONTH)
-    // TODO: check recipients don't already have a badge for this month
     await this.queueAirdropJob(
       badgeCid,
       recipients.map((recipient) => recipient.address)
