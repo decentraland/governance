@@ -40,12 +40,14 @@ import { activateProposals, finishProposal, publishBids } from './entities/Propo
 import { DiscordService } from './services/DiscordService'
 import filesystem from './utils/filesystem'
 
+const FIRST_DAY_OF_EACH_MONTH = '0 0 1 * *'
 const jobs = manager()
 jobs.cron('@eachMinute', finishProposal)
 jobs.cron('@eachMinute', activateProposals)
 jobs.cron('@eachMinute', publishBids)
 jobs.cron('@daily', updateGovernanceBudgets)
 jobs.cron('@daily', runAirdropJobs)
+// jobs.cron(FIRST_DAY_OF_EACH_MONTH, giveTopVoterBadges); // TODO: release the kraken
 
 const file = readFileSync('static/api.yaml', 'utf8')
 const swaggerDocument = YAML.parse(file)

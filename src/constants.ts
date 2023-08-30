@@ -30,3 +30,6 @@ export const NFT_STORAGE_API_KEY = process.env.NFT_STORAGE_API_KEY || '' //TODO:
 export const LEGISLATOR_BADGE_SPEC_CID = process.env.LEGISLATOR_BADGE_SPEC_CID || ''
 export const LAND_OWNER_BADGE_SPEC_CID = process.env.LAND_OWNER_BADGE_SPEC_CID || ''
 export const TRIMMED_OTTERSPACE_RAFT_ID = trimOtterspaceId(OTTERSPACE_DAO_RAFT_ID)
+export const TOP_VOTERS_PER_MONTH = 3
+export const TOP_VOTERS_IMG_URL =
+  'https://github.com/Decentraland-DAO/badges/blob/master/images/TopVoterBadge-2023.png?raw=true' //TODO: env var

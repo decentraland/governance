@@ -7,6 +7,7 @@ import { ErrorClient } from '../../clients/ErrorClient'
 import { OtterspaceSubgraph } from '../../clients/OtterspaceSubgraph'
 import { POLYGON_BADGES_CONTRACT_ADDRESS, RAFT_OWNER_PK, TRIMMED_OTTERSPACE_RAFT_ID } from '../../constants'
 import RpcService from '../../services/RpcService'
+import Time from '../../utils/date/Time'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { getUsersWhoVoted, isSameAddress } from '../Snapshot/utils'
 
@@ -97,20 +98,6 @@ export function getIpfsAddress(badgeCid: string) {
   return `ipfs://${badgeCid}/metadata.json`
 }
 
-export async function getLandOwnerAddresses(): Promise<string[]> {
-  const LAND_API_URL = 'https://api.decentraland.org/v2/tiles?include=owner&type=owned'
-  type LandOwner = { owner: string }
-  try {
-    const response: ApiResponse<{ [coordinates: string]: LandOwner }> = await (await fetch(LAND_API_URL)).json()
-    const { data: landOwnersMap } = response
-    const landOwnersAddresses = new Set(Object.values(landOwnersMap).map((landOwner) => landOwner.owner.toLowerCase()))
-    return Array.from(landOwnersAddresses)
-  } catch (error) {
-    ErrorClient.report("Couldn't fetch land owners", { error, category: ErrorCategory.Badges })
-    return []
-  }
-}
-
 export async function createSpec(badgeCid: string) {
   const provider = RpcService.getPolygonProvider()
   const raftOwner = new ethers.Wallet(RAFT_OWNER_PK, provider)
@@ -173,4 +160,25 @@ export async function getValidatedUsersForBadge(badgeCid: string, addresses: str
   } catch (error) {
     return { eligibleUsers: [], usersWithBadgesToReinstate: [], error: JSON.stringify(error) }
   }
+}
+
+// TODO: separate utils for DAO badges from utils for contract interactions
+
+export async function getLandOwnerAddresses(): Promise<string[]> {
+  const LAND_API_URL = 'https://api.decentraland.org/v2/tiles?include=owner&type=owned'
+  type LandOwner = { owner: string }
+  try {
+    const response: ApiResponse<{ [coordinates: string]: LandOwner }> = await (await fetch(LAND_API_URL)).json()
+    const { data: landOwnersMap } = response
+    const landOwnersAddresses = new Set(Object.values(landOwnersMap).map((landOwner) => landOwner.owner.toLowerCase()))
+    return Array.from(landOwnersAddresses)
+  } catch (error) {
+    ErrorClient.report("Couldn't fetch land owners", { error, category: ErrorCategory.Badges })
+    return []
+  }
+}
+
+export function getTopVoterBadgeTitle(start: Date) {
+  const startTime = Time.utc(start)
+  return `Top Voter ${startTime.format('MMMM')} ${startTime.format('YYYY')}`
 }
