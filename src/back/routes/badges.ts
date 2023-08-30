@@ -38,7 +38,7 @@ async function getBadges(req: Request<{ address: string }>): Promise<UserBadges>
   return await BadgesService.getBadges(address)
 }
 
-async function airdrop(req: WithAuth): Promise<AirdropOutcome> {
+async function airdrop(req: WithAuth): Promise<AirdropOutcome[]> {
   const user = req.auth!
   const recipients: string[] = req.body.recipients
   const badgeSpecCid = req.body.badgeSpecCid

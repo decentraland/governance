@@ -5,7 +5,6 @@ import AirdropJobModel, { AirdropJobStatus, AirdropOutcome } from '../back/model
 import { OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgraph'
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 import { LAND_OWNER_BADGE_SPEC_CID, LEGISLATOR_BADGE_SPEC_CID } from '../constants'
-import { storeBadgeSpec } from '../entities/Badges/storeBadgeSpec'
 import {
   ActionResult,
   ActionStatus,
@@ -21,7 +20,7 @@ import CoauthorModel from '../entities/Coauthor/model'
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalAttributes, ProposalType } from '../entities/Proposal/types'
 import { getChecksumAddress, isSameAddress } from '../entities/Snapshot/utils'
-import { inBackground } from '../helpers'
+import { inBackground, splitArray } from '../helpers'
 import { ErrorCategory } from '../utils/errorCategories'
 
 import { ErrorService } from './ErrorService'
@@ -83,7 +82,7 @@ export class BadgesService {
     return ipfsLink.replace('ipfs://', 'https://ipfs.io/ipfs/')
   }
 
-  public static async giveBadgeToUsers(badgeCid: string, users: string[]): Promise<AirdropOutcome> {
+  public static async giveBadgeToUsers(badgeCid: string, users: string[]): Promise<AirdropOutcome[]> {
     try {
       const { usersWithoutBadge, usersWithBadgesToReinstate } = await this.getUsersWithoutBadge(badgeCid, users)
       if (usersWithBadgesToReinstate.length > 0) {
@@ -93,15 +92,15 @@ export class BadgesService {
       }
 
       if (usersWithoutBadge.length === 0) {
-        return { status: AirdropJobStatus.FAILED, error: ErrorReason.NoUserWithoutBadge }
+        return [{ status: AirdropJobStatus.FAILED, error: ErrorReason.NoUserWithoutBadge }]
       }
       const usersWhoVoted = await this.getUsersWhoVoted(usersWithoutBadge)
       if (usersWhoVoted.length === 0) {
-        return { status: AirdropJobStatus.FAILED, error: ErrorReason.NoUserHasVoted }
+        return [{ status: AirdropJobStatus.FAILED, error: ErrorReason.NoUserHasVoted }]
       }
       return await this.airdropWithRetry(badgeCid, usersWhoVoted)
     } catch (e) {
-      return { status: AirdropJobStatus.FAILED, error: JSON.stringify(e) }
+      return [{ status: AirdropJobStatus.FAILED, error: JSON.stringify(e) }]
     }
   }
 
@@ -137,20 +136,31 @@ export class BadgesService {
     recipients: string[],
     retries = 3,
     pumpGas = false
-  ): Promise<AirdropOutcome> {
-    try {
-      await airdrop(badgeCid, recipients, pumpGas)
-      return { status: AirdropJobStatus.FINISHED, error: '' }
-    } catch (error: any) {
-      if (retries > 0) {
-        logger.log(`Retrying airdrop... Attempts left: ${retries}`, error)
-        const pumpGas = this.isTransactionUnderpricedError(error)
-        return await this.airdropWithRetry(badgeCid, recipients, retries - 1, pumpGas)
-      } else {
-        logger.error('Airdrop failed after maximum retries', error)
-        return { status: AirdropJobStatus.FAILED, error: JSON.stringify(error) }
+  ): Promise<AirdropOutcome[]> {
+    const _airdropWithRetry = async (
+      badgeCid: string,
+      recipients: string[],
+      retries = 3,
+      pumpGas = false
+    ): Promise<AirdropOutcome> => {
+      try {
+        await airdrop(badgeCid, recipients, pumpGas)
+        return { status: AirdropJobStatus.FINISHED, error: '' }
+      } catch (error: any) {
+        if (retries > 0) {
+          logger.log(`Retrying airdrop... Attempts left: ${retries}`, error)
+          const pumpGas = this.isTransactionUnderpricedError(error)
+          return await _airdropWithRetry(badgeCid, recipients, retries - 1, pumpGas)
+        } else {
+          logger.error('Airdrop failed after maximum retries', error)
+          return { status: AirdropJobStatus.FAILED, error: JSON.stringify(error) }
+        }
       }
     }
+
+    return await Promise.all(
+      splitArray(recipients, 50).map((recipients) => _airdropWithRetry(badgeCid, recipients, retries, pumpGas))
+    )
   }
 
   private static isTransactionUnderpricedError(error: any) {
@@ -173,17 +183,18 @@ export class BadgesService {
 
   static async giveAndRevokeLandOwnerBadges() {
     const landOwnerAddresses = await getLandOwnerAddresses()
-    const { status, error } = await BadgesService.giveBadgeToUsers(LAND_OWNER_BADGE_SPEC_CID, landOwnerAddresses)
+    const outcomes = await BadgesService.giveBadgeToUsers(LAND_OWNER_BADGE_SPEC_CID, landOwnerAddresses)
+    const failedOutcomes = outcomes.filter((outcome) => outcome.status === AirdropJobStatus.FAILED)
     if (
-      status === AirdropJobStatus.FAILED &&
-      error !== ErrorReason.NoUserWithoutBadge &&
-      error !== ErrorReason.NoUserHasVoted
+      failedOutcomes.length > 0 &&
+      failedOutcomes[0].error !== ErrorReason.NoUserWithoutBadge &&
+      failedOutcomes[0].error !== ErrorReason.NoUserHasVoted
     ) {
-      console.error('Unable to give LandOwner badges', error)
+      console.error('Unable to give LandOwner badges', failedOutcomes)
 
       ErrorService.report('Unable to give LandOwner badges', {
         category: ErrorCategory.Badges,
-        error,
+        failedOutcomes,
       })
     }
 

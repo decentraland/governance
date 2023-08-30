@@ -1,5 +1,7 @@
+import { Env } from '@dcl/ui-env'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 
+import { config } from '../../config'
 import { BadgesService } from '../../services/BadgesService'
 import AirdropJobModel, { AirdropJobAttributes } from '../models/AirdropJob'
 
@@ -17,16 +19,22 @@ async function runQueuedAirdropJobs() {
     const { id, badge_spec, recipients } = pendingJob
     const airdropOutcome = await BadgesService.giveBadgeToUsers(badge_spec, recipients)
     logger.log('Airdrop Outcome', airdropOutcome)
-    await AirdropJobModel.update<AirdropJobAttributes>(
-      {
-        ...airdropOutcome,
-        updated_at: new Date(),
-      },
-      { id }
+    await Promise.all(
+      airdropOutcome.map((outcome) =>
+        AirdropJobModel.update<AirdropJobAttributes>(
+          {
+            ...outcome,
+            updated_at: new Date(),
+          },
+          { id }
+        )
+      )
     )
   })
 }
 
 async function giveAndRevokeLandOwnerBadges() {
-  await BadgesService.giveAndRevokeLandOwnerBadges()
+  if (config.getEnv() === Env.PRODUCTION) {
+    await BadgesService.giveAndRevokeLandOwnerBadges()
+  }
 }
