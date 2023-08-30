@@ -30,3 +30,8 @@ async function runQueuedAirdropJobs() {
 async function giveAndRevokeLandOwnerBadges() {
   await BadgesService.giveAndRevokeLandOwnerBadges()
 }
+
+export async function giveTopVoterBadges() {
+  const badgeCiId = await BadgesService.createTopVotersBadge()
+  await BadgesService.queueTopVopVoterAirdrops(badgeCiId)
+}

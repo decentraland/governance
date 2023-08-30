@@ -2,9 +2,15 @@ import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { v1 as uuid } from 'uuid'
 
 import AirdropJobModel, { AirdropJobStatus, AirdropOutcome } from '../back/models/AirdropJob'
+import { VoteService } from '../back/services/vote'
 import { OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgraph'
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
-import { LAND_OWNER_BADGE_SPEC_CID, LEGISLATOR_BADGE_SPEC_CID } from '../constants'
+import {
+  LAND_OWNER_BADGE_SPEC_CID,
+  LEGISLATOR_BADGE_SPEC_CID,
+  TOP_VOTERS_IMG_URL,
+  TOP_VOTERS_PER_MONTH,
+} from '../constants'
 import { storeBadgeSpec } from '../entities/Badges/storeBadgeSpec'
 import {
   ActionResult,
@@ -16,12 +22,22 @@ import {
   UserBadges,
   toBadgeStatus,
 } from '../entities/Badges/types'
-import { airdrop, getLandOwnerAddresses, reinstateBadge, revokeBadge, trimOtterspaceId } from '../entities/Badges/utils'
+import {
+  airdrop,
+  createSpec,
+  getLandOwnerAddresses,
+  getTopVoterBadgeTitle,
+  reinstateBadge,
+  revokeBadge,
+  trimOtterspaceId,
+} from '../entities/Badges/utils'
 import CoauthorModel from '../entities/Coauthor/model'
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalAttributes, ProposalType } from '../entities/Proposal/types'
 import { getChecksumAddress, isSameAddress } from '../entities/Snapshot/utils'
 import { inBackground } from '../helpers'
+import Time from '../utils/date/Time'
+import { getPreviousMonthStartAndEnd } from '../utils/date/getPreviousMonthStartAndEnd'
 import { ErrorCategory } from '../utils/errorCategories'
 
 import { ErrorService } from './ErrorService'
@@ -132,6 +148,7 @@ export class BadgesService {
     }
   }
 
+  // TODO: move to contract interactions utils
   private static async airdropWithRetry(
     badgeCid: string,
     recipients: string[],
@@ -153,6 +170,7 @@ export class BadgesService {
     }
   }
 
+  // TODO: move to contract interactions utils
   private static isTransactionUnderpricedError(error: any) {
     try {
       const errorParsed = JSON.parse(error.body)
@@ -168,7 +186,15 @@ export class BadgesService {
     const coauthors = await CoauthorModel.findAllByProposals(governanceProposals, CoauthorStatus.APPROVED)
     const authors = governanceProposals.map((proposal) => proposal.user)
     const authorsAndCoauthors = new Set([...authors.map(getChecksumAddress), ...coauthors.map(getChecksumAddress)])
-    await this.queueAirdropJob(LEGISLATOR_BADGE_SPEC_CID, Array.from(authorsAndCoauthors))
+    const recipients = Array.from(authorsAndCoauthors)
+    if (!LEGISLATOR_BADGE_SPEC_CID || LEGISLATOR_BADGE_SPEC_CID.length === 0) {
+      ErrorService.report('Unable to create AirdropJob. LEGISLATOR_BADGE_SPEC_CID missing.', {
+        category: ErrorCategory.Badges,
+        recipients,
+      })
+      return
+    }
+    await this.queueAirdropJob(LEGISLATOR_BADGE_SPEC_CID, recipients)
   }
 
   static async giveAndRevokeLandOwnerBadges() {
@@ -210,13 +236,6 @@ export class BadgesService {
   }
 
   private static async queueAirdropJob(badgeSpec: string, recipients: string[]) {
-    if (!LEGISLATOR_BADGE_SPEC_CID || LEGISLATOR_BADGE_SPEC_CID.length === 0) {
-      ErrorService.report('Unable to create AirdropJob. LEGISLATOR_BADGE_SPEC_CID missing.', {
-        category: ErrorCategory.Badges,
-        recipients,
-      })
-      return
-    }
     logger.log(`Enqueueing airdrop job`, { badgeSpec, recipients })
     try {
       await AirdropJobModel.create({ id: uuid(), badge_spec: badgeSpec, recipients })
@@ -290,5 +309,30 @@ export class BadgesService {
     return await this.performBadgeAction(badgeCid, addresses, async (badgeId) => {
       await reinstateBadge(badgeId)
     })
+  }
+
+  static async createTopVotersBadge() {
+    const today = Time.utc()
+    const { start } = getPreviousMonthStartAndEnd(today.toDate())
+    const result = await storeBadgeSpec(
+      getTopVoterBadgeTitle(start),
+      'top voter badge description', // TODO: missing description
+      TOP_VOTERS_IMG_URL,
+      today.endOf('month').toISOString()
+    )
+    const { badgeCid } = result
+    await createSpec(badgeCid) // TODO: create with retries
+    return badgeCid
+  }
+
+  static async queueTopVopVoterAirdrops(badgeCid: string) {
+    const today = Time.utc().toDate()
+    const { start, end } = getPreviousMonthStartAndEnd(today)
+    const recipients = await VoteService.getTopVoters(start, end, TOP_VOTERS_PER_MONTH)
+    // TODO: check recipients don't already have a badge for this month
+    await this.queueAirdropJob(
+      badgeCid,
+      recipients.map((recipient) => recipient.address)
+    )
   }
 }
