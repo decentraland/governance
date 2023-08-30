@@ -1,8 +1,7 @@
-import { Env } from '@dcl/ui-env'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 
-import { config } from '../../config'
 import { BadgesService } from '../../services/BadgesService'
+import { isProdEnv } from '../../utils/governanceEnvs'
 import AirdropJobModel, { AirdropJobAttributes } from '../models/AirdropJob'
 
 export async function runAirdropJobs() {
@@ -30,7 +29,7 @@ async function runQueuedAirdropJobs() {
 }
 
 async function giveAndRevokeLandOwnerBadges() {
-  if (config.getEnv() === Env.PRODUCTION) {
+  if (isProdEnv()) {
     await BadgesService.giveAndRevokeLandOwnerBadges()
   }
 }
