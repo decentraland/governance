@@ -19,16 +19,12 @@ async function runQueuedAirdropJobs() {
     const { id, badge_spec, recipients } = pendingJob
     const airdropOutcome = await BadgesService.giveBadgeToUsers(badge_spec, recipients)
     logger.log('Airdrop Outcome', airdropOutcome)
-    await Promise.all(
-      airdropOutcome.map((outcome) =>
-        AirdropJobModel.update<AirdropJobAttributes>(
-          {
-            ...outcome,
-            updated_at: new Date(),
-          },
-          { id }
-        )
-      )
+    await AirdropJobModel.update<AirdropJobAttributes>(
+      {
+        ...airdropOutcome,
+        updated_at: new Date(),
+      },
+      { id }
     )
   })
 }
