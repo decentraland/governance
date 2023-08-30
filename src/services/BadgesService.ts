@@ -143,37 +143,29 @@ export class BadgesService {
 
   static async giveAndRevokeLandOwnerBadges() {
     const landOwnerAddresses = await getLandOwnerAddresses()
-    const { eligibleUsers, usersWithBadgesToReinstate, error } = await getValidatedUsersForBadge(
+    const { eligibleUsers, usersWithBadgesToReinstate } = await getValidatedUsersForBadge(
       LAND_OWNER_BADGE_SPEC_CID,
       landOwnerAddresses
     )
 
-    if (error && error !== ErrorReason.NoUserWithoutBadge && error !== ErrorReason.NoUserHasVoted) {
-      console.error('Unable to give LandOwner badges', error)
+    const outcomes = await Promise.all(
+      splitArray([...eligibleUsers, ...usersWithBadgesToReinstate], 50).map((addresses) =>
+        BadgesService.giveBadgeToUsers(LAND_OWNER_BADGE_SPEC_CID, addresses)
+      )
+    )
+    const failedOutcomes = outcomes.filter(
+      ({ status, error }) =>
+        status === AirdropJobStatus.FAILED &&
+        error !== ErrorReason.NoUserWithoutBadge &&
+        error !== ErrorReason.NoUserHasVoted
+    )
+    if (failedOutcomes.length > 0) {
+      console.error('Unable to give LandOwner badges', failedOutcomes)
+
       ErrorService.report('Unable to give LandOwner badges', {
         category: ErrorCategory.Badges,
-        error,
+        failedOutcomes,
       })
-    } else {
-      const outcomes = await Promise.all(
-        splitArray([...eligibleUsers, ...usersWithBadgesToReinstate], 50).map((addresses) =>
-          BadgesService.giveBadgeToUsers(LAND_OWNER_BADGE_SPEC_CID, addresses)
-        )
-      )
-      const failedOutcomes = outcomes.filter(
-        ({ status, error }) =>
-          status === AirdropJobStatus.FAILED &&
-          error !== ErrorReason.NoUserWithoutBadge &&
-          error !== ErrorReason.NoUserHasVoted
-      )
-      if (failedOutcomes.length > 0) {
-        console.error('Unable to give LandOwner badges', failedOutcomes)
-
-        ErrorService.report('Unable to give LandOwner badges', {
-          category: ErrorCategory.Badges,
-          failedOutcomes,
-        })
-      }
     }
 
     const badges = await OtterspaceSubgraph.get().getBadges(LAND_OWNER_BADGE_SPEC_CID)
