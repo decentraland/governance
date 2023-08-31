@@ -61,6 +61,7 @@
     "classnames": "^2.3.2",
     "clipboard-copy": "^4.0.1",
     "core-js": "^3.21.1",
+    "cssnano": "^6.0.1",
     "dayjs-precise-range": "^1.0.1",
     "dcl-catalyst-client": "^21.5.0",
     "decentraland-gatsby": "^5.75.1",
