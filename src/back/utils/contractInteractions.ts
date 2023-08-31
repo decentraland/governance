@@ -134,7 +134,7 @@ export async function airdropWithRetry(
 export async function createSpecWithRetry(badgeCid: string, retries = 3): Promise<BadgeCreationResult> {
   try {
     await createSpec(badgeCid)
-    return { status: ActionStatus.Success }
+    return { status: ActionStatus.Success, badgeCid }
   } catch (error: any) {
     if (retries > 0) {
       logger.log(`Retrying create spec... Attempts left: ${retries}`, error)

@@ -98,5 +98,5 @@ export function getTopVotersBadgeSpec() {
 
 export async function isSpecAlreadyCreated(title: string): Promise<boolean> {
   const existingBadge = await OtterspaceSubgraph.get().getBadgeSpecByTitle(title)
-  return !!existingBadge
+  return !!existingBadge[0]
 }
