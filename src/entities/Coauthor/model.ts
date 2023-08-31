@@ -17,7 +17,7 @@ export default class CoauthorModel extends Model<CoauthorAttributes> {
       WHERE lower(${columns([columnName])}) = lower(${value})
       ${conditional(!!status, SQL` AND "status" = ${status}`)}
     `
-    return await this.query(query)
+    return await this.namedQuery('find_coauthor_by_column', query)
   }
 
   static async findCoauthors(proposalId: string, status?: CoauthorStatus): Promise<CoauthorAttributes[]> {
@@ -41,7 +41,7 @@ export default class CoauthorModel extends Model<CoauthorAttributes> {
         VALUES
         ${objectValues(cols, coauthors)}
     `
-    await this.query(query)
+    await this.namedQuery('create_multiple', query)
   }
 
   static async findAllByProposals(proposals: ProposalAttributes[], status?: CoauthorStatus): Promise<string[]> {

@@ -81,7 +81,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         ${objectValues(keys, [proposal])}
     `
 
-    return this.query(sql) as any
+    return this.namedQuery('create_proposal', sql) as any
   }
 
   static update<U extends QueryPart = any, P extends QueryPart = any>(

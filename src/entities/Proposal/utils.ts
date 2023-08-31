@@ -47,7 +47,7 @@ export function isAlreadyBannedName(name: string) {
 }
 
 export async function isAlreadyPointOfInterest(x: number, y: number) {
-  const pois = await Catalyst.get().getPOIs()
+  const pois = await Catalyst.getInstance().getPOIs()
   return !!pois.find((position) => position[0] === x && position[1] === y)
 }
 
@@ -84,10 +84,6 @@ export function isValidUpdateProposalStatus(current: ProposalStatus, next: Propo
     default:
       return false
   }
-}
-
-export function isValidTransactionHash(transactionHash: string) {
-  return /^0x([A-Fa-f\d]{64})$/.test(transactionHash)
 }
 
 export function asNumber(value: string | number): number {
