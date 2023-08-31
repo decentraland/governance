@@ -251,7 +251,7 @@ export class BadgesService {
     })
   }
 
-  static async createTopVotersBadge(): Promise<BadgeCreationResult> {
+  static async createTopVotersBadgeSpec(): Promise<BadgeCreationResult> {
     const badgeSpec = getTopVotersBadgeSpec()
 
     if (await isSpecAlreadyCreated(badgeSpec.title)) {

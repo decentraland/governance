@@ -38,10 +38,12 @@ async function giveAndRevokeLandOwnerBadges() {
 }
 
 export async function giveTopVoterBadges() {
-  const { status, badgeCid, badgeTitle, error } = await BadgesService.createTopVotersBadge()
-  if (status === ActionStatus.Failed) {
-    ErrorService.report(error!, { category: ErrorCategory.Badges, badgeTitle, badgeCid })
-  } else {
-    await BadgesService.queueTopVopVoterAirdrops(badgeCid!)
+  const { status, badgeCid, badgeTitle, error } = await BadgesService.createTopVotersBadgeSpec()
+  if (error && status === ActionStatus.Failed) {
+    ErrorService.report(error, { category: ErrorCategory.Badges, badgeTitle, badgeCid })
   }
+  if (!badgeCid) {
+    ErrorService.report('Unable to create top voters badge', { category: ErrorCategory.Badges, badgeTitle })
+  }
+  await BadgesService.queueTopVopVoterAirdrops(badgeCid!)
 }
