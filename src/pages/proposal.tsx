@@ -206,7 +206,7 @@ export default function ProposalPage() {
             showVotingError: false,
             confirmSubscription: !votes![account!],
           })
-          reloadVotes()
+          await reloadVotes()
         } catch (error) {
           ErrorClient.report('Unable to vote', {
             error,
