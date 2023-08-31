@@ -16,7 +16,7 @@ async function runQueuedAirdropJobs() {
   if (pendingJobs.length === 0) {
     return
   }
-  logger.log(`Running ${pendingJobs} airdrop jobs`)
+  logger.log(`Running ${pendingJobs.length} airdrop jobs`)
   pendingJobs.map(async (pendingJob) => {
     const { id, badge_spec, recipients } = pendingJob
     const airdropOutcome = await BadgesService.giveBadgeToUsers(badge_spec, recipients)
