@@ -13,6 +13,13 @@ function checksumAddresses(addresses: string[]): string[] {
   return addresses.map((address) => ethers.utils.getAddress(address))
 }
 
+function getBadgesSignerAndContract() {
+  const provider = RpcService.getPolygonProvider()
+  const signer = new ethers.Wallet(RAFT_OWNER_PK, provider)
+  const contract = new ethers.Contract(POLYGON_BADGES_CONTRACT_ADDRESS, BadgesAbi, signer)
+  return { signer, contract }
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function estimateGas(estimateFunction: (...args: any[]) => Promise<any>): Promise<GasConfig> {
   const provider = RpcService.getPolygonProvider()
@@ -26,18 +33,16 @@ export async function estimateGas(estimateFunction: (...args: any[]) => Promise<
 }
 
 export async function airdrop(badgeCid: string, recipients: string[], shouldPumpGas = false) {
-  const provider = RpcService.getPolygonProvider()
-  const raftOwner = new ethers.Wallet(RAFT_OWNER_PK, provider)
-  const contract = new ethers.Contract(POLYGON_BADGES_CONTRACT_ADDRESS, BadgesAbi, raftOwner)
+  const { signer, contract } = getBadgesSignerAndContract()
   const ipfsAddress = `ipfs://${badgeCid}/metadata.json`
   const formattedRecipients = checksumAddresses(recipients)
   logger.log(`Airdropping, pumping gas ${shouldPumpGas}`)
   let txn
   if (shouldPumpGas) {
     const gasConfig = await estimateGas(async () => contract.estimateGas.airdrop(formattedRecipients, ipfsAddress))
-    txn = await contract.connect(raftOwner).airdrop(formattedRecipients, ipfsAddress, gasConfig)
+    txn = await contract.connect(signer).airdrop(formattedRecipients, ipfsAddress, gasConfig)
   } else {
-    txn = await contract.connect(raftOwner).airdrop(formattedRecipients, ipfsAddress)
+    txn = await contract.connect(signer).airdrop(formattedRecipients, ipfsAddress)
   }
   await txn.wait()
   logger.log('Airdropped badge with txn hash:', txn.hash)
@@ -45,41 +50,36 @@ export async function airdrop(badgeCid: string, recipients: string[], shouldPump
 }
 
 export async function reinstateBadge(badgeId: string) {
-  const provider = RpcService.getPolygonProvider()
-  const raftOwner = new ethers.Wallet(RAFT_OWNER_PK, provider)
-  const contract = new ethers.Contract(POLYGON_BADGES_CONTRACT_ADDRESS, BadgesAbi, raftOwner)
+  const { signer, contract } = getBadgesSignerAndContract()
   const gasConfig = await estimateGas(async () => {
     return contract.estimateGas.reinstateBadge(TRIMMED_OTTERSPACE_RAFT_ID, badgeId)
   })
 
-  const txn = await contract.connect(raftOwner).reinstateBadge(TRIMMED_OTTERSPACE_RAFT_ID, badgeId, gasConfig)
+  const txn = await contract.connect(signer).reinstateBadge(TRIMMED_OTTERSPACE_RAFT_ID, badgeId, gasConfig)
   await txn.wait()
   logger.log('Reinstated badge with txn hash:', txn.hash)
   return txn.hash
 }
 
 export async function revokeBadge(badgeId: string, reason: number) {
-  const provider = RpcService.getPolygonProvider()
-  const raftOwner = new ethers.Wallet(RAFT_OWNER_PK, provider)
-  const contract = new ethers.Contract(POLYGON_BADGES_CONTRACT_ADDRESS, BadgesAbi, raftOwner)
+  const { signer, contract } = getBadgesSignerAndContract()
 
   const gasConfig = await estimateGas(async () => {
     return contract.estimateGas.revokeBadge(TRIMMED_OTTERSPACE_RAFT_ID, badgeId, reason)
   })
 
-  const txn = await contract.connect(raftOwner).revokeBadge(TRIMMED_OTTERSPACE_RAFT_ID, badgeId, reason, gasConfig)
+  const txn = await contract.connect(signer).revokeBadge(TRIMMED_OTTERSPACE_RAFT_ID, badgeId, reason, gasConfig)
   await txn.wait()
   logger.log('Revoked badge with txn hash:', txn.hash)
   return txn.hash
 }
 
 export async function checkBalance() {
-  const provider = RpcService.getPolygonProvider()
-  const raftOwner = new ethers.Wallet(RAFT_OWNER_PK, provider)
-  const balance = await raftOwner.getBalance()
+  const { signer } = getBadgesSignerAndContract()
+  const balance = await signer.getBalance()
   const balanceInEther = ethers.utils.formatEther(balance)
   const balanceBigNumber = ethers.BigNumber.from(balance)
-  console.log(`Balance of ${raftOwner.address}: ${balanceInEther} ETH = ${balanceBigNumber}`)
+  console.log(`Balance of ${signer.address}: ${balanceInEther} ETH = ${balanceBigNumber}`)
 }
 
 export function trimOtterspaceId(rawId: string) {
@@ -95,16 +95,14 @@ export function getIpfsAddress(badgeCid: string) {
 }
 
 export async function createSpec(badgeCid: string) {
-  const provider = RpcService.getPolygonProvider()
-  const raftOwner = new ethers.Wallet(RAFT_OWNER_PK, provider)
-  const contract = new ethers.Contract(POLYGON_BADGES_CONTRACT_ADDRESS, BadgesAbi, raftOwner)
+  const { signer, contract } = getBadgesSignerAndContract()
   const ipfsAddress = `ipfs://${badgeCid}/metadata.json`
 
   const gasConfig = await estimateGas(async () => {
     return contract.estimateGas.createSpec(ipfsAddress, TRIMMED_OTTERSPACE_RAFT_ID)
   })
 
-  const txn = await contract.connect(raftOwner).createSpec(ipfsAddress, TRIMMED_OTTERSPACE_RAFT_ID, gasConfig)
+  const txn = await contract.connect(signer).createSpec(ipfsAddress, TRIMMED_OTTERSPACE_RAFT_ID, gasConfig)
   await txn.wait()
   logger.log('Create badge spec with txn hash:', txn.hash)
   return txn.hash
