@@ -1,36 +1,36 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { v1 as uuid } from 'uuid'
 
-import AirdropJobModel, { AirdropJobStatus, AirdropOutcome } from '../back/models/AirdropJob'
+import AirdropJobModel from '../back/models/AirdropJob'
 import { VoteService } from '../back/services/vote'
+import { AirdropJobStatus, AirdropOutcome } from '../back/types/AirdropJob'
+import {
+  airdropWithRetry,
+  createSpecWithRetry,
+  reinstateBadge,
+  revokeBadge,
+  trimOtterspaceId,
+} from '../back/utils/contractInteractions'
 import { OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgraph'
+import { LAND_OWNER_BADGE_SPEC_CID, LEGISLATOR_BADGE_SPEC_CID, TOP_VOTERS_PER_MONTH } from '../constants'
+import { storeBadgeSpecWithRetry } from '../entities/Badges/storeBadgeSpec'
 import {
-  LAND_OWNER_BADGE_SPEC_CID,
-  LEGISLATOR_BADGE_SPEC_CID,
-  TOP_VOTERS_IMG_URL,
-  TOP_VOTERS_PER_MONTH,
-} from '../constants'
-import { storeBadgeSpec } from '../entities/Badges/storeBadgeSpec'
-import {
-  ActionResult,
   ActionStatus,
   Badge,
+  BadgeCreationResult,
   BadgeStatus,
   BadgeStatusReason,
   ErrorReason,
   OtterspaceRevokeReason,
+  RevokeOrReinstateResult,
   UserBadges,
   toBadgeStatus,
 } from '../entities/Badges/types'
 import {
-  airdrop,
-  createSpec,
   getLandOwnerAddresses,
-  getTopVoterBadgeTitle,
+  getTopVotersBadgeSpec,
   getValidatedUsersForBadge,
-  reinstateBadge,
-  revokeBadge,
-  trimOtterspaceId,
+  isSpecAlreadyCreated,
 } from '../entities/Badges/utils'
 import CoauthorModel from '../entities/Coauthor/model'
 import { CoauthorStatus } from '../entities/Coauthor/types'
@@ -42,8 +42,6 @@ import { getPreviousMonthStartAndEnd } from '../utils/date/getPreviousMonthStart
 import { ErrorCategory } from '../utils/errorCategories'
 
 import { ErrorService } from './ErrorService'
-
-const TRANSACTION_UNDERPRICED_ERROR_CODE = -32000
 
 export class BadgesService {
   public static async getBadges(address: string): Promise<UserBadges> {
@@ -107,40 +105,9 @@ export class BadgesService {
         return { status: AirdropJobStatus.FAILED, error }
       }
 
-      return await this.airdropWithRetry(badgeCid, eligibleUsers)
+      return await airdropWithRetry(badgeCid, eligibleUsers)
     } catch (e) {
       return { status: AirdropJobStatus.FAILED, error: JSON.stringify(e) }
-    }
-  }
-
-  private static async airdropWithRetry(
-    badgeCid: string,
-    recipients: string[],
-    retries = 3,
-    pumpGas = false
-  ): Promise<AirdropOutcome> {
-    try {
-      await airdrop(badgeCid, recipients, pumpGas)
-      return { status: AirdropJobStatus.FINISHED, error: '' }
-    } catch (error: any) {
-      if (retries > 0) {
-        logger.log(`Retrying airdrop... Attempts left: ${retries}`, error)
-        const pumpGas = this.isTransactionUnderpricedError(error)
-        return await this.airdropWithRetry(badgeCid, recipients, retries - 1, pumpGas)
-      } else {
-        logger.error('Airdrop failed after maximum retries', error)
-        return { status: AirdropJobStatus.FAILED, error: JSON.stringify(error) }
-      }
-    }
-  }
-
-  private static isTransactionUnderpricedError(error: any) {
-    try {
-      const errorParsed = JSON.parse(error.body)
-      const errorCode = errorParsed?.error?.code
-      return errorCode === TRANSACTION_UNDERPRICED_ERROR_CODE
-    } catch (e) {
-      return false
     }
   }
 
@@ -233,7 +200,7 @@ export class BadgesService {
       return []
     }
 
-    const actionResults = await Promise.all<ActionResult>(
+    const actionResults = await Promise.all<RevokeOrReinstateResult>(
       badgeOwnerships.map(async (badgeOwnership) => {
         const trimmedId = trimOtterspaceId(badgeOwnership.id)
 
@@ -253,8 +220,7 @@ export class BadgesService {
             address: badgeOwnership.address,
             badgeId: trimmedId,
           }
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
+          // eslint-disable-next-line
         } catch (error: any) {
           return {
             status: ActionStatus.Failed,
@@ -273,7 +239,7 @@ export class BadgesService {
     badgeCid: string,
     addresses: string[],
     reason = OtterspaceRevokeReason.TenureEnded
-  ): Promise<ActionResult[]> {
+  ): Promise<RevokeOrReinstateResult[]> {
     return await this.performBadgeAction(badgeCid, addresses, async (badgeId) => {
       await revokeBadge(badgeId, Number(reason))
     })
@@ -285,25 +251,22 @@ export class BadgesService {
     })
   }
 
-  static async createTopVotersBadge() {
-    const today = Time.utc()
-    const { start } = getPreviousMonthStartAndEnd(today.toDate())
-    const result = await storeBadgeSpec(
-      getTopVoterBadgeTitle(start),
-      'top voter badge description', // TODO: missing description
-      TOP_VOTERS_IMG_URL,
-      today.endOf('month').toISOString()
-    )
-    const { badgeCid } = result
-    await createSpec(badgeCid) // TODO: create with retries
-    return badgeCid
+  static async createTopVotersBadgeSpec(): Promise<BadgeCreationResult> {
+    const badgeSpec = getTopVotersBadgeSpec()
+
+    if (await isSpecAlreadyCreated(badgeSpec.title)) {
+      return { status: ActionStatus.Failed, error: `Top Voter badge already exists`, badgeTitle: badgeSpec.title }
+    }
+    const result = await storeBadgeSpecWithRetry(badgeSpec)
+
+    if (result.status === ActionStatus.Failed || !result.badgeCid) return result
+    return await createSpecWithRetry(result.badgeCid)
   }
 
   static async queueTopVopVoterAirdrops(badgeCid: string) {
     const today = Time.utc().toDate()
     const { start, end } = getPreviousMonthStartAndEnd(today)
     const recipients = await VoteService.getTopVoters(start, end, TOP_VOTERS_PER_MONTH)
-    // TODO: check recipients don't already have a badge for this month
     await this.queueAirdropJob(
       badgeCid,
       recipients.map((recipient) => recipient.address)

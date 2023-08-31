@@ -15,7 +15,7 @@ import { register } from 'prom-client'
 import swaggerUi from 'swagger-ui-express'
 import YAML from 'yaml'
 
-import { runAirdropJobs } from './back/jobs/BadgeAirdrop'
+import { giveTopVoterBadges, runAirdropJobs } from './back/jobs/BadgeAirdrop'
 import badges from './back/routes/badges'
 import bid from './back/routes/bid'
 import budget from './back/routes/budget'
@@ -47,7 +47,7 @@ jobs.cron('@eachMinute', activateProposals)
 jobs.cron('@eachMinute', publishBids)
 jobs.cron('@daily', updateGovernanceBudgets)
 jobs.cron('@daily', runAirdropJobs)
-// jobs.cron(FIRST_DAY_OF_EACH_MONTH, giveTopVoterBadges); // TODO: release the kraken
+jobs.cron(FIRST_DAY_OF_EACH_MONTH, giveTopVoterBadges)
 
 const file = readFileSync('static/api.yaml', 'utf8')
 const swaggerDocument = YAML.parse(file)

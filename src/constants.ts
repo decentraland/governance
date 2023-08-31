@@ -1,4 +1,4 @@
-import { trimOtterspaceId } from './entities/Badges/utils'
+import { trimOtterspaceId } from './back/utils/contractInteractions'
 import { OTTERSPACE_DAO_RAFT_ID } from './entities/Snapshot/constants'
 import Candidates from './utils/delegates/candidates.json'
 import { env } from './utils/env'
@@ -25,11 +25,10 @@ export const VOTES_VP_THRESHOLD = 5
 export const SSO_URL = env('GATSBY_SSO_URL') ?? undefined
 export const RAFT_OWNER_PK = process.env.RAFT_OWNER_PK || ''
 export const POLYGON_BADGES_CONTRACT_ADDRESS = process.env.POLYGON_BADGES_CONTRACT_ADDRESS || ''
-export const POLYGON_RAFTS_CONTRACT_ADDRESS = process.env.POLYGON_RAFTS_CONTRACT_ADDRESS || '' //TODO: add to definitions
-export const NFT_STORAGE_API_KEY = process.env.NFT_STORAGE_API_KEY || '' //TODO: add to definitions
+export const POLYGON_RAFTS_CONTRACT_ADDRESS = process.env.POLYGON_RAFTS_CONTRACT_ADDRESS || ''
+export const NFT_STORAGE_API_KEY = process.env.NFT_STORAGE_API_KEY || ''
 export const LEGISLATOR_BADGE_SPEC_CID = process.env.LEGISLATOR_BADGE_SPEC_CID || ''
 export const LAND_OWNER_BADGE_SPEC_CID = process.env.LAND_OWNER_BADGE_SPEC_CID || ''
 export const TRIMMED_OTTERSPACE_RAFT_ID = trimOtterspaceId(OTTERSPACE_DAO_RAFT_ID)
 export const TOP_VOTERS_PER_MONTH = 3
-export const TOP_VOTERS_IMG_URL =
-  'https://github.com/Decentraland-DAO/badges/blob/master/images/TopVoterBadge-2023.png?raw=true' //TODO: env var
+export const TOP_VOTER_BADGE_IMG_URL = process.env.TOP_VOTER_BADGE_IMG_URL || ''
