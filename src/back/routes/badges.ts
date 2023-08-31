@@ -13,7 +13,7 @@ import {
   toOtterspaceRevokeReason,
 } from '../../entities/Badges/types'
 import { BadgesService } from '../../services/BadgesService'
-import { AirdropOutcome } from '../models/AirdropJob'
+import { AirdropOutcome } from '../types/AirdropJob'
 import { createSpec } from '../utils/contractInteractions'
 import {
   validateAddress,

@@ -1,8 +1,9 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { v1 as uuid } from 'uuid'
 
-import AirdropJobModel, { AirdropJobStatus, AirdropOutcome } from '../back/models/AirdropJob'
+import AirdropJobModel from '../back/models/AirdropJob'
 import { VoteService } from '../back/services/vote'
+import { AirdropJobStatus, AirdropOutcome } from '../back/types/AirdropJob'
 import {
   airdropWithRetry,
   createSpecWithRetry,

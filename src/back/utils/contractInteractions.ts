@@ -5,7 +5,7 @@ import { ethers } from 'ethers'
 import { POLYGON_BADGES_CONTRACT_ADDRESS, RAFT_OWNER_PK, TRIMMED_OTTERSPACE_RAFT_ID } from '../../constants'
 import { ActionStatus, BadgeCreationResult, GAS_MULTIPLIER, GasConfig } from '../../entities/Badges/types'
 import RpcService from '../../services/RpcService'
-import { AirdropJobStatus, AirdropOutcome } from '../models/AirdropJob'
+import { AirdropJobStatus, AirdropOutcome } from '../types/AirdropJob'
 
 const TRANSACTION_UNDERPRICED_ERROR_CODE = -32000
 

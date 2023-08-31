@@ -3,7 +3,7 @@ import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
 import env from 'decentraland-gatsby/dist/utils/env'
 import snakeCase from 'lodash/snakeCase'
 
-import { AirdropOutcome } from '../back/models/AirdropJob'
+import { AirdropOutcome } from '../back/types/AirdropJob'
 import { SpecState } from '../components/Debug/UploadBadgeSpec'
 import { GOVERNANCE_API } from '../constants'
 import { BadgeCreationResult, RevokeOrReinstateResult, UserBadges } from '../entities/Badges/types'
