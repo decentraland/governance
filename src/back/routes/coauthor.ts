@@ -60,7 +60,7 @@ export async function getCoauthors(req: Request) {
 
 const updateStatusValidator = schema.compile(updateStatusScheme)
 
-export async function updateStatus(req: WithAuth<Request>): Promise<CoauthorAttributes> {
+export async function updateStatus(req: WithAuth): Promise<CoauthorAttributes> {
   const user = req.auth!
   const id = req.params.proposal
   const data = validate<UpdateStatus>(updateStatusValidator, req.body || {})
