@@ -259,8 +259,8 @@ export class BadgesService {
     }
     const result = await storeBadgeSpecWithRetry(badgeSpec)
 
-    if (result.status === ActionStatus.Failed) return result
-    return await createSpecWithRetry(result.badgeCid!)
+    if (result.status === ActionStatus.Failed || !result.badgeCid) return result
+    return await createSpecWithRetry(result.badgeCid)
   }
 
   static async queueTopVopVoterAirdrops(badgeCid: string) {
