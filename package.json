@@ -107,7 +107,6 @@
     "swagger-ui-express": "^4.6.0",
     "swiper": "^8.3.0",
     "unified": "9.2.2",
-    "web3": "^1.7.1",
     "web3-eth": "^4.0.2",
     "web3-utils": "^1.7.1",
     "yaml": "^2.2.1"
