@@ -7,7 +7,7 @@ import { navigate } from '../../../utils/locations'
 import './Link.css'
 
 function isMetaClick(event: React.MouseEvent<HTMLAnchorElement>) {
-  return !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey)
+  return event.metaKey || event.altKey || event.ctrlKey || event.shiftKey
 }
 
 type Props = React.AnchorHTMLAttributes<HTMLAnchorElement>

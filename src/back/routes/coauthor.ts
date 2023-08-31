@@ -7,7 +7,6 @@ import validate from 'decentraland-gatsby/dist/entities/Route/validate'
 import schema from 'decentraland-gatsby/dist/entities/Schema'
 import { Request } from 'express'
 
-import { validateAddress } from '../../back/utils/validations'
 import CoauthorModel from '../../entities/Coauthor/model'
 import {
   CoauthorAttributes,
@@ -19,6 +18,7 @@ import {
 import { isCoauthoringUpdatable } from '../../entities/Coauthor/utils'
 import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
+import { validateAddress } from '../utils/validations'
 
 export default routes((route) => {
   const withAuth = auth()

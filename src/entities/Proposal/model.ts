@@ -15,11 +15,10 @@ import isUUID from 'validator/lib/isUUID'
 
 import Time from '../../utils/date/Time'
 import CoauthorModel from '../Coauthor/model'
+import { CoauthorStatus } from '../Coauthor/types'
 import { BUDGETING_START_DATE } from '../Grant/constants'
 import { OldGrantCategory, SubtypeAlternativeOptions, isGrantSubtype } from '../Grant/types'
 import SubscriptionModel from '../Subscription/model'
-
-import { CoauthorStatus } from './../Coauthor/types'
 
 import tsquery from './tsquery'
 import { ProposalAttributes, ProposalStatus, ProposalType, isProposalType } from './types'

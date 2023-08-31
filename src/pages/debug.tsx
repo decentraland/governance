@@ -13,13 +13,11 @@ import HttpStatus from '../components/Debug/HttpStatus'
 import SnapshotStatus from '../components/Debug/SnapshotStatus'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import LogIn from '../components/User/LogIn'
-import useFormatMessage from '../hooks/useFormatMessage'
 import useIsDebugAddress from '../hooks/useIsDebugAddress'
 
 import './debug.css'
 
 export default function DebugPage() {
-  const t = useFormatMessage()
   const [account] = useAuthContext()
   const { isDebugAddress } = useIsDebugAddress(account)
 

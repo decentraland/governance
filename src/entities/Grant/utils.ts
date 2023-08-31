@@ -1,13 +1,5 @@
 import toSnakeCase from 'lodash/snakeCase'
 
-import Accelerator from '../../components/Icon/Grants/Accelerator'
-import CoreUnit from '../../components/Icon/Grants/CoreUnit'
-import Documentation from '../../components/Icon/Grants/Documentation'
-import InWorldContent from '../../components/Icon/Grants/InWorldContent'
-import Platform from '../../components/Icon/Grants/Platform'
-import SocialMediaContent from '../../components/Icon/Grants/SocialMediaContent'
-import Sponsorship from '../../components/Icon/Grants/Sponsorship'
-
 import {
   GRANT_PROPOSAL_MAX_BUDGET,
   GRANT_PROPOSAL_MIN_BUDGET,
