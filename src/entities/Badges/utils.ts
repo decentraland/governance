@@ -10,6 +10,8 @@ import { getUsersWhoVoted, isSameAddress } from '../Snapshot/utils'
 
 import { BadgeStatus, BadgeStatusReason, ErrorReason } from './types'
 
+const TOP_VOTER_TITLE_PREFIX = `Top Voter`
+
 export async function getUsersWithoutBadge(badgeCid: string, users: string[]) {
   const badges = await OtterspaceSubgraph.get().getBadges(badgeCid)
   const usersWithBadgesToReinstate: string[] = []
@@ -73,7 +75,7 @@ export async function getLandOwnerAddresses(): Promise<string[]> {
 }
 
 export function getTopVoterBadgeTitle(formattedMonth: string, formattedYear: string) {
-  return `Top Voter ${formattedMonth} ${formattedYear}`
+  return `${TOP_VOTER_TITLE_PREFIX} - ${formattedMonth} ${formattedYear}`
 }
 
 export function getTopVoterBadgeDescription(formattedMonth: string, formattedYear: string) {
@@ -92,4 +94,9 @@ export function getTopVotersBadgeSpec() {
     imgUrl: TOP_VOTER_BADGE_IMG_URL,
     expiresAt: today.endOf('month').toISOString(),
   }
+}
+
+export async function isSpecAlreadyCreated(title: string): Promise<boolean> {
+  const existingBadge = await OtterspaceSubgraph.get().getBadgeSpecByTitle(title)
+  return !!existingBadge[0]
 }

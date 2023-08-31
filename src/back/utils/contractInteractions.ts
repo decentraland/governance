@@ -3,9 +3,9 @@ import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { ethers } from 'ethers'
 
 import { POLYGON_BADGES_CONTRACT_ADDRESS, RAFT_OWNER_PK, TRIMMED_OTTERSPACE_RAFT_ID } from '../../constants'
-import { GAS_MULTIPLIER, GasConfig } from '../../entities/Badges/types'
+import { ActionStatus, BadgeCreationResult, GAS_MULTIPLIER, GasConfig } from '../../entities/Badges/types'
 import RpcService from '../../services/RpcService'
-import { AirdropJobStatus, AirdropOutcome } from '../models/AirdropJob'
+import { AirdropJobStatus, AirdropOutcome } from '../types/AirdropJob'
 
 const TRANSACTION_UNDERPRICED_ERROR_CODE = -32000
 
@@ -25,15 +25,15 @@ export async function estimateGas(estimateFunction: (...args: any[]) => Promise<
   }
 }
 
-export async function airdrop(badgeCid: string, recipients: string[], pumpGas = false) {
+export async function airdrop(badgeCid: string, recipients: string[], shouldPumpGas = false) {
   const provider = RpcService.getPolygonProvider()
   const raftOwner = new ethers.Wallet(RAFT_OWNER_PK, provider)
   const contract = new ethers.Contract(POLYGON_BADGES_CONTRACT_ADDRESS, BadgesAbi, raftOwner)
   const ipfsAddress = `ipfs://${badgeCid}/metadata.json`
   const formattedRecipients = checksumAddresses(recipients)
-  logger.log(`Airdropping, pumping gas ${pumpGas}`)
+  logger.log(`Airdropping, pumping gas ${shouldPumpGas}`)
   let txn
-  if (pumpGas) {
+  if (shouldPumpGas) {
     const gasConfig = await estimateGas(async () => contract.estimateGas.airdrop(formattedRecipients, ipfsAddress))
     txn = await contract.connect(raftOwner).airdrop(formattedRecipients, ipfsAddress, gasConfig)
   } else {
@@ -114,19 +114,34 @@ export async function airdropWithRetry(
   badgeCid: string,
   recipients: string[],
   retries = 3,
-  pumpGas = false
+  shouldPumpGas = false
 ): Promise<AirdropOutcome> {
   try {
-    await airdrop(badgeCid, recipients, pumpGas)
+    await airdrop(badgeCid, recipients, shouldPumpGas)
     return { status: AirdropJobStatus.FINISHED, error: '' }
   } catch (error: any) {
     if (retries > 0) {
       logger.log(`Retrying airdrop... Attempts left: ${retries}`, error)
-      const pumpGas = isTransactionUnderpricedError(error)
-      return await airdropWithRetry(badgeCid, recipients, retries - 1, pumpGas)
+      const shouldPumpGas = isTransactionUnderpricedError(error)
+      return await airdropWithRetry(badgeCid, recipients, retries - 1, shouldPumpGas)
     } else {
       logger.error('Airdrop failed after maximum retries', error)
       return { status: AirdropJobStatus.FAILED, error: JSON.stringify(error) }
+    }
+  }
+}
+
+export async function createSpecWithRetry(badgeCid: string, retries = 3): Promise<BadgeCreationResult> {
+  try {
+    await createSpec(badgeCid)
+    return { status: ActionStatus.Success, badgeCid }
+  } catch (error: any) {
+    if (retries > 0) {
+      logger.log(`Retrying create spec... Attempts left: ${retries}`, error)
+      return await createSpecWithRetry(badgeCid, retries - 1)
+    } else {
+      logger.error('Create spec failed after maximum retries', error)
+      return { status: ActionStatus.Failed, error, badgeCid }
     }
   }
 }
