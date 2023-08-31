@@ -56,15 +56,15 @@ export default function ProposalSubmitCatalystPage({ catalystType }: Props) {
 
   const { isLoading: isCommsStatusLoading, isError: isErrorOnCommsStatus } = useQuery({
     queryKey: [`commsStatus#${domain}`],
-    queryFn: () => (domain ? Catalyst.from('https://' + domain).getCommsStatus() : null),
+    queryFn: () => (domain ? Catalyst.getInstanceFrom('https://' + domain).getCommsStatus() : null),
   })
   const { isLoading: isContentStatusLoading, isError: isErrorOnContentStatus } = useQuery({
     queryKey: [`contentStatus#${domain}`],
-    queryFn: () => (domain ? Catalyst.from('https://' + domain).getContentStatus() : null),
+    queryFn: () => (domain ? Catalyst.getInstanceFrom('https://' + domain).getContentStatus() : null),
   })
   const { isLoading: isLambdasStatusLoading, isError: isErrorOnLambdasStatus } = useQuery({
     queryKey: [`lambdasStatus#${domain}`],
-    queryFn: () => (domain ? Catalyst.from('https://' + domain).getLambdasStatus() : null),
+    queryFn: () => (domain ? Catalyst.getInstanceFrom('https://' + domain).getLambdasStatus() : null),
   })
 
   const [formDisabled, setFormDisabled] = useState(false)

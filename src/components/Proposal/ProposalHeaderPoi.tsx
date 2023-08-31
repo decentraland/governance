@@ -21,7 +21,7 @@ export default function ProposalHeaderPoi({ configuration }: Props) {
   const { x, y } = configuration
 
   const fetchSceneImg = async (x: number, y: number) => {
-    const scenes = await Catalyst.get().getEntityScenes([[x, y]])
+    const scenes = await Catalyst.getInstance().getEntityScenes([[x, y]])
     const scene = scenes[0]
     if (!scene) {
       return null
@@ -32,7 +32,7 @@ export default function ProposalHeaderPoi({ configuration }: Props) {
       const list = scene.content || []
       const content = list.find((content) => content.file === image)
       if (content) {
-        image = Catalyst.get().getContentUrl(content.hash)
+        image = Catalyst.getInstance().getContentUrl(content.hash)
       }
     }
 
