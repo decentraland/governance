@@ -67,28 +67,48 @@ query Badges($badgeCid: String!, $addresses: [String]!, $first: Int!, $skip: Int
 }
 `
 
+const BADGE_SPEC_BY_TITLE = `
+query BadgeSpecTitles($raft_id: String! $name: String!, $first: Int!, $skip: Int!) {
+  badges: badgeSpecs(
+    where: {raft: $raft_id,metadata_: {name: $name} }, 
+    first: $first, skip: $skip,
+    orderBy: createdAt
+    orderDirection: desc
+  ) {
+      id
+      metadata {
+        name
+        description
+        expiresAt
+        image
+      }  
+  }
+}`
+
+export type OtterspaceBadgeSpec = {
+  id: string
+  metadata: {
+    name: string
+    description: string
+    expiresAt?: number | null
+    image: string
+  }
+  raft?: {
+    id: string
+    metadata: {
+      name: string
+      image: string
+    }
+  }
+}
+
 export type OtterspaceBadge = {
   id: string
   createdAt: number
   status: string
   statusReason: string
   owner?: { id: string }
-  spec: {
-    id: string
-    metadata: {
-      name: string
-      description: string
-      expiresAt?: number | null
-      image: string
-    }
-    raft: {
-      id: string
-      metadata: {
-        name: string
-        image: string
-      }
-    }
-  }
+  spec: OtterspaceBadgeSpec
 }
 
 type BadgeOwnership = { id: string; address: string }
@@ -132,7 +152,7 @@ export class OtterspaceSubgraph {
           body: JSON.stringify({
             query: BADGES_QUERY,
             variables: { ...vars, skip, first },
-            operationName: 'Badges',
+            operationName: 'BadgesForAddress',
             extensions: { headers: null },
           }),
         })
@@ -177,7 +197,7 @@ export class OtterspaceSubgraph {
           body: JSON.stringify({
             query: RECIPIENTS_BADGE_ID_QUERY,
             variables: { ...vars, skip, first },
-            operationName: 'Badges',
+            operationName: 'RecipientsBadgeId',
             extensions: { headers: null },
           }),
         })
@@ -190,6 +210,32 @@ export class OtterspaceSubgraph {
 
     return badges.map((badge) => {
       return { id: badge.id, address: badge.owner?.id || '' }
+    })
+  }
+
+  async getBadgeSpecByTitle(title: string) {
+    const badgeSpecs: OtterspaceBadgeSpec[] = await inBatches(
+      async (vars, skip, first) => {
+        const response = await fetch(this.queryEndpoint, {
+          method: 'post',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query: BADGE_SPEC_BY_TITLE,
+            variables: { ...vars, skip, first },
+            operationName: 'BadgeSpecsByTitle',
+            extensions: { headers: null },
+          }),
+        })
+
+        const body = await response.json()
+        return body?.data?.badges || []
+      },
+      { raft_id: OTTERSPACE_DAO_RAFT_ID, name: title },
+      20
+    )
+
+    return badgeSpecs.map((badge) => {
+      return badge.metadata.name
     })
   }
 }

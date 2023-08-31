@@ -3,10 +3,10 @@ import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
 import env from 'decentraland-gatsby/dist/utils/env'
 import snakeCase from 'lodash/snakeCase'
 
-import { AirdropOutcome } from '../back/models/AirdropJob'
+import { AirdropOutcome } from '../back/types/AirdropJob'
 import { SpecState } from '../components/Debug/UploadBadgeSpec'
 import { GOVERNANCE_API } from '../constants'
-import { ActionResult, BadgeCreationResult, UserBadges } from '../entities/Badges/types'
+import { BadgeCreationResult, RevokeOrReinstateResult, UserBadges } from '../entities/Badges/types'
 import { BidRequest, UnpublishedBidAttributes } from '../entities/Bid/types'
 import { Budget, BudgetWithContestants, CategoryBudget } from '../entities/Budget/types'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
@@ -615,7 +615,7 @@ export class Governance extends API {
   }
 
   async revokeBadge(badgeSpecCid: string, recipients: string[], reason?: string) {
-    const response = await this.fetch<ApiResponse<ActionResult[]>>(
+    const response = await this.fetch<ApiResponse<RevokeOrReinstateResult[]>>(
       `/badges/revoke/`,
       this.options().method('POST').authorization({ sign: true }).json({
         badgeSpecCid,
