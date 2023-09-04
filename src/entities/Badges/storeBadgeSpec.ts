@@ -9,6 +9,7 @@ import {
   RAFT_OWNER_PK,
   TRIMMED_OTTERSPACE_RAFT_ID,
 } from '../../constants'
+import { toIsoStringDate } from '../../utils/date/toIsoString'
 
 import { ActionStatus, BadgeCreationResult } from './types'
 
@@ -44,12 +45,6 @@ const getImageFileFromUrl = async (imgUrl: string) => {
   }
 }
 
-function convertToISODate(dateString: string): string {
-  const [year, month, day] = dateString.split('-')
-  const isoDateString = `${year}-${month}-${day}T00:00:00.000Z`
-  return isoDateString
-}
-
 interface BadgeSpec {
   title: string
   description: string
@@ -70,7 +65,7 @@ export async function storeBadgeSpec({ title, description, imgUrl, expiresAt }: 
       raftTokenId: TRIMMED_OTTERSPACE_RAFT_ID,
       raftContractAddress: POLYGON_RAFTS_CONTRACT_ADDRESS,
       createdByAddress: raftOwner.address,
-      expiresAt: expiresAt ? convertToISODate(expiresAt) : '',
+      expiresAt: expiresAt ? toIsoStringDate(expiresAt) : '',
     },
     image: file,
   }
