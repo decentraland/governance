@@ -24,6 +24,7 @@ import committee from './back/routes/committee'
 import common from './back/routes/common'
 import debug from './back/routes/debug'
 import newsletter from './back/routes/newsletter'
+import notification from './back/routes/notification'
 import project from './back/routes/project'
 import proposal from './back/routes/proposal'
 import sitemap from './back/routes/sitemap'
@@ -77,6 +78,7 @@ app.use('/api', [
   vestings,
   project,
   newsletter,
+  notification,
   handle(async () => {
     throw new RequestError('NotFound', RequestError.NotFound)
   }),

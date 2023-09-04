@@ -651,4 +651,16 @@ export class Governance extends API {
     )
     return response.data
   }
+
+  async sendNotification(recipient: string, title: string, body: string) {
+    const response = await this.fetch<ApiResponse<string>>(
+      `/notifications/send`,
+      this.options().method('POST').json({
+        recipient,
+        title,
+        body,
+      })
+    )
+    return response.data
+  }
 }
