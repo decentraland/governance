@@ -6,15 +6,15 @@ import { Request } from 'express'
 
 import { storeBadgeSpec } from '../../entities/Badges/storeBadgeSpec'
 import {
-  ActionResult,
   ActionStatus,
   BadgeCreationResult,
+  RevokeOrReinstateResult,
   UserBadges,
   toOtterspaceRevokeReason,
 } from '../../entities/Badges/types'
-import { createSpec } from '../../entities/Badges/utils'
 import { BadgesService } from '../../services/BadgesService'
-import { AirdropOutcome } from '../models/AirdropJob'
+import { AirdropOutcome } from '../types/AirdropJob'
+import { createSpec } from '../utils/contractInteractions'
 import {
   validateAddress,
   validateDate,
@@ -56,7 +56,7 @@ async function airdrop(req: WithAuth): Promise<AirdropOutcome> {
   return await BadgesService.giveBadgeToUsers(badgeSpecCid, recipients)
 }
 
-async function revoke(req: WithAuth): Promise<ActionResult[]> {
+async function revoke(req: WithAuth): Promise<RevokeOrReinstateResult[]> {
   const user = req.auth!
   const { badgeSpecCid, reason } = req.body
   const recipients: string[] = req.body.recipients
@@ -88,7 +88,12 @@ async function uploadBadgeSpec(req: WithAuth): Promise<BadgeCreationResult> {
   validateDate(expiresAt)
 
   try {
-    const result = await storeBadgeSpec(title, description, imgUrl, expiresAt)
+    const result = await storeBadgeSpec({
+      title,
+      description,
+      imgUrl,
+      expiresAt,
+    })
     return { status: ActionStatus.Success, badgeCid: result.badgeCid }
   } catch (e) {
     return { status: ActionStatus.Failed, error: JSON.stringify(e) }

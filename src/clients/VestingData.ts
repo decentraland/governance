@@ -1,5 +1,5 @@
-import Web3 from 'web3'
-import { AbiItem } from 'web3-utils'
+import { JsonRpcProvider } from '@ethersproject/providers'
+import { ethers } from 'ethers'
 
 import RpcService from '../services/RpcService'
 import VESTING_ABI from '../utils/contracts/abi/vesting/vesting.json'
@@ -37,61 +37,63 @@ function getVestingDates(contractStart: number, contractEndsTimestamp: number) {
   }
 }
 
-async function getVestingContractLogs(vestingAddress: string, web3: Web3, version: ContractVersion) {
-  const eth = web3.eth
-  const web3Logs = await eth.getPastLogs({
+async function getVestingContractLogs(vestingAddress: string, provider: JsonRpcProvider, version: ContractVersion) {
+  const logsPromise = provider.getLogs({
     address: vestingAddress,
     fromBlock: 13916992, // 01/01/2022
     toBlock: 'latest',
   })
 
-  const blocks = await Promise.all(web3Logs.map((log) => eth.getBlock(log.blockNumber)))
-  const logs: VestingLog[] = []
+  const [logs, web3Logs] = await Promise.all([logsPromise, provider.getBlockWithTransactions('latest')])
+
   const topics = TopicsByVersion[version]
+  const logsData: VestingLog[] = []
 
-  const getLog = (timestamp: number, topic: string): VestingLog => ({
-    topic,
-    timestamp: toISOString(timestamp),
-  })
-
-  for (const idx in web3Logs) {
-    const eventTimestamp = Number(blocks[idx].timestamp)
-    switch (web3Logs[idx].topics[0]) {
+  logs.forEach((log) => {
+    const eventTimestamp = web3Logs.timestamp
+    switch (log.topics[0]) {
       case topics.REVOKE:
-        logs.push(getLog(eventTimestamp, topics.REVOKE))
+        logsData.push({ topic: topics.REVOKE, timestamp: toISOString(eventTimestamp) })
         break
       case topics.PAUSED:
-        logs.push(getLog(eventTimestamp, topics.PAUSED))
+        logsData.push({ topic: topics.PAUSED, timestamp: toISOString(eventTimestamp) })
         break
       case topics.UNPAUSED:
-        logs.push(getLog(eventTimestamp, topics.UNPAUSED))
+        logsData.push({ topic: topics.UNPAUSED, timestamp: toISOString(eventTimestamp) })
         break
       default:
         break
     }
-  }
+  })
 
-  return logs
+  return logsData
 }
 
-async function getVestingContractDataV1(vestingAddress: string, web3: Web3): Promise<VestingDates> {
-  const vestingContract = new web3.eth.Contract(VESTING_ABI as AbiItem[], vestingAddress)
-  const contractStart = Number(await vestingContract.methods.start().call())
-  const contractDuration = Number(await vestingContract.methods.duration().call())
+async function getVestingContractDataV1(
+  vestingAddress: string,
+  provider: ethers.providers.JsonRpcProvider
+): Promise<VestingDates> {
+  const vestingContract = new ethers.Contract(vestingAddress, VESTING_ABI, provider)
+  const contractStart = Number(await vestingContract.start())
+  const contractDuration = Number(await vestingContract.duration())
   const contractEndsTimestamp = contractStart + contractDuration
 
   return getVestingDates(contractStart, contractEndsTimestamp)
 }
 
-async function getVestingContractDataV2(vestingAddress: string, web3: Web3): Promise<VestingDates> {
-  const vestingContract = new web3.eth.Contract(VESTING_V2_ABI as AbiItem[], vestingAddress)
-  const contractStart = Number(await vestingContract.methods.getStart().call())
-  const contractDuration = Number(await vestingContract.methods.getPeriod().call())
+async function getVestingContractDataV2(
+  vestingAddress: string,
+  provider: ethers.providers.JsonRpcProvider
+): Promise<VestingDates> {
+  const vestingContract = new ethers.Contract(vestingAddress, VESTING_V2_ABI, provider)
+  const contractStart = Number(await vestingContract.getStart())
+  const contractDuration = Number(await vestingContract.getPeriod())
   let contractEndsTimestamp = 0
-  if (await vestingContract.methods.getIsLinear().call()) {
+
+  if (await vestingContract.getIsLinear()) {
     contractEndsTimestamp = contractStart + contractDuration
   } else {
-    const periods = (await vestingContract.methods.getVestedPerPeriod().call()).length || 0
+    const periods = (await vestingContract.getVestedPerPeriod()).length || 0
     contractEndsTimestamp = contractStart + contractDuration * periods
   }
 
@@ -106,10 +108,11 @@ export async function getVestingContractData(
     throw new Error('Unable to fetch vesting data for empty contract address')
   }
 
-  const web3 = new Web3(RpcService.getRpcUrl())
+  const provider = new ethers.providers.JsonRpcProvider(RpcService.getRpcUrl())
+
   try {
-    const datesPromise = getVestingContractDataV2(vestingAddress, web3)
-    const logsPromise = getVestingContractLogs(vestingAddress, web3, ContractVersion.V2)
+    const datesPromise = getVestingContractDataV2(vestingAddress, provider)
+    const logsPromise = getVestingContractLogs(vestingAddress, provider, ContractVersion.V2)
     const [dates, logs] = await Promise.all([datesPromise, logsPromise])
     return {
       ...dates,
@@ -118,8 +121,8 @@ export async function getVestingContractData(
     }
   } catch (errorV2) {
     try {
-      const datesPromise = getVestingContractDataV1(vestingAddress, web3)
-      const logsPromise = getVestingContractLogs(vestingAddress, web3, ContractVersion.V1)
+      const datesPromise = getVestingContractDataV1(vestingAddress, provider)
+      const logsPromise = getVestingContractLogs(vestingAddress, provider, ContractVersion.V1)
       const [dates, logs] = await Promise.all([datesPromise, logsPromise])
       return {
         ...dates,

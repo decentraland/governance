@@ -1,14 +1,17 @@
+import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { ethers } from 'ethers'
 import { NFTStorage } from 'nft.storage'
 
+import { getIpfsAddress } from '../../back/utils/contractInteractions'
 import {
   NFT_STORAGE_API_KEY,
   POLYGON_RAFTS_CONTRACT_ADDRESS,
   RAFT_OWNER_PK,
   TRIMMED_OTTERSPACE_RAFT_ID,
 } from '../../constants'
+import { toIsoStringDate } from '../../utils/date/toIsoString'
 
-import { getIpfsAddress } from './utils'
+import { ActionStatus, BadgeCreationResult } from './types'
 
 const blobToFile = (theBlob: Blob, fileName: string): File => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -42,13 +45,14 @@ const getImageFileFromUrl = async (imgUrl: string) => {
   }
 }
 
-function convertToISODate(dateString: string): string {
-  const [year, month, day] = dateString.split('-')
-  const isoDateString = `${year}-${month}-${day}T00:00:00.000Z`
-  return isoDateString
+interface BadgeSpec {
+  title: string
+  description: string
+  imgUrl: string
+  expiresAt?: string
 }
 
-export async function storeBadgeSpec(title: string, description: string, imgUrl: string, expiresAt?: string) {
+export async function storeBadgeSpec({ title, description, imgUrl, expiresAt }: BadgeSpec) {
   const client = new NFTStorage({ token: NFT_STORAGE_API_KEY })
   const raftOwner = new ethers.Wallet(RAFT_OWNER_PK)
   const file = await getImageFileFromUrl(imgUrl)
@@ -61,7 +65,7 @@ export async function storeBadgeSpec(title: string, description: string, imgUrl:
       raftTokenId: TRIMMED_OTTERSPACE_RAFT_ID,
       raftContractAddress: POLYGON_RAFTS_CONTRACT_ADDRESS,
       createdByAddress: raftOwner.address,
-      expiresAt: expiresAt ? convertToISODate(expiresAt) : '',
+      expiresAt: expiresAt ? toIsoStringDate(expiresAt) : '',
     },
     image: file,
   }
@@ -72,4 +76,20 @@ export async function storeBadgeSpec(title: string, description: string, imgUrl:
   const metadataUrl = `https://ipfs.io/ipfs/${badgeCid}/metadata.json`
   const ipfsAddress = getIpfsAddress(badgeCid)
   return { badgeCid: badgeCid, metadataUrl, ipfsAddress }
+}
+
+export async function storeBadgeSpecWithRetry(badgeSpec: BadgeSpec, retries = 3): Promise<BadgeCreationResult> {
+  const badgeTitle = badgeSpec.title
+  try {
+    const { badgeCid } = await storeBadgeSpec(badgeSpec)
+    return { status: ActionStatus.Success, badgeCid, badgeTitle }
+  } catch (error: any) {
+    if (retries > 0) {
+      logger.log(`Retrying upload spec... Attempts left: ${retries}`, error)
+      return await storeBadgeSpecWithRetry(badgeSpec, retries - 1)
+    } else {
+      logger.error('Upload spec failed after maximum retries', error)
+      return { status: ActionStatus.Failed, error, badgeTitle }
+    }
+  }
 }

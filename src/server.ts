@@ -15,7 +15,7 @@ import { register } from 'prom-client'
 import swaggerUi from 'swagger-ui-express'
 import YAML from 'yaml'
 
-import { runAirdropJobs } from './back/jobs/BadgeAirdrop'
+import { giveTopVoterBadges, runAirdropJobs } from './back/jobs/BadgeAirdrop'
 import badges from './back/routes/badges'
 import bid from './back/routes/bid'
 import budget from './back/routes/budget'
@@ -41,12 +41,16 @@ import { activateProposals, finishProposal, publishBids } from './entities/Propo
 import { DiscordService } from './services/DiscordService'
 import filesystem from './utils/filesystem'
 
+const FIRST_DAY_OF_EACH_MONTH = '0 0 1 * *'
+const FIFTH_OF_SEPTEMBER = '0 0 5 9 *' // TODO: remove after 05-09-2013
 const jobs = manager()
 jobs.cron('@eachMinute', finishProposal)
 jobs.cron('@eachMinute', activateProposals)
 jobs.cron('@eachMinute', publishBids)
 jobs.cron('@daily', updateGovernanceBudgets)
 jobs.cron('@daily', runAirdropJobs)
+jobs.cron(FIRST_DAY_OF_EACH_MONTH, giveTopVoterBadges)
+jobs.cron(FIFTH_OF_SEPTEMBER, giveTopVoterBadges) // TODO: remove after 05-09-2013
 
 const file = readFileSync('static/api.yaml', 'utf8')
 const swaggerDocument = YAML.parse(file)

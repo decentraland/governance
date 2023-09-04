@@ -9,7 +9,7 @@ export default function useTopVoters(start: Date, end: Date, limit?: number) {
   const { data: votes, isLoading } = useQuery({
     queryKey: [`topVoters#${start}#${end}`],
     queryFn: async () => {
-      await Governance.get().getTopVoters(start, end, limit)
+      return await Governance.get().getTopVoters(start, end, limit)
     },
     staleTime: FIVE_MINUTES_MS,
   })
