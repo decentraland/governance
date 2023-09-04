@@ -36,6 +36,7 @@ import { Topic } from '../entities/SurveyTopic/types'
 import { ProjectHealth, UpdateAttributes, UpdateResponse } from '../entities/Updates/types'
 import { Vote, VotedProposal, Voter } from '../entities/Votes/types'
 import Time from '../utils/date/Time'
+import { Notification } from '../utils/notifications'
 
 import { TransparencyBudget } from './DclData'
 import {
@@ -648,6 +649,14 @@ export class Governance extends API {
       this.options().method('POST').json({
         email,
       })
+    )
+    return response.data
+  }
+
+  async getUserNotifications(address: string) {
+    const response = await this.fetch<ApiResponse<Notification[]>>(
+      `/notifications/user/${address}`,
+      this.options().method('GET')
     )
     return response.data
   }

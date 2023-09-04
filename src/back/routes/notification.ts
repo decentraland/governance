@@ -4,7 +4,9 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { ethers } from 'ethers'
 import { Request } from 'express'
+import fetch from 'isomorphic-fetch'
 
+import { isProdEnv } from '../../utils/governanceEnvs'
 import { getCaipAddress } from '../../utils/notifications'
 
 enum ENV {
@@ -27,12 +29,13 @@ const CHANNEL_ADDRESS = '0xBf363AeDd082Ddd8DB2D6457609B03f9ee74a2F1'
 
 export default routes((router) => {
   router.post('/notifications/send', handleAPI(handleSendNotification))
-  router.get('/notifications/user/:address', handleAPI(handleGetNotifications))
+  router.get('/notifications/user/:address', handleAPI(handleUserNotifications))
 })
 
 const PUSH_CHANNEL_OWNER_PK = process.env.PUSH_CHANNEL_OWNER_PK
+const PUSH_API_URL = process.env.PUSH_API_URL
 const pkAddress = `0x${PUSH_CHANNEL_OWNER_PK}`
-const _signer = new ethers.Wallet(pkAddress)
+const signer = new ethers.Wallet(pkAddress)
 
 async function handleSendNotification(req: Request) {
   const { title, body, recipient } = req.body
@@ -42,7 +45,7 @@ async function handleSendNotification(req: Request) {
   }
 
   const response = await PushAPI.payloads.sendNotification({
-    signer: _signer,
+    signer,
     type: NotificationType.TARGET,
     identityType: NotificationIdentityType.DIRECT_PAYLOAD,
     notification: {
@@ -57,22 +60,24 @@ async function handleSendNotification(req: Request) {
     },
     recipients: getCaipAddress(recipient, CHAIN_ID),
     channel: getCaipAddress(CHANNEL_ADDRESS, CHAIN_ID),
-    env: ENV.STAGING,
+    env: isProdEnv() ? ENV.PROD : ENV.STAGING,
   })
 
   return response.data
 }
 
-async function handleGetNotifications(req: Request) {
+async function handleUserNotifications(req: Request) {
   const address = req.params.address
   if (!address) {
     throw new RequestError('Missing user', RequestError.BadRequest)
   }
 
-  const notifications = await PushAPI.user.getFeeds({
-    user: getCaipAddress(address, CHAIN_ID),
-    env: ENV.STAGING,
-  })
+  const response = await fetch(
+    `${PUSH_API_URL}/apis/v1/users/${getCaipAddress(address, CHAIN_ID)}/channels/${getCaipAddress(
+      CHANNEL_ADDRESS,
+      CHAIN_ID
+    )}/feeds`
+  )
 
-  return notifications
+  return (await response.json()).feeds
 }

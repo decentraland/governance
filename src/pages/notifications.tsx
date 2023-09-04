@@ -10,7 +10,7 @@ import { Field } from 'decentraland-ui/dist/components/Field/Field'
 
 import { Governance } from '../clients/Governance'
 import Heading from '../components/Common/Typography/Heading'
-import Label from '../components/Common/Typography/Label'
+import Text from '../components/Common/Typography/Text'
 import LogIn from '../components/User/LogIn'
 import useIsDebugAddress from '../hooks/useIsDebugAddress'
 import { getCaipAddress } from '../utils/notifications'
@@ -37,6 +37,12 @@ export default function DebugPage() {
     queryKey: [`subscriptions#${user}`],
     queryFn: () =>
       user ? PushAPI.user.getSubscriptions({ user: getCaipAddress(user, CHAIN_ID), env: ENV.STAGING }) : null,
+    enabled: !!user,
+  })
+
+  const { data: userNotifications } = useQuery({
+    queryKey: [`notifications#${user}`],
+    queryFn: () => (user ? Governance.get().getUserNotifications(user) : null),
     enabled: !!user,
   })
 
@@ -81,14 +87,35 @@ export default function DebugPage() {
 
   const isSubscribed = !!subscriptions?.find((item: any) => item.channel === CHANNEL_ADDRESS)
 
+  console.log('u', userNotifications)
+
   return (
     <Container className="DebugPage">
       <Heading>Notifications</Heading>
       <Button style={{ marginBottom: '25px' }} disabled={isSubscribed} onClick={handleSubscribeUserToChannel}>
         Subscribe to Decentraland DAO Push channel
       </Button>
+      {userNotifications && (
+        <div style={{ marginBottom: '25px' }}>
+          <Heading size="md">Your notifications</Heading>
+          {userNotifications?.map((notification) => (
+            <div
+              key={notification.payload_id}
+              style={{
+                border: '1px solid var(--black-400)',
+                padding: '6px',
+                marginBottom: '6px',
+                borderRadius: '12px',
+              }}
+            >
+              <Text>{notification.payload.data.asub}</Text>
+              <Text>{notification.payload.data.amsg}</Text>
+            </div>
+          ))}
+        </div>
+      )}
       <form onSubmit={handleNotificationSend}>
-        <Label>Send notification to user:</Label>
+        <Heading size="md">Send notification to user</Heading>
         <Field required placeholder="Address (0x...)" onChange={(e) => setNotificationAddress(e.target.value)} />
         <Field required placeholder="Title" onChange={(e) => setNotificationTitle(e.target.value)} />
         <Field required placeholder="Body" onChange={(e) => setNotificationBody(e.target.value)} />
