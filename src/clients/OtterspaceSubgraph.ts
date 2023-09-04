@@ -90,7 +90,7 @@ export type OtterspaceBadgeSpec = {
   metadata: {
     name: string
     description: string
-    expiresAt?: number | null
+    expiresAt?: string | null
     image: string
   }
   raft?: {

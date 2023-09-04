@@ -1,5 +1,8 @@
 import { ethers } from 'ethers'
 
+import { OtterspaceBadge } from '../../clients/OtterspaceSubgraph'
+import Time from '../../utils/date/Time'
+
 export enum BadgeStatus {
   Burned = 'BURNED',
   Minted = 'MINTED',
@@ -18,6 +21,7 @@ export type Badge = {
   description: string
   image: string
   status: BadgeStatus
+  isPastBadge: boolean
   createdAt: number
 }
 
@@ -53,6 +57,32 @@ export function isBadgeStatus(value: string | null | undefined): boolean {
 export function toBadgeStatus(value: string | null | undefined): BadgeStatus {
   if (isBadgeStatus(value)) return value as BadgeStatus
   else throw new Error(`Invalid BadgeStatus ${value}`)
+}
+
+export function isPastBadge(badge: OtterspaceBadge) {
+  const status = toBadgeStatus(badge.status)
+  const expiresAt = badge.spec.metadata.expiresAt
+  return (
+    (status === BadgeStatus.Revoked && badge.statusReason === BadgeStatusReason.TenureEnded) ||
+    (!!expiresAt && expiresAt.length > 0 && Time.utc(badge.spec.metadata.expiresAt).isBefore(Time.utc()))
+  )
+}
+
+export function toGovernanceBadge(otterspaceBadge: OtterspaceBadge) {
+  const { name, description, image } = otterspaceBadge.spec.metadata
+  const badge: Badge = {
+    name,
+    description,
+    createdAt: otterspaceBadge.createdAt,
+    image: getIpfsHttpsLink(image),
+    status: toBadgeStatus(otterspaceBadge.status),
+    isPastBadge: isPastBadge(otterspaceBadge),
+  }
+  return badge
+}
+
+function getIpfsHttpsLink(ipfsLink: string) {
+  return ipfsLink.replace('ipfs://', 'https://ipfs.io/ipfs/')
 }
 
 export function isOtterspaceRevokeReason(value: string | null | undefined): boolean {

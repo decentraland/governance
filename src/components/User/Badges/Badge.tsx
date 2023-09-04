@@ -40,15 +40,13 @@ function getVariantClass(variant: BadgeVariant) {
 }
 
 export default function Badge({ badge, className, iconClassName, variant = BadgeVariant.Primary }: Props) {
-  const isRevoked = badge.status === BadgeStatus.Revoked
-
   return (
     <div className={classNames('Badge', className)}>
       <div
         className={classNames(
           'Badge__Icon',
           getVariantClass(variant),
-          isRevoked && 'Badge__Icon--revoked',
+          badge.isPastBadge && 'Badge__Icon--past',
           iconClassName
         )}
         style={{ backgroundImage: `url(${badge.image})` }}

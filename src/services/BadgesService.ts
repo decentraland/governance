@@ -19,12 +19,11 @@ import {
   Badge,
   BadgeCreationResult,
   BadgeStatus,
-  BadgeStatusReason,
   ErrorReason,
   OtterspaceRevokeReason,
   RevokeOrReinstateResult,
   UserBadges,
-  toBadgeStatus,
+  toGovernanceBadge,
 } from '../entities/Badges/types'
 import {
   getLandOwnerAddresses,
@@ -54,18 +53,10 @@ export class BadgesService {
     const expiredBadges: Badge[] = []
     for (const otterspaceBadge of otterspaceBadges) {
       try {
-        const status = toBadgeStatus(otterspaceBadge.status)
-        if (status !== BadgeStatus.Burned) {
+        const badge = toGovernanceBadge(otterspaceBadge)
+        if (badge.status !== BadgeStatus.Burned) {
           if (otterspaceBadge.spec.metadata) {
-            const { name, description, image } = otterspaceBadge.spec.metadata
-            const badge = {
-              name,
-              description,
-              status,
-              image: BadgesService.getIpfsHttpsLink(image),
-              createdAt: otterspaceBadge.createdAt,
-            }
-            if (this.badgeExpired(status, otterspaceBadge.statusReason)) {
+            if (badge.isPastBadge) {
               expiredBadges.push(badge)
             } else {
               currentBadges.push(badge)
@@ -82,14 +73,6 @@ export class BadgesService {
     }
 
     return { currentBadges, expiredBadges, total: currentBadges.length + expiredBadges.length }
-  }
-
-  private static badgeExpired(status: BadgeStatus, statusReason: string) {
-    return status === BadgeStatus.Revoked && statusReason === BadgeStatusReason.TenureEnded
-  }
-
-  private static getIpfsHttpsLink(ipfsLink: string) {
-    return ipfsLink.replace('ipfs://', 'https://ipfs.io/ipfs/')
   }
 
   public static async giveBadgeToUsers(badgeCid: string, users: string[]): Promise<AirdropOutcome> {
