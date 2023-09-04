@@ -41,9 +41,11 @@ export async function giveTopVoterBadges() {
   const { status, badgeCid, badgeTitle, error } = await BadgesService.createTopVotersBadgeSpec()
   if (error && status === ActionStatus.Failed) {
     ErrorService.report(error, { category: ErrorCategory.Badges, badgeTitle, badgeCid })
+    return
   }
   if (!badgeCid) {
     ErrorService.report('Unable to create top voters badge', { category: ErrorCategory.Badges, badgeTitle })
+    return
   }
   await BadgesService.queueTopVopVoterAirdrops(badgeCid!)
 }
