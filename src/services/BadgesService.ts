@@ -135,7 +135,7 @@ export class BadgesService {
     )
 
     const outcomes = await Promise.all(
-      splitArray([...eligibleUsers, ...usersWithBadgesToReinstate], 50).map((addresses) =>
+      splitArray([...eligibleUsers, ...usersWithBadgesToReinstate], 20).map((addresses) =>
         BadgesService.giveBadgeToUsers(LAND_OWNER_BADGE_SPEC_CID, addresses)
       )
     )
