@@ -56,7 +56,7 @@ export class BadgesService {
         const badge = toGovernanceBadge(otterspaceBadge)
         if (badge.status !== BadgeStatus.Burned) {
           if (otterspaceBadge.spec.metadata) {
-            if (badge.expired) {
+            if (badge.isPastBadge) {
               expiredBadges.push(badge)
             } else {
               currentBadges.push(badge)

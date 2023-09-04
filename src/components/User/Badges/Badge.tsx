@@ -46,7 +46,7 @@ export default function Badge({ badge, className, iconClassName, variant = Badge
         className={classNames(
           'Badge__Icon',
           getVariantClass(variant),
-          badge.expired && 'Badge__Icon--expired',
+          badge.isPastBadge && 'Badge__Icon--past',
           iconClassName
         )}
         style={{ backgroundImage: `url(${badge.image})` }}

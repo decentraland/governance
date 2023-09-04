@@ -46,6 +46,6 @@
   background-position: right bottom;
 }
 
-.Badge__Icon--expired {
+.Badge__Icon--past {
   filter: grayscale(1);
 }

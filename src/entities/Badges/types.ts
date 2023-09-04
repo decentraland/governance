@@ -21,7 +21,7 @@ export type Badge = {
   description: string
   image: string
   status: BadgeStatus
-  expired: boolean
+  isPastBadge: boolean
   createdAt: number
 }
 
@@ -59,7 +59,7 @@ export function toBadgeStatus(value: string | null | undefined): BadgeStatus {
   else throw new Error(`Invalid BadgeStatus ${value}`)
 }
 
-export function badgeExpired(badge: OtterspaceBadge) {
+export function isPastBadge(badge: OtterspaceBadge) {
   const status = toBadgeStatus(badge.status)
   const expiresAt = badge.spec.metadata.expiresAt
   return (
@@ -70,15 +70,13 @@ export function badgeExpired(badge: OtterspaceBadge) {
 
 export function toGovernanceBadge(otterspaceBadge: OtterspaceBadge) {
   const { name, description, image } = otterspaceBadge.spec.metadata
-  const status = toBadgeStatus(otterspaceBadge.status)
-  const expired = badgeExpired(otterspaceBadge)
   const badge: Badge = {
     name,
     description,
-    image: getIpfsHttpsLink(image),
     createdAt: otterspaceBadge.createdAt,
-    status,
-    expired,
+    image: getIpfsHttpsLink(image),
+    status: toBadgeStatus(otterspaceBadge.status),
+    isPastBadge: isPastBadge(otterspaceBadge),
   }
   return badge
 }
