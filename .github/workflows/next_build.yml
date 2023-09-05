@@ -13,14 +13,14 @@ jobs:
       registry-paths: ${{ steps.push-to-quay.outputs.registry-paths }}
     steps:
       - uses: actions/checkout@v2
-      
-      - name: node.js 16
+
+      - name: node.js 18
         uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: 18.8.0
           registry-url: https://registry.npmjs.org/
           cache: 'npm'
-      
+
       - name: set up git
         run: git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
 
@@ -35,7 +35,7 @@ jobs:
           tags: ${{ github.sha }} latest
           dockerfiles: |
             ./Dockerfile
-      
+
       - name: Push To quay.io
         id: push-to-quay
         uses: redhat-actions/push-to-registry@v2
@@ -48,7 +48,7 @@ jobs:
 
       - name: Print image url
         run: echo "Image pushed to ${{ steps.push-to-quay.outputs.registry-paths }}"
-    
+
   deployment:
     needs: [build-push]
     name: "Deploy to: dev prd"
