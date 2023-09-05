@@ -9,6 +9,9 @@
   .BadgeDetail__Container {
     margin-top: 120px;
   }
+  .BadgeDetail__TxLink {
+    margin-bottom: 0;
+  }
 }
 
 .BadgeDetail__Icon {
@@ -45,5 +48,9 @@
 .BadgeDetail__Description {
   max-width: 360px;
   text-align: center;
+  margin-bottom: 16px;
+}
+
+.BadgeDetail__TxLink {
   margin-bottom: 16px;
 }

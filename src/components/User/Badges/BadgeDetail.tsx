@@ -50,7 +50,12 @@ export default function BadgeDetail({ badge }: Props) {
         </div>
       </div>
       <Markdown className="BadgeDetail__Description">{addNewLinesAfterFirstDot(badge.description)}</Markdown>
-      <Link href={getPolygonscanTxLink(badge.transactionHash)} target="_blank" rel="noreferrer">
+      <Link
+        href={getPolygonscanTxLink(badge.transactionHash)}
+        target="_blank"
+        rel="noreferrer"
+        className="BadgeDetail__TxLink"
+      >
         {t('component.badge_card.polygonscan_link')}
       </Link>
     </div>
