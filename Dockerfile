@@ -1,4 +1,4 @@
-FROM node:16.14-alpine as compiler
+FROM node:18.8-alpine as compiler
 ARG version_number
 
 RUN apk add --no-cache openssh-client \
@@ -47,7 +47,7 @@ RUN NODE_OPTIONS="--max-old-space-size=4096" npm run build:server
 RUN NODE_OPTIONS="--max-old-space-size=4096"  VERSION_NUMBER=$version_number npm run build:front
 RUN npm prune --production
 
-FROM node:16.14-alpine
+FROM node:18.8-alpine
 WORKDIR /app
 
 RUN rm -rf \
