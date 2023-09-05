@@ -1,5 +1,5 @@
 /* eslint-disable */
-const { default: developMiddleware } = require('decentraland-gatsby/dist/utils/development/developMiddleware')
+// const { default: developMiddleware } = require('decentraland-gatsby/dist/utils/development/developMiddleware'
 
 require('dotenv').config({
   path: `.env.${process.env.NODE_ENV}`,
@@ -17,7 +17,7 @@ module.exports = {
   },
   developMiddleware: developMiddleware({
     prefix: `/api`,
-    url: `http://localhost:4000`,
+    url: `http://127.0.0.1:4000`,
   }),
   plugins: [
     `gatsby-plugin-react-helmet`,
