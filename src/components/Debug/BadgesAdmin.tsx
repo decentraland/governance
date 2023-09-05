@@ -99,19 +99,14 @@ export default function BadgesAdmin({ className }: Props) {
           <Heading size="xs">{'Create, Airdrop, Revoke'}</Heading>
           <div>
             <Button
-              className="Debug__SideButton"
+              className="Debug__SectionButton"
               primary
               disabled={formDisabled}
               onClick={() => handleCreateBadgeSpec()}
             >
               {'Create Badge Spec'}
             </Button>
-            <Button
-              className="Debug__SectionButton"
-              primary
-              disabled={formDisabled}
-              onClick={() => handleAirdropBadge()}
-            >
+            <Button className="Debug__SideButton" primary disabled={formDisabled} onClick={() => handleAirdropBadge()}>
               {'Airdrop'}
             </Button>
             <Button className="Debug__SideButton" primary disabled={formDisabled} onClick={() => handleRevokeBadge()}>

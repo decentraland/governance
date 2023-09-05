@@ -4,6 +4,14 @@ import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 
 import { DEBUG_ADDRESSES } from '../../entities/Debug/isDebugAddress'
 import { ErrorService } from '../../services/ErrorService'
+import { giveAndRevokeLandOwnerBadges, giveTopVoterBadges, runQueuedAirdropJobs } from '../jobs/BadgeAirdrop'
+import { validateDebugAddress } from '../utils/validations'
+
+export const FUNCTIONS_MAP: { [key: string]: () => Promise<any> } = {
+  runQueuedAirdropJobs,
+  giveAndRevokeLandOwnerBadges,
+  giveTopVoterBadges,
+}
 
 export default routes((router) => {
   const withAuth = auth()
@@ -12,8 +20,27 @@ export default routes((router) => {
     handleAPI(async () => DEBUG_ADDRESSES)
   )
   router.post('/debug/report-error', withAuth, handleAPI(reportClientError))
+  router.post('/debug/trigger', withAuth, handleAPI(triggerFunction))
 })
 
 function reportClientError(req: WithAuth): void {
   ErrorService.report(req.body.message, { frontend: true, ...req.body.extraInfo })
+}
+
+async function triggerFunction(req: WithAuth) {
+  const user = req.auth!
+  validateDebugAddress(user)
+
+  const { functionName } = req.body
+
+  if (FUNCTIONS_MAP[functionName]) {
+    try {
+      const result = await FUNCTIONS_MAP[functionName]()
+      return { message: `Function '${functionName}' executed successfully.`, result }
+    } catch (error) {
+      throw new Error(`Error executing '${functionName}' function: ${error}`)
+    }
+  } else {
+    throw new Error(`Function '${functionName}' not found.`)
+  }
 }

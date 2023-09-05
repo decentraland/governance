@@ -449,6 +449,14 @@ export class Governance extends API {
     return response.data
   }
 
+  async triggerFunction(functionName: string) {
+    const response = await this.fetch<ApiResponse<string>>(
+      `/debug/trigger`,
+      this.options().method('POST').authorization({ sign: true }).json({ functionName })
+    )
+    return response.data
+  }
+
   async checkUrlTitle(url: string) {
     const response = await this.fetch<ApiResponse<{ title?: string }>>(
       `/url-title`,
