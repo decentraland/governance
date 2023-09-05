@@ -45,4 +45,5 @@
 .BadgeDetail__Description {
   max-width: 360px;
   text-align: center;
+  margin-bottom: 16px;
 }

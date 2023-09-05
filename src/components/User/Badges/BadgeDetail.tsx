@@ -1,8 +1,10 @@
 import React from 'react'
 
 import { Badge as GovernanceBadge } from '../../../entities/Badges/types'
+import { POLYGONSCAN_BASE_URL } from '../../../entities/Transparency/utils'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Time from '../../../utils/date/Time'
+import Link from '../../Common/Typography/Link'
 import Markdown from '../../Common/Typography/Markdown'
 
 import Badge, { BadgeVariant } from './Badge'
@@ -31,6 +33,10 @@ function addNewLinesAfterFirstDot(text: string): string {
   return `${firstPart}\n\n${secondPart}`
 }
 
+function getPolygonscanTxLink(txHash: string) {
+  return POLYGONSCAN_BASE_URL + 'tx/' + txHash
+}
+
 export default function BadgeDetail({ badge }: Props) {
   const t = useFormatMessage()
 
@@ -44,6 +50,9 @@ export default function BadgeDetail({ badge }: Props) {
         </div>
       </div>
       <Markdown className="BadgeDetail__Description">{addNewLinesAfterFirstDot(badge.description)}</Markdown>
+      <Link href={getPolygonscanTxLink(badge.transactionHash)} target="_blank" rel="noreferrer">
+        {t('component.badge_card.polygonscan_link')}
+      </Link>
     </div>
   )
 }
