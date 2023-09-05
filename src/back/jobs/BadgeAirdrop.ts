@@ -11,7 +11,7 @@ export async function runAirdropJobs() {
   await Promise.all([runQueuedAirdropJobs(), giveAndRevokeLandOwnerBadges()])
 }
 
-async function runQueuedAirdropJobs() {
+export async function runQueuedAirdropJobs() {
   const pendingJobs = await AirdropJobModel.getPending()
   if (pendingJobs.length === 0) {
     return
@@ -31,7 +31,7 @@ async function runQueuedAirdropJobs() {
   })
 }
 
-async function giveAndRevokeLandOwnerBadges() {
+export async function giveAndRevokeLandOwnerBadges() {
   if (isProdEnv()) {
     await BadgesService.giveAndRevokeLandOwnerBadges()
   }
