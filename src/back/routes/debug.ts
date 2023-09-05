@@ -7,7 +7,7 @@ import { ErrorService } from '../../services/ErrorService'
 import { giveAndRevokeLandOwnerBadges, giveTopVoterBadges, runQueuedAirdropJobs } from '../jobs/BadgeAirdrop'
 import { validateDebugAddress } from '../utils/validations'
 
-export const FUNCTIONS_MAP: { [key: string]: () => Promise<any> } = {
+const FUNCTIONS_MAP: { [key: string]: () => Promise<any> } = {
   runQueuedAirdropJobs,
   giveAndRevokeLandOwnerBadges,
   giveTopVoterBadges,
