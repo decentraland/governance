@@ -706,7 +706,8 @@
       "size": "Size"
     },
     "badge_card": {
-      "mint_date": "Minted {at}"
+      "mint_date": "Minted {at}",
+      "polygonscan_link": "View transaction on Polygonscan"
     },
     "snapshot_redirect_button_label": "Vote on Snapshot",
     "reaction_icon": {
