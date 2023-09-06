@@ -55,7 +55,7 @@ export default class VotesModel extends Model<VoteAttributes> {
         SQL`, `
       )})`
 
-    const results = await this.query(query)
+    const results = await this.namedQuery('find_any_vote', query)
     return results.map((score) => VotesModel.parse(score))
   }
 }

@@ -188,7 +188,7 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
   const updatedUpdate = await UpdateService.getById(id)
   if (updatedUpdate) {
     if (!completion_date) {
-      DiscourseService.createUpdate(updatedUpdate, proposal.title)
+      await DiscourseService.createUpdate(updatedUpdate, proposal.title)
       DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
     } else {
       UpdateService.commentUpdateEditInDiscourse(updatedUpdate)

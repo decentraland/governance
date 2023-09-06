@@ -32,7 +32,7 @@ function getContestingProposalsItems(
         value: contestant.size,
         className: isOverBudget ? 'CompetingProposalOverbudgetBar' : 'CompetingProposalBudgetBar',
         selected: highlightedContestant === contestant.id,
-        onHover: (e: React.MouseEvent<unknown>) => {
+        onHover: () => {
           setHighlightedContestant(contestant.id)
         },
         onBlur: () => {

@@ -181,7 +181,7 @@ export const JOB_CONTEXT_MOCK: CustomJobContext = {
     return Promise.resolve(undefined)
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  updatePayload(payload: Record<string, unknown> | undefined): Promise<void> {
+  updatePayload(): Promise<void> {
     return Promise.resolve(undefined)
   },
   log: jest.fn(),

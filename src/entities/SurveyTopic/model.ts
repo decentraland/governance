@@ -19,12 +19,15 @@ export default class SurveyTopicModel extends Model<SurveyTopicAttributes> {
     if (!isProposalType(proposalType)) return []
     const proposalCategory = getProposalCategory(proposalType, proposalConfiguration)
 
-    return await this.query(SQL`
+    return await this.namedQuery(
+      'get_survey_topic',
+      SQL`
     SELECT s.topic_id
     FROM ${table(SurveyTopicModel)} s
         INNER JOIN ${table(ProposalSurveyTopicModel)} ps ON ps."topic_id" = s."topic_id"
         WHERE ps."proposal_type" = ${proposalType}
         ${conditional(!!proposalCategory, SQL`AND ps."proposal_sub_types" LIKE '%' || ${proposalCategory} || '%'`)}
-    ;`)
+    ;`
+    )
   }
 }

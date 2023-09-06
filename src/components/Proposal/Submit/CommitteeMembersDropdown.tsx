@@ -13,7 +13,7 @@ interface ExtendedController extends React.ComponentProps<typeof Controller> {
   loading?: boolean
   disabled?: boolean
   error?: boolean
-  control: Control<any, any>
+  control: Control<any>
   onOptionClick?: (event: React.MouseEvent<HTMLDivElement>, data: DropdownItemProps) => void
 }
 

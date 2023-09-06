@@ -38,7 +38,7 @@ export function getScoresResult(snapshotScores: number[], choices: string[]) {
   return result
 }
 
-export async function getVotingResults(proposal: ProposalAttributes<any>, choices: string[]) {
+export async function getVotingResults(proposal: ProposalAttributes, choices: string[]) {
   const snapshotScores = await SnapshotGraphql.get().getProposalScores(proposal.snapshot_id)
   return getScoresResult(snapshotScores, choices)
 }
