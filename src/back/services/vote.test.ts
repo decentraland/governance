@@ -7,6 +7,8 @@ import { SNAPSHOT_VOTES_AUGUST_2023 } from '../../utils/votes/utils.testData'
 
 import { VoteService } from './vote'
 
+import clearAllMocks = jest.clearAllMocks
+
 describe('getTopVoters', () => {
   const firstOfAugust = Time.utc('2023-08-1T00:00:000Z').toDate()
   const { start, end } = getPreviousMonthStartAndEnd(firstOfAugust)
@@ -62,6 +64,17 @@ describe('getTopVoters', () => {
           votes: 21,
         },
       ])
+    })
+
+    describe('when there are no votes on the selected time period', () => {
+      beforeEach(() => {
+        clearAllMocks()
+        jest.spyOn(SnapshotService, 'getAllVotesBetweenDates').mockResolvedValue([])
+      })
+
+      it('should return an empty array', async () => {
+        expect(await get.topVoters).toEqual([])
+      })
     })
   })
 })
