@@ -117,11 +117,14 @@ export class BadgesService {
       landOwnerAddresses
     )
 
-    const outcomes = await Promise.all(
-      splitArray([...eligibleUsers, ...usersWithBadgesToReinstate], 20).map((addresses) =>
-        BadgesService.giveBadgeToUsers(LAND_OWNER_BADGE_SPEC_CID, addresses)
-      )
-    )
+    const outcomes: AirdropOutcome[] = []
+    const batches = splitArray([...eligibleUsers, ...usersWithBadgesToReinstate], 50)
+
+    for (const batch of batches) {
+      const outcome = await BadgesService.giveBadgeToUsers(LAND_OWNER_BADGE_SPEC_CID, batch)
+      outcomes.push(outcome)
+    }
+
     const failedOutcomes = outcomes.filter(
       ({ status, error }) =>
         status === AirdropJobStatus.FAILED &&
