@@ -19,7 +19,7 @@ type CalendarAlertModalProps = Omit<ModalProps, 'children'> & {
   proposal: Pick<ProposalAttributes, 'id' | 'title' | 'finish_at'>
 }
 
-const UNITS: UnitTypeLongPlural[] = ['seconds', 'minutes', 'hours', 'days']
+const UNITS: UnitTypeLongPlural[] = ['minutes', 'hours', 'days']
 const MAX_TIME_VALUE = 300
 
 function getAlertDate(finishAt: ProposalAttributes['finish_at'], value: number, unit: UnitTypeLongPlural): Date | null {

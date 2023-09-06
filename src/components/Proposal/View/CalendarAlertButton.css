@@ -1,4 +1,10 @@
-.CalendarAlertButton__IconContainer {
+.CalendarAlertButton__Container {
   display: flex;
-  padding: 0 2px;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 2px;
+}
+
+.CalendarAlertButton.SectionButton__Container {
+  justify-content: space-between;
 }

@@ -10,9 +10,10 @@ interface Props {
   disabled?: boolean
   onClick?: () => void
   children?: React.ReactNode
+  className?: string
 }
 
-function SidebarButton({ loading, disabled, onClick, children }: Props) {
+function SidebarButton({ loading, disabled, onClick, className, children }: Props) {
   return (
     <button
       onClick={onClick}
@@ -23,7 +24,7 @@ function SidebarButton({ loading, disabled, onClick, children }: Props) {
         disabled && 'SectionButton--disabled'
       )}
     >
-      <div className="SectionButton__Container">{children}</div>
+      <div className={classNames('SectionButton__Container', className)}>{children}</div>
     </button>
   )
 }
