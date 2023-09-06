@@ -1,7 +1,9 @@
 import React, { useMemo, useState } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import useTrackContext from 'decentraland-gatsby/dist/context/Track/useTrackContext'
 
+import { SegmentEvent } from '../../entities/Events/types'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../entities/Proposal/types'
 import { SubscriptionAttributes } from '../../entities/Subscription/types'
 import { Survey } from '../../entities/SurveyTopic/types'
@@ -83,6 +85,13 @@ export default function ProposalSidebar({
   const partialResults = useMemo(() => calculateResult(choices, highQualityVotes || {}), [choices, highQualityVotes])
 
   const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false)
+  const track = useTrackContext()
+  const setIsCalendarModalOpenWithTracking = (isOpen: boolean) => {
+    setIsCalendarModalOpen(isOpen)
+    if (isOpen) {
+      track(SegmentEvent.ModalViewed, { address: account, modal: 'Calendar Alert' })
+    }
+  }
 
   const handleVoteClick = (selectedChoice: SelectedVoteChoice) => {
     if (voteWithSurvey) {
@@ -153,7 +162,7 @@ export default function ProposalSidebar({
         <CalendarAlertButton
           loading={proposalLoading}
           disabled={isCalendarButtonDisabled}
-          onClick={() => setIsCalendarModalOpen(true)}
+          onClick={() => setIsCalendarModalOpenWithTracking(true)}
         />
         {proposal && <ProposalDetailSection proposal={proposal} />}
         {proposal && <ProposalActions proposal={proposal} deleting={deleting} updatePageState={updatePageState} />}
@@ -161,7 +170,7 @@ export default function ProposalSidebar({
           <CalendarAlertModal
             proposal={proposal}
             open={isCalendarModalOpen}
-            onClose={() => setIsCalendarModalOpen(false)}
+            onClose={() => setIsCalendarModalOpenWithTracking(false)}
           />
         )}
       </div>
