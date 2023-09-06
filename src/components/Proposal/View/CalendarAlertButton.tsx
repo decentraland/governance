@@ -21,7 +21,7 @@ function CalendarAlertButton({ loading, disabled, onClick }: Props) {
         <CalendarAdd className="CalendarAlertButton__Icon" size="16" />
         <span>{t('page.proposal_detail.calendar_button')}</span>
       </div>
-      <NewBadge />
+      {!disabled && <NewBadge />}
     </SidebarButton>
   )
 }
