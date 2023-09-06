@@ -14,7 +14,9 @@ export class VoteService {
 
   static async getTopVoters(start: Date, end: Date, limit = DEFAULT_TOP_VOTERS_LIMIT) {
     const votes = await SnapshotService.getAllVotesBetweenDates(new Date(start), new Date(end))
-    return this.countVotesByUser(votes).slice(0, limit)
+    return this.countVotesByUser(votes)
+      .sort((a, b) => b['votes'] - a['votes'])
+      .slice(0, limit)
   }
 
   private static countVotesByUser(votes: SnapshotVote[]) {
