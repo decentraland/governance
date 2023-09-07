@@ -30,7 +30,7 @@ export type SnapshotVote = {
   metadata?: Record<string, unknown>
   proposal?: {
     id: string
-    title: string
+    title?: string
     choices: string[]
     scores?: number[]
     state?: string | 'active' | 'closed'

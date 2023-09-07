@@ -14,12 +14,10 @@ export class VoteService {
 
   static async getTopVoters(start: Date, end: Date, limit = DEFAULT_TOP_VOTERS_LIMIT) {
     const votes = await SnapshotService.getAllVotesBetweenDates(new Date(start), new Date(end))
-    return this.countVotesByUser(votes)
-      .sort((a, b) => b['votes'] - a['votes'])
-      .slice(0, limit)
+    return this.getSortedVoteCountPerUser(votes).slice(0, limit)
   }
 
-  private static countVotesByUser(votes: SnapshotVote[]) {
+  public static getSortedVoteCountPerUser(votes: SnapshotVote[]) {
     const votesByUser = votes
       .filter((vote) => vote.vp && vote.vp > VOTES_VP_THRESHOLD)
       .reduce((acc, vote) => {
@@ -28,6 +26,7 @@ export class VoteService {
         return acc
       }, {} as Record<string, number>)
 
-    return Object.entries(votesByUser).map<Voter>(([address, votes]) => ({ address, votes }))
+    const voteCountPerUser = Object.entries(votesByUser).map<Voter>(([address, votes]) => ({ address, votes }))
+    return voteCountPerUser.sort((a, b) => b['votes'] - a['votes'])
   }
 }
