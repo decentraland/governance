@@ -12,7 +12,7 @@ import clearAllMocks = jest.clearAllMocks
 
 describe('getTopVoters', () => {
   describe('when fetching top voters for August 2023', () => {
-    const firstOfAugust = Time.utc('2023-08-01T00:00:00Z').toDate()
+    const firstOfAugust = Time.utc('2023-08-01T00:00:00.000Z').toDate()
     const { start, end } = getPreviousMonthStartAndEnd(firstOfAugust)
     beforeEach(() => {
       jest.clearAllMocks()
