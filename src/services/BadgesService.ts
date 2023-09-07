@@ -117,26 +117,36 @@ export class BadgesService {
       landOwnerAddresses
     )
 
-    const outcomes: AirdropOutcome[] = []
-    const batches = splitArray([...eligibleUsers, ...usersWithBadgesToReinstate], 50)
-
-    for (const batch of batches) {
-      const outcome = await BadgesService.giveBadgeToUsers(LAND_OWNER_BADGE_SPEC_CID, batch)
-      outcomes.push(outcome)
+    const airdropOutcomes: AirdropOutcome[] = []
+    const airdropBatches = splitArray(eligibleUsers, 50)
+    for (const batch of airdropBatches) {
+      const outcome = await airdropWithRetry(LAND_OWNER_BADGE_SPEC_CID, batch)
+      airdropOutcomes.push(outcome)
     }
 
-    const failedOutcomes = outcomes.filter(
+    const reinstateResults = await BadgesService.reinstateBadge(LAND_OWNER_BADGE_SPEC_CID, usersWithBadgesToReinstate)
+
+    const failedAirdropOutcomes = airdropOutcomes.filter(
       ({ status, error }) =>
         status === AirdropJobStatus.FAILED &&
         error !== ErrorReason.NoUserWithoutBadge &&
         error !== ErrorReason.NoUserHasVoted
     )
-    if (failedOutcomes.length > 0) {
-      console.error('Unable to give LandOwner badges', failedOutcomes)
+    if (failedAirdropOutcomes.length > 0) {
+      console.error('Unable to give LandOwner badges', failedAirdropOutcomes)
 
       ErrorService.report('Unable to give LandOwner badges', {
         category: ErrorCategory.Badges,
-        failedOutcomes,
+        failedAirdropOutcomes,
+      })
+    }
+
+    const failedReinstatements = reinstateResults.filter((result) => result.status === ActionStatus.Failed)
+    if (failedReinstatements.length > 0) {
+      console.error('Unable to reinstate LandOwner badges', failedReinstatements)
+      ErrorService.report('Unable to reinstate LandOwner badges', {
+        category: ErrorCategory.Badges,
+        failedReinstatements,
       })
     }
 

@@ -38,9 +38,12 @@ query Badges($raft_id: String!, $address: Bytes!, $first: Int!, $skip: Int!) {
 }`
 
 const BADGE_SPEC_OWNERS_QUERY = `
-query Badges($badgeCid: String!) {
+query Badges($badgeCid: String!, $skip: Int!, $first: Int!) {
     badges: badges(
         where: {spec: $badgeCid}
+        orderBy: id
+        first: $first 
+        skip: $skip
         ){
            id
             owner {
