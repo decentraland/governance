@@ -1,11 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
 import { UnitTypeLongPlural } from 'dayjs'
+import useTrackContext from 'decentraland-gatsby/dist/context/Track/useTrackContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
+import { SegmentEvent } from '../../entities/Events/types'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { proposalUrl } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
@@ -38,6 +40,9 @@ function CalendarAlertModal({ proposal, onClose, ...props }: CalendarAlertModalP
   const [timeValue, setTimeValue] = useState(0)
   const [unit, setUnit] = useState<UnitTypeLongPlural | undefined>()
   const [isDisabled, setIsDisabled] = useState(false)
+  const track = useTrackContext()
+
+  const trackAddToCalendar = () => track(SegmentEvent.ActionPerformed, { type: 'add to calendar' })
 
   const handleClose = () => {
     onClose()
@@ -81,7 +86,15 @@ function CalendarAlertModal({ proposal, onClose, ...props }: CalendarAlertModalP
           />
         </div>
         <div className="ProposalModal__Actions">
-          <Button fluid primary disabled={isDisabled} as="a" href={alertUrl} target="_blank">
+          <Button
+            fluid
+            primary
+            disabled={isDisabled}
+            as="a"
+            href={alertUrl}
+            target="_blank"
+            onClick={trackAddToCalendar}
+          >
             {t('modal.calendar_alert.add_to_calendar')}
           </Button>
           <Button className="CalendarAlertModal__CancelButton" fluid basic onClick={handleClose}>
