@@ -1,7 +1,6 @@
 import { SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
-import { VOTES_VP_THRESHOLD } from '../../constants'
 import VoteModel from '../../entities/Votes/model'
-import { Voter } from '../../entities/Votes/types'
+import { VoteCount, Voter } from '../../entities/Votes/types'
 import { SnapshotService } from '../../services/SnapshotService'
 
 const DEFAULT_TOP_VOTERS_LIMIT = 5
@@ -19,14 +18,32 @@ export class VoteService {
 
   public static getSortedVoteCountPerUser(votes: SnapshotVote[]) {
     const votesByUser = votes
-      .filter((vote) => vote.vp && vote.vp > VOTES_VP_THRESHOLD)
+      .filter((vote) => vote.vp && vote.vp > 5)
       .reduce((acc, vote) => {
         const address = vote.voter.toLowerCase()
-        acc[address] = (acc[address] || 0) + 1
+        if (!acc[address]) {
+          acc[address] = {
+            votes: 1,
+            lastVoted: vote.created,
+          }
+        } else {
+          acc[address] = {
+            votes: acc[address].votes + 1,
+            lastVoted: acc[address].lastVoted < vote.created ? vote.created : acc[address].lastVoted,
+          }
+        }
         return acc
-      }, {} as Record<string, number>)
+      }, {} as Record<string, VoteCount>)
 
-    const voteCountPerUser = Object.entries(votesByUser).map<Voter>(([address, votes]) => ({ address, votes }))
-    return voteCountPerUser.sort((a, b) => b['votes'] - a['votes'])
+    const voteCountPerUser = Object.entries(votesByUser).map<Voter>(([address, voteCount]) => ({
+      address,
+      ...voteCount,
+    }))
+    return voteCountPerUser.sort((a, b) => {
+      if (b.votes !== a.votes) {
+        return b.votes - a.votes
+      }
+      return a.lastVoted - b.lastVoted
+    })
   }
 }
