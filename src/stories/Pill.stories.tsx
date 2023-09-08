@@ -9,19 +9,25 @@ const meta: Meta<typeof Pill> = {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {
-    children: {
-      control: 'text',
-      description: 'Pill text',
-    },
-  },
 }
 
 export default meta
 type Story = StoryObj<typeof Pill>
 
-export const Primary: Story = {
+export const Outline: Story = {
   args: {
-    children: 'Text ',
+    children: 'ENACTED',
+    style: 'outline',
+    size: 'md',
+    color: 'green',
+  },
+}
+
+export const Shiny: Story = {
+  args: {
+    children: 'REJECTED',
+    style: 'shiny',
+    size: 'md',
+    color: 'red',
   },
 }
