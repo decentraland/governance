@@ -26,7 +26,7 @@ import Text from '../../Common/Typography/Text'
 import ErrorMessage from '../../Error/ErrorMessage'
 import ContentLayout, { ContentSection } from '../../Layout/ContentLayout'
 import LoadingView from '../../Layout/LoadingView'
-import LogIn from '../../User/LogIn'
+import LogIn from '../../Layout/LogIn'
 
 import CoAuthors from './CoAuthor/CoAuthors'
 
