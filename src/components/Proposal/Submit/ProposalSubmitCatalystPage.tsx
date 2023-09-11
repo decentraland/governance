@@ -21,11 +21,11 @@ import MarkdownNotice from '../../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../../components/Layout/ContentLayout'
 import LoadingView from '../../../components/Layout/LoadingView'
 import CoAuthors from '../../../components/Proposal/Submit/CoAuthor/CoAuthors'
-import LogIn from '../../../components/User/LogIn'
 import { CatalystType, NewProposalCatalyst, newProposalCatalystScheme } from '../../../entities/Proposal/types'
 import { isAlreadyACatalyst, isValidDomainName } from '../../../entities/Proposal/utils'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import locations, { navigate } from '../../../utils/locations'
+import LogIn from '../../Layout/LogIn'
 
 import './ProposalSubmitCatalystPage.css'
 

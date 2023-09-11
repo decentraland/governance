@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 
 import { ProjectWithUpdate } from '../../../entities/Proposal/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
-import Username from '../../User/Username'
+import Username from '../../Common/Username'
 import ProjectPill from '../ProjectPill'
 
 import './ProjectCardHeader.css'

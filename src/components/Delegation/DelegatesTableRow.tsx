@@ -7,8 +7,8 @@ import { Table } from 'decentraland-ui/dist/components/Table/Table'
 
 import { Delegate } from '../../hooks/useDelegatesInfo'
 import Time, { abbreviateTimeDifference } from '../../utils/date/Time'
+import Username from '../Common/Username'
 import Arrow from '../Icon/Arrow'
-import Username from '../User/Username'
 
 import './DelegatesTable.css'
 import './DelegatesTableRow.css'

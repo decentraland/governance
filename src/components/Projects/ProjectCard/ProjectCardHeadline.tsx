@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { ProjectWithUpdate } from '../../../entities/Proposal/types'
-import Username from '../../User/Username'
+import Username from '../../Common/Username'
 
 import './ProjectCardHeadline.css'
 
