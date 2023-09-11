@@ -55,13 +55,11 @@ export class BadgesService {
     for (const otterspaceBadge of otterspaceBadges) {
       try {
         const badge = toGovernanceBadge(otterspaceBadge)
-        if (shouldDisplayBadge(badge, otterspaceBadge)) {
-          if (otterspaceBadge.spec.metadata) {
-            if (badge.isPastBadge) {
-              expiredBadges.push(badge)
-            } else {
-              currentBadges.push(badge)
-            }
+        if (shouldDisplayBadge(badge)) {
+          if (badge.isPastBadge) {
+            expiredBadges.push(badge)
+          } else {
+            currentBadges.push(badge)
           }
         }
       } catch (error) {
