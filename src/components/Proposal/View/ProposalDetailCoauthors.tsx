@@ -4,10 +4,10 @@ import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
 import { CoauthorAttributes, CoauthorStatus } from '../../../entities/Coauthor/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
+import Username from '../../Common/Username'
 import Cancel from '../../Icon/Cancel'
 import Check from '../../Icon/Check'
 import Warning from '../../Icon/Warning'
-import Username from '../../User/Username'
 
 import './ProposalDetailCoauthors.css'
 

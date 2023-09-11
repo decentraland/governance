@@ -3,12 +3,13 @@ import React, { Suspense } from 'react'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
+import { NotMobile, useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import { VpDistribution } from '../../clients/SnapshotGraphqlTypes'
 import { isSameAddress } from '../../entities/Snapshot/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useGovernanceProfile from '../../hooks/useGovernanceProfile'
+import Username from '../Common/Username'
 import VotingPowerDistribution from '../Modal/VotingPowerDelegationDetail/VotingPowerDistribution'
 import { ProfileBox } from '../Profile/ProfileBox'
 import ProfileSettings from '../Profile/ProfileSettings'
@@ -18,7 +19,6 @@ import Badges from './Badges/Badges'
 import './UserStats.css'
 import UserVotingStats from './UserVotingStats'
 import UserVpStats from './UserVpStats'
-import Username from './Username'
 import ValidatedProfileCheck from './ValidatedProfileCheck'
 
 interface Props {
@@ -31,6 +31,7 @@ const UserAvatar = React.lazy(() => import('./UserAvatar'))
 
 export default function UserStats({ address, vpDistribution, isLoadingVpDistribution }: Props) {
   const t = useFormatMessage()
+  const isMobile = useMobileMediaQuery()
   const { profile, isLoadingGovernanceProfile, isProfileValidated } = useGovernanceProfile(address)
   const [user] = useAuthContext()
   const showSettings = isSameAddress(user, address) && !isLoadingGovernanceProfile && !isProfileValidated
@@ -40,12 +41,7 @@ export default function UserStats({ address, vpDistribution, isLoadingVpDistribu
     <Container className="UserStats__Container">
       <div className="UserStats__UserInfo">
         <div className="UserStats__UsernameContainer">
-          <Mobile>
-            <Username address={address} size="small" className="UserStats__Username" />
-          </Mobile>
-          <NotMobile>
-            <Username address={address} size="medium" className="UserStats__Username" />
-          </NotMobile>
+          <Username address={address} size={isMobile ? 'small' : 'medium'} className="UserStats__Username" />
           <ValidatedProfileCheck forumUsername={profile?.forum_username} isLoading={isLoadingGovernanceProfile} />
           {showSettings && <ProfileSettings />}
         </div>

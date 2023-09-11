@@ -7,7 +7,7 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import useFormatMessage from '../../hooks/useFormatMessage'
-import Username from '../User/Username'
+import Username from '../Common/Username'
 
 import './AddressesSelect.css'
 

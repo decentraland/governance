@@ -8,7 +8,7 @@ import { abbreviateNumber } from '../../../entities/Votes/utils'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import locations, { navigate } from '../../../utils/locations'
 import { formatChoice } from '../../../utils/votes/utils'
-import Username from '../../User/Username'
+import Username from '../../Common/Username'
 
 export type VoteListItemModalProps = {
   address: string
