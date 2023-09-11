@@ -1,20 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import Heading from '../components/Common/Typography/Heading'
+import HeadingComponent from '../components/Common/Typography/Heading'
 
-const meta: Meta<typeof Heading> = {
+const meta: Meta<typeof HeadingComponent> = {
   title: 'Common/Typography/Heading',
-  component: Heading,
+  component: HeadingComponent,
   parameters: {
     layout: 'centered',
   },
-  tags: ['autodocs'],
 }
 
 export default meta
-type Story = StoryObj<typeof Heading>
+type Story = StoryObj<typeof HeadingComponent>
 
-export const Default: Story = {
+export const Heading: Story = {
   args: {
     children: 'Heading',
     size: 'lg',

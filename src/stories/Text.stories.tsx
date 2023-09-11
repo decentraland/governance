@@ -1,20 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import Text from '../components/Common/Typography/Text'
+import TextComponent from '../components/Common/Typography/Text'
 
-const meta: Meta<typeof Text> = {
+const meta: Meta<typeof TextComponent> = {
   title: 'Common/Typography/Text',
-  component: Text,
+  component: TextComponent,
   parameters: {
     layout: 'centered',
   },
-  tags: ['autodocs'],
 }
 
 export default meta
-type Story = StoryObj<typeof Text>
+type Story = StoryObj<typeof TextComponent>
 
-export const Default: Story = {
+export const Text: Story = {
   args: {
     children: 'Text',
     size: 'md',

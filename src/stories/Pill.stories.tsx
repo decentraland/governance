@@ -31,3 +31,21 @@ export const Shiny: Story = {
     color: 'red',
   },
 }
+
+export const Medium: Story = {
+  args: {
+    children: 'REJECTED',
+    style: 'medium',
+    size: 'md',
+    color: 'red',
+  },
+}
+
+export const Light: Story = {
+  args: {
+    children: 'REJECTED',
+    style: 'light',
+    size: 'md',
+    color: 'red',
+  },
+}

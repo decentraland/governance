@@ -1,20 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import Label from '../components/Common/Typography/Label'
+import LabelComponent from '../components/Common/Typography/Label'
 
-const meta: Meta<typeof Label> = {
+const meta: Meta<typeof LabelComponent> = {
   title: 'Common/Typography/Label',
-  component: Label,
+  component: LabelComponent,
   parameters: {
     layout: 'centered',
   },
-  tags: ['autodocs'],
 }
 
 export default meta
-type Story = StoryObj<typeof Label>
+type Story = StoryObj<typeof LabelComponent>
 
-export const Default: Story = {
+export const Label: Story = {
   args: {
     children: 'Label',
   },
