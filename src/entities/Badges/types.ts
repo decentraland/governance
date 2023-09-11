@@ -14,6 +14,7 @@ export enum BadgeStatusReason {
   TenureEnded = 'tenure ended',
   Minted = 'Badge minted by user',
   BurnedByUser = 'Badge burned by user',
+  Other = 'other',
 }
 
 export type Badge = {
@@ -104,4 +105,11 @@ export function toOtterspaceRevokeReason(
   orElse: (value: string | null | undefined) => never
 ): OtterspaceRevokeReason {
   return isOtterspaceRevokeReason(value) ? (value as OtterspaceRevokeReason) : orElse(value)
+}
+
+export function shouldDisplayBadge(badge: Badge, otterspaceBadge: OtterspaceBadge) {
+  return (
+    badge.status !== BadgeStatus.Burned &&
+    !(badge.status === BadgeStatus.Revoked && otterspaceBadge.statusReason === BadgeStatusReason.Other)
+  )
 }
