@@ -1,4 +1,5 @@
 import { SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
+import { VOTES_VP_THRESHOLD } from '../../constants'
 import VoteModel from '../../entities/Votes/model'
 import { VoteCount, Voter } from '../../entities/Votes/types'
 import { SnapshotService } from '../../services/SnapshotService'
@@ -18,7 +19,7 @@ export class VoteService {
 
   public static getSortedVoteCountPerUser(votes: SnapshotVote[]) {
     const votesByUser = votes
-      .filter((vote) => vote.vp && vote.vp > 5)
+      .filter((vote) => vote.vp && vote.vp > VOTES_VP_THRESHOLD)
       .reduce((acc, vote) => {
         const address = vote.voter.toLowerCase()
         if (!acc[address]) {

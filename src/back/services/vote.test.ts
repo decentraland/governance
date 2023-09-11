@@ -160,7 +160,7 @@ describe('getTopVoters', () => {
 })
 
 describe('getSortedCountPerUser', () => {
-  it('sorts the vote count per user and cronologically', () => {
+  it('sorts the vote count per user and chronologically', () => {
     const sortedVotes = VoteService.getSortedVoteCountPerUser(SNAPSHOT_VOTES_AUGUST_2023)
     expect(sortedVotes).toEqual([
       {
