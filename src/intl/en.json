@@ -805,7 +805,7 @@
         "votes_per_proposal_title": "Votes per proposal",
         "votes_per_proposal": "Votes",
         "display_median": "Display: median",
-        "top_voters": "Last month's top voters",
+        "top_voters": "Last 30-Days top voters",
         "top_voters_tooltip": "Voting with +{vp}VP",
         "votes": "Votes",
         "fetching_participation": "Fetching participation...",

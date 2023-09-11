@@ -258,19 +258,19 @@ export class SnapshotGraphql extends API {
 
     try {
       while (hasNext) {
+        const variables = {
+          space: SNAPSHOT_SPACE,
+          first: batchSize,
+          start: created,
+          end: getQueryTimestamp(end.getTime()),
+        }
+
         const result = await this.fetch<SnapshotVoteResponse>(
           GRAPHQL_ENDPOINT,
-          this.options()
-            .method('POST')
-            .json({
-              query,
-              variables: {
-                space: SNAPSHOT_SPACE,
-                first: batchSize,
-                start: created,
-                end: getQueryTimestamp(end.getTime()),
-              },
-            })
+          this.options().method('POST').json({
+            query,
+            variables,
+          })
         )
 
         const results = result?.data?.votes
