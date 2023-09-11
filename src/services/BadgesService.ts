@@ -23,6 +23,7 @@ import {
   OtterspaceRevokeReason,
   RevokeOrReinstateResult,
   UserBadges,
+  shouldDisplayBadge,
   toGovernanceBadge,
 } from '../entities/Badges/types'
 import {
@@ -54,13 +55,11 @@ export class BadgesService {
     for (const otterspaceBadge of otterspaceBadges) {
       try {
         const badge = toGovernanceBadge(otterspaceBadge)
-        if (badge.status !== BadgeStatus.Burned) {
-          if (otterspaceBadge.spec.metadata) {
-            if (badge.isPastBadge) {
-              expiredBadges.push(badge)
-            } else {
-              currentBadges.push(badge)
-            }
+        if (shouldDisplayBadge(badge)) {
+          if (badge.isPastBadge) {
+            expiredBadges.push(badge)
+          } else {
+            currentBadges.push(badge)
           }
         }
       } catch (error) {
@@ -196,37 +195,36 @@ export class BadgesService {
       return []
     }
 
-    const actionResults = await Promise.all<RevokeOrReinstateResult>(
-      badgeOwnerships.map(async (badgeOwnership) => {
-        const trimmedId = trimOtterspaceId(badgeOwnership.id)
+    const actionResults: RevokeOrReinstateResult[] = []
 
-        if (trimmedId === '') {
-          return {
-            status: ActionStatus.Failed,
-            address: badgeOwnership.address,
-            badgeId: badgeOwnership.id,
-            error: ErrorReason.InvalidBadgeId,
-          }
-        }
+    for (const badgeOwnership of badgeOwnerships) {
+      const trimmedId = trimOtterspaceId(badgeOwnership.id)
 
+      if (trimmedId === '') {
+        actionResults.push({
+          status: ActionStatus.Failed,
+          address: badgeOwnership.address,
+          badgeId: badgeOwnership.id,
+          error: ErrorReason.InvalidBadgeId,
+        })
+      } else {
         try {
           await action(trimmedId)
-          return {
+          actionResults.push({
             status: ActionStatus.Success,
             address: badgeOwnership.address,
             badgeId: trimmedId,
-          }
-          // eslint-disable-next-line
+          })
         } catch (error: any) {
-          return {
+          actionResults.push({
             status: ActionStatus.Failed,
             address: badgeOwnership.address,
             badgeId: trimmedId,
             error: JSON.stringify(error?.reason || error),
-          }
+          })
         }
-      })
-    )
+      }
+    }
 
     return actionResults
   }
