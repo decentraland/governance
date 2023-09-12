@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
@@ -7,6 +7,8 @@ import { Table } from 'decentraland-ui/dist/components/Table/Table'
 import { VOTES_VP_THRESHOLD } from '../../constants'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useTopVoters from '../../hooks/useTopVoters'
+import Time from '../../utils/date/Time'
+import { getAMonthAgo } from '../../utils/date/aMonthAgo'
 import Helper from '../Helper/Helper'
 
 import HomeLoader from './HomeLoader'
@@ -17,12 +19,12 @@ const createRow = ({ address, votes }: { address: string; votes: number }, idx: 
   return <TopVotersRow key={idx} address={address} votes={votes} rank={idx + 1} />
 }
 
-const now = new Date()
-const start = new Date(now.getFullYear(), now.getMonth() - 1, now.getDay())
-
 function TopVoters() {
+  const now = useMemo(() => Time().toDate(), [])
+  const aMonthAgo = useMemo(() => getAMonthAgo(now), [])
+
   const t = useFormatMessage()
-  const { topVoters, isLoadingTopVoters } = useTopVoters(start, now)
+  const { topVoters, isLoadingTopVoters } = useTopVoters(aMonthAgo, now)
 
   return (
     <Card className="TopVoters">

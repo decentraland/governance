@@ -4,8 +4,8 @@ import { useIntl } from 'react-intl'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import locations from '../../utils/locations'
 import Link from '../Common/Typography/Link'
+import Username from '../Common/Username'
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
-import Username from '../User/Username'
 
 import './DelegatorCardProfile.css'
 

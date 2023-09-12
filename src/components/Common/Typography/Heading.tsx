@@ -10,7 +10,7 @@ type HeadingTypes = 'h1' | 'h3'
 type Props = React.HTMLAttributes<HTMLHeadingElement> & {
   className?: string
   as?: HeadingTypes
-  size?: FontSize
+  size?: FontSize | '2xs'
   weight?: FontWeight
 }
 

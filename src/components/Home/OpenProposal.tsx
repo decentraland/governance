@@ -13,8 +13,8 @@ import Time from '../../utils/date/Time'
 import locations from '../../utils/locations'
 import CategoryPill from '../Category/CategoryPill'
 import Link from '../Common/Typography/Link'
+import Username from '../Common/Username'
 import ChevronRight from '../Icon/ChevronRight'
-import Username from '../User/Username'
 
 import './OpenProposal.css'
 

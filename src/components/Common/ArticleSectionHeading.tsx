@@ -1,5 +1,7 @@
 import React from 'react'
 
+import Heading from './Typography/Heading'
+
 import './ArticleSectionHeading.css'
 
 interface Props {
@@ -7,5 +9,9 @@ interface Props {
 }
 
 export default function ArticleSectionHeading({ children }: Props) {
-  return <h2 className="ArticleSectionHeading">{children}</h2>
+  return (
+    <Heading className="ArticleSectionHeading" size="2xs" weight="semi-bold">
+      {children}
+    </Heading>
+  )
 }

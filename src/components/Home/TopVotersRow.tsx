@@ -3,7 +3,7 @@ import React from 'react'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Table } from 'decentraland-ui/dist/components/Table/Table'
 
-import Username from '../User/Username'
+import Username from '../Common/Username'
 
 interface Props {
   address: string
