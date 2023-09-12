@@ -4,6 +4,7 @@ import classNames from 'classnames'
 
 import { Governance } from '../../clients/Governance'
 import { ServiceHealth } from '../../clients/SnapshotTypes'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import Markdown from '../Common/Typography/Markdown'
 import WarningTriangle from '../Icon/WarningTriangle'
 
@@ -12,12 +13,11 @@ import './SnapshotStatus.css'
 const PING_INTERVAL_IN_MS = 5000 // 5 seconds
 
 export default function SnapshotStatus() {
-  const [serviceHealth, setServiceHealth] = useState<ServiceHealth>(ServiceHealth.Normal)
-  const [showTopBar, setShowTopBar] = useState(false) // Control bar visibility
+  const t = useFormatMessage()
+  const [showTopBar, setShowTopBar] = useState(false)
 
   const updateServiceStatus = async () => {
     const status = await Governance.get().getSnapshotStatus()
-    setServiceHealth(status.health)
     setShowTopBar(status.health === ServiceHealth.Slow || status.health === ServiceHealth.Failing)
   }
 
@@ -31,7 +31,7 @@ export default function SnapshotStatus() {
       <div className={classNames(`SnapshotStatus__TopBar`, showTopBar && 'SnapshotStatus__TopBar--visible')}>
         <WarningTriangle size="18" />
         <Markdown size="sm" componentsClassNames={{ p: 'SnapshotStatus__Text', strong: 'SnapshotStatus__Text' }}>
-          {'**Snapshot is failing.** Voting and creating proposals is currently unavailable.'}
+          {t('page.debug.snapshot_status.label')}
         </Markdown>
       </div>
     </>

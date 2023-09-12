@@ -4,16 +4,35 @@
   background: var(--black-700);
   display: flex;
   justify-content: center;
+  align-items: center;
   overflow: hidden;
   transition: all 0.75s ease 0s;
 }
 
 .SnapshotStatus__TopBar--visible {
-  padding-top: 12px;
-  height: 43px;
+  height: 50px;
+  padding-top: 4px;
+  padding-left: 31px;
+  gap: 16px;
 }
 
 .SnapshotStatus__Text {
   color: var(--white-900) !important;
-  margin-left: 6px;
+}
+
+@media (min-width: 768px) {
+  .SnapshotStatus__TopBar {
+    align-items: flex-start;
+  }
+
+  .SnapshotStatus__TopBar--visible {
+    height: 43px !important;
+    padding-top: 12px;
+    padding-left: 0;
+    gap: 0;
+  }
+
+  .SnapshotStatus__Text {
+    margin-left: 6px;
+  }
 }
