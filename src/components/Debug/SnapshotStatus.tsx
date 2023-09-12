@@ -1,58 +1,93 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
+import fetch from 'isomorphic-fetch'
 
-import { Governance } from '../../clients/Governance'
+import { getQueryTimestamp } from '../../clients/SnapshotGraphql'
 import { SNAPSHOT_SPACE } from '../../entities/Snapshot/constants'
-import Heading from '../Common/Typography/Heading'
-import Label from '../Common/Typography/Label'
-import Text from '../Common/Typography/Text'
-import ErrorMessage from '../Error/ErrorMessage'
-import { ContentSection } from '../Layout/ContentLayout'
+import { getAMonthAgo } from '../../utils/date/aMonthAgo'
+import Markdown from '../Common/Typography/Markdown'
+import WarningTriangle from '../Icon/WarningTriangle'
 
-import SnapshotPing from './SnapshotPing'
+import './SnapshotStatus.css'
 
-interface Props {
-  className?: string
+async function pingSnapshot(): Promise<number> {
+  const now = new Date()
+  const startTime = now.getTime()
+  try {
+    const query = `
+      query getVotes($space: String!, $start: Int!, $end: Int!, $first: Int!) {
+        votes(where: {space: $space, created_gte: $start, created_lt: $end}, orderBy: "created", orderDirection: asc, first: $first) {
+          id
+          voter
+          created
+          vp
+          choice
+          proposal {
+            id
+            choices
+          }
+        }
+      }
+    `
+
+    await fetch('https://hub.snapshot.org/graphql/', {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query,
+        variables: {
+          space: SNAPSHOT_SPACE,
+          first: 10,
+          start: getQueryTimestamp(getAMonthAgo(now).getTime()), //TODO: find significant timestamp
+          end: getQueryTimestamp(now.getTime()),
+        },
+      }),
+    })
+
+    const endTime = new Date().getTime()
+    return endTime - startTime
+  } catch (error) {
+    return -1 // Return -1 to indicate API failure
+  }
 }
 
-export default function SnapshotStatus({ className }: Props) {
-  const [spaceName, setSpaceName] = useState(SNAPSHOT_SPACE)
-  const [snapshotStatus, setSnapshotStatus] = useState<any>()
-  const [snapshotSpace, setSnapshotSpace] = useState<any>()
-  const [errorMessage, setErrorMessage] = useState<any>()
+type ServiceStatus = 'normal' | 'slow' | 'failing'
 
-  async function handleFetchClick() {
-    setErrorMessage('')
-    try {
-      const { status: newStatus, space: newSpace } = await Governance.get().getSnapshotStatusAndSpace(spaceName)
-      setSnapshotStatus(newStatus)
-      setSnapshotSpace(newSpace)
-      setErrorMessage('')
-    } catch (e: any) {
-      setErrorMessage(e.message)
+const SLOW_RESPONSE_TIME_THRESHOLD = 500
+const PING_INTERVAL = 5000
+
+export default function SnapshotStatus() {
+  const [serviceStatus, setServiceStatus] = useState<ServiceStatus>('normal')
+  const [showStatusBar, setShowStatusBar] = useState(false)
+
+  const updateServiceStatus = async () => {
+    const responseTime = await pingSnapshot()
+    console.log('responseTime', responseTime)
+    let currentStatus: ServiceStatus = 'normal'
+    if (responseTime === -1) {
+      currentStatus = 'failing'
+    } else if (responseTime > SLOW_RESPONSE_TIME_THRESHOLD) {
+      currentStatus = 'slow'
     }
+    console.log('serviceStatus', currentStatus)
+    setServiceStatus(currentStatus)
   }
 
+  useEffect(() => {
+    const intervalId = setInterval(updateServiceStatus, PING_INTERVAL)
+    return () => clearInterval(intervalId)
+  }, [])
+
   return (
-    <div className={className}>
-      <Heading size="sm">{'Snapshot'}</Heading>
-      <ContentSection>
-        <Label>{'Space Name'}</Label>
-        <div className="SpaceName__Section">
-          <Field value={spaceName} onChange={(_, { value }) => setSpaceName(value)} />
-          <Button className="Debug__SideButton" primary disabled={!spaceName} onClick={() => handleFetchClick()}>
-            {'Fetch Status & Space'}
-          </Button>
+    <>
+      {(serviceStatus === 'failing' || serviceStatus === 'slow') && (
+        <div className="SnapshotStatus__TopBar">
+          <WarningTriangle size="18" />
+          <Markdown size="sm" componentsClassNames={{ p: 'SnapshotStatus__Text', strong: 'SnapshotStatus__Text' }}>
+            {'**Snapshot is failing.** Voting and creating proposals is currently unavailable.'}
+          </Markdown>
         </div>
-      </ContentSection>
-      <Label>{'Status'}</Label>
-      <Text>{JSON.stringify(snapshotStatus)}</Text>
-      <Label>{'Space'}</Label>
-      <Text>{JSON.stringify(snapshotSpace)}</Text>
-      {!!errorMessage && <ErrorMessage label={'Snapshot Error'} errorMessage={errorMessage} />}
-      <SnapshotPing />
-    </div>
+      )}
+    </>
   )
 }

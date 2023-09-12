@@ -1,0 +1,13 @@
+.SnapshotStatus__TopBar {
+  width: 100%;
+  height: 43px;
+  background: var(--black-700);
+  padding-top: 12px;
+  display: flex;
+  justify-content: center;
+}
+
+.SnapshotStatus__Text {
+  color: var(--white-900) !important;
+  margin-left: 6px;
+}
