@@ -3,20 +3,63 @@ import isNumber from 'lodash/isNumber'
 
 import { SnapshotApi, SnapshotReceipt } from '../clients/SnapshotApi'
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
-import { DetailedScores, SnapshotProposal, SnapshotVote, VpDistribution } from '../clients/SnapshotGraphqlTypes'
+import {
+  DetailedScores,
+  ServiceHealth,
+  SnapshotProposal,
+  SnapshotStatus,
+  SnapshotVote,
+  VpDistribution,
+} from '../clients/SnapshotTypes'
 import * as templates from '../entities/Proposal/templates'
 import { proposalUrl, snapshotProposalUrl } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { isSameAddress } from '../entities/Snapshot/utils'
 import { inBackground } from '../helpers'
 import { Avatar } from '../utils/Catalyst/types'
+import { ErrorCategory } from '../utils/errorCategories'
 
+import CacheService from './CacheService'
+import { ErrorService } from './ErrorService'
 import { ProposalInCreation, ProposalLifespan } from './ProposalService'
 import RpcService from './RpcService'
 
 const DELEGATION_STRATEGY_NAME = 'delegation'
+const SLOW_RESPONSE_TIME_THRESHOLD_IN_MS = 5000 // 5 seconds
+const PING_INTERVAL_IN_SECONDS = 300 // 5 minutes
 
 export class SnapshotService {
+  public static async getStatus(): Promise<SnapshotStatus | undefined> {
+    try {
+      const cachedStatus = CacheService.get<SnapshotStatus>('snapshotStatus')
+      if (cachedStatus) {
+        console.log('cachedStatus', cachedStatus)
+        return cachedStatus
+      }
+
+      let health = ServiceHealth.Normal
+      const responseTime = await SnapshotGraphql.get().ping()
+      if (responseTime === -1) {
+        health = ServiceHealth.Failing
+      } else if (responseTime > SLOW_RESPONSE_TIME_THRESHOLD_IN_MS) {
+        health = ServiceHealth.Slow
+      }
+
+      const snapshotStatus = { health, responseTime }
+      this.saveStatusInCache(snapshotStatus)
+
+      logger.log('Snapshot status:', snapshotStatus)
+      return snapshotStatus
+    } catch (error) {
+      ErrorService.report('Unable to determine snapshot status', { error, category: ErrorCategory.Snapshot })
+      return undefined
+    }
+  }
+
+  private static saveStatusInCache(status: SnapshotStatus) {
+    CacheService.set('snapshotStatus', status, PING_INTERVAL_IN_SECONDS)
+  }
+
   static async createProposal(
     proposalInCreation: ProposalInCreation,
     proposalId: string,
@@ -87,17 +130,17 @@ export class SnapshotService {
     })
   }
 
-  static async getStatusAndSpace(spaceName = SNAPSHOT_SPACE) {
-    const [status, space] = await Promise.all([
-      await SnapshotGraphql.get().getStatus(),
+  static async getConfig(spaceName = SNAPSHOT_SPACE) {
+    const [config, space] = await Promise.all([
+      await SnapshotGraphql.get().getConfig(),
       await SnapshotGraphql.get().getSpace(spaceName),
     ])
     if (!space) {
       throw new Error(`Couldn't find snapshot space ${spaceName}. 
       \nSnapshot response: ${JSON.stringify(space)}
-      \nSnapshot status: ${JSON.stringify(status)}`)
+      \nSnapshot config: ${JSON.stringify(config)}`)
     }
-    return { status, space }
+    return { config, space }
   }
 
   static async getAddressesVotes(addresses: string[], first?: number, skip?: number) {

@@ -11,23 +11,21 @@ import Text from '../Common/Typography/Text'
 import ErrorMessage from '../Error/ErrorMessage'
 import { ContentSection } from '../Layout/ContentLayout'
 
-import SnapshotStatus from './SnapshotStatus'
-
 interface Props {
   className?: string
 }
 
 export default function Snapshot({ className }: Props) {
   const [spaceName, setSpaceName] = useState(SNAPSHOT_SPACE)
-  const [snapshotStatus, setSnapshotStatus] = useState<any>()
+  const [snapshotConfig, setSnapshotConfig] = useState<any>()
   const [snapshotSpace, setSnapshotSpace] = useState<any>()
   const [errorMessage, setErrorMessage] = useState<any>()
 
   async function handleFetchClick() {
     setErrorMessage('')
     try {
-      const { status: newStatus, space: newSpace } = await Governance.get().getSnapshotStatusAndSpace(spaceName)
-      setSnapshotStatus(newStatus)
+      const { config: newConfig, space: newSpace } = await Governance.get().getSnapshotConfigAndSpace(spaceName)
+      setSnapshotConfig(newConfig)
       setSnapshotSpace(newSpace)
       setErrorMessage('')
     } catch (e: any) {
@@ -47,8 +45,8 @@ export default function Snapshot({ className }: Props) {
           </Button>
         </div>
       </ContentSection>
-      <Label>{'Status'}</Label>
-      <Text>{JSON.stringify(snapshotStatus)}</Text>
+      <Label>{'Config'}</Label>
+      <Text>{JSON.stringify(snapshotConfig)}</Text>
       <Label>{'Space'}</Label>
       <Text>{JSON.stringify(snapshotSpace)}</Text>
       {!!errorMessage && <ErrorMessage label={'Snapshot Error'} errorMessage={errorMessage} />}

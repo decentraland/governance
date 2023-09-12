@@ -3,7 +3,7 @@ import Skeleton from 'react-loading-skeleton'
 
 import classNames from 'classnames'
 
-import { VpDistribution } from '../../../clients/SnapshotGraphqlTypes'
+import { VpDistribution } from '../../../clients/SnapshotTypes'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import { EMPTY_DISTRIBUTION } from '../../../hooks/useVotingPowerDistribution'
 

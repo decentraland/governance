@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { EMPTY_DELEGATION } from '../clients/SnapshotGraphqlTypes'
+import { EMPTY_DELEGATION } from '../clients/SnapshotTypes'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { getDelegations } from '../entities/Snapshot/utils'
 
