@@ -3,27 +3,30 @@
  *
  * See: https://www.gatsbyjs.org/docs/browser-apis/
  */
-import React from "react"
+import React from 'react'
 
-import "core-js/features/set-immediate"
-import "semantic-ui-css/semantic.min.css"
-import "balloon-css/balloon.min.css"
-import "decentraland-ui/dist/themes/base-theme.css"
-import "decentraland-ui/dist/themes/alternative/light-theme.css"
-import "./src/theme.css"
-import "./src/ui-overrides.css"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import 'core-js/features/set-immediate'
+import 'semantic-ui-css/semantic.min.css'
+import 'balloon-css/balloon.min.css'
+import 'decentraland-ui/dist/themes/base-theme.css'
+import 'decentraland-ui/dist/themes/alternative/light-theme.css'
+import './src/theme.css'
+import './src/ui-overrides.css'
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
 
 import { IntlProvider } from "react-intl"
-import AuthProvider from "decentraland-gatsby/dist/context/Auth/AuthProvider"
-import FeatureFlagProvider from "decentraland-gatsby/dist/context/FeatureFlag/FeatureFlagProvider"
-import segment from "decentraland-gatsby/dist/utils/segment/segment"
-import Layout from "./src/components/Layout/Layout"
-import Navbar from "./src/components/Layout/Navbar"
-import IdentityModalContextProvider from "./src/components/Context/IdentityModalContext"
-import BurgerMenuStatusContextProvider from "./src/components/Context/BurgerMenuStatusContext"
-import ExternalLinkWarningModal from "./src/components/Modal/ExternalLinkWarningModal/ExternalLinkWarningModal"
-import IdentityConnectModal from "./src/components/Modal/IdentityConnectModal/IdentityConnectModal"
+import AuthProvider from 'decentraland-gatsby/dist/context/Auth/AuthProvider'
+import FeatureFlagProvider from 'decentraland-gatsby/dist/context/FeatureFlag/FeatureFlagProvider'
+import segment from 'decentraland-gatsby/dist/utils/segment/segment'
+import Layout from './src/components/Layout/Layout'
+import Navbar from './src/components/Layout/Navbar'
+import IdentityModalContextProvider from './src/components/Context/IdentityModalContext'
+import BurgerMenuStatusContextProvider from './src/components/Context/BurgerMenuStatusContext'
+import ExternalLinkWarningModal from './src/components/Modal/ExternalLinkWarningModal/ExternalLinkWarningModal'
+import IdentityConnectModal from './src/components/Modal/IdentityConnectModal/IdentityConnectModal'
 import Segment from "decentraland-gatsby/dist/components/Development/Segment"
 import { SEGMENT_KEY, SSO_URL } from "./src/constants"
 import { flattenMessages } from "./src/utils/intl"
