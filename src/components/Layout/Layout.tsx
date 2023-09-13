@@ -49,7 +49,6 @@ export default function Layout({ children, ...props }: LayoutProps) {
 
   return (
     <>
-      <SnapshotStatus />
       <Navbar
         activePage="dao"
         onClickMenuOption={handleClickMenuOption}

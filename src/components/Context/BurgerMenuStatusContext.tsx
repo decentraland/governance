@@ -11,6 +11,7 @@ type BurgerMenuStatus = {
   searching: boolean
   filtering: boolean
   translate?: string
+  snapshotStatusBarOpen: boolean
 }
 
 export type BurgerMenuStatusContextType = {
@@ -28,6 +29,7 @@ const BurgerMenuStatusContextProvider = ({ children }: BurgerMenuStatusContextPr
     open: searchParams.searching || filtering,
     searching: searchParams.searching,
     filtering: filtering,
+    snapshotStatusBarOpen: false,
   })
   return <BurgerMenuStatusContext.Provider value={{ status, setStatus }}>{children}</BurgerMenuStatusContext.Provider>
 }

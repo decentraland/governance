@@ -4,6 +4,7 @@ import classNames from 'classnames'
 
 import { Governance } from '../../clients/Governance'
 import { ServiceHealth } from '../../clients/SnapshotTypes'
+import { useBurgerMenu } from '../../hooks/useBurgerMenu'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Markdown from '../Common/Typography/Markdown'
 import WarningTriangle from '../Icon/WarningTriangle'
@@ -15,10 +16,13 @@ const PING_INTERVAL_IN_MS = 5000 // 5 seconds
 export default function SnapshotStatus() {
   const t = useFormatMessage()
   const [showTopBar, setShowTopBar] = useState(false)
+  const { setStatus } = useBurgerMenu()
 
   const updateServiceStatus = async () => {
     const status = await Governance.get().getSnapshotStatus()
-    setShowTopBar(status.health === ServiceHealth.Slow || status.health === ServiceHealth.Failing)
+    const show = status.health === ServiceHealth.Slow || status.health === ServiceHealth.Failing
+    setShowTopBar(show)
+    setStatus((prev) => ({ ...prev, snapshotStatusBarOpen: show }))
   }
 
   useEffect(() => {
