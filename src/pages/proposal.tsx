@@ -16,7 +16,6 @@ import { ErrorClient } from '../clients/ErrorClient'
 import { Governance } from '../clients/Governance'
 import { SnapshotApi } from '../clients/SnapshotApi'
 import CategoryPill from '../components/Category/CategoryPill'
-import ProposalVPChart from '../components/Charts/ProposalVPChart'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import BidSubmittedModal from '../components/Modal/BidSubmittedModal'
@@ -69,6 +68,8 @@ import locations, { navigate } from '../utils/locations'
 import { isUnderMaintenance } from '../utils/maintenance'
 
 import './proposal.css'
+
+const ProposalVPChart = React.lazy(() => import('../components/Charts/ProposalVPChart'))
 
 const EMPTY_VOTE_CHOICE_SELECTION: SelectedVoteChoice = { choice: undefined, choiceIndex: undefined }
 const MAX_ERRORS_BEFORE_SNAPSHOT_REDIRECT = 3
@@ -335,6 +336,7 @@ export default function ProposalPage() {
     proposal?.status === ProposalStatus.Active &&
     (proposal?.type === ProposalType.Tender || proposal?.type === ProposalType.Bid)
 
+  const isSSR = typeof window === 'undefined'
   const showVotesChart = !isLoadingProposal && proposal?.type !== ProposalType.Poll && highQualityVotes
 
   return (
@@ -389,8 +391,12 @@ export default function ProposalPage() {
                   />
                 </Desktop>
               )}
-              {showVotesChart && (
-                <ProposalVPChart requiredToPass={proposal?.required_to_pass} voteMap={highQualityVotes} />
+              {!isSSR && (
+                <React.Suspense fallback={<></>}>
+                  {showVotesChart && (
+                    <ProposalVPChart requiredToPass={proposal?.required_to_pass} voteMap={highQualityVotes} />
+                  )}
+                </React.Suspense>
               )}
               <ProposalComments proposal={proposal} />
             </Grid.Column>
