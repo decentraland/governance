@@ -1,4 +1,4 @@
-import { yellow } from 'colors/safe'
+import yellow from 'chalk'
 import env from 'decentraland-gatsby/dist/utils/env'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 

@@ -1,4 +1,4 @@
-import { magenta } from 'colors/safe'
+import magenta from 'chalk'
 import env from 'decentraland-gatsby/dist/utils/env'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
