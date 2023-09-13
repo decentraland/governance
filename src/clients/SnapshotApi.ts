@@ -6,7 +6,7 @@ import { CancelProposal, ProposalType, Vote } from '@snapshot-labs/snapshot.js/d
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import env from 'decentraland-gatsby/dist/utils/env'
 
-import { DEBUG_ADDRESSES } from '../entities/Debug/isDebugAddress'
+import { DEBUG_ADDRESSES } from '../constants'
 import {
   SNAPSHOT_ADDRESS,
   SNAPSHOT_API_KEY,

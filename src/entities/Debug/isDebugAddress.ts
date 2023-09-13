@@ -1,11 +1,6 @@
 import { magenta } from 'colors/safe'
-import env from 'decentraland-gatsby/dist/utils/env'
-import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-export const DEBUG_ADDRESSES = (env('DEBUG_ADDRESSES', '') || '')
-  .split(',')
-  .filter(isEthereumAddress)
-  .map((address) => address.toLowerCase())
+import { DEBUG_ADDRESSES } from '../../constants'
 
 const debugAddresses = new Set(DEBUG_ADDRESSES)
 
