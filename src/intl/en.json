@@ -868,8 +868,8 @@
         "relevant_link": "Relevant link"
       },
       "votes_chart": {
-        "title": "Voting timeline",
-        "pass_threshold": "Pass threshold",
+        "title": "Voting Timeline",
+        "pass_threshold": "Acceptance threshold",
         "tooltip_label": "{choice}: {vp} VP",
         "tooltip_voter": "\nVoter: {address}\nVP used: {vp}"
       }

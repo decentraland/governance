@@ -10,6 +10,7 @@ import zoomPlugin from 'chartjs-plugin-zoom'
 import { Vote } from '../../entities/Votes/types'
 import useAbbreviatedFormatter from '../../hooks/useAbbreviatedFormatter'
 import useFormatMessage from '../../hooks/useFormatMessage'
+import Section from '../Proposal/View/Section'
 
 import { getDataset, getSegregatedVotes, getSortedVotes } from './ProposalVPChart.utils'
 
@@ -47,6 +48,7 @@ function ProposalVPChart({ requiredToPass, voteMap }: Props) {
           fill: false,
           borderColor: YES_COLOR,
           backgroundColor: YES_COLOR,
+          stepped: 'before',
         },
         {
           label: 'No',
@@ -54,6 +56,7 @@ function ProposalVPChart({ requiredToPass, voteMap }: Props) {
           fill: false,
           borderColor: NO_COLOR,
           backgroundColor: NO_COLOR,
+          stepped: 'before',
         },
         {
           label: 'Abstain',
@@ -61,6 +64,7 @@ function ProposalVPChart({ requiredToPass, voteMap }: Props) {
           fill: false,
           borderColor: ABSTAIN_COLOR,
           backgroundColor: ABSTAIN_COLOR,
+          stepped: 'before',
         },
       ],
     })
@@ -69,16 +73,6 @@ function ProposalVPChart({ requiredToPass, voteMap }: Props) {
   const options = {
     responsive: true,
     plugins: {
-      title: {
-        text: t('page.proposal_view.votes_chart.title'),
-        display: true,
-        align: 'start' as const,
-        padding: 0,
-        color: '#16141A',
-        font: {
-          size: 17,
-        },
-      },
       legend: {
         display: true,
         align: 'end' as const,
@@ -121,6 +115,7 @@ function ProposalVPChart({ requiredToPass, voteMap }: Props) {
           x: {
             min: votes[0]?.timestamp || 0,
             max: votes[votes.length - 1]?.timestamp || 0,
+            minRange: 86400000, // 1 day
           },
         },
       },
@@ -131,16 +126,18 @@ function ProposalVPChart({ requiredToPass, voteMap }: Props) {
             display: !!requiredToPass,
             yMin: requiredToPass || 0,
             yMax: requiredToPass || 0,
-            borderColor: 'rgba(115, 110, 125, 1)',
+            borderColor: 'rgb(115, 110, 125)',
             borderWidth: 1,
             borderDash: [5],
             label: {
               content: t('page.proposal_view.votes_chart.pass_threshold'),
               display: true,
               position: 'end' as const,
-              padding: {
-                x: 6,
-                y: 1,
+              yAdjust: 10,
+              color: 'rgb(115, 110, 125)',
+              backgroundColor: 'transparent',
+              font: {
+                weight: 'normal' as const,
               },
             },
           },
@@ -165,7 +162,11 @@ function ProposalVPChart({ requiredToPass, voteMap }: Props) {
     },
   }
 
-  return <Chart ref={chartRef} options={options} data={chartData} type="line" />
+  return (
+    <Section title={t('page.proposal_view.votes_chart.title')}>
+      <Chart ref={chartRef} options={options} data={chartData} type="line" />
+    </Section>
+  )
 }
 
 export default ProposalVPChart
