@@ -1,0 +1,7 @@
+.ProposalVPChart {
+  cursor: grab;
+}
+
+.ProposalVPChart:active {
+  cursor: grabbing;
+}

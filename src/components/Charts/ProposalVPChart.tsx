@@ -12,6 +12,7 @@ import useAbbreviatedFormatter from '../../hooks/useAbbreviatedFormatter'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Section from '../Proposal/View/Section'
 
+import './ProposalVPChart.css'
 import { getDataset, getSegregatedVotes, getSortedVotes } from './ProposalVPChart.utils'
 
 ChartJS.register(zoomPlugin, annotationPlugin)
@@ -163,8 +164,8 @@ function ProposalVPChart({ requiredToPass, voteMap }: Props) {
   }
 
   return (
-    <Section title={t('page.proposal_view.votes_chart.title')}>
-      <Chart ref={chartRef} options={options} data={chartData} type="line" />
+    <Section title={t('page.proposal_view.votes_chart.title')} isNew>
+      <Chart className="ProposalVPChart" ref={chartRef} options={options} data={chartData} type="line" />
     </Section>
   )
 }
