@@ -6,6 +6,7 @@ import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 import {
   DetailedScores,
   ServiceHealth,
+  ServiceStatus,
   SnapshotProposal,
   SnapshotStatus,
   SnapshotVote,
@@ -25,7 +26,7 @@ import { ProposalInCreation, ProposalLifespan } from './ProposalService'
 import RpcService from './RpcService'
 
 const DELEGATION_STRATEGY_NAME = 'delegation'
-const SLOW_RESPONSE_TIME_THRESHOLD_IN_MS = 5000 // 5 seconds
+const SLOW_RESPONSE_TIME_THRESHOLD_IN_MS = 8000 // 8 seconds
 const STATUS_CACHE_TIMEOUT_IN_SECONDS = 60 // 1 minute
 
 export class SnapshotService {
@@ -47,16 +48,13 @@ export class SnapshotService {
     }
   }
 
-  private static async sense() {
-    let scoresStatus = undefined
+  private static async sense(): Promise<SnapshotStatus> {
     const { status: graphQlStatus, addressesSample } = await this.senseGraphQl()
-    if (graphQlStatus.health === ServiceHealth.Normal) {
-      scoresStatus = await this.senseScores(addressesSample)
-    }
-    return scoresStatus || graphQlStatus
+    const scoresStatus = await this.senseScores(addressesSample)
+    return { scoresStatus, graphQlStatus }
   }
 
-  private static async senseScores(addressesSample: string[]): Promise<SnapshotStatus> {
+  private static async senseScores(addressesSample: string[]): Promise<ServiceStatus> {
     let scoresHealth = ServiceHealth.Normal
     const responseTime = await SnapshotApi.get().ping(addressesSample)
     if (responseTime === -1) {
@@ -67,7 +65,7 @@ export class SnapshotService {
     return { health: scoresHealth, responseTime }
   }
 
-  private static async senseGraphQl(): Promise<{ status: SnapshotStatus; addressesSample: string[] }> {
+  private static async senseGraphQl(): Promise<{ status: ServiceStatus; addressesSample: string[] }> {
     let health = ServiceHealth.Normal
     const { responseTime, addressesSample } = await SnapshotGraphql.get().ping()
     if (responseTime === -1) {

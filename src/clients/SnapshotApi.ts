@@ -6,6 +6,7 @@ import { CancelProposal, ProposalType, Vote } from '@snapshot-labs/snapshot.js/d
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import env from 'decentraland-gatsby/dist/utils/env'
 
+import { DEBUG_ADDRESSES } from '../entities/Debug/isDebugAddress'
 import {
   SNAPSHOT_ADDRESS,
   SNAPSHOT_API_KEY,
@@ -186,13 +187,12 @@ export class SnapshotApi {
   }
 
   async ping(addressesSample: string[]) {
-    const { formattedAddresses, spaceName, network, strategies, scoreApiUrl } = await this.prepareArgs(addressesSample)
-
-    const now = new Date()
-    const startTime = now.getTime()
+    const addresses = addressesSample.length === 0 ? DEBUG_ADDRESSES : addressesSample
     try {
+      const { formattedAddresses, spaceName, network, strategies, scoreApiUrl } = await this.prepareArgs(addresses)
+      const now = new Date()
+      const startTime = now.getTime()
       await snapshot.utils.getScores(spaceName, strategies, network, formattedAddresses, undefined, scoreApiUrl)
-
       const endTime = new Date().getTime()
       return endTime - startTime
     } catch (error) {

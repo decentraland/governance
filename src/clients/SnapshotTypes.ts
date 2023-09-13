@@ -137,4 +137,5 @@ export enum ServiceHealth {
   Slow = 'slow',
   Failing = 'failing',
 }
-export type SnapshotStatus = { health: ServiceHealth; responseTime: number }
+export type ServiceStatus = { health: ServiceHealth; responseTime: number }
+export type SnapshotStatus = { scoresStatus: ServiceStatus; graphQlStatus: ServiceStatus }

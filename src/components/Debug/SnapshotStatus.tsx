@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import classNames from 'classnames'
 
 import { Governance } from '../../clients/Governance'
-import { ServiceHealth } from '../../clients/SnapshotTypes'
+import { ServiceHealth, SnapshotStatus as SnapshotServiceStatus } from '../../clients/SnapshotTypes'
 import { useBurgerMenu } from '../../hooks/useBurgerMenu'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Markdown from '../Common/Typography/Markdown'
@@ -11,7 +11,13 @@ import WarningTriangle from '../Icon/WarningTriangle'
 
 import './SnapshotStatus.css'
 
-const PING_INTERVAL_IN_MS = 5000 // 5 seconds
+const PING_INTERVAL_IN_MS = 10000 // 10 seconds
+
+function logIfNotNormal(status: SnapshotServiceStatus) {
+  if (status.scoresStatus.health !== ServiceHealth.Normal || status.graphQlStatus.health !== ServiceHealth.Normal) {
+    console.log('Snapshot Status', status)
+  }
+}
 
 export default function SnapshotStatus() {
   const t = useFormatMessage()
@@ -20,7 +26,9 @@ export default function SnapshotStatus() {
 
   const updateServiceStatus = async () => {
     const status = await Governance.get().getSnapshotStatus()
-    const show = status.health === ServiceHealth.Slow || status.health === ServiceHealth.Failing
+    logIfNotNormal(status)
+    const show =
+      status.scoresStatus.health === ServiceHealth.Slow || status.scoresStatus.health === ServiceHealth.Failing
     setShowTopBar(show)
     setStatus((prev) => ({ ...prev, snapshotStatusBarOpen: show }))
   }

@@ -1,3 +1,4 @@
+import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import API from 'decentraland-gatsby/dist/utils/api/API'
 import env from 'decentraland-gatsby/dist/utils/env'
 import uniqBy from 'lodash/uniqBy'
@@ -467,7 +468,6 @@ export class SnapshotGraphql extends API {
       const endTime = new Date().getTime()
       return { responseTime: endTime - startTime, addressesSample }
     } catch (error) {
-      console.log('error', error)
       return { responseTime: -1, addressesSample: [] } // Return -1 to indicate API failures
     }
   }
