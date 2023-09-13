@@ -26,7 +26,7 @@ import RpcService from './RpcService'
 
 const DELEGATION_STRATEGY_NAME = 'delegation'
 const SLOW_RESPONSE_TIME_THRESHOLD_IN_MS = 5000 // 5 seconds
-const PING_INTERVAL_IN_SECONDS = 60 // 1 minute
+const STATUS_CACHE_TIMEOUT_IN_SECONDS = 60 // 1 minute
 
 export class SnapshotService {
   public static async getStatus(): Promise<SnapshotStatus | undefined> {
@@ -45,7 +45,7 @@ export class SnapshotService {
       }
 
       const snapshotStatus = { health, responseTime }
-      this.saveStatusInCache(snapshotStatus)
+      CacheService.set('snapshotStatus', snapshotStatus, STATUS_CACHE_TIMEOUT_IN_SECONDS)
 
       logger.log('Snapshot status:', snapshotStatus)
       return snapshotStatus
@@ -53,10 +53,6 @@ export class SnapshotService {
       ErrorService.report('Unable to determine snapshot status', { error, category: ErrorCategory.Snapshot })
       return undefined
     }
-  }
-
-  private static saveStatusInCache(status: SnapshotStatus) {
-    CacheService.set('snapshotStatus', status, PING_INTERVAL_IN_SECONDS)
   }
 
   static async createProposal(
