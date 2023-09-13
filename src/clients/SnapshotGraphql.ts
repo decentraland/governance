@@ -447,14 +447,12 @@ export class SnapshotGraphql extends API {
     const now = new Date()
     const startTime = now.getTime()
     try {
-      const query = GET_VOTES_QUERY
-
-      await this.fetch(
+      const response = await this.fetch<SnapshotVoteResponse>(
         GRAPHQL_ENDPOINT,
         this.options()
           .method('POST')
           .json({
-            query,
+            query: GET_VOTES_QUERY,
             variables: {
               space: SNAPSHOT_SPACE,
               first: 10,
@@ -464,11 +462,13 @@ export class SnapshotGraphql extends API {
           })
       )
 
+      const addressesSample = response?.data?.votes.map((vote: SnapshotVote) => vote.voter)
+
       const endTime = new Date().getTime()
-      return endTime - startTime
+      return { responseTime: endTime - startTime, addressesSample }
     } catch (error) {
       console.log('error', error)
-      return -1 // Return -1 to indicate API failure
+      return { responseTime: -1, addressesSample: [] } // Return -1 to indicate API failures
     }
   }
 }

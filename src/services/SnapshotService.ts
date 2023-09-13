@@ -36,15 +36,7 @@ export class SnapshotService {
         return cachedStatus
       }
 
-      let health = ServiceHealth.Normal
-      const responseTime = await SnapshotGraphql.get().ping()
-      if (responseTime === -1) {
-        health = ServiceHealth.Failing
-      } else if (responseTime > SLOW_RESPONSE_TIME_THRESHOLD_IN_MS) {
-        health = ServiceHealth.Slow
-      }
-
-      const snapshotStatus = { health, responseTime }
+      const snapshotStatus = await this.sense()
       CacheService.set('snapshotStatus', snapshotStatus, STATUS_CACHE_TIMEOUT_IN_SECONDS)
 
       logger.log('Snapshot status:', snapshotStatus)
@@ -53,6 +45,37 @@ export class SnapshotService {
       ErrorService.report('Unable to determine snapshot status', { error, category: ErrorCategory.Snapshot })
       return undefined
     }
+  }
+
+  private static async sense() {
+    let scoresStatus = undefined
+    const { status: graphQlStatus, addressesSample } = await this.senseGraphQl()
+    if (graphQlStatus.health === ServiceHealth.Normal) {
+      scoresStatus = await this.senseScores(addressesSample)
+    }
+    return scoresStatus || graphQlStatus
+  }
+
+  private static async senseScores(addressesSample: string[]): Promise<SnapshotStatus> {
+    let scoresHealth = ServiceHealth.Normal
+    const responseTime = await SnapshotApi.get().ping(addressesSample)
+    if (responseTime === -1) {
+      scoresHealth = ServiceHealth.Failing
+    } else if (responseTime > SLOW_RESPONSE_TIME_THRESHOLD_IN_MS) {
+      scoresHealth = ServiceHealth.Slow
+    }
+    return { health: scoresHealth, responseTime }
+  }
+
+  private static async senseGraphQl(): Promise<{ status: SnapshotStatus; addressesSample: string[] }> {
+    let health = ServiceHealth.Normal
+    const { responseTime, addressesSample } = await SnapshotGraphql.get().ping()
+    if (responseTime === -1) {
+      health = ServiceHealth.Failing
+    } else if (responseTime > SLOW_RESPONSE_TIME_THRESHOLD_IN_MS) {
+      health = ServiceHealth.Slow
+    }
+    return { status: { health, responseTime }, addressesSample }
   }
 
   static async createProposal(

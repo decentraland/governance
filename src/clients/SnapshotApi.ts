@@ -155,11 +155,7 @@ export class SnapshotApi {
   }
 
   async getScores(addresses: string[]) {
-    const formattedAddresses = addresses.map((address) => getChecksumAddress(address))
-    const spaceName = SnapshotApi.getSpaceName()
-    const network = getEnvironmentChainId().toString()
-    const strategies = (await SnapshotGraphql.get().getSpace(spaceName)).strategies
-    const scoreApiUrl = `https://score.snapshot.org/?apiKey=${SNAPSHOT_API_KEY}`
+    const { formattedAddresses, spaceName, network, strategies, scoreApiUrl } = await this.prepareArgs(addresses)
 
     try {
       const scores = await snapshot.utils.getScores(
@@ -187,5 +183,29 @@ export class SnapshotApi {
 
   private static toSnapshotTimestamp(time: number) {
     return Number(time.toString().slice(0, -3))
+  }
+
+  async ping(addressesSample: string[]) {
+    const { formattedAddresses, spaceName, network, strategies, scoreApiUrl } = await this.prepareArgs(addressesSample)
+
+    const now = new Date()
+    const startTime = now.getTime()
+    try {
+      await snapshot.utils.getScores(spaceName, strategies, network, formattedAddresses, undefined, scoreApiUrl)
+
+      const endTime = new Date().getTime()
+      return endTime - startTime
+    } catch (error) {
+      return -1 // Return -1 to indicate API failures
+    }
+  }
+
+  private async prepareArgs(addresses: string[]) {
+    const formattedAddresses = addresses.map((address) => getChecksumAddress(address))
+    const spaceName = SnapshotApi.getSpaceName()
+    const network = getEnvironmentChainId().toString()
+    const strategies = (await SnapshotGraphql.get().getSpace(spaceName)).strategies
+    const scoreApiUrl = `https://score.snapshot.org/?apiKey=${SNAPSHOT_API_KEY}`
+    return { formattedAddresses, spaceName, network, strategies, scoreApiUrl }
   }
 }
