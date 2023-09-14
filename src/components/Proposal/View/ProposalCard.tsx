@@ -11,8 +11,8 @@ import { useProposalDateText } from '../../../hooks/useProposalDateText'
 import useProposalVotes from '../../../hooks/useProposalVotes'
 import useWinningChoice from '../../../hooks/useWinningChoice'
 import Link from '../../Common/Typography/Link'
+import Username from '../../Common/Username'
 import ChevronRight from '../../Icon/ChevronRight'
-import Username from '../../User/Username'
 
 import './ProposalCard.css'
 

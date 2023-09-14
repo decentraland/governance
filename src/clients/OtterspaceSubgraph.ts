@@ -17,6 +17,7 @@ query Badges($raft_id: String!, $address: Bytes!, $first: Int!, $skip: Int!) {
     createdAt
     status
     statusReason
+    transactionHash
     spec {
       id
       metadata {
@@ -37,9 +38,12 @@ query Badges($raft_id: String!, $address: Bytes!, $first: Int!, $skip: Int!) {
 }`
 
 const BADGE_SPEC_OWNERS_QUERY = `
-query Badges($badgeCid: String!) {
+query Badges($badgeCid: String!, $skip: Int!, $first: Int!) {
     badges: badges(
         where: {spec: $badgeCid}
+        orderBy: id
+        first: $first 
+        skip: $skip
         ){
            id
             owner {
@@ -107,8 +111,9 @@ export type OtterspaceBadge = {
   createdAt: number
   status: string
   statusReason: string
-  owner?: { id: string }
   spec: OtterspaceBadgeSpec
+  owner?: { id: string }
+  transactionHash?: string
 }
 
 type BadgeOwnership = { id: string; address: string }

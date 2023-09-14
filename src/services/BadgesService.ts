@@ -23,6 +23,7 @@ import {
   OtterspaceRevokeReason,
   RevokeOrReinstateResult,
   UserBadges,
+  shouldDisplayBadge,
   toGovernanceBadge,
 } from '../entities/Badges/types'
 import {
@@ -54,13 +55,11 @@ export class BadgesService {
     for (const otterspaceBadge of otterspaceBadges) {
       try {
         const badge = toGovernanceBadge(otterspaceBadge)
-        if (badge.status !== BadgeStatus.Burned) {
-          if (otterspaceBadge.spec.metadata) {
-            if (badge.isPastBadge) {
-              expiredBadges.push(badge)
-            } else {
-              currentBadges.push(badge)
-            }
+        if (shouldDisplayBadge(badge)) {
+          if (badge.isPastBadge) {
+            expiredBadges.push(badge)
+          } else {
+            currentBadges.push(badge)
           }
         }
       } catch (error) {
@@ -117,23 +116,36 @@ export class BadgesService {
       landOwnerAddresses
     )
 
-    const outcomes = await Promise.all(
-      splitArray([...eligibleUsers, ...usersWithBadgesToReinstate], 20).map((addresses) =>
-        BadgesService.giveBadgeToUsers(LAND_OWNER_BADGE_SPEC_CID, addresses)
-      )
-    )
-    const failedOutcomes = outcomes.filter(
+    const airdropOutcomes: AirdropOutcome[] = []
+    const airdropBatches = splitArray(eligibleUsers, 50)
+    for (const batch of airdropBatches) {
+      const outcome = await airdropWithRetry(LAND_OWNER_BADGE_SPEC_CID, batch)
+      airdropOutcomes.push(outcome)
+    }
+
+    const reinstateResults = await BadgesService.reinstateBadge(LAND_OWNER_BADGE_SPEC_CID, usersWithBadgesToReinstate)
+
+    const failedAirdropOutcomes = airdropOutcomes.filter(
       ({ status, error }) =>
         status === AirdropJobStatus.FAILED &&
         error !== ErrorReason.NoUserWithoutBadge &&
         error !== ErrorReason.NoUserHasVoted
     )
-    if (failedOutcomes.length > 0) {
-      console.error('Unable to give LandOwner badges', failedOutcomes)
+    if (failedAirdropOutcomes.length > 0) {
+      console.error('Unable to give LandOwner badges', failedAirdropOutcomes)
 
       ErrorService.report('Unable to give LandOwner badges', {
         category: ErrorCategory.Badges,
-        failedOutcomes,
+        failedAirdropOutcomes,
+      })
+    }
+
+    const failedReinstatements = reinstateResults.filter((result) => result.status === ActionStatus.Failed)
+    if (failedReinstatements.length > 0) {
+      console.error('Unable to reinstate LandOwner badges', failedReinstatements)
+      ErrorService.report('Unable to reinstate LandOwner badges', {
+        category: ErrorCategory.Badges,
+        failedReinstatements,
       })
     }
 
@@ -183,37 +195,36 @@ export class BadgesService {
       return []
     }
 
-    const actionResults = await Promise.all<RevokeOrReinstateResult>(
-      badgeOwnerships.map(async (badgeOwnership) => {
-        const trimmedId = trimOtterspaceId(badgeOwnership.id)
+    const actionResults: RevokeOrReinstateResult[] = []
 
-        if (trimmedId === '') {
-          return {
-            status: ActionStatus.Failed,
-            address: badgeOwnership.address,
-            badgeId: badgeOwnership.id,
-            error: ErrorReason.InvalidBadgeId,
-          }
-        }
+    for (const badgeOwnership of badgeOwnerships) {
+      const trimmedId = trimOtterspaceId(badgeOwnership.id)
 
+      if (trimmedId === '') {
+        actionResults.push({
+          status: ActionStatus.Failed,
+          address: badgeOwnership.address,
+          badgeId: badgeOwnership.id,
+          error: ErrorReason.InvalidBadgeId,
+        })
+      } else {
         try {
           await action(trimmedId)
-          return {
+          actionResults.push({
             status: ActionStatus.Success,
             address: badgeOwnership.address,
             badgeId: trimmedId,
-          }
-          // eslint-disable-next-line
+          })
         } catch (error: any) {
-          return {
+          actionResults.push({
             status: ActionStatus.Failed,
             address: badgeOwnership.address,
             badgeId: trimmedId,
             error: JSON.stringify(error?.reason || error),
-          }
+          })
         }
-      })
-    )
+      }
+    }
 
     return actionResults
   }

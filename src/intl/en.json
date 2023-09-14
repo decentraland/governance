@@ -706,7 +706,8 @@
       "size": "Size"
     },
     "badge_card": {
-      "mint_date": "Minted {at}"
+      "mint_date": "Minted {at}",
+      "polygonscan_link": "View transaction on Polygonscan"
     },
     "snapshot_redirect_button_label": "Vote on Snapshot",
     "reaction_icon": {
@@ -804,7 +805,7 @@
         "votes_per_proposal_title": "Votes per proposal",
         "votes_per_proposal": "Votes",
         "display_median": "Display: median",
-        "top_voters": "Last month's top voters",
+        "top_voters": "Last 30-Days top voters",
         "top_voters_tooltip": "Voting with +{vp}VP",
         "votes": "Votes",
         "fetching_participation": "Fetching participation...",

@@ -7,6 +7,8 @@ import { getQueryTimestamp } from '../clients/SnapshotGraphql'
 import { SnapshotProposal, SnapshotVote } from '../clients/SnapshotGraphqlTypes'
 import { calculateMatch, getChecksumAddress, outcomeMatch } from '../entities/Snapshot/utils'
 import { getFormattedPercentage } from '../helpers'
+import Time from '../utils/date/Time'
+import { getAMonthAgo } from '../utils/date/aMonthAgo'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
@@ -47,8 +49,8 @@ function getParticipation(
 }
 
 export default function useVotingStats(address: string, userAddress: string | null) {
-  const now = useMemo(() => new Date(), [])
-  const aMonthAgo = useMemo(() => new Date(now.getFullYear(), now.getMonth() - 1, now.getDay()), [now])
+  const now = useMemo(() => Time().toDate(), [])
+  const aMonthAgo = useMemo(() => getAMonthAgo(now), [])
 
   const { data: last30DaysProposals, isLoading: isLoadingProposals } = useQuery({
     queryKey: [`last30DaysProposals#${aMonthAgo.getTime()}`],

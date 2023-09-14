@@ -12,12 +12,12 @@ import { abbreviateTimeDifference, formatDate } from '../../utils/date/Time'
 import locations from '../../utils/locations'
 import Link from '../Common/Typography/Link'
 import Markdown from '../Common/Typography/Markdown'
+import Username from '../Common/Username'
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
 import CliffProgress from '../Projects/ProjectCard/CliffProgress'
 import ProgressBarTooltip from '../Projects/ProjectCard/ProgressBarTooltip'
 import VestingProgress from '../Projects/ProjectCard/VestingProgress'
 import ProjectPill from '../Projects/ProjectPill'
-import Username from '../User/Username'
 
 import './GrantBeneficiaryItem.css'
 

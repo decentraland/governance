@@ -2,9 +2,8 @@ import { NavigateOptions } from '@reach/router'
 import API from 'decentraland-gatsby/dist/utils/api/API'
 import { navigate as gatsbyNavigate } from 'gatsby'
 
+import { NewGrantCategory } from '../entities/Grant/types'
 import { CatalystType, HiringType, PoiType, ProposalStatus, ProposalType } from '../entities/Proposal/types'
-
-import { NewGrantCategory } from './../entities/Grant/types'
 
 const GATSBY_BASE_URL = process.env.GATSBY_BASE_URL || '/'
 

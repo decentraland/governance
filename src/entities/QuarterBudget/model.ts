@@ -103,7 +103,7 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
           qb.finish_at > ${now}
     `
 
-    const result = await this.query(query)
+    const result = await this.namedQuery('get_current_budget', query)
     if (!result || result.length === 0) {
       return null
     }
@@ -126,7 +126,7 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
           ON qcb.quarter_budget_id = qb.id;
     `
 
-    const result = await this.query(query)
+    const result = await this.namedQuery('get_budget_for_date', query)
     if (!result || result.length === 0) {
       return null
     }
@@ -148,7 +148,7 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
           qb.finish_at > ${now}
     `
 
-    const result = await this.query(query)
+    const result = await this.namedQuery('get_category_budget_for_current_quarter', query)
     if (!result || result.length !== 1) {
       return null
     }
@@ -168,7 +168,7 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
         WHERE "quarter_budget_id" = ${budgetUpdate.id}
         AND "category" = ${newGrantCategory} 
          `
-      await this.query(query)
+      await this.namedQuery('update_budget', query)
     }
   }
 

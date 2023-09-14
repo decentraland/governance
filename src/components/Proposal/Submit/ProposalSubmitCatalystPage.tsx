@@ -21,11 +21,11 @@ import MarkdownNotice from '../../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../../components/Layout/ContentLayout'
 import LoadingView from '../../../components/Layout/LoadingView'
 import CoAuthors from '../../../components/Proposal/Submit/CoAuthor/CoAuthors'
-import LogIn from '../../../components/User/LogIn'
 import { CatalystType, NewProposalCatalyst, newProposalCatalystScheme } from '../../../entities/Proposal/types'
 import { isAlreadyACatalyst, isValidDomainName } from '../../../entities/Proposal/utils'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import locations, { navigate } from '../../../utils/locations'
+import LogIn from '../../Layout/LogIn'
 
 import './ProposalSubmitCatalystPage.css'
 
@@ -56,15 +56,15 @@ export default function ProposalSubmitCatalystPage({ catalystType }: Props) {
 
   const { isLoading: isCommsStatusLoading, isError: isErrorOnCommsStatus } = useQuery({
     queryKey: [`commsStatus#${domain}`],
-    queryFn: () => (domain ? Catalyst.from('https://' + domain).getCommsStatus() : null),
+    queryFn: () => (domain ? Catalyst.getInstanceFrom('https://' + domain).getCommsStatus() : null),
   })
   const { isLoading: isContentStatusLoading, isError: isErrorOnContentStatus } = useQuery({
     queryKey: [`contentStatus#${domain}`],
-    queryFn: () => (domain ? Catalyst.from('https://' + domain).getContentStatus() : null),
+    queryFn: () => (domain ? Catalyst.getInstanceFrom('https://' + domain).getContentStatus() : null),
   })
   const { isLoading: isLambdasStatusLoading, isError: isErrorOnLambdasStatus } = useQuery({
     queryKey: [`lambdasStatus#${domain}`],
-    queryFn: () => (domain ? Catalyst.from('https://' + domain).getLambdasStatus() : null),
+    queryFn: () => (domain ? Catalyst.getInstanceFrom('https://' + domain).getLambdasStatus() : null),
   })
 
   const [formDisabled, setFormDisabled] = useState(false)

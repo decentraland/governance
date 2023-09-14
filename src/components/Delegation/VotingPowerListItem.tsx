@@ -2,8 +2,8 @@ import React from 'react'
 
 import classNames from 'classnames'
 
+import Username from '../Common/Username'
 import VotingPower from '../Token/VotingPower'
-import Username from '../User/Username'
 
 import './VotingPowerListItem.css'
 

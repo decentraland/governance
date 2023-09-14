@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import { Button, ButtonProps } from 'decentraland-ui/dist/components/Button/Button'
 
 import { ChoiceColor } from '../../../../entities/Votes/types'
-import Username from '../../../User/Username'
+import Username from '../../../Common/Username'
 import TextWithTooltip from '../TextWithTooltip'
 
 import './ChoiceButton.css'

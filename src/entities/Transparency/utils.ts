@@ -40,7 +40,7 @@ export function aggregateBalances(latestBalances: TokenInWallet[]): AggregatedTo
 }
 
 const ETHERSCAN_BASE_URL = 'https://etherscan.io/'
-const POLYGON_BASE_URL = 'https://polygonscan.com/'
+export const POLYGONSCAN_BASE_URL = 'https://polygonscan.com/'
 
 export function blockExplorerLink(wallet: TokenInWallet): BlockExplorerLink {
   const addressUrl = 'address/' + wallet.address
@@ -48,7 +48,7 @@ export function blockExplorerLink(wallet: TokenInWallet): BlockExplorerLink {
     case 'Ethereum':
       return { name: 'Etherscan', link: ETHERSCAN_BASE_URL + addressUrl }
     case 'Polygon':
-      return { name: 'Polygonscan', link: POLYGON_BASE_URL + addressUrl }
+      return { name: 'Polygonscan', link: POLYGONSCAN_BASE_URL + addressUrl }
     default:
       logger.error('Unable to get block explorer link', { wallet: wallet })
       return { name: '', link: '/' }

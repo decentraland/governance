@@ -4,9 +4,9 @@ import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
 import useFormatMessage from '../../../../hooks/useFormatMessage'
 import Markdown from '../../../Common/Typography/Markdown'
+import Username from '../../../Common/Username'
 import Info from '../../../Icon/Info'
 import VotingPower from '../../../Token/VotingPower'
-import Username from '../../../User/Username'
 
 import './DelegationsLabel.css'
 

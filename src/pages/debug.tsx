@@ -11,15 +11,14 @@ import EnvStatus from '../components/Debug/EnvStatus'
 import ErrorReporting from '../components/Debug/ErrorReporting'
 import HttpStatus from '../components/Debug/HttpStatus'
 import SnapshotStatus from '../components/Debug/SnapshotStatus'
+import TriggerFunction from '../components/Debug/TriggerFunction'
+import LogIn from '../components/Layout/LogIn'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
-import LogIn from '../components/User/LogIn'
-import useFormatMessage from '../hooks/useFormatMessage'
 import useIsDebugAddress from '../hooks/useIsDebugAddress'
 
 import './debug.css'
 
 export default function DebugPage() {
-  const t = useFormatMessage()
   const [account] = useAuthContext()
   const { isDebugAddress } = useIsDebugAddress(account)
 
@@ -37,6 +36,7 @@ export default function DebugPage() {
       <BadgesAdmin className="DebugPage__Section" />
       <SnapshotStatus className="DebugPage__Section" />
       <EnvStatus className="DebugPage__Section" />
+      <TriggerFunction className="DebugPage__Section" />
       <ErrorReporting className="DebugPage__Section" />
     </Container>
   )

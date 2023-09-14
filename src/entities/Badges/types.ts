@@ -14,6 +14,7 @@ export enum BadgeStatusReason {
   TenureEnded = 'tenure ended',
   Minted = 'Badge minted by user',
   BurnedByUser = 'Badge burned by user',
+  Other = 'other',
 }
 
 export type Badge = {
@@ -21,8 +22,10 @@ export type Badge = {
   description: string
   image: string
   status: BadgeStatus
+  statusReason: BadgeStatusReason
   isPastBadge: boolean
   createdAt: number
+  transactionHash: string
 }
 
 export enum ErrorReason {
@@ -54,9 +57,18 @@ export function isBadgeStatus(value: string | null | undefined): boolean {
   return !!value && new Set<string>(Object.values(BadgeStatus)).has(value)
 }
 
+export function isBadgeStatusReason(value: string | null | undefined): boolean {
+  return !!value && new Set<string>(Object.values(BadgeStatusReason)).has(value)
+}
+
 export function toBadgeStatus(value: string | null | undefined): BadgeStatus {
   if (isBadgeStatus(value)) return value as BadgeStatus
   else throw new Error(`Invalid BadgeStatus ${value}`)
+}
+
+export function toBadgeStatusReason(value: string | null | undefined): BadgeStatusReason {
+  if (isBadgeStatusReason(value)) return value as BadgeStatusReason
+  else throw new Error(`Invalid BadgeStatusReason ${value}`)
 }
 
 export function isPastBadge(badge: OtterspaceBadge) {
@@ -76,7 +88,9 @@ export function toGovernanceBadge(otterspaceBadge: OtterspaceBadge) {
     createdAt: otterspaceBadge.createdAt,
     image: getIpfsHttpsLink(image),
     status: toBadgeStatus(otterspaceBadge.status),
+    statusReason: toBadgeStatusReason(otterspaceBadge.statusReason),
     isPastBadge: isPastBadge(otterspaceBadge),
+    transactionHash: otterspaceBadge.transactionHash || '',
   }
   return badge
 }
@@ -102,4 +116,13 @@ export function toOtterspaceRevokeReason(
   orElse: (value: string | null | undefined) => never
 ): OtterspaceRevokeReason {
   return isOtterspaceRevokeReason(value) ? (value as OtterspaceRevokeReason) : orElse(value)
+}
+
+export function shouldDisplayBadge(badge: Badge) {
+  return (
+    badge.status !== BadgeStatus.Burned &&
+    !(badge.status === BadgeStatus.Revoked && badge.statusReason === BadgeStatusReason.Other) &&
+    badge.name &&
+    badge.name.length > 0
+  )
 }

@@ -2,8 +2,8 @@ import React, { Fragment } from 'react'
 
 import { Reaction } from '../../../entities/SurveyTopic/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
-import Pipe from '../../Common/Pipe'
 
+import Pipe from './Pipe'
 import ReactionCounter from './ReactionCounter'
 import './SurveyTopicResult.css'
 

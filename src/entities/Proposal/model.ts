@@ -15,11 +15,10 @@ import isUUID from 'validator/lib/isUUID'
 
 import Time from '../../utils/date/Time'
 import CoauthorModel from '../Coauthor/model'
+import { CoauthorStatus } from '../Coauthor/types'
 import { BUDGETING_START_DATE } from '../Grant/constants'
 import { OldGrantCategory, SubtypeAlternativeOptions, isGrantSubtype } from '../Grant/types'
 import SubscriptionModel from '../Subscription/model'
-
-import { CoauthorStatus } from './../Coauthor/types'
 
 import tsquery from './tsquery'
 import { ProposalAttributes, ProposalStatus, ProposalType, isProposalType } from './types'
@@ -82,7 +81,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         ${objectValues(keys, [proposal])}
     `
 
-    return this.query(sql) as any
+    return this.namedQuery('create_proposal', sql) as any
   }
 
   static update<U extends QueryPart = any, P extends QueryPart = any>(
@@ -111,7 +110,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         )}
     `
 
-    return this.query(sql) as any
+    return this.namedQuery('update_proposal', sql) as any
   }
 
   static async countAll() {
@@ -127,7 +126,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
           SQL`, `
         )})`
 
-    const results = await this.query(query)
+    const results = await this.namedQuery('find_from_snapshot_ids', query)
     return results.map((item) => ProposalModel.parse(item))
   }
 
@@ -140,7 +139,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         OFFSET ${page * SITEMAP_ITEMS_PER_PAGE} LIMIT ${SITEMAP_ITEMS_PER_PAGE}
     `
 
-    return this.query(query)
+    return this.namedQuery('get_sitemap_proposals', query)
   }
 
   static async activateProposals() {
@@ -153,7 +152,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
           AND "start_at" <= now()
     `
 
-    return this.rowCount(query)
+    return this.namedRowCount('activate_proposals_count', query)
   }
 
   static async getActiveGrantProposals(from?: Date, to?: Date) {
@@ -168,7 +167,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
           ORDER BY created_at ASC
     `
 
-    const result = await this.query(query)
+    const result = await this.namedQuery('active_grant_proposals', query)
     return result.map(ProposalModel.parse)
   }
 
@@ -183,7 +182,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
           ORDER BY created_at ASC
     `
 
-    const result = await this.query(query)
+    const result = await this.namedQuery('pending_new_grants', query)
     return result.map(ProposalModel.parse)
   }
 
@@ -197,7 +196,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
           ORDER BY created_at ASC
     `
 
-    const result = await this.query(query)
+    const result = await this.namedQuery('finishable_proposals', query)
     return result.map(ProposalModel.parse)
   }
 
@@ -218,7 +217,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
           AND "id" IN (${join(ids)})
     `
 
-    return this.rowCount(query)
+    return this.namedRowCount('finished_proposals_count', query)
   }
 
   private static getSubtypeQuery(subtype: string) {
@@ -275,7 +274,9 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       return 0
     }
 
-    const result = await this.query(SQL`
+    const result = await this.namedQuery(
+      'proposals_total',
+      SQL`
     SELECT COUNT(*) as "total"
     FROM ${table(ProposalModel)} p
           ${conditional(!!subscribed, SQL`INNER JOIN ${table(SubscriptionModel)} s ON s."proposal_id" = p."id"`)}
@@ -307,7 +308,8 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         !!timeFrame && timeFrameKey === 'finish_at',
         SQL`AND p."finish_at" > NOW() AND p."finish_at" < ${timeFrame}`
       )}
-      ${conditional(!!search, SQL`AND "rank" > 0`)}`)
+      ${conditional(!!search, SQL`AND "rank" > 0`)}`
+    )
 
     return (!!result && result[0] && Number(result[0].total)) || 0
   }
@@ -367,7 +369,9 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     const sqlSnapshotIds = snapshotIds?.split(',').map((id) => SQL`${id}`)
     const sqlSnapshotIdsJoin = sqlSnapshotIds ? join(sqlSnapshotIds) : null
 
-    const proposals = await this.query(SQL`
+    const proposals = await this.namedQuery(
+      'proposals_list',
+      SQL`
     SELECT p.*${conditional(!!coauthor && !user, SQL`, c."coauthors"`)}
     FROM ${table(ProposalModel)} p
         ${conditional(!!subscribed, SQL`INNER JOIN ${table(SubscriptionModel)} s ON s."proposal_id" = p."id"`)}
@@ -406,7 +410,8 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       min: 0,
       max: 100,
       defaultValue: 100,
-    })} ${offsetQuery(offset)}`)
+    })} ${offsetQuery(offset)}`
+    )
 
     return proposals.map(this.parse)
   }
