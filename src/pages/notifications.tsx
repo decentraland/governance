@@ -12,7 +12,7 @@ import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectF
 import { Governance } from '../clients/Governance'
 import Heading from '../components/Common/Typography/Heading'
 import Text from '../components/Common/Typography/Text'
-import LogIn from '../components/User/LogIn'
+import LogIn from '../components/Layout/LogIn'
 import useIsDebugAddress from '../hooks/useIsDebugAddress'
 import { NotificationType, getCaipAddress } from '../utils/notifications'
 
