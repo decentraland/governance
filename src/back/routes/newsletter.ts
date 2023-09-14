@@ -6,8 +6,8 @@ import fetch from 'isomorphic-fetch'
 import isEmail from 'validator/lib/isEmail'
 
 import { ErrorService } from '../../services/ErrorService'
+import { NewsletterSubscriptionResult } from '../../shared/types/newsletter'
 import { ErrorCategory } from '../../utils/errorCategories'
-import { NewsletterSubscriptionResult } from '../types/newsletter'
 
 export default routes((router) => {
   router.post('/newsletter-subscribe', handleAPI(handleSubscription))
