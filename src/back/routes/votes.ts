@@ -25,9 +25,7 @@ export default routes((route) => {
 
 export async function getProposalVotes(req: Request<{ proposal: string }>) {
   const refresh = req.query.refresh === 'true'
-  const id = req.params.proposal
-
-  validateProposalId(id)
+  const id = validateProposalId(req.params.proposal)
 
   const proposal = await ProposalService.getProposal(id)
   const latestVotes = await VoteService.getVotes(id)

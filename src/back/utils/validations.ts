@@ -58,13 +58,11 @@ export function validateProposalFields(fields: unknown) {
   }
 }
 
-export function validateProposalId(id?: string, required?: 'optional') {
-  if (required !== 'optional' && (!id || !isUUID(id))) {
+export function validateProposalId(id?: string) {
+  if (!(id && isUUID(id))) {
     throw new RequestError('Invalid proposal id', RequestError.BadRequest)
   }
-  if (id && !isUUID(id)) {
-    throw new RequestError('Invalid proposal id', RequestError.BadRequest)
-  }
+  return id
 }
 
 export function validateAddress(address: string) {
