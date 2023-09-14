@@ -85,7 +85,7 @@ async function uploadBadgeSpec(req: WithAuth): Promise<BadgeCreationResult> {
 
   const { title, description, imgUrl, expiresAt } = req.body
   validateRequiredStrings(['title', 'description', 'imgUrl'], req.body)
-  validateDate(expiresAt)
+  validateDate(expiresAt, 'optional')
 
   try {
     const result = await storeBadgeSpec({

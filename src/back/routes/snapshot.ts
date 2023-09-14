@@ -5,7 +5,12 @@ import { Request } from 'express'
 
 import { SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
 import { SnapshotService } from '../../services/SnapshotService'
-import { validateAddress, validateDates, validateFields, validateProposalSnapshotId } from '../utils/validations'
+import {
+  validateAddress,
+  validateDates,
+  validateProposalFields,
+  validateProposalSnapshotId,
+} from '../utils/validations'
 
 export default routes((router) => {
   router.get('/snapshot/status-space/:spaceName', handleAPI(getStatusAndSpace))
@@ -38,25 +43,25 @@ async function getProposalVotes(req: Request<{ proposalSnapshotId?: string }>) {
 
 async function getAllVotesBetweenDates(req: Request): Promise<SnapshotVote[]> {
   const { start, end } = req.body
-  validateDates(start, end)
+  const { validatedStart, validatedEnd } = validateDates(start, end)
 
-  return await SnapshotService.getAllVotesBetweenDates(new Date(start), new Date(end))
+  return await SnapshotService.getAllVotesBetweenDates(validatedStart, validatedEnd)
 }
 
 async function getProposals(req: Request) {
   const { start, end, fields } = req.body
-  validateDates(start, end)
-  validateFields(fields)
+  const { validatedStart, validatedEnd } = validateDates(start, end)
+  validateProposalFields(fields)
 
-  return await SnapshotService.getProposals(new Date(start), new Date(end), fields)
+  return await SnapshotService.getProposals(validatedStart, validatedEnd, fields)
 }
 
 async function getPendingProposals(req: Request) {
   const { start, end, fields, limit } = req.body
-  validateDates(start, end)
-  validateFields(fields)
+  const { validatedStart, validatedEnd } = validateDates(start, end)
+  validateProposalFields(fields)
 
-  return await SnapshotService.getPendingProposals(new Date(start), new Date(end), fields, limit)
+  return await SnapshotService.getPendingProposals(validatedStart, validatedEnd, fields, limit)
 }
 
 async function getVpDistribution(req: Request<{ address: string; proposalSnapshotId?: string }>) {

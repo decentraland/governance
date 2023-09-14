@@ -117,8 +117,8 @@ async function getAddressVotesWithProposals(req: Request) {
 
 async function getTopVoters(req: Request) {
   const { start, end, limit } = req.body
-  validateDates(start, end)
+  const { validatedStart, validatedEnd } = validateDates(start, end)
   const validLimit = isNumber(limit) ? limit : undefined
 
-  return await VoteService.getTopVoters(start, end, validLimit)
+  return await VoteService.getTopVoters(validatedStart, validatedEnd, validLimit)
 }

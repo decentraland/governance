@@ -6,14 +6,16 @@ import { SnapshotProposal } from '../../clients/SnapshotGraphqlTypes'
 import isDebugAddress from '../../entities/Debug/isDebugAddress'
 
 export function validateDates(start?: string, end?: string) {
-  validateDate(start)
-  validateDate(end)
+  const validatedStart = new Date(validateDate(start)!)
+  const validatedEnd = new Date(validateDate(end)!)
+  return { validatedStart, validatedEnd }
 }
 
 export function validateDate(date?: string, required?: 'optional') {
   if ((required !== 'optional' && !(date && isValidDate(date))) || (date && !isValidDate(date))) {
     throw new RequestError('Invalid date', RequestError.BadRequest)
   }
+  return date
 }
 
 function isValidDate(date: string) {
@@ -22,7 +24,7 @@ function isValidDate(date: string) {
   return !isNaN(parsedDate.getTime())
 }
 
-export function validateFields(fields: unknown) {
+export function validateProposalFields(fields: unknown) {
   if (!fields || !Array.isArray(fields) || fields.length === 0) {
     throw new RequestError('Invalid fields', RequestError.BadRequest)
   }
