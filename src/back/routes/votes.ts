@@ -25,9 +25,7 @@ export default routes((route) => {
 
 export async function getProposalVotes(req: Request<{ proposal: string }>) {
   const refresh = req.query.refresh === 'true'
-  const id = req.params.proposal
-
-  validateProposalId(id)
+  const id = validateProposalId(req.params.proposal)
 
   const proposal = await ProposalService.getProposal(id)
   const latestVotes = await VoteService.getVotes(id)
@@ -77,8 +75,7 @@ export async function getCachedVotes(req: Request) {
 }
 
 async function getAddressVotesWithProposals(req: Request) {
-  const address = req.params.address
-  validateAddress(address)
+  const address = validateAddress(req.params.address)
   const first = Number(req.query.first) || undefined
   const skip = Number(req.query.skip) || undefined
 
@@ -117,8 +114,8 @@ async function getAddressVotesWithProposals(req: Request) {
 
 async function getTopVoters(req: Request) {
   const { start, end, limit } = req.body
-  validateDates(start, end)
+  const { validatedStart, validatedEnd } = validateDates(start, end)
   const validLimit = isNumber(limit) ? limit : undefined
 
-  return await VoteService.getTopVoters(start, end, validLimit)
+  return await VoteService.getTopVoters(validatedStart, validatedEnd, validLimit)
 }

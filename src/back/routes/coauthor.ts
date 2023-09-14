@@ -44,8 +44,7 @@ export async function filterCoauthorRequests(requests: CoauthorAttributes[]) {
 }
 
 export async function getProposals(req: Request) {
-  const address = req.params.address
-  validateAddress(address)
+  const address = validateAddress(req.params.address)
   const status = toCoauthorStatusType(req.params.status)
   const requests = await CoauthorModel.findProposals(address, status)
   return await filterCoauthorRequests(requests)
