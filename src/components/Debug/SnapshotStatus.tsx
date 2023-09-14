@@ -28,7 +28,7 @@ export default function SnapshotStatus() {
     const status = await Governance.get().getSnapshotStatus()
     logIfNotNormal(status)
     const show =
-      status.scoresStatus.health === ServiceHealth.Slow || status.scoresStatus.health === ServiceHealth.Failing
+      true || status.scoresStatus.health === ServiceHealth.Slow || status.scoresStatus.health === ServiceHealth.Failing
     setShowTopBar(show)
     setStatus((prev) => ({ ...prev, snapshotStatusBarOpen: show }))
   }

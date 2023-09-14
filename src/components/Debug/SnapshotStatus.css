@@ -9,13 +9,13 @@
   z-index: 21;
   position: relative;
   transition: all 0.75s ease 0s;
+  padding-left: 26px;
 }
 
 .SnapshotStatus__TopBar--visible {
   height: 50px;
   padding-top: 4px;
-  padding-left: 31px;
-  gap: 16px;
+  gap: 24px;
 }
 
 .SnapshotStatus__Text {
@@ -24,6 +24,7 @@
 
 @media (min-width: 768px) {
   .SnapshotStatus__TopBar {
+    padding-left: 32px;
     align-items: flex-start;
   }
 
