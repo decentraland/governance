@@ -136,6 +136,8 @@ export enum ServiceHealth {
   Normal = 'normal',
   Slow = 'slow',
   Failing = 'failing',
+  Unknown = 'unknown',
 }
 export type ServiceStatus = { health: ServiceHealth; responseTime: number }
 export type SnapshotStatus = { scoresStatus: ServiceStatus; graphQlStatus: ServiceStatus }
+export const UNKNOWN_STATUS = { health: ServiceHealth.Unknown, responseTime: 0 }

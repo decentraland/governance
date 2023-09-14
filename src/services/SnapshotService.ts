@@ -10,6 +10,7 @@ import {
   SnapshotProposal,
   SnapshotStatus,
   SnapshotVote,
+  UNKNOWN_STATUS,
   VpDistribution,
 } from '../clients/SnapshotTypes'
 import * as templates from '../entities/Proposal/templates'
@@ -27,31 +28,26 @@ import RpcService from './RpcService'
 
 const DELEGATION_STRATEGY_NAME = 'delegation'
 const SLOW_RESPONSE_TIME_THRESHOLD_IN_MS = 8000 // 8 seconds
-const STATUS_CACHE_TIMEOUT_IN_SECONDS = 60 // 1 minute
 
 export class SnapshotService {
   public static async getStatus(): Promise<SnapshotStatus | undefined> {
-    try {
-      const cachedStatus = CacheService.get<SnapshotStatus>('snapshotStatus')
-      if (cachedStatus) {
-        return cachedStatus
-      }
-
-      const snapshotStatus = await this.ping()
-      CacheService.set('snapshotStatus', snapshotStatus, STATUS_CACHE_TIMEOUT_IN_SECONDS)
-
-      logger.log('Snapshot status:', snapshotStatus)
-      return snapshotStatus
-    } catch (error) {
-      ErrorService.report('Unable to determine snapshot status', { error, category: ErrorCategory.Snapshot })
-      return undefined
+    const cachedStatus = CacheService.get<SnapshotStatus>('snapshotStatus')
+    if (cachedStatus) {
+      return cachedStatus
     }
+    return { scoresStatus: UNKNOWN_STATUS, graphQlStatus: UNKNOWN_STATUS }
   }
 
-  private static async ping(): Promise<SnapshotStatus> {
-    const { status: graphQlStatus, addressesSample } = await this.pingGraphQl()
-    const scoresStatus = await this.pingScores(addressesSample)
-    return { scoresStatus, graphQlStatus }
+  public static async ping() {
+    try {
+      const { status: graphQlStatus, addressesSample } = await this.pingGraphQl()
+      const scoresStatus = await this.pingScores(addressesSample)
+      const snapshotStatus = { scoresStatus, graphQlStatus }
+      CacheService.set('snapshotStatus', snapshotStatus)
+      logger.log('Snapshot status:', snapshotStatus)
+    } catch (error) {
+      ErrorService.report('Unable to determine snapshot status', { error, category: ErrorCategory.Snapshot })
+    }
   }
 
   private static async pingScores(addressesSample: string[]): Promise<ServiceStatus> {
