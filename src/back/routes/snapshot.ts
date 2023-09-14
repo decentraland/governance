@@ -35,10 +35,8 @@ async function getAddressesVotes(req: Request) {
 }
 
 async function getProposalVotes(req: Request<{ proposalSnapshotId?: string }>) {
-  const { proposalSnapshotId } = req.params
-  validateProposalSnapshotId(proposalSnapshotId)
-
-  return await SnapshotService.getProposalVotes(proposalSnapshotId!)
+  const proposalSnapshotId = validateProposalSnapshotId(req.params.proposalSnapshotId)
+  return await SnapshotService.getProposalVotes(proposalSnapshotId)
 }
 
 async function getAllVotesBetweenDates(req: Request): Promise<SnapshotVote[]> {
@@ -79,8 +77,6 @@ async function getScores(req: Request) {
 }
 
 async function getProposalScores(req: Request<{ proposalSnapshotId?: string }>) {
-  const { proposalSnapshotId } = req.params
-  validateProposalSnapshotId(proposalSnapshotId)
-
-  return await SnapshotService.getProposalScores(proposalSnapshotId!)
+  const proposalSnapshotId = validateProposalSnapshotId(req.params.proposalSnapshotId)
+  return await SnapshotService.getProposalScores(proposalSnapshotId)
 }

@@ -76,6 +76,7 @@ export function validateProposalSnapshotId(proposalSnapshotId?: string) {
   if (!proposalSnapshotId || proposalSnapshotId.length === 0) {
     throw new RequestError('Invalid snapshot id')
   }
+  return proposalSnapshotId
 }
 
 export function validateRequiredString(fieldName: string, value?: string) {
