@@ -75,8 +75,7 @@ export async function getCachedVotes(req: Request) {
 }
 
 async function getAddressVotesWithProposals(req: Request) {
-  const address = req.params.address
-  validateAddress(address)
+  const address = validateAddress(req.params.address)
   const first = Number(req.query.first) || undefined
   const skip = Number(req.query.skip) || undefined
 

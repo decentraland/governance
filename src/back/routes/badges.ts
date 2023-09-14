@@ -33,8 +33,7 @@ export default routes((router) => {
 })
 
 async function getBadges(req: Request<{ address: string }>): Promise<UserBadges> {
-  const address = req.params.address
-  validateAddress(address)
+  const address = validateAddress(req.params.address)
   return await BadgesService.getBadges(address)
 }
 

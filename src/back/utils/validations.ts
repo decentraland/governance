@@ -65,10 +65,11 @@ export function validateProposalId(id?: string) {
   return id
 }
 
-export function validateAddress(address: string) {
+export function validateAddress(address?: string) {
   if (!address || !isEthereumAddress(address)) {
     throw new RequestError(`Invalid address ${address}`, RequestError.BadRequest)
   }
+  return address
 }
 
 export function validateProposalSnapshotId(proposalSnapshotId?: string) {

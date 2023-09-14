@@ -66,9 +66,7 @@ async function getPendingProposals(req: Request) {
 
 async function getVpDistribution(req: Request<{ address: string; proposalSnapshotId?: string }>) {
   const { address, proposalSnapshotId } = req.params
-  validateAddress(address)
-
-  return await SnapshotService.getVpDistribution(address, proposalSnapshotId)
+  return await SnapshotService.getVpDistribution(validateAddress(address), proposalSnapshotId)
 }
 
 async function getScores(req: Request) {

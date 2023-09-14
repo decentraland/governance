@@ -625,9 +625,8 @@ async function getGrants(): Promise<CategorizedGrants> {
 
 // TODO: Still in use by user profile page.
 async function getGrantsByUser(req: Request): ReturnType<typeof getGrants> {
-  const address = req.params.address
+  const address = validateAddress(req.params.address)
   const isCoauthoring = req.query.coauthor === 'true'
-  validateAddress(address)
 
   let coauthoringProposalIds = new Set<string>()
 
