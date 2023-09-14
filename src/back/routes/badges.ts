@@ -103,9 +103,7 @@ async function createBadgeSpec(req: WithAuth): Promise<BadgeCreationResult> {
   const user = req.auth
   validateDebugAddress(user)
 
-  const { badgeCid } = req.body
-  validateRequiredString('badgeCid', badgeCid)
-
+  const badgeCid = validateRequiredString('badgeCid', req.body.badgeCid)
   try {
     const result = await createSpec(badgeCid)
     return { status: ActionStatus.Success, badgeCid: JSON.stringify(result) }

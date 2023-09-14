@@ -83,6 +83,7 @@ export function validateRequiredString(fieldName: string, value?: string) {
   if (!value || value.length === 0) {
     throw new RequestError(`Invalid ${fieldName}`, RequestError.BadRequest)
   }
+  return value
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
