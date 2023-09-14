@@ -37,7 +37,7 @@ export class SnapshotService {
         return cachedStatus
       }
 
-      const snapshotStatus = await this.sense()
+      const snapshotStatus = await this.ping()
       CacheService.set('snapshotStatus', snapshotStatus, STATUS_CACHE_TIMEOUT_IN_SECONDS)
 
       logger.log('Snapshot status:', snapshotStatus)
@@ -48,13 +48,13 @@ export class SnapshotService {
     }
   }
 
-  private static async sense(): Promise<SnapshotStatus> {
-    const { status: graphQlStatus, addressesSample } = await this.senseGraphQl()
-    const scoresStatus = await this.senseScores(addressesSample)
+  private static async ping(): Promise<SnapshotStatus> {
+    const { status: graphQlStatus, addressesSample } = await this.pingGraphQl()
+    const scoresStatus = await this.pingScores(addressesSample)
     return { scoresStatus, graphQlStatus }
   }
 
-  private static async senseScores(addressesSample: string[]): Promise<ServiceStatus> {
+  private static async pingScores(addressesSample: string[]): Promise<ServiceStatus> {
     let scoresHealth = ServiceHealth.Normal
     const responseTime = await SnapshotApi.get().ping(addressesSample)
     if (responseTime === -1) {
@@ -65,7 +65,7 @@ export class SnapshotService {
     return { health: scoresHealth, responseTime }
   }
 
-  private static async senseGraphQl(): Promise<{ status: ServiceStatus; addressesSample: string[] }> {
+  private static async pingGraphQl(): Promise<{ status: ServiceStatus; addressesSample: string[] }> {
     let health = ServiceHealth.Normal
     const { responseTime, addressesSample } = await SnapshotGraphql.get().ping()
     if (responseTime === -1) {

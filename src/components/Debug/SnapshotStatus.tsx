@@ -28,7 +28,7 @@ export default function SnapshotStatus() {
     const status = await Governance.get().getSnapshotStatus()
     logIfNotNormal(status)
     const show =
-      true || status.scoresStatus.health === ServiceHealth.Slow || status.scoresStatus.health === ServiceHealth.Failing
+      status.scoresStatus.health === ServiceHealth.Slow || status.scoresStatus.health === ServiceHealth.Failing
     setShowTopBar(show)
     setStatus((prev) => ({ ...prev, snapshotStatusBarOpen: show }))
   }
@@ -39,13 +39,11 @@ export default function SnapshotStatus() {
   }, [])
 
   return (
-    <>
-      <div className={classNames(`SnapshotStatus__TopBar`, showTopBar && 'SnapshotStatus__TopBar--visible')}>
-        <WarningTriangle size="18" />
-        <Markdown size="sm" componentsClassNames={{ p: 'SnapshotStatus__Text', strong: 'SnapshotStatus__Text' }}>
-          {t('page.debug.snapshot_status.label')}
-        </Markdown>
-      </div>
-    </>
+    <div className={classNames(`SnapshotStatus__TopBar`, showTopBar && 'SnapshotStatus__TopBar--visible')}>
+      <WarningTriangle size="18" />
+      <Markdown size="sm" componentsClassNames={{ p: 'SnapshotStatus__Text', strong: 'SnapshotStatus__Text' }}>
+        {t('page.debug.snapshot_status.label')}
+      </Markdown>
+    </div>
   )
 }

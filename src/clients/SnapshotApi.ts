@@ -156,7 +156,9 @@ export class SnapshotApi {
   }
 
   async getScores(addresses: string[]) {
-    const { formattedAddresses, spaceName, network, strategies, scoreApiUrl } = await this.prepareArgs(addresses)
+    const { formattedAddresses, spaceName, network, strategies, scoreApiUrl } = await this.prepareScoresQueryArgs(
+      addresses
+    )
 
     try {
       const scores = await snapshot.utils.getScores(
@@ -189,7 +191,9 @@ export class SnapshotApi {
   async ping(addressesSample: string[]) {
     const addresses = addressesSample.length === 0 ? DEBUG_ADDRESSES : addressesSample
     try {
-      const { formattedAddresses, spaceName, network, strategies, scoreApiUrl } = await this.prepareArgs(addresses)
+      const { formattedAddresses, spaceName, network, strategies, scoreApiUrl } = await this.prepareScoresQueryArgs(
+        addresses
+      )
       const now = new Date()
       const startTime = now.getTime()
       await snapshot.utils.getScores(spaceName, strategies, network, formattedAddresses, undefined, scoreApiUrl)
@@ -200,7 +204,7 @@ export class SnapshotApi {
     }
   }
 
-  private async prepareArgs(addresses: string[]) {
+  private async prepareScoresQueryArgs(addresses: string[]) {
     const formattedAddresses = addresses.map((address) => getChecksumAddress(address))
     const spaceName = SnapshotApi.getSpaceName()
     const network = getEnvironmentChainId().toString()
