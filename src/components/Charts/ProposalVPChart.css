@@ -5,3 +5,20 @@
 .ProposalVPChart:active {
   cursor: grabbing;
 }
+
+#ProposalVPChartTooltip {
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 3px;
+  color: white;
+  opacity: 1;
+  pointer-events: none;
+  position: absolute;
+  transform: translate(-50%, 0);
+  transition: all 0.1s ease;
+  width: max-content;
+  padding: 4px;
+}
+
+#ProposalVPChartTooltip .container {
+  margin: 0;
+}

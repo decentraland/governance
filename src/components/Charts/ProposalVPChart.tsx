@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Chart } from 'react-chartjs-2'
 
-import { ChartData, Chart as ChartJS, TooltipItem } from 'chart.js'
+import { ChartData, Chart as ChartJS } from 'chart.js'
 import 'chart.js/auto'
 import 'chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm'
 import annotationPlugin from 'chartjs-plugin-annotation'
@@ -13,7 +13,15 @@ import useFormatMessage from '../../hooks/useFormatMessage'
 import Section from '../Proposal/View/Section'
 
 import './ProposalVPChart.css'
-import { getDataset, getSegregatedVotes, getSortedVotes } from './ProposalVPChart.utils'
+import {
+  externalTooltipHandler,
+  getAbstainColor,
+  getDataset,
+  getNoColor,
+  getSegregatedVotes,
+  getSortedVotes,
+  getYesColor,
+} from './ProposalVPChart.utils'
 
 ChartJS.register(zoomPlugin, annotationPlugin)
 
@@ -22,9 +30,12 @@ interface Props {
   voteMap: Record<string, Vote>
 }
 
-const YES_COLOR = '#44b600'
-const NO_COLOR = '#ff4545'
-const ABSTAIN_COLOR = '#736e7d'
+const COMMON_DATASET_OPTIONS = {
+  fill: false,
+  stepped: 'before' as const,
+  pointHoverRadius: 3,
+  pointHoverBorderWidth: 8,
+}
 
 function ProposalVPChart({ requiredToPass, voteMap }: Props) {
   const t = useFormatMessage()
@@ -46,26 +57,26 @@ function ProposalVPChart({ requiredToPass, voteMap }: Props) {
         {
           label: 'Yes',
           data: getDataset(yesVotes),
-          fill: false,
-          borderColor: YES_COLOR,
-          backgroundColor: YES_COLOR,
-          stepped: 'before',
+          borderColor: getYesColor(),
+          backgroundColor: getYesColor(),
+          pointHoverBorderColor: getYesColor(0.4),
+          ...COMMON_DATASET_OPTIONS,
         },
         {
           label: 'No',
           data: getDataset(noVotes),
-          fill: false,
-          borderColor: NO_COLOR,
-          backgroundColor: NO_COLOR,
-          stepped: 'before',
+          borderColor: getNoColor(),
+          backgroundColor: getNoColor(),
+          pointHoverBorderColor: getNoColor(0.4),
+          ...COMMON_DATASET_OPTIONS,
         },
         {
           label: 'Abstain',
           data: getDataset(abstainVotes),
-          fill: false,
-          borderColor: ABSTAIN_COLOR,
-          backgroundColor: ABSTAIN_COLOR,
-          stepped: 'before',
+          borderColor: getAbstainColor(),
+          backgroundColor: getAbstainColor(),
+          pointHoverBorderColor: getAbstainColor(0.4),
+          ...COMMON_DATASET_OPTIONS,
         },
       ],
     })
@@ -83,21 +94,24 @@ function ProposalVPChart({ requiredToPass, voteMap }: Props) {
         },
       },
       tooltip: {
-        displayColors: false,
-        callbacks: {
-          label: (context: TooltipItem<'line'>) => {
-            const vp = context.formattedValue
-            const choice = context.dataset.label
-            return t('page.proposal_view.votes_chart.tooltip_label', { choice, vp })
-          },
-          afterLabel: (context: TooltipItem<'line'>) => {
-            const idx = context.dataIndex
-            const choice = context.dataset.label as keyof typeof segregatedVotesMap
-            const vote = segregatedVotesMap[choice][idx]
-            const formattedVP = vote.vp.toLocaleString('en-US')
-            return t('page.proposal_view.votes_chart.tooltip_voter', { address: vote.address, vp: formattedVP })
-          },
-        },
+        // displayColors: false,
+        // callbacks: {
+        //   label: (context: TooltipItem<'line'>) => {
+        //     const vp = context.formattedValue
+        //     const choice = context.dataset.label
+        //     return t('page.proposal_view.votes_chart.tooltip_label', { choice, vp })
+        //   },
+        //   afterLabel: (context: TooltipItem<'line'>) => {
+        //     const idx = context.dataIndex
+        //     const choice = context.dataset.label as keyof typeof segregatedVotesMap
+        //     const vote = segregatedVotesMap[choice][idx]
+        //     const formattedVP = vote.vp.toLocaleString('en-US')
+        //     return t('page.proposal_view.votes_chart.tooltip_voter', { address: vote.address, vp: formattedVP })
+        //   },
+        // },
+        enabled: false,
+        position: 'nearest' as const,
+        external: externalTooltipHandler,
       },
       zoom: {
         zoom: {
@@ -153,10 +167,19 @@ function ProposalVPChart({ requiredToPass, voteMap }: Props) {
             day: 'DD/MM',
           },
         },
+        ticks: {
+          autoSkip: true,
+          maxTicksLimit: 4,
+        },
+        grid: {
+          drawOnChartArea: false,
+        },
       },
       y: {
         ticks: {
           callback: (value: number | string) => `${YAxisFormat(Number(value))} VP`,
+          autoSkip: true,
+          maxTicksLimit: 5,
         },
         min: 0,
       },
