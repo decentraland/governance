@@ -3,18 +3,19 @@ import React from 'react'
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 import { useLocation } from '@reach/router'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import env from 'decentraland-gatsby/dist/utils/env'
 import { Footer } from 'decentraland-ui/dist/components/Footer/Footer'
 import { Navbar, NavbarProps } from 'decentraland-ui/dist/components/Navbar/Navbar'
 import type { PageProps } from 'gatsby'
 
+import { config } from '../../config'
 import { isProjectPath } from '../../utils/locations'
 import WalletSelectorModal from '../Modal/WalletSelectorModal'
 import WrongNetworkModal from '../Modal/WrongNetworkModal'
 
 import './Layout.css'
 
-const CHAIN_ID: ChainId[] = env('GATSBY_DEFAULT_CHAIN_ID', String(ChainId.ETHEREUM_MAINNET))
+const CHAIN_ID: ChainId[] = config
+  .get('GATSBY_DEFAULT_CHAIN_ID', String(ChainId.ETHEREUM_MAINNET))
   .split(',')
   .filter(Boolean)
   .map((chainId) => Number(chainId))

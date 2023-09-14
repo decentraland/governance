@@ -9,6 +9,12 @@ export type Notification = {
   }
 }
 
+export const NotificationType = {
+  BROADCAST: 1,
+  TARGET: 3,
+  SUBSET: 4,
+}
+
 export function getCaipAddress(address: string, chainId: number) {
   return `eip155:${chainId}:${address}`
 }
