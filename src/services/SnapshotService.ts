@@ -28,10 +28,11 @@ import RpcService from './RpcService'
 
 const DELEGATION_STRATEGY_NAME = 'delegation'
 const SLOW_RESPONSE_TIME_THRESHOLD_IN_MS = 8000 // 8 seconds
+const SNAPSHOT_STATUS_CACHE_KEY = 'SNAPSHOT_STATUS'
 
 export class SnapshotService {
   public static async getStatus(): Promise<SnapshotStatus | undefined> {
-    const cachedStatus = CacheService.get<SnapshotStatus>('snapshotStatus')
+    const cachedStatus = CacheService.get<SnapshotStatus>(SNAPSHOT_STATUS_CACHE_KEY)
     if (cachedStatus) {
       return cachedStatus
     }
@@ -43,7 +44,7 @@ export class SnapshotService {
       const { status: graphQlStatus, addressesSample } = await this.pingGraphQl()
       const scoresStatus = await this.pingScores(addressesSample)
       const snapshotStatus = { scoresStatus, graphQlStatus }
-      CacheService.set('snapshotStatus', snapshotStatus)
+      CacheService.set(SNAPSHOT_STATUS_CACHE_KEY, snapshotStatus)
       logger.log('Snapshot status:', snapshotStatus)
     } catch (error) {
       ErrorService.report('Unable to determine snapshot status', { error, category: ErrorCategory.Snapshot })
