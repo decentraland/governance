@@ -9,6 +9,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 import isEmail from 'validator/lib/isEmail'
 
+import { NewsletterSubscriptionResult } from '../../../back/types/newsletter'
 import { Governance } from '../../../clients/Governance'
 import useAsyncTask from '../../../hooks/useAsyncTask'
 import useFormatMessage from '../../../hooks/useFormatMessage'
@@ -20,32 +21,9 @@ import '../ProposalModal.css'
 
 import './NewsletterSubscriptionModal.css'
 
-type NewsletterSubscriptionResult = {
-  email: string
-  error: boolean
-  details: string | null
-}
-
 type Props = Omit<ModalProps, 'children'> & {
   onSubscriptionSuccess?: () => void
   subscribed: boolean
-}
-
-async function subscribe(email: string) {
-  try {
-    await Governance.get().subscribeToNewsletter(email)
-    return {
-      email,
-      error: false,
-      details: null,
-    }
-  } catch (err) {
-    return {
-      email,
-      error: true,
-      details: (err as any).body.detail,
-    }
-  }
 }
 
 export function NewsletterSubscriptionModal({ onSubscriptionSuccess, subscribed, ...props }: Props) {
@@ -89,7 +67,7 @@ export function NewsletterSubscriptionModal({ onSubscriptionSuccess, subscribed,
 
   const [subscribing, handleAccept] = useAsyncTask(async () => {
     if (state.email && isEmail(state.email) && onSubscriptionSuccess) {
-      const subscriptionResult: NewsletterSubscriptionResult = await subscribe(state.email)
+      const subscriptionResult: NewsletterSubscriptionResult = await Governance.get().subscribeToNewsletter(state.email)
       if (subscriptionResult.error) {
         setState({
           isValid: false,

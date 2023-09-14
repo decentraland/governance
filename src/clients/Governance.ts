@@ -4,6 +4,7 @@ import env from 'decentraland-gatsby/dist/utils/env'
 import snakeCase from 'lodash/snakeCase'
 
 import { AirdropOutcome } from '../back/types/AirdropJob'
+import { NewsletterSubscriptionResult } from '../back/types/newsletter'
 import { SpecState } from '../components/Debug/UploadBadgeSpec'
 import { GOVERNANCE_API } from '../constants'
 import { BadgeCreationResult, RevokeOrReinstateResult, UserBadges } from '../entities/Badges/types'
@@ -651,7 +652,7 @@ export class Governance extends API {
   }
 
   async subscribeToNewsletter(email: string) {
-    const response = await this.fetch<ApiResponse<string>>(
+    const response = await this.fetch<ApiResponse<NewsletterSubscriptionResult>>(
       `/newsletter-subscribe`,
       this.options().method('POST').json({
         email,
