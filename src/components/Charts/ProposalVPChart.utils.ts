@@ -1,8 +1,12 @@
 import type { Chart, ScriptableTooltipContext } from 'chart.js'
 
 import { Vote } from '../../entities/Votes/types'
+import { DEFAULT_AVATAR_IMAGE } from '../../utils/Catalyst'
+import { Avatar } from '../../utils/Catalyst/types'
+import Time from '../../utils/date/Time'
 
 type VoteWithAddress = Vote & { address: string }
+type VoteWithProfile = VoteWithAddress & { profile?: Avatar }
 
 const TOOLTIP_ID = 'ProposalVPChartTooltip'
 
@@ -12,18 +16,21 @@ export function getSortedVotes(votesMap: Record<string, Vote>) {
     .sort((a, b) => a.timestamp - b.timestamp)
 }
 
-export function getSegregatedVotes(votes: VoteWithAddress[]) {
-  const yesVotes: VoteWithAddress[] = []
-  const noVotes: VoteWithAddress[] = []
-  const abstainVotes: VoteWithAddress[] = []
+export function getSegregatedVotes(votes: VoteWithAddress[], profileMap: Map<string, Avatar>) {
+  const yesVotes: VoteWithProfile[] = []
+  const noVotes: VoteWithProfile[] = []
+  const abstainVotes: VoteWithProfile[] = []
 
   for (const vote of votes) {
-    if (vote.choice === 1) {
-      yesVotes.push(vote)
-    } else if (vote.choice === 2) {
-      noVotes.push(vote)
-    } else if (vote.choice === 3) {
-      abstainVotes.push(vote)
+    const profile = profileMap.get(vote.address.toLowerCase())
+    const voteWithProfile = { ...vote, profile }
+
+    if (voteWithProfile.choice === 1) {
+      yesVotes.push(voteWithProfile)
+    } else if (voteWithProfile.choice === 2) {
+      noVotes.push(voteWithProfile)
+    } else if (voteWithProfile.choice === 3) {
+      abstainVotes.push(voteWithProfile)
     }
   }
 
@@ -70,13 +77,24 @@ function getOrCreateTooltip(chart: Chart<'line'>) {
   return customTooltip
 }
 
-export function externalTooltipHandler(context: ScriptableTooltipContext<'line'>) {
+type TooltipHandlerProps = {
+  context: ScriptableTooltipContext<'line'>
+  datasetMap: Record<string, VoteWithProfile[]>
+  title: (choice: string, vp: number) => string
+}
+export function externalTooltipHandler({ context, datasetMap, title }: TooltipHandlerProps) {
   // Tooltip Element
   const { chart, tooltip } = context
   const tooltipEl = getOrCreateTooltip(chart)
   const dataPoint = tooltip.dataPoints?.[0].raw as { x: number; y: number } | undefined
   const dataIdx: number | undefined = tooltip.dataPoints?.[0].dataIndex
-  const datasetLabel = tooltip.dataPoints?.[0].dataset.label
+  const datasetLabel = tooltip.dataPoints?.[0].dataset.label || ''
+
+  const vote = datasetMap[datasetLabel]?.[dataIdx]
+
+  const username = vote?.profile?.name || vote?.address.slice(0, 7)
+  const userVP = vote?.vp || 0
+  const formattedTimestamp = Time(dataPoint?.x || 0).format('DD/MM/YY, HH:mm z')
 
   // Hide if no tooltip
   if (tooltip.opacity === 0) {
@@ -84,17 +102,26 @@ export function externalTooltipHandler(context: ScriptableTooltipContext<'line'>
     return
   }
 
+  //Set Avatar
+  const avatar = document.createElement('img')
+  avatar.className = 'avatar'
+  avatar.src = vote?.profile?.avatar?.snapshots?.face256 || DEFAULT_AVATAR_IMAGE
+
   // Set Text
   const textContainer = document.createElement('div')
   textContainer.className = 'container'
 
   const titleElement = document.createElement('div')
-  const title = document.createTextNode(`voted "${datasetLabel}"`)
-  titleElement.appendChild(title)
+  const userElement = document.createElement('strong')
+  const userText = document.createTextNode(username)
+  userElement.appendChild(userText)
+  titleElement.appendChild(userElement)
+  const titleText = document.createTextNode(title(datasetLabel, userVP))
+  titleElement.appendChild(titleText)
   titleElement.className = 'title'
 
   const detailsElement = document.createElement('div')
-  const details = document.createTextNode(`Acc. ${dataPoint?.y.toLocaleString('en-US')} VP`)
+  const details = document.createTextNode(`${formattedTimestamp}. Acc. VP: ${dataPoint?.y.toLocaleString('en-US')}`)
   detailsElement.appendChild(details)
   detailsElement.className = 'details'
 
@@ -107,11 +134,12 @@ export function externalTooltipHandler(context: ScriptableTooltipContext<'line'>
   }
 
   // Add new children
+  tooltipEl.appendChild(avatar)
   tooltipEl.appendChild(textContainer)
 
   const { offsetLeft: positionX, offsetTop: positionY, width } = chart.canvas
 
-  const maxX = width * 0.9
+  const maxX = width * 0.8
 
   // Display, position, and set styles for font
   tooltipEl.style.opacity = '1'

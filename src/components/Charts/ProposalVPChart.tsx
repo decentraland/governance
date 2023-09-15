@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Chart } from 'react-chartjs-2'
 
-import { ChartData, Chart as ChartJS } from 'chart.js'
+import { ChartData, Chart as ChartJS, ScriptableTooltipContext } from 'chart.js'
 import 'chart.js/auto'
 import 'chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm'
 import annotationPlugin from 'chartjs-plugin-annotation'
@@ -9,6 +9,8 @@ import annotationPlugin from 'chartjs-plugin-annotation'
 import { Vote } from '../../entities/Votes/types'
 import useAbbreviatedFormatter from '../../hooks/useAbbreviatedFormatter'
 import useFormatMessage from '../../hooks/useFormatMessage'
+import useProfiles from '../../hooks/useProfiles'
+import { Avatar } from '../../utils/Catalyst/types'
 import Section from '../Proposal/View/Section'
 
 import './ProposalVPChart.css'
@@ -27,6 +29,7 @@ ChartJS.register(annotationPlugin)
 interface Props {
   requiredToPass?: number | null
   voteMap: Record<string, Vote>
+  isLoadingVotes?: boolean
 }
 
 const COMMON_DATASET_OPTIONS = {
@@ -36,18 +39,32 @@ const COMMON_DATASET_OPTIONS = {
   pointHoverBorderWidth: 8,
 }
 
-function ProposalVPChart({ requiredToPass, voteMap }: Props) {
+function ProposalVPChart({ requiredToPass, voteMap, isLoadingVotes }: Props) {
   const t = useFormatMessage()
   const YAxisFormat = useAbbreviatedFormatter()
   const chartRef = useRef<ChartJS>(null)
   const votes = useMemo(() => getSortedVotes(voteMap), [voteMap])
-  const { yesVotes, noVotes, abstainVotes } = useMemo(() => getSegregatedVotes(votes), [votes])
-
+  const { profiles, isLoadingProfiles } = useProfiles(votes.map((vote) => vote.address))
+  const profileByAddress = useMemo(
+    () =>
+      profiles.reduce((acc, { profile }) => {
+        acc.set(profile.ethAddress.toLowerCase(), profile)
+        return acc
+      }, new Map<string, Avatar>()),
+    [profiles]
+  )
+  const { yesVotes, noVotes, abstainVotes } = useMemo(
+    () => getSegregatedVotes(votes, profileByAddress),
+    [profileByAddress, votes]
+  )
   const segregatedVotesMap = {
     Yes: yesVotes,
     No: noVotes,
     Abstain: abstainVotes,
   }
+
+  const tooltipTitle = (choice: string, vp: number) =>
+    t('page.proposal_view.votes_chart.tooltip_title', { choice, vp: vp.toLocaleString('en-US') })
 
   const [chartData, setChartData] = useState<ChartData<'line'>>({ datasets: [] })
   useEffect(() => {
@@ -93,24 +110,10 @@ function ProposalVPChart({ requiredToPass, voteMap }: Props) {
         },
       },
       tooltip: {
-        // displayColors: false,
-        // callbacks: {
-        //   label: (context: TooltipItem<'line'>) => {
-        //     const vp = context.formattedValue
-        //     const choice = context.dataset.label
-        //     return t('page.proposal_view.votes_chart.tooltip_label', { choice, vp })
-        //   },
-        //   afterLabel: (context: TooltipItem<'line'>) => {
-        //     const idx = context.dataIndex
-        //     const choice = context.dataset.label as keyof typeof segregatedVotesMap
-        //     const vote = segregatedVotesMap[choice][idx]
-        //     const formattedVP = vote.vp.toLocaleString('en-US')
-        //     return t('page.proposal_view.votes_chart.tooltip_voter', { address: vote.address, vp: formattedVP })
-        //   },
-        // },
         enabled: false,
         position: 'nearest' as const,
-        external: externalTooltipHandler,
+        external: (context: ScriptableTooltipContext<'line'>) =>
+          externalTooltipHandler({ context, datasetMap: segregatedVotesMap, title: tooltipTitle }),
       },
       annotation: {
         annotations: {
@@ -165,7 +168,7 @@ function ProposalVPChart({ requiredToPass, voteMap }: Props) {
   }
 
   return (
-    <Section title={t('page.proposal_view.votes_chart.title')} isNew>
+    <Section title={t('page.proposal_view.votes_chart.title')} isNew isLoading={isLoadingVotes || isLoadingProfiles}>
       <Chart className="ProposalVPChart" ref={chartRef} options={options} data={chartData} type="line" />
     </Section>
   )

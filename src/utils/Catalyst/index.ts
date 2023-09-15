@@ -6,7 +6,7 @@ import { isSameAddress } from '../../entities/Snapshot/utils'
 import { Avatar, ProfileResponse } from './types'
 
 const CATALYST_URL = 'https://peer.decentraland.org'
-const DEFAULT_AVATAR_IMAGE = 'https://decentraland.org/images/male.png'
+export const DEFAULT_AVATAR_IMAGE = 'https://decentraland.org/images/male.png'
 
 export async function getProfile(address: string): Promise<Avatar | null> {
   if (!isEthereumAddress(address)) {
