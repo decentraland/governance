@@ -3,5 +3,4 @@ export enum FeatureFlags {
   // Polygon = 'dao-enabled-polygon',
   Ens = 'dao-enabled-ens',
   Delegation = 'dao-enabled-delegation',
-  NewNavbarDropdown = 'dapps-new-navbar-dropdown',
 }
