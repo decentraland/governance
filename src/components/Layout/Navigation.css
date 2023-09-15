@@ -8,12 +8,6 @@
   vertical-align: middle;
 }
 
-.dcl.navbar-account .ui.button.inverted {
-  color: white;
-  background-color: var(--primary);
-  border: none;
-}
-
 @media (min-width: 768px) {
   .Navigation .dcl.tabs {
     display: flex;
