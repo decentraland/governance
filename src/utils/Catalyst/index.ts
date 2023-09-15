@@ -1,6 +1,8 @@
 import fetch from 'isomorphic-fetch'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
+import { isSameAddress } from '../../entities/Snapshot/utils'
+
 import { Avatar, ProfileResponse } from './types'
 
 const CATALYST_URL = 'https://peer.decentraland.org'
@@ -14,6 +16,33 @@ export async function getProfile(address: string): Promise<Avatar | null> {
   const response: ProfileResponse = await (await fetch(`${CATALYST_URL}/lambdas/profile/${address}`)).json()
 
   return response.avatars.length > 0 ? response.avatars[0] : null
+}
+
+export async function getProfiles(addresses: string[]): Promise<(Avatar | null)[]> {
+  for (const address of addresses) {
+    if (!isEthereumAddress(address)) {
+      throw new Error(`Invalid address provided. Value: ${address}`)
+    }
+  }
+
+  const response: ProfileResponse[] = await (
+    await fetch(`${CATALYST_URL}/lambdas/profiles`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ ids: addresses }),
+    })
+  ).json()
+
+  const result: (Avatar | null)[] = []
+
+  for (const address of addresses) {
+    const profile = response.find((profile) => isSameAddress(profile.avatars[0]?.ethAddress, address))
+    result.push(profile?.avatars[0] || null)
+  }
+
+  return result
 }
 
 export function createDefaultAvatar(address: string): Avatar {
