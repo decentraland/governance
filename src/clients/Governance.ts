@@ -35,6 +35,7 @@ import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { Topic } from '../entities/SurveyTopic/types'
 import { ProjectHealth, UpdateAttributes, UpdateResponse } from '../entities/Updates/types'
 import { Vote, VotedProposal, Voter } from '../entities/Votes/types'
+import { NewsletterSubscriptionResult } from '../shared/types/newsletter'
 import Time from '../utils/date/Time'
 
 import { TransparencyBudget } from './DclData'
@@ -651,7 +652,7 @@ export class Governance extends API {
   }
 
   async subscribeToNewsletter(email: string) {
-    const response = await this.fetch<ApiResponse<string>>(
+    const response = await this.fetch<ApiResponse<NewsletterSubscriptionResult>>(
       `/newsletter-subscribe`,
       this.options().method('POST').json({
         email,
