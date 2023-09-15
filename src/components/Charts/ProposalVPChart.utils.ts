@@ -137,12 +137,18 @@ export function externalTooltipHandler({ context, datasetMap, title }: TooltipHa
   tooltipEl.appendChild(avatar)
   tooltipEl.appendChild(textContainer)
 
-  const { offsetLeft: positionX, offsetTop: positionY, width } = chart.canvas
+  const tooltipWidth = tooltipEl.clientWidth
 
-  const maxX = width * 0.8
+  const { offsetLeft: positionX, offsetTop: positionY, clientWidth: canvasWidth } = chart.canvas
 
-  // Display, position, and set styles for font
+  const maxX = canvasWidth - tooltipWidth / 2
+  const minX = tooltipWidth / 2
+
+  const isLowerHalf = tooltip.caretX < canvasWidth / 2
+  const xShift = isLowerHalf ? Math.max(minX, tooltip.caretX) : Math.min(maxX, tooltip.caretX)
+
+  // Display and position
   tooltipEl.style.opacity = '1'
-  tooltipEl.style.left = positionX + Math.min(maxX, tooltip.caretX) + 'px'
+  tooltipEl.style.left = positionX + xShift + 'px'
   tooltipEl.style.top = positionY + tooltip.caretY + 'px'
 }
