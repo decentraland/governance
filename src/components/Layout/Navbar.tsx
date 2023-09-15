@@ -25,7 +25,7 @@ function Navbar(props: UserInformationProps) {
         </Mobile>
       )}
       <NotMobile>
-        {ff.flags[FeatureFlags.NewNavbarDropdown] ? <UserInformation {...props} /> : <UserMenu {...props} />}
+        <UserInformation {...props} />
       </NotMobile>
     </>
   )
