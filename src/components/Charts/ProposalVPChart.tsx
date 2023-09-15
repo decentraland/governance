@@ -5,7 +5,6 @@ import { ChartData, Chart as ChartJS } from 'chart.js'
 import 'chart.js/auto'
 import 'chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm'
 import annotationPlugin from 'chartjs-plugin-annotation'
-import zoomPlugin from 'chartjs-plugin-zoom'
 
 import { Vote } from '../../entities/Votes/types'
 import useAbbreviatedFormatter from '../../hooks/useAbbreviatedFormatter'
@@ -23,7 +22,7 @@ import {
   getYesColor,
 } from './ProposalVPChart.utils'
 
-ChartJS.register(zoomPlugin, annotationPlugin)
+ChartJS.register(annotationPlugin)
 
 interface Props {
   requiredToPass?: number | null
@@ -112,27 +111,6 @@ function ProposalVPChart({ requiredToPass, voteMap }: Props) {
         enabled: false,
         position: 'nearest' as const,
         external: externalTooltipHandler,
-      },
-      zoom: {
-        zoom: {
-          wheel: {
-            enabled: true,
-            speed: 0.1,
-          },
-          mode: 'x' as const,
-        },
-        pan: {
-          enabled: true,
-          mode: 'x' as const,
-          speed: 0.1,
-        },
-        limits: {
-          x: {
-            min: votes[0]?.timestamp || 0,
-            max: votes[votes.length - 1]?.timestamp || 0,
-            minRange: 86400000, // 1 day
-          },
-        },
       },
       annotation: {
         annotations: {
