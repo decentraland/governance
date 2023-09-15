@@ -87,7 +87,7 @@ export function externalTooltipHandler({ context, datasetMap, title }: TooltipHa
   const { chart, tooltip } = context
   const tooltipEl = getOrCreateTooltip(chart)
   const dataPoint = tooltip.dataPoints?.[0].raw as { x: number; y: number } | undefined
-  const dataIdx: number | undefined = tooltip.dataPoints?.[0].dataIndex
+  const dataIdx = tooltip.dataPoints?.[0].dataIndex
   const datasetLabel = tooltip.dataPoints?.[0].dataset.label || ''
 
   const vote = datasetMap[datasetLabel]?.[dataIdx]
