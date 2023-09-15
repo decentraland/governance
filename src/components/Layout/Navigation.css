@@ -9,9 +9,9 @@
 }
 
 .dcl.navbar-account .ui.button.inverted {
-  color: white;
-  background-color: var(--primary);
-  border: none;
+  color: black;
+  border: 1px solid black;
+  border-radius: 6px;
 }
 
 @media (min-width: 768px) {
