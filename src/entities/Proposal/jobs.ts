@@ -91,6 +91,8 @@ async function getProposalsWithOutcome(proposals: ProposalAttributes[], context:
   const pendingProposalsWithOutcome = []
 
   for (const proposal of proposals) {
+    // TODO: New proposal status could be calculated here and added to outcome.
+    // E.g: OutcomeObject: { ...outcome, newProposalStatus: OutOfBudget }
     const outcome = await calculateOutcome(proposal, context)
     if (!outcome) {
       continue

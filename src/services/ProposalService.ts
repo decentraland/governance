@@ -2,12 +2,14 @@ import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import { v1 as uuid } from 'uuid'
 
+import { NotificationService } from '../back/services/notification'
 import { VoteService } from '../back/services/vote'
 import { Discourse, DiscourseComment, DiscoursePost } from '../clients/Discourse'
 import { SnapshotProposalContent } from '../clients/SnapshotGraphqlTypes'
 import CoauthorModel from '../entities/Coauthor/model'
 import isDAOCommittee from '../entities/Committee/isDAOCommittee'
 import ProposalModel from '../entities/Proposal/model'
+import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import * as templates from '../entities/Proposal/templates'
 import { getUpdateMessage } from '../entities/Proposal/templates/messages'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
@@ -194,6 +196,7 @@ export class ProposalService {
       await VotesModel.createEmpty(id)
       if (coAuthors) {
         await CoauthorModel.createMultiple(id, coAuthors)
+        NotificationService.coAuthorRequested(newProposal, coAuthors)
       }
     } catch (err: any) {
       DiscourseService.dropDiscourseTopic(discourseProposal.topic_id)
@@ -228,5 +231,12 @@ export class ProposalService {
       }
       await Discourse.get().commentOnPost(discourseComment)
     })
+  }
+
+  static async finishProposals(proposals: ProposalWithOutcome[]) {
+    // TODO: ProposalModel.finishProposal, update to finishProposals
+    // TODO: NotificationService.votingEndedAuthors(proposal)
+    // TODO: Get voters from proposalIds
+    // TODO: NotificationService.votingEndedVoters(proposal)
   }
 }
