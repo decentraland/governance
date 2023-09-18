@@ -63,7 +63,7 @@ import useIsProposalOwner from '../hooks/useIsProposalOwner'
 import useProposal from '../hooks/useProposal'
 import useProposalUpdates from '../hooks/useProposalUpdates'
 import useProposalVotes from '../hooks/useProposalVotes'
-import useSurveyTopics from '../hooks/useSurveyTopics'
+import useSurvey from '../hooks/useSurvey'
 import useURLSearchParams from '../hooks/useURLSearchParams'
 import { ErrorCategory } from '../utils/errorCategories'
 import locations, { navigate } from '../utils/locations'
@@ -74,7 +74,6 @@ import './proposal.css'
 const EMPTY_VOTE_CHOICE_SELECTION: SelectedVoteChoice = { choice: undefined, choiceIndex: undefined }
 const MAX_ERRORS_BEFORE_SNAPSHOT_REDIRECT = 3
 const SECONDS_FOR_VOTING_RETRY = 5
-const SURVEY_TOPICS_FEATURE_LAUNCH = new Date(2023, 3, 5, 0, 0)
 
 export type ProposalPageState = {
   changingVote: boolean
@@ -189,8 +188,13 @@ export default function ProposalPage() {
   const showProposalUpdates =
     publicUpdates && isProposalStatusWithUpdates(proposal?.status) && proposal?.type === ProposalType.Grant
 
-  // TODO: extract some of this to hooks
-  const { surveyTopics, isLoadingSurveyTopics } = useSurveyTopics(proposal?.id)
+  const { surveyTopics, isLoadingSurveyTopics, voteWithSurvey, showSurveyResults } = useSurvey(
+    proposal,
+    votes,
+    isLoadingVotes,
+    isMobile
+  )
+
   const [isBarVisible, setIsBarVisible] = useState<boolean>(true)
   const commentsSectionRef = useRef<HTMLDivElement | null>(null)
   const reactionsSectionRef = useRef<HTMLDivElement | null>(null)
@@ -204,15 +208,6 @@ export default function ProposalPage() {
       commentsSectionRef.current.scrollIntoView({ behavior: 'smooth' })
     }
   }
-  const voteWithSurvey =
-    !isLoadingSurveyTopics &&
-    !!surveyTopics &&
-    surveyTopics.length > 0 &&
-    !!proposal &&
-    proposal.created_at > SURVEY_TOPICS_FEATURE_LAUNCH
-  const hasVotes = votes && Object.keys(votes).length > 0 && !isLoadingVotes
-  const hasSurveyTopics = surveyTopics && surveyTopics?.length > 0 && !isLoadingSurveyTopics
-  const showSurveyResults = proposal && voteWithSurvey && !isMobile && hasVotes && hasSurveyTopics
   useEffect(() => {
     const handleScroll = () => {
       const hideBarSectionRef = reactionsSectionRef.current || commentsSectionRef.current
