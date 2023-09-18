@@ -1,55 +1,49 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Field } from 'decentraland-ui/dist/components/Field/Field'
+import classNames from 'classnames'
 
 import { Governance } from '../../clients/Governance'
-import { SNAPSHOT_SPACE } from '../../entities/Snapshot/constants'
-import Heading from '../Common/Typography/Heading'
-import Label from '../Common/Typography/Label'
-import Text from '../Common/Typography/Text'
-import ErrorMessage from '../Error/ErrorMessage'
-import { ContentSection } from '../Layout/ContentLayout'
+import { ServiceHealth, SnapshotStatus as SnapshotServiceStatus } from '../../clients/SnapshotTypes'
+import { useBurgerMenu } from '../../hooks/useBurgerMenu'
+import useFormatMessage from '../../hooks/useFormatMessage'
+import Markdown from '../Common/Typography/Markdown'
+import WarningTriangle from '../Icon/WarningTriangle'
 
-interface Props {
-  className?: string
+import './SnapshotStatus.css'
+
+const PING_INTERVAL_IN_MS = 10000 // 10 seconds
+
+function logIfNotNormal(status: SnapshotServiceStatus) {
+  if (status.scoresStatus.health !== ServiceHealth.Normal || status.graphQlStatus.health !== ServiceHealth.Normal) {
+    console.log('Snapshot Status', status)
+  }
 }
 
-export default function SnapshotStatus({ className }: Props) {
-  const [spaceName, setSpaceName] = useState(SNAPSHOT_SPACE)
-  const [snapshotStatus, setSnapshotStatus] = useState<any>()
-  const [snapshotSpace, setSnapshotSpace] = useState<any>()
-  const [errorMessage, setErrorMessage] = useState<any>()
+export default function SnapshotStatus() {
+  const t = useFormatMessage()
+  const [showTopBar, setShowTopBar] = useState(false)
+  const { setStatus } = useBurgerMenu()
 
-  async function handleFetchClick() {
-    setErrorMessage('')
-    try {
-      const { status: newStatus, space: newSpace } = await Governance.get().getSnapshotStatusAndSpace(spaceName)
-      setSnapshotStatus(newStatus)
-      setSnapshotSpace(newSpace)
-      setErrorMessage('')
-    } catch (e: any) {
-      setErrorMessage(e.message)
-    }
+  const updateServiceStatus = async () => {
+    const status = await Governance.get().getSnapshotStatus()
+    logIfNotNormal(status)
+    const show =
+      status.scoresStatus.health === ServiceHealth.Slow || status.scoresStatus.health === ServiceHealth.Failing
+    setShowTopBar(show)
+    setStatus((prev) => ({ ...prev, snapshotStatusBarOpen: show }))
   }
 
+  useEffect(() => {
+    const intervalId = setInterval(updateServiceStatus, PING_INTERVAL_IN_MS)
+    return () => clearInterval(intervalId)
+  }, [])
+
   return (
-    <div className={className}>
-      <Heading size="sm">{'Snapshot'}</Heading>
-      <ContentSection>
-        <Label>{'Space Name'}</Label>
-        <div className="SpaceName__Section">
-          <Field value={spaceName} onChange={(_, { value }) => setSpaceName(value)} />
-          <Button className="Debug__SideButton" primary disabled={!spaceName} onClick={() => handleFetchClick()}>
-            {'Fetch Status & Space'}
-          </Button>
-        </div>
-      </ContentSection>
-      <Label>{'Status'}</Label>
-      <Text>{JSON.stringify(snapshotStatus)}</Text>
-      <Label>{'Space'}</Label>
-      <Text>{JSON.stringify(snapshotSpace)}</Text>
-      {!!errorMessage && <ErrorMessage label={'Snapshot Error'} errorMessage={errorMessage} />}
+    <div className={classNames(`SnapshotStatus__TopBar`, showTopBar && 'SnapshotStatus__TopBar--visible')}>
+      <WarningTriangle size="18" />
+      <Markdown size="sm" componentsClassNames={{ p: 'SnapshotStatus__Text', strong: 'SnapshotStatus__Text' }}>
+        {t('page.debug.snapshot_status.label')}
+      </Markdown>
     </div>
   )
 }

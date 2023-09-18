@@ -1,4 +1,4 @@
-import { SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
+import { SnapshotVote } from '../../clients/SnapshotTypes'
 import { VOTES_VP_THRESHOLD } from '../../constants'
 import VoteModel from '../../entities/Votes/model'
 import { VoteCount, Voter } from '../../entities/Votes/types'

@@ -3,7 +3,7 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
-import { SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
+import { SnapshotVote } from '../../clients/SnapshotTypes'
 import { SnapshotService } from '../../services/SnapshotService'
 import {
   validateAddress,
@@ -13,7 +13,8 @@ import {
 } from '../utils/validations'
 
 export default routes((router) => {
-  router.get('/snapshot/status-space/:spaceName', handleAPI(getStatusAndSpace))
+  router.get('/snapshot/status', handleAPI(getStatus))
+  router.get('/snapshot/config/:spaceName', handleAPI(getConfig))
   router.post('/snapshot/votes', handleAPI(getAddressesVotes))
   router.get('/snapshot/votes/:proposalSnapshotId', handleAPI(getProposalVotes))
   router.post('/snapshot/votes/all', handleAPI(getAllVotesBetweenDates))
@@ -24,9 +25,13 @@ export default routes((router) => {
   router.get('/snapshot/proposal-scores/:proposalSnapshotId', handleAPI(getProposalScores))
 })
 
-async function getStatusAndSpace(req: Request<{ spaceName?: string }>) {
+async function getStatus(req: Request) {
+  return await SnapshotService.getStatus()
+}
+
+async function getConfig(req: Request<{ spaceName?: string }>) {
   const { spaceName } = req.params
-  return await SnapshotService.getStatusAndSpace(spaceName)
+  return await SnapshotService.getConfig(spaceName)
 }
 
 async function getAddressesVotes(req: Request) {

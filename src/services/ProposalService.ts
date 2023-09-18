@@ -4,7 +4,7 @@ import { v1 as uuid } from 'uuid'
 
 import { VoteService } from '../back/services/vote'
 import { Discourse, DiscourseComment, DiscoursePost } from '../clients/Discourse'
-import { SnapshotProposalContent } from '../clients/SnapshotGraphqlTypes'
+import { SnapshotProposalContent } from '../clients/SnapshotTypes'
 import CoauthorModel from '../entities/Coauthor/model'
 import isDAOCommittee from '../entities/Committee/isDAOCommittee'
 import ProposalModel from '../entities/Proposal/model'

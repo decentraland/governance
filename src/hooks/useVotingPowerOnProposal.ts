@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { Governance } from '../clients/Governance'
-import { SnapshotVote, StrategyOrder, VpDistribution } from '../clients/SnapshotGraphqlTypes'
+import { SnapshotVote, StrategyOrder, VpDistribution } from '../clients/SnapshotTypes'
 import { ProposalAttributes } from '../entities/Proposal/types'
 import { isSameAddress } from '../entities/Snapshot/utils'
 import { MINIMUM_VP_REQUIRED_TO_VOTE } from '../entities/Votes/constants'

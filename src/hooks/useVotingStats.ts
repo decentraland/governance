@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import { Governance } from '../clients/Governance'
 import { getQueryTimestamp } from '../clients/SnapshotGraphql'
-import { SnapshotProposal, SnapshotVote } from '../clients/SnapshotGraphqlTypes'
+import { SnapshotProposal, SnapshotVote } from '../clients/SnapshotTypes'
 import { calculateMatch, getChecksumAddress, outcomeMatch } from '../entities/Snapshot/utils'
 import { getFormattedPercentage } from '../helpers'
 import Time from '../utils/date/Time'
