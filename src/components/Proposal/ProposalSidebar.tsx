@@ -15,7 +15,6 @@ import { ProposalPageState } from '../../pages/proposal'
 import CalendarAlertModal from '../Modal/CalendarAlertModal'
 
 import CalendarAlertButton from './View/CalendarAlertButton'
-import ForumButton from './View/ForumButton'
 import ProposalCoAuthorStatus from './View/ProposalCoAuthorStatus'
 import ProposalDetailSection from './View/ProposalDetailSection'
 import ProposalGovernanceSection from './View/ProposalGovernanceSection'
@@ -152,7 +151,6 @@ export default function ProposalSidebar({
         {showProposalThresholdsSummary && (
           <ProposalThresholdsSummary proposal={proposal} partialResults={partialResults} />
         )}
-        <ForumButton loading={proposalLoading} proposal={proposal} />
         <SubscribeButton
           loading={proposalLoading || subscriptionsLoading || subscribing}
           disabled={!proposal}
