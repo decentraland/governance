@@ -33,8 +33,7 @@ export default routes((router) => {
 })
 
 async function getBadges(req: Request<{ address: string }>): Promise<UserBadges> {
-  const address = req.params.address
-  validateAddress(address)
+  const address = validateAddress(req.params.address)
   return await BadgesService.getBadges(address)
 }
 
@@ -85,7 +84,7 @@ async function uploadBadgeSpec(req: WithAuth): Promise<BadgeCreationResult> {
 
   const { title, description, imgUrl, expiresAt } = req.body
   validateRequiredStrings(['title', 'description', 'imgUrl'], req.body)
-  validateDate(expiresAt)
+  validateDate(expiresAt, 'optional')
 
   try {
     const result = await storeBadgeSpec({
@@ -104,9 +103,7 @@ async function createBadgeSpec(req: WithAuth): Promise<BadgeCreationResult> {
   const user = req.auth
   validateDebugAddress(user)
 
-  const { badgeCid } = req.body
-  validateRequiredString('badgeCid', badgeCid)
-
+  const badgeCid = validateRequiredString('badgeCid', req.body.badgeCid)
   try {
     const result = await createSpec(badgeCid)
     return { status: ActionStatus.Success, badgeCid: JSON.stringify(result) }

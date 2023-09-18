@@ -81,8 +81,7 @@ async function checkValidationMessage(req: WithAuth) {
 }
 
 async function isValidated(req: Request) {
-  const address = req.params.address
-  validateAddress(address)
+  const address = validateAddress(req.params.address)
   try {
     return await UserModel.isForumValidated(address)
   } catch (error) {
@@ -93,9 +92,7 @@ async function isValidated(req: Request) {
 }
 
 async function getProfile(req: Request) {
-  const address = req.params.address
-  validateAddress(address)
-
+  const address = validateAddress(req.params.address)
   const user = await UserModel.findOne<UserAttributes>({ address: address.toLowerCase() })
 
   if (!user) {

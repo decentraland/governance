@@ -14,16 +14,17 @@ interface Props {
 }
 
 function BurgerMenuLayout({ children, navigationOnly, activeTab }: Props) {
-  const burgerMenu = useBurgerMenu()
-
+  const { status } = useBurgerMenu()
+  const { open, translate, snapshotStatusBarOpen } = status
   return (
     <>
       <Mobile>
-        <BurgerMenuContent navigationOnly={navigationOnly} activeTab={activeTab} />
-        <div
-          className="Animated"
-          style={burgerMenu?.status.open ? { transform: `translateY(${burgerMenu.status.translate})` } : undefined}
-        >
+        <BurgerMenuContent
+          navigationOnly={navigationOnly}
+          activeTab={activeTab}
+          snapshotStatusBarOpen={snapshotStatusBarOpen}
+        />
+        <div className="Animated" style={open ? { transform: `translateY(${translate})` } : undefined}>
           {children}
         </div>
       </Mobile>

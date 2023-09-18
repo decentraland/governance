@@ -90,6 +90,7 @@
     "keccak": "^3.0.1",
     "lodash": "^4.17.21",
     "nft.storage": "^7.1.1",
+    "node-cache": "^5.1.2",
     "node-pg-migrate": "^6.2.1",
     "numeral": "^2.0.6",
     "patch-package": "^6.4.7",

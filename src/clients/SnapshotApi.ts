@@ -6,6 +6,7 @@ import { CancelProposal, ProposalType, Vote } from '@snapshot-labs/snapshot.js/d
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import env from 'decentraland-gatsby/dist/utils/env'
 
+import { DEBUG_ADDRESSES } from '../constants'
 import {
   SNAPSHOT_ADDRESS,
   SNAPSHOT_API_KEY,
@@ -155,11 +156,9 @@ export class SnapshotApi {
   }
 
   async getScores(addresses: string[]) {
-    const formattedAddresses = addresses.map((address) => getChecksumAddress(address))
-    const spaceName = SnapshotApi.getSpaceName()
-    const network = getEnvironmentChainId().toString()
-    const strategies = (await SnapshotGraphql.get().getSpace(spaceName)).strategies
-    const scoreApiUrl = `https://score.snapshot.org/?apiKey=${SNAPSHOT_API_KEY}`
+    const { formattedAddresses, spaceName, network, strategies, scoreApiUrl } = await this.prepareScoresQueryArgs(
+      addresses
+    )
 
     try {
       const scores = await snapshot.utils.getScores(
@@ -187,5 +186,30 @@ export class SnapshotApi {
 
   private static toSnapshotTimestamp(time: number) {
     return Number(time.toString().slice(0, -3))
+  }
+
+  async ping(addressesSample: string[]) {
+    const addresses = addressesSample.length === 0 ? DEBUG_ADDRESSES : addressesSample
+    try {
+      const { formattedAddresses, spaceName, network, strategies, scoreApiUrl } = await this.prepareScoresQueryArgs(
+        addresses
+      )
+      const now = new Date()
+      const startTime = now.getTime()
+      await snapshot.utils.getScores(spaceName, strategies, network, formattedAddresses, undefined, scoreApiUrl)
+      const endTime = new Date().getTime()
+      return endTime - startTime
+    } catch (error) {
+      return -1 // Return -1 to indicate API failures
+    }
+  }
+
+  private async prepareScoresQueryArgs(addresses: string[]) {
+    const formattedAddresses = addresses.map((address) => getChecksumAddress(address))
+    const spaceName = SnapshotApi.getSpaceName()
+    const network = getEnvironmentChainId().toString()
+    const strategies = (await SnapshotGraphql.get().getSpace(spaceName)).strategies
+    const scoreApiUrl = `https://score.snapshot.org/?apiKey=${SNAPSHOT_API_KEY}`
+    return { formattedAddresses, spaceName, network, strategies, scoreApiUrl }
   }
 }

@@ -4,7 +4,7 @@
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
 import { CommitteeName } from '../../clients/DclData'
-import { SnapshotProposal } from '../../clients/SnapshotGraphqlTypes'
+import { SnapshotProposal } from '../../clients/SnapshotTypes'
 import {
   CategoryAssessmentQuestions,
   GrantRequestDueDiligence,

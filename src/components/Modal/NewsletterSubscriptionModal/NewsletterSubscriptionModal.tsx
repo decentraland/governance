@@ -12,6 +12,7 @@ import isEmail from 'validator/lib/isEmail'
 import { Governance } from '../../../clients/Governance'
 import useAsyncTask from '../../../hooks/useAsyncTask'
 import useFormatMessage from '../../../hooks/useFormatMessage'
+import { NewsletterSubscriptionResult } from '../../../shared/types/newsletter'
 import { ANONYMOUS_USR_SUBSCRIPTION, NEWSLETTER_SUBSCRIPTION_KEY } from '../../Banner/Subscription/SubscriptionBanner'
 import Label from '../../Common/Typography/Label'
 import Text from '../../Common/Typography/Text'
@@ -20,32 +21,9 @@ import '../ProposalModal.css'
 
 import './NewsletterSubscriptionModal.css'
 
-type NewsletterSubscriptionResult = {
-  email: string
-  error: boolean
-  details: string | null
-}
-
 type Props = Omit<ModalProps, 'children'> & {
   onSubscriptionSuccess?: () => void
   subscribed: boolean
-}
-
-async function subscribe(email: string) {
-  try {
-    await Governance.get().subscribeToNewsletter(email)
-    return {
-      email,
-      error: false,
-      details: null,
-    }
-  } catch (err) {
-    return {
-      email,
-      error: true,
-      details: (err as any).body.detail,
-    }
-  }
 }
 
 export function NewsletterSubscriptionModal({ onSubscriptionSuccess, subscribed, ...props }: Props) {
@@ -89,7 +67,7 @@ export function NewsletterSubscriptionModal({ onSubscriptionSuccess, subscribed,
 
   const [subscribing, handleAccept] = useAsyncTask(async () => {
     if (state.email && isEmail(state.email) && onSubscriptionSuccess) {
-      const subscriptionResult: NewsletterSubscriptionResult = await subscribe(state.email)
+      const subscriptionResult: NewsletterSubscriptionResult = await Governance.get().subscribeToNewsletter(state.email)
       if (subscriptionResult.error) {
         setState({
           isValid: false,

@@ -43,7 +43,6 @@ async function getCurrentContestedBudget(): Promise<BudgetWithContestants> {
 }
 
 async function getBudgetWithContestants(req: Request<{ proposal: string }>): Promise<BudgetWithContestants> {
-  const id = req.params.proposal
-  validateProposalId(id)
+  const id = validateProposalId(req.params.proposal)
   return await BudgetService.getBudgetWithContestants(id)
 }

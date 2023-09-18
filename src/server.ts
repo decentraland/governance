@@ -16,6 +16,7 @@ import swaggerUi from 'swagger-ui-express'
 import YAML from 'yaml'
 
 import { giveTopVoterBadges, runAirdropJobs } from './back/jobs/BadgeAirdrop'
+import { pingSnapshot } from './back/jobs/PingSnapshot'
 import badges from './back/routes/badges'
 import bid from './back/routes/bid'
 import budget from './back/routes/budget'
@@ -44,6 +45,7 @@ const jobs = manager()
 jobs.cron('@eachMinute', finishProposal)
 jobs.cron('@eachMinute', activateProposals)
 jobs.cron('@eachMinute', publishBids)
+jobs.cron('@eachMinute', pingSnapshot)
 jobs.cron('@daily', updateGovernanceBudgets)
 jobs.cron('@daily', runAirdropJobs)
 jobs.cron('@monthly', giveTopVoterBadges)

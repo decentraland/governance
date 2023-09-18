@@ -1,4 +1,4 @@
-import { SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
+import { SnapshotVote } from '../../clients/SnapshotTypes'
 
 import { VOTES_EXAMPLE } from './outcomeMatchData'
 import { outcomeMatch } from './utils'
