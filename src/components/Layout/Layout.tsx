@@ -9,6 +9,7 @@ import { Navbar, NavbarProps } from 'decentraland-ui/dist/components/Navbar/Navb
 import type { PageProps } from 'gatsby'
 
 import { isProjectPath } from '../../utils/locations'
+import SnapshotStatus from '../Debug/SnapshotStatus'
 import WalletSelectorModal from '../Modal/WalletSelectorModal'
 import WrongNetworkModal from '../Modal/WrongNetworkModal'
 

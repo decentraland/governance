@@ -1,4 +1,4 @@
-import { Delegation } from '../clients/SnapshotGraphqlTypes'
+import { Delegation } from '../clients/SnapshotTypes'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { filterDelegationFrom, filterDelegationTo } from '../entities/Snapshot/utils'
 

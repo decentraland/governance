@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { VpDistribution } from '../../clients/SnapshotGraphqlTypes'
+import { VpDistribution } from '../../clients/SnapshotTypes'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import MobileSlider from '../Common/MobileSlider'
 

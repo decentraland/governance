@@ -22,6 +22,7 @@ export type FilterStatus = {
 
 export type BurgerMenuContentProps = NavigationProps & {
   navigationOnly?: boolean
+  snapshotStatusBarOpen?: boolean
 }
 
 const filtersInitialStatus = { categoryOpen: true, statusOpen: false, timeFrameOpen: false }
@@ -34,7 +35,7 @@ const TIMEFRAME_FILTER_HEIGHT = 212
 const CLOSED_FILTER_HEIGHT = 56
 const MOBILE_NAVIGATION_HEIGHT = 180
 
-function BurgerMenuContent({ navigationOnly, activeTab }: BurgerMenuContentProps) {
+function BurgerMenuContent({ navigationOnly, activeTab, snapshotStatusBarOpen }: BurgerMenuContentProps) {
   const [footer, setFooter] = useState<Element | null>(null)
   const [filterStatus, setFilterStatus] = useState(filtersInitialStatus)
   const { status, setStatus } = useBurgerMenu()
@@ -91,7 +92,12 @@ function BurgerMenuContent({ navigationOnly, activeTab }: BurgerMenuContentProps
 
   return (
     <div
-      className={classNames('BurgerMenuContent', 'Animated', navigationOnly && 'BurgerMenuContent--Padded')}
+      className={classNames(
+        'BurgerMenuContent',
+        'Animated',
+        navigationOnly && 'BurgerMenuContent--Padded',
+        navigationOnly && snapshotStatusBarOpen && 'BurgerMenuContent--PushedDown'
+      )}
       style={(!open && { transform: 'translateY(-200%)' }) || {}}
     >
       {navigationOnly ? (

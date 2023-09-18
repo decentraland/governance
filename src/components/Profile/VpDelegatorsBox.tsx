@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
-import { DelegationResult, DetailedScores } from '../../clients/SnapshotGraphqlTypes'
+import { DelegationResult, DetailedScores } from '../../clients/SnapshotTypes'
 import { isSameAddress } from '../../entities/Snapshot/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useVotingPowerInformation from '../../hooks/useVotingPowerInformation'

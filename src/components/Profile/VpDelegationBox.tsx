@@ -5,7 +5,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
-import { DelegationResult } from '../../clients/SnapshotGraphqlTypes'
+import { DelegationResult } from '../../clients/SnapshotTypes'
 import { isSameAddress } from '../../entities/Snapshot/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'

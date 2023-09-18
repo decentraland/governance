@@ -733,7 +733,10 @@
     "debug": {
       "title": "Debug",
       "description": "A tab where anything is possible",
-      "error_label": "There was an error."
+      "error_label": "There was an error.",
+      "snapshot_status": {
+        "label": "**Snapshot is unstable.** Voting and creating proposals may be unavailable."
+      }
     },
     "home": {
       "title": "Decentraland DAO",

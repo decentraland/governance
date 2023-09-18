@@ -1,6 +1,6 @@
 import isUUID from 'validator/lib/isUUID'
 
-import { SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
+import { SnapshotVote } from '../../clients/SnapshotTypes'
 
 import { ChoiceColor, Vote } from './types'
 

@@ -3,10 +3,12 @@ import env from 'decentraland-gatsby/dist/utils/env'
 import uniqBy from 'lodash/uniqBy'
 
 import { SNAPSHOT_API, SNAPSHOT_API_KEY, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
+import { getAMonthAgo } from '../utils/date/aMonthAgo'
 import { ErrorCategory } from '../utils/errorCategories'
 
 import { ErrorClient } from './ErrorClient'
 import {
+  SnapshotConfig,
   SnapshotProposal,
   SnapshotProposalContent,
   SnapshotProposalResponse,
@@ -14,20 +16,33 @@ import {
   SnapshotQueryResponse,
   SnapshotScoresState,
   SnapshotSpace,
-  SnapshotStatus,
   SnapshotVote,
   SnapshotVoteResponse,
   SnapshotVpResponse,
   StrategyOrder,
   VpDistribution,
-} from './SnapshotGraphqlTypes'
+} from './SnapshotTypes'
 import { inBatches, trimLastForwardSlash } from './utils'
 
 export const getQueryTimestamp = (dateTimestamp: number) => Math.round(dateTimestamp / 1000)
 
 const GRAPHQL_ENDPOINT = `/graphql`
 const BATCH_SIZE = 1000
-const OLDEST_PROPOSAL_TIMESTAMP = 1621036800
+const GET_VOTES_QUERY = `
+  query getVotes($space: String!, $start: Int!, $end: Int!, $first: Int!) {
+    votes(where: {space: $space, created_gte: $start, created_lt: $end}, orderBy: "created", orderDirection: asc, first: $first) {
+      id
+      voter
+      created
+      vp
+      choice
+      proposal {
+        id
+        choices
+      }
+    }
+  }
+`
 
 export class SnapshotGraphql extends API {
   static Url = SNAPSHOT_API || 'https://hub.snapshot.org/'
@@ -52,12 +67,12 @@ export class SnapshotGraphql extends API {
     if (SNAPSHOT_API_KEY) this.defaultOptions.header('x-api-key', SNAPSHOT_API_KEY)
   }
 
-  async getStatus() {
-    const status = await this.fetch<SnapshotStatus>('/api/')
+  async getConfig() {
+    const snapshotConfig = await this.fetch<SnapshotConfig>('/api/')
 
     return {
-      ...status,
-      version: status.version.split('#')[0],
+      ...snapshotConfig,
+      version: snapshotConfig.version.split('#')[0],
     }
   }
 
@@ -235,22 +250,6 @@ export class SnapshotGraphql extends API {
   }
 
   async getAllVotesBetweenDates(start: Date, end: Date): Promise<SnapshotVote[]> {
-    const query = `
-      query getVotes($space: String!, $start: Int!, $end: Int!, $first: Int!) {
-        votes(where: {space: $space, created_gte: $start, created_lt: $end}, orderBy: "created", orderDirection: asc, first: $first) {
-          id
-          voter
-          created
-          vp
-          choice
-          proposal {
-            id
-            choices
-          }
-        }
-      }
-    `
-
     let allResults: SnapshotVote[] = []
     let hasNext = true
     let created = getQueryTimestamp(start.getTime())
@@ -268,7 +267,7 @@ export class SnapshotGraphql extends API {
         const result = await this.fetch<SnapshotVoteResponse>(
           GRAPHQL_ENDPOINT,
           this.options().method('POST').json({
-            query,
+            GET_VOTES_QUERY,
             variables,
           })
         )
@@ -444,23 +443,31 @@ export class SnapshotGraphql extends API {
     return result?.data?.proposal
   }
 
-  async hasVoted(address: string) {
-    const query = `query HasVoted($space: String!, $address: String!, $created: Int!) {
-      votes(
-          where: { space: $space, voter: $address, created_gt: $created}
-          first: 1
-      ) {
-        voter  
-      }
+  async ping() {
+    const now = new Date()
+    const startTime = now.getTime()
+    try {
+      const startDate = getAMonthAgo(now).getTime()
+      const endDate = now.getTime()
+      const response = await this.fetch<SnapshotVoteResponse>(
+        GRAPHQL_ENDPOINT,
+        this.options()
+          .method('POST')
+          .json({
+            query: GET_VOTES_QUERY,
+            variables: {
+              space: SNAPSHOT_SPACE,
+              first: 10,
+              start: getQueryTimestamp(startDate),
+              end: getQueryTimestamp(endDate),
+            },
+          })
+      )
+      const endTime = new Date().getTime()
+      const addressesSample = response?.data?.votes.map((vote: SnapshotVote) => vote.voter)
+      return { responseTime: endTime - startTime, addressesSample }
+    } catch (error) {
+      return { responseTime: -1, addressesSample: [] } // Return -1 to indicate API failures
     }
-    `
-    const result = await this.fetch<SnapshotQueryResponse<{ votes: Pick<SnapshotVote, 'voter'>[] }>>(
-      GRAPHQL_ENDPOINT,
-      this.options()
-        .method('POST')
-        .json({ query, variables: { address, space: SNAPSHOT_SPACE, created: OLDEST_PROPOSAL_TIMESTAMP } })
-    )
-
-    return result?.data?.votes.length > 0
   }
 }
