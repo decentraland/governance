@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { Ref, forwardRef, useMemo } from 'react'
 
 import { decodeSurvey } from '../../../entities/SurveyTopic/decoder'
 import { Reaction, Topic, TopicFeedback } from '../../../entities/SurveyTopic/types'
@@ -51,30 +51,32 @@ function getResults(availableTopics: Topic[] | null, votes: Record<string, Vote>
   return topicsResults
 }
 
-const SurveyResults = ({ votes, isLoadingVotes, surveyTopics, isLoadingSurveyTopics }: Props) => {
-  const t = useFormatMessage()
-  const topicResults = useMemo(() => getResults(surveyTopics, votes), [surveyTopics, votes])
-  const topicIds = Object.keys(topicResults)
-  const hasVotes = votes && Object.keys(votes).length > 0 && !isLoadingVotes
-  const hasSurveyTopics = surveyTopics && surveyTopics?.length > 0 && !isLoadingSurveyTopics
+const SurveyResults = forwardRef(
+  ({ votes, isLoadingVotes, surveyTopics, isLoadingSurveyTopics }: Props, ref: Ref<HTMLDivElement>) => {
+    const t = useFormatMessage()
+    const topicResults = useMemo(() => getResults(surveyTopics, votes), [surveyTopics, votes])
+    const topicIds = Object.keys(topicResults)
+    const hasVotes = votes && Object.keys(votes).length > 0 && !isLoadingVotes
+    const hasSurveyTopics = surveyTopics && surveyTopics?.length > 0 && !isLoadingSurveyTopics
 
-  if (!hasVotes || !hasSurveyTopics) {
-    return null
+    if (!hasVotes || !hasSurveyTopics) {
+      return null
+    }
+
+    return (
+      <Section title={t('survey.results.title')} isLoading={isLoadingSurveyTopics}>
+        {topicIds.map((topicId: string, index: number) => {
+          return (
+            <SurveyTopicResult
+              key={`SurveyTopicResult__${index}`}
+              topicId={topicId}
+              topicResult={topicResults[topicId]}
+            />
+          )
+        })}
+      </Section>
+    )
   }
-
-  return (
-    <Section title={t('survey.results.title')} isLoading={isLoadingSurveyTopics}>
-      {topicIds.map((topicId: string, index: number) => {
-        return (
-          <SurveyTopicResult
-            key={`SurveyTopicResult__${index}`}
-            topicId={topicId}
-            topicResult={topicResults[topicId]}
-          />
-        )
-      })}
-    </Section>
-  )
-}
+)
 
 export default SurveyResults

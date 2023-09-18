@@ -9,13 +9,14 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { Desktop } from 'decentraland-ui/dist/components/Media/Media'
+import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { ErrorClient } from '../clients/ErrorClient'
 import { Governance } from '../clients/Governance'
 import { SnapshotApi } from '../clients/SnapshotApi'
 import CategoryPill from '../components/Category/CategoryPill'
+import FloatingBar from '../components/FloatingBar/FloatingBar'
 import ProposalVPChart from '../components/Charts/ProposalVPChart'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
@@ -143,6 +144,7 @@ function getProposalView(proposal: ProposalAttributes | null) {
 export default function ProposalPage() {
   const t = useFormatMessage()
   const params = useURLSearchParams()
+  const isMobile = useMobileMediaQuery()
   const [proposalPageState, updatePageState] = usePatchState<ProposalPageState>({
     changingVote: false,
     confirmSubscription: false,
@@ -186,6 +188,20 @@ export default function ProposalPage() {
   const { publicUpdates, pendingUpdates, nextUpdate, currentUpdate, refetchUpdates } = useProposalUpdates(proposal?.id)
   const showProposalUpdates =
     publicUpdates && isProposalStatusWithUpdates(proposal?.status) && proposal?.type === ProposalType.Grant
+
+  const [isBarVisible, setIsBarVisible] = useState<boolean>(true)
+  const commentsSectionRef = useRef<HTMLDivElement | null>(null)
+  const reactionsSectionRef = useRef<HTMLDivElement | null>(null)
+  const scrollToReactions = () => {
+    if (reactionsSectionRef.current) {
+      reactionsSectionRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+  const scrollToComments = () => {
+    if (commentsSectionRef.current) {
+      commentsSectionRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
 
   const [castingVote, castVote] = useAsyncTask(
     async (selectedChoice: SelectedVoteChoice, survey?: Survey) => {
@@ -293,6 +309,21 @@ export default function ProposalPage() {
     }
   }, [proposalPageState.showVotingError, proposalPageState.retryTimer, updatePageState])
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const commentsSection = commentsSectionRef.current
+      if (commentsSection) {
+        const commentsSectionTop = commentsSection.getBoundingClientRect().top
+        setIsBarVisible(commentsSectionTop > window.innerHeight)
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
+
   const closeProposalSuccessModal = () => {
     updatePageState({ showProposalSuccessModal: false })
     navigate(locations.proposal(proposal!.id), { replace: true })
@@ -334,6 +365,7 @@ export default function ProposalPage() {
     proposal &&
     proposal?.status === ProposalStatus.Active &&
     (proposal?.type === ProposalType.Tender || proposal?.type === ProposalType.Bid)
+  const showSurveyResults = proposal && voteWithSurvey && !isMobile
 
   const showVotesChart = !isLoadingProposal && proposal?.type !== ProposalType.Poll && highQualityVotes
 
@@ -379,15 +411,14 @@ export default function ProposalPage() {
                   isCoauthor={isCoauthor}
                 />
               )}
-              {proposal && voteWithSurvey && (
-                <Desktop>
-                  <SurveyResults
-                    votes={votes}
-                    isLoadingVotes={isLoadingVotes}
-                    surveyTopics={surveyTopics}
-                    isLoadingSurveyTopics={isLoadingSurveyTopics}
-                  />
-                </Desktop>
+              {showSurveyResults && (
+                <SurveyResults
+                  votes={votes}
+                  isLoadingVotes={isLoadingVotes}
+                  surveyTopics={surveyTopics}
+                  isLoadingSurveyTopics={isLoadingSurveyTopics}
+                  ref={reactionsSectionRef}
+                />
               )}
               {showVotesChart && (
                 <ProposalVPChart
@@ -397,7 +428,18 @@ export default function ProposalPage() {
                   endTimestamp={proposal?.finish_at.getTime()}
                 />
               )}
-              <ProposalComments proposal={proposal} />
+              <ProposalComments proposal={proposal} ref={commentsSectionRef} />
+              {proposal && (
+                <FloatingBar
+                  isVisible={isBarVisible}
+                  showViewReactions={!!showSurveyResults}
+                  scrollToReactions={scrollToReactions}
+                  scrollToComments={scrollToComments}
+                  proposalId={proposal?.id}
+                  discourseTopicId={proposal?.discourse_topic_id}
+                  discourseTopicSlug={proposal?.discourse_topic_slug}
+                />
+              )}
             </Grid.Column>
 
             <Grid.Column tablet="4" className="ProposalDetailActions">
