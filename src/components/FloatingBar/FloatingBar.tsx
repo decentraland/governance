@@ -47,7 +47,7 @@ const FloatingBar: React.FC<FloatingBarProps> = ({
         )}
         {showViewComments && (
           <Link onClick={scrollToComments} className={'FloatingBar__ViewComments'}>
-            <Forum color={'#736E7D'} />
+            <Forum color={'var(--black-600)'} />
             {t('component.floating_bar.total_comments_label', { count: comments?.totalComments })}
           </Link>
         )}
