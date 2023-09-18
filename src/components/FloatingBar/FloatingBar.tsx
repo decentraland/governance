@@ -3,6 +3,7 @@ import React from 'react'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { forumUrl } from '../../entities/Proposal/utils'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import useProposalComments from '../../hooks/useProposalComments'
 import Link from '../Common/Typography/Link'
 import Forum from '../Icon/Forum'
@@ -30,23 +31,24 @@ const FloatingBar: React.FC<FloatingBarProps> = ({
   scrollToComments,
   scrollToReactions,
 }) => {
-  if (!isVisible) return null
+  const t = useFormatMessage()
   const { comments, isLoadingComments } = useProposalComments(proposalId)
   const showViewComments = !isLoadingComments || (comments && comments.totalComments > 0)
 
+  if (!isVisible) return null
   return (
     <div className="FloatingBar">
       <div className="FloatingBar__ProposalSectionActions">
         {showViewReactions && (
           <Link onClick={scrollToReactions} className={'FloatingBar__ViewComments'}>
-            {'View Reactions'}
+            {t('component.floating_bar.view_reactions_label')}
             <Reactions />
           </Link>
         )}
         {showViewComments && (
           <Link onClick={scrollToComments} className={'FloatingBar__ViewComments'}>
             <Forum color={'#736E7D'} />
-            {`${comments?.totalComments} Comments`}
+            {t('component.floating_bar.total_comments_label', { count: comments?.totalComments })}
           </Link>
         )}
       </div>
@@ -58,7 +60,7 @@ const FloatingBar: React.FC<FloatingBarProps> = ({
         href={(discourseTopicId && forumUrl(discourseTopicSlug, discourseTopicId)) || ''}
         className="FloatingBar__JoinDiscussion"
       >
-        {'JOIN DISCUSSION'}
+        {t('component.floating_bar.forum_label')}
         <Open />
       </Button>
     </div>

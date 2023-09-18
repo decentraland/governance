@@ -723,6 +723,11 @@
       "duplicated_error": "It looks like this {addressAlias} has already been added.",
       "max_error": "The maximum number of {addressesAlias} was exceeded.",
       "logged_user_invalid": "Logged user address is not allowed"
+    },
+    "floating_bar": {
+      "view_reactions_label": "View Reactions",
+      "total_comments_label": "{count} {count, plural, one {Comment} other {Comments}}",
+      "forum_label": "Join Discussion"
     }
   },
   "page": {

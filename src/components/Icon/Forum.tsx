@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Forum({ size = 24, color = '#000' }: { size?: number; color?: string }) {
+function Forum({ size = 24, color = 'var(--black-800)' }: { size?: number; color?: string }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} fill="none" viewBox="0 0 24 24">
       <path
