@@ -171,7 +171,7 @@ export default function ProposalPage() {
   const { isOwner } = useIsProposalOwner(proposal)
   const { votes, isLoadingVotes, reloadVotes } = useProposalVotes(proposal?.id)
   const { highQualityVotes, lowQualityVotes } = useMemo(() => getVoteSegmentation(votes), [votes])
-  const { surveyTopics, isLoadingSurveyTopics } = useSurveyTopics(proposal?.id)
+
   const subscriptionsQueryKey = `subscriptions#${proposal?.id || ''}`
   const { data: subscriptions, isLoading: isSubscriptionsLoading } = useQuery({
     queryKey: [subscriptionsQueryKey],
@@ -189,6 +189,8 @@ export default function ProposalPage() {
   const showProposalUpdates =
     publicUpdates && isProposalStatusWithUpdates(proposal?.status) && proposal?.type === ProposalType.Grant
 
+  // TODO: extract some of this to hooks
+  const { surveyTopics, isLoadingSurveyTopics } = useSurveyTopics(proposal?.id)
   const [isBarVisible, setIsBarVisible] = useState<boolean>(true)
   const commentsSectionRef = useRef<HTMLDivElement | null>(null)
   const reactionsSectionRef = useRef<HTMLDivElement | null>(null)
@@ -202,6 +204,29 @@ export default function ProposalPage() {
       commentsSectionRef.current.scrollIntoView({ behavior: 'smooth' })
     }
   }
+  const voteWithSurvey =
+    !isLoadingSurveyTopics &&
+    !!surveyTopics &&
+    surveyTopics.length > 0 &&
+    !!proposal &&
+    proposal.created_at > SURVEY_TOPICS_FEATURE_LAUNCH
+  const hasVotes = votes && Object.keys(votes).length > 0 && !isLoadingVotes
+  const hasSurveyTopics = surveyTopics && surveyTopics?.length > 0 && !isLoadingSurveyTopics
+  const showSurveyResults = proposal && voteWithSurvey && !isMobile && hasVotes && hasSurveyTopics
+  useEffect(() => {
+    const handleScroll = () => {
+      const hideBarSectionRef = reactionsSectionRef.current || commentsSectionRef.current
+      if (hideBarSectionRef) {
+        const hideBarSectionTop = hideBarSectionRef.getBoundingClientRect().top
+        setIsBarVisible(hideBarSectionTop > window.innerHeight)
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
 
   const [castingVote, castVote] = useAsyncTask(
     async (selectedChoice: SelectedVoteChoice, survey?: Survey) => {
@@ -309,21 +334,6 @@ export default function ProposalPage() {
     }
   }, [proposalPageState.showVotingError, proposalPageState.retryTimer, updatePageState])
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const commentsSection = commentsSectionRef.current
-      if (commentsSection) {
-        const commentsSectionTop = commentsSection.getBoundingClientRect().top
-        setIsBarVisible(commentsSectionTop > window.innerHeight)
-      }
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [])
-
   const closeProposalSuccessModal = () => {
     updatePageState({ showProposalSuccessModal: false })
     navigate(locations.proposal(proposal!.id), { replace: true })
@@ -333,13 +343,6 @@ export default function ProposalPage() {
     updatePageState({ showUpdateSuccessModal: false })
     navigate(locations.proposal(proposal!.id), { replace: true })
   }
-
-  const voteWithSurvey =
-    !isLoadingSurveyTopics &&
-    !!surveyTopics &&
-    surveyTopics.length > 0 &&
-    !!proposal &&
-    proposal.created_at > SURVEY_TOPICS_FEATURE_LAUNCH
 
   if (isErrorOnProposal) {
     return (
@@ -365,7 +368,6 @@ export default function ProposalPage() {
     proposal &&
     proposal?.status === ProposalStatus.Active &&
     (proposal?.type === ProposalType.Tender || proposal?.type === ProposalType.Bid)
-  const showSurveyResults = proposal && voteWithSurvey && !isMobile
 
   const showVotesChart = !isLoadingProposal && proposal?.type !== ProposalType.Poll && highQualityVotes
 
@@ -414,7 +416,6 @@ export default function ProposalPage() {
               {showSurveyResults && (
                 <SurveyResults
                   votes={votes}
-                  isLoadingVotes={isLoadingVotes}
                   surveyTopics={surveyTopics}
                   isLoadingSurveyTopics={isLoadingSurveyTopics}
                   ref={reactionsSectionRef}

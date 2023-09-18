@@ -10,7 +10,6 @@ import SurveyTopicResult from './SurveyTopicResult'
 
 interface Props {
   votes: Record<string, Vote> | null
-  isLoadingVotes: boolean
   surveyTopics: Topic[] | null
   isLoadingSurveyTopics: boolean
 }
@@ -51,19 +50,13 @@ function getResults(availableTopics: Topic[] | null, votes: Record<string, Vote>
   return topicsResults
 }
 
-const SurveyResults = forwardRef(
-  ({ votes, isLoadingVotes, surveyTopics, isLoadingSurveyTopics }: Props, ref: Ref<HTMLDivElement>) => {
-    const t = useFormatMessage()
-    const topicResults = useMemo(() => getResults(surveyTopics, votes), [surveyTopics, votes])
-    const topicIds = Object.keys(topicResults)
-    const hasVotes = votes && Object.keys(votes).length > 0 && !isLoadingVotes
-    const hasSurveyTopics = surveyTopics && surveyTopics?.length > 0 && !isLoadingSurveyTopics
+const SurveyResults = forwardRef(({ votes, surveyTopics, isLoadingSurveyTopics }: Props, ref: Ref<HTMLDivElement>) => {
+  const t = useFormatMessage()
+  const topicResults = useMemo(() => getResults(surveyTopics, votes), [surveyTopics, votes])
+  const topicIds = Object.keys(topicResults)
 
-    if (!hasVotes || !hasSurveyTopics) {
-      return null
-    }
-
-    return (
+  return (
+    <div ref={ref}>
       <Section title={t('survey.results.title')} isLoading={isLoadingSurveyTopics}>
         {topicIds.map((topicId: string, index: number) => {
           return (
@@ -75,8 +68,8 @@ const SurveyResults = forwardRef(
           )
         })}
       </Section>
-    )
-  }
-)
+    </div>
+  )
+})
 
 export default SurveyResults
