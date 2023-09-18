@@ -425,7 +425,7 @@ export default function ProposalPage() {
                 />
               )}
               <ProposalComments proposal={proposal} ref={commentsSectionRef} />
-              {proposal && (
+              {proposal && !isLoadingSurveyTopics && (
                 <FloatingBar
                   isVisible={isBarVisible}
                   showViewReactions={!!showSurveyResults}

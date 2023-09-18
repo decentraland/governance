@@ -1,6 +1,8 @@
 import React from 'react'
 
+import classNames from 'classnames'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { forumUrl } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
@@ -33,24 +35,34 @@ const FloatingBar: React.FC<FloatingBarProps> = ({
 }) => {
   const t = useFormatMessage()
   const { comments, isLoadingComments } = useProposalComments(proposalId)
-  const showViewComments = !isLoadingComments || (comments && comments.totalComments > 0)
-
   if (!isVisible) return null
   return (
     <div className="FloatingBar">
       <div className="FloatingBar__ProposalSectionActions">
         {showViewReactions && (
-          <Link onClick={scrollToReactions} className={'FloatingBar__ViewComments'}>
+          <Link onClick={scrollToReactions} className={'FloatingBar__Action'}>
             {t('component.floating_bar.view_reactions_label')}
             <Reactions />
           </Link>
         )}
-        {showViewComments && (
-          <Link onClick={scrollToComments} className={'FloatingBar__ViewComments'}>
-            <Forum color={'var(--black-600)'} />
-            {t('component.floating_bar.total_comments_label', { count: comments?.totalComments })}
-          </Link>
-        )}
+        <Link onClick={scrollToComments} className={'FloatingBar__Action'}>
+          {isLoadingComments && (
+            <Loader
+              active
+              size="tiny"
+              className={classNames(
+                !showViewReactions && 'FloatingBar__LoaderLeft',
+                showViewReactions && 'FloatingBar__LoaderRight'
+              )}
+            />
+          )}
+          {!isLoadingComments && (
+            <>
+              <Forum color={'var(--black-600)'} />
+              {t('component.floating_bar.total_comments_label', { count: comments?.totalComments })}
+            </>
+          )}
+        </Link>
       </div>
       <Button
         basic
