@@ -14,6 +14,7 @@ import useIsProfileValidated from '../../hooks/useIsProfileValidated'
 import locations, { isProjectPath } from '../../utils/locations'
 import Link from '../Common/Typography/Link'
 import Dot from '../Icon/Dot'
+import NotificationFeed from '../NotificationFeed'
 import SearchInput from '../Search/SearchInput'
 
 import './Navigation.css'
@@ -121,6 +122,7 @@ const Navigation = ({ activeTab }: NavigationProps) => {
         </Tabs.Left>
         <Tabs.Right>
           <SearchInput />
+          {user && <NotificationFeed />}
         </Tabs.Right>
       </Tabs>
     </div>

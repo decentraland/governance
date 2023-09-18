@@ -1,6 +1,8 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import Sidebar from 'semantic-ui-react/dist/commonjs/modules/Sidebar/Sidebar'
+
+import { useClickOutside } from '../../hooks/useClickOutside'
 
 import './GovernanceSidebar.css'
 
@@ -13,26 +15,7 @@ type Props = {
 }
 
 export default function GovernanceSidebar({ visible, onShow, onHide, onClose, children }: Props) {
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      const sidebar = document.querySelector('.GovernanceSidebar')
-      if (sidebar && !sidebar.contains(event.target as Node) && !!onClose) {
-        event.preventDefault()
-        event.stopPropagation()
-        onClose()
-      }
-    }
-
-    if (visible) {
-      document.addEventListener('mousedown', handleClickOutside)
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [visible, onClose])
+  useClickOutside('.GovernanceSidebar', !!visible, onClose)
 
   return (
     <Sidebar
