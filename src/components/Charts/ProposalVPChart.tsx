@@ -15,6 +15,7 @@ import Section from '../Proposal/View/Section'
 
 import './ProposalVPChart.css'
 import {
+  HOUR_IN_MS,
   externalTooltipHandler,
   getAbstainColor,
   getDataset,
@@ -30,6 +31,8 @@ interface Props {
   requiredToPass?: number | null
   voteMap: Record<string, Vote>
   isLoadingVotes?: boolean
+  startTimestamp?: number
+  endTimestamp?: number
 }
 
 const COMMON_DATASET_OPTIONS = {
@@ -39,7 +42,7 @@ const COMMON_DATASET_OPTIONS = {
   pointHoverBorderWidth: 8,
 }
 
-function ProposalVPChart({ requiredToPass, voteMap, isLoadingVotes }: Props) {
+function ProposalVPChart({ requiredToPass, voteMap, isLoadingVotes, startTimestamp, endTimestamp }: Props) {
   const t = useFormatMessage()
   const YAxisFormat = useAbbreviatedFormatter()
   const chartRef = useRef<ChartJS>(null)
@@ -72,7 +75,7 @@ function ProposalVPChart({ requiredToPass, voteMap, isLoadingVotes }: Props) {
       datasets: [
         {
           label: 'Yes',
-          data: getDataset(yesVotes),
+          data: getDataset(yesVotes, endTimestamp),
           borderColor: getYesColor(),
           backgroundColor: getYesColor(),
           pointHoverBorderColor: getYesColor(0.4),
@@ -80,7 +83,7 @@ function ProposalVPChart({ requiredToPass, voteMap, isLoadingVotes }: Props) {
         },
         {
           label: 'No',
-          data: getDataset(noVotes),
+          data: getDataset(noVotes, endTimestamp),
           borderColor: getNoColor(),
           backgroundColor: getNoColor(),
           pointHoverBorderColor: getNoColor(0.4),
@@ -88,7 +91,7 @@ function ProposalVPChart({ requiredToPass, voteMap, isLoadingVotes }: Props) {
         },
         {
           label: 'Abstain',
-          data: getDataset(abstainVotes),
+          data: getDataset(abstainVotes, endTimestamp),
           borderColor: getAbstainColor(),
           backgroundColor: getAbstainColor(),
           pointHoverBorderColor: getAbstainColor(0.4),
@@ -96,7 +99,8 @@ function ProposalVPChart({ requiredToPass, voteMap, isLoadingVotes }: Props) {
         },
       ],
     })
-  }, [abstainVotes, noVotes, yesVotes])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [abstainVotes.length, noVotes.length, yesVotes.length, endTimestamp])
 
   const options = {
     responsive: true,
@@ -148,6 +152,8 @@ function ProposalVPChart({ requiredToPass, voteMap, isLoadingVotes }: Props) {
             day: 'DD/MM',
           },
         },
+        min: startTimestamp,
+        max: votes[votes.length - 1]?.timestamp + HOUR_IN_MS * 2,
         ticks: {
           autoSkip: true,
           maxTicksLimit: 4,
@@ -169,7 +175,7 @@ function ProposalVPChart({ requiredToPass, voteMap, isLoadingVotes }: Props) {
 
   return (
     <Section title={t('page.proposal_view.votes_chart.title')} isNew isLoading={isLoadingVotes || isLoadingProfiles}>
-      <Chart className="ProposalVPChart" ref={chartRef} options={options} data={chartData} type="line" />
+      <Chart id="ProposalVPChart" ref={chartRef} options={options} data={chartData} type="line" />
     </Section>
   )
 }

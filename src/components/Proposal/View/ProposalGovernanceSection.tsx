@@ -88,12 +88,13 @@ export default function ProposalGovernanceSection({
               {showResults ? t('page.proposal_detail.result_label') : t('page.proposal_detail.get_involved')}
             </SidebarHeaderLabel>
             {showResultsButton && (
-              <button
+              <a
                 className="ProposalGovernanceSection__ResultsButton"
                 onClick={() => setShowResults((prevState) => !prevState)}
+                href={proposal?.type !== ProposalType.Poll ? '#ProposalVPChart' : undefined}
               >
                 {!showResults ? t('page.proposal_detail.show_results') : t('page.proposal_detail.hide_results')}
-              </button>
+              </a>
             )}
           </div>
         </div>

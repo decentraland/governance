@@ -9,6 +9,8 @@ type VoteWithAddress = Vote & { address: string }
 type VoteWithProfile = VoteWithAddress & { profile?: Avatar }
 
 const TOOLTIP_ID = 'ProposalVPChartTooltip'
+export const HOUR_IN_MS = 60 * 60 * 1000
+const DAY_IN_MS = 24 * HOUR_IN_MS
 
 export function getSortedVotes(votesMap: Record<string, Vote>) {
   return Object.entries(votesMap)
@@ -37,15 +39,22 @@ export function getSegregatedVotes(votes: VoteWithAddress[], profileMap: Map<str
   return { yesVotes, noVotes, abstainVotes }
 }
 
-export function getDataset(votes: VoteWithAddress[]) {
+export function getDataset(votes: VoteWithAddress[], endTimestamp?: number) {
   type DataPoint = { x: number; y: number }
-  return votes.reduce<DataPoint[]>((acc, vote) => {
-    const last = acc[acc.length - 1]
-    const x = vote.timestamp
-    const y = last ? last.y + vote.vp : vote.vp
-    acc.push({ x, y })
-    return acc
-  }, [])
+  const dataset = votes.reduce<DataPoint[]>(
+    (acc, vote) => {
+      const last = acc[acc.length - 1]
+      const x = vote.timestamp
+      const y = last ? last.y + vote.vp : vote.vp
+      acc.push({ x, y })
+      return acc
+    },
+    [{ x: 0, y: 0 }]
+  )
+
+  const last = dataset[dataset.length - 1]
+  const result = endTimestamp ? [...dataset, { x: endTimestamp + DAY_IN_MS, y: last.y }] : dataset
+  return result.length === 2 && result[0].y === result[1].y ? [] : result
 }
 
 function getColor(r: number, g: number, b: number, a = 1) {
@@ -85,12 +94,12 @@ type TooltipHandlerProps = {
 export function externalTooltipHandler({ context, datasetMap, title }: TooltipHandlerProps) {
   // Tooltip Element
   const { chart, tooltip } = context
-  const tooltipEl = getOrCreateTooltip(chart)
+  const customTooltip = getOrCreateTooltip(chart)
   const dataPoint = tooltip.dataPoints?.[0].raw as { x: number; y: number } | undefined
   const dataIdx = tooltip.dataPoints?.[0].dataIndex
   const datasetLabel = tooltip.dataPoints?.[0].dataset.label || ''
 
-  const vote = datasetMap[datasetLabel]?.[dataIdx]
+  const vote = datasetMap[datasetLabel]?.[dataIdx - 1]
 
   const username = vote?.profile?.name || vote?.address.slice(0, 7)
   const userVP = vote?.vp || 0
@@ -98,7 +107,7 @@ export function externalTooltipHandler({ context, datasetMap, title }: TooltipHa
 
   // Hide if no tooltip
   if (tooltip.opacity === 0) {
-    tooltipEl.style.opacity = '0'
+    customTooltip.style.opacity = '0'
     return
   }
 
@@ -129,15 +138,15 @@ export function externalTooltipHandler({ context, datasetMap, title }: TooltipHa
   textContainer.appendChild(detailsElement)
 
   // Remove old children
-  while (tooltipEl.firstChild) {
-    tooltipEl.firstChild.remove()
+  while (customTooltip.firstChild) {
+    customTooltip.firstChild.remove()
   }
 
   // Add new children
-  tooltipEl.appendChild(avatar)
-  tooltipEl.appendChild(textContainer)
+  customTooltip.appendChild(avatar)
+  customTooltip.appendChild(textContainer)
 
-  const tooltipWidth = tooltipEl.clientWidth
+  const tooltipWidth = customTooltip.clientWidth
 
   const { offsetLeft: positionX, offsetTop: positionY, clientWidth: canvasWidth } = chart.canvas
 
@@ -148,7 +157,7 @@ export function externalTooltipHandler({ context, datasetMap, title }: TooltipHa
   const xShift = isLowerHalf ? Math.max(minX, tooltip.caretX) : Math.min(maxX, tooltip.caretX)
 
   // Display and position
-  tooltipEl.style.opacity = '1'
-  tooltipEl.style.left = positionX + xShift + 'px'
-  tooltipEl.style.top = positionY + tooltip.caretY + 'px'
+  customTooltip.style.opacity = '1'
+  customTooltip.style.left = positionX + xShift + 'px'
+  customTooltip.style.top = positionY + tooltip.caretY + 'px'
 }

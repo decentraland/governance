@@ -390,7 +390,12 @@ export default function ProposalPage() {
                 </Desktop>
               )}
               {showVotesChart && (
-                <ProposalVPChart requiredToPass={proposal?.required_to_pass} voteMap={highQualityVotes} />
+                <ProposalVPChart
+                  requiredToPass={proposal?.required_to_pass}
+                  voteMap={highQualityVotes}
+                  startTimestamp={proposal?.start_at.getTime()}
+                  endTimestamp={proposal?.finish_at.getTime()}
+                />
               )}
               <ProposalComments proposal={proposal} />
             </Grid.Column>
