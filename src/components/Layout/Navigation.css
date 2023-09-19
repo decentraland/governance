@@ -8,6 +8,12 @@
   vertical-align: middle;
 }
 
+.dcl.navbar-account .ui.button.inverted {
+  color: black;
+  border: 1px solid black;
+  border-radius: 6px;
+}
+
 @media (min-width: 768px) {
   .Navigation .dcl.tabs {
     display: flex;
@@ -42,15 +48,4 @@
   color: var(--white-900) !important;
   margin-bottom: 0;
   padding-left: 0;
-}
-
-.WiderNavigation .dcl.tabs .ui.container {
-  width: 100%;
-  max-width: 1440px !important;
-}
-
-@media (min-width: 768px) {
-  .WiderNavigation .dcl.tabs .ui.container {
-    padding: 0 24px;
-  }
 }

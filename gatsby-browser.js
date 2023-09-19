@@ -31,6 +31,7 @@ import Segment from "decentraland-gatsby/dist/components/Development/Segment"
 import { SEGMENT_KEY, SSO_URL } from "./src/constants"
 import { flattenMessages } from "./src/utils/intl"
 import en from "./src/intl/en.json"
+import SnapshotStatus from "./src/components/Debug/SnapshotStatus"
 
 const queryClient = new QueryClient()
 
@@ -49,6 +50,7 @@ export const wrapPageElement = ({ element, props }) => {
       <IntlProvider defaultLocale='en' locale='en' messages={flattenMessages(en)}>
         <IdentityModalContextProvider>
           <BurgerMenuStatusContextProvider>
+            <SnapshotStatus />
             <Layout {...props} rightMenu={<Navbar />}>
               {element}
             </Layout>

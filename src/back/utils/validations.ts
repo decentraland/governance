@@ -2,7 +2,7 @@ import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
-import { SnapshotProposal } from '../../clients/SnapshotGraphqlTypes'
+import { SnapshotProposal } from '../../clients/SnapshotTypes'
 import isDebugAddress from '../../entities/Debug/isDebugAddress'
 
 export function validateDates(start?: string, end?: string) {

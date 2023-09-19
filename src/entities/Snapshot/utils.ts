@@ -2,14 +2,14 @@ import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { ethers } from 'ethers'
 
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
+import { SnapshotSubgraph } from '../../clients/SnapshotSubgraph'
 import {
   Delegation,
   DelegationResult,
   EMPTY_DELEGATION,
   SnapshotProposal,
   SnapshotVote,
-} from '../../clients/SnapshotGraphqlTypes'
-import { SnapshotSubgraph } from '../../clients/SnapshotSubgraph'
+} from '../../clients/SnapshotTypes'
 
 import { SNAPSHOT_SPACE } from './constants'
 import { getDelegatedQuery } from './queries'

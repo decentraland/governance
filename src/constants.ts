@@ -1,3 +1,5 @@
+import isEthereumAddress from 'validator/lib/isEthereumAddress'
+
 import { trimOtterspaceId } from './back/utils/contractInteractions'
 import { OTTERSPACE_DAO_RAFT_ID } from './entities/Snapshot/constants'
 import Candidates from './utils/delegates/candidates.json'
@@ -32,3 +34,7 @@ export const LAND_OWNER_BADGE_SPEC_CID = process.env.LAND_OWNER_BADGE_SPEC_CID |
 export const TRIMMED_OTTERSPACE_RAFT_ID = trimOtterspaceId(OTTERSPACE_DAO_RAFT_ID)
 export const TOP_VOTERS_PER_MONTH = 3
 export const TOP_VOTER_BADGE_IMG_URL = process.env.TOP_VOTER_BADGE_IMG_URL || ''
+export const DEBUG_ADDRESSES = (env('DEBUG_ADDRESSES', '') || '')
+  .split(',')
+  .filter(isEthereumAddress)
+  .map((address) => address.toLowerCase())

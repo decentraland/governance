@@ -6,13 +6,14 @@ import fetch from 'isomorphic-fetch'
 import isEmail from 'validator/lib/isEmail'
 
 import { ErrorService } from '../../services/ErrorService'
+import { NewsletterSubscriptionResult } from '../../shared/types/newsletter'
 import { ErrorCategory } from '../../utils/errorCategories'
 
 export default routes((router) => {
   router.post('/newsletter-subscribe', handleAPI(handleSubscription))
 })
 
-async function handleSubscription(req: Request) {
+async function handleSubscription(req: Request): Promise<NewsletterSubscriptionResult> {
   const email = req.body.email
   if (!isEmail(email)) {
     throw new RequestError('Invalid email', RequestError.BadRequest)
@@ -28,13 +29,16 @@ async function handleSubscription(req: Request) {
     },
     body: `{ "email": "${email}" }`,
   })
-
   const data = await response.json()
+
   if (data.errors) {
-    const errorMessage = 'Error subscribing to newsletter'
-    ErrorService.report(errorMessage, { email, error: JSON.stringify(data.errors), category: ErrorCategory.Newsletter })
-    throw new RequestError(errorMessage, RequestError.InternalServerError)
+    ErrorService.report('Error subscribing to newsletter', {
+      email,
+      error: JSON.stringify(data.errors),
+      category: ErrorCategory.Newsletter,
+    })
+    return { email, error: true, details: 'Invalid email' }
   }
 
-  return data
+  return { email, error: false, details: '' }
 }

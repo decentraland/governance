@@ -5,7 +5,7 @@ import { Request } from 'express'
 import isNumber from 'lodash/isNumber'
 
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
-import { SnapshotVote } from '../../clients/SnapshotGraphqlTypes'
+import { SnapshotVote } from '../../clients/SnapshotTypes'
 import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import VotesModel from '../../entities/Votes/model'

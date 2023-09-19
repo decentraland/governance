@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { Governance } from '../clients/Governance'
-import { VpDistribution } from '../clients/SnapshotGraphqlTypes'
+import { VpDistribution } from '../clients/SnapshotTypes'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 

@@ -1,14 +1,14 @@
 import React from 'react'
 
 import { useLocation } from '@reach/router'
-import UserMenu, { UserMenuProps } from 'decentraland-gatsby/dist/components/User/UserMenu'
+import UserInformation, { UserInformationProps } from 'decentraland-gatsby/dist/components/User/UserInformation'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import BurgerMenu from './BurgerMenu/BurgerMenu'
 
 const BURGER_MENU_LOCATIONS = ['/', '/proposals/', '/transparency/', '/projects/', '/profile/']
 
-function Navbar(props: UserMenuProps) {
+function Navbar(props: UserInformationProps) {
   const location = useLocation()
   const showBurgerMenu = BURGER_MENU_LOCATIONS.some((burgerLocation) => burgerLocation === location.pathname)
 
@@ -20,7 +20,7 @@ function Navbar(props: UserMenuProps) {
         </Mobile>
       )}
       <NotMobile>
-        <UserMenu {...props} />
+        <UserInformation {...props} />
       </NotMobile>
     </>
   )

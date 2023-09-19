@@ -49,12 +49,7 @@ export default function Layout({ children, ...props }: LayoutProps) {
 
   return (
     <>
-      <Navbar
-        activePage="dao"
-        onClickMenuOption={handleClickMenuOption}
-        rightMenu={props.rightMenu}
-        className={isWiderLayout ? 'WiderNavbar' : undefined}
-      />
+      <Navbar activePage="dao" onClickMenuOption={handleClickMenuOption} rightMenu={props.rightMenu} />
       <main>{children}</main>
       <WrongNetworkModal
         currentNetwork={state.chainId}

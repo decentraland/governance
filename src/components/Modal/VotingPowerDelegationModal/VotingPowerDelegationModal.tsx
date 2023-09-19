@@ -3,7 +3,7 @@ import React from 'react'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
-import { VpDistribution } from '../../../clients/SnapshotGraphqlTypes'
+import { VpDistribution } from '../../../clients/SnapshotTypes'
 import VotingPowerDelegationDetail from '../VotingPowerDelegationDetail/VotingPowerDelegationDetail'
 
 import VotingPowerDelegationCandidatesList, { Candidate } from './VotingPowerDelegationCandidatesList'

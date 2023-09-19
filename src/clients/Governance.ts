@@ -35,18 +35,20 @@ import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { Topic } from '../entities/SurveyTopic/types'
 import { ProjectHealth, UpdateAttributes, UpdateResponse } from '../entities/Updates/types'
 import { Vote, VotedProposal, Voter } from '../entities/Votes/types'
+import { NewsletterSubscriptionResult } from '../shared/types/newsletter'
 import Time from '../utils/date/Time'
 import { Notification } from '../utils/notifications'
 
 import { TransparencyBudget } from './DclData'
 import {
   DetailedScores,
+  SnapshotConfig,
   SnapshotProposal,
   SnapshotSpace,
   SnapshotStatus,
   SnapshotVote,
   VpDistribution,
-} from './SnapshotGraphqlTypes'
+} from './SnapshotTypes'
 import { VestingInfo } from './VestingData'
 
 type NewProposalMap = {
@@ -528,11 +530,16 @@ export class Governance extends API {
     return response.data
   }
 
-  async getSnapshotStatusAndSpace(spaceName?: string) {
-    const response = await this.fetch<ApiResponse<{ status: SnapshotStatus; space: SnapshotSpace }>>(
-      `/snapshot/status-space/${spaceName}`,
+  async getSnapshotConfigAndSpace(spaceName?: string) {
+    const response = await this.fetch<ApiResponse<{ config: SnapshotConfig; space: SnapshotSpace }>>(
+      `/snapshot/config/${spaceName}`,
       this.options().method('GET')
     )
+    return response.data
+  }
+
+  async getSnapshotStatus() {
+    const response = await this.fetch<ApiResponse<SnapshotStatus>>(`/snapshot/status`, this.options().method('GET'))
     return response.data
   }
 
@@ -652,7 +659,7 @@ export class Governance extends API {
   }
 
   async subscribeToNewsletter(email: string) {
-    const response = await this.fetch<ApiResponse<string>>(
+    const response = await this.fetch<ApiResponse<NewsletterSubscriptionResult>>(
       `/newsletter-subscribe`,
       this.options().method('POST').json({
         email,

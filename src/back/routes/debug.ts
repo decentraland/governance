@@ -2,7 +2,7 @@ import { WithAuth, auth } from 'decentraland-gatsby/dist/entities/Auth/middlewar
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 
-import { DEBUG_ADDRESSES } from '../../entities/Debug/isDebugAddress'
+import { DEBUG_ADDRESSES } from '../../constants'
 import { ErrorService } from '../../services/ErrorService'
 import { giveAndRevokeLandOwnerBadges, giveTopVoterBadges, runQueuedAirdropJobs } from '../jobs/BadgeAirdrop'
 import { validateDebugAddress } from '../utils/validations'
