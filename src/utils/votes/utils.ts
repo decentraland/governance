@@ -5,12 +5,12 @@ import { DelegationsLabelProps } from '../../components/Proposal/View/ProposalVo
 import { VotedChoice } from '../../components/Proposal/View/ProposalVoting/VotedChoiceButton'
 import { Vote } from '../../entities/Votes/types'
 import { Scores } from '../../entities/Votes/utils'
-import { env } from '../env'
+import { clientEnv } from '../clientEnv'
 
 import { DelegationsLabelBuilder } from './helpers/DelegationsLabelBuilder'
 import { VotedChoiceBuilder } from './helpers/VotedChoiceBuilder'
 
-const DEFAULT_CHAIN_ID = process.env.GATSBY_DEFAULT_CHAIN_ID || env('GATSBY_DEFAULT_CHAIN_ID')
+const DEFAULT_CHAIN_ID = process.env.GATSBY_DEFAULT_CHAIN_ID || clientEnv('GATSBY_DEFAULT_CHAIN_ID')
 
 export function getEnvironmentChainId() {
   const CHAIN_ID = Number(DEFAULT_CHAIN_ID)
