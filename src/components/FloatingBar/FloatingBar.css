@@ -12,6 +12,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  opacity: 0;
+  transition: all 0.5s ease 0s;
+}
+
+.FloatingBar--visible {
+  opacity: 1;
 }
 
 .FloatingBar__ProposalSectionActions {
@@ -27,8 +33,14 @@
   line-height: 24px;
   font-weight: var(--weight-semi-bold);
   text-transform: uppercase;
-  display: flex;
   gap: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.FloatingBar__ReactionsImg {
+  height: 24px;
+  width: 36px;
 }
 
 .FloatingBar__JoinDiscussion {

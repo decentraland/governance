@@ -10,9 +10,10 @@ import useProposalComments from '../../hooks/useProposalComments'
 import Link from '../Common/Typography/Link'
 import Forum from '../Icon/Forum'
 import Open from '../Icon/Open'
-import Reactions from '../Icon/Reactions'
 
 import './FloatingBar.css'
+
+const reactions = require('../../images/reactions.png').default
 
 interface FloatingBarProps {
   isVisible: boolean
@@ -35,14 +36,14 @@ const FloatingBar: React.FC<FloatingBarProps> = ({
 }) => {
   const t = useFormatMessage()
   const { comments, isLoadingComments } = useProposalComments(proposalId)
-  if (!isVisible) return null
+
   return (
-    <div className="FloatingBar">
+    <div className={classNames('FloatingBar', isVisible && 'FloatingBar--visible')}>
       <div className="FloatingBar__ProposalSectionActions">
         {showViewReactions && (
           <Link onClick={scrollToReactions} className={'FloatingBar__Action'}>
             {t('component.floating_bar.view_reactions_label')}
-            <Reactions />
+            <img src={reactions} className="FloatingBar__ReactionsImg" />
           </Link>
         )}
         <Link onClick={scrollToComments} className={'FloatingBar__Action'}>
