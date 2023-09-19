@@ -10,19 +10,18 @@
   }
 }
 
-.WiderNavbar.dcl.navbar .ui.container {
-  width: unset !important;
-  max-width: 1391px !important;
-}
-
 .ui.container.WiderFooter {
   width: unset !important;
   max-width: 1440px !important;
 }
 
 @media (min-width: 768px) {
-  .WiderNavbar.dcl.navbar .ui.container,
   .ui.container.WiderFooter {
     padding: 0 24px !important;
   }
+}
+
+.dcl.navbar .ui.container,
+.Navigation .dcl.tabs .ui.container {
+  width: calc(100% - 48px);
 }

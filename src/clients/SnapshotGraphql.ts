@@ -267,7 +267,7 @@ export class SnapshotGraphql extends API {
         const result = await this.fetch<SnapshotVoteResponse>(
           GRAPHQL_ENDPOINT,
           this.options().method('POST').json({
-            GET_VOTES_QUERY,
+            query: GET_VOTES_QUERY,
             variables,
           })
         )

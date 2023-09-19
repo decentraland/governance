@@ -9,7 +9,6 @@ import { Navbar, NavbarProps } from 'decentraland-ui/dist/components/Navbar/Navb
 import type { PageProps } from 'gatsby'
 
 import { isProjectPath } from '../../utils/locations'
-import SnapshotStatus from '../Debug/SnapshotStatus'
 import WalletSelectorModal from '../Modal/WalletSelectorModal'
 import WrongNetworkModal from '../Modal/WrongNetworkModal'
 
@@ -49,12 +48,7 @@ export default function Layout({ children, ...props }: LayoutProps) {
 
   return (
     <>
-      <Navbar
-        activePage="dao"
-        onClickMenuOption={handleClickMenuOption}
-        rightMenu={props.rightMenu}
-        className={isWiderLayout ? 'WiderNavbar' : undefined}
-      />
+      <Navbar activePage="dao" onClickMenuOption={handleClickMenuOption} rightMenu={props.rightMenu} />
       <main>{children}</main>
       <WrongNetworkModal
         currentNetwork={state.chainId}
