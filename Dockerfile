@@ -40,6 +40,7 @@ COPY ./gatsby-config.js                       /app/gatsby-config.js
 COPY ./gatsby-node.js                         /app/gatsby-node.js
 COPY ./gatsby-ssr.js                          /app/gatsby-ssr.js
 COPY ./tsconfig.json                          /app/tsconfig.json
+COPY ./.babelrc.json                          /app/.babelrc.json
 
 RUN sed -i.temp '/Pulumi\.ts/d' package.json
 
