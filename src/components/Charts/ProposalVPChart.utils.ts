@@ -19,24 +19,24 @@ export function getSortedVotes(votesMap: Record<string, Vote>) {
 }
 
 export function getSegregatedVotes(votes: VoteWithAddress[], profileMap: Map<string, Avatar>) {
-  const yesVotes: VoteWithProfile[] = []
-  const noVotes: VoteWithProfile[] = []
-  const abstainVotes: VoteWithProfile[] = []
+  const yes: VoteWithProfile[] = []
+  const no: VoteWithProfile[] = []
+  const abstain: VoteWithProfile[] = []
 
   for (const vote of votes) {
     const profile = profileMap.get(vote.address.toLowerCase())
     const voteWithProfile = { ...vote, profile }
 
     if (voteWithProfile.choice === 1) {
-      yesVotes.push(voteWithProfile)
+      yes.push(voteWithProfile)
     } else if (voteWithProfile.choice === 2) {
-      noVotes.push(voteWithProfile)
+      no.push(voteWithProfile)
     } else if (voteWithProfile.choice === 3) {
-      abstainVotes.push(voteWithProfile)
+      abstain.push(voteWithProfile)
     }
   }
 
-  return { yesVotes, noVotes, abstainVotes }
+  return { yes, no, abstain }
 }
 
 export function getDataset(votes: VoteWithAddress[], endTimestamp?: number) {
@@ -54,7 +54,8 @@ export function getDataset(votes: VoteWithAddress[], endTimestamp?: number) {
 
   const last = dataset[dataset.length - 1]
   const result = endTimestamp ? [...dataset, { x: endTimestamp + DAY_IN_MS, y: last.y }] : dataset
-  return result.length === 2 && result[0].y === result[1].y ? [] : result
+  const hasNoVotes = result.length === 2 && result[0].y === result[1].y
+  return hasNoVotes ? [] : result
 }
 
 function getColor(r: number, g: number, b: number, a = 1) {
@@ -88,10 +89,10 @@ function getOrCreateTooltip(chart: Chart<'line'>) {
 
 type TooltipHandlerProps = {
   context: ScriptableTooltipContext<'line'>
-  datasetMap: Record<string, VoteWithProfile[]>
+  votes: Record<string, VoteWithProfile[]>
   title: (choice: string, vp: number) => string
 }
-export function externalTooltipHandler({ context, datasetMap, title }: TooltipHandlerProps) {
+export function externalTooltipHandler({ context, votes, title }: TooltipHandlerProps) {
   // Tooltip Element
   const { chart, tooltip } = context
   const customTooltip = getOrCreateTooltip(chart)
@@ -99,7 +100,7 @@ export function externalTooltipHandler({ context, datasetMap, title }: TooltipHa
   const dataIdx = tooltip.dataPoints?.[0].dataIndex
   const datasetLabel = tooltip.dataPoints?.[0].dataset.label || ''
 
-  const vote = datasetMap[datasetLabel]?.[dataIdx - 1]
+  const vote = votes[datasetLabel.toLowerCase()]?.[dataIdx - 1]
 
   const username = vote?.profile?.name || vote?.address.slice(0, 7)
   const userVP = vote?.vp || 0

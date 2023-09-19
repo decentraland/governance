@@ -13,12 +13,10 @@ type Profile = {
 
 export default function useProfiles(addresses: (string | null | undefined)[]): {
   profiles: Profile[]
-  invalidAddresses: (string | null | undefined)[]
   isLoadingProfiles: boolean
 } {
   const fetchProfiles = async () => {
     const validAddresses = addresses.filter((address) => isEthereumAddress(address || '')) as string[]
-    const invalidAddresses = addresses.filter((address) => !isEthereumAddress(address || ''))
     let validAddressesProfiles: Profile[] = []
 
     try {
@@ -35,7 +33,7 @@ export default function useProfiles(addresses: (string | null | undefined)[]): {
       }))
     }
 
-    return { profiles: validAddressesProfiles, invalidAddresses }
+    return { profiles: validAddressesProfiles }
   }
 
   const { data, isLoading: isLoadingProfiles } = useQuery({
@@ -44,7 +42,7 @@ export default function useProfiles(addresses: (string | null | undefined)[]): {
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
-  const { profiles, invalidAddresses } = data || {}
+  const { profiles } = data || {}
 
-  return { profiles: profiles || [], invalidAddresses: invalidAddresses || [], isLoadingProfiles }
+  return { profiles: profiles || [], isLoadingProfiles }
 }

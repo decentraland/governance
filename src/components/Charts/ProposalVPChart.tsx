@@ -46,8 +46,8 @@ function ProposalVPChart({ requiredToPass, voteMap, isLoadingVotes, startTimesta
   const t = useFormatMessage()
   const YAxisFormat = useAbbreviatedFormatter()
   const chartRef = useRef<ChartJS>(null)
-  const votes = useMemo(() => getSortedVotes(voteMap), [voteMap])
-  const { profiles, isLoadingProfiles } = useProfiles(votes.map((vote) => vote.address))
+  const sortedVotes = useMemo(() => getSortedVotes(voteMap), [voteMap])
+  const { profiles, isLoadingProfiles } = useProfiles(sortedVotes.map((vote) => vote.address))
   const profileByAddress = useMemo(
     () =>
       profiles.reduce((acc, { profile }) => {
@@ -56,15 +56,7 @@ function ProposalVPChart({ requiredToPass, voteMap, isLoadingVotes, startTimesta
       }, new Map<string, Avatar>()),
     [profiles]
   )
-  const { yesVotes, noVotes, abstainVotes } = useMemo(
-    () => getSegregatedVotes(votes, profileByAddress),
-    [profileByAddress, votes]
-  )
-  const segregatedVotesMap = {
-    Yes: yesVotes,
-    No: noVotes,
-    Abstain: abstainVotes,
-  }
+  const votes = useMemo(() => getSegregatedVotes(sortedVotes, profileByAddress), [profileByAddress, sortedVotes])
 
   const tooltipTitle = (choice: string, vp: number) =>
     t('page.proposal_view.votes_chart.tooltip_title', { choice, vp: vp.toLocaleString('en-US') })
@@ -75,7 +67,7 @@ function ProposalVPChart({ requiredToPass, voteMap, isLoadingVotes, startTimesta
       datasets: [
         {
           label: 'Yes',
-          data: getDataset(yesVotes, endTimestamp),
+          data: getDataset(votes.yes, endTimestamp),
           borderColor: getYesColor(),
           backgroundColor: getYesColor(),
           pointHoverBorderColor: getYesColor(0.4),
@@ -83,7 +75,7 @@ function ProposalVPChart({ requiredToPass, voteMap, isLoadingVotes, startTimesta
         },
         {
           label: 'No',
-          data: getDataset(noVotes, endTimestamp),
+          data: getDataset(votes.no, endTimestamp),
           borderColor: getNoColor(),
           backgroundColor: getNoColor(),
           pointHoverBorderColor: getNoColor(0.4),
@@ -91,7 +83,7 @@ function ProposalVPChart({ requiredToPass, voteMap, isLoadingVotes, startTimesta
         },
         {
           label: 'Abstain',
-          data: getDataset(abstainVotes, endTimestamp),
+          data: getDataset(votes.abstain, endTimestamp),
           borderColor: getAbstainColor(),
           backgroundColor: getAbstainColor(),
           pointHoverBorderColor: getAbstainColor(0.4),
@@ -100,7 +92,7 @@ function ProposalVPChart({ requiredToPass, voteMap, isLoadingVotes, startTimesta
       ],
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [abstainVotes.length, noVotes.length, yesVotes.length, endTimestamp])
+  }, [votes.abstain.length, votes.no.length, votes.yes.length, endTimestamp])
 
   const options = {
     responsive: true,
@@ -112,12 +104,24 @@ function ProposalVPChart({ requiredToPass, voteMap, isLoadingVotes, startTimesta
           boxHeight: 1,
           boxWidth: 10,
         },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onHover: (e: any) => {
+          if (e.native && e.native.target) {
+            e.native.target.style.cursor = 'pointer'
+          }
+        },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onLeave: (e: any) => {
+          if (e.native && e.native.target) {
+            e.native.target.style.cursor = 'default'
+          }
+        },
       },
       tooltip: {
         enabled: false,
         position: 'nearest' as const,
         external: (context: ScriptableTooltipContext<'line'>) =>
-          externalTooltipHandler({ context, datasetMap: segregatedVotesMap, title: tooltipTitle }),
+          externalTooltipHandler({ context, votes, title: tooltipTitle }),
       },
       annotation: {
         annotations: {
@@ -153,7 +157,7 @@ function ProposalVPChart({ requiredToPass, voteMap, isLoadingVotes, startTimesta
           },
         },
         min: startTimestamp,
-        max: votes[votes.length - 1]?.timestamp + HOUR_IN_MS * 2,
+        max: sortedVotes[sortedVotes.length - 1]?.timestamp + HOUR_IN_MS * 2,
         ticks: {
           autoSkip: true,
           maxTicksLimit: 4,
@@ -169,6 +173,10 @@ function ProposalVPChart({ requiredToPass, voteMap, isLoadingVotes, startTimesta
           maxTicksLimit: 5,
         },
         min: 0,
+        border: {
+          display: false,
+        },
+        padding: 5,
       },
     },
   }
