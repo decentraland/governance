@@ -1,9 +1,11 @@
-import * as PushAPI from '@pushprotocol/restapi'
 import { ethers } from 'ethers'
 
+import { NOTIFICATIONS_SERVICE_ENABLED } from '../../constants'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { isProdEnv } from '../../utils/governanceEnvs'
 import { getCaipAddress } from '../../utils/notifications'
+
+const PushAPI = NOTIFICATIONS_SERVICE_ENABLED ? require('@pushprotocol/restapi') : null
 
 enum ENV {
   PROD = 'prod',
@@ -14,7 +16,7 @@ const CHAIN_ID = 5
 const CHANNEL_ADDRESS = '0xBf363AeDd082Ddd8DB2D6457609B03f9ee74a2F1'
 const PUSH_CHANNEL_OWNER_PK = process.env.PUSH_CHANNEL_OWNER_PK
 const pkAddress = `0x${PUSH_CHANNEL_OWNER_PK}`
-const signer = new ethers.Wallet(pkAddress)
+const signer = NOTIFICATIONS_SERVICE_ENABLED ? new ethers.Wallet(pkAddress) : undefined
 const NotificationIdentityType = {
   DIRECT_PAYLOAD: 2,
 }
