@@ -2,7 +2,7 @@ import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isURL from 'validator/lib/isURL'
 
-import { env } from '../utils/env'
+import { clientEnv } from '../utils/clientEnv'
 
 export const CURRENCY_FORMAT_OPTIONS = {
   style: 'currency',
@@ -98,7 +98,7 @@ export function capitalizeFirstLetter(string: string) {
 }
 
 export function getVestingContractUrl(address: string) {
-  const VESTING_DASHBOARD_URL = env('GATSBY_VESTING_DASHBOARD_URL')
+  const VESTING_DASHBOARD_URL = clientEnv('GATSBY_VESTING_DASHBOARD_URL')
   return VESTING_DASHBOARD_URL.replace('%23', '#').concat(address.toLowerCase())
 }
 

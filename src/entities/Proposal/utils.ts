@@ -6,8 +6,8 @@ import numeral from 'numeral'
 import { Governance } from '../../clients/Governance'
 import { GOVERNANCE_API } from '../../constants'
 import { getTile } from '../../utils/Land'
+import { clientEnv } from '../../utils/clientEnv'
 import Time from '../../utils/date/Time'
-import { env } from '../../utils/env'
 import { SNAPSHOT_SPACE, SNAPSHOT_URL } from '../Snapshot/constants'
 import { UpdateAttributes } from '../Updates/types'
 import { DISCOURSE_API } from '../User/utils'
@@ -22,7 +22,7 @@ export const SITEMAP_ITEMS_PER_PAGE = 100
 export const DEFAULT_CHOICES = ['yes', 'no', 'abstain']
 export const REGEX_NAME = new RegExp(`^([a-zA-Z0-9]){${MIN_NAME_SIZE},${MAX_NAME_SIZE}}$`)
 
-export const JOIN_DISCORD_URL = env('GATSBY_JOIN_DISCORD_URL') || 'https://dcl.gg/discord'
+export const JOIN_DISCORD_URL = clientEnv('GATSBY_JOIN_DISCORD_URL') || 'https://dcl.gg/discord'
 
 export const CLIFF_PERIOD_IN_DAYS = 29
 
