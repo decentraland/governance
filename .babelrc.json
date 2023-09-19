@@ -12,13 +12,8 @@
       }
     ],
     "@babel/preset-typescript",
-    "@babel/preset-react",
-    [
-      "babel-preset-gatsby",
-      {
-        "reactRuntime": "automatic"
-      }
-    ]
+    ["@babel/preset-react", { "reactRuntime": "automatic" }],
+    ["babel-preset-gatsby", { "reactRuntime": "automatic" }]
   ],
   "plugins": []
 }
