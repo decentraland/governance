@@ -3,8 +3,8 @@
   "version": "0.0.0-development",
   "description": "",
   "engines": {
-    "node": ">=16.0.0",
-    "npm": ">=7.0.0"
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   },
   "scripts": {
     "test": "jest --no-cache --runInBand",
