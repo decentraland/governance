@@ -16,8 +16,8 @@ import { ErrorClient } from '../clients/ErrorClient'
 import { Governance } from '../clients/Governance'
 import { SnapshotApi } from '../clients/SnapshotApi'
 import CategoryPill from '../components/Category/CategoryPill'
-import FloatingBar from '../components/FloatingBar/FloatingBar'
 import ProposalVPChart from '../components/Charts/ProposalVPChart'
+import FloatingBar from '../components/FloatingBar/FloatingBar'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import BidSubmittedModal from '../components/Modal/BidSubmittedModal'
@@ -208,20 +208,24 @@ export default function ProposalPage() {
       commentsSectionRef.current.scrollIntoView({ behavior: 'smooth' })
     }
   }
+
   useEffect(() => {
-    const handleScroll = () => {
-      const hideBarSectionRef = reactionsSectionRef.current || commentsSectionRef.current
-      if (hideBarSectionRef) {
-        const hideBarSectionTop = hideBarSectionRef.getBoundingClientRect().top
-        setIsBarVisible(hideBarSectionTop > window.innerHeight)
+    setIsBarVisible(true)
+    if (!isLoadingProposal && typeof window !== 'undefined') {
+      const handleScroll = () => {
+        const hideBarSectionRef = reactionsSectionRef.current || commentsSectionRef.current
+        if (!!hideBarSectionRef && !!window) {
+          const hideBarSectionTop = hideBarSectionRef.getBoundingClientRect().top
+          setIsBarVisible(hideBarSectionTop > window.innerHeight)
+        }
+      }
+
+      window.addEventListener('scroll', handleScroll)
+      return () => {
+        window.removeEventListener('scroll', handleScroll)
       }
     }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [])
+  }, [isLoadingProposal])
 
   const [castingVote, castVote] = useAsyncTask(
     async (selectedChoice: SelectedVoteChoice, survey?: Survey) => {
@@ -297,15 +301,11 @@ export default function ProposalPage() {
   }, [proposal, account, isDAOCommittee])
 
   useEffect(() => {
-    updatePageStateRef.current({ showProposalSuccessModal: params.get('new') === 'true' })
-  }, [params])
-
-  useEffect(() => {
-    updatePageStateRef.current({ showTenderPublishedModal: params.get('pending') === 'true' })
-  }, [params])
-
-  useEffect(() => {
-    updatePageStateRef.current({ showBidSubmittedModal: params.get('bid') === 'true' })
+    updatePageStateRef.current({
+      showProposalSuccessModal: params.get('new') === 'true',
+      showTenderPublishedModal: params.get('pending') === 'true',
+      showBidSubmittedModal: params.get('bid') === 'true',
+    })
   }, [params])
 
   useEffect(() => {
@@ -425,17 +425,16 @@ export default function ProposalPage() {
                 />
               )}
               <ProposalComments proposal={proposal} ref={commentsSectionRef} />
-              {proposal && !isLoadingSurveyTopics && (
-                <FloatingBar
-                  isVisible={isBarVisible}
-                  showViewReactions={!!showSurveyResults}
-                  scrollToReactions={scrollToReactions}
-                  scrollToComments={scrollToComments}
-                  proposalId={proposal?.id}
-                  discourseTopicId={proposal?.discourse_topic_id}
-                  discourseTopicSlug={proposal?.discourse_topic_slug}
-                />
-              )}
+              <FloatingBar
+                isVisible={isBarVisible}
+                showViewReactions={!!showSurveyResults}
+                scrollToReactions={scrollToReactions}
+                scrollToComments={scrollToComments}
+                proposalId={proposal?.id}
+                discourseTopicId={proposal?.discourse_topic_id}
+                discourseTopicSlug={proposal?.discourse_topic_slug}
+                isLoadingProposal={isLoadingProposal}
+              />
             </Grid.Column>
 
             <Grid.Column tablet="4" className="ProposalDetailActions">

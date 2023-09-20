@@ -20,9 +20,10 @@ interface FloatingBarProps {
   showViewReactions: boolean
   scrollToComments: () => void
   scrollToReactions: () => void
-  proposalId: string
-  discourseTopicId: number
-  discourseTopicSlug: string
+  proposalId?: string
+  discourseTopicId?: number
+  discourseTopicSlug?: string
+  isLoadingProposal: boolean
 }
 
 const FloatingBar: React.FC<FloatingBarProps> = ({
@@ -33,12 +34,13 @@ const FloatingBar: React.FC<FloatingBarProps> = ({
   isVisible,
   scrollToComments,
   scrollToReactions,
+  isLoadingProposal,
 }) => {
   const t = useFormatMessage()
   const { comments, isLoadingComments } = useProposalComments(proposalId)
-
+  const showTotalComments = !isLoadingComments && !isLoadingProposal
   return (
-    <div className={classNames('FloatingBar', isVisible && 'FloatingBar--visible')}>
+    <div className={classNames('FloatingBar', !isVisible && !isLoadingProposal && 'FloatingBar--hidden')}>
       <div className="FloatingBar__ProposalSectionActions">
         {showViewReactions && (
           <Link onClick={scrollToReactions} className={'FloatingBar__Action'}>
@@ -47,7 +49,7 @@ const FloatingBar: React.FC<FloatingBarProps> = ({
           </Link>
         )}
         <Link onClick={scrollToComments} className={'FloatingBar__Action'}>
-          {isLoadingComments && (
+          {!showTotalComments && (
             <Loader
               active
               size="tiny"
@@ -57,10 +59,10 @@ const FloatingBar: React.FC<FloatingBarProps> = ({
               )}
             />
           )}
-          {!isLoadingComments && (
+          {showTotalComments && (
             <>
               <Forum color={'var(--black-600)'} />
-              {t('component.floating_bar.total_comments_label', { count: comments?.totalComments })}
+              {t('component.floating_bar.total_comments_label', { count: comments?.totalComments || 0 })}
             </>
           )}
         </Link>
