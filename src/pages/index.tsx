@@ -54,11 +54,9 @@ export default function HomePage() {
       {!endingSoonProposals && <LoadingView withNavigation />}
       {endingSoonProposals && (
         <BurgerMenuLayout navigationOnly activeTab={NavigationTab.Home}>
-          <Container>
+          <Container fluid className="HomeContainer">
             <MainBanner />
-          </Container>
-          <MetricsCards />
-          <Container>
+            <MetricsCards />
             {isLoadingProposals && <Loader active />}
             {!isLoadingProposals && (
               <>
