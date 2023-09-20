@@ -1,0 +1,49 @@
+#ProposalVPChartTooltip {
+  --padding-size: 9px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background: rgba(22, 20, 26, 0.9);
+  border-radius: 5px;
+  color: var(--white-900);
+  opacity: 1;
+  pointer-events: none;
+  position: absolute;
+  transform: translate(-50%, 0);
+  transition: all 0.1s ease;
+  width: max-content;
+  padding: var(--padding-size);
+  z-index: 100;
+}
+
+#ProposalVPChartTooltip .avatar {
+  --size: 40px;
+  min-width: var(--size) !important;
+  max-width: var(--size) !important;
+  min-height: var(--size) !important;
+  max-height: var(--size) !important;
+  border-radius: 100%;
+  background-color: var(--black-600);
+  vertical-align: middle;
+  margin: 0;
+}
+
+#ProposalVPChartTooltip .container {
+  margin: 0;
+  margin-left: var(--padding-size);
+}
+
+#ProposalVPChartTooltip .title {
+  font-size: 13px;
+  font-style: normal;
+  line-height: 18px;
+  max-width: 160px;
+}
+
+#ProposalVPChartTooltip .details {
+  font-size: 10px;
+  font-style: normal;
+  font-weight: var(--weight-normal);
+  line-height: 18px;
+  opacity: 0.6;
+}

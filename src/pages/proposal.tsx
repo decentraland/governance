@@ -16,6 +16,7 @@ import { ErrorClient } from '../clients/ErrorClient'
 import { Governance } from '../clients/Governance'
 import { SnapshotApi } from '../clients/SnapshotApi'
 import CategoryPill from '../components/Category/CategoryPill'
+import ProposalVPChart from '../components/Charts/ProposalVPChart'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import BidSubmittedModal from '../components/Modal/BidSubmittedModal'
@@ -334,6 +335,8 @@ export default function ProposalPage() {
     proposal?.status === ProposalStatus.Active &&
     (proposal?.type === ProposalType.Tender || proposal?.type === ProposalType.Bid)
 
+  const showVotesChart = !isLoadingProposal && proposal?.type !== ProposalType.Poll && highQualityVotes
+
   return (
     <>
       <Head
@@ -385,6 +388,14 @@ export default function ProposalPage() {
                     isLoadingSurveyTopics={isLoadingSurveyTopics}
                   />
                 </Desktop>
+              )}
+              {showVotesChart && (
+                <ProposalVPChart
+                  requiredToPass={proposal?.required_to_pass}
+                  voteMap={highQualityVotes}
+                  startTimestamp={proposal?.start_at.getTime()}
+                  endTimestamp={proposal?.finish_at.getTime()}
+                />
               )}
               <ProposalComments proposal={proposal} />
             </Grid.Column>

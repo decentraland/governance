@@ -869,6 +869,11 @@
         "personnel_title": "Personnel",
         "roadmap_title": "Roadmap and milestones",
         "relevant_link": "Relevant link"
+      },
+      "votes_chart": {
+        "title": "Voting Timeline",
+        "pass_threshold": "Acceptance threshold",
+        "tooltip_title": ", voted \"{choice}\" with {vp} VP"
       }
     },
     "proposal_bidding_tendering": {
