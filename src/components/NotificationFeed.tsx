@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { Web3Provider } from '@ethersproject/providers'
 import * as PushAPI from '@pushprotocol/restapi'
@@ -9,21 +9,27 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { Governance } from '../clients/Governance'
+import { isSameAddress } from '../entities/Snapshot/utils'
 import { DEFAULT_QUERY_STALE_TIME } from '../hooks/constants'
 import { useClickOutside } from '../hooks/useClickOutside'
-import { CHAIN_ID, CHANNEL_ADDRESS, ENV, getCaipAddress } from '../utils/notifications'
+import { CHAIN_ID, CHANNEL_ADDRESS, ENV, Notification, getCaipAddress } from '../utils/notifications'
 
 import FullWidthButton from './Common/FullWidthButton'
 import Heading from './Common/Typography/Heading'
 import Text from './Common/Typography/Text'
 import NotificationBellActive from './Icon/NotificationBellActive'
 import NotificationBellInactive from './Icon/NotificationBellInactive'
+import PeaceCircle from './Icon/PeaceCircle'
+import NotificationItem from './Notifications/NotificationItem'
 
 import './NotificationFeed.css'
+
+const NOTIFICATIONS_PER_PAGE = 5
 
 export default function NotificationFeed() {
   const [isOpen, setOpen] = useState(false)
   const [user, userState] = useAuthContext()
+  const [filteredNotifications, setFilteredNotifications] = useState<Notification[]>([])
 
   useClickOutside('.NotificationFeed__Content', isOpen, () => setOpen(false))
 
@@ -40,9 +46,8 @@ export default function NotificationFeed() {
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
-  // TODO: Type subscriptions query
   const isSubscribed = useMemo(
-    () => !!subscriptions?.find((item: any) => item.channel === CHANNEL_ADDRESS),
+    () => !!subscriptions?.find((item: { channel: string }) => isSameAddress(item.channel, CHANNEL_ADDRESS)),
     [subscriptions]
   )
   const {
@@ -90,6 +95,24 @@ export default function NotificationFeed() {
     })
   }
 
+  const handleLoadMoreClick = () => {
+    const notifications = userNotifications?.slice(
+      0,
+      filteredNotifications.length + NOTIFICATIONS_PER_PAGE
+    ) as unknown as Notification[]
+    setFilteredNotifications(notifications)
+  }
+
+  useEffect(() => {
+    if (filteredNotifications.length === 0 && userNotifications && userNotifications?.length > 0) {
+      const notifications = userNotifications.slice(0, NOTIFICATIONS_PER_PAGE) as unknown as Notification[]
+      setFilteredNotifications(notifications)
+    }
+  }, [userNotifications, filteredNotifications.length])
+
+  const hasNotifications = filteredNotifications && filteredNotifications.length > 0
+  const showLoadMoreButton = isSubscribed && !isLoadingNotifications && hasNotifications
+
   return (
     <>
       <button
@@ -120,17 +143,26 @@ export default function NotificationFeed() {
             </Button>
           </div>
         )}
-        {!isLoadingNotifications && isSubscribed && userNotifications && (
+        {isSubscribed && !isLoadingNotifications && !hasNotifications && (
+          <div className="NotificationFeed__EmptyView">
+            <PeaceCircle />
+            <Text color="secondary" weight="medium">
+              No notifications at this time
+            </Text>
+          </div>
+        )}
+        {showLoadMoreButton && (
           <div>
-            {userNotifications?.map((notification) => (
-              <div key={notification.payload_id} className="NotificationFeed__Item">
-                <Text>{notification.payload.data.asub}</Text>
-                <Text>{notification.payload.data.amsg}</Text>
-              </div>
-            ))}
-            <div className="NotificationFeed__LoadMoreButtonContainer">
-              <FullWidthButton>Load more</FullWidthButton>
+            <div className="NotificationFeed__List">
+              {filteredNotifications?.map((notification) => (
+                <NotificationItem key={notification.payload_id} notification={notification} />
+              ))}
             </div>
+            {filteredNotifications.length !== userNotifications?.length && (
+              <div className="NotificationFeed__LoadMoreButtonContainer">
+                <FullWidthButton onClick={handleLoadMoreClick}>Load more</FullWidthButton>
+              </div>
+            )}
           </div>
         )}
         {(isLoadingSubscriptions ||

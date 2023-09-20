@@ -1,8 +1,10 @@
 // TODO: Move to notification types file
 export type Notification = {
   payload_id: number
+  epoch: string
   payload: {
     data: {
+      acta: string
       asub: string
       amsg: string
     }

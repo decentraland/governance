@@ -1,0 +1,11 @@
+.NotificationItem {
+  padding: 0 16px;
+}
+
+.NotificationItem__Text {
+  margin-bottom: 0;
+}
+
+.NotificationItem__Date {
+  text-transform: uppercase;
+}
