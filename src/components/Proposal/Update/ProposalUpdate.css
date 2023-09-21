@@ -3,7 +3,7 @@
   justify-content: space-between;
   align-items: center;
   flex-direction: row;
-  border: 1px solid #dddce0;
+  border: 1px solid var(--black-300);
   border-radius: 8px;
   padding: 0 16px;
   min-height: 44px;
