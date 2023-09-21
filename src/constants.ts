@@ -1,3 +1,4 @@
+import env from 'decentraland-gatsby/dist/utils/env'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { trimOtterspaceId } from './back/utils/contractInteractions'
@@ -6,7 +7,7 @@ import { clientEnv } from './utils/clientEnv'
 import Candidates from './utils/delegates/candidates.json'
 
 function getBooleanStringVar(variableName: string, defaultValue: boolean) {
-  const enabled = clientEnv(variableName)
+  const enabled = env(variableName)
   if (enabled && enabled.length > 0) return enabled === 'true'
   return defaultValue
 }
