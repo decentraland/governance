@@ -89,6 +89,7 @@ export type ProposalPageState = {
   showBidVotingModal: boolean
   showVotingError: boolean
   showSnapshotRedirect: boolean
+  showResults: boolean
   retryTimer: number
   selectedChoice: SelectedVoteChoice
 }
@@ -157,6 +158,7 @@ export default function ProposalPage() {
     showBidVotingModal: false,
     showVotingError: false,
     showSnapshotRedirect: false,
+    showResults: false,
     retryTimer: SECONDS_FOR_VOTING_RETRY,
     selectedChoice: EMPTY_VOTE_CHOICE_SELECTION,
   })
@@ -335,7 +337,8 @@ export default function ProposalPage() {
     proposal?.status === ProposalStatus.Active &&
     (proposal?.type === ProposalType.Tender || proposal?.type === ProposalType.Bid)
 
-  const showVotesChart = !isLoadingProposal && proposal?.type !== ProposalType.Poll && highQualityVotes
+  const showVotesChart =
+    proposalPageState.showResults && !isLoadingProposal && proposal?.type !== ProposalType.Poll && highQualityVotes
 
   return (
     <>
