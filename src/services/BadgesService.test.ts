@@ -12,13 +12,9 @@ jest.mock('../constants', () => ({
 
 const COAUTHORS = ['0x56d0b5ed3d525332f00c9bc938f93598ab16aaa7', '0x49e4dbff86a2e5da27c540c9a9e8d2c3726e278f']
 describe('giveLegislatorBadges', () => {
-  beforeAll(() => {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+  it('should call queueAirdropJob with correct arguments for governance proposals', async () => {
     jest.spyOn(AirdropJobModel, 'create').mockResolvedValue(async () => {})
     jest.spyOn(CoauthorModel, 'findAllByProposals').mockResolvedValue(COAUTHORS)
-  })
-
-  it('should call queueAirdropJob with correct arguments for governance proposals', async () => {
     const proposal = createTestProposal(ProposalType.Governance, ProposalStatus.Passed)
     proposal.user = '0x4757ce43dc5429b8f1a132dc29ef970e55ae722b'
     const expectedAuthorsAndCoauthors = [proposal.user, ...COAUTHORS].map(getChecksumAddress)
@@ -28,5 +24,12 @@ describe('giveLegislatorBadges', () => {
       badge_spec: 'badge-spec-id',
       recipients: expectedAuthorsAndCoauthors,
     })
+  })
+
+  it('does not try to airdrop any badge when there are no governance proposals', async () => {
+    jest.clearAllMocks()
+    const proposal = createTestProposal(ProposalType.Draft, ProposalStatus.Passed)
+    await BadgesService.giveLegislatorBadges([proposal])
+    expect(AirdropJobModel.create).not.toHaveBeenCalled()
   })
 })
