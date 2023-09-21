@@ -7,6 +7,7 @@ import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
+import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
@@ -33,6 +34,7 @@ import { VotingModal } from '../components/Modal/Votes/VotingModal/VotingModal'
 import ProposalComments from '../components/Proposal/Comments/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
+import ProposalHero from '../components/Proposal/ProposalHero'
 import ProposalSidebar from '../components/Proposal/ProposalSidebar'
 import SurveyResults from '../components/Proposal/SentimentSurvey/SurveyResults'
 import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
@@ -343,9 +345,9 @@ export default function ProposalPage() {
 
   if (isErrorOnProposal) {
     return (
-      <ContentLayout className="ProposalDetailPage">
+      <Container className="ProposalDetailPage">
         <NotFound />
-      </ContentLayout>
+      </Container>
     )
   }
 
@@ -380,15 +382,8 @@ export default function ProposalPage() {
         }
         image="https://decentraland.org/images/decentraland.png"
       />
-      <ContentLayout className="ProposalDetailPage">
-        <ContentSection>
-          <Header size="huge">{proposal?.title || ''} &nbsp;</Header>
-          <Loader active={!proposal} />
-          <div className="ProposalDetailPage__Labels">
-            {proposal && <StatusPill isLink status={proposal.status} />}
-            {proposal && <CategoryPill isLink proposalType={proposal.type} />}
-          </div>
-        </ContentSection>
+      <ProposalHero proposal={proposal} />
+      <Container className="ProposalDetailPage">
         <Grid stackable>
           <Grid.Row>
             <Grid.Column tablet="12" className="ProposalDetailPage__Description">
@@ -467,7 +462,7 @@ export default function ProposalPage() {
             </Grid.Column>
           </Grid.Row>
         </Grid>
-      </ContentLayout>
+      </Container>
 
       {proposal && voteWithSurvey && (
         <VotingModal

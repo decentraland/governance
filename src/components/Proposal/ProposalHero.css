@@ -1,0 +1,48 @@
+.ProposalHero__Container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin: 24px 71px 23px;
+  isolation: isolate;
+  height: 148px;
+}
+
+.ProposalHero__Banner {
+  position: absolute;
+
+  border-radius: 6px;
+  height: 148px;
+  width: 100%;
+}
+
+.ProposalHero__UpperLayer {
+  background: #A524B3;
+  box-shadow: 0px 4px 24px 0px rgba(198, 64, 205, 0.50);
+}
+
+.ProposalHero__BottomLayer {
+  background: linear-gradient(90deg, rgba(22, 20, 26, 0) 0%, #16141a 100%);
+  opacity: 0.7;
+  border: 1px solid #000;
+  mix-blend-mode: hue;
+}
+
+.ProposalHero__Text {
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ProposalHero__Title {
+  color: var(--white-900);
+  font-size: 24px;
+  font-weight: var(--weight-semi-bold);
+  line-height: 28px;
+  letter-spacing: 0.4px;
+}
+
+.ProposalHero__Title::first-letter {
+  text-transform: capitalize;
+}

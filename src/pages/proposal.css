@@ -20,6 +20,7 @@
   display: flex;
   gap: 7px;
   min-height: 24px;
+  justify-content: center;
 }
 
 .ProposalDetailPage__Description img {
