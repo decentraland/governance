@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import classNames from 'classnames'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
@@ -34,6 +34,7 @@ interface Props {
   castingVote: boolean
   proposalPageState: ProposalPageState
   updatePageState: (newState: Partial<ProposalPageState>) => void
+  onShowResults: (show: boolean) => void
 }
 
 export default function ProposalGovernanceSection({
@@ -49,6 +50,7 @@ export default function ProposalGovernanceSection({
   voteWithSurvey,
   proposalPageState,
   updatePageState,
+  onShowResults,
 }: Props) {
   const t = useFormatMessage()
   const now = Time.utc()
@@ -67,9 +69,17 @@ export default function ProposalGovernanceSection({
     !hasTenderProcessStarted &&
     Number(bidProposals?.total) === 0
 
+  const handleShowResults = useCallback(
+    (show: boolean) => {
+      setShowResults(show)
+      onShowResults(show)
+    },
+    [onShowResults]
+  )
+
   useEffect(() => {
-    setShowResults(hasVoted || finished || !userAddress)
-  }, [hasVoted, finished, userAddress])
+    handleShowResults(hasVoted || finished || !userAddress)
+  }, [hasVoted, finished, userAddress, handleShowResults])
 
   return (
     <div
@@ -88,13 +98,12 @@ export default function ProposalGovernanceSection({
               {showResults ? t('page.proposal_detail.result_label') : t('page.proposal_detail.get_involved')}
             </SidebarHeaderLabel>
             {showResultsButton && (
-              <a
+              <button
                 className="ProposalGovernanceSection__ResultsButton"
-                onClick={() => setShowResults((prevState) => !prevState)}
-                href={proposal?.type !== ProposalType.Poll ? '#ProposalVPChart' : undefined}
+                onClick={() => handleShowResults(!showResults)}
               >
                 {!showResults ? t('page.proposal_detail.show_results') : t('page.proposal_detail.hide_results')}
-              </a>
+              </button>
             )}
           </div>
         </div>

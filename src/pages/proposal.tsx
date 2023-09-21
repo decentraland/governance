@@ -170,6 +170,7 @@ export default function ProposalPage() {
   const { votes, isLoadingVotes, reloadVotes } = useProposalVotes(proposal?.id)
   const { highQualityVotes, lowQualityVotes } = useMemo(() => getVoteSegmentation(votes), [votes])
   const { surveyTopics, isLoadingSurveyTopics } = useSurveyTopics(proposal?.id)
+  const [showResults, setShowResults] = useState(false)
   const subscriptionsQueryKey = `subscriptions#${proposal?.id || ''}`
   const { data: subscriptions, isLoading: isSubscriptionsLoading } = useQuery({
     queryKey: [subscriptionsQueryKey],
@@ -335,7 +336,7 @@ export default function ProposalPage() {
     proposal?.status === ProposalStatus.Active &&
     (proposal?.type === ProposalType.Tender || proposal?.type === ProposalType.Bid)
 
-  const showVotesChart = !isLoadingProposal && proposal?.type !== ProposalType.Poll && highQualityVotes
+  const showVotesChart = showResults && !isLoadingProposal && proposal?.type !== ProposalType.Poll && highQualityVotes
 
   return (
     <>
@@ -423,6 +424,7 @@ export default function ProposalPage() {
                 votesLoading={isLoadingVotes}
                 isCoauthor={isCoauthor}
                 isOwner={isOwner}
+                onShowResults={setShowResults}
               />
             </Grid.Column>
           </Grid.Row>

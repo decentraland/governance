@@ -51,6 +51,7 @@ type Props = {
   highQualityVotes: Record<string, Vote> | null
   isOwner: boolean
   isCoauthor: boolean
+  onShowResults: (show: boolean) => void
 }
 
 export default function ProposalSidebar({
@@ -75,6 +76,7 @@ export default function ProposalSidebar({
   votesLoading,
   isOwner,
   isCoauthor,
+  onShowResults,
 }: Props) {
   const [account] = useAuthContext()
   const subscribed = useMemo(
@@ -148,6 +150,7 @@ export default function ProposalSidebar({
           onVote={handleVoteClick}
           updatePageState={updatePageState}
           proposalPageState={proposalPageState}
+          onShowResults={onShowResults}
         />
         {showProposalThresholdsSummary && (
           <ProposalThresholdsSummary proposal={proposal} partialResults={partialResults} />
