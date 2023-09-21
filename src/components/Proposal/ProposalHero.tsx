@@ -3,11 +3,12 @@ import React from 'react'
 import classNames from 'classnames'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
-import { ProposalAttributes, ProposalType } from '../../entities/Proposal/types'
+import { ProposalAttributes, ProposalStatus, ProposalType } from '../../entities/Proposal/types'
 import CategoryPill, { ColorsConfig } from '../Category/CategoryPill'
 import { PillColor } from '../Common/Pill'
 import StatusPill from '../Status/StatusPill'
 
+import HeroBanner from './HeroBanner'
 import './ProposalHero.css'
 
 interface Props {
@@ -16,24 +17,21 @@ interface Props {
 
 export default function ProposalHero({ proposal }: Props) {
   const colorsConfig = ColorsConfig[proposal?.type || ProposalType.Grant]
-
+  const isProposalActive = proposal?.status === ProposalStatus.Active
   return (
     <div className="ProposalHero__Container">
-      <div className={classNames('ProposalHero__Banner', `ProposalHero__Banner--${colorsConfig}`)}></div>
-      <div
-        className={classNames(
-          'ProposalHero__Banner',
-          'ProposalHero__Gradient',
-          `ProposalHero__Gradient--${colorsConfig}`
-        )}
-      />
+      <HeroBanner proposalActive={isProposalActive} colorsConfig={colorsConfig} />
       <div className="ProposalHero__Text">
-        <p className="ProposalHero__Title">{proposal?.title || ''}</p>
+        <p className={classNames('ProposalHero__Title', !isProposalActive && 'ProposalHero__Title--finished')}>
+          {proposal?.title || ''}
+        </p>
         <Loader active={!proposal} />
-        <div className="ProposalDetailPage__Labels">
-          {proposal && <StatusPill isLink status={proposal.status} color={PillColor.White} />}
-          {proposal && <CategoryPill isLink proposalType={proposal.type} transparent />}
-        </div>
+        {proposal && (
+          <div className="ProposalDetailPage__Labels">
+            <StatusPill isLink status={proposal.status} color={isProposalActive ? PillColor.White : undefined} />
+            <CategoryPill isLink proposalType={proposal.type} transparent={isProposalActive} />
+          </div>
+        )}
       </div>
     </div>
   )

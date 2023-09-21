@@ -8,13 +8,6 @@
   height: 148px;
 }
 
-.ProposalHero__Banner {
-  position: absolute;
-  border-radius: 6px;
-  height: 148px;
-  width: 100%;
-}
-
 .ProposalHero__Text {
   isolation: isolate;
   display: flex;
@@ -34,78 +27,6 @@
   text-transform: capitalize;
 }
 
-.ProposalHero__Gradient {
-  background: linear-gradient(90deg, rgba(22, 20, 26, 0) 0%, #16141a 100%);
-}
-
-.ProposalHero__Banner--purple {
-  background: #a524b3;
-  box-shadow: 0 4px 24px 0 rgba(198, 64, 205, 0.5);
-}
-.ProposalHero__Gradient--purple {
-  opacity: 0.7;
-  mix-blend-mode: hue;
-}
-
-.ProposalHero__Banner--blue {
-  background: var(--blue-800);
-  box-shadow: 0 4px 24px 0 rgba(23, 104, 233, 0.5);
-}
-.ProposalHero__Gradient--blue {
-  opacity: 0.43;
-  mix-blend-mode: overlay;
-}
-
-.ProposalHero__Banner--fuchsia {
-  background: var(--fuchsia-800);
-  box-shadow: 0px 4px 24px 0px rgba(199, 0, 198, 0.5);
-}
-.ProposalHero__Gradient--fuchsia {
-  opacity: 0.3;
-  mix-blend-mode: multiply;
-}
-
-.ProposalHero__Banner--green {
-  background: var(--green-800);
-  box-shadow: 0px 4px 24px 0px rgba(49, 131, 0, 0.5);
-}
-.ProposalHero__Gradient--green {
-  opacity: 0.3;
-  mix-blend-mode: multiply;
-}
-
-.ProposalHero__Banner--yellow {
-  background: var(--yellow-900);
-  box-shadow: 0px 4px 24px 0px rgba(255, 146, 39, 0.5);
-}
-.ProposalHero__Gradient--yellow {
-  opacity: 0.45;
-  mix-blend-mode: overlay;
-}
-
-.ProposalHero__Banner--orange {
-  background: var(--orange-800);
-  box-shadow: 0px 4px 24px 0px rgba(255, 83, 41, 0.5);
-}
-.ProposalHero__Gradient--orange {
-  opacity: 0.4;
-  mix-blend-mode: overlay;
-}
-
-.ProposalHero__Banner--red {
-  background: var(--red-800);
-  box-shadow: 0px 4px 24px 0px rgba(221, 0, 43, 0.5);
-}
-.ProposalHero__Gradient--red {
-  background: linear-gradient(90deg, #fff 0%, rgba(255, 255, 255, 0) 100%) !important;
-  mix-blend-mode: overlay;
-}
-
-.ProposalHero__Banner--aqua {
-  background: var(--aqua-800);
-  box-shadow: 0px 4px 24px 0px rgba(0, 182, 138, 0.5);
-}
-.ProposalHero__Gradient--aqua {
-  opacity: 0.3;
-  mix-blend-mode: multiply;
+.ProposalHero__Title--finished {
+  color: var(--black-700);
 }
