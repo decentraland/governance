@@ -67,7 +67,7 @@ import { ErrorCategory } from '../utils/errorCategories'
 import locations, { navigate } from '../utils/locations'
 import { isUnderMaintenance } from '../utils/maintenance'
 
-import './proposal.css'
+import './proposal.css';
 
 const EMPTY_VOTE_CHOICE_SELECTION: SelectedVoteChoice = { choice: undefined, choiceIndex: undefined }
 const MAX_ERRORS_BEFORE_SNAPSHOT_REDIRECT = 3
