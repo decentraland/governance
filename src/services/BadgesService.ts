@@ -95,6 +95,9 @@ export class BadgesService {
 
   static async giveLegislatorBadges(acceptedProposals: ProposalAttributes[]) {
     const governanceProposals = acceptedProposals.filter((proposal) => proposal.type === ProposalType.Governance)
+    if (governanceProposals.length === 0) {
+      return
+    }
     const coauthors = await CoauthorModel.findAllByProposals(governanceProposals, CoauthorStatus.APPROVED)
     const authors = governanceProposals.map((proposal) => proposal.user)
     const authorsAndCoauthors = new Set([...authors.map(getChecksumAddress), ...coauthors.map(getChecksumAddress)])

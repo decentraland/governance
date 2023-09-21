@@ -40,7 +40,15 @@ async function updateAcceptedProposals(acceptedProposals: ProposalWithOutcome[],
       ProposalStatus.Passed
     )
 
-    await BadgesService.giveLegislatorBadges(acceptedProposals)
+    try {
+      await BadgesService.giveLegislatorBadges(acceptedProposals)
+    } catch (error) {
+      ErrorService.report('Error while attempting to give badges', {
+        error,
+        category: ErrorCategory.Badges,
+        acceptedProposals,
+      })
+    }
   }
 }
 
