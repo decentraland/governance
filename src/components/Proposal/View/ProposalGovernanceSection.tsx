@@ -34,7 +34,6 @@ interface Props {
   castingVote: boolean
   proposalPageState: ProposalPageState
   updatePageState: (newState: Partial<ProposalPageState>) => void
-  onShowResults: (show: boolean) => void
 }
 
 export default function ProposalGovernanceSection({
@@ -50,13 +49,11 @@ export default function ProposalGovernanceSection({
   voteWithSurvey,
   proposalPageState,
   updatePageState,
-  onShowResults,
 }: Props) {
   const t = useFormatMessage()
   const now = Time.utc()
   const finishAt = Time.utc(proposal?.finish_at)
   const finished = finishAt.isBefore(now)
-  const [showResults, setShowResults] = useState(finished)
   const [userAddress] = useAuthContext()
   const hasVoted = !!(!!userAddress && votes?.[userAddress])
   const showResultsButton = !hasVoted && !finished && proposal?.status !== ProposalStatus.Pending
@@ -69,12 +66,13 @@ export default function ProposalGovernanceSection({
     !hasTenderProcessStarted &&
     Number(bidProposals?.total) === 0
 
+  const { showResults } = proposalPageState
+
   const handleShowResults = useCallback(
     (show: boolean) => {
-      setShowResults(show)
-      onShowResults(show)
+      updatePageState({ showResults: show })
     },
-    [onShowResults]
+    [updatePageState]
   )
 
   useEffect(() => {
