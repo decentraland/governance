@@ -1,3 +1,7 @@
+.BoxTabs .dcl.tabs .ui.container {
+  width: 100%;
+}
+
 .BoxTabs .dcl.tabs {
   display: flex !important;
   padding: 0 18px;

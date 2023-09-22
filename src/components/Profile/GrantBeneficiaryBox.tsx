@@ -20,7 +20,7 @@ export default function GrantBeneficiaryBox({ address }: Props) {
   if (!hasGrants) return null
 
   return (
-    <Container className="GrantBeneficiaryBox">
+    <Container fluid className="GrantBeneficiaryBox">
       <ProfileBox title={t('page.profile.grants.title')} info={t('page.profile.grants.info')}>
         <GrantBeneficiaryList grants={grants} />
       </ProfileBox>
