@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px;
-  border-bottom: 1px solid #dddce0;
+  border-bottom: 1px solid var(--black-300);
 }
 
 .OpenProposal__Section {

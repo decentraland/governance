@@ -1,23 +1,27 @@
-import React from 'react'
+import React, { Ref, forwardRef } from 'react'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import useProposalComments from '../../../hooks/useProposalComments'
 import Comments from '../../Comments/Comments'
 
-type ProposalComments = {
+type ProposalCommentsProps = {
   proposal: ProposalAttributes | null
 }
 
-export default function ProposalComments({ proposal }: ProposalComments) {
+const ProposalComments = forwardRef(({ proposal }: ProposalCommentsProps, ref: Ref<HTMLDivElement>) => {
   const { comments, isLoadingComments } = useProposalComments(proposal?.id)
 
   return (
-    <Comments
-      comments={comments}
-      isLoading={isLoadingComments}
-      topicId={proposal?.discourse_topic_id}
-      topicSlug={proposal?.discourse_topic_slug}
-      topicType="proposal"
-    />
+    <div ref={ref}>
+      <Comments
+        comments={comments}
+        isLoading={isLoadingComments}
+        topicId={proposal?.discourse_topic_id}
+        topicSlug={proposal?.discourse_topic_slug}
+        topicType="proposal"
+      />
+    </div>
   )
-}
+})
+
+export default ProposalComments

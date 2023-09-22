@@ -45,6 +45,8 @@ export default class CoauthorModel extends Model<CoauthorAttributes> {
   }
 
   static async findAllByProposals(proposals: ProposalAttributes[], status?: CoauthorStatus): Promise<string[]> {
+    if (proposals.length === 0) return []
+
     const query = SQL`
         SELECT address
         FROM ${table(this)}

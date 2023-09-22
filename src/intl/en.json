@@ -723,6 +723,11 @@
       "duplicated_error": "It looks like this {addressAlias} has already been added.",
       "max_error": "The maximum number of {addressesAlias} was exceeded.",
       "logged_user_invalid": "Logged user address is not allowed"
+    },
+    "floating_bar": {
+      "view_reactions_label": "View Reactions",
+      "total_comments_label": "{count} {count, plural, one {Comment} other {Comments}}",
+      "forum_label": "Join Discussion"
     }
   },
   "page": {
@@ -963,7 +968,6 @@
     "proposal_detail": {
       "title": "Decentraland DAO",
       "description": "The governance hub for Decentraland. Create and vote on proposals that help shape the future of the metaverse.",
-      "forum_button": "Discuss in the forum",
       "subscribe_button": "Add to my Watchlist",
       "subscribed_button": "Remove from my Watchlist",
       "calendar_button": "Set calendar alert",
