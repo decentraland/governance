@@ -3,8 +3,8 @@ import React from 'react'
 import classNames from 'classnames'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
-import { ProposalAttributes } from '../../entities/Proposal/types'
-import CategoryPill from '../Category/CategoryPill'
+import { ProposalAttributes, ProposalType } from '../../entities/Proposal/types'
+import CategoryPill, { ColorsConfig } from '../Category/CategoryPill'
 import { PillColor } from '../Common/Pill'
 import StatusPill from '../Status/StatusPill'
 
@@ -15,14 +15,16 @@ interface Props {
 }
 
 export default function ProposalHero({ proposal }: Props) {
+  const colorsConfig = ColorsConfig[proposal?.type || ProposalType.Grant]
+
   return (
     <div className="ProposalHero__Container">
-      <div className={classNames('ProposalHero__Banner', `ProposalHero__Banner--${proposal?.type}`)}></div>
+      <div className={classNames('ProposalHero__Banner', `ProposalHero__Banner--${colorsConfig}`)}></div>
       <div
         className={classNames(
           'ProposalHero__Banner',
           'ProposalHero__Gradient',
-          `ProposalHero__Gradient--${proposal?.type}`
+          `ProposalHero__Gradient--${colorsConfig}`
         )}
       />
       <div className="ProposalHero__Text">

@@ -8,7 +8,7 @@ import locations from '../../utils/locations'
 import Pill, { PillColor } from '../Common/Pill'
 import Link from '../Common/Typography/Link'
 
-const ColorsConfig: Record<ProposalType, PillColor> = {
+export const ColorsConfig: Record<ProposalType, PillColor> = {
   [ProposalType.POI]: PillColor.Green,
   [ProposalType.Catalyst]: PillColor.Blue,
   [ProposalType.BanName]: PillColor.Fuchsia,
