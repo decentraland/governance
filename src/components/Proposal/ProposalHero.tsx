@@ -17,8 +17,14 @@ interface Props {
 export default function ProposalHero({ proposal }: Props) {
   return (
     <div className="ProposalHero__Container">
-      <div className={classNames('ProposalHero__Banner', 'ProposalHero__UpperLayer')}></div>
-      <div className={classNames('ProposalHero__Banner', 'ProposalHero__BottomLayer')} />
+      <div className={classNames('ProposalHero__Banner', `ProposalHero__Banner--${proposal?.type}`)}></div>
+      <div
+        className={classNames(
+          'ProposalHero__Banner',
+          'ProposalHero__Gradient',
+          `ProposalHero__Gradient--${proposal?.type}`
+        )}
+      />
       <div className="ProposalHero__Text">
         <p className="ProposalHero__Title">{proposal?.title || ''}</p>
         <Loader active={!proposal} />

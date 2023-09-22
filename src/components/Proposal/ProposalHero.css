@@ -10,22 +10,9 @@
 
 .ProposalHero__Banner {
   position: absolute;
-
   border-radius: 6px;
   height: 148px;
   width: 100%;
-}
-
-.ProposalHero__UpperLayer {
-  background: #A524B3;
-  box-shadow: 0px 4px 24px 0px rgba(198, 64, 205, 0.50);
-}
-
-.ProposalHero__BottomLayer {
-  background: linear-gradient(90deg, rgba(22, 20, 26, 0) 0%, #16141a 100%);
-  opacity: 0.7;
-  border: 1px solid #000;
-  mix-blend-mode: hue;
 }
 
 .ProposalHero__Text {
@@ -45,4 +32,27 @@
 
 .ProposalHero__Title::first-letter {
   text-transform: capitalize;
+}
+
+.ProposalHero__Gradient {
+  background: linear-gradient(90deg, rgba(22, 20, 26, 0) 0%, #16141a 100%);
+  border: 1px solid #000;
+}
+
+.ProposalHero__Banner--grant {
+  background: #a524b3;
+  box-shadow: 0px 4px 24px 0px rgba(198, 64, 205, 0.5);
+}
+.ProposalHero__Gradient--grant {
+  opacity: 0.7;
+  mix-blend-mode: hue;
+}
+
+.ProposalHero__Banner--catalyst {
+  background: var(--blue-800);
+  box-shadow: 0px 4px 24px 0px rgba(23, 104, 233, 0.5);
+}
+.ProposalHero__Gradient--catalyst {
+  opacity: 0.43;
+  mix-blend-mode: overlay;
 }
