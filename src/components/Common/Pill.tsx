@@ -14,6 +14,7 @@ export enum PillColor {
   Orange = 'orange',
   Yellow = 'yellow',
   Aqua = 'aqua',
+  White = 'white',
 }
 
 export type Props = {
@@ -21,6 +22,7 @@ export type Props = {
   color?: PillColor | `${PillColor}`
   size?: 'sm' | 'md'
   style?: 'shiny' | 'medium' | 'light' | 'outline'
+  transparent?: boolean
   className?: string
   icon?: React.ReactNode
 }
@@ -30,11 +32,19 @@ export default function Pill({
   size = 'md',
   style = 'shiny',
   color = PillColor.Green,
+  transparent,
   className,
   icon,
 }: Props) {
   return (
-    <div className={classNames(`Pill`, `Pill--${size}`, `Pill--${style}-${color}`, className)}>
+    <div
+      className={classNames(
+        `Pill`,
+        `Pill--${size}`,
+        transparent ? `Pill--transparent` : `Pill--${style}-${color}`,
+        className
+      )}
+    >
       {icon}
       <span>{children}</span>
     </div>

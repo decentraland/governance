@@ -28,6 +28,7 @@ type Props = {
   proposalType: ProposalType
   size?: 'sm' | 'md'
   isLink?: boolean
+  transparent?: boolean
 }
 
 function getProposalTypeShortLabel(proposalType: ProposalType) {
@@ -38,7 +39,7 @@ function getProposalTypeLabel(proposalType: ProposalType) {
   return proposalType.replaceAll('_', ' ')
 }
 
-export default function CategoryPill({ className, proposalType, size = 'md', isLink = false }: Props) {
+export default function CategoryPill({ className, proposalType, size = 'md', isLink = false, transparent }: Props) {
   const isMobile = useMobileMediaQuery()
   const label = isMobile ? getProposalTypeShortLabel(proposalType) : getProposalTypeLabel(proposalType)
   const colorsConfig = ColorsConfig[proposalType]
@@ -47,7 +48,7 @@ export default function CategoryPill({ className, proposalType, size = 'md', isL
   const pillSize = isMobile ? 'sm' : size
 
   const component = (
-    <Pill style="light" color={colorsConfig} className={pillClassNames} size={pillSize}>
+    <Pill style="light" color={colorsConfig} className={pillClassNames} size={pillSize} transparent={transparent}>
       {label}
     </Pill>
   )

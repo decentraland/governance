@@ -242,3 +242,18 @@
   border-color: var(--aqua-800);
   color: var(--aqua-800);
 }
+
+.Pill--light-white,
+.Pill--medium-white,
+.Pill--shiny-white,
+.Pill--outline-white {
+  background-color: transparent;
+  border-color: var(--white-900);
+  color: var(--white-900);
+}
+
+.Pill--transparent {
+  border-color: transparent;
+  color: var(--white-900);
+  background: rgba(255, 255, 255, 0.16);
+}
