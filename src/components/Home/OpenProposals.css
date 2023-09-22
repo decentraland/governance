@@ -9,6 +9,10 @@
   margin-bottom: 16px;
 }
 
+.OpenProposals__ProposalsContainer .dcl.tabs .ui.container {
+  width: 100%;
+}
+
 .OpenProposals__Loader,
 .OpenProposals__Empty {
   display: flex;

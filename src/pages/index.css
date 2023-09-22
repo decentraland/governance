@@ -1,3 +1,8 @@
 html {
   scroll-behavior: smooth;
 }
+
+.ui.container.HomeContainer {
+  max-width: 1410px !important;
+  padding: 0 1rem !important;
+}

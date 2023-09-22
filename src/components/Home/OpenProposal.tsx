@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import { Mobile } from 'decentraland-ui/dist/components/Media/Media'
+import { Desktop, TabletAndBelow } from 'decentraland-ui/dist/components/Media/Media'
 import isEmpty from 'lodash/isEmpty'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
@@ -54,22 +54,24 @@ const OpenProposal = ({ proposal }: Props) => {
     <Link className="OpenProposal" href={locations.proposal(proposal.id)}>
       <div className="OpenProposal__Section">
         <Username className="OpenProposal__Avatar" address={user} variant="avatar" size="medium" />
-        <div>
+        <div className="OpenProposal__TextContainer">
           <h3 className="OpenProposal__Title">{title}</h3>
           <span className="OpenProposal__Details">
-            <Mobile>
+            <TabletAndBelow>
               <CategoryPill className="OpenProposal__Pill" proposalType={proposal.type} size="sm" />
-            </Mobile>
+            </TabletAndBelow>
             <span className="OpenProposal__DetailsItem OpenProposal__UsernameContainer">
               {t('page.home.open_proposals.by_user')}
               <Username className="OpenProposal__Username" address={user} variant="address" />
             </span>
-            <span className="OpenProposal__DetailsItem OpenProposal__DetailsOnlyDesktop">
-              {t('page.home.open_proposals.votes', { total: Object.keys(votes || {}).length })}
-            </span>
-            <span className="OpenProposal__DetailsItem OpenProposal__DetailsOnlyDesktop">
-              {t('page.home.open_proposals.comments', { total: comments?.totalComments || 0 })}
-            </span>
+            <Desktop>
+              <span className="OpenProposal__DetailsItem">
+                {t('page.home.open_proposals.votes', { total: Object.keys(votes || {}).length })}
+              </span>
+              <span className="OpenProposal__DetailsItem">
+                {t('page.home.open_proposals.comments', { total: comments?.totalComments || 0 })}
+              </span>
+            </Desktop>
             <span className="OpenProposal__DetailsItem">{dateText}</span>
           </span>
         </div>
@@ -98,9 +100,11 @@ const OpenProposal = ({ proposal }: Props) => {
           </div>
         </div>
       </div>
-      <Mobile>
-        <ChevronRight color="var(--black-400)" />
-      </Mobile>
+      <TabletAndBelow>
+        <div>
+          <ChevronRight color="var(--black-400)" />
+        </div>
+      </TabletAndBelow>
     </Link>
   )
 }
