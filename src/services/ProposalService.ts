@@ -19,10 +19,12 @@ import VotesModel from '../entities/Votes/model'
 import { inBackground } from '../helpers'
 import { getProfile } from '../utils/Catalyst'
 import Time from '../utils/date/Time'
+import { ErrorCategory } from '../utils/errorCategories'
 import { getEnvironmentChainId } from '../utils/votes/utils'
 
 import { DiscordService } from './DiscordService'
 import { DiscourseService } from './DiscourseService'
+import { ErrorService } from './ErrorService'
 import { SnapshotService } from './SnapshotService'
 
 export type ProposalInCreation = {
@@ -233,10 +235,25 @@ export class ProposalService {
     })
   }
 
-  static async finishProposals(proposals: ProposalWithOutcome[]) {
-    // TODO: ProposalModel.finishProposal, update to finishProposals
-    // TODO: NotificationService.votingEndedAuthors(proposal)
-    // TODO: Get voters from proposalIds
-    // TODO: NotificationService.votingEndedVoters(proposal)
+  static async finishProposals(proposals: ProposalWithOutcome[], status: ProposalStatus) {
+    await ProposalModel.finishProposal(
+      proposals.map(({ id }) => id),
+      status
+    )
+
+    try {
+      for (const proposal of proposals) {
+        NotificationService.votingEndedAuthors(proposal)
+        // TODO: Get voters from proposalIds
+        // TODO: NotificationService.votingEndedVoters(proposal, voters)
+      }
+    } catch (error) {
+      ErrorService.report('Error sending notifications', {
+        error,
+        category: ErrorCategory.Notifications,
+        proposals,
+        status,
+      })
+    }
   }
 }

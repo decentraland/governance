@@ -122,17 +122,21 @@ export class NotificationService {
     })
   }
 
-  static async votingEndedAuthors(proposal: ProposalAttributes, authors: string[]) {
-    /*
-      TYPE SUBSET
-      Trigger: A proposal ended
-      Target recipient: Authors & Co authors of the proposal
-      Copy: Title: "Voting Ended on Your Proposal [TITLE]"
-      Description: "The votes are in! Find out the outcome of the voting on your proposal now."
-      Target URL: Proposal URL
-    */
+  static async votingEndedAuthors(proposal: ProposalAttributes) {
+    const coauthors = await CoauthorService.getAllFromProposalId(proposal.id)
+    const coauthorsAddresses = coauthors.length > 0 ? coauthors.map((coauthor) => coauthor.address) : []
+    const addresses = [proposal.user, ...coauthorsAddresses]
 
-    return true
+    if (!areValidAddresses(addresses)) {
+      return
+    }
+
+    return await this.sendNotification({
+      title: `Voting Ended on Your Proposal ${proposal.title}`,
+      body: 'The votes are in! Find out the outcome of the voting on your proposal now.',
+      recipient: addresses,
+      url: proposalUrl(proposal.id),
+    })
   }
 
   static async votingEndedVoters(proposal: ProposalAttributes, voters: string[]) {
