@@ -15,7 +15,6 @@
   "GATSBY_DISCOURSE_USER": "dao",
   "GATSBY_DISCOURSE_CONNECT_THREAD": "1190",
   "GATSBY_DISCOURSE_API": "https://forum.decentraland.vote/",
-  "GATSBY_DECENTRALAND_API": "https://subscription.decentraland.org",
   "GATSBY_DCL_DATA_API": "https://data.decentraland.vote/",
   "GATSBY_VOTING_POWER_TO_PASS_CATALYST": "0",
   "GATSBY_VOTING_POWER_TO_PASS_BAN_NAME": "0",
