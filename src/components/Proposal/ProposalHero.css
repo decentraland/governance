@@ -3,11 +3,6 @@
     width: 100%;
     max-width: 1410px !important;
     padding: 0px 1rem !important;
-  }
-}
-
-@media only screen and (min-width: 1200px) {
-  .ProposalHero__Container {
     margin-left: auto !important;
     margin-right: auto !important;
   }

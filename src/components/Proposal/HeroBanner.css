@@ -2,7 +2,8 @@
   position: absolute;
   border-radius: 6px;
   height: 148px;
-  width: 100%;
+  left: 1rem;
+  right: 1rem;
 }
 
 .HeroBanner--finished {
