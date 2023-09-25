@@ -10,7 +10,7 @@
   min-height: var(--avatar-size) !important;
   max-height: var(--avatar-size) !important;
   border-radius: 100%;
-  background-color: #7a7a7a;
+  background-color: var(--black-600);
   vertical-align: middle;
   margin: 0;
 }

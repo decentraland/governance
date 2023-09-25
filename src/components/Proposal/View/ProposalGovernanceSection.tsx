@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect } from 'react'
 
 import classNames from 'classnames'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
@@ -54,7 +54,6 @@ export default function ProposalGovernanceSection({
   const now = Time.utc()
   const finishAt = Time.utc(proposal?.finish_at)
   const finished = finishAt.isBefore(now)
-  const [showResults, setShowResults] = useState(finished)
   const [userAddress] = useAuthContext()
   const hasVoted = !!(!!userAddress && votes?.[userAddress])
   const showResultsButton = !hasVoted && !finished && proposal?.status !== ProposalStatus.Pending
@@ -67,9 +66,18 @@ export default function ProposalGovernanceSection({
     !hasTenderProcessStarted &&
     Number(bidProposals?.total) === 0
 
+  const { showResults } = proposalPageState
+
+  const handleShowResults = useCallback(
+    (show: boolean) => {
+      updatePageState({ showResults: show })
+    },
+    [updatePageState]
+  )
+
   useEffect(() => {
-    setShowResults(hasVoted || finished || !userAddress)
-  }, [hasVoted, finished, userAddress])
+    handleShowResults(hasVoted || finished || !userAddress)
+  }, [hasVoted, finished, userAddress, handleShowResults])
 
   return (
     <div
@@ -90,7 +98,7 @@ export default function ProposalGovernanceSection({
             {showResultsButton && (
               <button
                 className="ProposalGovernanceSection__ResultsButton"
-                onClick={() => setShowResults((prevState) => !prevState)}
+                onClick={() => handleShowResults(!showResults)}
               >
                 {!showResults ? t('page.proposal_detail.show_results') : t('page.proposal_detail.hide_results')}
               </button>

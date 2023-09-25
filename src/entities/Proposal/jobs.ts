@@ -40,7 +40,15 @@ async function updateAcceptedProposals(acceptedProposals: ProposalWithOutcome[],
       ProposalStatus.Passed
     )
 
-    await BadgesService.giveLegislatorBadges(acceptedProposals)
+    try {
+      await BadgesService.giveLegislatorBadges(acceptedProposals)
+    } catch (error) {
+      ErrorService.report('Error while attempting to give badges', {
+        error,
+        category: ErrorCategory.Badges,
+        acceptedProposals,
+      })
+    }
   }
 }
 
@@ -197,35 +205,39 @@ async function categorizeProposals(
 }
 
 export async function finishProposal(context: JobContext) {
-  const finishableProposals = await ProposalModel.getFinishableProposals()
-  if (finishableProposals.length === 0) {
-    return
-  }
-
-  const currentBudgets = await BudgetService.getBudgetsForProposals(finishableProposals)
-
-  context.log(`Updating ${finishableProposals.length} proposals...`)
-  const { finishedProposals, acceptedProposals, outOfBudgetProposals, rejectedProposals, updatedBudgets } =
-    await categorizeProposals(finishableProposals, currentBudgets, context)
-
-  await updateFinishedProposals(finishedProposals, context)
-  await updateAcceptedProposals(acceptedProposals, context)
-  await updateOutOfBudgetProposals(outOfBudgetProposals, context)
-  await updateRejectedProposals(rejectedProposals, context)
-  await BudgetService.updateBudgets(updatedBudgets)
-
-  const proposals = [...finishedProposals, ...acceptedProposals, ...rejectedProposals]
-  context.log(`Updating ${proposals.length} proposals in discourse... \n\n`)
-  for (const { id, title, winnerChoice, outcomeStatus } of proposals) {
-    ProposalService.commentProposalUpdateInDiscourse(id)
-    if (outcomeStatus) {
-      DiscordService.finishProposal(
-        id,
-        title,
-        outcomeStatus,
-        outcomeStatus === ProposalOutcome.FINISHED ? winnerChoice : undefined
-      )
+  try {
+    const finishableProposals = await ProposalModel.getFinishableProposals()
+    if (finishableProposals.length === 0) {
+      return
     }
+
+    const currentBudgets = await BudgetService.getBudgetsForProposals(finishableProposals)
+
+    context.log(`Updating ${finishableProposals.length} proposals...`)
+    const { finishedProposals, acceptedProposals, outOfBudgetProposals, rejectedProposals, updatedBudgets } =
+      await categorizeProposals(finishableProposals, currentBudgets, context)
+
+    await updateFinishedProposals(finishedProposals, context)
+    await updateAcceptedProposals(acceptedProposals, context)
+    await updateOutOfBudgetProposals(outOfBudgetProposals, context)
+    await updateRejectedProposals(rejectedProposals, context)
+    await BudgetService.updateBudgets(updatedBudgets)
+
+    const proposals = [...finishedProposals, ...acceptedProposals, ...rejectedProposals]
+    context.log(`Updating ${proposals.length} proposals in discourse... \n\n`)
+    for (const { id, title, winnerChoice, outcomeStatus } of proposals) {
+      ProposalService.commentProposalUpdateInDiscourse(id)
+      if (outcomeStatus) {
+        DiscordService.finishProposal(
+          id,
+          title,
+          outcomeStatus,
+          outcomeStatus === ProposalOutcome.FINISHED ? winnerChoice : undefined
+        )
+      }
+    }
+  } catch (error) {
+    ErrorService.report('Error finishing proposals', { error, category: ErrorCategory.Job })
   }
 }
 

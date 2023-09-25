@@ -40,3 +40,4 @@ export const DEBUG_ADDRESSES = (process.env.DEBUG_ADDRESSES || '')
   .split(',')
   .filter(isEthereumAddress)
   .map((address) => address.toLowerCase())
+export const SNAPSHOT_STATUS_ENABLED = false
