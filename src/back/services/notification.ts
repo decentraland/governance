@@ -21,6 +21,7 @@ enum ENV {
 const CHAIN_ID = 5
 const CHANNEL_ADDRESS = '0xBf363AeDd082Ddd8DB2D6457609B03f9ee74a2F1'
 const PUSH_CHANNEL_OWNER_PK = process.env.PUSH_CHANNEL_OWNER_PK
+const PUSH_API_URL = process.env.PUSH_API_URL
 const pkAddress = `0x${PUSH_CHANNEL_OWNER_PK}`
 const signer = NOTIFICATIONS_SERVICE_ENABLED ? new ethers.Wallet(pkAddress) : undefined
 const NotificationIdentityType = {
@@ -96,6 +97,21 @@ export class NotificationService {
     }
 
     return getCaipAddress(recipient, CHAIN_ID)
+  }
+
+  static async getUserFeed(address: string) {
+    try {
+      const response = await fetch(
+        `${PUSH_API_URL}/apis/v1/users/${getCaipAddress(address, CHAIN_ID)}/channels/${getCaipAddress(
+          CHANNEL_ADDRESS,
+          CHAIN_ID
+        )}/feeds`
+      )
+
+      return (await response.json()).feeds
+    } catch (error) {
+      throw new Error('Error getting user feed')
+    }
   }
 
   static async proposalEnacted(proposal: ProposalAttributes) {
