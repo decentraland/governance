@@ -8,7 +8,6 @@ import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
@@ -16,11 +15,10 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 import { ErrorClient } from '../clients/ErrorClient'
 import { Governance } from '../clients/Governance'
 import { SnapshotApi } from '../clients/SnapshotApi'
-import CategoryPill from '../components/Category/CategoryPill'
 import ProposalVPChart from '../components/Charts/ProposalVPChart'
 import FloatingBar from '../components/FloatingBar/FloatingBar'
-import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
+import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import BidSubmittedModal from '../components/Modal/BidSubmittedModal'
 import BidVotingModal from '../components/Modal/BidVotingModal/BidVotingModal'
 import { DeleteProposalModal } from '../components/Modal/DeleteProposalModal/DeleteProposalModal'
@@ -46,7 +44,6 @@ import CompetingBiddingAndTendering from '../components/Proposal/View/CompetingB
 import GovernanceProcess from '../components/Proposal/View/GovernanceProcess'
 import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
 import ProposalMarkdown from '../components/Proposal/View/ProposalMarkdown'
-import StatusPill from '../components/Status/StatusPill'
 import { VOTES_VP_THRESHOLD } from '../constants'
 import { OldGrantCategory } from '../entities/Grant/types'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
@@ -382,6 +379,7 @@ export default function ProposalPage() {
         }
         image="https://decentraland.org/images/decentraland.png"
       />
+      <Navigation activeTab={NavigationTab.Proposals} />
       <ProposalHero proposal={proposal} />
       <Container className="ProposalDetailPage">
         <Grid stackable>

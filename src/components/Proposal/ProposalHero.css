@@ -1,9 +1,25 @@
+@media (min-width: 768px) {
+  .ProposalHero__Container {
+    width: 100%;
+    max-width: 1410px !important;
+    padding: 0px 1rem !important;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .ProposalHero__Container {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
 .ProposalHero__Container {
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  margin: 24px 71px 23px;
+  margin-top: 24px;
+  margin-bottom: 23px;
   isolation: isolate;
   height: 148px;
 }
