@@ -1,4 +1,5 @@
 import { ethers } from 'ethers'
+import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { NOTIFICATIONS_SERVICE_ENABLED } from '../../constants'
 import { ProposalAttributes } from '../../entities/Proposal/types'
@@ -23,6 +24,9 @@ const signer = NOTIFICATIONS_SERVICE_ENABLED ? new ethers.Wallet(pkAddress) : un
 const NotificationIdentityType = {
   DIRECT_PAYLOAD: 2,
 }
+
+const areValidAddresses = (addresses: string[]) =>
+  Array.isArray(addresses) && addresses.every((item) => isEthereumAddress(item))
 
 export class NotificationService {
   static async sendNotification({
@@ -76,22 +80,26 @@ export class NotificationService {
     return NotificationType.TARGET
   }
 
-  private static getRecipients(address: string | string[] | undefined) {
-    if (!address) {
+  private static getRecipients(recipient: string | string[] | undefined) {
+    if (!recipient) {
       return undefined
     }
 
-    if (Array.isArray(address)) {
-      return address.map((item: string) => getCaipAddress(item, CHAIN_ID))
+    if (Array.isArray(recipient)) {
+      return recipient.map((item: string) => getCaipAddress(item, CHAIN_ID))
     }
 
-    return getCaipAddress(address, CHAIN_ID)
+    return getCaipAddress(recipient, CHAIN_ID)
   }
 
   static async proposalEnacted(proposal: ProposalAttributes) {
     const coauthors = await CoauthorService.getAllFromProposalId(proposal.id)
     const coauthorsAddresses = coauthors.length > 0 ? coauthors.map((coauthor) => coauthor.address) : []
     const addresses = [proposal.user, ...coauthorsAddresses]
+
+    if (!areValidAddresses(addresses)) {
+      return
+    }
 
     return await this.sendNotification({
       title: 'Grant Proposal Enacted',
@@ -102,15 +110,16 @@ export class NotificationService {
   }
 
   static async coAuthorRequested(proposal: ProposalAttributes, coAuthors: string[]) {
-    /*
-      Trigger: A proposal got published and the user has been added as a coauthor.
-      Target recipient: Proposed co author
-      Copy: Title: "Co-author Request Received"
-      Description: "You've been invited to collaborate as a co-author on a published proposal. Accept it or reject it here"
-      Target URL: Proposal URL
-    */
+    if (!areValidAddresses(coAuthors)) {
+      return
+    }
 
-    return true
+    return await this.sendNotification({
+      title: 'Co-author Request Received',
+      body: "You've been invited to collaborate as a co-author on a published proposal. Accept it or reject it here",
+      recipient: coAuthors,
+      url: proposalUrl(proposal.id),
+    })
   }
 
   static async votingEndedAuthors(proposal: ProposalAttributes, authors: string[]) {
