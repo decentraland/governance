@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { cloneDeep } from 'lodash'
 
+import { NotificationService } from '../../back/services/notification'
 import { BudgetService } from '../../services/BudgetService'
 import { DiscordService } from '../../services/DiscordService'
 import { DiscourseService } from '../../services/DiscourseService'
@@ -35,6 +36,7 @@ import { ProposalAttributes, ProposalStatus, ProposalType } from './types'
 
 jest.mock('../../constants', () => ({
   DISCORD_SERVICE_ENABLED: false,
+  NOTIFICATIONS_SERVICE_ENABLED: false,
 }))
 
 describe('finishProposals', () => {
@@ -46,6 +48,7 @@ describe('finishProposals', () => {
     jest.spyOn(DiscordService, 'finishProposal').mockImplementation(() => {})
     jest.spyOn(DiscordService, 'newProposal').mockImplementation(() => {})
     jest.spyOn(DiscordService, 'newUpdate').mockImplementation(() => {})
+    jest.spyOn(NotificationService, 'votingEndedAuthors').mockImplementation()
     jest.spyOn(DiscourseService, 'getCategory').mockImplementation(() => 5)
   })
   beforeEach(() => {

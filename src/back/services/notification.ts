@@ -44,6 +44,10 @@ export class NotificationService {
     recipient: string | string[] | undefined
     url: string
   }) {
+    if (!NOTIFICATIONS_SERVICE_ENABLED) {
+      return
+    }
+
     const response = await PushAPI.payloads.sendNotification({
       signer,
       type: this.getType(type, recipient),
@@ -147,7 +151,7 @@ export class NotificationService {
       const addresses = [proposal.user, ...coauthorsAddresses]
 
       if (!areValidAddresses(addresses)) {
-        return
+        throw new Error('Invalid addresses')
       }
 
       return await this.sendNotification({
