@@ -67,8 +67,12 @@ export default function ProfilePage() {
         image="https://decentraland.org/images/decentraland.png"
       />
       <Navigation activeTab={NavigationTab.Profile} />
-      <UserStats address={address} vpDistribution={vpDistribution} isLoadingVpDistribution={isLoadingVpDistribution} />
       <div className="ProfilePage__Container">
+        <UserStats
+          address={address}
+          vpDistribution={vpDistribution}
+          isLoadingVpDistribution={isLoadingVpDistribution}
+        />
         <GrantBeneficiaryBox address={address} />
         <ActivityBox address={address} />
         <VpDelegationBox

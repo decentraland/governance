@@ -36,7 +36,7 @@ const ActivityBox = ({ address }: Props) => {
   const { requestsStatus } = useProposalsByCoAuthor(isLoggedUserProfile ? account : null, CoauthorStatus.PENDING)
 
   return (
-    <Container>
+    <Container fluid>
       <BoxTabsContainer>
         <BoxTabs>
           <BoxTabs.Left>
