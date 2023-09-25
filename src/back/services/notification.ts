@@ -2,8 +2,11 @@ import { ethers } from 'ethers'
 
 import { NOTIFICATIONS_SERVICE_ENABLED } from '../../constants'
 import { ProposalAttributes } from '../../entities/Proposal/types'
+import { proposalUrl } from '../../entities/Proposal/utils'
 import { isProdEnv } from '../../utils/governanceEnvs'
-import { getCaipAddress } from '../../utils/notifications'
+import { NotificationType, getCaipAddress } from '../../utils/notifications'
+
+import { CoauthorService } from './coauthor'
 
 const PushAPI = NOTIFICATIONS_SERVICE_ENABLED ? require('@pushprotocol/restapi') : null
 
@@ -22,10 +25,22 @@ const NotificationIdentityType = {
 }
 
 export class NotificationService {
-  static async sendNotification(type: number, title: string, body: string, recipient: string, url: string) {
+  static async sendNotification({
+    type,
+    title,
+    body,
+    recipient,
+    url,
+  }: {
+    type?: number
+    title: string
+    body: string
+    recipient: string | string[] | undefined
+    url: string
+  }) {
     const response = await PushAPI.payloads.sendNotification({
       signer,
-      type,
+      type: this.getType(type, recipient),
       identityType: NotificationIdentityType.DIRECT_PAYLOAD,
       notification: {
         title,
@@ -37,7 +52,7 @@ export class NotificationService {
         cta: url,
         img: '',
       },
-      recipients: recipient ? getCaipAddress(recipient, CHAIN_ID) : undefined,
+      recipients: this.getRecipients(recipient),
       channel: getCaipAddress(CHANNEL_ADDRESS, CHAIN_ID),
       env: isProdEnv() ? ENV.PROD : ENV.STAGING,
     })
@@ -45,15 +60,45 @@ export class NotificationService {
     return response.data
   }
 
-  static async proposalEnacted(proposal: ProposalAttributes) {
-    /*
-      Target recipient: Author / Coauthors of the Grant Proposal
-      Copy: Title: "Grant Proposal Enacted"
-      Description: "Congratulations! Your Grant Proposal has been successfully enacted and a Vesting Contract was added"
-      Target URL: Grant Proposal URL
-    */
+  private static getType(type: number | undefined, recipient: string | string[] | undefined) {
+    if (type) {
+      return type
+    }
 
-    return true
+    if (!recipient) {
+      return NotificationType.BROADCAST
+    }
+
+    if (Array.isArray(recipient)) {
+      return NotificationType.SUBSET
+    }
+
+    return NotificationType.TARGET
+  }
+
+  private static getRecipients(address: string | string[] | undefined) {
+    if (!address) {
+      return undefined
+    }
+
+    if (Array.isArray(address)) {
+      return address.map((item: string) => getCaipAddress(item, CHAIN_ID))
+    }
+
+    return getCaipAddress(address, CHAIN_ID)
+  }
+
+  static async proposalEnacted(proposal: ProposalAttributes) {
+    const coauthors = await CoauthorService.getAllFromProposalId(proposal.id)
+    const coauthorsAddresses = coauthors.length > 0 ? coauthors.map((coauthor) => coauthor.address) : []
+    const addresses = [proposal.user, ...coauthorsAddresses]
+
+    return await this.sendNotification({
+      title: 'Grant Proposal Enacted',
+      body: 'Congratulations! Your Grant Proposal has been successfully enacted and a Vesting Contract was added',
+      recipient: addresses,
+      url: proposalUrl(proposal.id),
+    })
   }
 
   static async coAuthorRequested(proposal: ProposalAttributes, coAuthors: string[]) {

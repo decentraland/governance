@@ -32,7 +32,7 @@ async function sendNotification(req: WithAuth) {
     throw new RequestError('Invalid data', RequestError.BadRequest)
   }
 
-  return await NotificationService.sendNotification(type, title, body, recipient, cta)
+  return await NotificationService.sendNotification({ type, title, body, recipient, url: cta })
 }
 
 async function getUserFeed(req: Request) {
