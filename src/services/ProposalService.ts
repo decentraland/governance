@@ -241,19 +241,10 @@ export class ProposalService {
       status
     )
 
-    try {
-      for (const proposal of proposals) {
-        NotificationService.votingEndedAuthors(proposal)
-        // TODO: Get voters from proposalIds
-        // TODO: NotificationService.votingEndedVoters(proposal, voters)
-      }
-    } catch (error) {
-      ErrorService.report('Error sending notifications', {
-        error,
-        category: ErrorCategory.Notifications,
-        proposals,
-        status,
-      })
+    for (const proposal of proposals) {
+      NotificationService.votingEndedAuthors(proposal)
+      // TODO: Get voters from proposalIds
+      // TODO: NotificationService.votingEndedVoters(proposal, voters)
     }
   }
 }

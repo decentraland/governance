@@ -4,6 +4,8 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import { NOTIFICATIONS_SERVICE_ENABLED } from '../../constants'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { proposalUrl } from '../../entities/Proposal/utils'
+import { ErrorService } from '../../services/ErrorService'
+import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
 import { NotificationType, getCaipAddress } from '../../utils/notifications'
 
@@ -93,50 +95,74 @@ export class NotificationService {
   }
 
   static async proposalEnacted(proposal: ProposalAttributes) {
-    const coauthors = await CoauthorService.getAllFromProposalId(proposal.id)
-    const coauthorsAddresses = coauthors.length > 0 ? coauthors.map((coauthor) => coauthor.address) : []
-    const addresses = [proposal.user, ...coauthorsAddresses]
+    try {
+      const coauthors = await CoauthorService.getAllFromProposalId(proposal.id)
+      const coauthorsAddresses = coauthors.length > 0 ? coauthors.map((coauthor) => coauthor.address) : []
+      const addresses = [proposal.user, ...coauthorsAddresses]
 
-    if (!areValidAddresses(addresses)) {
-      return
+      if (!areValidAddresses(addresses)) {
+        throw new Error('Invalid addresses')
+      }
+
+      return await this.sendNotification({
+        title: 'Grant Proposal Enacted',
+        body: 'Congratulations! Your Grant Proposal has been successfully enacted and a Vesting Contract was added',
+        recipient: addresses,
+        url: proposalUrl(proposal.id),
+      })
+    } catch (error) {
+      ErrorService.report('Error sending proposal enacted notification', {
+        error,
+        category: ErrorCategory.Notifications,
+        proposal,
+      })
     }
-
-    return await this.sendNotification({
-      title: 'Grant Proposal Enacted',
-      body: 'Congratulations! Your Grant Proposal has been successfully enacted and a Vesting Contract was added',
-      recipient: addresses,
-      url: proposalUrl(proposal.id),
-    })
   }
 
   static async coAuthorRequested(proposal: ProposalAttributes, coAuthors: string[]) {
-    if (!areValidAddresses(coAuthors)) {
-      return
-    }
+    try {
+      if (!areValidAddresses(coAuthors)) {
+        throw new Error('Invalid addresses')
+      }
 
-    return await this.sendNotification({
-      title: 'Co-author Request Received',
-      body: "You've been invited to collaborate as a co-author on a published proposal. Accept it or reject it here",
-      recipient: coAuthors,
-      url: proposalUrl(proposal.id),
-    })
+      return await this.sendNotification({
+        title: 'Co-author Request Received',
+        body: "You've been invited to collaborate as a co-author on a published proposal. Accept it or reject it here",
+        recipient: coAuthors,
+        url: proposalUrl(proposal.id),
+      })
+    } catch (error) {
+      ErrorService.report('Error sending co-author request notification', {
+        error,
+        category: ErrorCategory.Notifications,
+        proposal,
+      })
+    }
   }
 
   static async votingEndedAuthors(proposal: ProposalAttributes) {
-    const coauthors = await CoauthorService.getAllFromProposalId(proposal.id)
-    const coauthorsAddresses = coauthors.length > 0 ? coauthors.map((coauthor) => coauthor.address) : []
-    const addresses = [proposal.user, ...coauthorsAddresses]
+    try {
+      const coauthors = await CoauthorService.getAllFromProposalId(proposal.id)
+      const coauthorsAddresses = coauthors.length > 0 ? coauthors.map((coauthor) => coauthor.address) : []
+      const addresses = [proposal.user, ...coauthorsAddresses]
 
-    if (!areValidAddresses(addresses)) {
-      return
+      if (!areValidAddresses(addresses)) {
+        return
+      }
+
+      return await this.sendNotification({
+        title: `Voting Ended on Your Proposal ${proposal.title}`,
+        body: 'The votes are in! Find out the outcome of the voting on your proposal now.',
+        recipient: addresses,
+        url: proposalUrl(proposal.id),
+      })
+    } catch (error) {
+      ErrorService.report('Error sending voting ended notification to authors', {
+        error,
+        category: ErrorCategory.Notifications,
+        proposal,
+      })
     }
-
-    return await this.sendNotification({
-      title: `Voting Ended on Your Proposal ${proposal.title}`,
-      body: 'The votes are in! Find out the outcome of the voting on your proposal now.',
-      recipient: addresses,
-      url: proposalUrl(proposal.id),
-    })
   }
 
   static async votingEndedVoters(proposal: ProposalAttributes, voters: string[]) {
