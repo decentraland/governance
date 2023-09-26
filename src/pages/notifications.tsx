@@ -154,12 +154,7 @@ export default function DebugPage() {
           placeholder="Body"
           onChange={(e) => setNotificationBody(e.target.value)}
         />
-        <Field
-          value={notificationURL}
-          required
-          placeholder="URL"
-          onChange={(e) => setNotificationURL(e.target.value)}
-        />
+        <Field value={notificationURL} placeholder="URL" onChange={(e) => setNotificationURL(e.target.value)} />
         <Button loading={isSendingNotification}>Send</Button>
       </form>
     </Container>
