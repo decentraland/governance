@@ -64,7 +64,11 @@ function BidProposalView({ config }: Props) {
         title={t('page.proposal_view.bid.delivery_date_title')}
         body={formatDate(deliveryDate)}
       />
-      <ProposalDescriptionItem title={t('page.proposal_view.bid.beneficiary_title')} body={beneficiary} />
+      <ProposalDescriptionItem
+        title={t('page.proposal_view.bid.beneficiary_title')}
+        body={beneficiary}
+        className="ProposalMarkdown__BreakAnywhere"
+      />
       <ProposalDescriptionItem title={t('page.proposal_view.bid.email_title')} body={email} />
       <ProposalDescriptionItem title={t('page.proposal_view.bid.deliverables_title')} body={deliverables} />
       <ProposalDescriptionItem title={t('page.proposal_view.bid.roadmap_title')} body={roadmap} />
