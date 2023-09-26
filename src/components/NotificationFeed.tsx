@@ -21,6 +21,7 @@ import Text from './Common/Typography/Text'
 import NotificationBellActive from './Icon/NotificationBellActive'
 import NotificationBellInactive from './Icon/NotificationBellInactive'
 import PeaceCircle from './Icon/PeaceCircle'
+import SignGray from './Icon/SignGray'
 import NotificationItem from './Notifications/NotificationItem'
 
 import './NotificationFeed.css'
@@ -30,6 +31,7 @@ const NOTIFICATIONS_PER_PAGE = 5
 export default function NotificationFeed() {
   const t = useFormatMessage()
   const [isOpen, setOpen] = useState(false)
+  const [isSubscribing, setIsSubscribing] = useState(false)
   const [user, userState] = useAuthContext()
   const [filteredNotifications, setFilteredNotifications] = useState<Notification[]>([])
 
@@ -68,6 +70,7 @@ export default function NotificationFeed() {
       return
     }
 
+    setIsSubscribing(true)
     const signer = new Web3Provider(userState.provider).getSigner()
 
     await PushAPI.channels.subscribe({
@@ -79,6 +82,8 @@ export default function NotificationFeed() {
       },
       env: ENV.STAGING,
     })
+
+    setIsSubscribing(false)
   }
 
   const handleUnsubscribeUserToChannel = async () => {
@@ -113,7 +118,10 @@ export default function NotificationFeed() {
   }, [userNotifications, filteredNotifications.length])
 
   const hasNotifications = filteredNotifications && filteredNotifications.length > 0
-  const showLoadMoreButton = isSubscribed && !isLoadingNotifications && hasNotifications
+  const showNotifications = isSubscribed && !isLoadingNotifications && hasNotifications
+  const showLoadMoreButton = filteredNotifications.length !== userNotifications?.length
+  const unsubscribedKey = isSubscribing ? 'subscribing' : 'unsubscribed'
+  const UnsubscribedIcon = isSubscribing ? SignGray : NotificationBellInactive
 
   return (
     <>
@@ -137,11 +145,11 @@ export default function NotificationFeed() {
         </div>
         {!isSubscribed && (
           <div className="NotificationFeed__UnsubscribedView">
-            <NotificationBellInactive size={124} />
-            <Heading size="sm">{`Don't miss a beat`}</Heading>
-            <Text>{t('navigation.notifications.unsubscribed.description')}</Text>
-            <Button size="small" primary disabled={isSubscribed} onClick={handleSubscribeUserToChannel}>
-              {t('navigation.notifications.unsubscribed.button')}
+            <UnsubscribedIcon size="124" />
+            <Heading size="sm">{t(`navigation.notifications.${unsubscribedKey}.title`)}</Heading>
+            <Text>{t(`navigation.notifications.${unsubscribedKey}.description`)}</Text>
+            <Button size="small" primary disabled={isSubscribing} onClick={handleSubscribeUserToChannel}>
+              {t(`navigation.notifications.${unsubscribedKey}.button`)}
             </Button>
           </div>
         )}
@@ -153,14 +161,14 @@ export default function NotificationFeed() {
             </Text>
           </div>
         )}
-        {showLoadMoreButton && (
+        {showNotifications && (
           <div>
             <div className="NotificationFeed__List">
               {filteredNotifications?.map((notification) => (
                 <NotificationItem key={notification.payload_id} notification={notification} />
               ))}
             </div>
-            {filteredNotifications.length !== userNotifications?.length && (
+            {showLoadMoreButton && (
               <div className="NotificationFeed__LoadMoreButtonContainer">
                 <FullWidthButton onClick={handleLoadMoreClick}>
                   {t('navigation.notifications.load_more')}

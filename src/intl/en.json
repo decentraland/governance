@@ -55,8 +55,14 @@
       "title": "Notifications",
       "opt_out": "Opt out",
       "unsubscribed": {
+        "title": "Don't miss a beat",
         "description": "We rely on a 3rd party service that you’ll have to opt-in to in order to proceed.",
         "button": "Activate notifications"
+      },
+      "subscribing": {
+        "title": "Setting up notifications",
+        "description": "Before we begin populating your inbox, we need you to sign a transaction...",
+        "button": "Signature pending"
       },
       "empty": "No notifications at this time",
       "load_more": "Load more"
