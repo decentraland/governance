@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect } from 'react'
 
 import { useLocation } from '@reach/router'
-import { useQuery } from '@tanstack/react-query'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -12,7 +11,6 @@ import { NotMobile, useMobileMediaQuery } from 'decentraland-ui/dist/components/
 import { Pagination } from 'decentraland-ui/dist/components/Pagination/Pagination'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
-import { Governance } from '../clients/Governance'
 import RandomBanner from '../components/Banner/RandomBanner'
 import CategoryBanner from '../components/Category/CategoryBanner'
 import Empty from '../components/Common/Empty'
@@ -30,9 +28,9 @@ import StatusFilter from '../components/Search/StatusFilter'
 import TimeFrameFilter from '../components/Search/TimeFrameFilter'
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
-import { DEFAULT_QUERY_STALE_TIME } from '../hooks/constants'
 import { useBurgerMenu } from '../hooks/useBurgerMenu'
 import useFormatMessage from '../hooks/useFormatMessage'
+import useMultipleProposalVotes from '../hooks/useMultipleProposalVotes'
 import useProposals from '../hooks/useProposals'
 import useProposalsByCoAuthor from '../hooks/useProposalsByCoAuthor'
 import { useProposalsSearchParams } from '../hooks/useProposalsSearchParams'
@@ -59,11 +57,7 @@ export default function ProposalsPage() {
     itemsPerPage: ITEMS_PER_PAGE,
   })
   const proposalIds = (proposals?.data || []).map((proposal) => proposal.id)
-  const { data: votes, isLoading: isLoadingVotes } = useQuery({
-    queryKey: [`porposalVotes#${proposalIds.join('-')}`],
-    queryFn: () => Governance.get().getVotes(proposalIds),
-    staleTime: DEFAULT_QUERY_STALE_TIME,
-  })
+  const { votes, isLoadingVotes } = useMultipleProposalVotes(proposalIds)
   const [subscriptions, subscriptionsState] = useSubscriptions()
   const isMobile = useMobileMediaQuery()
   const { status: burgerStatus } = useBurgerMenu()
@@ -144,14 +138,14 @@ export default function ProposalsPage() {
       <Navigation activeTab={NavigationTab.Proposals} />
       {isLoading && <LoadingView withNavigation />}
       {!isLoading && (
-        <Container>
+        <Container fluid className="Proposals__Container">
           <div className="OnlyDesktop">
             <RandomBanner isVisible={!searching} />
           </div>
           {!isMobile && search && proposals && <SearchTitle />}
           <Grid stackable>
             <Grid.Row>
-              <Grid.Column tablet="4">
+              <Grid.Column className="Proposals__FiltersColumn">
                 <NotMobile>
                   <div>
                     <CategoryFilter filterType={ProposalType} startOpen />
@@ -161,7 +155,7 @@ export default function ProposalsPage() {
                 </NotMobile>
               </Grid.Column>
               <BurgerMenuLayout activeTab={NavigationTab.Proposals}>
-                <Grid.Column tablet="12" className="ProposalsTable">
+                <Grid.Column className="ProposalsTable">
                   {isMobile && proposals && <SearchTitle />}
                   <ActionableLayout
                     leftAction={

@@ -4,6 +4,7 @@ import isEmpty from 'lodash/isEmpty'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
+import useMultipleProposalVotes from '../../hooks/useMultipleProposalVotes'
 import useProposalsByParticipatingVP from '../../hooks/useProposalsByParticipatingVP'
 import Time from '../../utils/date/Time'
 import locations from '../../utils/locations'
@@ -33,6 +34,8 @@ const twoWeeksAgo = Time(now).subtract(2, 'week').toDate()
 const OpenProposals = ({ endingSoonProposals, isLoadingProposals }: Props) => {
   const t = useFormatMessage()
   const [activeTab, setActiveTab] = useState(Tab.EndingSoon)
+  const proposalIds = (endingSoonProposals || []).map((proposal) => proposal.id)
+  const { votes } = useMultipleProposalVotes(proposalIds)
 
   const { proposals: proposalsByParticipatingVP, isLoadingProposals: isLoadingProposalsByParticipatingVp } =
     useProposalsByParticipatingVP(twoWeeksAgo, now)
@@ -58,7 +61,9 @@ const OpenProposals = ({ endingSoonProposals, isLoadingProposals }: Props) => {
           <>
             {!isLoadingProposals &&
               endingSoonProposals &&
-              endingSoonProposals.map((proposal) => <OpenProposal key={proposal.id} proposal={proposal} />)}
+              endingSoonProposals.map((proposal) => (
+                <OpenProposal key={proposal.id} proposal={proposal} votes={votes ? votes[proposal.id] : undefined} />
+              ))}
             {isLoadingProposals && (
               <HomeLoader className="OpenProposals__Loader">{t('page.home.open_proposals.loading')}</HomeLoader>
             )}

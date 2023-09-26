@@ -1,14 +1,14 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Desktop, TabletAndBelow } from 'decentraland-ui/dist/components/Media/Media'
 import isEmpty from 'lodash/isEmpty'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
+import { Vote } from '../../entities/Votes/types'
 import { calculateResult } from '../../entities/Votes/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useProposalComments from '../../hooks/useProposalComments'
-import useProposalVotes from '../../hooks/useProposalVotes'
 import Time from '../../utils/date/Time'
 import locations from '../../utils/locations'
 import CategoryPill from '../Category/CategoryPill'
@@ -20,13 +20,13 @@ import './OpenProposal.css'
 
 interface Props {
   proposal: ProposalAttributes
+  votes?: Record<string, Vote>
 }
 
-const OpenProposal = ({ proposal }: Props) => {
+const OpenProposal = ({ proposal, votes }: Props) => {
   const t = useFormatMessage()
   const { title, user, finish_at } = proposal
   const { comments } = useProposalComments(proposal.id)
-  const { votes } = useProposalVotes(proposal.id)
   const [account] = useAuthContext()
   const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [proposal])
   const hasVote = !!account && !isEmpty(votes?.[account])

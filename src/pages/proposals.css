@@ -16,8 +16,22 @@
   justify-content: center !important;
 }
 
+.ui.fluid.Proposals__Container {
+  max-width: 1410px !important;
+  padding: 0px 1rem !important;
+}
+
 .ProposalsTable__Empty {
   margin-top: 60px;
+}
+
+.column.Proposals__FiltersColumn {
+  width: 21.87% !important;
+  max-width: 300px !important;
+}
+
+.column.ProposalsTable {
+  width: 100% !important;
 }
 
 /* Only Mobile */
@@ -38,11 +52,19 @@
   .ActionableLayout {
     min-height: 300px;
   }
+
+  .ui.fluid.Proposals__Container {
+    margin: 0 !important;
+  }
 }
 
 /* Desktop Only */
 @media only screen and (min-width: 768px) {
   .SubmitButton {
     display: inline !important;
+  }
+
+  .column.ProposalsTable {
+    width: 78.13% !important;
   }
 }
