@@ -12,6 +12,7 @@ import { Governance } from '../clients/Governance'
 import { isSameAddress } from '../entities/Snapshot/utils'
 import { DEFAULT_QUERY_STALE_TIME } from '../hooks/constants'
 import { useClickOutside } from '../hooks/useClickOutside'
+import useFormatMessage from '../hooks/useFormatMessage'
 import { CHAIN_ID, CHANNEL_ADDRESS, ENV, Notification, getCaipAddress } from '../utils/notifications'
 
 import FullWidthButton from './Common/FullWidthButton'
@@ -27,6 +28,7 @@ import './NotificationFeed.css'
 const NOTIFICATIONS_PER_PAGE = 5
 
 export default function NotificationFeed() {
+  const t = useFormatMessage()
   const [isOpen, setOpen] = useState(false)
   const [user, userState] = useAuthContext()
   const [filteredNotifications, setFilteredNotifications] = useState<Notification[]>([])
@@ -125,11 +127,11 @@ export default function NotificationFeed() {
       <div className={classNames('NotificationFeed__Content', isOpen && 'NotificationFeed__Content--visible')}>
         <div className="NotificationFeed__Header">
           <Text color="secondary" size="sm" className="NotificationFeed__Title">
-            Notifications
+            {t('navigation.notifications.title')}
           </Text>
           {isSubscribed && (
             <button className="NotificationFeed__OptOut" onClick={handleUnsubscribeUserToChannel}>
-              Opt out
+              {t('navigation.notifications.opt_out')}
             </button>
           )}
         </div>
@@ -137,9 +139,9 @@ export default function NotificationFeed() {
           <div className="NotificationFeed__UnsubscribedView">
             <NotificationBellInactive size={124} />
             <Heading size="sm">{`Don't miss a beat`}</Heading>
-            <Text>We rely on a 3rd party service that you’ll have to opt-in to in order to proceed.</Text>
+            <Text>{t('navigation.notifications.unsubscribed.description')}</Text>
             <Button size="small" primary disabled={isSubscribed} onClick={handleSubscribeUserToChannel}>
-              Activate notifications
+              {t('navigation.notifications.unsubscribed.button')}
             </Button>
           </div>
         )}
@@ -147,7 +149,7 @@ export default function NotificationFeed() {
           <div className="NotificationFeed__EmptyView">
             <PeaceCircle />
             <Text color="secondary" weight="medium">
-              No notifications at this time
+              {t('navigation.notifications.empty')}
             </Text>
           </div>
         )}
@@ -160,7 +162,9 @@ export default function NotificationFeed() {
             </div>
             {filteredNotifications.length !== userNotifications?.length && (
               <div className="NotificationFeed__LoadMoreButtonContainer">
-                <FullWidthButton onClick={handleLoadMoreClick}>Load more</FullWidthButton>
+                <FullWidthButton onClick={handleLoadMoreClick}>
+                  {t('navigation.notifications.load_more')}
+                </FullWidthButton>
               </div>
             )}
           </div>

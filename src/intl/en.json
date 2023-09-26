@@ -51,6 +51,16 @@
         "3months": "Last 90 Days"
       }
     },
+    "notifications": {
+      "title": "Notifications",
+      "opt_out": "Opt out",
+      "unsubscribed": {
+        "description": "We rely on a 3rd party service that you’ll have to opt-in to in order to proceed.",
+        "button": "Activate notifications"
+      },
+      "empty": "No notifications at this time",
+      "load_more": "Load more"
+    },
     "exit": "Are you sure you want to exit? You will lose the changes you have made."
   },
   "mobile_login": {
