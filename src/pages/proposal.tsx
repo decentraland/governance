@@ -9,7 +9,7 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
+import { Desktop, NotMobile, useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { ErrorClient } from '../clients/ErrorClient'
