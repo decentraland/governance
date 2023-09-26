@@ -60,3 +60,9 @@
   margin-right: 84px !important;
   position: relative !important;
 }
+
+@media (max-width: 374px) {
+  .FloatingBar {
+    display: none;
+  }
+}
