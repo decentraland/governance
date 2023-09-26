@@ -16,11 +16,11 @@ interface Props {
 }
 
 export default function ProposalHero({ proposal }: Props) {
-  const colorsConfig = ColorsConfig[proposal?.type || ProposalType.Grant]
+  const color = ColorsConfig[proposal?.type || ProposalType.Grant]
   const isProposalActive = proposal?.status === ProposalStatus.Active
   return (
     <div className="ProposalHero__Container">
-      <HeroBanner proposalActive={isProposalActive} colorsConfig={colorsConfig} />
+      <HeroBanner proposalActive={isProposalActive} color={color} />
       <div className="ProposalHero__Text">
         <p className={classNames('ProposalHero__Title', !isProposalActive && 'ProposalHero__Title--finished')}>
           {proposal?.title || ''}
@@ -29,7 +29,11 @@ export default function ProposalHero({ proposal }: Props) {
         {proposal && (
           <div className="ProposalDetailPage__Labels">
             <StatusPill isLink status={proposal.status} color={isProposalActive ? PillColor.White : undefined} />
-            <CategoryPill isLink proposalType={proposal.type} transparent={isProposalActive} />
+            <CategoryPill
+              isLink
+              proposalType={proposal.type}
+              color={isProposalActive ? PillColor.Transparent : undefined}
+            />
           </div>
         )}
       </div>

@@ -16,7 +16,7 @@
 }
 
 .HeroBanner--purple {
-  background: #a524b3;
+  background: var(--fuchsia-500);
   box-shadow: 0 4px 24px 0 rgba(198, 64, 205, 0.5);
 }
 .HeroBanner__Gradient--purple {

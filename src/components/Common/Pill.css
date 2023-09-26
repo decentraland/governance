@@ -252,7 +252,10 @@
   color: var(--white-900);
 }
 
-.Pill--transparent {
+.Pill--light-transparent,
+.Pill--medium-transparent,
+.Pill--shiny-transparent,
+.Pill--outline-transparent {
   border-color: transparent;
   color: var(--white-900);
   background: rgba(255, 255, 255, 0.16);

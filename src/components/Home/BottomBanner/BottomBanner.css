@@ -2,7 +2,7 @@
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  background: linear-gradient(180deg, #a524b3 0%, var(--primary) 100%);
+  background: linear-gradient(180deg, var(--fuchsia-500) 0%, var(--primary) 100%);
   border-radius: 8px;
   margin-top: 40px;
   padding: 24px 15px;

@@ -48,7 +48,7 @@
 }
 
 .ProposalProcess__ItemGradient--bidding-and-tendering {
-  background: linear-gradient(270deg, #a524b3 14.1%, #ff2d55 100%); /* TODO: add color to theme */
+  background: linear-gradient(270deg, var(--fuchsia-500) 14.1%, #ff2d55 100%); /* TODO: add color to theme */
 }
 
 .ProposalProcess__ItemGradient--governance {
