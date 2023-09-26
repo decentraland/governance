@@ -48,12 +48,12 @@
   border: 2px solid var(--secondary-text);
 }
 
-.ContentLayout .ContentLayout__Section.GrantSize .dcl.field {
+.ContentLayout__Section.GrantSize .dcl.field {
   width: 100%;
   max-width: 300px;
 }
 
-.ContentLayout .ContentLayout__Section.GrantSize .dcl.field .ui.input input {
+.ContentLayout__Section.GrantSize .dcl.field .ui.input input {
   padding-right: 70px;
 }
 

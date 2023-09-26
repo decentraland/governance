@@ -6,6 +6,12 @@
     margin-left: auto !important;
     margin-right: auto !important;
   }
+
+  .ProposalHero__Title {
+    font-size: 24px !important;
+    line-height: 28px !important;
+    letter-spacing: 0.3px !important;
+  }
 }
 
 .ProposalHero__Container {
@@ -16,7 +22,6 @@
   margin-top: 24px;
   margin-bottom: 23px;
   isolation: isolate;
-  height: 148px;
 }
 
 .ProposalHero__Text {
@@ -28,10 +33,12 @@
 
 .ProposalHero__Title {
   color: var(--white-900);
-  font-size: 24px;
   font-weight: var(--weight-semi-bold);
-  line-height: 28px;
-  letter-spacing: 0.4px;
+  font-size: 18px;
+  line-height: 26px;
+  letter-spacing: 0.3px;
+  text-align: center;
+  padding: 1em 2em 0 2em;
 }
 
 .ProposalHero__Title::first-letter {

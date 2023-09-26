@@ -1,13 +1,12 @@
 .HeroBanner {
   position: absolute;
   border-radius: 6px;
-  height: 148px;
+  height: 100%;
   left: 1rem;
   right: 1rem;
 }
 
 .HeroBanner--finished {
-  border-radius: 6px;
   border: 1px solid #e8e8e8;
   background: linear-gradient(89deg, #f6f5f8 0%, rgba(246, 245, 248, 0) 100%);
 }

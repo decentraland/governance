@@ -3,7 +3,6 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { ErrorCode } from '@ethersproject/logger'
 import { Web3Provider } from '@ethersproject/providers'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import classNames from 'classnames'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
@@ -382,7 +381,7 @@ export default function ProposalPage() {
       />
       <Navigation activeTab={NavigationTab.Proposals} />
       <ProposalHero proposal={proposal} />
-      <Container className={classNames('ProposalDetailPage', 'ContentLayout')}>
+      <Container className={'ProposalDetailPage'}>
         <Grid stackable>
           <Grid.Row>
             <Grid.Column tablet="12" className="ProposalDetailPage__Description">
