@@ -7,7 +7,7 @@ import { proposalUrl } from '../../entities/Proposal/utils'
 import { ErrorService } from '../../services/ErrorService'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
-import { NotificationType, getCaipAddress } from '../../utils/notifications'
+import { NotificationCustomType, NotificationType, getCaipAddress } from '../../utils/notifications'
 
 import { CoauthorService } from './coauthor'
 
@@ -38,12 +38,14 @@ export class NotificationService {
     body,
     recipient,
     url,
+    customType,
   }: {
     type?: number
     title: string
     body: string
     recipient: string | string[] | undefined
     url: string
+    customType: NotificationCustomType
   }) {
     if (!NOTIFICATIONS_SERVICE_ENABLED) {
       return
@@ -62,7 +64,14 @@ export class NotificationService {
         body,
         cta: url,
         img: '',
+        additionalMeta: {
+          type: `0+${1}`, // TODO: Check what this means with Push team.
+          data: JSON.stringify({
+            customType,
+          }),
+        },
       },
+
       recipients: this.getRecipients(recipient),
       channel: getCaipAddress(CHANNEL_ADDRESS, CHAIN_ID),
       env: isProdEnv() ? ENV.PROD : ENV.STAGING,
@@ -129,6 +138,7 @@ export class NotificationService {
         body: 'Congratulations! Your Grant Proposal has been successfully enacted and a Vesting Contract was added',
         recipient: addresses,
         url: proposalUrl(proposal.id),
+        customType: NotificationCustomType.Grant,
       })
     } catch (error) {
       ErrorService.report('Error sending proposal enacted notification', {
@@ -150,6 +160,7 @@ export class NotificationService {
         body: "You've been invited to collaborate as a co-author on a published proposal. Accept it or reject it here",
         recipient: coAuthors,
         url: proposalUrl(proposal.id),
+        customType: NotificationCustomType.Proposal,
       })
     } catch (error) {
       ErrorService.report('Error sending co-author request notification', {
@@ -175,6 +186,7 @@ export class NotificationService {
         body: 'The votes are in! Find out the outcome of the voting on your proposal now.',
         recipient: addresses,
         url: proposalUrl(proposal.id),
+        customType: NotificationCustomType.Proposal,
       })
     } catch (error) {
       ErrorService.report('Error sending voting ended notification to authors', {

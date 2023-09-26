@@ -1,5 +1,13 @@
 .NotificationItem {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
   padding: 0 16px;
+}
+
+.NotificationItem__IconContainer {
+  width: 24px;
+  height: 24px;
 }
 
 .NotificationItem__Text {

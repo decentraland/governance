@@ -1,4 +1,4 @@
-// TODO: Move to notification types file
+// TODO: Move types to notification types file
 export type Notification = {
   payload_id: number
   epoch: string
@@ -7,6 +7,9 @@ export type Notification = {
       acta: string
       asub: string
       amsg: string
+      additionalMeta: {
+        data: string
+      }
     }
   }
 }
@@ -14,6 +17,12 @@ export type Notification = {
 export enum ENV {
   PROD = 'prod',
   STAGING = 'staging',
+}
+
+export enum NotificationCustomType {
+  Announcement = 'announcement',
+  Proposal = 'proposal',
+  Grant = 'grant',
 }
 
 export const NotificationType = {

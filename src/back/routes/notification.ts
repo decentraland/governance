@@ -4,7 +4,7 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
-import { NotificationType } from '../../utils/notifications'
+import { NotificationCustomType, NotificationType } from '../../utils/notifications'
 import { NotificationService } from '../services/notification'
 import { validateDebugAddress } from '../utils/validations'
 
@@ -26,7 +26,14 @@ async function sendNotification(req: WithAuth) {
     throw new RequestError('Invalid data', RequestError.BadRequest)
   }
 
-  return await NotificationService.sendNotification({ type, title, body, recipient, url: cta })
+  return await NotificationService.sendNotification({
+    type,
+    title,
+    body,
+    recipient,
+    url: cta,
+    customType: NotificationCustomType.Announcement,
+  })
 }
 
 async function getUserFeed(req: Request) {
