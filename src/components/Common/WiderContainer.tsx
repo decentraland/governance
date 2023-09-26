@@ -1,5 +1,3 @@
-import React from 'react'
-
 import classNames from 'classnames'
 import { Container, ContainerProps } from 'decentraland-ui/dist/components/Container/Container'
 

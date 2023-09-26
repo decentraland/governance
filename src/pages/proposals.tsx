@@ -4,7 +4,6 @@ import { useLocation } from '@reach/router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { NotMobile, useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
@@ -15,6 +14,7 @@ import RandomBanner from '../components/Banner/RandomBanner'
 import CategoryBanner from '../components/Category/CategoryBanner'
 import Empty from '../components/Common/Empty'
 import Link from '../components/Common/Typography/Link'
+import WiderContainer from '../components/Common/WiderContainer'
 import ActionableLayout from '../components/Layout/ActionableLayout'
 import BurgerMenuLayout from '../components/Layout/BurgerMenu/BurgerMenuLayout'
 import LoadingView from '../components/Layout/LoadingView'
@@ -138,7 +138,7 @@ export default function ProposalsPage() {
       <Navigation activeTab={NavigationTab.Proposals} />
       {isLoading && <LoadingView withNavigation />}
       {!isLoading && (
-        <Container fluid className="Proposals__Container">
+        <WiderContainer>
           <div className="OnlyDesktop">
             <RandomBanner isVisible={!searching} />
           </div>
@@ -217,7 +217,7 @@ export default function ProposalsPage() {
               </BurgerMenuLayout>
             </Grid.Row>
           </Grid>
-        </Container>
+        </WiderContainer>
       )}
     </>
   )
