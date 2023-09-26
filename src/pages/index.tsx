@@ -1,9 +1,9 @@
 import React from 'react'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
+import WiderContainer from '../components/Common/WiderContainer'
 import ActiveCommunityGrants from '../components/Home/ActiveCommunityGrants'
 import BottomBanner from '../components/Home/BottomBanner/BottomBanner'
 import CommunityEngagement from '../components/Home/CommunityEngagement'
@@ -54,7 +54,7 @@ export default function HomePage() {
       {!endingSoonProposals && <LoadingView withNavigation />}
       {endingSoonProposals && (
         <BurgerMenuLayout navigationOnly activeTab={NavigationTab.Home}>
-          <Container fluid className="HomeContainer">
+          <WiderContainer>
             <MainBanner />
             <MetricsCards />
             {isLoadingProposals && <Loader active />}
@@ -70,7 +70,7 @@ export default function HomePage() {
                 <BottomBanner />
               </>
             )}
-          </Container>
+          </WiderContainer>
         </BurgerMenuLayout>
       )}
     </>
