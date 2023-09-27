@@ -12,10 +12,10 @@ import BoxTabs from '../Common/BoxTabs'
 import BoxTabsContainer from '../Common/BoxTabsContainer'
 import Empty from '../Common/Empty'
 import FullWidthButton from '../Common/FullWidthButton'
+import ProposalPreviewCard from '../Common/ProposalPreviewCard/ProposalPreviewCard'
 
 import HomeLoader from './HomeLoader'
 import HomeSectionHeader from './HomeSectionHeader'
-import OpenProposal from './OpenProposal'
 import './OpenProposals.css'
 
 enum Tab {
@@ -62,7 +62,12 @@ const OpenProposals = ({ endingSoonProposals, isLoadingProposals }: Props) => {
             {!isLoadingProposals &&
               endingSoonProposals &&
               endingSoonProposals.map((proposal) => (
-                <OpenProposal key={proposal.id} proposal={proposal} votes={votes ? votes[proposal.id] : undefined} />
+                <ProposalPreviewCard
+                  key={proposal.id}
+                  proposal={proposal}
+                  votes={votes ? votes[proposal.id] : undefined}
+                  variant="vote"
+                />
               ))}
             {isLoadingProposals && (
               <HomeLoader className="OpenProposals__Loader">{t('page.home.open_proposals.loading')}</HomeLoader>
@@ -76,7 +81,9 @@ const OpenProposals = ({ endingSoonProposals, isLoadingProposals }: Props) => {
           <>
             {!isLoadingProposalsByParticipatingVp &&
               proposalsByParticipatingVP &&
-              proposalsByParticipatingVP.map((proposal) => <OpenProposal key={proposal.id} proposal={proposal} />)}
+              proposalsByParticipatingVP.map((proposal) => (
+                <ProposalPreviewCard key={proposal.id} proposal={proposal} variant="vote" />
+              ))}
             {isLoadingProposalsByParticipatingVp && (
               <HomeLoader className="OpenProposals__Loader">{t('page.home.open_proposals.loading')}</HomeLoader>
             )}

@@ -1,0 +1,12 @@
+.ProposalPreviewCard__CategoryModule {
+  display: flex;
+  width: 280px !important;
+  justify-content: space-between;
+}
+
+.CategoryModule__PillContainer {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-start;
+  width: 100%;
+}

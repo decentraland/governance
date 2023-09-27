@@ -6,13 +6,18 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { NotMobile, useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
+import {
+  NotMobile,
+  useMobileMediaQuery,
+  useTabletAndBelowMediaQuery,
+} from 'decentraland-ui/dist/components/Media/Media'
 import { Pagination } from 'decentraland-ui/dist/components/Pagination/Pagination'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import RandomBanner from '../components/Banner/RandomBanner'
 import CategoryBanner from '../components/Category/CategoryBanner'
 import Empty from '../components/Common/Empty'
+import ProposalPreviewCard from '../components/Common/ProposalPreviewCard/ProposalPreviewCard'
 import Link from '../components/Common/Typography/Link'
 import WiderContainer from '../components/Common/WiderContainer'
 import ActionableLayout from '../components/Layout/ActionableLayout'
@@ -60,6 +65,7 @@ export default function ProposalsPage() {
   const { votes, isLoadingVotes } = useMultipleProposalVotes(proposalIds)
   const [subscriptions, subscriptionsState] = useSubscriptions()
   const isMobile = useMobileMediaQuery()
+  const isTabletAndBelow = useTabletAndBelowMediaQuery()
   const { status: burgerStatus } = useBurgerMenu()
   const { open } = burgerStatus
 
@@ -189,7 +195,7 @@ export default function ProposalsPage() {
                     )}
                     {proposals &&
                       proposals.data.map((proposal) => {
-                        return (
+                        return isTabletAndBelow ? (
                           <ProposalItem
                             key={proposal.id}
                             proposal={proposal}
@@ -200,6 +206,13 @@ export default function ProposalsPage() {
                               !!subscriptions.find((subscription) => subscription.proposal_id === proposal.id)
                             }
                             onSubscribe={(_, proposal) => subscriptionsState.subscribe(proposal.id)}
+                          />
+                        ) : (
+                          <ProposalPreviewCard
+                            key={proposal.id}
+                            proposal={proposal}
+                            votes={votes ? votes[proposal.id] : undefined}
+                            variant="category"
                           />
                         )
                       })}
