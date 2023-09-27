@@ -16,6 +16,7 @@ import { SnapshotApi } from '../clients/SnapshotApi'
 import ProposalVPChart from '../components/Charts/ProposalVPChart'
 import WiderContainer from '../components/Common/WiderContainer'
 import FloatingBar from '../components/FloatingBar/FloatingBar'
+import { Desktop1440 } from '../components/Layout/Desktop1440'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import BidSubmittedModal from '../components/Modal/BidSubmittedModal'
@@ -41,6 +42,7 @@ import BidProposalView from '../components/Proposal/View/Categories/BidProposalV
 import GrantProposalView from '../components/Proposal/View/Categories/GrantProposalView'
 import CompetingBiddingAndTendering from '../components/Proposal/View/CompetingBiddingAndTendering'
 import GovernanceProcess from '../components/Proposal/View/GovernanceProcess'
+import ProposalDetailSection from '../components/Proposal/View/ProposalDetailSection'
 import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
 import ProposalMarkdown from '../components/Proposal/View/ProposalMarkdown'
 import { VOTES_VP_THRESHOLD } from '../constants'
@@ -381,6 +383,11 @@ export default function ProposalPage() {
       <Navigation activeTab={NavigationTab.Proposals} />
       <WiderContainer className={'ProposalDetailPage'}>
         <ProposalHero proposal={proposal} />
+        <Desktop1440>
+          <div className={'ProposalDetail__Left'}>
+            {proposal && <ProposalDetailSection proposal={proposal} className={'DetailsSection__StickyBottom'} />}
+          </div>
+        </Desktop1440>
         <div className="ProposalDetailPage__Description">
           <Loader active={isLoadingProposal} />
           {showProposalBudget && <ProposalBudget proposal={proposal} budget={budgetWithContestants} />}

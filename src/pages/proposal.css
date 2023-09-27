@@ -9,6 +9,13 @@
   padding-right: 0;
 }
 
+.ProposalDetail__Left {
+  display: flex;
+  width: 284px;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
 @media (min-width: 768px) {
   .ProposalDetailPage {
     flex-direction: row !important;
@@ -22,6 +29,12 @@
 
   .ProposalDetailActions {
     width: 284px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .ProposalDetailPage__Description {
+    max-width: calc(100% - 284px - 284px);
   }
 }
 

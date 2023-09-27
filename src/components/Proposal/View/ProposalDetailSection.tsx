@@ -1,5 +1,7 @@
 import React from 'react'
 
+import classNames from 'classnames'
+
 import { ProposalAttributes, ProposalType } from '../../../entities/Proposal/types'
 import { snapshotProposalUrl } from '../../../entities/Proposal/utils'
 import useCoAuthorsByProposal from '../../../hooks/useCoAuthorsByProposal'
@@ -16,16 +18,17 @@ import SidebarHeaderLabel from './SidebarHeaderLabel'
 
 interface Props {
   proposal: ProposalAttributes
+  className?: string
 }
 
 const formatDate = (date: Date) => Time.from(date).format('MMM DD, YYYY HH:mm')
 
-export default function ProposalDetailSection({ proposal }: Props) {
+export default function ProposalDetailSection({ proposal, className }: Props) {
   const t = useFormatMessage()
   const coAuthors = useCoAuthorsByProposal(proposal)
 
   return (
-    <div className="DetailsSection DetailsSection--no-border">
+    <div className={classNames('DetailsSection', 'DetailsSection--no-border', className)}>
       <div className="DetailsSection__Content">
         <SidebarHeaderLabel>{t('page.proposal_detail.details_label')}</SidebarHeaderLabel>
         <div className="DetailsSection__Flex">
