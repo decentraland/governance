@@ -137,8 +137,8 @@ export default function SubmitDraftProposal() {
             name="title"
             rules={{
               required: { value: true, message: t('error.draft.title_empty') },
-              min: { value: schema.title.minLength, message: t('error.draft.title_too_short') },
-              max: { value: schema.title.maxLength, message: t('error.draft.title_too_long') },
+              minLength: { value: schema.title.minLength, message: t('error.draft.title_too_short') },
+              maxLength: { value: schema.title.maxLength, message: t('error.draft.title_too_large') },
             }}
             error={!!errors.title}
             loading={isLoadingVpDistribution}
