@@ -34,7 +34,7 @@
   line-height: 24px;
   font-weight: var(--weight-semi-bold);
   text-transform: uppercase;
-  gap: 5px;
+  gap: 2px;
   display: flex;
   align-items: center;
 }
@@ -42,6 +42,7 @@
 .FloatingBar__ReactionsImg {
   height: 24px;
   width: 36px;
+  margin-left: 3px;
 }
 
 .FloatingBar__JoinDiscussion {
