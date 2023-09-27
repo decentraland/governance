@@ -20,6 +20,8 @@
   display: flex;
   gap: 7px;
   min-height: 24px;
+  justify-content: center;
+  padding: 0 0 1em 0;
 }
 
 .ProposalDetailPage__Description img {
@@ -32,6 +34,7 @@
 
 .ProposalDetailPage__Body {
   margin-bottom: 40px;
+  padding: 24px 16px 20px;
 }
 
 @media only screen and (min-width: 320px) and (max-width: 767px) {

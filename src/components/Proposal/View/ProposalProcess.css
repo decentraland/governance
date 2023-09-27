@@ -45,11 +45,10 @@
   box-shadow: 0px 4px 14px rgba(213, 27, 60, 0.4); /* TODO: add color to theme */
   border-radius: 8px;
   z-index: 1;
-  transform: scale(1.04);
 }
 
 .ProposalProcess__ItemGradient--bidding-and-tendering {
-  background: linear-gradient(270deg, #a524b3 14.1%, #ff2d55 100%); /* TODO: add color to theme */
+  background: linear-gradient(270deg, var(--fuchsia-500) 14.1%, #ff2d55 100%); /* TODO: add color to theme */
 }
 
 .ProposalProcess__ItemGradient--governance {

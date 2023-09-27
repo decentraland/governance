@@ -7,19 +7,18 @@ import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
+import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
+import { Desktop, NotMobile, useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { ErrorClient } from '../clients/ErrorClient'
 import { Governance } from '../clients/Governance'
 import { SnapshotApi } from '../clients/SnapshotApi'
-import CategoryPill from '../components/Category/CategoryPill'
 import ProposalVPChart from '../components/Charts/ProposalVPChart'
 import FloatingBar from '../components/FloatingBar/FloatingBar'
-import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
+import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import BidSubmittedModal from '../components/Modal/BidSubmittedModal'
 import BidVotingModal from '../components/Modal/BidVotingModal/BidVotingModal'
 import { DeleteProposalModal } from '../components/Modal/DeleteProposalModal/DeleteProposalModal'
@@ -33,6 +32,7 @@ import { VotingModal } from '../components/Modal/Votes/VotingModal/VotingModal'
 import ProposalComments from '../components/Proposal/Comments/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
+import ProposalHero from '../components/Proposal/ProposalHero'
 import ProposalSidebar from '../components/Proposal/ProposalSidebar'
 import SurveyResults from '../components/Proposal/SentimentSurvey/SurveyResults'
 import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
@@ -44,7 +44,6 @@ import CompetingBiddingAndTendering from '../components/Proposal/View/CompetingB
 import GovernanceProcess from '../components/Proposal/View/GovernanceProcess'
 import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
 import ProposalMarkdown from '../components/Proposal/View/ProposalMarkdown'
-import StatusPill from '../components/Status/StatusPill'
 import { VOTES_VP_THRESHOLD } from '../constants'
 import { OldGrantCategory } from '../entities/Grant/types'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
@@ -343,9 +342,9 @@ export default function ProposalPage() {
 
   if (isErrorOnProposal) {
     return (
-      <ContentLayout className="ProposalDetailPage">
+      <Container className="ProposalDetailPage">
         <NotFound />
-      </ContentLayout>
+      </Container>
     )
   }
 
@@ -380,15 +379,9 @@ export default function ProposalPage() {
         }
         image="https://decentraland.org/images/decentraland.png"
       />
-      <ContentLayout className="ProposalDetailPage">
-        <ContentSection>
-          <Header size="huge">{proposal?.title || ''} &nbsp;</Header>
-          <Loader active={!proposal} />
-          <div className="ProposalDetailPage__Labels">
-            {proposal && <StatusPill isLink status={proposal.status} />}
-            {proposal && <CategoryPill isLink proposalType={proposal.type} />}
-          </div>
-        </ContentSection>
+      <Navigation activeTab={NavigationTab.Proposals} />
+      <ProposalHero proposal={proposal} />
+      <Container className={'ProposalDetailPage'}>
         <Grid stackable>
           <Grid.Row>
             <Grid.Column tablet="12" className="ProposalDetailPage__Description">
@@ -467,7 +460,7 @@ export default function ProposalPage() {
             </Grid.Column>
           </Grid.Row>
         </Grid>
-      </ContentLayout>
+      </Container>
 
       {proposal && voteWithSurvey && (
         <VotingModal
