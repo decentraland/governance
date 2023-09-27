@@ -231,7 +231,7 @@ export const newProposalPollScheme = {
     title: {
       type: 'string',
       minLength: 5,
-      maxLength: 200,
+      maxLength: 80,
     },
     description: {
       type: 'string',
