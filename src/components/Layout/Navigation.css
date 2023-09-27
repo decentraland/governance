@@ -14,6 +14,10 @@
   border-radius: 6px;
 }
 
+.Navigation .dcl.tabs .ui.container {
+  max-width: 1440px !important;
+}
+
 @media (min-width: 768px) {
   .Navigation .dcl.tabs {
     display: flex;
@@ -25,8 +29,7 @@
 
   .Navigation .dcl.tabs .ui.container {
     width: 100%;
-    max-width: 1410px !important;
-    padding: 0px 1rem !important;
+    padding: 0 24px;
   }
 
   .dcl.tabs .ui.container {
