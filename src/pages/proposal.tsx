@@ -7,15 +7,14 @@ import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
-import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { ErrorClient } from '../clients/ErrorClient'
 import { Governance } from '../clients/Governance'
 import { SnapshotApi } from '../clients/SnapshotApi'
 import ProposalVPChart from '../components/Charts/ProposalVPChart'
+import WiderContainer from '../components/Common/WiderContainer'
 import FloatingBar from '../components/FloatingBar/FloatingBar'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
@@ -342,9 +341,9 @@ export default function ProposalPage() {
 
   if (isErrorOnProposal) {
     return (
-      <Container className="ProposalDetailPage">
+      <WiderContainer className="ProposalDetailPage">
         <NotFound />
-      </Container>
+      </WiderContainer>
     )
   }
 
@@ -380,8 +379,8 @@ export default function ProposalPage() {
         image="https://decentraland.org/images/decentraland.png"
       />
       <Navigation activeTab={NavigationTab.Proposals} />
-      <ProposalHero proposal={proposal} />
-      <div className={'ProposalDetailPage'}>
+      <WiderContainer className={'ProposalDetailPage'}>
+        <ProposalHero proposal={proposal} />
         <div className="ProposalDetailPage__Description">
           <Loader active={isLoadingProposal} />
           {showProposalBudget && <ProposalBudget proposal={proposal} budget={budgetWithContestants} />}
@@ -453,7 +452,7 @@ export default function ProposalPage() {
             isOwner={isOwner}
           />
         </div>
-      </div>
+      </WiderContainer>
 
       {proposal && voteWithSurvey && (
         <VotingModal

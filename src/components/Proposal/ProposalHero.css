@@ -1,10 +1,6 @@
 @media (min-width: 768px) {
   .ProposalHero__Container {
     width: 100%;
-    max-width: 1410px !important;
-    padding: 0px 1rem !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
   }
 
   .ProposalHero__Title {
@@ -19,8 +15,7 @@
   justify-content: center;
   align-items: center;
   position: relative;
-  margin-top: 24px;
-  margin-bottom: 23px;
+  margin-bottom: 24px;
   isolation: isolate;
 }
 

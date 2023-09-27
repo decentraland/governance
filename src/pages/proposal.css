@@ -1,10 +1,5 @@
 .ProposalDetailPage {
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 1410px;
-  padding: 0 1rem;
-  width: 100%;
-  display: flex;
+  display: flex !important;
   flex-direction: column;
   flex-wrap: wrap;
 }
@@ -54,11 +49,12 @@
 
 .ProposalImagesPreview {
   margin-bottom: 20px;
+  padding: 0 1em 0;
 }
 
 .ProposalDetailPage__Body {
   margin-bottom: 40px;
-  padding: 24px 16px 20px;
+  padding: 24px 1em 20px;
 }
 
 @media only screen and (min-width: 320px) and (max-width: 768px) {
