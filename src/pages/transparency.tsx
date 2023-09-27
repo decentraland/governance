@@ -1,11 +1,11 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
+import WiderContainer from '../components/Common/WiderContainer'
 import ChartBar from '../components/Icon/ChartBar'
 import Database from '../components/Icon/Database'
 import Discord from '../components/Icon/Discord'
@@ -54,7 +54,7 @@ export default function TransparencyPage() {
         {!data && <LoadingView withNavigation />}
         {data && (
           <BurgerMenuLayout navigationOnly activeTab={NavigationTab.Transparency}>
-            <Container className="TransparencyContainer">
+            <WiderContainer>
               <Grid className="TransparencyGrid" stackable>
                 <Grid.Row columns={2}>
                   <Grid.Column tablet="4">
@@ -77,7 +77,7 @@ export default function TransparencyPage() {
                   </Grid.Column>
 
                   <Grid.Column tablet="12">
-                    <div className="TransparencySection">
+                    <div className="TransparencySection TransparencySection__BalanceCard">
                       <Card className="TransparencyCard">
                         <Card.Content>
                           <Header>{t('page.transparency.mission.balance_title')}</Header>
@@ -95,23 +95,23 @@ export default function TransparencyPage() {
                         </Card.Content>
                       </Card>
                     </div>
-                    <Grid.Row columns={2} divided={true} className="MonthlyTotals">
-                      <MonthlyTotal
-                        title={t('page.transparency.mission.monthly_income') || ''}
-                        monthlyTotal={data.income}
-                      />
-                      <MonthlyTotal
-                        title={t('page.transparency.mission.monthly_expenses') || ''}
-                        monthlyTotal={data.expenses}
-                        invertDiffColors={true}
-                      />
+                    <Grid.Row>
+                      <div className="MonthlyTotals">
+                        <MonthlyTotal
+                          title={t('page.transparency.mission.monthly_income') || ''}
+                          monthlyTotal={data.income}
+                        />
+                        <MonthlyTotal
+                          title={t('page.transparency.mission.monthly_expenses') || ''}
+                          monthlyTotal={data.expenses}
+                          invertDiffColors={true}
+                        />
+                      </div>
                     </Grid.Row>
                   </Grid.Column>
                 </Grid.Row>
               </Grid>
-            </Container>
 
-            <Container className="TransparencyContainer">
               <Grid className="TransparencyGrid Funding" stackable>
                 <Grid.Row columns={2}>
                   <Grid.Column tablet="4">
@@ -155,9 +155,6 @@ export default function TransparencyPage() {
                   </Grid.Column>
                 </Grid.Row>
               </Grid>
-            </Container>
-
-            <Container className="TransparencyContainer">
               <Grid className="TransparencyGrid" stackable>
                 <Grid.Row columns={2}>
                   <Grid.Column tablet="4">
@@ -196,7 +193,7 @@ export default function TransparencyPage() {
                   </Grid.Column>
                 </Grid.Row>
               </Grid>
-            </Container>
+            </WiderContainer>
           </BurgerMenuLayout>
         )}
       </div>
