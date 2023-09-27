@@ -52,6 +52,7 @@
       }
     },
     "notifications": {
+      "button_label": "Notifications menu",
       "title": "Notifications",
       "opt_out": "Opt out",
       "unsubscribed": {

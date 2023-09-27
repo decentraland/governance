@@ -54,7 +54,7 @@ export default function DebugPage() {
   return (
     <Container className="DebugPage">
       <form onSubmit={handleSendNotification}>
-        <Heading size="md">Send notification</Heading>
+        <Heading size="md">Send announcement notification</Heading>
         <SelectField
           value={notificationType}
           onChange={(_, { value }) => setNotificationType(Number(value))}

@@ -1,5 +1,3 @@
-import React from 'react'
-
 function NotificationBellActive({ className, size = 32 }: { className?: string; size?: number }) {
   return (
     <svg

@@ -8,34 +8,36 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
-import { Governance } from '../clients/Governance'
-import { isSameAddress } from '../entities/Snapshot/utils'
-import { DEFAULT_QUERY_STALE_TIME } from '../hooks/constants'
-import { useClickOutside } from '../hooks/useClickOutside'
-import useFormatMessage from '../hooks/useFormatMessage'
-import { CHAIN_ID, CHANNEL_ADDRESS, ENV, Notification, getCaipAddress } from '../utils/notifications'
+import { Governance } from '../../clients/Governance'
+import { isSameAddress } from '../../entities/Snapshot/utils'
+import { DEFAULT_QUERY_STALE_TIME } from '../../hooks/constants'
+import { useClickOutside } from '../../hooks/useClickOutside'
+import useFormatMessage from '../../hooks/useFormatMessage'
+import { CHAIN_ID, CHANNEL_ADDRESS, ENV, Notification, getCaipAddress } from '../../utils/notifications'
+import FullWidthButton from '../Common/FullWidthButton'
+import Heading from '../Common/Typography/Heading'
+import Text from '../Common/Typography/Text'
+import NotificationBellInactive from '../Icon/NotificationBellInactive'
+import PeaceCircle from '../Icon/PeaceCircle'
+import SignGray from '../Icon/SignGray'
 
-import FullWidthButton from './Common/FullWidthButton'
-import Heading from './Common/Typography/Heading'
-import Text from './Common/Typography/Text'
-import NotificationBellActive from './Icon/NotificationBellActive'
-import NotificationBellInactive from './Icon/NotificationBellInactive'
-import PeaceCircle from './Icon/PeaceCircle'
-import SignGray from './Icon/SignGray'
-import NotificationItem from './Notifications/NotificationItem'
-
-import './NotificationFeed.css'
+import NotificationItem from './NotificationItem'
+import './NotificationsFeed.css'
 
 const NOTIFICATIONS_PER_PAGE = 5
 
-export default function NotificationFeed() {
+interface Props {
+  isOpen: boolean
+  onClose: () => void
+}
+
+export default function NotificationsFeed({ isOpen, onClose }: Props) {
   const t = useFormatMessage()
-  const [isOpen, setOpen] = useState(false)
   const [isSubscribing, setIsSubscribing] = useState(false)
   const [user, userState] = useAuthContext()
   const [filteredNotifications, setFilteredNotifications] = useState<Notification[]>([])
 
-  useClickOutside('.NotificationFeed__Content', isOpen, () => setOpen(false))
+  useClickOutside('.NotificationsFeed', isOpen, onClose)
 
   const {
     data: subscriptions,
@@ -54,6 +56,7 @@ export default function NotificationFeed() {
     () => !!subscriptions?.find((item: { channel: string }) => isSameAddress(item.channel, CHANNEL_ADDRESS)),
     [subscriptions]
   )
+
   const {
     data: userNotifications,
     isLoading: isLoadingNotifications,
@@ -122,66 +125,63 @@ export default function NotificationFeed() {
   const showLoadMoreButton = filteredNotifications.length !== userNotifications?.length
   const unsubscribedKey = isSubscribing ? 'subscribing' : 'unsubscribed'
   const UnsubscribedIcon = isSubscribing ? SignGray : NotificationBellInactive
+  const isLoading =
+    isLoadingSubscriptions ||
+    isRefetchingSubscriptions ||
+    isRefetchingNotifications ||
+    (isSubscribed && isLoadingNotifications)
 
   return (
-    <>
-      <button
-        className={classNames('NotificationFeed__Button', isOpen && 'NotificationFeed__Button--active')}
-        onClick={() => setOpen((prev) => !prev)}
-        aria-label="Open notifications"
-      >
-        {isOpen ? <NotificationBellActive /> : <NotificationBellInactive />}
-      </button>
-      <div className={classNames('NotificationFeed__Content', isOpen && 'NotificationFeed__Content--visible')}>
-        <div className="NotificationFeed__Header">
-          <Text color="secondary" size="sm" className="NotificationFeed__Title">
-            {t('navigation.notifications.title')}
-          </Text>
-          {isSubscribed && (
-            <button className="NotificationFeed__OptOut" onClick={handleUnsubscribeUserToChannel}>
-              {t('navigation.notifications.opt_out')}
-            </button>
-          )}
-        </div>
-        {!isSubscribed && (
-          <div className="NotificationFeed__UnsubscribedView">
-            <UnsubscribedIcon size="124" />
-            <Heading size="sm">{t(`navigation.notifications.${unsubscribedKey}.title`)}</Heading>
-            <Text>{t(`navigation.notifications.${unsubscribedKey}.description`)}</Text>
-            <Button size="small" primary disabled={isSubscribing} onClick={handleSubscribeUserToChannel}>
-              {t(`navigation.notifications.${unsubscribedKey}.button`)}
-            </Button>
-          </div>
+    <div className={classNames('NotificationsFeed', isOpen && 'NotificationsFeed--visible')}>
+      <div className="NotificationsFeed__Header">
+        <Text color="secondary" size="sm" className="NotificationsFeed__Title">
+          {t('navigation.notifications.title')}
+        </Text>
+        {isSubscribed && (
+          <button className="NotificationsFeed__OptOut" onClick={handleUnsubscribeUserToChannel}>
+            {t('navigation.notifications.opt_out')}
+          </button>
         )}
-        {isSubscribed && !isLoadingNotifications && !hasNotifications && (
-          <div className="NotificationFeed__EmptyView">
-            <PeaceCircle />
-            <Text color="secondary" weight="medium">
-              {t('navigation.notifications.empty')}
-            </Text>
-          </div>
-        )}
-        {showNotifications && (
-          <div>
-            <div className="NotificationFeed__List">
-              {filteredNotifications?.map((notification) => (
-                <NotificationItem key={notification.payload_id} notification={notification} />
-              ))}
-            </div>
-            {showLoadMoreButton && (
-              <div className="NotificationFeed__LoadMoreButtonContainer">
-                <FullWidthButton onClick={handleLoadMoreClick}>
-                  {t('navigation.notifications.load_more')}
-                </FullWidthButton>
-              </div>
-            )}
-          </div>
-        )}
-        {(isLoadingSubscriptions ||
-          isRefetchingSubscriptions ||
-          isRefetchingNotifications ||
-          (isSubscribed && isLoadingNotifications)) && <Loader active />}
       </div>
-    </>
+      {!isLoading && (
+        <>
+          {!isSubscribed && (
+            <div className="NotificationsFeed__UnsubscribedView">
+              <UnsubscribedIcon size="124" />
+              <Heading size="sm">{t(`navigation.notifications.${unsubscribedKey}.title`)}</Heading>
+              <Text>{t(`navigation.notifications.${unsubscribedKey}.description`)}</Text>
+              <Button size="small" primary disabled={isSubscribing} onClick={handleSubscribeUserToChannel}>
+                {t(`navigation.notifications.${unsubscribedKey}.button`)}
+              </Button>
+            </div>
+          )}
+          {isSubscribed && !isLoadingNotifications && !hasNotifications && (
+            <div className="NotificationsFeed__EmptyView">
+              <PeaceCircle />
+              <Text color="secondary" weight="medium">
+                {t('navigation.notifications.empty')}
+              </Text>
+            </div>
+          )}
+          {showNotifications && (
+            <div className="NotificationsFeed__ListContainer">
+              <div className="NotificationsFeed__List">
+                {filteredNotifications?.map((notification) => (
+                  <NotificationItem key={notification.payload_id} notification={notification} />
+                ))}
+              </div>
+              {showLoadMoreButton && (
+                <div className="NotificationsFeed__LoadMoreButtonContainer">
+                  <FullWidthButton onClick={handleLoadMoreClick}>
+                    {t('navigation.notifications.load_more')}
+                  </FullWidthButton>
+                </div>
+              )}
+            </div>
+          )}
+        </>
+      )}
+      {isLoading && <Loader active />}
+    </div>
   )
 }
