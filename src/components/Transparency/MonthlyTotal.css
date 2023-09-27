@@ -1,10 +1,13 @@
-.MonthlyTotal.ui.card {
-  width: 100%;
-}
-
-.MonthlyTotal__Container {
+.MonthlyTotal {
   width: 100%;
   display: flex;
+  box-shadow: var(--shadow-1);
+  border-radius: 8px;
+}
+
+.MonthlyTotal__Card.ui.card {
+  width: 100%;
+  box-shadow: none !important;
 }
 
 .MonthlyTotal--Full {

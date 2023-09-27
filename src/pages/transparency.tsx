@@ -95,19 +95,17 @@ export default function TransparencyPage() {
                         </Card.Content>
                       </Card>
                     </div>
-                    <Grid.Row>
-                      <div className="MonthlyTotals">
-                        <MonthlyTotal
-                          title={t('page.transparency.mission.monthly_income') || ''}
-                          monthlyTotal={data.income}
-                        />
-                        <MonthlyTotal
-                          title={t('page.transparency.mission.monthly_expenses') || ''}
-                          monthlyTotal={data.expenses}
-                          invertDiffColors={true}
-                        />
-                      </div>
-                    </Grid.Row>
+                    <div className="MonthlyTotals">
+                      <MonthlyTotal
+                        title={t('page.transparency.mission.monthly_income') || ''}
+                        monthlyTotal={data.income}
+                      />
+                      <MonthlyTotal
+                        title={t('page.transparency.mission.monthly_expenses') || ''}
+                        monthlyTotal={data.expenses}
+                        invertDiffColors={true}
+                      />
+                    </div>
                   </Grid.Column>
                 </Grid.Row>
               </Grid>

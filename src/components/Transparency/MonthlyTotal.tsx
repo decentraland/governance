@@ -42,8 +42,8 @@ export default function MonthlyTotal({ title, monthlyTotal, invertDiffColors = f
   }
 
   return (
-    <div className={classNames('MonthlyTotal__Container', detailsVisibility)}>
-      <Card className="MonthlyTotal">
+    <div className={classNames('MonthlyTotal', detailsVisibility)}>
+      <Card className="MonthlyTotal__Card">
         <Card.Content className="MonthlyTotal_Headers">
           <div>
             <Header className="MonthlyTotal__Header">{title}</Header>
