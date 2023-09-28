@@ -1,9 +1,9 @@
 .ProposalPreviewCard {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
+  width: 100%;
+  display: inline-flex;
   padding: 16px;
+  justify-content: space-between;
+  align-items: center;
   transition: box-shadow 0.1s ease, transform 0.1s ease, -webkit-box-shadow 0.1s ease, -webkit-transform 0.1s ease;
 }
 
@@ -36,7 +36,6 @@
 @media (min-width: 992px) {
   .ProposalPreviewCard__Avatar {
     display: block;
-    margin-right: 13px;
   }
 }
 
@@ -46,41 +45,20 @@
 
 .ProposalPreviewCard__Title {
   margin: 0;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  align-self: stretch;
   overflow: hidden;
+  text-overflow: ellipsis;
+  font-style: normal;
 }
 
-.ProposalPreviewCard__TextContainer,
-.ProposalPreviewCard__Section,
-.ProposalPreviewCard__Title {
-  width: calc(100% - 10px);
-}
-
-@media (min-width: 992px) {
-  .ProposalPreviewCard__Title {
-    width: 420px !important;
-  }
-
-  .ProposalPreviewCard--category .ProposalPreviewCard__Title {
-    width: 300px !important;
-  }
-
-  .ProposalPreviewCard__TextContainer,
-  .ProposalPreviewCard__Section,
-  .ProposalPreviewCard__Title {
-    width: unset;
-  }
-}
-
-@media (min-width: 1200px) {
-  .ProposalPreviewCard__Title {
-    width: 600px !important;
-  }
-
-  .ProposalPreviewCard--category .ProposalPreviewCard__Title {
-    width: 490px !important;
-  }
+.ProposalPreviewCard__TextContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1 0 0;
 }
 
 .ProposalPreviewCard__Details {

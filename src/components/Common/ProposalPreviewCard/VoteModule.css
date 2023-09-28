@@ -5,7 +5,6 @@
 @media (min-width: 992px) {
   .ProposalPreviewCard__Section.VoteModule {
     display: flex;
-    min-width: 420px;
     justify-content: flex-end;
   }
 }
@@ -17,14 +16,7 @@
 .VoteModule__VoteSection {
   display: flex;
   justify-content: space-between;
-  width: 100%;
-}
-
-.VoteModule__VotingContainer,
-.VoteModule__VotingContainer--Voted {
-  width: 100%;
-  margin-left: 20px;
-  max-width: 220px;
+  gap: 50px;
 }
 
 .VoteModule__VotingVpNeeded,
@@ -33,6 +25,7 @@
   letter-spacing: -0.2px;
   margin: 0;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .VoteModule__VotingVpNeeded {

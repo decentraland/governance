@@ -1,6 +1,5 @@
 .ProposalPreviewCard__Section.CategoryModule {
   display: flex;
-  width: 280px !important;
   justify-content: space-between;
 }
 
@@ -8,5 +7,14 @@
   display: flex;
   gap: 16px;
   justify-content: flex-start;
-  width: 100%;
+  min-width: 260px;
+  white-space: nowrap;
+}
+
+.CategoryModule__Chevron {
+  visibility: hidden;
+}
+
+.CategoryModule__Chevron--visible {
+  visibility: visible;
 }

@@ -1,3 +1,5 @@
+import classNames from 'classnames'
+
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import CategoryPill from '../../Category/CategoryPill'
 import ChevronRight from '../../Icon/ChevronRight'
@@ -18,7 +20,10 @@ function CategoryModule({ proposal, isHovered }: Props) {
         <StatusPill status={proposal.status} />
         <CategoryPill proposalType={proposal.type} />
       </div>
-      {isHovered && <ChevronRight color="var(--black-400)" />}
+      <ChevronRight
+        className={classNames('CategoryModule__Chevron', isHovered && 'CategoryModule__Chevron--visible')}
+        color="var(--black-400)"
+      />
     </ProposalPreviewCardSection>
   )
 }
