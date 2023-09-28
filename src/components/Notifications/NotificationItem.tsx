@@ -3,9 +3,9 @@ import { Notification, NotificationCustomType } from '../../utils/notifications'
 import Link from '../Common/Typography/Link'
 import Markdown from '../Common/Typography/Markdown'
 import Text from '../Common/Typography/Text'
-import CheckCircle from '../Icon/CheckCircle'
-import CheckCircleOutline from '../Icon/CheckCircleOutline'
-import QuestionCircle from '../Icon/QuestionCircle'
+import Announcement from '../Icon/Notifications/Announcement'
+import Grant from '../Icon/Notifications/Grant'
+import Proposal from '../Icon/Notifications/Proposal'
 
 import './NotificationItem.css'
 
@@ -16,12 +16,12 @@ interface Props {
 function getIcon(metadata: { customType: string }) {
   switch (metadata?.customType) {
     case NotificationCustomType.Announcement:
-      return QuestionCircle // TODO: Add Announcement icon
+      return Announcement
     case NotificationCustomType.Grant:
-      return CheckCircleOutline // TODO: Add Grant icon
+      return Grant
     case NotificationCustomType.Proposal:
     default:
-      return CheckCircle // TODO: Add Proposal icon
+      return Proposal
   }
 }
 
@@ -34,7 +34,7 @@ export default function NotificationItem({ notification }: Props) {
   return (
     <Component className="NotificationItem" href={notification.payload.data.acta}>
       <div className="NotificationItem__IconContainer">
-        <Icon size="24" />
+        <Icon />
       </div>
       <div>
         <Markdown className="NotificationItem__Text" size="sm">
