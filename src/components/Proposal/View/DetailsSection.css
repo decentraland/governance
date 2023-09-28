@@ -13,7 +13,7 @@
 
 .DetailsSection__StickyBottom {
   position: sticky !important;
-  bottom: 10px !important;
+  bottom: 30px !important;
   padding: 0 1em 0 1em;
 }
 
