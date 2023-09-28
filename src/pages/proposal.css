@@ -1,15 +1,34 @@
+.ProposalDetailPage {
+  display: flex !important;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+.ProposalDetailPage__Description {
+  max-width: 100%;
+  padding-right: 0;
+}
+
+@media (min-width: 768px) {
+  .ProposalDetailPage {
+    flex-direction: row !important;
+  }
+
+  .ProposalDetailPage__Description {
+    flex: 1;
+    max-width: calc(100% - 284px);
+    padding-right: 2rem;
+  }
+
+  .ProposalDetailActions {
+    width: 284px;
+  }
+}
+
 @media (max-width: 767px) {
   .SignIn.center .ui.primary.button {
     display: none;
   }
-}
-
-.ProposalDetailPage .ui.grid > .row > .column.ProposalDetailPage__Description {
-  width: 72% !important;
-}
-
-.ProposalDetailPage .ui.grid > .row > .column.ProposalDetailActions {
-  width: 28% !important;
 }
 
 .ProposalDetailPage .ui.header {
@@ -30,21 +49,16 @@
 
 .ProposalImagesPreview {
   margin-bottom: 20px;
+  padding: 0 1em 0;
 }
 
 .ProposalDetailPage__Body {
   margin-bottom: 40px;
-  padding: 24px 16px 20px;
+  padding: 24px 1em 20px;
 }
 
-@media only screen and (min-width: 320px) and (max-width: 767px) {
-  .ProposalDetailPage .ui.grid > .row > .column.ProposalDetailPage__Description {
-    width: 100% !important;
-    padding: 1rem 0 !important;
-  }
-
-  .ProposalDetailPage .ui.grid > .row > .column.ProposalDetailActions {
-    width: 100% !important;
-    padding: 1rem 0 !important;
+@media only screen and (max-width: 768px) {
+  .ProposalDetailPage__Body {
+    padding: 24px 2px 20px;
   }
 }

@@ -103,7 +103,7 @@
   }
 }
 
-@media only screen and (min-width: 320px) and (max-width: 767px) {
+@media only screen and (max-width: 767px) {
   .content.TokensPerWalletPopup__Content {
     padding: 8px 8px !important;
   }

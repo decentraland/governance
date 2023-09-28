@@ -66,7 +66,11 @@ function GrantProposalView({ config }: Props) {
           body={t('page.proposal_view.grant.payout_strategy_body', { startDate: vestingStartDate })}
         />
       )}
-      <ProposalDescriptionItem title={t('page.proposal_view.grant.beneficiary_title')} body={beneficiary} />
+      <ProposalDescriptionItem
+        title={t('page.proposal_view.grant.beneficiary_title')}
+        body={beneficiary}
+        className="ProposalMarkdown__BreakAnywhere"
+      />
       <ProposalDescriptionItem title={t('page.proposal_view.grant.email_title')} body={email} />
       <ProposalDescriptionItem title={t('page.proposal_view.grant.description_title')} body={description} />
       {hasBudgetBreakdown && <BudgetBreakdownView breakdown={budgetBreakdown} />}

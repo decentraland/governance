@@ -7,15 +7,14 @@ import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { Desktop, NotMobile, useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
-import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
+import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ErrorClient } from '../clients/ErrorClient'
 import { Governance } from '../clients/Governance'
 import { SnapshotApi } from '../clients/SnapshotApi'
 import ProposalVPChart from '../components/Charts/ProposalVPChart'
+import WiderContainer from '../components/Common/WiderContainer'
 import FloatingBar from '../components/FloatingBar/FloatingBar'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
@@ -342,9 +341,9 @@ export default function ProposalPage() {
 
   if (isErrorOnProposal) {
     return (
-      <Container className="ProposalDetailPage">
+      <WiderContainer className="ProposalDetailPage">
         <NotFound />
-      </Container>
+      </WiderContainer>
     )
   }
 
@@ -380,87 +379,80 @@ export default function ProposalPage() {
         image="https://decentraland.org/images/decentraland.png"
       />
       <Navigation activeTab={NavigationTab.Proposals} />
-      <ProposalHero proposal={proposal} />
-      <Container className={'ProposalDetailPage'}>
-        <Grid stackable>
-          <Grid.Row>
-            <Grid.Column tablet="12" className="ProposalDetailPage__Description">
-              <Loader active={isLoadingProposal} />
-              {showProposalBudget && <ProposalBudget proposal={proposal} budget={budgetWithContestants} />}
-              {showCompetingBiddingAndTendering && <CompetingBiddingAndTendering proposal={proposal} />}
-              {proposal?.type === ProposalType.POI && <ProposalHeaderPoi configuration={proposal?.configuration} />}
-              {showImagesPreview && <ProposalImagesPreview imageUrls={proposal.configuration.image_previews} />}
-              <div className="ProposalDetailPage__Body">{getProposalView(proposal)}</div>
-              {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
-              {proposal && isBiddingAndTenderingProposal(proposal?.type) && <BiddingAndTendering proposal={proposal} />}
-              {proposal && isGovernanceProcessProposal(proposal.type) && (
-                <GovernanceProcess proposalType={proposal.type} />
-              )}
-              {showProposalUpdates && (
-                <ProposalUpdates
-                  proposal={proposal}
-                  updates={publicUpdates}
-                  onUpdateDeleted={refetchUpdates}
-                  isCoauthor={isCoauthor}
-                />
-              )}
-              {showSurveyResults && (
-                <SurveyResults
-                  votes={votes}
-                  surveyTopics={surveyTopics}
-                  isLoadingSurveyTopics={isLoadingSurveyTopics}
-                  ref={reactionsSectionRef}
-                />
-              )}
-              {showVotesChart && (
-                <ProposalVPChart
-                  requiredToPass={proposal?.required_to_pass}
-                  voteMap={highQualityVotes}
-                  startTimestamp={proposal?.start_at.getTime()}
-                  endTimestamp={proposal?.finish_at.getTime()}
-                />
-              )}
-              <ProposalComments proposal={proposal} ref={commentsSectionRef} />
-              <FloatingBar
-                isVisible={isBarVisible}
-                showViewReactions={!!showSurveyResults}
-                scrollToReactions={scrollToReactions}
-                scrollToComments={scrollToComments}
-                proposalId={proposal?.id}
-                discourseTopicId={proposal?.discourse_topic_id}
-                discourseTopicSlug={proposal?.discourse_topic_slug}
-                isLoadingProposal={isLoadingProposal}
-              />
-            </Grid.Column>
-
-            <Grid.Column tablet="4" className="ProposalDetailActions">
-              <ProposalSidebar
-                proposal={proposal}
-                proposalLoading={isLoadingProposal}
-                deleting={deleting}
-                proposalPageState={proposalPageState}
-                updatePageState={updatePageState}
-                pendingUpdates={pendingUpdates}
-                currentUpdate={currentUpdate}
-                nextUpdate={nextUpdate}
-                castingVote={castingVote}
-                castVote={castVote}
-                voteWithSurvey={voteWithSurvey}
-                voteOnBid={proposal?.type === ProposalType.Bid && !proposalPageState.changingVote}
-                subscribing={isUpdatingSubscription}
-                subscribe={updateSubscription}
-                subscriptions={subscriptions ?? []}
-                subscriptionsLoading={isSubscriptionsLoading}
-                highQualityVotes={highQualityVotes}
-                votes={votes}
-                votesLoading={isLoadingVotes}
-                isCoauthor={isCoauthor}
-                isOwner={isOwner}
-              />
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-      </Container>
+      <WiderContainer className={'ProposalDetailPage'}>
+        <ProposalHero proposal={proposal} />
+        <div className="ProposalDetailPage__Description">
+          <Loader active={isLoadingProposal} />
+          {showProposalBudget && <ProposalBudget proposal={proposal} budget={budgetWithContestants} />}
+          {showCompetingBiddingAndTendering && <CompetingBiddingAndTendering proposal={proposal} />}
+          {proposal?.type === ProposalType.POI && <ProposalHeaderPoi configuration={proposal?.configuration} />}
+          {showImagesPreview && <ProposalImagesPreview imageUrls={proposal.configuration.image_previews} />}
+          <div className="ProposalDetailPage__Body">{getProposalView(proposal)}</div>
+          {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
+          {proposal && isBiddingAndTenderingProposal(proposal?.type) && <BiddingAndTendering proposal={proposal} />}
+          {proposal && isGovernanceProcessProposal(proposal.type) && <GovernanceProcess proposalType={proposal.type} />}
+          {showProposalUpdates && (
+            <ProposalUpdates
+              proposal={proposal}
+              updates={publicUpdates}
+              onUpdateDeleted={refetchUpdates}
+              isCoauthor={isCoauthor}
+            />
+          )}
+          {showSurveyResults && (
+            <SurveyResults
+              votes={votes}
+              surveyTopics={surveyTopics}
+              isLoadingSurveyTopics={isLoadingSurveyTopics}
+              ref={reactionsSectionRef}
+            />
+          )}
+          {showVotesChart && (
+            <ProposalVPChart
+              requiredToPass={proposal?.required_to_pass}
+              voteMap={highQualityVotes}
+              startTimestamp={proposal?.start_at.getTime()}
+              endTimestamp={proposal?.finish_at.getTime()}
+            />
+          )}
+          <ProposalComments proposal={proposal} ref={commentsSectionRef} />
+          <FloatingBar
+            isVisible={isBarVisible}
+            showViewReactions={!!showSurveyResults}
+            scrollToReactions={scrollToReactions}
+            scrollToComments={scrollToComments}
+            proposalId={proposal?.id}
+            discourseTopicId={proposal?.discourse_topic_id}
+            discourseTopicSlug={proposal?.discourse_topic_slug}
+            isLoadingProposal={isLoadingProposal}
+          />
+        </div>
+        <div className="ProposalDetailActions">
+          <ProposalSidebar
+            proposal={proposal}
+            proposalLoading={isLoadingProposal}
+            deleting={deleting}
+            proposalPageState={proposalPageState}
+            updatePageState={updatePageState}
+            pendingUpdates={pendingUpdates}
+            currentUpdate={currentUpdate}
+            nextUpdate={nextUpdate}
+            castingVote={castingVote}
+            castVote={castVote}
+            voteWithSurvey={voteWithSurvey}
+            voteOnBid={proposal?.type === ProposalType.Bid && !proposalPageState.changingVote}
+            subscribing={isUpdatingSubscription}
+            subscribe={updateSubscription}
+            subscriptions={subscriptions ?? []}
+            subscriptionsLoading={isSubscriptionsLoading}
+            highQualityVotes={highQualityVotes}
+            votes={votes}
+            votesLoading={isLoadingVotes}
+            isCoauthor={isCoauthor}
+            isOwner={isOwner}
+          />
+        </div>
+      </WiderContainer>
 
       {proposal && voteWithSurvey && (
         <VotingModal
