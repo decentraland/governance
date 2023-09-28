@@ -197,16 +197,25 @@ export class NotificationService {
     }
   }
 
-  static async votingEndedVoters(proposal: ProposalAttributes, voters: string[]) {
-    /*
-      TYPE SUBSET
-      Trigger: A proposal ended
-      Target recipient: Users who voted on the proposal
-      Copy: Title: "Voting Ended on a Proposal You Voted On"
-      Description: "Discover the results of the proposal you participated in as a voter. Your input matters!"
-      Target URL: Proposal URL
-    */
+  static async votingEndedVoters(proposal: ProposalAttributes, addresses: string[]) {
+    try {
+      if (!areValidAddresses(addresses)) {
+        throw new Error('Invalid addresses')
+      }
 
-    return true
+      return await this.sendNotification({
+        title: 'Voting Ended on a Proposal You Voted On',
+        body: 'Discover the results of the proposal you participated in as a voter. Your input matters!',
+        recipient: addresses,
+        url: proposalUrl(proposal.id),
+        customType: NotificationCustomType.Proposal,
+      })
+    } catch (error) {
+      ErrorService.report('Error sending voting ended notification to voters', {
+        error,
+        category: ErrorCategory.Notifications,
+        proposal,
+      })
+    }
   }
 }

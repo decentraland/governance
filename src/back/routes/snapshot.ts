@@ -25,7 +25,7 @@ export default routes((router) => {
   router.get('/snapshot/proposal-scores/:proposalSnapshotId', handleAPI(getProposalScores))
 })
 
-async function getStatus(req: Request) {
+async function getStatus() {
   return await SnapshotService.getStatus()
 }
 

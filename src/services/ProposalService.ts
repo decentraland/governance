@@ -6,6 +6,7 @@ import { NotificationService } from '../back/services/notification'
 import { VoteService } from '../back/services/vote'
 import { Discourse, DiscourseComment, DiscoursePost } from '../clients/Discourse'
 import { SnapshotProposalContent } from '../clients/SnapshotTypes'
+import { NOTIFICATIONS_SERVICE_ENABLED } from '../constants'
 import CoauthorModel from '../entities/Coauthor/model'
 import isDAOCommittee from '../entities/Committee/isDAOCommittee'
 import ProposalModel from '../entities/Proposal/model'
@@ -19,12 +20,10 @@ import VotesModel from '../entities/Votes/model'
 import { inBackground } from '../helpers'
 import { getProfile } from '../utils/Catalyst'
 import Time from '../utils/date/Time'
-import { ErrorCategory } from '../utils/errorCategories'
 import { getEnvironmentChainId } from '../utils/votes/utils'
 
 import { DiscordService } from './DiscordService'
 import { DiscourseService } from './DiscourseService'
-import { ErrorService } from './ErrorService'
 import { SnapshotService } from './SnapshotService'
 
 export type ProposalInCreation = {
@@ -241,10 +240,17 @@ export class ProposalService {
       status
     )
 
-    for (const proposal of proposals) {
-      NotificationService.votingEndedAuthors(proposal)
-      // TODO: Get voters from proposalIds
-      // TODO: NotificationService.votingEndedVoters(proposal, voters)
+    if (NOTIFICATIONS_SERVICE_ENABLED) {
+      for (const proposal of proposals) {
+        try {
+          NotificationService.votingEndedAuthors(proposal)
+          const votes = await VoteService.getVotes(proposal.id)
+          const voters = Object.keys(votes)
+          NotificationService.votingEndedVoters(proposal, voters)
+        } catch (error) {
+          logger.log('Error sending notifications on proposal finish', { proposalId: proposal.id })
+        }
+      }
     }
   }
 }
