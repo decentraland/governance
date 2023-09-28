@@ -9,7 +9,7 @@
   padding-right: 0;
 }
 
-@media (min-width: 769px) {
+@media (min-width: 768px) {
   .ProposalDetailPage {
     flex-direction: row !important;
   }
@@ -57,7 +57,7 @@
   padding: 24px 1em 20px;
 }
 
-@media only screen and (min-width: 320px) and (max-width: 768px) {
+@media only screen and (max-width: 768px) {
   .ProposalDetailPage__Body {
     padding: 24px 2px 20px;
   }

@@ -8,7 +8,7 @@
   border: 1px solid var(--black-300);
   background: var(--white-900);
   box-shadow: 0 0 25px 0 var(--alpha-black-400);
-  padding: 12px 1em 12px 1em;
+  padding: 12px 1em;
   justify-content: space-between;
   align-items: center;
   transition: all 0.5s ease 0s;
