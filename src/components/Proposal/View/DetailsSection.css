@@ -14,7 +14,6 @@
 .DetailsSection__StickyBottom {
   position: sticky !important;
   bottom: 30px !important;
-  padding: 0 1em 0 1em;
 }
 
 .DetailsSection--with-shadow {
