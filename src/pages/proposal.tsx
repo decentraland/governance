@@ -16,7 +16,7 @@ import { SnapshotApi } from '../clients/SnapshotApi'
 import ProposalVPChart from '../components/Charts/ProposalVPChart'
 import WiderContainer from '../components/Common/WiderContainer'
 import FloatingBar from '../components/FloatingBar/FloatingBar'
-import { Desktop1440 } from '../components/Layout/Desktop1440'
+import { Desktop1200 } from '../components/Layout/Desktop1200'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import BidSubmittedModal from '../components/Modal/BidSubmittedModal'
@@ -69,7 +69,7 @@ import { ErrorCategory } from '../utils/errorCategories'
 import locations, { navigate } from '../utils/locations'
 import { isUnderMaintenance } from '../utils/maintenance'
 
-import './proposal.css';
+import './proposal.css'
 
 const EMPTY_VOTE_CHOICE_SELECTION: SelectedVoteChoice = { choice: undefined, choiceIndex: undefined }
 const MAX_ERRORS_BEFORE_SNAPSHOT_REDIRECT = 3
@@ -383,11 +383,11 @@ export default function ProposalPage() {
       <Navigation activeTab={NavigationTab.Proposals} />
       <WiderContainer className={'ProposalDetailPage'}>
         <ProposalHero proposal={proposal} />
-        <Desktop1440>
+        <Desktop1200>
           <div className={'ProposalDetail__Left'}>
-            {proposal && <ProposalDetailSection proposal={proposal} className={'DetailsSection__StickyBottom'} />}
+            {proposal && <ProposalDetailSection proposal={proposal} className={'DetailsSection__StickyTop'} />}
           </div>
-        </Desktop1440>
+        </Desktop1200>
         <div className="ProposalDetailPage__Description">
           <Loader active={isLoadingProposal} />
           {showProposalBudget && <ProposalBudget proposal={proposal} budget={budgetWithContestants} />}

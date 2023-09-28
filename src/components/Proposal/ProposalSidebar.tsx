@@ -12,7 +12,7 @@ import { isProposalStatusWithUpdates } from '../../entities/Updates/utils'
 import { SelectedVoteChoice, Vote } from '../../entities/Votes/types'
 import { calculateResult } from '../../entities/Votes/utils'
 import { ProposalPageState } from '../../pages/proposal'
-import { NotDesktop1440 } from '../Layout/Desktop1440'
+import { NotDesktop1200 } from '../Layout/Desktop1200'
 import CalendarAlertModal from '../Modal/CalendarAlertModal'
 
 import CalendarAlertButton from './View/CalendarAlertButton'
@@ -164,9 +164,9 @@ export default function ProposalSidebar({
           onClick={() => setIsCalendarModalOpenWithTracking(true)}
         />
         {proposal && (
-          <NotDesktop1440>
+          <NotDesktop1200>
             <ProposalDetailSection proposal={proposal} />
-          </NotDesktop1440>
+          </NotDesktop1200>
         )}
         {proposal && <ProposalActions proposal={proposal} deleting={deleting} updatePageState={updatePageState} />}
         {proposal && (
