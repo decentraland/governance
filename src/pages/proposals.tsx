@@ -35,10 +35,10 @@ import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { useBurgerMenu } from '../hooks/useBurgerMenu'
 import useFormatMessage from '../hooks/useFormatMessage'
-import useMultipleProposalVotes from '../hooks/useMultipleProposalVotes'
 import useProposals from '../hooks/useProposals'
 import useProposalsByCoAuthor from '../hooks/useProposalsByCoAuthor'
 import { useProposalsSearchParams } from '../hooks/useProposalsSearchParams'
+import useProposalsVotes from '../hooks/useProposalsVotes'
 import useSubscriptions from '../hooks/useSubscriptions'
 import locations, { navigate } from '../utils/locations'
 import { isUnderMaintenance } from '../utils/maintenance'
@@ -62,7 +62,7 @@ export default function ProposalsPage() {
     itemsPerPage: ITEMS_PER_PAGE,
   })
   const proposalIds = (proposals?.data || []).map((proposal) => proposal.id)
-  const { votes, isLoadingVotes } = useMultipleProposalVotes(proposalIds)
+  const { votes, isLoadingVotes } = useProposalsVotes(proposalIds)
   const [subscriptions, subscriptionsState] = useSubscriptions()
   const isMobile = useMobileMediaQuery()
   const isTabletAndBelow = useTabletAndBelowMediaQuery()

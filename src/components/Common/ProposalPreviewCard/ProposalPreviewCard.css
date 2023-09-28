@@ -25,12 +25,6 @@
   transform: translateY(-4px);
 }
 
-.ProposalPreviewCard__Section {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
 .ProposalPreviewCard:visited .ProposalPreviewCard__Title {
   color: var(--black-600);
 }
@@ -52,10 +46,6 @@
 
 .ProposalPreviewCard__Title {
   margin: 0;
-  font-weight: var(--weight-semi-bold);
-  font-size: 17px;
-  line-height: 26px;
-  letter-spacing: -0.2px;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;

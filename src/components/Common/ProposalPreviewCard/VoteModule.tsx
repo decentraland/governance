@@ -9,7 +9,9 @@ import { calculateResult } from '../../../entities/Votes/utils'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import CategoryPill from '../../Category/CategoryPill'
 import ChevronRight from '../../Icon/ChevronRight'
+import Text from '../Typography/Text'
 
+import ProposalPreviewCardSection from './ProposalPreviewCardSection'
 import './VoteModule.css'
 
 interface Props {
@@ -38,7 +40,7 @@ function VoteModule({ proposal, votes }: Props) {
     value: t('general.number', { value: isThresholdStillNotMet ? neededForAcceptance : vpInFavor }),
   })
   return (
-    <div className="ProposalPreviewCard__Section ProposalPreviewCard__VoteModule">
+    <ProposalPreviewCardSection className="VoteModule">
       <div className="VoteModule__PillContainer">
         <CategoryPill proposalType={proposal.type} />
       </div>
@@ -46,13 +48,21 @@ function VoteModule({ proposal, votes }: Props) {
         <div className={`VoteModule__VotingContainer${hasVote ? '--Voted' : ''}`}>
           {hasVote ? (
             <>
-              <p className="VoteModule__VotingConsensus">{t('page.home.open_proposals.you_voted')}</p>
-              <p className="VoteModule__VotingVpNeeded">{vote || '-'}</p>
+              <Text weight="semi-bold" size="xs" className="VoteModule__VotingConsensus">
+                {t('page.home.open_proposals.you_voted')}
+              </Text>
+              <Text weight="semi-bold" size="xs" className="VoteModule__VotingVpNeeded">
+                {vote || '-'}
+              </Text>
             </>
           ) : (
             <>
-              <p className="VoteModule__VotingConsensus">{votingConsensusText}</p>
-              <p className="VoteModule__VotingVpNeeded">{votingNeededText}</p>
+              <Text weight="semi-bold" size="xs" className="VoteModule__VotingConsensus">
+                {votingConsensusText}
+              </Text>
+              <Text weight="semi-bold" size="xs" className="VoteModule__VotingVpNeeded">
+                {votingNeededText}
+              </Text>
             </>
           )}
         </div>
@@ -61,7 +71,7 @@ function VoteModule({ proposal, votes }: Props) {
           <ChevronRight color="var(--black-400)" />
         </div>
       </div>
-    </div>
+    </ProposalPreviewCardSection>
   )
 }
 

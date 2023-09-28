@@ -1,4 +1,4 @@
-.ProposalPreviewCard__CategoryModule {
+.ProposalPreviewCard__Section.CategoryModule {
   display: flex;
   width: 280px !important;
   justify-content: space-between;

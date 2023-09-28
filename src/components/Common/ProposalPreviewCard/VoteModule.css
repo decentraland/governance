@@ -1,9 +1,9 @@
-.ProposalPreviewCard__VoteModule {
+.ProposalPreviewCard__Section.VoteModule {
   display: none;
 }
 
 @media (min-width: 992px) {
-  .ProposalPreviewCard__VoteModule {
+  .ProposalPreviewCard__Section.VoteModule {
     display: flex;
     min-width: 420px;
     justify-content: flex-end;
@@ -27,27 +27,20 @@
   max-width: 220px;
 }
 
+.VoteModule__VotingVpNeeded,
 .VoteModule__VotingConsensus {
-  font-weight: var(--weight-semi-bold);
-  font-size: 11px;
-  line-height: 26px;
+  line-height: 26px !important;
   letter-spacing: -0.2px;
-  text-transform: uppercase;
-  color: var(--black-600);
   margin: 0;
+  text-transform: uppercase;
 }
 
 .VoteModule__VotingVpNeeded {
-  font-weight: var(--weight-semi-bold);
-  font-size: 11px;
-  line-height: 26px;
-  letter-spacing: -0.2px;
-  text-transform: uppercase;
-  color: var(--black-800);
-  margin: 0;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
+  color: var(--black-800) !important;
+}
+
+.VoteModule__VotingConsensus {
+  color: var(--black-600) !important;
 }
 
 .VoteModule__VoteContainer {

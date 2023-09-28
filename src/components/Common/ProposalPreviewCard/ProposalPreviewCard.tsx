@@ -13,9 +13,11 @@ import CategoryPill from '../../Category/CategoryPill'
 import Link from '../../Common/Typography/Link'
 import Username from '../../Common/Username'
 import ChevronRight from '../../Icon/ChevronRight'
+import Heading from '../Typography/Heading'
 
 import CategoryModule from './CategoryModule'
 import './ProposalPreviewCard.css'
+import ProposalPreviewCardSection from './ProposalPreviewCardSection'
 import VoteModule from './VoteModule'
 
 enum Variant {
@@ -45,10 +47,12 @@ const ProposalPreviewCard = ({ proposal, votes, variant }: Props) => {
       onMouseEnter={() => setisHovered(true)}
       onMouseLeave={() => setisHovered(false)}
     >
-      <div className="ProposalPreviewCard__Section">
+      <ProposalPreviewCardSection>
         <Username className="ProposalPreviewCard__Avatar" address={user} variant="avatar" size="medium" />
         <div className="ProposalPreviewCard__TextContainer">
-          <h3 className="ProposalPreviewCard__Title">{title}</h3>
+          <Heading as="h3" size="xs" weight="semi-bold" className="ProposalPreviewCard__Title">
+            {title}
+          </Heading>
           <span className="ProposalPreviewCard__Details">
             <TabletAndBelow>
               <CategoryPill className="ProposalPreviewCard__Pill" proposalType={proposal.type} size="sm" />
@@ -68,7 +72,7 @@ const ProposalPreviewCard = ({ proposal, votes, variant }: Props) => {
             <span className="ProposalPreviewCard__DetailsItem">{dateText}</span>
           </span>
         </div>
-      </div>
+      </ProposalPreviewCardSection>
       {variant === Variant.Vote && <VoteModule proposal={proposal} votes={votes} />}
       {variant === Variant.Category && <CategoryModule proposal={proposal} isHovered={isHovered} />}
       <TabletAndBelow>

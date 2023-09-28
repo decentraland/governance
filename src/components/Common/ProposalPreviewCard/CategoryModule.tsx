@@ -4,6 +4,7 @@ import ChevronRight from '../../Icon/ChevronRight'
 import StatusPill from '../../Status/StatusPill'
 
 import './CategoryModule.css'
+import ProposalPreviewCardSection from './ProposalPreviewCardSection'
 
 interface Props {
   proposal: ProposalAttributes
@@ -12,13 +13,13 @@ interface Props {
 
 function CategoryModule({ proposal, isHovered }: Props) {
   return (
-    <div className="ProposalPreviewCard__Section ProposalPreviewCard__CategoryModule">
+    <ProposalPreviewCardSection className="CategoryModule">
       <div className="CategoryModule__PillContainer">
         <StatusPill status={proposal.status} />
         <CategoryPill proposalType={proposal.type} />
       </div>
       {isHovered && <ChevronRight color="var(--black-400)" />}
-    </div>
+    </ProposalPreviewCardSection>
   )
 }
 
