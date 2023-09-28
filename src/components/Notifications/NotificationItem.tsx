@@ -1,5 +1,5 @@
+import { Notification, NotificationCustomType } from '../../shared/types/notifications'
 import Time from '../../utils/date/Time'
-import { Notification, NotificationCustomType } from '../../utils/notifications'
 import Link from '../Common/Typography/Link'
 import Markdown from '../Common/Typography/Markdown'
 import Text from '../Common/Typography/Text'

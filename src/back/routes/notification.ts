@@ -4,7 +4,8 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
-import { NotificationCustomType, NotificationType } from '../../utils/notifications'
+import { NotificationCustomType } from '../../shared/types/notifications'
+import { NotificationType } from '../../utils/notifications'
 import { NotificationService } from '../services/notification'
 import { validateDebugAddress } from '../utils/validations'
 

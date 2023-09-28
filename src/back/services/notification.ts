@@ -1,3 +1,4 @@
+import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 import { ethers } from 'ethers'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
@@ -5,9 +6,10 @@ import { NOTIFICATIONS_SERVICE_ENABLED } from '../../constants'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { proposalUrl } from '../../entities/Proposal/utils'
 import { ErrorService } from '../../services/ErrorService'
+import { NotificationCustomType } from '../../shared/types/notifications'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
-import { NotificationCustomType, NotificationType, getCaipAddress } from '../../utils/notifications'
+import { NotificationType, PUSH_CHANNEL_ID, getCaipAddress } from '../../utils/notifications'
 
 import { CoauthorService } from './coauthor'
 
@@ -18,8 +20,7 @@ enum ENV {
   STAGING = 'staging',
 }
 
-const CHAIN_ID = 5
-const CHANNEL_ADDRESS = '0xBf363AeDd082Ddd8DB2D6457609B03f9ee74a2F1'
+const chainId = isProdEnv() ? ChainId.ETHEREUM_MAINNET : ChainId.ETHEREUM_GOERLI
 const PUSH_CHANNEL_OWNER_PK = process.env.PUSH_CHANNEL_OWNER_PK
 const PUSH_API_URL = process.env.PUSH_API_URL
 const pkAddress = `0x${PUSH_CHANNEL_OWNER_PK}`
@@ -27,6 +28,8 @@ const signer = NOTIFICATIONS_SERVICE_ENABLED ? new ethers.Wallet(pkAddress) : un
 const NotificationIdentityType = {
   DIRECT_PAYLOAD: 2,
 }
+const ADDITIONAL_META_CUSTOM_TYPE = 0
+const ADDITIONAL_META_CUSTOM_TYPE_VERSION = 1
 
 const areValidAddresses = (addresses: string[]) =>
   Array.isArray(addresses) && addresses.every((item) => isEthereumAddress(item))
@@ -65,7 +68,7 @@ export class NotificationService {
         cta: url,
         img: '',
         additionalMeta: {
-          type: `0+${1}`, // TODO: Check what this means with Push team.
+          type: `${ADDITIONAL_META_CUSTOM_TYPE}+${ADDITIONAL_META_CUSTOM_TYPE_VERSION}`,
           data: JSON.stringify({
             customType,
           }),
@@ -73,7 +76,7 @@ export class NotificationService {
       },
 
       recipients: this.getRecipients(recipient),
-      channel: getCaipAddress(CHANNEL_ADDRESS, CHAIN_ID),
+      channel: getCaipAddress(PUSH_CHANNEL_ID, chainId),
       env: isProdEnv() ? ENV.PROD : ENV.STAGING,
     })
 
@@ -102,18 +105,18 @@ export class NotificationService {
     }
 
     if (Array.isArray(recipient)) {
-      return recipient.map((item: string) => getCaipAddress(item, CHAIN_ID))
+      return recipient.map((item: string) => getCaipAddress(item, chainId))
     }
 
-    return getCaipAddress(recipient, CHAIN_ID)
+    return getCaipAddress(recipient, chainId)
   }
 
   static async getUserFeed(address: string) {
     try {
       const response = await fetch(
-        `${PUSH_API_URL}/apis/v1/users/${getCaipAddress(address, CHAIN_ID)}/channels/${getCaipAddress(
-          CHANNEL_ADDRESS,
-          CHAIN_ID
+        `${PUSH_API_URL}/apis/v1/users/${getCaipAddress(address, chainId)}/channels/${getCaipAddress(
+          PUSH_CHANNEL_ID,
+          chainId
         )}/feeds`
       )
 

@@ -36,8 +36,8 @@ import { Topic } from '../entities/SurveyTopic/types'
 import { ProjectHealth, UpdateAttributes, UpdateResponse } from '../entities/Updates/types'
 import { Vote, VotedProposal, Voter } from '../entities/Votes/types'
 import { NewsletterSubscriptionResult } from '../shared/types/newsletter'
+import { Notification } from '../shared/types/notifications'
 import Time from '../utils/date/Time'
-import { Notification } from '../utils/notifications'
 
 import { TransparencyBudget } from './DclData'
 import {

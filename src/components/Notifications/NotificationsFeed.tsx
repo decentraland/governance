@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 
+import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 import { Web3Provider } from '@ethersproject/providers'
 import * as PushAPI from '@pushprotocol/restapi'
 import { useQuery } from '@tanstack/react-query'
@@ -13,7 +14,8 @@ import { isSameAddress } from '../../entities/Snapshot/utils'
 import { DEFAULT_QUERY_STALE_TIME } from '../../hooks/constants'
 import { useClickOutside } from '../../hooks/useClickOutside'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import { CHAIN_ID, CHANNEL_ADDRESS, ENV, Notification, getCaipAddress } from '../../utils/notifications'
+import { ENV, Notification } from '../../shared/types/notifications'
+import { PUSH_CHANNEL_ID, getCaipAddress } from '../../utils/notifications'
 import FullWidthButton from '../Common/FullWidthButton'
 import Heading from '../Common/Typography/Heading'
 import Text from '../Common/Typography/Text'
@@ -38,6 +40,7 @@ export default function NotificationsFeed({ isOpen, onClose }: Props) {
   const [filteredNotifications, setFilteredNotifications] = useState<Notification[]>([])
 
   useClickOutside('.NotificationsFeed', isOpen, onClose)
+  const chainId = userState.chainId || ChainId.ETHEREUM_GOERLI
 
   const {
     data: subscriptions,
@@ -47,13 +50,18 @@ export default function NotificationsFeed({ isOpen, onClose }: Props) {
   } = useQuery({
     queryKey: [`subscriptions#${user}`],
     queryFn: () =>
-      user ? PushAPI.user.getSubscriptions({ user: getCaipAddress(user, CHAIN_ID), env: ENV.STAGING }) : null,
+      user
+        ? PushAPI.user.getSubscriptions({
+            user: getCaipAddress(user, chainId),
+            env: ENV.STAGING,
+          })
+        : null,
     enabled: !!user,
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
   const isSubscribed = useMemo(
-    () => !!subscriptions?.find((item: { channel: string }) => isSameAddress(item.channel, CHANNEL_ADDRESS)),
+    () => !!subscriptions?.find((item: { channel: string }) => isSameAddress(item.channel, PUSH_CHANNEL_ID)),
     [subscriptions]
   )
 
@@ -78,8 +86,8 @@ export default function NotificationsFeed({ isOpen, onClose }: Props) {
 
     await PushAPI.channels.subscribe({
       signer,
-      channelAddress: getCaipAddress(CHANNEL_ADDRESS, CHAIN_ID),
-      userAddress: getCaipAddress(user, CHAIN_ID),
+      channelAddress: getCaipAddress(PUSH_CHANNEL_ID, chainId),
+      userAddress: getCaipAddress(user, chainId),
       onSuccess: () => {
         refetchSubscriptions()
       },
@@ -98,8 +106,8 @@ export default function NotificationsFeed({ isOpen, onClose }: Props) {
 
     await PushAPI.channels.unsubscribe({
       signer,
-      channelAddress: getCaipAddress(CHANNEL_ADDRESS, CHAIN_ID),
-      userAddress: getCaipAddress(user, CHAIN_ID),
+      channelAddress: getCaipAddress(PUSH_CHANNEL_ID, chainId),
+      userAddress: getCaipAddress(user, chainId),
       onSuccess: () => refetchSubscriptions(),
       env: ENV.STAGING,
     })
