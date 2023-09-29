@@ -1,0 +1,104 @@
+.ProposalPreviewCard {
+  width: 100%;
+  display: inline-flex;
+  padding: 16px;
+  justify-content: space-between;
+  align-items: center;
+  transition: box-shadow 0.1s ease, transform 0.1s ease, -webkit-box-shadow 0.1s ease, -webkit-transform 0.1s ease;
+}
+
+.ProposalPreviewCard--vote {
+  border-bottom: 1px solid var(--black-300);
+}
+
+.ProposalPreviewCard--category {
+  border-radius: 8px;
+  border: 1px solid var(--black-300);
+  box-shadow: var(--shadow-1);
+  margin: 8px 0;
+}
+
+.ProposalPreviewCard--category:hover {
+  border: 1px solid var(--black-100);
+  box-shadow: var(--shadow-2);
+  cursor: pointer;
+  transform: translateY(-4px);
+}
+
+.ProposalPreviewCard:visited .ProposalPreviewCard__Title {
+  color: var(--black-600);
+}
+
+.ProposalPreviewCard__Avatar {
+  display: none;
+}
+
+@media (min-width: 992px) {
+  .ProposalPreviewCard__Avatar {
+    display: block;
+  }
+}
+
+.ProposalPreviewCard:last-child {
+  border-bottom: none;
+}
+
+.ProposalPreviewCard__Title {
+  margin: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  align-self: stretch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-style: normal;
+}
+
+.ProposalPreviewCard__TextContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1 0 0;
+}
+
+.ProposalPreviewCard__Details {
+  display: flex;
+  flex-direction: row;
+  color: var(--black-600);
+  text-transform: uppercase;
+  align-items: center;
+  font-weight: var(--weight-semi-bold);
+  font-size: 11px;
+  line-height: 26px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: initial;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.ProposalPreviewCard__DetailsItem:after {
+  content: '·';
+  padding: 0 5px;
+}
+
+.ProposalPreviewCard__DetailsItem:last-child:after {
+  content: '';
+  padding: 0;
+}
+
+.ProposalPreviewCard__Pill {
+  margin-right: 5px;
+}
+
+.ProposalPreviewCard__UsernameContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.ProposalPreviewCard__Username {
+  font-weight: var(--weight-semi-bold);
+  color: var(--black-800);
+  margin-left: 2px;
+}

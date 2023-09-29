@@ -20,6 +20,15 @@
   margin-top: 60px;
 }
 
+.column.Proposals__FiltersColumn {
+  width: 21.87% !important;
+  max-width: 300px !important;
+}
+
+.column.ProposalsTable {
+  width: 100% !important;
+}
+
 /* Only Mobile */
 @media only screen and (max-width: 767px) {
   .ui.pagination.menu .item + .item {
@@ -44,5 +53,9 @@
 @media only screen and (min-width: 768px) {
   .SubmitButton {
     display: inline !important;
+  }
+
+  .column.ProposalsTable {
+    width: 78.13% !important;
   }
 }

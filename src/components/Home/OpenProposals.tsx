@@ -5,16 +5,17 @@ import isEmpty from 'lodash/isEmpty'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useProposalsByParticipatingVP from '../../hooks/useProposalsByParticipatingVP'
+import useProposalsVotes from '../../hooks/useProposalsVotes'
 import Time from '../../utils/date/Time'
 import locations from '../../utils/locations'
 import BoxTabs from '../Common/BoxTabs'
 import BoxTabsContainer from '../Common/BoxTabsContainer'
 import Empty from '../Common/Empty'
 import FullWidthButton from '../Common/FullWidthButton'
+import ProposalPreviewCard from '../Common/ProposalPreviewCard/ProposalPreviewCard'
 
 import HomeLoader from './HomeLoader'
 import HomeSectionHeader from './HomeSectionHeader'
-import OpenProposal from './OpenProposal'
 import './OpenProposals.css'
 
 enum Tab {
@@ -33,6 +34,8 @@ const twoWeeksAgo = Time(now).subtract(2, 'week').toDate()
 const OpenProposals = ({ endingSoonProposals, isLoadingProposals }: Props) => {
   const t = useFormatMessage()
   const [activeTab, setActiveTab] = useState(Tab.EndingSoon)
+  const proposalIds = (endingSoonProposals || []).map((proposal) => proposal.id)
+  const { votes } = useProposalsVotes(proposalIds)
 
   const { proposals: proposalsByParticipatingVP, isLoadingProposals: isLoadingProposalsByParticipatingVp } =
     useProposalsByParticipatingVP(twoWeeksAgo, now)
@@ -58,7 +61,14 @@ const OpenProposals = ({ endingSoonProposals, isLoadingProposals }: Props) => {
           <>
             {!isLoadingProposals &&
               endingSoonProposals &&
-              endingSoonProposals.map((proposal) => <OpenProposal key={proposal.id} proposal={proposal} />)}
+              endingSoonProposals.map((proposal) => (
+                <ProposalPreviewCard
+                  key={proposal.id}
+                  proposal={proposal}
+                  votes={votes ? votes[proposal.id] : undefined}
+                  variant="vote"
+                />
+              ))}
             {isLoadingProposals && (
               <HomeLoader className="OpenProposals__Loader">{t('page.home.open_proposals.loading')}</HomeLoader>
             )}
@@ -71,7 +81,9 @@ const OpenProposals = ({ endingSoonProposals, isLoadingProposals }: Props) => {
           <>
             {!isLoadingProposalsByParticipatingVp &&
               proposalsByParticipatingVP &&
-              proposalsByParticipatingVP.map((proposal) => <OpenProposal key={proposal.id} proposal={proposal} />)}
+              proposalsByParticipatingVP.map((proposal) => (
+                <ProposalPreviewCard key={proposal.id} proposal={proposal} variant="vote" />
+              ))}
             {isLoadingProposalsByParticipatingVp && (
               <HomeLoader className="OpenProposals__Loader">{t('page.home.open_proposals.loading')}</HomeLoader>
             )}

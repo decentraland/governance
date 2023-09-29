@@ -54,7 +54,11 @@ export const getCategoryIcon = (type: string, variant?: CategoryIconVariant, siz
 
   const Icon = icons[type]
 
-  return <Icon size="24" />
+  return (
+    <div className="CategoryOption__IconContainer">
+      <Icon size="24" />
+    </div>
+  )
 }
 
 const getHref = (href: string | undefined, subtype: SubtypeOptions) => {
@@ -118,7 +122,7 @@ export default function CategoryOption({ active, type, className, count, subtype
         <span className="CategoryOption__TitleContainer">
           <span>
             {getCategoryIcon(type, CategoryIconVariant.Circled)}
-            <Text>{t(`category.${type}_title`)}</Text>
+            <Text className="CategoryOption__Title">{t(`category.${type}_title`)}</Text>
           </span>
           {hasSubtypes && (
             <span

@@ -1,0 +1,20 @@
+.ProposalPreviewCard__Section.CategoryModule {
+  display: flex;
+  justify-content: space-between;
+}
+
+.CategoryModule__PillContainer {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-start;
+  min-width: 260px;
+  white-space: nowrap;
+}
+
+.CategoryModule__Chevron {
+  visibility: hidden;
+}
+
+.CategoryModule__Chevron--visible {
+  visibility: visible;
+}
