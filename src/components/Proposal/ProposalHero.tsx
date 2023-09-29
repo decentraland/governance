@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Ref, forwardRef } from 'react'
 
 import classNames from 'classnames'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
@@ -15,11 +15,11 @@ interface Props {
   proposal: ProposalAttributes | null
 }
 
-export default function ProposalHero({ proposal }: Props) {
+const ProposalHero = forwardRef(({ proposal }: Props, ref: Ref<HTMLDivElement>) => {
   const color = ColorsConfig[proposal?.type || ProposalType.Grant]
   const isProposalActive = proposal?.status === ProposalStatus.Active
   return (
-    <div className="ProposalHero__Container">
+    <div className="ProposalHero__Container" ref={ref}>
       <HeroBanner proposalActive={isProposalActive} color={color} />
       <div className="ProposalHero__Text">
         <p className={classNames('ProposalHero__Title', !isProposalActive && 'ProposalHero__Title--finished')}>
@@ -39,4 +39,6 @@ export default function ProposalHero({ proposal }: Props) {
       </div>
     </div>
   )
-}
+})
+
+export default ProposalHero
