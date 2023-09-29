@@ -68,11 +68,11 @@
 
 .ProposalDetailPage__Body {
   margin-bottom: 40px;
-  padding: 24px 1em 20px;
+  padding: 10px 1em 20px;
 }
 
 @media only screen and (max-width: 768px) {
   .ProposalDetailPage__Body {
-    padding: 24px 2px 20px;
+    padding: 10px 2px 20px;
   }
 }
