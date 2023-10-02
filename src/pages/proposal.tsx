@@ -445,7 +445,7 @@ export default function ProposalPage() {
           <ProposalComments proposal={proposal} ref={commentsSectionRef} />
           <FloatingBar
             isVisible={isBarVisible}
-            showViewReactions={!!showSurveyResults}
+            proposalHasReactions={!!showSurveyResults}
             scrollToReactions={scrollToReactions}
             scrollToComments={scrollToComments}
             proposalId={proposal?.id}

@@ -3,6 +3,7 @@ import React from 'react'
 import classNames from 'classnames'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
+import { useTabletMediaQuery } from 'decentraland-ui/src/components/Media/Media'
 
 import { forumUrl } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
@@ -17,7 +18,7 @@ const reactions = require('../../images/reactions.png').default
 
 interface FloatingBarProps {
   isVisible: boolean
-  showViewReactions: boolean
+  proposalHasReactions: boolean
   scrollToComments: () => void
   scrollToReactions: () => void
   proposalId?: string
@@ -30,7 +31,7 @@ const FloatingBar: React.FC<FloatingBarProps> = ({
   proposalId,
   discourseTopicId,
   discourseTopicSlug,
-  showViewReactions,
+  proposalHasReactions,
   isVisible,
   scrollToComments,
   scrollToReactions,
@@ -38,7 +39,9 @@ const FloatingBar: React.FC<FloatingBarProps> = ({
 }) => {
   const t = useFormatMessage()
   const { comments, isLoadingComments } = useProposalComments(proposalId)
+  const isTablet = useTabletMediaQuery()
   const showTotalComments = !isLoadingComments && !isLoadingProposal
+  const showViewReactions = proposalHasReactions && !isTablet
   return (
     <div className={classNames('FloatingBar', !isVisible && !isLoadingProposal && 'FloatingBar--hidden')}>
       <div className="FloatingBar__ProposalSectionActions">
