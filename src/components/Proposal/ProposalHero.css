@@ -32,6 +32,44 @@
   padding: 1.3em 0;
 }
 
+/*TODO: remove this after implementing new mobile menu*/
+.ProposalHero__Breadcrumb__Container {
+  display: flex;
+  gap: 8px;
+}
+
+.ProposalHero__Breadcrumb__Container .Link {
+  color: var(--white-900);
+  text-align: center;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 19px;
+  text-transform: uppercase;
+  position: relative;
+  padding-left: 16px;
+}
+
+.ProposalHero__Breadcrumb--active .Link {
+  color: var(--black-600);
+}
+
+.ProposalHero__Breadcrumb__Container .Link:first-child {
+  padding-left: 0;
+}
+
+.ProposalHero__Breadcrumb__Container .Link:before {
+  content: '\203A';
+  font-size: 22px;
+  position: absolute;
+  left: 0;
+  top: -2px;
+}
+
+.ProposalHero__Breadcrumb__Container .Link:first-child:before {
+  display: none;
+}
+
 .ProposalHero__Title {
   color: var(--white-900);
   font-weight: var(--weight-semi-bold);
@@ -40,7 +78,14 @@
   letter-spacing: 0.3px;
   text-align: center;
   padding: 0 2em;
-  margin-bottom: 0.3em;
+  margin: 8px 0;
+}
+
+@media (min-width: 768px) {
+  .ProposalHero__Title {
+    margin-bottom: 0.3em;
+    margin-top: unset;
+  }
 }
 
 .ProposalHero__Title::first-letter {
