@@ -1,6 +1,6 @@
 .FloatingHeader {
   width: 100%;
-  position: sticky;
+  position: fixed;
   top: 0;
   opacity: 1;
   z-index: 3;
