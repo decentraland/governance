@@ -14,8 +14,8 @@ import { isSameAddress } from '../../entities/Snapshot/utils'
 import { DEFAULT_QUERY_STALE_TIME } from '../../hooks/constants'
 import { useClickOutside } from '../../hooks/useClickOutside'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import { ENV, Notification } from '../../shared/types/notifications'
-import { PUSH_CHANNEL_ID, getCaipAddress } from '../../utils/notifications'
+import { Notification } from '../../shared/types/notifications'
+import { PUSH_CHANNEL_ID, getCaipAddress, getPushNotificationsEnv } from '../../utils/notifications'
 import FullWidthButton from '../Common/FullWidthButton'
 import Heading from '../Common/Typography/Heading'
 import Text from '../Common/Typography/Text'
@@ -41,7 +41,7 @@ export default function NotificationsFeed({ isOpen, onClose }: Props) {
 
   useClickOutside('.NotificationsFeed', isOpen, onClose)
   const chainId = userState.chainId || ChainId.ETHEREUM_GOERLI
-  const env = ENV.STAGING // TODO: check if it is prod or staging according to chain id
+  const env = getPushNotificationsEnv(chainId)
 
   const {
     data: subscriptions,

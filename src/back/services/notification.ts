@@ -8,17 +8,12 @@ import { ErrorService } from '../../services/ErrorService'
 import { NotificationCustomType } from '../../shared/types/notifications'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
-import { NotificationType, PUSH_CHANNEL_ID, getCaipAddress } from '../../utils/notifications'
+import { NotificationType, PUSH_CHANNEL_ID, getCaipAddress, getPushNotificationsEnv } from '../../utils/notifications'
 import { areValidAddresses } from '../utils/validations'
 
 import { CoauthorService } from './coauthor'
 
 const PushAPI = NOTIFICATIONS_SERVICE_ENABLED ? require('@pushprotocol/restapi') : null
-
-enum ENV {
-  PROD = 'prod',
-  STAGING = 'staging',
-}
 
 const chainId = isProdEnv() ? ChainId.ETHEREUM_MAINNET : ChainId.ETHEREUM_GOERLI
 const PUSH_CHANNEL_OWNER_PK = process.env.PUSH_CHANNEL_OWNER_PK
@@ -74,7 +69,7 @@ export class NotificationService {
 
       recipients: this.getRecipients(recipient),
       channel: getCaipAddress(PUSH_CHANNEL_ID, chainId),
-      env: isProdEnv() ? ENV.PROD : ENV.STAGING,
+      env: getPushNotificationsEnv(chainId),
     })
 
     return response.data
