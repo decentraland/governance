@@ -1,3 +1,4 @@
+import { ChainId } from '@dcl/schemas'
 import env from 'decentraland-gatsby/dist/utils/env'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
@@ -41,3 +42,5 @@ export const DEBUG_ADDRESSES = (process.env.DEBUG_ADDRESSES || '')
   .filter(isEthereumAddress)
   .map((address) => address.toLowerCase())
 export const SNAPSHOT_STATUS_ENABLED = false
+export const DEFAULT_CHAIN_ID =
+  process.env.GATSBY_DEFAULT_CHAIN_ID || clientEnv('GATSBY_DEFAULT_CHAIN_ID', String(ChainId.ETHEREUM_MAINNET))

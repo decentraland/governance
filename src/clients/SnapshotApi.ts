@@ -14,9 +14,9 @@ import {
   SNAPSHOT_SPACE,
 } from '../entities/Snapshot/constants'
 import { getChecksumAddress } from '../entities/Snapshot/utils'
+import { getEnvironmentChainId } from '../helpers'
 import { ProposalInCreation, ProposalLifespan } from '../services/ProposalService'
 import Time from '../utils/date/Time'
-import { getEnvironmentChainId } from '../utils/votes/utils'
 
 import { SnapshotGraphql } from './SnapshotGraphql'
 import { trimLastForwardSlash } from './utils'
