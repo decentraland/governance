@@ -49,7 +49,7 @@ export default function NotificationsFeed({ isOpen, onClose }: Props) {
     isLoading: isLoadingSubscriptions,
     isRefetching: isRefetchingSubscriptions,
   } = useQuery({
-    queryKey: [`subscriptions#${user}`],
+    queryKey: [`pushSubscriptions#${user}`],
     queryFn: () =>
       user
         ? PushAPI.user.getSubscriptions({

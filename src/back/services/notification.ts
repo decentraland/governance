@@ -1,6 +1,5 @@
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 import { ethers } from 'ethers'
-import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { NOTIFICATIONS_SERVICE_ENABLED } from '../../constants'
 import { ProposalAttributes } from '../../entities/Proposal/types'
@@ -10,6 +9,7 @@ import { NotificationCustomType } from '../../shared/types/notifications'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
 import { NotificationType, PUSH_CHANNEL_ID, getCaipAddress } from '../../utils/notifications'
+import { areValidAddresses } from '../utils/validations'
 
 import { CoauthorService } from './coauthor'
 
@@ -30,9 +30,6 @@ const NotificationIdentityType = {
 }
 const ADDITIONAL_META_CUSTOM_TYPE = 0
 const ADDITIONAL_META_CUSTOM_TYPE_VERSION = 1
-
-const areValidAddresses = (addresses: string[]) =>
-  Array.isArray(addresses) && addresses.every((item) => isEthereumAddress(item))
 
 export class NotificationService {
   static async sendNotification({
