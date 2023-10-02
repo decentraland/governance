@@ -41,6 +41,7 @@ export default function NotificationsFeed({ isOpen, onClose }: Props) {
 
   useClickOutside('.NotificationsFeed', isOpen, onClose)
   const chainId = userState.chainId || ChainId.ETHEREUM_GOERLI
+  const env = ENV.STAGING // TODO: check if it is prod or staging according to chain id
 
   const {
     data: subscriptions,
@@ -53,7 +54,7 @@ export default function NotificationsFeed({ isOpen, onClose }: Props) {
       user
         ? PushAPI.user.getSubscriptions({
             user: getCaipAddress(user, chainId),
-            env: ENV.STAGING,
+            env,
           })
         : null,
     enabled: !!user,
@@ -91,7 +92,7 @@ export default function NotificationsFeed({ isOpen, onClose }: Props) {
       onSuccess: () => {
         refetchSubscriptions()
       },
-      env: ENV.STAGING,
+      env,
     })
 
     setIsSubscribing(false)
@@ -109,7 +110,7 @@ export default function NotificationsFeed({ isOpen, onClose }: Props) {
       channelAddress: getCaipAddress(PUSH_CHANNEL_ID, chainId),
       userAddress: getCaipAddress(user, chainId),
       onSuccess: () => refetchSubscriptions(),
-      env: ENV.STAGING,
+      env,
     })
   }
 
@@ -152,11 +153,13 @@ export default function NotificationsFeed({ isOpen, onClose }: Props) {
         )}
       </div>
       {!isLoading && (
-        <>
+        <div className="NotificationsFeed__Content">
           {!isSubscribed && (
             <div className="NotificationsFeed__UnsubscribedView">
               <UnsubscribedIcon size="124" />
-              <Heading size="sm">{t(`navigation.notifications.${unsubscribedKey}.title`)}</Heading>
+              <Heading className="NotificationsFeed__UnsubscribedViewHeading" size="sm">
+                {t(`navigation.notifications.${unsubscribedKey}.title`)}
+              </Heading>
               <Text>{t(`navigation.notifications.${unsubscribedKey}.description`)}</Text>
               <Button size="small" primary disabled={isSubscribing} onClick={handleSubscribeUserToChannel}>
                 {t(`navigation.notifications.${unsubscribedKey}.button`)}
@@ -187,7 +190,7 @@ export default function NotificationsFeed({ isOpen, onClose }: Props) {
               )}
             </div>
           )}
-        </>
+        </div>
       )}
       {isLoading && <Loader active />}
     </div>

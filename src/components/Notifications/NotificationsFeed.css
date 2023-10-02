@@ -2,7 +2,7 @@
   min-width: 346px;
   min-height: 370px;
   max-height: 385px;
-  height: 100;
+  height: 100%;
   overflow-y: auto;
   pointer-events: none;
   opacity: 0;
@@ -42,6 +42,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 48px;
   padding: 16px;
 }
 
@@ -61,10 +62,6 @@
   cursor: pointer;
 }
 
-.NotificationsFeed__EmptyView {
-  gap: 16px;
-}
-
 .NotificationsFeed__ListContainer {
   display: flex;
   flex-direction: column;
@@ -79,15 +76,32 @@
   padding-bottom: 16px;
 }
 
+.NotificationsFeed__Content {
+  height: 100%;
+}
+
 .NotificationsFeed__EmptyView,
 .NotificationsFeed__UnsubscribedView {
   display: flex;
   flex-direction: column;
   padding: 0 16px;
   align-items: center;
-  justify-content: center;
   text-align: center;
+}
+
+.NotificationsFeed__UnsubscribedView {
+  margin-top: 8px;
+  justify-content: flex-start;
+}
+
+.NotificationsFeed__UnsubscribedViewHeading {
+  margin-top: 20px;
+}
+
+.NotificationsFeed__EmptyView {
   height: 100%;
+  justify-content: center;
+  gap: 16px;
 }
 
 .NotificationsFeed__LoadMoreButtonContainer {
