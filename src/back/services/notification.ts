@@ -126,7 +126,7 @@ export class NotificationService {
     }
   }
 
-  static async proposalEnacted(proposal: ProposalAttributes) {
+  static async grantProposalEnacted(proposal: ProposalAttributes) {
     try {
       const coauthors = await CoauthorService.getAllFromProposalId(proposal.id)
       const coauthorsAddresses = coauthors.length > 0 ? coauthors.map((coauthor) => coauthor.address) : []
