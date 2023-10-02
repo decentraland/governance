@@ -22,9 +22,9 @@ const ProposalHero = forwardRef(({ proposal }: Props, ref: Ref<HTMLDivElement>) 
     <div className="ProposalHero__Container" ref={ref}>
       <HeroBanner proposalActive={isProposalActive} color={color} />
       <div className="ProposalHero__Text">
-        <p className={classNames('ProposalHero__Title', !isProposalActive && 'ProposalHero__Title--finished')}>
+        <h1 className={classNames('ProposalHero__Title', !isProposalActive && 'ProposalHero__Title--finished')}>
           {proposal?.title || ''}
-        </p>
+        </h1>
         <Loader active={!proposal} />
         {proposal && (
           <div className="ProposalDetailPage__Labels">
@@ -40,5 +40,7 @@ const ProposalHero = forwardRef(({ proposal }: Props, ref: Ref<HTMLDivElement>) 
     </div>
   )
 })
+
+ProposalHero.displayName = 'ProposalHero'
 
 export default ProposalHero
