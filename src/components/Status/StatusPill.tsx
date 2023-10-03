@@ -53,7 +53,11 @@ export default function StatusPill({ className, status, size, isLink, color }: P
   )
 
   if (isLink) {
-    return <Link href={href}>{component}</Link>
+    return (
+      <Link href={href} className="Pill__Link">
+        {component}
+      </Link>
+    )
   }
 
   return component

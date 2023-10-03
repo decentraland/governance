@@ -8,7 +8,7 @@ import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
+import { NotMobile, useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ErrorClient } from '../clients/ErrorClient'
 import { Governance } from '../clients/Governance'
@@ -16,6 +16,7 @@ import { SnapshotApi } from '../clients/SnapshotApi'
 import ProposalVPChart from '../components/Charts/ProposalVPChart'
 import WiderContainer from '../components/Common/WiderContainer'
 import FloatingBar from '../components/FloatingBar/FloatingBar'
+import FloatingHeader from '../components/FloatingHeader/FloatingHeader'
 import { Desktop1200 } from '../components/Layout/Desktop1200'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
@@ -197,9 +198,11 @@ export default function ProposalPage() {
     isMobile
   )
 
+  const [isFloatingHeaderVisible, setIsFloatingHeaderVisible] = useState<boolean>(true)
   const [isBarVisible, setIsBarVisible] = useState<boolean>(true)
   const commentsSectionRef = useRef<HTMLDivElement | null>(null)
   const reactionsSectionRef = useRef<HTMLDivElement | null>(null)
+  const heroSectionRef = useRef<HTMLDivElement | null>(null)
   const scrollToReactions = () => {
     if (reactionsSectionRef.current) {
       reactionsSectionRef.current.scrollIntoView({ behavior: 'smooth' })
@@ -213,12 +216,18 @@ export default function ProposalPage() {
 
   useEffect(() => {
     setIsBarVisible(true)
+    setIsFloatingHeaderVisible(false)
     if (!isLoadingProposal && typeof window !== 'undefined') {
       const handleScroll = () => {
         const hideBarSectionRef = reactionsSectionRef.current || commentsSectionRef.current
         if (!!hideBarSectionRef && !!window) {
           const hideBarSectionTop = hideBarSectionRef.getBoundingClientRect().top
           setIsBarVisible(hideBarSectionTop > window.innerHeight)
+        }
+
+        if (!!heroSectionRef.current && !!window) {
+          const { top: heroSectionTop, height: heroSectionHeight } = heroSectionRef.current.getBoundingClientRect()
+          setIsFloatingHeaderVisible(heroSectionTop + heroSectionHeight / 2 < 0)
         }
       }
 
@@ -381,8 +390,9 @@ export default function ProposalPage() {
         image="https://decentraland.org/images/decentraland.png"
       />
       <Navigation activeTab={NavigationTab.Proposals} />
+      <NotMobile>{proposal && <FloatingHeader isVisible={isFloatingHeaderVisible} proposal={proposal} />}</NotMobile>
       <WiderContainer className={'ProposalDetailPage'}>
-        <ProposalHero proposal={proposal} />
+        <ProposalHero proposal={proposal} ref={heroSectionRef} />
         <Desktop1200>
           <div className={'ProposalDetail__Left'}>
             {proposal && <ProposalDetailSection proposal={proposal} className={'DetailsSection__StickyTop'} />}
@@ -423,16 +433,17 @@ export default function ProposalPage() {
             />
           )}
           <ProposalComments proposal={proposal} ref={commentsSectionRef} />
-          <FloatingBar
-            isVisible={isBarVisible}
-            showViewReactions={!!showSurveyResults}
-            scrollToReactions={scrollToReactions}
-            scrollToComments={scrollToComments}
-            proposalId={proposal?.id}
-            discourseTopicId={proposal?.discourse_topic_id}
-            discourseTopicSlug={proposal?.discourse_topic_slug}
-            isLoadingProposal={isLoadingProposal}
-          />
+          {proposal && (
+            <FloatingBar
+              isVisible={isBarVisible}
+              proposalHasReactions={!!showSurveyResults}
+              scrollToReactions={scrollToReactions}
+              scrollToComments={scrollToComments}
+              proposalId={proposal?.id}
+              discourseTopicId={proposal?.discourse_topic_id}
+              discourseTopicSlug={proposal?.discourse_topic_slug}
+            />
+          )}
         </div>
         <div className="ProposalDetailActions">
           <ProposalSidebar
