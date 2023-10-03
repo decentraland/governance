@@ -18,6 +18,7 @@ import WiderContainer from '../components/Common/WiderContainer'
 import FloatingBar from '../components/FloatingBar/FloatingBar'
 import FloatingHeader from '../components/FloatingHeader/FloatingHeader'
 import { Desktop1200 } from '../components/Layout/Desktop1200'
+import LoadingView from '../components/Layout/LoadingView'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import BidSubmittedModal from '../components/Modal/BidSubmittedModal'
@@ -378,28 +379,36 @@ export default function ProposalPage() {
   const showVotesChart =
     proposalPageState.showResults && !isLoadingProposal && proposal?.type !== ProposalType.Poll && highQualityVotes
 
+  const title = proposal?.title || t('page.proposal_detail.title') || ''
+  const description =
+    (proposal?.description && formatDescription(proposal.description)) || t('page.proposal_detail.description') || ''
+  const image = 'https://decentraland.org/images/decentraland.png'
+
+  if (isLoadingProposal) {
+    return (
+      <>
+        <Head title={title} description={description} image={image} />
+        <Navigation activeTab={NavigationTab.Proposals} />
+        <LoadingView withNavigation />
+      </>
+    )
+  }
+
   return (
     <>
-      <Head
-        title={proposal?.title || t('page.proposal_detail.title') || ''}
-        description={
-          (proposal?.description && formatDescription(proposal.description)) ||
-          t('page.proposal_detail.description') ||
-          ''
-        }
-        image="https://decentraland.org/images/decentraland.png"
-      />
+      <Head title={title} description={description} image={image} />
       <Navigation activeTab={NavigationTab.Proposals} />
       <NotMobile>{proposal && <FloatingHeader isVisible={isFloatingHeaderVisible} proposal={proposal} />}</NotMobile>
       <WiderContainer className={'ProposalDetailPage'}>
         <ProposalHero proposal={proposal} ref={heroSectionRef} />
-        <Desktop1200>
-          <div className={'ProposalDetail__Left'}>
-            {proposal && <ProposalDetailSection proposal={proposal} className={'DetailsSection__StickyTop'} />}
-          </div>
-        </Desktop1200>
+        {proposal && (
+          <Desktop1200>
+            <div className={'ProposalDetail__Left'}>
+              <ProposalDetailSection proposal={proposal} className={'DetailsSection__StickyTop'} />
+            </div>
+          </Desktop1200>
+        )}
         <div className="ProposalDetailPage__Description">
-          <Loader active={isLoadingProposal} />
           {showProposalBudget && <ProposalBudget proposal={proposal} budget={budgetWithContestants} />}
           {showCompetingBiddingAndTendering && <CompetingBiddingAndTendering proposal={proposal} />}
           {proposal?.type === ProposalType.POI && <ProposalHeaderPoi configuration={proposal?.configuration} />}
