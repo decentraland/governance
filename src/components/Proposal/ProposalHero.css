@@ -64,6 +64,7 @@
   position: absolute;
   left: 0;
   top: -2px;
+  opacity: 0.45;
 }
 
 .ProposalHero__Breadcrumb__Container .Link:first-child:before {
