@@ -3,7 +3,7 @@ import React from 'react'
 import classNames from 'classnames'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { useTabletMediaQuery } from 'decentraland-ui/src/components/Media/Media'
+import { useTabletMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import { forumUrl } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
