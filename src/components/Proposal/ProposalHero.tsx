@@ -5,13 +5,11 @@ import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Mobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../entities/Proposal/types'
-import useFormatMessage from '../../hooks/useFormatMessage'
-import locations from '../../utils/locations'
 import CategoryPill, { ColorsConfig } from '../Category/CategoryPill'
 import { PillColor } from '../Common/Pill'
-import Link from '../Common/Typography/Link'
 import StatusPill from '../Status/StatusPill'
 
+import Breadcrumb from './Breadcrumb'
 import HeroBanner from './HeroBanner'
 import './ProposalHero.css'
 
@@ -20,7 +18,6 @@ interface Props {
 }
 
 const ProposalHero = forwardRef(({ proposal }: Props, ref: Ref<HTMLDivElement>) => {
-  const t = useFormatMessage()
   const color = ColorsConfig[proposal?.type || ProposalType.Grant]
   const isProposalActive = proposal?.status === ProposalStatus.Active
   return (
@@ -28,20 +25,7 @@ const ProposalHero = forwardRef(({ proposal }: Props, ref: Ref<HTMLDivElement>) 
       <HeroBanner proposalActive={isProposalActive} color={color} />
       <div className="ProposalHero__Text">
         <Mobile>
-          <div className="Breadcrumb">
-            <Link
-              href={locations.home()}
-              className={classNames('Breadcrumb__Link', !isProposalActive && 'Breadcrumb__Link--active')}
-            >
-              {'DAO'}
-            </Link>
-            <Link
-              href={locations.proposals()}
-              className={classNames('Breadcrumb__Link', !isProposalActive && 'Breadcrumb__Link--active')}
-            >
-              {t('navigation.proposals')}
-            </Link>
-          </div>
+          <Breadcrumb isProposalActive={isProposalActive} />
         </Mobile>
         <h1 className={classNames('ProposalHero__Title', !isProposalActive && 'ProposalHero__Title--finished')}>
           {proposal?.title || ''}
