@@ -79,7 +79,3 @@ export function navigate(to: string, options?: NavigateOptions<any>) {
   }
   gatsbyNavigate(to, options)
 }
-
-export function isProjectPath(pathname: string) {
-  return pathname.includes('/projects')
-}
