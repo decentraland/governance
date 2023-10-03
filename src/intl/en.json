@@ -18,6 +18,7 @@
   },
   "navigation": {
     "home": "DAO Home",
+    "dao": "DAO",
     "proposals": "Proposals",
     "projects": "Projects",
     "profile": "Profile",

@@ -2,12 +2,14 @@ import React, { Ref, forwardRef } from 'react'
 
 import classNames from 'classnames'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
+import { Mobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../entities/Proposal/types'
 import CategoryPill, { ColorsConfig } from '../Category/CategoryPill'
 import { PillColor } from '../Common/Pill'
 import StatusPill from '../Status/StatusPill'
 
+import Breadcrumb from './Breadcrumb'
 import HeroBanner from './HeroBanner'
 import './ProposalHero.css'
 
@@ -22,6 +24,9 @@ const ProposalHero = forwardRef(({ proposal }: Props, ref: Ref<HTMLDivElement>) 
     <div className="ProposalHero__Container" ref={ref}>
       <HeroBanner proposalActive={isProposalActive} color={color} />
       <div className="ProposalHero__Text">
+        <Mobile>
+          <Breadcrumb isProposalActive={isProposalActive} />
+        </Mobile>
         <h1 className={classNames('ProposalHero__Title', !isProposalActive && 'ProposalHero__Title--finished')}>
           {proposal?.title || ''}
         </h1>

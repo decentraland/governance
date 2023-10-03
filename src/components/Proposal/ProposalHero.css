@@ -40,7 +40,14 @@
   letter-spacing: 0.3px;
   text-align: center;
   padding: 0 2em;
-  margin-bottom: 0.3em;
+  margin: 8px 0;
+}
+
+@media (min-width: 768px) {
+  .ProposalHero__Title {
+    margin-bottom: 0.3em;
+    margin-top: unset;
+  }
 }
 
 .ProposalHero__Title::first-letter {
