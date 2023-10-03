@@ -22,7 +22,7 @@
   color: var(--white-900) !important;
 }
 
-.TransparencySection .MembersContainer {
+.MembersContainer {
   display: flex;
   flex-wrap: wrap;
 }
