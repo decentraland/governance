@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import { useLocation } from '@reach/router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
@@ -12,7 +12,6 @@ import {
   useTabletAndBelowMediaQuery,
 } from 'decentraland-ui/dist/components/Media/Media'
 import { Pagination } from 'decentraland-ui/dist/components/Pagination/Pagination'
-import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import RandomBanner from '../components/Banner/RandomBanner'
 import CategoryBanner from '../components/Category/CategoryBanner'
@@ -149,43 +148,49 @@ export default function ProposalsPage() {
             <RandomBanner isVisible={!searching} />
           </div>
           {!isMobile && search && proposals && <SearchTitle />}
-          <Grid stackable>
-            <Grid.Row>
-              <Grid.Column className="Proposals__FiltersColumn">
-                <NotMobile>
-                  <div>
-                    <CategoryFilter filterType={ProposalType} startOpen />
-                    <StatusFilter statusType={ProposalStatus} />
-                    <TimeFrameFilter />
-                  </div>
-                </NotMobile>
-              </Grid.Column>
-              <BurgerMenuLayout activeTab={NavigationTab.Proposals}>
-                <Grid.Column className="ProposalsTable">
-                  {isMobile && proposals && <SearchTitle />}
-                  <ActionableLayout
-                    leftAction={
-                      <Header sub>
-                        {!proposals && ''}
-                        {proposals && t('general.count_proposals', { count: proposals.total || 0 })}
-                      </Header>
-                    }
-                    rightAction={
-                      !searching && (
-                        <>
-                          {proposals && <SortingMenu />}
-                          <Button primary size="small" className="SubmitButton" as={Link} href={locations.submit()}>
-                            {t('page.proposal_list.new_proposal')}
-                          </Button>
-                        </>
-                      )
-                    }
-                  >
+          <div className="ProposalsPage__Container">
+            <NotMobile>
+              <div className="ProposalsPage__Sidebar">
+                <div>
+                  <CategoryFilter filterType={ProposalType} startOpen />
+                  <StatusFilter statusType={ProposalStatus} />
+                  <TimeFrameFilter />
+                </div>
+              </div>
+            </NotMobile>
+            <BurgerMenuLayout activeTab={NavigationTab.Proposals}>
+              <div className="ProposalsPage__Content">
+                {isMobile && proposals && <SearchTitle />}
+                <ActionableLayout
+                  leftAction={
+                    <Header sub>
+                      {!proposals && ''}
+                      {proposals && t('general.count_proposals', { count: proposals.total || 0 })}
+                    </Header>
+                  }
+                  rightAction={
+                    !searching && (
+                      <>
+                        {proposals && <SortingMenu />}
+                        <Button
+                          primary
+                          size="small"
+                          className="ProposalsPage__SubmitButton"
+                          as={Link}
+                          href={locations.submit()}
+                        >
+                          {t('page.proposal_list.new_proposal')}
+                        </Button>
+                      </>
+                    )
+                  }
+                >
+                  <div className="ProposalsPage__List">
                     <Loader active={!proposals || isLoadingProposals} />
                     {type && !searching && <CategoryBanner type={type} />}
                     {proposals && proposals.data.length === 0 && (
                       <Empty
-                        className="ProposalsTable__Empty"
+                        className="ProposalsPage__Empty"
                         description={
                           searching || status || timeFrame?.length > 0
                             ? t('navigation.search.no_matches')
@@ -216,20 +221,20 @@ export default function ProposalsPage() {
                           />
                         )
                       })}
-                    {proposals && proposals.total > ITEMS_PER_PAGE && (
-                      <Pagination
-                        onPageChange={(e, { activePage }) => handlePageFilter(activePage as number)}
-                        totalPages={Math.ceil(proposals.total / ITEMS_PER_PAGE)}
-                        activePage={page}
-                        firstItem={null}
-                        lastItem={null}
-                      />
-                    )}
-                  </ActionableLayout>
-                </Grid.Column>
-              </BurgerMenuLayout>
-            </Grid.Row>
-          </Grid>
+                  </div>
+                  {proposals && proposals.total > ITEMS_PER_PAGE && (
+                    <Pagination
+                      onPageChange={(e, { activePage }) => handlePageFilter(activePage as number)}
+                      totalPages={Math.ceil(proposals.total / ITEMS_PER_PAGE)}
+                      activePage={page}
+                      firstItem={null}
+                      lastItem={null}
+                    />
+                  )}
+                </ActionableLayout>
+              </div>
+            </BurgerMenuLayout>
+          </div>
         </WiderContainer>
       )}
     </>

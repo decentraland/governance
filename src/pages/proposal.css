@@ -2,7 +2,6 @@
   display: flex !important;
   flex-direction: column;
   flex-wrap: wrap;
-  --proposal-sidebar-width: 284px;
 }
 
 .ProposalDetailPage__Description {
@@ -12,7 +11,7 @@
 
 .ProposalDetail__Left {
   display: flex;
-  width: 284px;
+  width: var(--dao-sidebar-width);
   flex-direction: column;
   justify-content: flex-start;
   padding-right: 1em;
@@ -25,18 +24,18 @@
 
   .ProposalDetailPage__Description {
     flex: 1;
-    max-width: calc(100% - var(--proposal-sidebar-width));
+    max-width: calc(100% - var(--dao-sidebar-width));
     padding-right: 2rem;
   }
 
   .ProposalDetailActions {
-    width: 284px;
+    width: var(--dao-sidebar-width);
   }
 }
 
 @media (min-width: 1200px) {
   .ProposalDetailPage__Description {
-    max-width: calc(100% - 2 * var(--proposal-sidebar-width));
+    max-width: calc(100% - 2 * var(--dao-sidebar-width));
   }
 }
 
