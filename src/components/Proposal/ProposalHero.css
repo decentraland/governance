@@ -32,12 +32,12 @@
   padding: 1.3em 0;
 }
 
-.ProposalHero__Breadcrumb {
+.Breadcrumb {
   display: flex;
   gap: 8px;
 }
 
-.ProposalHero__Breadcrumb .Link {
+.Breadcrumb__Link {
   color: var(--white-900);
   text-align: center;
   font-size: 13px;
@@ -49,15 +49,15 @@
   padding-left: 16px;
 }
 
-.ProposalHero__Breadcrumb--active .Link {
+.Breadcrumb__Link--active {
   color: var(--black-600);
 }
 
-.ProposalHero__Breadcrumb .Link:first-child {
+.Breadcrumb__Link:first-child {
   padding-left: 0;
 }
 
-.ProposalHero__Breadcrumb .Link:before {
+.Breadcrumb__Link:before {
   content: '\203A';
   font-size: 22px;
   position: absolute;
@@ -66,7 +66,7 @@
   opacity: 0.45;
 }
 
-.ProposalHero__Breadcrumb .Link:first-child:before {
+.Breadcrumb__Link:first-child:before {
   display: none;
 }
 

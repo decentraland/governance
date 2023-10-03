@@ -28,11 +28,19 @@ const ProposalHero = forwardRef(({ proposal }: Props, ref: Ref<HTMLDivElement>) 
       <HeroBanner proposalActive={isProposalActive} color={color} />
       <div className="ProposalHero__Text">
         <Mobile>
-          <div
-            className={classNames('ProposalHero__Breadcrumb', !isProposalActive && 'ProposalHero__Breadcrumb--active')}
-          >
-            <Link href={locations.home()}>{'DAO'}</Link>
-            <Link href={locations.proposals()}>{t('navigation.proposals')}</Link>
+          <div className="Breadcrumb">
+            <Link
+              href={locations.home()}
+              className={classNames('Breadcrumb__Link', !isProposalActive && 'Breadcrumb__Link--active')}
+            >
+              {'DAO'}
+            </Link>
+            <Link
+              href={locations.proposals()}
+              className={classNames('Breadcrumb__Link', !isProposalActive && 'Breadcrumb__Link--active')}
+            >
+              {t('navigation.proposals')}
+            </Link>
           </div>
         </Mobile>
         <h1 className={classNames('ProposalHero__Title', !isProposalActive && 'ProposalHero__Title--finished')}>
