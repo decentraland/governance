@@ -10,7 +10,6 @@ import locations from '../../utils/locations'
 import CategoryPill, { ColorsConfig } from '../Category/CategoryPill'
 import { PillColor } from '../Common/Pill'
 import Link from '../Common/Typography/Link'
-import ChevronRight from '../Icon/ChevronRight'
 import StatusPill from '../Status/StatusPill'
 
 import HeroBanner from './HeroBanner'
@@ -30,10 +29,7 @@ const ProposalHero = forwardRef(({ proposal }: Props, ref: Ref<HTMLDivElement>) 
       <div className="ProposalHero__Text">
         <Mobile>
           <div
-            className={classNames(
-              'ProposalHero__Breadcrumb__Container',
-              !isProposalActive && 'ProposalHero__Breadcrumb--active'
-            )}
+            className={classNames('ProposalHero__Breadcrumb', !isProposalActive && 'ProposalHero__Breadcrumb--active')}
           >
             <Link href={locations.home()}>{'DAO'}</Link>
             <Link href={locations.proposals()}>{t('navigation.proposals')}</Link>

@@ -14,7 +14,7 @@ interface FloatingHeaderProps {
   proposal: ProposalAttributes
 }
 
-const FloatingHeader: React.FC<FloatingHeaderProps> = ({ isVisible, proposal }) => {
+const FloatingHeader = ({ isVisible, proposal }: FloatingHeaderProps) => {
   return (
     <div className={classNames('FloatingHeader', !isVisible && 'FloatingHeader--hidden')}>
       <WiderContainer className="FloatingHeader__Content">
