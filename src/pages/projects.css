@@ -1,0 +1,17 @@
+.ProjectsPage__Container {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+}
+
+.ProjectsPage__Sidebar {
+  display: none;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .ProjectsPage__Sidebar {
+    display: block;
+    max-width: var(--dao-sidebar-width);
+  }
+}
