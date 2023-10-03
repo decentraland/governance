@@ -11,15 +11,12 @@ import './FloatingHeader.css'
 
 interface FloatingHeaderProps {
   isVisible: boolean
-  proposal?: ProposalAttributes | null
-  isLoadingProposal: boolean
+  proposal: ProposalAttributes
 }
 
-const FloatingHeader: React.FC<FloatingHeaderProps> = ({ proposal, isVisible, isLoadingProposal }) => {
-  if (!proposal) return null
-
+const FloatingHeader: React.FC<FloatingHeaderProps> = ({ isVisible, proposal }) => {
   return (
-    <div className={classNames('FloatingHeader', !isVisible && !isLoadingProposal && 'FloatingHeader--hidden')}>
+    <div className={classNames('FloatingHeader', !isVisible && 'FloatingHeader--hidden')}>
       <WiderContainer className="FloatingHeader__Content">
         <div className="FloatingHeader__Title">{proposal?.title}</div>
         <div className="FloatingHeader__Status">

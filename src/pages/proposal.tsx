@@ -198,7 +198,6 @@ export default function ProposalPage() {
     isMobile
   )
 
-  const [renderFloatingBar, setRenderFloatingBar] = useState<boolean>(false)
   const [isFloatingHeaderVisible, setIsFloatingHeaderVisible] = useState<boolean>(true)
   const [isBarVisible, setIsBarVisible] = useState<boolean>(true)
   const commentsSectionRef = useRef<HTMLDivElement | null>(null)
@@ -228,7 +227,6 @@ export default function ProposalPage() {
 
         if (!!heroSectionRef.current && !!window) {
           const { top: heroSectionTop, height: heroSectionHeight } = heroSectionRef.current.getBoundingClientRect()
-          setRenderFloatingBar(heroSectionTop < 0)
           setIsFloatingHeaderVisible(heroSectionTop + heroSectionHeight / 2 < 0)
         }
       }
@@ -392,15 +390,7 @@ export default function ProposalPage() {
         image="https://decentraland.org/images/decentraland.png"
       />
       <Navigation activeTab={NavigationTab.Proposals} />
-      <NotMobile>
-        {renderFloatingBar && (
-          <FloatingHeader
-            isVisible={isFloatingHeaderVisible}
-            proposal={proposal}
-            isLoadingProposal={isLoadingProposal}
-          />
-        )}
-      </NotMobile>
+      <NotMobile>{proposal && <FloatingHeader isVisible={isFloatingHeaderVisible} proposal={proposal} />}</NotMobile>
       <WiderContainer className={'ProposalDetailPage'}>
         <ProposalHero proposal={proposal} ref={heroSectionRef} />
         <Desktop1200>
@@ -443,16 +433,17 @@ export default function ProposalPage() {
             />
           )}
           <ProposalComments proposal={proposal} ref={commentsSectionRef} />
-          <FloatingBar
-            isVisible={isBarVisible}
-            proposalHasReactions={!!showSurveyResults}
-            scrollToReactions={scrollToReactions}
-            scrollToComments={scrollToComments}
-            proposalId={proposal?.id}
-            discourseTopicId={proposal?.discourse_topic_id}
-            discourseTopicSlug={proposal?.discourse_topic_slug}
-            isLoadingProposal={isLoadingProposal}
-          />
+          {proposal && (
+            <FloatingBar
+              isVisible={isBarVisible}
+              proposalHasReactions={!!showSurveyResults}
+              scrollToReactions={scrollToReactions}
+              scrollToComments={scrollToComments}
+              proposalId={proposal?.id}
+              discourseTopicId={proposal?.discourse_topic_id}
+              discourseTopicSlug={proposal?.discourse_topic_slug}
+            />
+          )}
         </div>
         <div className="ProposalDetailActions">
           <ProposalSidebar

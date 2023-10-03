@@ -24,10 +24,9 @@ interface FloatingBarProps {
   proposalId?: string
   discourseTopicId?: number
   discourseTopicSlug?: string
-  isLoadingProposal: boolean
 }
 
-const FloatingBar: React.FC<FloatingBarProps> = ({
+const FloatingBar = ({
   proposalId,
   discourseTopicId,
   discourseTopicSlug,
@@ -35,15 +34,13 @@ const FloatingBar: React.FC<FloatingBarProps> = ({
   isVisible,
   scrollToComments,
   scrollToReactions,
-  isLoadingProposal,
-}) => {
+}: FloatingBarProps) => {
   const t = useFormatMessage()
   const { comments, isLoadingComments } = useProposalComments(proposalId)
   const isTablet = useTabletMediaQuery()
-  const showTotalComments = !isLoadingComments && !isLoadingProposal
   const showViewReactions = proposalHasReactions && !isTablet
   return (
-    <div className={classNames('FloatingBar', !isVisible && !isLoadingProposal && 'FloatingBar--hidden')}>
+    <div className={classNames('FloatingBar', !isVisible && 'FloatingBar--hidden')}>
       <div className="FloatingBar__ProposalSectionActions">
         {showViewReactions && (
           <Link onClick={scrollToReactions} className={'FloatingBar__Action'}>
@@ -52,7 +49,7 @@ const FloatingBar: React.FC<FloatingBarProps> = ({
           </Link>
         )}
         <Link onClick={scrollToComments} className={'FloatingBar__Action'}>
-          {!showTotalComments && (
+          {isLoadingComments && (
             <Loader
               active
               size="tiny"
@@ -62,7 +59,7 @@ const FloatingBar: React.FC<FloatingBarProps> = ({
               )}
             />
           )}
-          {showTotalComments && (
+          {!isLoadingComments && (
             <>
               <Forum color={'var(--black-600)'} />
               {t('component.floating_bar.total_comments_label', { count: comments?.totalComments || 0 })}
