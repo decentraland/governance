@@ -16,6 +16,8 @@ interface Props {
 
 function CategoryModule({ proposal, isHovered }: Props) {
   const t = useFormatMessage()
+  const isGrant = proposal.type === ProposalType.Grant
+  const isBid = proposal.type === ProposalType.Bid
   return (
     <ProposalPreviewCardSection className="CategoryModule">
       <div className="CategoryModule__Container">
@@ -23,9 +25,9 @@ function CategoryModule({ proposal, isHovered }: Props) {
           <StatusPill status={proposal.status} />
         </div>
         <CategoryPill proposalType={proposal.type} />
-        {proposal.type === ProposalType.Grant && (
+        {(isGrant || isBid) && (
           <span className="CategoryModule__GrantSize">{`$${t('general.number', {
-            value: proposal.configuration.size,
+            value: isGrant ? proposal.configuration.size : proposal.configuration.funding,
           })}`}</span>
         )}
       </div>
