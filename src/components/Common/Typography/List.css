@@ -2,14 +2,4 @@
   color: var(--text);
   font-style: normal;
   font-stretch: normal;
-  letter-spacing: 0.3px;
-  font-size: 15px;
-  line-height: 24px;
-  font-weight: var(--weight-light);
-}
-
-@media only screen and (max-width: 767px) {
-  .List > .ListItem {
-    font-size: 11px;
-  }
 }
