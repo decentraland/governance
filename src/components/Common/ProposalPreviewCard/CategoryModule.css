@@ -3,12 +3,26 @@
   justify-content: space-between;
 }
 
-.CategoryModule__PillContainer {
+.CategoryModule__Container {
   display: flex;
   gap: 16px;
   justify-content: flex-start;
-  min-width: 260px;
+  align-items: center;
+  min-width: 300px;
   white-space: nowrap;
+}
+
+.CategoryModule__StatusPill {
+  display: flex;
+  min-width: 118px;
+  justify-content: flex-end;
+}
+
+.CategoryModule__GrantSize {
+  color: var(--black-400);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: var(--weight-medium);
 }
 
 .CategoryModule__Chevron {
