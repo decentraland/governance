@@ -1,6 +1,13 @@
 .MonthlyTotal {
   width: 100%;
   display: flex;
+  box-shadow: var(--shadow-1);
+  border-radius: 8px;
+}
+
+.MonthlyTotal__Card.ui.card {
+  width: 100%;
+  box-shadow: none !important;
 }
 
 .MonthlyTotal--Full {
@@ -69,12 +76,6 @@ strong.Number.Number--Green {
 
 strong.Number.Number--Red {
   color: var(--dcl-primary);
-}
-
-@media only screen and (min-width: 992px) {
-  .MonthlyTotal:last-of-type {
-    margin-left: 2em;
-  }
 }
 
 @media screen and (min-width: 1080px) {

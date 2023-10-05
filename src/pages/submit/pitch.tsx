@@ -116,8 +116,14 @@ export default function SubmitPitchProposal() {
             name="initiative_name"
             rules={{
               required: { value: true, message: t('error.pitch.initiative_name_empty') },
-              min: { value: schema.initiative_name.minLength, message: t('error.pitch.initiative_name_too_short') },
-              max: { value: schema.initiative_name.maxLength, message: t('error.pitch.initiative_name_too_long') },
+              minLength: {
+                value: schema.initiative_name.minLength,
+                message: t('error.pitch.initiative_name_too_short'),
+              },
+              maxLength: {
+                value: schema.initiative_name.maxLength,
+                message: t('error.pitch.initiative_name_too_large'),
+              },
             }}
             error={!!errors.initiative_name}
             loading={isLoadingVpDistribution}

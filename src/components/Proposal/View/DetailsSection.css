@@ -11,8 +11,13 @@
   border: none;
 }
 
+.DetailsSection__StickyTop {
+  top: 83px !important;
+  position: sticky !important;
+}
+
 .DetailsSection--with-shadow {
-  box-shadow: 0px 0px 10px rgba(115, 110, 125, 0.15);
+  box-shadow: 0 0 10px rgba(115, 110, 125, 0.15);
 }
 
 .DetailsSection--shiny {

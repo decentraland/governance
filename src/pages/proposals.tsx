@@ -1,22 +1,24 @@
-import React, { useCallback, useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import { useLocation } from '@reach/router'
-import { useQuery } from '@tanstack/react-query'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { NotMobile, useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
+import {
+  NotMobile,
+  useMobileMediaQuery,
+  useTabletAndBelowMediaQuery,
+} from 'decentraland-ui/dist/components/Media/Media'
 import { Pagination } from 'decentraland-ui/dist/components/Pagination/Pagination'
-import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
-import { Governance } from '../clients/Governance'
 import RandomBanner from '../components/Banner/RandomBanner'
 import CategoryBanner from '../components/Category/CategoryBanner'
 import Empty from '../components/Common/Empty'
+import ProposalPreviewCard from '../components/Common/ProposalPreviewCard/ProposalPreviewCard'
 import Link from '../components/Common/Typography/Link'
+import WiderContainer from '../components/Common/WiderContainer'
 import ActionableLayout from '../components/Layout/ActionableLayout'
 import BurgerMenuLayout from '../components/Layout/BurgerMenu/BurgerMenuLayout'
 import LoadingView from '../components/Layout/LoadingView'
@@ -30,12 +32,12 @@ import StatusFilter from '../components/Search/StatusFilter'
 import TimeFrameFilter from '../components/Search/TimeFrameFilter'
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
-import { DEFAULT_QUERY_STALE_TIME } from '../hooks/constants'
 import { useBurgerMenu } from '../hooks/useBurgerMenu'
 import useFormatMessage from '../hooks/useFormatMessage'
 import useProposals from '../hooks/useProposals'
 import useProposalsByCoAuthor from '../hooks/useProposalsByCoAuthor'
 import { useProposalsSearchParams } from '../hooks/useProposalsSearchParams'
+import useProposalsVotes from '../hooks/useProposalsVotes'
 import useSubscriptions from '../hooks/useSubscriptions'
 import locations, { navigate } from '../utils/locations'
 import { isUnderMaintenance } from '../utils/maintenance'
@@ -59,13 +61,10 @@ export default function ProposalsPage() {
     itemsPerPage: ITEMS_PER_PAGE,
   })
   const proposalIds = (proposals?.data || []).map((proposal) => proposal.id)
-  const { data: votes, isLoading: isLoadingVotes } = useQuery({
-    queryKey: [`porposalVotes#${proposalIds.join('-')}`],
-    queryFn: () => Governance.get().getVotes(proposalIds),
-    staleTime: DEFAULT_QUERY_STALE_TIME,
-  })
+  const { votes, isLoadingVotes } = useProposalsVotes(proposalIds)
   const [subscriptions, subscriptionsState] = useSubscriptions()
   const isMobile = useMobileMediaQuery()
+  const isTabletAndBelow = useTabletAndBelowMediaQuery()
   const { status: burgerStatus } = useBurgerMenu()
   const { open } = burgerStatus
 
@@ -144,48 +143,54 @@ export default function ProposalsPage() {
       <Navigation activeTab={NavigationTab.Proposals} />
       {isLoading && <LoadingView withNavigation />}
       {!isLoading && (
-        <Container>
+        <WiderContainer>
           <div className="OnlyDesktop">
             <RandomBanner isVisible={!searching} />
           </div>
           {!isMobile && search && proposals && <SearchTitle />}
-          <Grid stackable>
-            <Grid.Row>
-              <Grid.Column tablet="4">
-                <NotMobile>
-                  <div>
-                    <CategoryFilter filterType={ProposalType} startOpen />
-                    <StatusFilter statusType={ProposalStatus} />
-                    <TimeFrameFilter />
-                  </div>
-                </NotMobile>
-              </Grid.Column>
-              <BurgerMenuLayout activeTab={NavigationTab.Proposals}>
-                <Grid.Column tablet="12" className="ProposalsTable">
-                  {isMobile && proposals && <SearchTitle />}
-                  <ActionableLayout
-                    leftAction={
-                      <Header sub>
-                        {!proposals && ''}
-                        {proposals && t('general.count_proposals', { count: proposals.total || 0 })}
-                      </Header>
-                    }
-                    rightAction={
-                      !searching && (
-                        <>
-                          {proposals && <SortingMenu />}
-                          <Button primary size="small" className="SubmitButton" as={Link} href={locations.submit()}>
-                            {t('page.proposal_list.new_proposal')}
-                          </Button>
-                        </>
-                      )
-                    }
-                  >
+          <div className="ProposalsPage__Container">
+            <NotMobile>
+              <div className="ProposalsPage__Sidebar">
+                <div>
+                  <CategoryFilter filterType={ProposalType} startOpen />
+                  <StatusFilter statusType={ProposalStatus} />
+                  <TimeFrameFilter />
+                </div>
+              </div>
+            </NotMobile>
+            <BurgerMenuLayout activeTab={NavigationTab.Proposals}>
+              <div className="ProposalsPage__Content">
+                {isMobile && proposals && <SearchTitle />}
+                <ActionableLayout
+                  leftAction={
+                    <Header sub>
+                      {!proposals && ''}
+                      {proposals && t('general.count_proposals', { count: proposals.total || 0 })}
+                    </Header>
+                  }
+                  rightAction={
+                    !searching && (
+                      <>
+                        {proposals && <SortingMenu />}
+                        <Button
+                          primary
+                          size="small"
+                          className="ProposalsPage__SubmitButton"
+                          as={Link}
+                          href={locations.submit()}
+                        >
+                          {t('page.proposal_list.new_proposal')}
+                        </Button>
+                      </>
+                    )
+                  }
+                >
+                  <div className="ProposalsPage__List">
                     <Loader active={!proposals || isLoadingProposals} />
                     {type && !searching && <CategoryBanner type={type} />}
                     {proposals && proposals.data.length === 0 && (
                       <Empty
-                        className="ProposalsTable__Empty"
+                        className="ProposalsPage__Empty"
                         description={
                           searching || status || timeFrame?.length > 0
                             ? t('navigation.search.no_matches')
@@ -195,7 +200,7 @@ export default function ProposalsPage() {
                     )}
                     {proposals &&
                       proposals.data.map((proposal) => {
-                        return (
+                        return isTabletAndBelow ? (
                           <ProposalItem
                             key={proposal.id}
                             proposal={proposal}
@@ -207,23 +212,30 @@ export default function ProposalsPage() {
                             }
                             onSubscribe={(_, proposal) => subscriptionsState.subscribe(proposal.id)}
                           />
+                        ) : (
+                          <ProposalPreviewCard
+                            key={proposal.id}
+                            proposal={proposal}
+                            votes={votes ? votes[proposal.id] : undefined}
+                            variant="category"
+                          />
                         )
                       })}
-                    {proposals && proposals.total > ITEMS_PER_PAGE && (
-                      <Pagination
-                        onPageChange={(e, { activePage }) => handlePageFilter(activePage as number)}
-                        totalPages={Math.ceil(proposals.total / ITEMS_PER_PAGE)}
-                        activePage={page}
-                        firstItem={null}
-                        lastItem={null}
-                      />
-                    )}
-                  </ActionableLayout>
-                </Grid.Column>
-              </BurgerMenuLayout>
-            </Grid.Row>
-          </Grid>
-        </Container>
+                  </div>
+                  {proposals && proposals.total > ITEMS_PER_PAGE && (
+                    <Pagination
+                      onPageChange={(e, { activePage }) => handlePageFilter(activePage as number)}
+                      totalPages={Math.ceil(proposals.total / ITEMS_PER_PAGE)}
+                      activePage={page}
+                      firstItem={null}
+                      lastItem={null}
+                    />
+                  )}
+                </ActionableLayout>
+              </div>
+            </BurgerMenuLayout>
+          </div>
+        </WiderContainer>
       )}
     </>
   )

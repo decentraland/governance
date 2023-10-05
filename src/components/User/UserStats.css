@@ -66,6 +66,9 @@
   .UserStats__StatBoxes {
     display: flex;
     justify-content: space-between;
+  }
+
+  .UserStats__StatBoxes:not(:last-child) {
     margin-bottom: 44px;
   }
 

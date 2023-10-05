@@ -8,7 +8,7 @@ import locations from '../../utils/locations'
 import Pill, { PillColor } from '../Common/Pill'
 import Link from '../Common/Typography/Link'
 
-const ColorsConfig: Record<ProposalType, PillColor> = {
+export const ColorsConfig: Record<ProposalType, PillColor> = {
   [ProposalType.POI]: PillColor.Green,
   [ProposalType.Catalyst]: PillColor.Blue,
   [ProposalType.BanName]: PillColor.Fuchsia,
@@ -28,6 +28,7 @@ type Props = {
   proposalType: ProposalType
   size?: 'sm' | 'md'
   isLink?: boolean
+  color?: PillColor
 }
 
 function getProposalTypeShortLabel(proposalType: ProposalType) {
@@ -38,22 +39,26 @@ function getProposalTypeLabel(proposalType: ProposalType) {
   return proposalType.replaceAll('_', ' ')
 }
 
-export default function CategoryPill({ className, proposalType, size = 'md', isLink = false }: Props) {
+export default function CategoryPill({ className, proposalType, size = 'md', isLink = false, color }: Props) {
   const isMobile = useMobileMediaQuery()
   const label = isMobile ? getProposalTypeShortLabel(proposalType) : getProposalTypeLabel(proposalType)
-  const colorsConfig = ColorsConfig[proposalType]
+  const pillColor = color || ColorsConfig[proposalType]
   const pillClassNames = classNames('CategoryPill', className)
   const href = isLink ? locations.proposals({ type: proposalType }) : undefined
   const pillSize = isMobile ? 'sm' : size
 
   const component = (
-    <Pill style="light" color={colorsConfig} className={pillClassNames} size={pillSize}>
+    <Pill style="light" color={pillColor} className={pillClassNames} size={pillSize}>
       {label}
     </Pill>
   )
 
   if (isLink) {
-    return <Link href={href}>{component}</Link>
+    return (
+      <Link href={href} className="Pill__Link">
+        {component}
+      </Link>
+    )
   }
 
   return component

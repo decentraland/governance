@@ -23,6 +23,12 @@
     color: var(--text);
   }
 
+  .Navigation .dcl.tabs .ui.container {
+    max-width: 1440px !important;
+    width: 100%;
+    padding: 0 24px;
+  }
+
   .dcl.tabs .ui.container {
     display: flex;
   }

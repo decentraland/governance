@@ -157,8 +157,8 @@ export default function SubmitTenderProposal() {
             name="project_name"
             rules={{
               required: { value: true, message: t('error.tender.project_name_empty') },
-              min: { value: schema.project_name.minLength, message: t('error.tender.project_name_too_short') },
-              max: { value: schema.project_name.maxLength, message: t('error.tender.project_name_too_long') },
+              minLength: { value: schema.project_name.minLength, message: t('error.tender.project_name_too_short') },
+              maxLength: { value: schema.project_name.maxLength, message: t('error.tender.project_name_too_large') },
             }}
             error={!!errors.project_name}
             loading={isLoadingVpDistribution}

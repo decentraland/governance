@@ -25,7 +25,7 @@ function VotedProposalsBox({ address }: Props) {
   const { votes, isLoading, handleViewMore, hasMoreProposals } = useVotedProposals(address, PROPOSALS_PER_PAGE)
 
   return (
-    <Container>
+    <Container fluid>
       <ProfileBox title={t('page.profile.voted_proposals.title')}>
         {isLoading && <SkeletonBars amount={votes.length || 3} height={89} />}
         {!isLoading &&

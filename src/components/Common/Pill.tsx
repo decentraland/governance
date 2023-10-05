@@ -14,6 +14,8 @@ export enum PillColor {
   Orange = 'orange',
   Yellow = 'yellow',
   Aqua = 'aqua',
+  White = 'white',
+  Transparent = 'transparent',
 }
 
 export type Props = {

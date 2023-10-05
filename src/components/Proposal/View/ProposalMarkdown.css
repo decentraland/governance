@@ -20,3 +20,34 @@
   font-weight: var(--weight-normal) !important;
   letter-spacing: 0 !important;
 }
+
+.ProposalMarkdown__BreakAnywhere {
+  line-break: anywhere;
+}
+
+@media (min-width: 1001px) and (max-width: 1199px), (min-width: 1300px) {
+  .ProposalMarkdown__Description__Title {
+    font-size: 14px !important;
+  }
+  .ProposalMarkdown__Description__SubTitle {
+    font-size: 21px !important;
+  }
+  .ProposalMarkdown__Description__Text,
+  .ProposalMarkdown__Description__ListItem {
+    font-size: 17px !important;
+    line-height: 32px !important;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1299px), (max-width: 1000px) {
+  .ProposalMarkdown__Description__Title {
+    font-size: 13px !important;
+  }
+  .ProposalMarkdown__Description__SubTitle {
+    font-size: 21px !important;
+  }
+  .ProposalMarkdown__Description__Text,
+  .ProposalMarkdown__Description__ListItem {
+    font-size: 15px !important;
+  }
+}

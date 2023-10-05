@@ -231,7 +231,7 @@ export const newProposalPollScheme = {
     title: {
       type: 'string',
       minLength: 5,
-      maxLength: 200,
+      maxLength: 80,
     },
     description: {
       type: 'string',
@@ -274,7 +274,7 @@ export const newProposalDraftScheme = {
     },
     title: {
       type: 'string',
-      minLength: 1,
+      minLength: 5,
       maxLength: 80,
     },
     summary: {
@@ -341,7 +341,7 @@ export const newProposalGovernanceScheme = {
     },
     title: {
       type: 'string',
-      minLength: 1,
+      minLength: 5,
       maxLength: 80,
     },
     summary: {

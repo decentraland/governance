@@ -4,15 +4,11 @@
   justify-content: space-between;
   width: 100%;
   gap: 16px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 @media (min-width: 768px) {
   .ProposalBudget__Row {
     flex-direction: row;
   }
-}
-
-.ProposalBudget__Row:last-child {
-  margin-bottom: 0;
 }

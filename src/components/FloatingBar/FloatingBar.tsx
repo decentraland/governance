@@ -3,6 +3,7 @@ import React from 'react'
 import classNames from 'classnames'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
+import { useTabletMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import { forumUrl } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
@@ -17,30 +18,29 @@ const reactions = require('../../images/reactions.png').default
 
 interface FloatingBarProps {
   isVisible: boolean
-  showViewReactions: boolean
+  proposalHasReactions: boolean
   scrollToComments: () => void
   scrollToReactions: () => void
   proposalId?: string
   discourseTopicId?: number
   discourseTopicSlug?: string
-  isLoadingProposal: boolean
 }
 
-const FloatingBar: React.FC<FloatingBarProps> = ({
+const FloatingBar = ({
   proposalId,
   discourseTopicId,
   discourseTopicSlug,
-  showViewReactions,
+  proposalHasReactions,
   isVisible,
   scrollToComments,
   scrollToReactions,
-  isLoadingProposal,
-}) => {
+}: FloatingBarProps) => {
   const t = useFormatMessage()
   const { comments, isLoadingComments } = useProposalComments(proposalId)
-  const showTotalComments = !isLoadingComments && !isLoadingProposal
+  const isTablet = useTabletMediaQuery()
+  const showViewReactions = proposalHasReactions && !isTablet
   return (
-    <div className={classNames('FloatingBar', !isVisible && !isLoadingProposal && 'FloatingBar--hidden')}>
+    <div className={classNames('FloatingBar', !isVisible && 'FloatingBar--hidden')}>
       <div className="FloatingBar__ProposalSectionActions">
         {showViewReactions && (
           <Link onClick={scrollToReactions} className={'FloatingBar__Action'}>
@@ -49,7 +49,7 @@ const FloatingBar: React.FC<FloatingBarProps> = ({
           </Link>
         )}
         <Link onClick={scrollToComments} className={'FloatingBar__Action'}>
-          {!showTotalComments && (
+          {isLoadingComments && (
             <Loader
               active
               size="tiny"
@@ -59,7 +59,7 @@ const FloatingBar: React.FC<FloatingBarProps> = ({
               )}
             />
           )}
-          {showTotalComments && (
+          {!isLoadingComments && (
             <>
               <Forum color={'var(--black-600)'} />
               {t('component.floating_bar.total_comments_label', { count: comments?.totalComments || 0 })}

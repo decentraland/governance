@@ -1,9 +1,8 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import { NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 import toSnakeCase from 'lodash/snakeCase'
-import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import WiderContainer from '../components/Common/WiderContainer'
 import BurgerMenuLayout from '../components/Layout/BurgerMenu/BurgerMenuLayout'
@@ -28,6 +27,8 @@ import useFormatMessage from '../hooks/useFormatMessage'
 import useProjects from '../hooks/useProjects'
 import useURLSearchParams from '../hooks/useURLSearchParams'
 import { isUnderMaintenance } from '../utils/maintenance'
+
+import './projects.css'
 
 function filterDisplayableProjects(
   projects: ProjectWithUpdate[] | undefined,
@@ -118,32 +119,30 @@ export default function ProjectsPage() {
         <BurgerMenuLayout navigationOnly activeTab={NavigationTab.Grants}>
           <WiderContainer>
             <ProjectsBanner />
-            <Grid stackable>
-              <Grid.Row>
-                <Grid.Column tablet="3">
-                  <NotMobile>
-                    <CategoryFilter
-                      filterType={ProjectTypeFilter}
-                      categoryCount={counter}
-                      startOpen
-                      showAllFilter={false}
-                    />
-                    <StatusFilter statusType={ProjectStatus} startOpen />
-                    <RequestBanner />
-                  </NotMobile>
-                </Grid.Column>
-                <Grid.Column tablet="13">
-                  {displayableProjects && (
-                    <CurrentProjectsList
-                      projects={displayableProjects}
-                      selectedType={type}
-                      selectedSubtype={subtype}
-                      status={toProjectStatus(status)}
-                    />
-                  )}
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
+            <div className="ProjectsPage__Container">
+              <div className="ProjectsPage__Sidebar">
+                <NotMobile>
+                  <CategoryFilter
+                    filterType={ProjectTypeFilter}
+                    categoryCount={counter}
+                    startOpen
+                    showAllFilter={false}
+                  />
+                  <StatusFilter statusType={ProjectStatus} startOpen />
+                  <RequestBanner />
+                </NotMobile>
+              </div>
+              <div>
+                {displayableProjects && (
+                  <CurrentProjectsList
+                    projects={displayableProjects}
+                    selectedType={type}
+                    selectedSubtype={subtype}
+                    status={toProjectStatus(status)}
+                  />
+                )}
+              </div>
+            </div>
           </WiderContainer>
         </BurgerMenuLayout>
       )}
