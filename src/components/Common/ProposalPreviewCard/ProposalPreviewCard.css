@@ -74,8 +74,6 @@
   text-overflow: ellipsis;
   white-space: initial;
   display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
 }
 
 .ProposalPreviewCard__DetailsItem:after {
