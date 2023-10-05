@@ -684,7 +684,7 @@ export class Governance extends API {
         title,
         body,
         type,
-        cta: url,
+        url,
       })
     )
     return response.data

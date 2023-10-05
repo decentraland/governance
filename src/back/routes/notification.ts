@@ -17,7 +17,7 @@ export default routes((router) => {
 
 async function sendNotification(req: WithAuth) {
   validateDebugAddress(req.auth)
-  const { title, body, recipient, cta, type } = req.body
+  const { title, body, recipient, url, type } = req.body
 
   if (type === NotificationType.TARGET && !recipient) {
     throw new RequestError('Target type needs recipient', RequestError.BadRequest)
@@ -32,7 +32,7 @@ async function sendNotification(req: WithAuth) {
     title,
     body,
     recipient,
-    url: cta,
+    url,
     customType: NotificationCustomType.Announcement,
   })
 }

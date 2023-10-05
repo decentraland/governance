@@ -44,3 +44,4 @@ export const DEBUG_ADDRESSES = (process.env.DEBUG_ADDRESSES || '')
 export const SNAPSHOT_STATUS_ENABLED = false
 export const DEFAULT_CHAIN_ID =
   process.env.GATSBY_DEFAULT_CHAIN_ID || clientEnv('GATSBY_DEFAULT_CHAIN_ID', String(ChainId.ETHEREUM_MAINNET))
+export const PUSH_CHANNEL_ID = process.env.GATSBY_PUSH_CHANNEL_ID || clientEnv('GATSBY_PUSH_CHANNEL_ID')

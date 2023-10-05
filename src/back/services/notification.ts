@@ -1,14 +1,14 @@
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 import { ethers } from 'ethers'
 
-import { NOTIFICATIONS_SERVICE_ENABLED } from '../../constants'
+import { NOTIFICATIONS_SERVICE_ENABLED, PUSH_CHANNEL_ID } from '../../constants'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { proposalUrl } from '../../entities/Proposal/utils'
 import { ErrorService } from '../../services/ErrorService'
 import { NotificationCustomType } from '../../shared/types/notifications'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
-import { NotificationType, PUSH_CHANNEL_ID, getCaipAddress, getPushNotificationsEnv } from '../../utils/notifications'
+import { NotificationType, getCaipAddress, getPushNotificationsEnv } from '../../utils/notifications'
 import { areValidAddresses } from '../utils/validations'
 
 import { CoauthorService } from './coauthor'
@@ -26,6 +26,8 @@ const NotificationIdentityType = {
 const ADDITIONAL_META_CUSTOM_TYPE = 0
 const ADDITIONAL_META_CUSTOM_TYPE_VERSION = 1
 
+type Recipient = string | string[] | undefined
+
 export class NotificationService {
   static async sendNotification({
     type,
@@ -38,7 +40,7 @@ export class NotificationService {
     type?: number
     title: string
     body: string
-    recipient: string | string[] | undefined
+    recipient: Recipient
     url: string
     customType: NotificationCustomType
   }) {
@@ -75,7 +77,7 @@ export class NotificationService {
     return response.data
   }
 
-  private static getType(type: number | undefined, recipient: string | string[] | undefined) {
+  private static getType(type: number | undefined, recipient: Recipient) {
     if (type) {
       return type
     }
@@ -91,7 +93,7 @@ export class NotificationService {
     return NotificationType.TARGET
   }
 
-  private static getRecipients(recipient: string | string[] | undefined) {
+  private static getRecipients(recipient: Recipient) {
     if (!recipient) {
       return undefined
     }
@@ -178,7 +180,7 @@ export class NotificationService {
 
       return await this.sendNotification({
         title: `Voting Ended on Your Proposal ${proposal.title}`,
-        body: 'The votes are in! Find out the outcome of the voting on your proposal now.',
+        body: 'The votes are in! Find out the outcome of the voting on your proposal now',
         recipient: addresses,
         url: proposalUrl(proposal.id),
         customType: NotificationCustomType.Proposal,
