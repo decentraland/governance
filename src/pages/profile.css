@@ -1,7 +1,9 @@
 .ProfilePage__Container {
-  display: flex;
+  display: flex !important;
   flex-direction: column;
+  width: 100%;
   gap: 24px;
+  margin: auto;
 }
 
 @media (min-width: 768px) {

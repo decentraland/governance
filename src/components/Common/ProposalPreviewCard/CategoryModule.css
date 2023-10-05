@@ -1,0 +1,34 @@
+.ProposalPreviewCard__Section.CategoryModule {
+  display: flex;
+  justify-content: space-between;
+}
+
+.CategoryModule__Container {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-start;
+  align-items: center;
+  min-width: 300px;
+  white-space: nowrap;
+}
+
+.CategoryModule__StatusPill {
+  display: flex;
+  min-width: 118px;
+  justify-content: flex-end;
+}
+
+.CategoryModule__GrantSize {
+  color: var(--black-400);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: var(--weight-medium);
+}
+
+.CategoryModule__Chevron {
+  visibility: hidden;
+}
+
+.CategoryModule__Chevron--visible {
+  visibility: visible;
+}

@@ -10,3 +10,19 @@
   font-size: 15px !important;
   line-height: 1.81 !important;
 }
+
+@media (min-width: 1001px) and (max-width: 1199px), (min-width: 1300px) {
+  .CategoryAssessment__Question {
+    font-size: 14px !important;
+  }
+  .CategoryAssessment__Text {
+    font-size: 17px !important;
+    line-height: 28px !important;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1299px), (max-width: 1000px) {
+  .CategoryAssessment__Question {
+    font-size: 13px !important;
+  }
+}

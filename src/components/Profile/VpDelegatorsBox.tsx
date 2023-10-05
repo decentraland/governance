@@ -40,7 +40,7 @@ export default function VpDelegatorsBox({
     !isLoggedUserProfile && !isLoadingUserVpDistribution && profileAddress && accountHasDelegations
 
   return (
-    <Container>
+    <Container fluid>
       <ProfileBox
         className="VpDelegatorsBox"
         title={t('page.profile.delegators.title')}

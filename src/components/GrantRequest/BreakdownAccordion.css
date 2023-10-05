@@ -1,3 +1,7 @@
+.BreakdownAccordion .BreakdownAccordion__Title {
+  font-family: var(--font-family) !important;
+}
+
 .BreakdownAccordion__TitleContainer {
   display: flex;
   justify-content: space-between;

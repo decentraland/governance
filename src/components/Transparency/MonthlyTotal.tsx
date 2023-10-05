@@ -10,6 +10,7 @@ import { formatBalance } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import { DetailItem } from '../Proposal/View/DetailItem'
 
+import ItemsList from './ItemsList'
 import './MonthlyTotal.css'
 
 enum Color {
@@ -43,7 +44,7 @@ export default function MonthlyTotal({ title, monthlyTotal, invertDiffColors = f
 
   return (
     <div className={classNames('MonthlyTotal', detailsVisibility)}>
-      <Card>
+      <Card className="MonthlyTotal__Card">
         <Card.Content className="MonthlyTotal_Headers">
           <div>
             <Header className="MonthlyTotal__Header">{title}</Header>
@@ -66,7 +67,7 @@ export default function MonthlyTotal({ title, monthlyTotal, invertDiffColors = f
           </div>
         </Card.Content>
         <Card.Content className={classNames('MonthlyTotal__Detail', detailsVisibility)}>
-          <div className="ItemsList">
+          <ItemsList>
             {monthlyTotal.details &&
               monthlyTotal.details.map((detail, index) => {
                 return (
@@ -78,7 +79,7 @@ export default function MonthlyTotal({ title, monthlyTotal, invertDiffColors = f
                   />
                 )
               })}
-          </div>
+          </ItemsList>
         </Card.Content>
         {monthlyTotal.details.length > MAX_TAGS && (
           <Button basic onClick={handleButtonClick}>

@@ -1,0 +1,59 @@
+@media (min-width: 768px) {
+  .ProposalHero__Container {
+    width: 100%;
+  }
+
+  .ProposalHero__Title {
+    font-size: 24px !important;
+    line-height: 28px !important;
+    letter-spacing: 0.3px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .ProposalHero__Text {
+    padding: 2.5em 0 !important;
+  }
+}
+
+.ProposalHero__Container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin-bottom: 24px;
+  isolation: isolate;
+}
+
+.ProposalHero__Text {
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.3em 0;
+}
+
+.ProposalHero__Title {
+  color: var(--white-900);
+  font-weight: var(--weight-semi-bold);
+  font-size: 18px;
+  line-height: 26px;
+  letter-spacing: 0.3px;
+  text-align: center;
+  padding: 0 2em;
+  margin: 8px 0;
+}
+
+@media (min-width: 768px) {
+  .ProposalHero__Title {
+    margin-bottom: 0.3em;
+    margin-top: unset;
+  }
+}
+
+.ProposalHero__Title::first-letter {
+  text-transform: capitalize;
+}
+
+.ProposalHero__Title--finished {
+  color: var(--black-700);
+}

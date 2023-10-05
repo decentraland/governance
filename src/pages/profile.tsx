@@ -5,6 +5,7 @@ import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
+import WiderContainer from '../components/Common/WiderContainer'
 import BurgerMenuLayout from '../components/Layout/BurgerMenu/BurgerMenuLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import LogIn from '../components/Layout/LogIn'
@@ -67,8 +68,12 @@ export default function ProfilePage() {
         image="https://decentraland.org/images/decentraland.png"
       />
       <Navigation activeTab={NavigationTab.Profile} />
-      <UserStats address={address} vpDistribution={vpDistribution} isLoadingVpDistribution={isLoadingVpDistribution} />
-      <div className="ProfilePage__Container">
+      <WiderContainer className="ProfilePage__Container">
+        <UserStats
+          address={address}
+          vpDistribution={vpDistribution}
+          isLoadingVpDistribution={isLoadingVpDistribution}
+        />
         <GrantBeneficiaryBox address={address} />
         <ActivityBox address={address} />
         <VpDelegationBox
@@ -87,7 +92,7 @@ export default function ProfilePage() {
           isLoadingScores={isLoadingScores}
         />
         <VotedProposalsBox address={address} />
-      </div>
+      </WiderContainer>
     </BurgerMenuLayout>
   )
 }

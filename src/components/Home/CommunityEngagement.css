@@ -54,6 +54,7 @@
     flex-direction: row;
     justify-content: space-between;
     column-gap: 26px;
+    max-height: 430px;
   }
 
   .CommunityEngagement__Data .ui.card.HomeCharts {

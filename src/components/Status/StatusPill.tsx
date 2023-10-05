@@ -15,6 +15,7 @@ type Props = {
   status: ProposalStatus
   size?: PillProps['size']
   isLink?: boolean
+  color?: PillColor
 }
 
 const ColorsConfig: Record<ProposalStatus, PillColor> = {
@@ -28,7 +29,7 @@ const ColorsConfig: Record<ProposalStatus, PillColor> = {
   [ProposalStatus.Deleted]: PillColor.Red,
 }
 
-export default function StatusPill({ className, status, size, isLink }: Props) {
+export default function StatusPill({ className, status, size, isLink, color }: Props) {
   const isMobile = useMobileMediaQuery()
 
   const style = status === (ProposalStatus.Enacted || ProposalStatus.OutOfBudget) ? 'shiny' : 'outline'
@@ -44,7 +45,7 @@ export default function StatusPill({ className, status, size, isLink }: Props) {
       size={pillSize}
       style={style}
       className={classNames('StatusPill', className)}
-      color={ColorsConfig[status]}
+      color={color || ColorsConfig[status]}
       icon={icon}
     >
       {name}
@@ -52,7 +53,11 @@ export default function StatusPill({ className, status, size, isLink }: Props) {
   )
 
   if (isLink) {
-    return <Link href={href}>{component}</Link>
+    return (
+      <Link href={href} className="Pill__Link">
+        {component}
+      </Link>
+    )
   }
 
   return component

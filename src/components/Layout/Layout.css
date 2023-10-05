@@ -2,6 +2,14 @@
   margin-bottom: 0;
   border-bottom: none;
   background-color: var(--background);
+  width: unset !important;
+  max-width: 1440px !important;
+  margin: 0 auto;
+}
+
+.dcl.new-user-menu .toggle {
+  width: 42px !important;
+  height: 42px !important;
 }
 
 @media only screen and (min-width: 1200px) {

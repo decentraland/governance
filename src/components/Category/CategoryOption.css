@@ -88,9 +88,24 @@
   color: var(--white-900);
 }
 
+.CategoryOption__IconContainer {
+  display: flex;
+}
+
 .CategoryOption__TitleContainer {
   width: 100%;
   justify-content: space-between;
+}
+
+.FilterHeader__Title,
+.CategoryOption__Title,
+.CategoryOption__SubcategoryItem:not(.CategoryOption__SubcategoryItem--active) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: initial;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
 }
 
 .CategoryOption__Arrow svg {
@@ -131,6 +146,7 @@
 
 .CategoryOption__SubcategoryItem--active {
   position: relative;
+  overflow: unset;
 }
 
 .CategoryOption__SubcategoryItem--active::after {

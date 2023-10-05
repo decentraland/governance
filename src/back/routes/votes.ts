@@ -76,8 +76,11 @@ export async function getCachedVotes(req: Request) {
 
 async function getAddressVotesWithProposals(req: Request) {
   const address = validateAddress(req.params.address)
-  const first = Number(req.query.first) || undefined
-  const skip = Number(req.query.skip) || undefined
+  const numFirst = Number(req.query.first)
+  const numSkip = Number(req.query.skip)
+
+  const first = Number.isInteger(numFirst) ? numFirst : undefined
+  const skip = Number.isInteger(numSkip) ? numSkip : undefined
 
   const votes = await SnapshotService.getAddressesVotes([address], first, skip)
 

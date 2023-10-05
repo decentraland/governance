@@ -86,9 +86,7 @@ const MetricsCards = () => {
         <div className="MetricsCards__Carousel">{content}</div>
       </Mobile>
       <NotMobile>
-        <Container>
-          <div className="MetricsCards">{content}</div>
-        </Container>
+        <div className="MetricsCards">{content}</div>
       </NotMobile>
     </>
   )

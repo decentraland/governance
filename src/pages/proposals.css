@@ -1,48 +1,57 @@
-.ui.pagination.menu {
-  justify-content: flex-end;
+.ProposalsPage__Container .ui.pagination.menu {
+  width: 100%;
+  justify-content: center !important;
+}
+
+.ProposalsPage__SubmitButton {
+  display: none !important;
+}
+
+.ProposalsPage__Empty {
+  margin-top: 60px;
+}
+
+.ProposalsPage__Sidebar {
+  max-width: var(--dao-sidebar-width);
   width: 100%;
 }
 
-.SubmitButton {
-  display: none !important;
+.ProposalsPage__Content {
+  width: 100%;
+}
+
+.ProposalsPage__List {
+  margin-bottom: 16px;
+}
+
+@media only screen and (max-width: 767px) {
+  .ProposalsPage__Container .ui.pagination.menu .item + .item {
+    margin-left: 5px;
+  }
+
+  .ProposalsPage__Container .ui.pagination.menu .item[type='nextItem'],
+  .ProposalsPage__Container .ui.pagination.menu .item[type='prevItem'] {
+    display: none !important;
+  }
+
+  .ProposalsPage__Container .ActionableLayout {
+    min-height: 300px;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .ProposalsPage__SubmitButton {
+    display: inline !important;
+  }
+}
+
+.ProposalsPage__Container {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
 }
 
 .Animated {
   width: 100%;
   transition: all 0.5s ease 0s;
-}
-
-.ui.pagination.menu {
-  justify-content: center !important;
-}
-
-.ProposalsTable__Empty {
-  margin-top: 60px;
-}
-
-/* Only Mobile */
-@media only screen and (max-width: 767px) {
-  .ui.pagination.menu .item + .item {
-    margin-left: 5px;
-  }
-
-  .ui.pagination.menu .item[type='nextItem'],
-  .ui.pagination.menu .item[type='prevItem'] {
-    display: none !important;
-  }
-
-  .ui.container > .ui.stackable.grid > .row > .column {
-    padding-bottom: 0 !important;
-  }
-
-  .ActionableLayout {
-    min-height: 300px;
-  }
-}
-
-/* Desktop Only */
-@media only screen and (min-width: 768px) {
-  .SubmitButton {
-    display: inline !important;
-  }
 }

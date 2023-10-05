@@ -38,7 +38,7 @@ function VpDelegationBox({ address, delegation, isLoadingDelegation, ownVp, isLo
   const profileHasADelegation = delegatedTo.length > 0 && !!ownVp
 
   return (
-    <Container>
+    <Container fluid>
       <ProfileBox
         title={t('page.profile.delegation.title')}
         info={t('page.profile.delegation.helper')}

@@ -17,7 +17,12 @@ const CategoryAssessmentItem = ({ label, children }: { label: string; children: 
       <h2 className="CategoryAssessment__Question">{label}</h2>
       <Markdown
         className="CategoryAssessment__Text"
-        componentsClassNames={{ h1: 'Heading--sm', h2: 'Heading--xs', h3: 'Heading--xs' }}
+        componentsClassNames={{
+          h1: 'Heading--sm',
+          h2: 'Heading--xs',
+          h3: 'Heading--xs',
+          p: 'CategoryAssessment__Text',
+        }}
       >
         {String(children)}
       </Markdown>

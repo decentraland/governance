@@ -1,29 +1,20 @@
-.ui.sub.header.GrantList__Sub {
+.GrantList__Total {
+  margin-bottom: 8px;
+}
+
+.GrantList__Title {
   border-bottom: 1px solid rgba(34, 36, 38, 0.1);
   padding-bottom: 1em;
   margin-bottom: 0;
+  text-transform: uppercase;
 }
 
-.ui.header.GrantList__Total {
-  font-size: x-large;
-  font-weight: var(--weight-semi-bold);
-}
-
-.content.GrantList__Content {
+.GrantList__Content {
   border-top: 0 !important;
 }
 
-.ItemsList {
-  width: 100%;
-  display: block;
-  margin-top: 0;
-  margin-bottom: 0;
-  padding-top: 16px;
-  position: relative;
-}
-
-a.GrantList__Link {
-  color: #6299f0;
+.GrantList__Link {
+  color: var(--blue-800);
   font-weight: var(--weight-semi-bold);
   font-size: 17px;
   display: flex;

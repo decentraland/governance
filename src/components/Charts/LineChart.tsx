@@ -61,6 +61,7 @@ function LineChart({ label, data, unit, colors }: Props) {
 
   const options = {
     responsive: true,
+    aspectRatio: 2.5,
     plugins: {
       legend: {
         display: false,

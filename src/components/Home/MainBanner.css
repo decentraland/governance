@@ -1,7 +1,7 @@
 .MainBanner {
   position: relative;
   padding: 24px 16px 30px 16px;
-  background: linear-gradient(180deg, #a524b3 0%, var(--dcl-primary) 100%);
+  background: linear-gradient(180deg, var(--fuchsia-500) 0%, var(--dcl-primary) 100%);
   border-radius: 8px;
 }
 
@@ -9,7 +9,6 @@
   .MainBanner {
     margin-bottom: 34px;
     padding: 45px 54px;
-    margin-bottom: 34px;
   }
 }
 
