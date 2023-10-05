@@ -14,6 +14,7 @@ export enum BadgeStatusReason {
   TenureEnded = 'tenure ended',
   Minted = 'Badge minted by user',
   BurnedByUser = 'Badge burned by user',
+  ReinstatedByUser = 'Reinstated by user',
   Other = 'other',
 }
 
