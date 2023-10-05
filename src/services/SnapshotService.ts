@@ -27,10 +27,14 @@ import { ProposalInCreation, ProposalLifespan } from './ProposalService'
 import RpcService from './RpcService'
 
 const DELEGATION_STRATEGY_NAME = 'delegation'
-const SLOW_RESPONSE_TIME_THRESHOLD_IN_MS = 8000 // 8 seconds
 const SNAPSHOT_STATUS_CACHE_KEY = 'SNAPSHOT_STATUS'
+const MAX_ERROR_BUFFER_SIZE = 30
+const SERVICE_FAILURE_ERROR_RATE_THRESHOLD = 0.25
 
 export class SnapshotService {
+  private static scoresRequestResults: boolean[] = []
+  private static graphQlRequestResults: boolean[] = []
+
   public static async getStatus(): Promise<SnapshotStatus | undefined> {
     const cachedStatus = CacheService.get<SnapshotStatus>(SNAPSHOT_STATUS_CACHE_KEY)
     if (cachedStatus) {
@@ -41,8 +45,8 @@ export class SnapshotService {
 
   public static async ping() {
     try {
-      const { status: graphQlStatus, addressesSample } = await this.pingGraphQl()
-      const scoresStatus = await this.pingScores(addressesSample)
+      const { status: graphQlStatus, addressesSample } = await this.measureGraphQlErrorRate()
+      const scoresStatus = await this.measureScoresErrorRate(addressesSample)
       const snapshotStatus = { scoresStatus, graphQlStatus }
       CacheService.set(SNAPSHOT_STATUS_CACHE_KEY, snapshotStatus)
       logger.log('Snapshot status:', snapshotStatus)
@@ -51,26 +55,50 @@ export class SnapshotService {
     }
   }
 
-  private static async pingScores(addressesSample: string[]): Promise<ServiceStatus> {
-    let scoresHealth = ServiceHealth.Normal
-    const responseTime = await SnapshotApi.get().ping(addressesSample)
-    if (responseTime === -1) {
-      scoresHealth = ServiceHealth.Failing
-    } else if (responseTime > SLOW_RESPONSE_TIME_THRESHOLD_IN_MS) {
-      scoresHealth = ServiceHealth.Slow
-    }
-    return { health: scoresHealth, responseTime }
-  }
-
-  private static async pingGraphQl(): Promise<{ status: ServiceStatus; addressesSample: string[] }> {
-    let health = ServiceHealth.Normal
+  private static async measureGraphQlErrorRate(): Promise<{ status: ServiceStatus; addressesSample: string[] }> {
+    let requestSuccessful = true
     const { responseTime, addressesSample } = await SnapshotGraphql.get().ping()
     if (responseTime === -1) {
-      health = ServiceHealth.Failing
-    } else if (responseTime > SLOW_RESPONSE_TIME_THRESHOLD_IN_MS) {
-      health = ServiceHealth.Slow
+      requestSuccessful = false
     }
-    return { status: { health, responseTime }, addressesSample }
+
+    this.graphQlRequestResults.push(requestSuccessful)
+    if (this.graphQlRequestResults.length > MAX_ERROR_BUFFER_SIZE) {
+      this.graphQlRequestResults.shift()
+    }
+    const errorRate =
+      this.graphQlRequestResults.filter((requestSuccessful) => !requestSuccessful).length /
+      this.graphQlRequestResults.length
+
+    let scoresHealth = ServiceHealth.Normal
+    if (errorRate > SERVICE_FAILURE_ERROR_RATE_THRESHOLD) {
+      scoresHealth = ServiceHealth.Failing
+    }
+
+    return { status: { health: scoresHealth, responseTime, errorRate }, addressesSample }
+  }
+
+  private static async measureScoresErrorRate(addressesSample: string[]): Promise<ServiceStatus> {
+    let requestSuccessful = true
+    const responseTime = await SnapshotApi.get().ping(addressesSample)
+    if (responseTime === -1) {
+      requestSuccessful = false
+    }
+
+    this.scoresRequestResults.push(requestSuccessful)
+    if (this.scoresRequestResults.length > MAX_ERROR_BUFFER_SIZE) {
+      this.scoresRequestResults.shift()
+    }
+    const errorRate =
+      this.scoresRequestResults.filter((requestSuccessful) => !requestSuccessful).length /
+      this.scoresRequestResults.length
+
+    let scoresHealth = ServiceHealth.Normal
+    if (errorRate > SERVICE_FAILURE_ERROR_RATE_THRESHOLD) {
+      scoresHealth = ServiceHealth.Failing
+    }
+
+    return { health: scoresHealth, responseTime, errorRate }
   }
 
   static async createProposal(
