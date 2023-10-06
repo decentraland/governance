@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { NewGrantCategory } from '../../entities/Grant/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Markdown from '../Common/Typography/Markdown'

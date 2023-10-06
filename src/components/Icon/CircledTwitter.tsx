@@ -1,5 +1,3 @@
-import React from 'react'
-
 function CircledTwitter({ className, size = '64' }: { size?: string; className?: string }) {
   return (
     <svg

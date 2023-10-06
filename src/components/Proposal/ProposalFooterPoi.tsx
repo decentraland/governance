@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { NewProposalPOI } from '../../entities/Proposal/types'

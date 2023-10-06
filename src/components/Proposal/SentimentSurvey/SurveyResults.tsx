@@ -1,4 +1,4 @@
-import React, { Ref, forwardRef, useMemo } from 'react'
+import { Ref, forwardRef, useMemo } from 'react'
 
 import { decodeSurvey } from '../../../entities/SurveyTopic/decoder'
 import { Reaction, Topic, TopicFeedback } from '../../../entities/SurveyTopic/types'

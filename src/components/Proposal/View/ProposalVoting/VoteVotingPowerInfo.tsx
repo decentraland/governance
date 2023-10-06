@@ -1,5 +1,3 @@
-import React from 'react'
-
 import Bold from 'decentraland-gatsby/dist/components/Text/Bold'
 
 import { MINIMUM_VP_REQUIRED_TO_VOTE } from '../../../../entities/Votes/constants'

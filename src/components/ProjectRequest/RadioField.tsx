@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Radio as DCLRadio, RadioProps } from 'decentraland-ui/dist/components/Radio/Radio'
 
 import './RadioField.css'

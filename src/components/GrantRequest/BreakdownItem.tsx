@@ -1,5 +1,3 @@
-import React from 'react'
-
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
 
 import './BreakdownItem.css'

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { Control, Controller } from 'react-hook-form'
 
 import type { DropdownItemProps } from 'decentraland-ui'

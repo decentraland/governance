@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 
 import useFormatMessage from '../../../hooks/useFormatMessage'

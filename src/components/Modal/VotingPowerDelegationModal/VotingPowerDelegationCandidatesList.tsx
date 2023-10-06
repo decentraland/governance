@@ -1,5 +1,3 @@
-import React from 'react'
-
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'

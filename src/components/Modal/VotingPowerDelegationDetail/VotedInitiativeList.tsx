@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Match } from '../../../entities/Snapshot/utils'
 import { VotedProposal } from '../../../entities/Votes/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'

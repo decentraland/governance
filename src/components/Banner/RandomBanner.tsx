@@ -1,5 +1,3 @@
-import React from 'react'
-
 import useNewsletterSubscription from '../../hooks/useNewsletterSubscription'
 import { NewsletterSubscriptionModal } from '../Modal/NewsletterSubscriptionModal/NewsletterSubscriptionModal'
 

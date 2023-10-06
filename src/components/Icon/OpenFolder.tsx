@@ -1,5 +1,3 @@
-import React from 'react'
-
 function OpenFolder({
   className,
   size = 24,

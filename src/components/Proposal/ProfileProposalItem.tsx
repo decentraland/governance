@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'

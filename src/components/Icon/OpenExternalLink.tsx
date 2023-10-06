@@ -1,5 +1,3 @@
-import React from 'react'
-
 function OpenExternalLink({
   className,
   size = '12',

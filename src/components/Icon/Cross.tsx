@@ -1,5 +1,3 @@
-import React from 'react'
-
 function Cross({ className }: { className?: string }) {
   return (
     <svg

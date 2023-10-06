@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { ProposalType } from '../../../entities/Proposal/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'

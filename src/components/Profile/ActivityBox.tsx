@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'

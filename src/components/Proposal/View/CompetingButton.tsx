@@ -1,5 +1,3 @@
-import React from 'react'
-
 import ChevronRight from '../../Icon/ChevronRight'
 
 import './CompetingButton.css'

@@ -1,5 +1,3 @@
-import React from 'react'
-
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 

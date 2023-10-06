@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { useLocation } from '@reach/router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'

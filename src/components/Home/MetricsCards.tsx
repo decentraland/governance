@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'

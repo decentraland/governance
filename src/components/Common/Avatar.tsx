@@ -1,5 +1,3 @@
-import React from 'react'
-
 import classNames from 'classnames'
 import { AvatarFace } from 'decentraland-ui/dist/components/AvatarFace/AvatarFace'
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import snakeCase from 'lodash/snakeCase'

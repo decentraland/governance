@@ -1,5 +1,3 @@
-import React from 'react'
-
 import NumberIcon from './NumberIcon'
 
 export interface GrantRequestSectionIconProps {

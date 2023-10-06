@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 import Menu from 'semantic-ui-react/dist/commonjs/collections/Menu'

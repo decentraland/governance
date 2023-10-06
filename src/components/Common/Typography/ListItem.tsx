@@ -1,5 +1,3 @@
-import React from 'react'
-
 import classNames from 'classnames'
 
 type ListItemProps = React.LiHTMLAttributes<HTMLLIElement>

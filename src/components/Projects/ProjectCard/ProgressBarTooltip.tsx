@@ -1,4 +1,3 @@
-import React from 'react'
 import { useIntl } from 'react-intl'
 
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'

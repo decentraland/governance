@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 import Flickity from 'react-flickity-component'
 
 import Bold from 'decentraland-gatsby/dist/components/Text/Bold'

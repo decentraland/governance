@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'

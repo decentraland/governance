@@ -1,5 +1,3 @@
-import React from 'react'
-
 function DocumentOutline({
   className,
   size = 24,

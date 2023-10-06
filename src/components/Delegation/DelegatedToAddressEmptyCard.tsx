@@ -1,5 +1,3 @@
-import React from 'react'
-
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Empty from '../Common/Empty'
 import Scale from '../Icon/Scale'

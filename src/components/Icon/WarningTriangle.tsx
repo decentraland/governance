@@ -1,5 +1,3 @@
-import React from 'react'
-
 function WarningTriangle({ className, size = '14' }: { size?: string; className?: string }) {
   return (
     <svg

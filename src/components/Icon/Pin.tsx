@@ -1,6 +1,4 @@
-import React from 'react'
-
-export default React.memo(function Pin() {
+export default function Pin() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
       <path
@@ -11,4 +9,4 @@ export default React.memo(function Pin() {
       />
     </svg>
   )
-})
+}

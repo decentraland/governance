@@ -1,5 +1,3 @@
-import React from 'react'
-
 function Add() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="28" fill="none" viewBox="0 0 24 28">

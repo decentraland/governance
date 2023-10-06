@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Popup, PopupProps } from 'decentraland-ui/dist/components/Popup/Popup'
 
 import Markdown from '../Common/Typography/Markdown'

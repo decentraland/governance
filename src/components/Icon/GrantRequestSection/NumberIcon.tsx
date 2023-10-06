@@ -1,5 +1,3 @@
-import React from 'react'
-
 export interface GrantRequestSectionIconProps {
   sectionNumber: number
   color?: string

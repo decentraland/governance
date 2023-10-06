@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import env from 'decentraland-gatsby/dist/utils/env'

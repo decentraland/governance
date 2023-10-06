@@ -1,4 +1,4 @@
-import React, { Ref, forwardRef } from 'react'
+import { Ref, forwardRef } from 'react'
 
 import classNames from 'classnames'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'

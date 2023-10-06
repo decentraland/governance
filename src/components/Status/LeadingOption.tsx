@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 
@@ -22,7 +22,7 @@ interface Props {
   status: ProposalStatus
 }
 
-export default React.memo(function LeadingOption({ status, leadingOption, metVP, userChoice }: Props) {
+export default function LeadingOption({ status, leadingOption, metVP, userChoice }: Props) {
   const t = useFormatMessage()
   const [user] = useAuthContext()
 
@@ -56,4 +56,4 @@ export default React.memo(function LeadingOption({ status, leadingOption, metVP,
       </p>
     </div>
   )
-})
+}

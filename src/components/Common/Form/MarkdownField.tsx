@@ -1,4 +1,3 @@
-import React from 'react'
 import { Control, Controller, FieldValues, Path, PathValue } from 'react-hook-form'
 
 import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'

@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import { Suspense, lazy } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
@@ -27,7 +27,7 @@ interface Props {
   isLoadingVpDistribution: boolean
 }
 
-const UserAvatar = React.lazy(() => import('./UserAvatar'))
+const UserAvatar = lazy(() => import('./UserAvatar'))
 
 export default function UserStats({ address, vpDistribution, isLoadingVpDistribution }: Props) {
   const t = useFormatMessage()

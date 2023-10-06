@@ -1,5 +1,3 @@
-import React from 'react'
-
 import classNames from 'classnames'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'

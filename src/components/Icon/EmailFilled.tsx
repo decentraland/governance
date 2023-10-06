@@ -1,5 +1,3 @@
-import React from 'react'
-
 function EmailFilled({ className }: { className?: string }) {
   return (
     <svg

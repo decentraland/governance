@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import { Fragment, useState } from 'react'
 
 import classNames from 'classnames'
 import toNumber from 'lodash/toNumber'

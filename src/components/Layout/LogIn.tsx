@@ -1,5 +1,3 @@
-import React from 'react'
-
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -59,4 +57,4 @@ function LogIn({ title, description }: LogInProps) {
   )
 }
 
-export default React.memo(LogIn)
+export default LogIn

@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
 
 import CompetingBids from './CompetingBids'

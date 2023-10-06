@@ -1,11 +1,9 @@
-import React from 'react'
-
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 
 import Navigation from '../components/Layout/Navigation'
 import useFormatMessage from '../hooks/useFormatMessage'
 
-export default React.memo(function NotFoundPage() {
+export default function NotFoundPage() {
   const t = useFormatMessage()
   const title = t('page.404.title')!
   const description = t('page.404.description')!
@@ -16,4 +14,4 @@ export default React.memo(function NotFoundPage() {
       <NotFound title={title} description={description} />
     </>
   )
-})
+}

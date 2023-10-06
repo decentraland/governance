@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import { UnitTypeLongPlural } from 'dayjs'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'

@@ -1,5 +1,3 @@
-import React from 'react'
-
 import toSnakeCase from 'lodash/snakeCase'
 
 import { NewGrantCategory, OldGrantCategory, SubtypeAlternativeOptions } from '../../entities/Grant/types'

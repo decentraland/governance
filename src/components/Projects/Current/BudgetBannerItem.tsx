@@ -1,5 +1,3 @@
-import React from 'react'
-
 import './BudgetBannerItem.css'
 
 interface Props {

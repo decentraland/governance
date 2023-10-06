@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Badge as GovernanceBadge } from '../../../entities/Badges/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Time from '../../../utils/date/Time'

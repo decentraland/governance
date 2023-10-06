@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { VpDistribution } from '../../../clients/SnapshotTypes'
 import { getFormattedPercentage } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'
