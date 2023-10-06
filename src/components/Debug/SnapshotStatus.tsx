@@ -12,7 +12,7 @@ import WarningTriangle from '../Icon/WarningTriangle'
 
 import './SnapshotStatus.css'
 
-const PING_INTERVAL_IN_MS = 10000 // 10 seconds
+const PING_INTERVAL_IN_MS = 30000 // 30 seconds
 
 function logIfNotNormal(status: SnapshotServiceStatus) {
   if (status.scoresStatus.health !== ServiceHealth.Normal || status.graphQlStatus.health !== ServiceHealth.Normal) {

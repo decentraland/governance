@@ -1,18 +1,15 @@
 import chalk from 'chalk'
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 
 import { SnapshotApi } from '../clients/SnapshotApi'
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 import { ServiceHealth, ServiceStatus, SnapshotStatus, UNKNOWN_STATUS } from '../clients/SnapshotTypes'
+import { SNAPSHOT_STATUS_ERROR_RATE_THRESHOLD, SNAPSHOT_STATUS_MAX_ERROR_BUFFER_SIZE } from '../constants'
 import { ErrorCategory } from '../utils/errorCategories'
 
 import CacheService from './CacheService'
 import { ErrorService } from './ErrorService'
 
 const SNAPSHOT_STATUS_CACHE_KEY = 'SNAPSHOT_STATUS'
-// TODO: make configurable by env var?
-const MAX_ERROR_BUFFER_SIZE = 30
-const SERVICE_FAILURE_ERROR_RATE_THRESHOLD = 0.25
 
 export class SnapshotStatusService {
   private static scoresRequestResults: boolean[] = []
@@ -64,13 +61,13 @@ export class SnapshotStatusService {
   }
 
   private static calculateErrorRate(responsesBuffer: boolean[]) {
-    if (responsesBuffer.length > MAX_ERROR_BUFFER_SIZE) {
+    if (responsesBuffer.length > SNAPSHOT_STATUS_MAX_ERROR_BUFFER_SIZE) {
       responsesBuffer.shift()
     }
     const errorRate = responsesBuffer.filter((requestSuccessful) => !requestSuccessful).length / responsesBuffer.length
 
     let health = ServiceHealth.Normal
-    if (errorRate > SERVICE_FAILURE_ERROR_RATE_THRESHOLD) {
+    if (errorRate > SNAPSHOT_STATUS_ERROR_RATE_THRESHOLD) {
       health = ServiceHealth.Failing
     }
     return { errorRate, health }
