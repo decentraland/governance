@@ -4,6 +4,7 @@ import classNames from 'classnames'
 
 import { Governance } from '../../clients/Governance'
 import { ServiceHealth, SnapshotStatus as SnapshotServiceStatus } from '../../clients/SnapshotTypes'
+import { SNAPSHOT_STATUS_ENABLED } from '../../constants'
 import { useBurgerMenu } from '../../hooks/useBurgerMenu'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Markdown from '../Common/Typography/Markdown'
@@ -27,7 +28,7 @@ export default function SnapshotStatus() {
   const updateServiceStatus = async () => {
     const status = await Governance.get().getSnapshotStatus()
     logIfNotNormal(status)
-    const show = status.scoresStatus.health === ServiceHealth.Failing
+    const show = status.scoresStatus.health === ServiceHealth.Failing && SNAPSHOT_STATUS_ENABLED
     setShowTopBar(show)
     setStatus((prev) => ({ ...prev, snapshotStatusBarOpen: show }))
   }
