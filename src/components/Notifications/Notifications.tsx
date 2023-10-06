@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 import * as PushAPI from '@pushprotocol/restapi'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import classNames from 'classnames'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 
@@ -23,8 +23,25 @@ export default function Notifications() {
   const [user, userState] = useAuthContext()
   const [isOpen, setOpen] = useState(false)
   const chainId = userState.chainId || ChainId.ETHEREUM_GOERLI
-  const hasNewNotifications = false // TODO: Integrate this
-  const lastNotificationId = 8403736 // TODO: Integrate this
+  const queryClient = useQueryClient()
+  const lastNotificationQueryKey = `lastNotificationId#${user}`
+  const mutation = useMutation(
+    (newLastNotificationId: number) => {
+      return Governance.get().updateUserLastNotification(newLastNotificationId)
+    },
+    {
+      onMutate: async (newLastNotificationId: number) => {
+        await queryClient.cancelQueries([lastNotificationQueryKey])
+        const previousTodos = queryClient.getQueryData([lastNotificationQueryKey])
+        queryClient.setQueryData([lastNotificationQueryKey], () => newLastNotificationId)
+        return { previousTodos }
+      },
+      onError: (_error, _newLastNotificationId, context) => {
+        queryClient.setQueryData([lastNotificationQueryKey], context?.previousTodos)
+      },
+    }
+  )
+
   const env = getPushNotificationsEnv(chainId)
 
   const {
@@ -60,6 +77,26 @@ export default function Notifications() {
     enabled: !!user && isSubscribed,
   })
 
+  const { data: lastNotificationId } = useQuery({
+    queryKey: [lastNotificationQueryKey],
+    queryFn: () => (user ? Governance.get().getUserLastNotification() : null),
+    enabled: !!user && isSubscribed,
+  })
+
+  const latestNotification = userNotifications?.[0].payload_id
+  const hasNewNotifications =
+    Number(userNotifications?.length) > 0 &&
+    !!lastNotificationId &&
+    latestNotification &&
+    latestNotification !== Number(lastNotificationId)
+
+  const handleFeedClose = () => {
+    setOpen(false)
+    if (hasNewNotifications) {
+      mutation.mutate(userNotifications?.[0].payload_id)
+    }
+  }
+
   return (
     <>
       <div>
@@ -78,7 +115,7 @@ export default function Notifications() {
       </div>
       <NotificationsFeed
         isOpen={isOpen}
-        onClose={() => setOpen(false)}
+        onClose={handleFeedClose}
         userNotifications={userNotifications}
         onSubscriptionChangeSuccess={refetchSubscriptions}
         lastNotificationId={lastNotificationId}

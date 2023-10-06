@@ -6,6 +6,7 @@ import { Request } from 'express'
 
 import { NotificationCustomType } from '../../shared/types/notifications'
 import { NotificationType } from '../../utils/notifications'
+import UserNotificationConfigModel, { UserNotificationConfigAttributes } from '../models/UserNotificationConfig'
 import { NotificationService } from '../services/notification'
 import { validateDebugAddress } from '../utils/validations'
 
@@ -13,6 +14,8 @@ export default routes((router) => {
   const withAuth = auth()
   router.post('/notifications/send', withAuth, handleAPI(sendNotification))
   router.get('/notifications/user/:address', handleAPI(getUserFeed))
+  router.get('/notifications/last-notification', withAuth, handleAPI(getUserLastNotification))
+  router.post('/notifications/last-notification', withAuth, handleAPI(updateUserLastNotification))
 })
 
 async function sendNotification(req: WithAuth) {
@@ -44,4 +47,25 @@ async function getUserFeed(req: Request) {
   }
 
   return await NotificationService.getUserFeed(address)
+}
+
+async function getUserLastNotification(req: WithAuth) {
+  const config = await UserNotificationConfigModel.findOne<UserNotificationConfigAttributes>({ address: req.auth })
+  if (!config) {
+    throw new RequestError('User notification not found', RequestError.NotFound)
+  }
+
+  return config.last_notification_id
+}
+
+async function updateUserLastNotification(req: WithAuth) {
+  const last_notification_id = req.body.last_notification_id
+  if (!last_notification_id) {
+    throw new RequestError('Missing Notification ID', RequestError.BadRequest)
+  }
+
+  return await UserNotificationConfigModel.upsert({
+    address: req.auth,
+    last_notification_id: req.body.last_notification_id,
+  })
 }

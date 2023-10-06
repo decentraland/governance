@@ -689,4 +689,22 @@ export class Governance extends API {
     )
     return response.data
   }
+
+  async getUserLastNotification() {
+    const response = await this.fetch<ApiResponse<number>>(
+      `/notifications/last-notification`,
+      this.options().method('GET').authorization({ sign: true })
+    )
+    return response.data
+  }
+
+  async updateUserLastNotification(last_notification_id: number) {
+    const response = await this.fetch<ApiResponse<string>>(
+      `/notifications/last-notification`,
+      this.options().method('POST').authorization({ sign: true }).json({
+        last_notification_id,
+      })
+    )
+    return response.data
+  }
 }

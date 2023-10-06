@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 import { Web3Provider } from '@ethersproject/providers'
@@ -35,7 +35,7 @@ interface Props {
   isRefetchingNotifications: boolean
   isLoadingSubscriptions: boolean
   isRefetchingSubscriptions: boolean
-  lastNotificationId: number
+  lastNotificationId: number | null | undefined
 }
 
 export default function NotificationsFeed({
@@ -53,7 +53,7 @@ export default function NotificationsFeed({
   const t = useFormatMessage()
   const [isSubscribing, setIsSubscribing] = useState(false)
   const [user, userState] = useAuthContext()
-  const [filteredNotifications, setFilteredNotifications] = useState<Notification[]>([])
+  const [notificationsPerPage, setNotificationsPerPage] = useState(NOTIFICATIONS_PER_PAGE)
   const lastNotificationIdIndex = userNotifications?.findIndex((item) => item.payload_id === lastNotificationId)
 
   useClickOutside('.NotificationsFeed', isOpen, onClose)
@@ -96,23 +96,15 @@ export default function NotificationsFeed({
   }
 
   const handleLoadMoreClick = () => {
-    const notifications = userNotifications?.slice(
-      0,
-      filteredNotifications.length + NOTIFICATIONS_PER_PAGE
-    ) as unknown as Notification[]
-    setFilteredNotifications(notifications)
+    if (filteredNotifications) {
+      setNotificationsPerPage(filteredNotifications.length + NOTIFICATIONS_PER_PAGE)
+    }
   }
 
-  useEffect(() => {
-    if (filteredNotifications.length === 0 && userNotifications && userNotifications?.length > 0) {
-      const notifications = userNotifications.slice(0, NOTIFICATIONS_PER_PAGE) as unknown as Notification[]
-      setFilteredNotifications(notifications)
-    }
-  }, [userNotifications, filteredNotifications.length])
-
+  const filteredNotifications = userNotifications?.slice(0, notificationsPerPage)
   const hasNotifications = filteredNotifications && filteredNotifications.length > 0
   const showNotifications = isSubscribed && !isLoadingNotifications && hasNotifications
-  const showLoadMoreButton = filteredNotifications.length !== userNotifications?.length
+  const showLoadMoreButton = filteredNotifications?.length !== userNotifications?.length
   const unsubscribedKey = isSubscribing ? 'subscribing' : 'unsubscribed'
   const UnsubscribedIcon = isSubscribing ? SignGray : NotificationBellInactive
   const isLoading =
