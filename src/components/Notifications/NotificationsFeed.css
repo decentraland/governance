@@ -72,8 +72,6 @@
 .NotificationsFeed__List {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding-bottom: 16px;
 }
 
 .NotificationsFeed__Content {

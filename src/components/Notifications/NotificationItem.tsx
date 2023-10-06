@@ -1,3 +1,5 @@
+import classNames from 'classnames'
+
 import { Notification, NotificationCustomType } from '../../shared/types/notifications'
 import Time from '../../utils/date/Time'
 import Link from '../Common/Typography/Link'
@@ -11,6 +13,7 @@ import './NotificationItem.css'
 
 interface Props {
   notification: Notification
+  isNew: boolean
 }
 
 function getIcon(metadata: { customType: string }) {
@@ -25,14 +28,17 @@ function getIcon(metadata: { customType: string }) {
   }
 }
 
-export default function NotificationItem({ notification }: Props) {
+export default function NotificationItem({ notification, isNew }: Props) {
   const hasLink = !!notification.payload.data.acta
   const Component = hasLink ? Link : 'div'
   const metadata = notification.payload.data.additionalMeta?.data || ''
   const Icon = getIcon(metadata ? JSON.parse(metadata) : null)
 
   return (
-    <Component className="NotificationItem" href={notification.payload.data.acta}>
+    <Component
+      className={classNames('NotificationItem', isNew && 'NotificationItem--new')}
+      href={notification.payload.data.acta}
+    >
       <div className="NotificationItem__IconContainer">
         <Icon />
       </div>

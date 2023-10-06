@@ -1,18 +1,14 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 import { Web3Provider } from '@ethersproject/providers'
 import * as PushAPI from '@pushprotocol/restapi'
-import { useQuery } from '@tanstack/react-query'
 import classNames from 'classnames'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
-import { Governance } from '../../clients/Governance'
 import { PUSH_CHANNEL_ID } from '../../constants'
-import { isSameAddress } from '../../entities/Snapshot/utils'
-import { DEFAULT_QUERY_STALE_TIME } from '../../hooks/constants'
 import { useClickOutside } from '../../hooks/useClickOutside'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import { Notification } from '../../shared/types/notifications'
@@ -32,51 +28,37 @@ const NOTIFICATIONS_PER_PAGE = 5
 interface Props {
   isOpen: boolean
   onClose: () => void
+  onSubscriptionChangeSuccess: () => void
+  userNotifications: Notification[] | null | undefined
+  isSubscribed: boolean
+  isLoadingNotifications: boolean
+  isRefetchingNotifications: boolean
+  isLoadingSubscriptions: boolean
+  isRefetchingSubscriptions: boolean
+  lastNotificationId: number
 }
 
-export default function NotificationsFeed({ isOpen, onClose }: Props) {
+export default function NotificationsFeed({
+  isOpen,
+  onClose,
+  onSubscriptionChangeSuccess,
+  userNotifications,
+  isSubscribed,
+  isLoadingNotifications,
+  isRefetchingNotifications,
+  isLoadingSubscriptions,
+  isRefetchingSubscriptions,
+  lastNotificationId,
+}: Props) {
   const t = useFormatMessage()
   const [isSubscribing, setIsSubscribing] = useState(false)
   const [user, userState] = useAuthContext()
   const [filteredNotifications, setFilteredNotifications] = useState<Notification[]>([])
+  const lastNotificationIdIndex = userNotifications?.findIndex((item) => item.payload_id === lastNotificationId)
 
   useClickOutside('.NotificationsFeed', isOpen, onClose)
   const chainId = userState.chainId || ChainId.ETHEREUM_GOERLI
   const env = getPushNotificationsEnv(chainId)
-
-  const {
-    data: subscriptions,
-    refetch: refetchSubscriptions,
-    isLoading: isLoadingSubscriptions,
-    isRefetching: isRefetchingSubscriptions,
-  } = useQuery({
-    queryKey: [`pushSubscriptions#${user}`],
-    queryFn: () =>
-      user
-        ? PushAPI.user.getSubscriptions({
-            user: getCaipAddress(user, chainId),
-            env,
-          })
-        : null,
-    enabled: !!user,
-    staleTime: DEFAULT_QUERY_STALE_TIME,
-  })
-
-  const isSubscribed = useMemo(
-    () => !!subscriptions?.find((item: { channel: string }) => isSameAddress(item.channel, PUSH_CHANNEL_ID)),
-    [subscriptions]
-  )
-
-  const {
-    data: userNotifications,
-    isLoading: isLoadingNotifications,
-    isRefetching: isRefetchingNotifications,
-  } = useQuery({
-    queryKey: [`notifications#${user}`],
-    queryFn: () => (user ? Governance.get().getUserNotifications(user) : null),
-    enabled: !!user && isSubscribed,
-    staleTime: DEFAULT_QUERY_STALE_TIME,
-  })
 
   const handleSubscribeUserToChannel = async () => {
     if (!user || !userState.provider) {
@@ -90,9 +72,7 @@ export default function NotificationsFeed({ isOpen, onClose }: Props) {
       signer,
       channelAddress: getCaipAddress(PUSH_CHANNEL_ID, chainId),
       userAddress: getCaipAddress(user, chainId),
-      onSuccess: () => {
-        refetchSubscriptions()
-      },
+      onSuccess: onSubscriptionChangeSuccess,
       env,
     })
 
@@ -110,7 +90,7 @@ export default function NotificationsFeed({ isOpen, onClose }: Props) {
       signer,
       channelAddress: getCaipAddress(PUSH_CHANNEL_ID, chainId),
       userAddress: getCaipAddress(user, chainId),
-      onSuccess: () => refetchSubscriptions(),
+      onSuccess: onSubscriptionChangeSuccess,
       env,
     })
   }
@@ -178,8 +158,12 @@ export default function NotificationsFeed({ isOpen, onClose }: Props) {
           {showNotifications && (
             <div className="NotificationsFeed__ListContainer">
               <div className="NotificationsFeed__List">
-                {filteredNotifications?.map((notification) => (
-                  <NotificationItem key={notification.payload_id} notification={notification} />
+                {filteredNotifications?.map((notification, index) => (
+                  <NotificationItem
+                    key={notification.payload_id}
+                    notification={notification}
+                    isNew={!!lastNotificationIdIndex && index < lastNotificationIdIndex}
+                  />
                 ))}
               </div>
               {showLoadMoreButton && (
