@@ -1,6 +1,5 @@
 .Username {
-  display: flex;
-  align-items: center;
+  display: inline;
 }
 
 .Username .dcl.blockie {
