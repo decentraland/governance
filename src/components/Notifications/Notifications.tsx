@@ -60,9 +60,6 @@ export default function Notifications() {
     enabled: !!user && isSubscribed,
   })
 
-  console.log('u', userNotifications)
-  console.log('s', subscriptions, PUSH_CHANNEL_ID)
-
   return (
     <>
       <div>
