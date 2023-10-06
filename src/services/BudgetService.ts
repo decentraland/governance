@@ -18,7 +18,7 @@ import { BUDGETING_START_DATE } from '../entities/Grant/constants'
 import { NewGrantCategory } from '../entities/Grant/types'
 import { isValidGrantBudget } from '../entities/Grant/utils'
 import ProposalModel from '../entities/Proposal/model'
-import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
+import { ProposalAttributes, ProposalType } from '../entities/Proposal/types'
 import QuarterBudgetModel from '../entities/QuarterBudget/model'
 import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { toNewGrantCategory } from '../entities/QuarterCategoryBudget/utils'
@@ -210,7 +210,7 @@ export class BudgetService {
 
   static async getBudgetWithContestants(proposalId: string) {
     const proposal = await ProposalService.getProposal(proposalId)
-    if (proposal.type !== ProposalType.Grant || proposal.status !== ProposalStatus.Active) {
+    if (proposal.type !== ProposalType.Grant) {
       return NULL_CONTESTED_BUDGET
     }
     const proposalBudget = await QuarterBudgetModel.getBudgetForDate(proposal.created_at)
