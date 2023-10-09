@@ -62,11 +62,9 @@
 }
 
 .ProposalPreviewCard__Details {
-  display: flex;
-  flex-direction: row;
+  display: block;
   color: var(--black-600);
   text-transform: uppercase;
-  align-items: center;
   font-weight: var(--weight-semi-bold);
   font-size: 11px;
   line-height: 26px;
@@ -78,6 +76,7 @@
 .ProposalPreviewCard__DetailsItem:after {
   content: '·';
   padding: 0 5px;
+  color: var(--black-600);
 }
 
 .ProposalPreviewCard__DetailsItem:last-child:after {
@@ -85,13 +84,16 @@
   padding: 0;
 }
 
+.ProposalPreviewCard__DetailsItem--highlight {
+  color: var(--red-800);
+}
+
 .ProposalPreviewCard__Pill {
   margin-right: 5px;
 }
 
 .ProposalPreviewCard__UsernameContainer {
-  display: flex;
-  flex-direction: row;
+  display: inline;
 }
 
 .ProposalPreviewCard__Username {

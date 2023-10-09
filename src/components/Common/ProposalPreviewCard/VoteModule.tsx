@@ -45,7 +45,7 @@ function VoteModule({ proposal, votes }: Props) {
         <CategoryPill proposalType={proposal.type} />
       </div>
       <div className="VoteModule__VoteSection">
-        <div className={`VoteModule__VotingContainer${hasVote ? '--Voted' : ''}`}>
+        <div className="VoteModule__VotingContainer">
           {hasVote ? (
             <>
               <Text weight="semi-bold" size="xs" className="VoteModule__VotingConsensus">
