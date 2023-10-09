@@ -22,7 +22,7 @@ import ContentLayout, { ContentSection } from '../../components/Layout/ContentLa
 import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/Layout/LogIn'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
-import { SUBMISSION_THRESHOLD_PITCH } from '../../entities/Proposal/constants'
+import { SUBMISSION_THRESHOLD_TENDER } from '../../entities/Proposal/constants'
 import { NewProposalTender, newProposalTenderScheme } from '../../entities/Proposal/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import usePreselectedProposal from '../../hooks/usePreselectedProposal'
@@ -65,7 +65,7 @@ export default function SubmitTenderProposal() {
   const [account, accountState] = useAuthContext()
   const { vpDistribution, isLoadingVpDistribution } = useVotingPowerDistribution(account)
   const submissionVpNotMet = useMemo(
-    () => !!vpDistribution && vpDistribution.total < Number(SUBMISSION_THRESHOLD_PITCH),
+    () => !!vpDistribution && vpDistribution.total < Number(SUBMISSION_THRESHOLD_TENDER),
     [vpDistribution]
   )
   const [formDisabled, setFormDisabled] = useState(false)
@@ -112,29 +112,28 @@ export default function SubmitTenderProposal() {
     }
   }
 
+  const title = t('page.submit_tender.title')
+  const description = t('page.submit_tender.description', { threshold: SUBMISSION_THRESHOLD_TENDER })
+
   if (accountState.loading) {
     return <LoadingView />
   }
 
   if (!account) {
-    return <LogIn title={t('page.submit_tender.title') || ''} description={t('page.submit_tender.description') || ''} />
+    return <LogIn title={title} description={description} />
   }
 
   return (
     <ContentLayout small preventNavigation={preventNavigation.current}>
-      <Head
-        title={t('page.submit_tender.title') || ''}
-        description={t('page.submit_tender.description') || ''}
-        image="https://decentraland.org/images/decentraland.png"
-      />
-      <Helmet title={t('page.submit_tender.title') || ''} />
+      <Head title={title} description={description} image="https://decentraland.org/images/decentraland.png" />
+      <Helmet title={title} />
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <ContentSection>
-          <Header size="huge">{t('page.submit_tender.title')}</Header>
+          <Header size="huge">{title}</Header>
         </ContentSection>
         <ContentSection>
-          <Markdown>{t('page.submit_tender.description')}</Markdown>
+          <Markdown>{description}</Markdown>
         </ContentSection>
 
         <ContentSection>
@@ -368,7 +367,7 @@ export default function SubmitTenderProposal() {
         {submissionVpNotMet && (
           <ContentSection>
             <Text size="lg" color="primary">
-              {t('error.tender.submission_vp_not_met')}
+              {t('error.tender.submission_vp_not_met', { threshold: SUBMISSION_THRESHOLD_TENDER })}
             </Text>
           </ContentSection>
         )}
