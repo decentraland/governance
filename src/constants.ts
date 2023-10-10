@@ -39,6 +39,7 @@ export const DEBUG_ADDRESSES = (process.env.DEBUG_ADDRESSES || '')
   .filter(isEthereumAddress)
   .map((address) => address.toLowerCase())
 
-export const SNAPSHOT_STATUS_ENABLED = process.env.SNAPSHOT_STATUS_ENABLED === 'true'
+export const SNAPSHOT_STATUS_ENABLED =
+  process.env.SNAPSHOT_STATUS_ENABLED === 'true' || getBooleanStringVar('SNAPSHOT_STATUS_ENABLED', true)
 export const SNAPSHOT_STATUS_MAX_ERROR_BUFFER_SIZE = Number(process.env.SNAPSHOT_STATUS_MAX_ERROR_BUFFER_SIZE || 30)
 export const SNAPSHOT_STATUS_ERROR_RATE_THRESHOLD = Number(process.env.SNAPSHOT_STATUS_ERROR_RATE_THRESHOLD || 0.33)
