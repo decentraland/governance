@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { useLocation } from '@reach/router'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'

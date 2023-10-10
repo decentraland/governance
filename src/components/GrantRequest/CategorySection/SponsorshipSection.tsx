@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'

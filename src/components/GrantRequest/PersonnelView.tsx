@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { TeamMember } from '../../entities/Grant/types'
 import useFormatMessage from '../../hooks/useFormatMessage'

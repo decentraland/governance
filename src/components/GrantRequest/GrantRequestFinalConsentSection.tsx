@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { NewGrantCategory } from '../../entities/Grant/types'
 import { userModifiedForm } from '../../entities/Proposal/utils'

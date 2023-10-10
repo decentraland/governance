@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { useQuery } from '@tanstack/react-query'
 import ImgFixed from 'decentraland-gatsby/dist/components/Image/ImgFixed'
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'

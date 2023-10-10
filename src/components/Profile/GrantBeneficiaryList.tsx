@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { Project } from '../../entities/Proposal/types'
 import { useSortingByKey } from '../../hooks/useSortingByKey'

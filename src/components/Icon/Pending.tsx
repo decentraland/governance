@@ -1,5 +1,3 @@
-import React from 'react'
-
 function Pending({ className, size = '32' }: { size?: string; className?: string }) {
   return (
     <svg

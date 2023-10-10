@@ -1,5 +1,3 @@
-import React from 'react'
-
 import VotingPower from '../Token/VotingPower'
 
 import { UserStatBox } from './UserStatBox'

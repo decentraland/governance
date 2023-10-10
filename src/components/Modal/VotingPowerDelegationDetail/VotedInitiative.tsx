@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
 import { VotedProposal } from '../../../entities/Votes/types'

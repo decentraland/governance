@@ -1,5 +1,3 @@
-import React from 'react'
-
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import CalendarAdd from '../../Icon/CalendarAdd'
 import NewBadge from '../NewBadge/NewBadge'

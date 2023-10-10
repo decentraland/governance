@@ -1,5 +1,3 @@
-import React from 'react'
-
 function Discord({
   className,
   color = 'var(--white-900)',

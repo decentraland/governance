@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
 import { Button } from 'decentraland-ui/dist/components/Button/Button'

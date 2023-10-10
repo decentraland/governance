@@ -1,5 +1,3 @@
-import React from 'react'
-
 function CheckCircle({ className, size = '32', outline }: { size?: string; className?: string; outline?: boolean }) {
   return (
     <>

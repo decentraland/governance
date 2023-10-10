@@ -1,5 +1,3 @@
-import React from 'react'
-
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Helper from '../Helper/Helper'
 import Lock from '../Icon/Lock'

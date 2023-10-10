@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 
 import './BoxTabs.css'

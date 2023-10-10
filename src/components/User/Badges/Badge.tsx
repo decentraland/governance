@@ -1,5 +1,3 @@
-import React from 'react'
-
 import classNames from 'classnames'
 
 import { BadgeStatus, Badge as GovernanceBadge } from '../../../entities/Badges/types'

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import classNames from 'classnames'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'

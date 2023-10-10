@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import classNames from 'classnames'
 import { useMobileMediaQuery, useTabletAndBelowMediaQuery } from 'decentraland-ui/dist/components/Media/Media'

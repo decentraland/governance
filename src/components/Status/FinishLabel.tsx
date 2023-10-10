@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import useCountdown, { Countdown } from '../../hooks/useCountdown'

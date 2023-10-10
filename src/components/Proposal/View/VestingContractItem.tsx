@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { VestingLog } from '../../../clients/VestingData'
 import { getVestingContractUrl } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'

@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import useFormatMessage from '../../hooks/useFormatMessage'

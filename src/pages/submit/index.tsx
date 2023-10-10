@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'

@@ -1,5 +1,3 @@
-import React from 'react'
-
 function Open({ className }: { className?: string }) {
   return (
     <svg

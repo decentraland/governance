@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 

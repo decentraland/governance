@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Badge } from '../../../entities/Badges/types'
 import useBadges from '../../../hooks/useBadges'

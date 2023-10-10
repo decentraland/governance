@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { useQuery } from '@tanstack/react-query'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 

@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { NewGrantCategory, OldGrantCategory, ProposalGrantCategory } from '../../entities/Grant/types'
 import { ProposalType } from '../../entities/Proposal/types'
 import Pill, { PillColor } from '../Common/Pill'

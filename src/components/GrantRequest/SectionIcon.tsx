@@ -1,5 +1,3 @@
-import React from 'react'
-
 import GrantRequestSectionError from '../Icon/GrantRequestSection/GrantRequestSectionError'
 import GrantRequestSectionFocused from '../Icon/GrantRequestSection/GrantRequestSectionFocused'
 import GrantRequestSectionOk from '../Icon/GrantRequestSection/GrantRequestSectionOk'

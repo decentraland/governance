@@ -1,5 +1,3 @@
-import React from 'react'
-
 import classNames from 'classnames'
 import { Back } from 'decentraland-ui/dist/components/Back/Back'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'

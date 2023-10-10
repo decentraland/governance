@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import ActionCard, { ActionCardProps } from '../../ActionCard/ActionCard'

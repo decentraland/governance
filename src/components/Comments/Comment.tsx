@@ -1,5 +1,3 @@
-import React from 'react'
-
 import DOMPurify from 'dompurify'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 

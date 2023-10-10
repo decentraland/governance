@@ -1,5 +1,3 @@
-import React from 'react'
-
 function QuestionCircle({ size = '17', className }: { size?: string; className?: string }) {
   return (
     <svg

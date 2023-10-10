@@ -1,5 +1,3 @@
-import React from 'react'
-
 import classNames from 'classnames'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'

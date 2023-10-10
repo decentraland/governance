@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 

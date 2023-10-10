@@ -1,5 +1,3 @@
-import React from 'react'
-
 import LocalizedFormat from 'dayjs/plugin/localizedFormat'
 
 import Time from '../../utils/date/Time'

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { PreviewCamera, PreviewEmote } from '@dcl/schemas'
 import { WearablePreview } from 'decentraland-ui/dist/components/WearablePreview/WearablePreview'

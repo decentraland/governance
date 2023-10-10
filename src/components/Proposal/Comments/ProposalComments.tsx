@@ -1,4 +1,4 @@
-import React, { Ref, forwardRef } from 'react'
+import { Ref, forwardRef } from 'react'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import useProposalComments from '../../../hooks/useProposalComments'

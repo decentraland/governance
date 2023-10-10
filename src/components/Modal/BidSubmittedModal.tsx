@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'

@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { CLIFF_PERIOD_IN_DAYS } from '../../../entities/Proposal/utils'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Time from '../../../utils/date/Time'

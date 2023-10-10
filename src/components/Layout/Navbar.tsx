@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { useLocation } from '@reach/router'
 import UserInformation, { UserInformationProps } from 'decentraland-gatsby/dist/components/User/UserInformation'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'

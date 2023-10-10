@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { UnitTypeLongPlural } from 'dayjs'
 import useTrackContext from 'decentraland-gatsby/dist/context/Track/useTrackContext'

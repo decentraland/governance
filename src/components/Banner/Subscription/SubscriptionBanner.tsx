@@ -1,5 +1,3 @@
-import React from 'react'
-
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Email from '../../Icon/Email'
 import Banner from '../Banner'
@@ -29,4 +27,4 @@ function SubscriptionBanner({ isVisible, onAction }: SubscriptionBannerProps) {
   )
 }
 
-export default React.memo(SubscriptionBanner)
+export default SubscriptionBanner

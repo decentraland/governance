@@ -1,5 +1,3 @@
-import React from 'react'
-
 import classNames from 'classnames'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 

@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
 
 import { MatchResult } from '../../../entities/Snapshot/utils'

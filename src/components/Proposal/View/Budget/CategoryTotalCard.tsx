@@ -1,5 +1,3 @@
-import React from 'react'
-
 import snakeCase from 'lodash/snakeCase'
 
 import { BudgetWithContestants } from '../../../../entities/Budget/types'

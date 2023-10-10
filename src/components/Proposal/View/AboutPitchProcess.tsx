@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { ProposalAttributes, ProposalStatus } from '../../../entities/Proposal/types'
 import { useBidProposals } from '../../../hooks/useBidProposals'

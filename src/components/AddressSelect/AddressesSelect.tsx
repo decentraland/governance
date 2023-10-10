@@ -1,4 +1,4 @@
-import React, { KeyboardEventHandler, useEffect, useState } from 'react'
+import { KeyboardEventHandler, useEffect, useState } from 'react'
 import { InputActionMeta, OnChangeValue } from 'react-select'
 import CreatableSelect from 'react-select/creatable'
 

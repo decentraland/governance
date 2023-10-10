@@ -1,5 +1,3 @@
-import React from 'react'
-
 function Megaphone({ className }: { className?: string }) {
   return (
     <svg

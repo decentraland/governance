@@ -1,5 +1,3 @@
-import React from 'react'
-
 function DecentralandLogo({ className }: { className?: string }) {
   return (
     <svg

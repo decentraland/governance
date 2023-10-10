@@ -1,5 +1,3 @@
-import React from 'react'
-
 function AddReaction({ className }: { className?: string }) {
   return (
     <svg

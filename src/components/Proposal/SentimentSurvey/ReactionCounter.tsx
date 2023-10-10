@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Reaction } from '../../../entities/SurveyTopic/types'
 import { REACTION_LIST } from '../../../entities/SurveyTopic/utils'
 import useFormatMessage from '../../../hooks/useFormatMessage'

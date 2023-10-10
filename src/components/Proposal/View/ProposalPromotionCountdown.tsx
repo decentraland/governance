@@ -1,5 +1,3 @@
-import React from 'react'
-
 import useCountdown from '../../../hooks/useCountdown'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Time from '../../../utils/date/Time'

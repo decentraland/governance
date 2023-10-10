@@ -1,5 +1,3 @@
-import React from 'react'
-
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 
 import { CoauthorAttributes } from '../../entities/Coauthor/types'

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
