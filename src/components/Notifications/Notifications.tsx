@@ -84,15 +84,31 @@ export default function Notifications() {
     queryFn: () => (user ? Governance.get().getUserNotifications(user) : null),
     enabled: !!user && isSubscribed,
   })
+  const latestNotification = userNotifications?.[0].payload_id
 
   const { data: lastNotificationId } = useQuery({
     queryKey: [lastNotificationQueryKey],
-    queryFn: () => (user ? Governance.get().getUserLastNotification() : null),
+    queryFn: async () => {
+      if (!user) {
+        return null
+      }
+
+      try {
+        return await Governance.get().getUserLastNotification()
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        if (error.statusCode === 404 && latestNotification) {
+          mutation.mutate(latestNotification)
+          return latestNotification
+        }
+
+        return null
+      }
+    },
     enabled: !!user && isSubscribed,
     retry: 3,
   })
 
-  const latestNotification = userNotifications?.[0].payload_id
   const hasNewNotifications =
     Number(userNotifications?.length) > 0 &&
     !!lastNotificationId &&
