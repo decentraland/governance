@@ -1,8 +1,7 @@
-import { Env } from '@dcl/ui-env'
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 import orderBy from 'lodash/orderBy'
 
-import { config } from '../../config'
+import { isProdEnv } from '../../utils/governanceEnvs'
 import { Scores } from '../Votes/utils'
 
 import { calculateWinnerChoice, getVotingResults, sameOptions } from './outcomeUtils'
@@ -69,8 +68,7 @@ export async function calculateOutcome(proposal: ProposalAttributes, context: Jo
       outcomeStatus: getOutcomeStatus(winnerChoice, winnerVotingPower, choices, results, proposal.required_to_pass),
     }
   } catch (e) {
-    //TODO: move this logging decisions to the ErrorService
-    if (config.getEnv() !== Env.LOCAL && config.getEnv() !== Env.DEVELOPMENT) {
+    if (isProdEnv()) {
       context.error(
         `Unable to calculate outcome for proposal: ${proposal.id}, snapshot id: ${proposal.snapshot_id}`,
         e as Error
