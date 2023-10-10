@@ -18,6 +18,9 @@ import NotificationBellInactive from '../Icon/NotificationBellInactive'
 import './Notifications.css'
 import NotificationsFeed from './NotificationsFeed'
 
+const NOTIFICATIONS_NEW_FEATURE_DISMISSED_LOCAL_STORAGE_KEY =
+  'org.decentraland.governance.notifications-new-feature-dismissed'
+
 export default function Notifications() {
   const t = useFormatMessage()
   const [user, userState] = useAuthContext()
@@ -25,6 +28,11 @@ export default function Notifications() {
   const chainId = userState.chainId || ChainId.ETHEREUM_GOERLI
   const queryClient = useQueryClient()
   const lastNotificationQueryKey = `lastNotificationId#${user}`
+  const [isNewFeatureDismissed, setIsNewFeatureDismissed] = useState(
+    typeof window !== undefined
+      ? localStorage.getItem(NOTIFICATIONS_NEW_FEATURE_DISMISSED_LOCAL_STORAGE_KEY) === 'true'
+      : true
+  )
   const mutation = useMutation(
     (newLastNotificationId: number) => {
       return Governance.get().updateUserLastNotification(newLastNotificationId)
@@ -93,10 +101,18 @@ export default function Notifications() {
 
   const handleFeedClose = () => {
     setOpen(false)
+
+    if (!isNewFeatureDismissed) {
+      localStorage.setItem(NOTIFICATIONS_NEW_FEATURE_DISMISSED_LOCAL_STORAGE_KEY, 'true')
+      setIsNewFeatureDismissed(true)
+    }
+
     if ((latestNotification && !lastNotificationId) || hasNewNotifications) {
       mutation.mutate(latestNotification)
     }
   }
+
+  const showDot = (!isNewFeatureDismissed || hasNewNotifications) && !isOpen
 
   return (
     <>
@@ -107,7 +123,7 @@ export default function Notifications() {
           aria-label={t('navigation.notifications.button_label')}
         >
           {isOpen ? <NotificationBellActive /> : <NotificationBellInactive />}
-          {hasNewNotifications && !isOpen && (
+          {showDot && (
             <div className="Notifications__DotOuterCircle">
               <div className="Notifications__DotInnerCircle" />
             </div>
