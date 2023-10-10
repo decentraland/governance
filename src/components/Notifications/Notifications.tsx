@@ -81,6 +81,7 @@ export default function Notifications() {
     queryKey: [lastNotificationQueryKey],
     queryFn: () => (user ? Governance.get().getUserLastNotification() : null),
     enabled: !!user && isSubscribed,
+    retry: 3,
   })
 
   const latestNotification = userNotifications?.[0].payload_id
@@ -92,8 +93,8 @@ export default function Notifications() {
 
   const handleFeedClose = () => {
     setOpen(false)
-    if (hasNewNotifications) {
-      mutation.mutate(userNotifications?.[0].payload_id)
+    if ((latestNotification && !lastNotificationId) || hasNewNotifications) {
+      mutation.mutate(latestNotification)
     }
   }
 

@@ -66,6 +66,6 @@ async function updateUserLastNotification(req: WithAuth) {
 
   return await UserNotificationConfigModel.upsert({
     address: req.auth,
-    last_notification_id: req.body.last_notification_id,
+    last_notification_id,
   })
 }
