@@ -4,7 +4,6 @@
 
 .Username .dcl.blockie {
   margin: 0;
-  margin-right: 7px;
 }
 
 .Username .dcl.blockie-wrapper {
@@ -16,8 +15,9 @@ a.Username span.address {
   color: inherit;
 }
 
-.Username .Avatar {
-  margin-right: 0.5rem;
+.Username .dcl.address,
+.Username .dcl.name {
+  margin-left: 0.5rem;
 }
 
 .Username .dcl.blockie-wrapper .dcl.blockie-children {

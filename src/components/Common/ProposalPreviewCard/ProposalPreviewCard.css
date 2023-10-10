@@ -98,6 +98,6 @@
 
 .ProposalPreviewCard__Username {
   font-weight: var(--weight-semi-bold);
-  color: var(--black-800);
-  margin-left: 2px;
+  color: var(--black-800) !important;
+  margin-left: 2px !important;
 }

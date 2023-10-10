@@ -20,6 +20,10 @@
   gap: 8px;
 }
 
+.Username.UserStats__Username {
+  display: flex;
+}
+
 .UserStats__UsernameContainer > svg {
   height: 20px;
   width: 15px;
