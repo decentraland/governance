@@ -1,8 +1,5 @@
-import { SNAPSHOT_STATUS_ENABLED } from '../../constants'
-import { SnapshotService } from '../../services/SnapshotService'
+import { SnapshotStatusService } from '../../services/SnapshotStatusService'
 
 export async function pingSnapshot() {
-  if (SNAPSHOT_STATUS_ENABLED) {
-    await SnapshotService.ping()
-  }
+  await SnapshotStatusService.ping()
 }
