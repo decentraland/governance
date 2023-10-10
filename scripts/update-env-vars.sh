@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# To run this script:
+# - jq for parsing JSON (sudo apt-get install jq or brew install jq)
+# - heroku CLI installed and authenticated
+# - awk should already be on your system
+# Put in the .env.heroku all the variables your want to add or overwrite to the review app
+
 TARGET_APP=$1
 
 if [[ -z "$TARGET_APP" ]]; then
