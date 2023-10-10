@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { DAO_DISCORD_URL, FORUM_URL } from '../../../constants'
 import { ProposalStatus, ProposalType } from '../../../entities/Proposal/types'

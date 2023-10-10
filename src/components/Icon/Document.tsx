@@ -1,5 +1,3 @@
-import React from 'react'
-
 function Document({
   className,
   size = 24,

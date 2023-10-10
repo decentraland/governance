@@ -1,5 +1,3 @@
-import React from 'react'
-
 import classNames from 'classnames'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 

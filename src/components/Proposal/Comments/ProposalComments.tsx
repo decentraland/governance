@@ -1,4 +1,4 @@
-import React, { Ref, forwardRef } from 'react'
+import { Ref, forwardRef } from 'react'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import useProposalComments from '../../../hooks/useProposalComments'
@@ -23,5 +23,7 @@ const ProposalComments = forwardRef(({ proposal }: ProposalCommentsProps, ref: R
     </div>
   )
 })
+
+ProposalComments.displayName = 'ProposalComments'
 
 export default ProposalComments

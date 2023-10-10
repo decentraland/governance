@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import ReactMarkdown, { Components, Options } from 'react-markdown'
 
 import classNames from 'classnames'

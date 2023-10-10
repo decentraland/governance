@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { SelectedVoteChoice, Vote } from '../../../../entities/Votes/types'

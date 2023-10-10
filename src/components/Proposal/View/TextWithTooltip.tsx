@@ -1,5 +1,3 @@
-import React from 'react'
-
 import classNames from 'classnames'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 

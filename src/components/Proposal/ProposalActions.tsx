@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { useIsMutating } from '@tanstack/react-query'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'

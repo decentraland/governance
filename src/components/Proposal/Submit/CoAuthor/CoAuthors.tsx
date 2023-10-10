@@ -1,5 +1,3 @@
-import React from 'react'
-
 import useFormatMessage from '../../../../hooks/useFormatMessage'
 import AddressesSelect from '../../../AddressSelect/AddressesSelect'
 import SubLabel from '../../../Common/SubLabel'

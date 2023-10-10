@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { getFormattedPercentage } from '../../../../helpers'
 import { DistributionBarItemProps } from '../../../Common/DistributionBar/DistributionBarItem'
 import ArrowMarker from '../../../Icon/ArrowMarker'

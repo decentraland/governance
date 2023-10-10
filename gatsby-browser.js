@@ -3,8 +3,6 @@
  *
  * See: https://www.gatsbyjs.org/docs/browser-apis/
  */
-import React from 'react'
-
 import 'core-js/features/set-immediate'
 import 'semantic-ui-css/semantic.min.css'
 import 'balloon-css/balloon.min.css'

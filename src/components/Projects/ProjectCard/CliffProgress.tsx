@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { CLIFF_PERIOD_IN_DAYS } from '../../../entities/Proposal/utils'
 import { getRoundedPercentage } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'

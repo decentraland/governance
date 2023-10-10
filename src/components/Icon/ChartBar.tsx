@@ -1,5 +1,3 @@
-import React from 'react'
-
 function ChartBar({
   className,
   size = 24,

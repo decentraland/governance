@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { Reaction, Topic } from '../../../entities/SurveyTopic/types'
 import { REACTION_LIST } from '../../../entities/SurveyTopic/utils'

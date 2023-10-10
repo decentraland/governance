@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { forumUrl } from '../../entities/Proposal/utils'
 import { getUpdateUrl } from '../../entities/Updates/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'

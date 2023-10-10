@@ -1,5 +1,3 @@
-import React from 'react'
-
 import Link from '../../Common/Typography/Link'
 
 import './Action.css'

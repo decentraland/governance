@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { forumUserUrl } from '../../entities/Proposal/utils'

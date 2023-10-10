@@ -1,5 +1,3 @@
-import React from 'react'
-
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Footer } from 'decentraland-ui/dist/components/Footer/Footer'
 import { Navbar, NavbarProps } from 'decentraland-ui/dist/components/Navbar/Navbar'

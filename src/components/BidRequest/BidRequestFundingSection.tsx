@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 
 import { Field as DCLField } from 'decentraland-ui/dist/components/Field/Field'

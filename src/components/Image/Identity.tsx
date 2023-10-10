@@ -1,6 +1,4 @@
 /* eslint-disable react/no-unknown-property */
-import React from 'react'
-
 function Identity() {
   return (
     <svg width="418" height="185" viewBox="0 0 418 185" fill="none" xmlns="http://www.w3.org/2000/svg">

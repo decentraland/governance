@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import Icon from '@jparnaudo/react-crypto-icons'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'

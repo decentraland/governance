@@ -1,5 +1,3 @@
-import React from 'react'
-
 import Markdown from './Typography/Markdown'
 import Text from './Typography/Text'
 

@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 
 import { Badge, UserBadges } from '../../../entities/Badges/types'

@@ -1,5 +1,3 @@
-import React from 'react'
-
 import Sidebar from 'semantic-ui-react/dist/commonjs/modules/Sidebar/Sidebar'
 
 import { useClickOutside } from '../../hooks/useClickOutside'

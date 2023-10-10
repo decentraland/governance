@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import snakeCase from 'lodash/snakeCase'

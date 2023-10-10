@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { GrantRequestCategoryAssessment, NewGrantCategory } from '../../entities/Grant/types'
 import useFormatMessage from '../../hooks/useFormatMessage'

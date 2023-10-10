@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { useIntl } from 'react-intl'
 
 import { ProjectWithUpdate, ProposalType } from '../../../entities/Proposal/types'

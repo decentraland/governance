@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -125,4 +125,4 @@ const Navigation = ({ activeTab }: NavigationProps) => {
   )
 }
 
-export default React.memo(Navigation)
+export default Navigation

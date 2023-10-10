@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { ProposalAttributes, ProposalType } from '../../../entities/Proposal/types'
 import { useBidProposals } from '../../../hooks/useBidProposals'
 import { useTenderProposals } from '../../../hooks/useTenderProposals'

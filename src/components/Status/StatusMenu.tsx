@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 

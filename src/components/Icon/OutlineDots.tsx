@@ -1,5 +1,3 @@
-import React from 'react'
-
 function OutlineDots({ className }: { className?: string }) {
   return (
     <svg

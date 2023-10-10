@@ -1,5 +1,3 @@
-import React from 'react'
-
 function Scale() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="76" height="60" fill="none" viewBox="0 0 76 60">

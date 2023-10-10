@@ -1,6 +1,4 @@
-import React from 'react'
-
-export default React.memo(function JumpIn(props: React.SVGProps<SVGSVGElement>) {
+export default function JumpIn(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" {...props}>
       <path
@@ -11,4 +9,4 @@ export default React.memo(function JumpIn(props: React.SVGProps<SVGSVGElement>) 
       />
     </svg>
   )
-})
+}

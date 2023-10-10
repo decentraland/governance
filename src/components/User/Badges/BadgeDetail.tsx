@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Badge as GovernanceBadge } from '../../../entities/Badges/types'
 import { POLYGONSCAN_BASE_URL } from '../../../entities/Transparency/utils'
 import useFormatMessage from '../../../hooks/useFormatMessage'

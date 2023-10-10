@@ -1,5 +1,3 @@
-import React from 'react'
-
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 
 import ProposalSubmitPoiPage from '../../components/Proposal/Submit/ProposalSubmitPoiPage'

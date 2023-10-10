@@ -1,5 +1,3 @@
-import React from 'react'
-
 import classNames from 'classnames'
 
 import { CatalystType, HiringType, PoiType, ProposalType, isHiringType } from '../../entities/Proposal/types'

@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { ProposalAttributes, ProposalType } from '../../../entities/Proposal/types'
 import { UpdateAttributes } from '../../../entities/Updates/types'
 import { isProposalStatusWithUpdates } from '../../../entities/Updates/utils'

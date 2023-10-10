@@ -1,5 +1,3 @@
-import React from 'react'
-
 import Markdown from '../../Common/Typography/Markdown'
 
 import './ProposalMarkdown.css'

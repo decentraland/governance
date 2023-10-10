@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 

@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { OPEN_CALL_FOR_DELEGATES_LINK } from '../../../constants'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Delegate from '../../Icon/Delegate'

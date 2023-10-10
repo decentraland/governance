@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 import Flickity, { FlickityOptions } from 'react-flickity-component'
 
 import classNames from 'classnames'

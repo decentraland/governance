@@ -1,5 +1,3 @@
-import React from 'react'
-
 function Warning({ className, size = '32' }: { size?: string; className?: string }) {
   return (
     <svg
