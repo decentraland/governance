@@ -75,7 +75,7 @@ const Username = ({ address, size, linked, variant = UsernameVariant.Full, stron
           {hasDclProfile && (
             <>
               <Avatar size={size} address={address} />
-              {profileHasName && !isAvatarVariant && <span className="dcl name">{profile!.name}</span>}
+              {profileHasName && !isAvatarVariant && <span className="Username__Name">{profile!.name}</span>}
               {!profileHasName && !isAvatarVariant && <Address value={checksumAddress} strong={strong} />}
             </>
           )}

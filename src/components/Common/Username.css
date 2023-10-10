@@ -16,7 +16,7 @@ a.Username span.address {
 }
 
 .Username .dcl.address,
-.Username .dcl.name {
+.Username .Username__Name {
   margin-left: 0.5rem;
 }
 
