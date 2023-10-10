@@ -3,76 +3,20 @@ import isNumber from 'lodash/isNumber'
 
 import { SnapshotApi, SnapshotReceipt } from '../clients/SnapshotApi'
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
-import {
-  DetailedScores,
-  ServiceHealth,
-  ServiceStatus,
-  SnapshotProposal,
-  SnapshotStatus,
-  SnapshotVote,
-  UNKNOWN_STATUS,
-  VpDistribution,
-} from '../clients/SnapshotTypes'
+import { DetailedScores, SnapshotProposal, SnapshotVote, VpDistribution } from '../clients/SnapshotTypes'
 import * as templates from '../entities/Proposal/templates'
 import { proposalUrl, snapshotProposalUrl } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { isSameAddress } from '../entities/Snapshot/utils'
 import { inBackground } from '../helpers'
 import { Avatar } from '../utils/Catalyst/types'
-import { ErrorCategory } from '../utils/errorCategories'
 
-import CacheService from './CacheService'
-import { ErrorService } from './ErrorService'
 import { ProposalInCreation, ProposalLifespan } from './ProposalService'
 import RpcService from './RpcService'
 
 const DELEGATION_STRATEGY_NAME = 'delegation'
-const SLOW_RESPONSE_TIME_THRESHOLD_IN_MS = 8000 // 8 seconds
-const SNAPSHOT_STATUS_CACHE_KEY = 'SNAPSHOT_STATUS'
 
 export class SnapshotService {
-  public static async getStatus(): Promise<SnapshotStatus | undefined> {
-    const cachedStatus = CacheService.get<SnapshotStatus>(SNAPSHOT_STATUS_CACHE_KEY)
-    if (cachedStatus) {
-      return cachedStatus
-    }
-    return { scoresStatus: UNKNOWN_STATUS, graphQlStatus: UNKNOWN_STATUS }
-  }
-
-  public static async ping() {
-    try {
-      const { status: graphQlStatus, addressesSample } = await this.pingGraphQl()
-      const scoresStatus = await this.pingScores(addressesSample)
-      const snapshotStatus = { scoresStatus, graphQlStatus }
-      CacheService.set(SNAPSHOT_STATUS_CACHE_KEY, snapshotStatus)
-      logger.log('Snapshot status:', snapshotStatus)
-    } catch (error) {
-      ErrorService.report('Unable to determine snapshot status', { error, category: ErrorCategory.Snapshot })
-    }
-  }
-
-  private static async pingScores(addressesSample: string[]): Promise<ServiceStatus> {
-    let scoresHealth = ServiceHealth.Normal
-    const responseTime = await SnapshotApi.get().ping(addressesSample)
-    if (responseTime === -1) {
-      scoresHealth = ServiceHealth.Failing
-    } else if (responseTime > SLOW_RESPONSE_TIME_THRESHOLD_IN_MS) {
-      scoresHealth = ServiceHealth.Slow
-    }
-    return { health: scoresHealth, responseTime }
-  }
-
-  private static async pingGraphQl(): Promise<{ status: ServiceStatus; addressesSample: string[] }> {
-    let health = ServiceHealth.Normal
-    const { responseTime, addressesSample } = await SnapshotGraphql.get().ping()
-    if (responseTime === -1) {
-      health = ServiceHealth.Failing
-    } else if (responseTime > SLOW_RESPONSE_TIME_THRESHOLD_IN_MS) {
-      health = ServiceHealth.Slow
-    }
-    return { status: { health, responseTime }, addressesSample }
-  }
-
   static async createProposal(
     proposalInCreation: ProposalInCreation,
     proposalId: string,

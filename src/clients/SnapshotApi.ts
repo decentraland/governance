@@ -188,8 +188,8 @@ export class SnapshotApi {
     return Number(time.toString().slice(0, -3))
   }
 
-  async ping(addressesSample: string[]) {
-    const addresses = addressesSample.length === 0 ? DEBUG_ADDRESSES : addressesSample
+  async ping(addressesSample?: string[]) {
+    const addresses = !addressesSample || addressesSample.length === 0 ? DEBUG_ADDRESSES : addressesSample
     try {
       const { formattedAddresses, spaceName, network, strategies, scoreApiUrl } = await this.prepareScoresQueryArgs(
         addresses

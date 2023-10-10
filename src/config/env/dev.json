@@ -22,6 +22,7 @@
   "GATSBY_SNAPSHOT_SPACE": "daotest.dcl.eth",
   "GATSBY_SNAPSHOT_URL": "https://demo.snapshot.org/",
   "GATSBY_SNAPSHOT_QUERY_ENDPOINT": "https://api.thegraph.com/subgraphs/name/snapshot-labs/snapshot",
+  "SNAPSHOT_STATUS_ENABLED": "true",
   "GATSBY_SUBMISSION_THRESHOLD_DRAFT": "100",
   "GATSBY_SUBMISSION_THRESHOLD_GOVERNANCE": "100",
   "GATSBY_SUBMISSION_THRESHOLD_POLL": "100",

@@ -41,7 +41,11 @@ export const DEBUG_ADDRESSES = (process.env.DEBUG_ADDRESSES || '')
   .split(',')
   .filter(isEthereumAddress)
   .map((address) => address.toLowerCase())
-export const SNAPSHOT_STATUS_ENABLED = false
+
+export const SNAPSHOT_STATUS_ENABLED =
+  process.env.SNAPSHOT_STATUS_ENABLED === 'true' || getBooleanStringVar('SNAPSHOT_STATUS_ENABLED', true)
+export const SNAPSHOT_STATUS_MAX_ERROR_BUFFER_SIZE = Number(process.env.SNAPSHOT_STATUS_MAX_ERROR_BUFFER_SIZE || 30)
+export const SNAPSHOT_STATUS_ERROR_RATE_THRESHOLD = Number(process.env.SNAPSHOT_STATUS_ERROR_RATE_THRESHOLD || 0.33)
 export const DEFAULT_CHAIN_ID =
   process.env.GATSBY_DEFAULT_CHAIN_ID || clientEnv('GATSBY_DEFAULT_CHAIN_ID', String(ChainId.ETHEREUM_MAINNET))
 export const PUSH_CHANNEL_ID = process.env.GATSBY_PUSH_CHANNEL_ID || clientEnv('GATSBY_PUSH_CHANNEL_ID')

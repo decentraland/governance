@@ -327,7 +327,7 @@
       "deliverables_too_short": "Deliverables is too short",
       "deliverables_too_large": "Deliverables is too large",
       "target_release_quarter_empty": "Target release quarter is empty",
-      "submission_vp_not_met": "This action requires at least 100 VP."
+      "submission_vp_not_met": "This action requires at least {threshold} VP."
     },
     "bid": {
       "funding": {
@@ -1895,7 +1895,7 @@
     },
     "submit_tender": {
       "title": "Tender proposal",
-      "description": "Tender proposals are the second step in the Bidding & Tendering process. The aim of this stage is to refine the problems outlined in the Pitch proposal, providing a clearer vision of what the execution teams should propose in their Bid proposals.\n\nThis action requires at least 100 VP. [Buy MANA](https://account.decentraland.org/) to get VP, or [run for delegate](https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840/5).",
+      "description": "Tender proposals are the second step in the Bidding & Tendering process. The aim of this stage is to refine the problems outlined in the Pitch proposal, providing a clearer vision of what the execution teams should propose in their Bid proposals.\n\nThis action requires at least {threshold} VP. [Buy MANA](https://account.decentraland.org/) to get VP, or [run for delegate](https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840/5).",
       "linked_proposal_label": "Linked Pitch Proposal",
       "project_name_label": "Project name",
       "summary_label": "Summary",

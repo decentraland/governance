@@ -26,6 +26,7 @@
   width: auto;
   height: auto;
   max-width: 100%;
+  word-break: break-word;
 }
 
 .Comment__Cooked img {

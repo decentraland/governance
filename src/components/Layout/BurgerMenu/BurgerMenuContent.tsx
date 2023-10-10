@@ -29,7 +29,7 @@ const filtersInitialStatus = { categoryOpen: true, statusOpen: false, timeFrameO
 
 const OPEN_BURGER_HEIGHT = 895
 const SEARCH_TITLE_HEIGHT = 32
-const CATEGORY_FILTER_HEIGHT = 407
+const CATEGORY_FILTER_HEIGHT = 600
 const STATUS_FILTER_HEIGHT = 290
 const TIMEFRAME_FILTER_HEIGHT = 212
 const CLOSED_FILTER_HEIGHT = 56

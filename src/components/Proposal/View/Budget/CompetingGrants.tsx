@@ -14,7 +14,7 @@ interface Props {
   budget: BudgetWithContestants
 }
 
-export default function CompetingProposals({ proposal, budget }: Props) {
+export default function CompetingGrants({ proposal, budget }: Props) {
   const t = useFormatMessage()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const grantCategory = proposal.configuration.category

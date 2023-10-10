@@ -62,23 +62,21 @@
 }
 
 .ProposalPreviewCard__Details {
-  display: flex;
-  flex-direction: row;
+  display: block;
   color: var(--black-600);
   text-transform: uppercase;
-  align-items: center;
   font-weight: var(--weight-semi-bold);
   font-size: 11px;
   line-height: 26px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: initial;
-  display: -webkit-box;
 }
 
 .ProposalPreviewCard__DetailsItem:after {
   content: '·';
   padding: 0 5px;
+  color: var(--black-600);
 }
 
 .ProposalPreviewCard__DetailsItem:last-child:after {
@@ -86,17 +84,20 @@
   padding: 0;
 }
 
+.ProposalPreviewCard__DetailsItem--highlight {
+  color: var(--red-800);
+}
+
 .ProposalPreviewCard__Pill {
   margin-right: 5px;
 }
 
 .ProposalPreviewCard__UsernameContainer {
-  display: flex;
-  flex-direction: row;
+  display: inline;
 }
 
 .ProposalPreviewCard__Username {
   font-weight: var(--weight-semi-bold);
-  color: var(--black-800);
-  margin-left: 2px;
+  color: var(--black-800) !important;
+  margin-left: 2px !important;
 }

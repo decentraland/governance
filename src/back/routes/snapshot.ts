@@ -5,6 +5,7 @@ import { Request } from 'express'
 
 import { SnapshotVote } from '../../clients/SnapshotTypes'
 import { SnapshotService } from '../../services/SnapshotService'
+import { SnapshotStatusService } from '../../services/SnapshotStatusService'
 import {
   validateAddress,
   validateDates,
@@ -26,7 +27,7 @@ export default routes((router) => {
 })
 
 async function getStatus() {
-  return await SnapshotService.getStatus()
+  return await SnapshotStatusService.getStatus()
 }
 
 async function getConfig(req: Request<{ spaceName?: string }>) {

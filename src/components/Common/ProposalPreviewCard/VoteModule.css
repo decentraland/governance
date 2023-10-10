@@ -1,11 +1,12 @@
 .ProposalPreviewCard__Section.VoteModule {
   display: none;
+  min-width: 450px;
 }
 
 @media (min-width: 992px) {
   .ProposalPreviewCard__Section.VoteModule {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
   }
 }
 
@@ -28,6 +29,10 @@
   white-space: nowrap;
 }
 
+.VoteModule__VotingContainer {
+  min-width: 155px;
+}
+
 .VoteModule__VotingVpNeeded {
   color: var(--black-800) !important;
 }
@@ -40,6 +45,8 @@
   display: flex;
   align-items: center;
   text-transform: uppercase;
+  justify-content: flex-end;
+  min-width: 59px;
 }
 
 .VoteModule__VoteText {
