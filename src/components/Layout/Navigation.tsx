@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
+import { Mobile, NotMobile, useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 
@@ -13,6 +13,7 @@ import locations from '../../utils/locations'
 import Link from '../Common/Typography/Link'
 import Dot from '../Icon/Dot'
 import SearchInput from '../Search/SearchInput'
+import SearchInputMobile from '../Search/SearchInputMobile'
 
 import './Navigation.css'
 
@@ -115,10 +116,15 @@ const Navigation = ({ activeTab }: NavigationProps) => {
             </Link>
           )}
         </Tabs.Left>
-        <Tabs.Right>
-          <SearchInput />
-        </Tabs.Right>
+        <NotMobile>
+          <Tabs.Right>
+            <SearchInput />
+          </Tabs.Right>
+        </NotMobile>
       </Tabs>
+      <Mobile>
+        <SearchInputMobile />
+      </Mobile>
     </div>
   )
 }

@@ -1,55 +1,50 @@
-.SearchContainerMobile {
-  display: flex;
-  position: relative;
-  justify-content: center;
-}
-
-.SearchContainerMobile > .dcl.close {
-  position: absolute;
-  top: 0;
-  right: 16px;
-  margin: 8px;
-  background-color: #f1f6fe;
-  z-index: 10;
-}
-
 .SearchInputMobile {
-  border: 0;
-  padding: 8px 32px;
-  width: 100%;
-  border-radius: 24px;
-  background: #f2f3f5 url('../../images/icons/magnify.svg') no-repeat 25% center;
-  float: right;
-  outline-width: 0;
-  transition: all 0.1s ease-in-out;
-}
-
-@media (max-width: 374px) {
-  .SearchInputMobile {
-    background: #f2f3f5 url('../../images/icons/magnify.svg') no-repeat 20% center;
-  }
-}
-
-.SearchInputMobile:focus {
-  box-shadow: var(--shadow-2);
-}
-
-input.SearchInputMobile::placeholder {
-  text-align: center;
-  color: var(--secondary-text);
-  transition: all 0.2s ease-in-out 0.15s;
+  position: absolute;
+  top: -1px;
+  right: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background: var(--white-900);
+  width: 40px;
+  height: 34px;
+  gap: 8px;
+  font-size: 16px;
+  /* transition: all 0.5s ease-in-out; */
 }
 
 .SearchInputMobile--open {
-  background: #f2f3f5 url('../../images/icons/magnify.svg') no-repeat 8px center;
-  transition: all 0.15s ease-in-out 0s;
+  width: 100%;
+  padding: 0 16px;
+  top: 0;
 }
 
-.SearchInputMobile.SearchInputMobile--open:focus {
-  outline: none;
+/* background: linear-gradient(270deg, #FFF 0%, rgba(255, 255, 255, 0.00) 103.13%); */
+
+.SearchInputMobile__Input {
+  width: 16px;
+  padding: 8px 13px;
+  border: 0;
+  background: var(--white-900) no-repeat 8px center;
+  background-image: url('../../images/icons/new-magnify.svg');
+  outline-width: 0;
 }
 
-input.SearchInputMobile--open::placeholder {
-  text-align: left;
-  transition: all 0.2s ease-in-out 0.15s;
+.SearchInputMobile__Input--open {
+  width: 100%;
+  padding: 8px 32px;
+  background: var(--white-900) no-repeat 0 center;
+  background-image: url('../../images/icons/new-magnify.svg');
+}
+
+.SearchInputMobile__CloseIcon {
+  position: absolute;
+  top: 10px;
+  right: 0;
+}
+
+.SearchInputMobile__Container {
+  position: relative;
+  width: 100%;
 }

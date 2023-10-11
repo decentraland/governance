@@ -2,80 +2,102 @@ import { useEffect, useRef, useState } from 'react'
 
 import { useLocation } from '@reach/router'
 import classNames from 'classnames'
-import { Close } from 'decentraland-ui/dist/components/Close/Close'
 
-import { useBurgerMenu } from '../../hooks/useBurgerMenu'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import { useProposalsSearchParams } from '../../hooks/useProposalsSearchParams'
+import locations, { navigate } from '../../utils/locations'
+import Cross from '../Icon/Cross'
 
-import { handleSearch } from './SearchInput'
 import './SearchInputMobile.css'
 
-export default function SearchInputMobile(props: React.HTMLAttributes<HTMLDivElement>) {
+function handleSearch(textSearch: string, location: Location) {
+  const newParams = new URLSearchParams(location.search)
+  if (textSearch) {
+    newParams.set('search', textSearch)
+    newParams.delete('page')
+    newParams.delete('order')
+  } else {
+    newParams.delete('search')
+    newParams.delete('page')
+  }
+
+  navigate(locations.proposals(newParams))
+}
+
+export default function SearchInputMobile() {
   const t = useFormatMessage()
   const location = useLocation()
-  const { search, searching } = useProposalsSearchParams()
+  const { search } = useProposalsSearchParams()
   const searchInput = useRef<HTMLInputElement>(null)
   const [open, setOpen] = useState(false)
   const [searchText, setSearchText] = useState(() => search || '')
-  const [placeholder, setPlaceholder] = useState(t('navigation.search.mobile.placeholder') || '')
-  const burgerMenu = useBurgerMenu()
-  useEffect(() => {
-    burgerMenu?.setStatus((prev) => ({ ...prev, searching: searching }))
-  }, [searching])
 
-  function focusSearch() {
-    searchInput.current?.focus()
+  const focusSearch = () => {
+    setTimeout(() => {
+      searchInput.current?.focus()
+      searchInput.current?.click()
+    }, 500)
   }
 
   useEffect(() => {
     if (!search) {
       setSearchText('')
+      setOpen(false)
     } else {
-      setSearchText(search)
-      setOpen(true)
+      focusSearch()
     }
   }, [search])
 
-  function handleChange(e: React.ChangeEvent<any>) {
+  const handleChange = (e: React.ChangeEvent<any>) => {
     setSearchText(e.target.value)
   }
 
-  function handleClear() {
-    setSearchText('')
-    focusSearch()
+  const handleClear = () => {
+    if (searchText === '') {
+      setOpen(false)
+    } else {
+      setSearchText('')
+      focusSearch()
+    }
   }
 
-  function handleKeyPress(e: React.KeyboardEvent) {
+  const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleSearch(searchText, location)
     }
   }
 
-  function handleFocus() {
-    setOpen(true)
-    if (!searchText) setPlaceholder(t('navigation.search.mobile.focus_placeholder') || '')
+  const keyUpHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.code === 'Escape') {
+      setSearchText('')
+    }
   }
 
-  function handleBlur() {
-    setOpen(!!searchText)
-    if (!searchText) setPlaceholder(t('navigation.search.mobile.placeholder') || '')
+  const handleOpen = () => {
+    if (!open) {
+      setOpen(true)
+      focusSearch()
+    }
   }
 
   return (
-    <div className={'SearchContainerMobile'}>
-      <input
-        {...props}
-        className={classNames('SearchInputMobile', open && 'SearchInputMobile--open', props.className)}
-        value={searchText}
-        placeholder={placeholder}
-        onChange={handleChange}
-        onKeyPress={handleKeyPress}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        ref={searchInput}
-      />
-      {searchText && open && <Close small onClick={handleClear} />}
+    <div className={classNames('SearchInputMobile', open && 'SearchInputMobile--open')}>
+      <div className="SearchInputMobile__Container">
+        <input
+          className={classNames('SearchInputMobile__Input', open && 'SearchInputMobile__Input--open')}
+          value={searchText}
+          placeholder={t('navigation.search.placeholder') || ''}
+          onChange={handleChange}
+          onKeyPress={handleKeyPress}
+          onKeyUp={keyUpHandler}
+          onFocus={() => setOpen(true)}
+          onBlur={() => setOpen(!!searchText)}
+          ref={searchInput}
+        />
+        {open && (
+          <Cross className="SearchInputMobile__CloseIcon" size="14" color="var(--black-800)" onClick={handleClear} />
+        )}
+      </div>
     </div>
   )
 }
