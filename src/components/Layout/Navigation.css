@@ -1,6 +1,5 @@
-.Navigation .dcl.tabs {
-  background: var(--background);
-  display: none;
+.Navigation {
+  position: relative;
 }
 
 .Navigation .dcl.tab svg {
@@ -14,42 +13,86 @@
   border-radius: 6px;
 }
 
-@media (min-width: 768px) {
-  .Navigation .dcl.tabs {
-    display: flex;
-  }
+.Navigation .dcl.tabs .ui.container {
+  display: flex;
+}
 
-  .Navigation .dcl.tabs a {
-    color: var(--text);
-  }
+.Navigation .dcl.tabs a {
+  color: var(--text);
+}
 
-  .Navigation .dcl.tabs .ui.container {
-    max-width: 1440px !important;
+.Navigation .dcl.tabs-left {
+  display: flex;
+  flex-direction: row;
+}
+
+@media (max-width: 767px) {
+  .Navigation .dcl.tabs-left {
     width: 100%;
-    padding: 0 24px;
+    overflow: scroll;
+  }
+
+  .Navigation .dcl.tab {
+    margin: 0 16px;
+    padding: 0;
+    padding-bottom: 14px;
+    white-space: nowrap;
   }
 
   .dcl.tabs .ui.container {
     display: flex;
   }
+
+  .Navigation .dcl.tab {
+    padding-bottom: 5px;
+  }
+  .Navigation .dcl.tab.active {
+    border-bottom: 3px solid var(--primary);
+    border-left: 0;
+  }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .Navigation .dcl.tabs-left::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .Navigation .dcl.tabs-left {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
 }
 
-.dcl.tabs-right {
+@media (min-width: 768px) {
+  .Navigation .dcl.tabs .ui.container {
+    max-width: 1440px !important;
+    width: 100%;
+    padding: 0 24px;
+  }
+}
+
+.Navigation .dcl.tabs .dcl.tabs-right {
   display: flex;
   align-items: center;
 }
 
-.NavigationProfilePopUp {
+.Navigation__ProfilePopUp {
   width: 152px;
   overflow-wrap: break-word;
 }
 
-.NavigationProfilePopUp p,
-.NavigationProfilePopUp .ui.button.basic {
+.Navigation__ProfilePopUp p,
+.Navigation__ProfilePopUp .ui.button.basic {
   font-style: normal;
   font-weight: var(--weight-normal);
   font-size: 13px;
   color: var(--white-900) !important;
   margin-bottom: 0;
   padding-left: 0;
+}
+
+.Navigation__SearchInput {
+  position: absolute;
+  top: 0;
+  right: 0;
 }

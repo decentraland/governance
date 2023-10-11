@@ -80,7 +80,7 @@ const Navigation = ({ activeTab }: NavigationProps) => {
             <Link href={locations.profile({ address: user })}>
               <Popup
                 style={{ zIndex: 1000 }}
-                className="NavigationProfilePopUp"
+                className="Navigation__ProfilePopUp"
                 content={
                   <div>
                     <p>{t('navigation.profile_pop_up.label')}</p>
