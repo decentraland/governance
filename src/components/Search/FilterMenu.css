@@ -26,7 +26,7 @@
   height: 100vh;
   width: 293px;
   overflow-y: scroll;
-  overscroll-behavior: contain;
+  overscroll-behavior: none;
   visibility: hidden;
   transition: 0.5s ease;
   box-shadow: 0px 0px 35px 0px var(--alpha-black-400);
@@ -43,7 +43,7 @@
   right: 0;
   width: 293px;
   min-height: 100%;
-  background-color: white;
+  background-color: var(--white-900);
   z-index: 99999;
   padding: 15px 32px;
 }
@@ -61,6 +61,7 @@
   opacity: 0;
   visibility: hidden;
   transition: 0.5s ease;
+  overflow-y: hidden;
 }
 
 .FilterMenu__Overlay--open {

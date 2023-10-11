@@ -1,0 +1,30 @@
+.FilterContainer {
+  position: relative;
+  min-height: 32px;
+  margin-bottom: 8px;
+  margin-top: 16px;
+}
+
+.FilterContainer:first-child {
+  margin-top: 8px;
+}
+
+.FilterContainer__TitleContainer {
+  display: flex;
+  margin-bottom: 8px;
+}
+
+.FilterContainer__TitleContainer:first-child {
+  margin-top: 0;
+}
+
+.FilterContainer__Title {
+  text-transform: uppercase;
+  margin-bottom: 0;
+}
+
+.FilterContainer__Content {
+  height: auto;
+  overflow: hidden;
+  transition: opacity 1s ease-out;
+}

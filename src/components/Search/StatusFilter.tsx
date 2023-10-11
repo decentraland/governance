@@ -10,14 +10,14 @@ import { getUrlFilters } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
 
 import { FilterProps } from './CategoryFilter'
-import CollapsibleFilter from './CollapsibleFilter'
+import FilterContainer from './FilterContainer'
 import FilterLabel from './FilterLabel'
 
 type StatusType = typeof ProposalStatus | typeof ProjectStatus
 
 const FILTER_KEY = 'status'
 
-export default function StatusFilter({ startOpen, statusType }: FilterProps & { statusType: StatusType }) {
+export default function StatusFilter({ statusType }: FilterProps & { statusType: StatusType }) {
   const t = useFormatMessage()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
@@ -25,7 +25,7 @@ export default function StatusFilter({ startOpen, statusType }: FilterProps & { 
   const isGrantFilter = isEqual(statusType, ProjectStatus)
 
   return (
-    <CollapsibleFilter title={t('navigation.search.status_filter_title')} startOpen={startOpen}>
+    <FilterContainer title={t('navigation.search.status_filter_title')}>
       <FilterLabel label={t(`status.all`)} href={getUrlFilters(FILTER_KEY, params)} active={!status} />
       {Object.values(statusType).map((value, index) => {
         const label = toSnakeCase(value)
@@ -40,6 +40,6 @@ export default function StatusFilter({ startOpen, statusType }: FilterProps & { 
           )
         }
       })}
-    </CollapsibleFilter>
+    </FilterContainer>
   )
 }

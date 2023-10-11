@@ -171,21 +171,21 @@ export default function ProposalsPage() {
                   </>
                 }
               >
-                <div className="ProposalsPage__List">
-                  <Loader active={!proposals || isLoadingProposals} />
-                  {type && !searching && <CategoryBanner type={type} />}
-                  {proposals && proposals.data.length === 0 && (
-                    <Empty
-                      className="ProposalsPage__Empty"
-                      description={
-                        searching || status || timeFrame?.length > 0
-                          ? t('navigation.search.no_matches')
-                          : t('page.proposal_list.no_proposals_yet')
-                      }
-                    />
-                  )}
-                  {proposals &&
-                    proposals.data.map((proposal) => {
+                <Loader active={!proposals || isLoadingProposals} />
+                {type && !searching && <CategoryBanner type={type} />}
+                {proposals && proposals.data.length === 0 && (
+                  <Empty
+                    className="ProposalsPage__Empty"
+                    description={
+                      searching || status || timeFrame?.length > 0
+                        ? t('navigation.search.no_matches')
+                        : t('page.proposal_list.no_proposals_yet')
+                    }
+                  />
+                )}
+                {proposals && (
+                  <div className="ProposalsPage__List">
+                    {proposals.data.map((proposal) => {
                       return isTabletAndBelow ? (
                         <ProposalItem
                           key={proposal.id}
@@ -205,7 +205,8 @@ export default function ProposalsPage() {
                         />
                       )
                     })}
-                </div>
+                  </div>
+                )}
                 {proposals && proposals.total > ITEMS_PER_PAGE && (
                   <Pagination
                     onPageChange={(e, { activePage }) => handlePageFilter(activePage as number)}

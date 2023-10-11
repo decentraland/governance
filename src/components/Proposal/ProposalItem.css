@@ -1,3 +1,7 @@
+.ProposalItem.ui.card {
+  margin: 0 !important;
+}
+
 .ProposalItem,
 .ui.card.Link.ProposalItem {
   width: 100% !important;

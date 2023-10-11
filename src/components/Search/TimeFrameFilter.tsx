@@ -4,7 +4,7 @@ import useFormatMessage from '../../hooks/useFormatMessage'
 import useURLSearchParams from '../../hooks/useURLSearchParams'
 import locations from '../../utils/locations'
 
-import CollapsibleFilter from './CollapsibleFilter'
+import FilterContainer from './FilterContainer'
 import FilterLabel from './FilterLabel'
 
 export default function TimeFrameFilter() {
@@ -20,7 +20,7 @@ export default function TimeFrameFilter() {
   }
 
   return (
-    <CollapsibleFilter title={t('navigation.search.timeframe_filter.title') || ''}>
+    <FilterContainer title={t('navigation.search.timeframe_filter.title') || ''}>
       <FilterLabel
         label={t('navigation.search.timeframe_filter.all') || ''}
         href={handleTimeFrameFilter(null)}
@@ -41,6 +41,6 @@ export default function TimeFrameFilter() {
         href={handleTimeFrameFilter('3months')}
         active={timeFrame === '3months'}
       />
-    </CollapsibleFilter>
+    </FilterContainer>
   )
 }

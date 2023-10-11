@@ -8,7 +8,7 @@ import useURLSearchParams from '../../hooks/useURLSearchParams'
 import CategoryOption from '../Category/CategoryOption'
 
 import './CategoryFilter.css'
-import CollapsibleFilter from './CollapsibleFilter'
+import FilterContainer from './FilterContainer'
 
 export enum ProjectTypeFilter {
   All = 'all_projects',
@@ -31,7 +31,6 @@ const FILTER_KEY = 'type'
 
 export default function CategoryFilter({
   filterType,
-  startOpen,
   categoryCount,
   showAllFilter = true,
 }: FilterProps & { filterType: FilterType; showAllFilter?: boolean }) {
@@ -41,7 +40,7 @@ export default function CategoryFilter({
   const type = params.get(FILTER_KEY)
 
   return (
-    <CollapsibleFilter title={t('navigation.search.category_filter_title')} startOpen={startOpen}>
+    <FilterContainer title={t('navigation.search.category_filter_title')}>
       {showAllFilter && (
         <CategoryOption
           type="all_proposals"
@@ -74,6 +73,6 @@ export default function CategoryFilter({
           />
         )
       })}
-    </CollapsibleFilter>
+    </FilterContainer>
   )
 }
