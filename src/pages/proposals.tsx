@@ -7,6 +7,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import {
+  Mobile,
   NotMobile,
   useMobileMediaQuery,
   useTabletAndBelowMediaQuery,
@@ -20,19 +21,17 @@ import ProposalPreviewCard from '../components/Common/ProposalPreviewCard/Propos
 import Link from '../components/Common/Typography/Link'
 import WiderContainer from '../components/Common/WiderContainer'
 import ActionableLayout from '../components/Layout/ActionableLayout'
-import BurgerMenuLayout from '../components/Layout/BurgerMenu/BurgerMenuLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import ProposalItem from '../components/Proposal/ProposalItem'
 import CategoryFilter from '../components/Search/CategoryFilter'
-import { SearchTitle } from '../components/Search/SearchTitle'
+import SearchTitle from '../components/Search/SearchTitle'
 import SortingMenu from '../components/Search/SortingMenu'
 import StatusFilter from '../components/Search/StatusFilter'
 import TimeFrameFilter from '../components/Search/TimeFrameFilter'
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
-import { useBurgerMenu } from '../hooks/useBurgerMenu'
 import useFormatMessage from '../hooks/useFormatMessage'
 import useProposals from '../hooks/useProposals'
 import useProposalsByCoAuthor from '../hooks/useProposalsByCoAuthor'
@@ -65,8 +64,6 @@ export default function ProposalsPage() {
   const [subscriptions, subscriptionsState] = useSubscriptions()
   const isMobile = useMobileMediaQuery()
   const isTabletAndBelow = useTabletAndBelowMediaQuery()
-  const { status: burgerStatus } = useBurgerMenu()
-  const { open } = burgerStatus
 
   const handlePageFilter = useCallback(
     (page: number) => {
@@ -89,57 +86,34 @@ export default function ProposalsPage() {
   const [user] = useAuthContext()
   const { requestsStatus } = useProposalsByCoAuthor(user, CoauthorStatus.PENDING)
 
+  const title =
+    (type === ProposalType.Catalyst && t('page.proposal_catalyst_list.title')) ||
+    (type === ProposalType.POI && t('page.proposal_poi_list.title')) ||
+    (type === ProposalType.BanName && t('page.proposal_ban_name_list.title')) ||
+    (type === ProposalType.Poll && t('page.proposal_poll_list.title')) ||
+    t('page.proposal_list.title') ||
+    ''
+
+  const description =
+    (type === ProposalType.Catalyst && t('page.proposal_catalyst_list.description')) ||
+    (type === ProposalType.POI && t('page.proposal_poi_list.description')) ||
+    (type === ProposalType.BanName && t('page.proposal_ban_name_list.description')) ||
+    (type === ProposalType.Poll && t('page.proposal_poll_list.description')) ||
+    t('page.proposal_list.description') ||
+    ''
+
   if (isUnderMaintenance()) {
-    return (
-      <MaintenanceLayout
-        title={
-          (type === ProposalType.Catalyst && t('page.proposal_catalyst_list.title')) ||
-          (type === ProposalType.POI && t('page.proposal_poi_list.title')) ||
-          (type === ProposalType.BanName && t('page.proposal_ban_name_list.title')) ||
-          (type === ProposalType.Poll && t('page.proposal_poll_list.title')) ||
-          t('page.proposal_list.title')
-        }
-        description={
-          (type === ProposalType.Catalyst && t('page.proposal_catalyst_list.description')) ||
-          (type === ProposalType.POI && t('page.proposal_poi_list.description')) ||
-          (type === ProposalType.BanName && t('page.proposal_ban_name_list.description')) ||
-          (type === ProposalType.Poll && t('page.proposal_poll_list.description')) ||
-          t('page.proposal_list.description')
-        }
-        activeTab={NavigationTab.Proposals}
-      />
-    )
+    return <MaintenanceLayout title={title} description={description} activeTab={NavigationTab.Proposals} />
   }
 
   const isLoading = !proposals || (isLoadingProposals && isLoadingVotes)
 
   return (
     <>
-      <div
-        className="OnlyMobile Animated"
-        style={(isMobile && open && { transform: 'translateX(-200%)', height: 0 }) || {}}
-      >
+      <Mobile>
         <RandomBanner isVisible={!searching} />
-      </div>
-      <Head
-        title={
-          (type === ProposalType.Catalyst && t('page.proposal_catalyst_list.title')) ||
-          (type === ProposalType.POI && t('page.proposal_poi_list.title')) ||
-          (type === ProposalType.BanName && t('page.proposal_ban_name_list.title')) ||
-          (type === ProposalType.Poll && t('page.proposal_poll_list.title')) ||
-          t('page.proposal_list.title') ||
-          ''
-        }
-        description={
-          (type === ProposalType.Catalyst && t('page.proposal_catalyst_list.description')) ||
-          (type === ProposalType.POI && t('page.proposal_poi_list.description')) ||
-          (type === ProposalType.BanName && t('page.proposal_ban_name_list.description')) ||
-          (type === ProposalType.Poll && t('page.proposal_poll_list.description')) ||
-          t('page.proposal_list.description') ||
-          ''
-        }
-        image="https://decentraland.org/images/decentraland.png"
-      />
+      </Mobile>
+      <Head title={title} description={description} image="https://decentraland.org/images/decentraland.png" />
       <Navigation activeTab={NavigationTab.Proposals} />
       {isLoading && <LoadingView withNavigation />}
       {!isLoading && (
@@ -158,82 +132,78 @@ export default function ProposalsPage() {
                 </div>
               </div>
             </NotMobile>
-            <BurgerMenuLayout activeTab={NavigationTab.Proposals}>
-              <div className="ProposalsPage__Content">
-                {isMobile && proposals && <SearchTitle />}
-                <ActionableLayout
-                  leftAction={
-                    <Header sub>
-                      {!proposals && ''}
-                      {proposals && t('general.count_proposals', { count: proposals.total || 0 })}
-                    </Header>
-                  }
-                  rightAction={
-                    !searching && (
-                      <>
-                        {proposals && <SortingMenu />}
-                        <Button
-                          primary
-                          size="small"
-                          className="ProposalsPage__SubmitButton"
-                          as={Link}
-                          href={locations.submit()}
-                        >
-                          {t('page.proposal_list.new_proposal')}
-                        </Button>
-                      </>
-                    )
-                  }
-                >
-                  <div className="ProposalsPage__List">
-                    <Loader active={!proposals || isLoadingProposals} />
-                    {type && !searching && <CategoryBanner type={type} />}
-                    {proposals && proposals.data.length === 0 && (
-                      <Empty
-                        className="ProposalsPage__Empty"
-                        description={
-                          searching || status || timeFrame?.length > 0
-                            ? t('navigation.search.no_matches')
-                            : t('page.proposal_list.no_proposals_yet')
-                        }
-                      />
-                    )}
-                    {proposals &&
-                      proposals.data.map((proposal) => {
-                        return isTabletAndBelow ? (
-                          <ProposalItem
-                            key={proposal.id}
-                            proposal={proposal}
-                            hasCoauthorRequest={!!requestsStatus.find((req) => req.proposal_id === proposal.id)}
-                            votes={votes ? votes[proposal.id] : undefined}
-                            subscribing={subscriptionsState.isSubscribing}
-                            subscribed={
-                              !!subscriptions.find((subscription) => subscription.proposal_id === proposal.id)
-                            }
-                            onSubscribe={(_, proposal) => subscriptionsState.subscribe(proposal.id)}
-                          />
-                        ) : (
-                          <ProposalPreviewCard
-                            key={proposal.id}
-                            proposal={proposal}
-                            votes={votes ? votes[proposal.id] : undefined}
-                            variant="category"
-                          />
-                        )
-                      })}
-                  </div>
-                  {proposals && proposals.total > ITEMS_PER_PAGE && (
-                    <Pagination
-                      onPageChange={(e, { activePage }) => handlePageFilter(activePage as number)}
-                      totalPages={Math.ceil(proposals.total / ITEMS_PER_PAGE)}
-                      activePage={page}
-                      firstItem={null}
-                      lastItem={null}
+            <div className="ProposalsPage__Content">
+              {isMobile && proposals && <SearchTitle />}
+              <ActionableLayout
+                leftAction={
+                  <Header sub>
+                    {!proposals && ''}
+                    {proposals && t('general.count_proposals', { count: proposals.total || 0 })}
+                  </Header>
+                }
+                rightAction={
+                  !searching && (
+                    <>
+                      {proposals && <SortingMenu />}
+                      <Button
+                        primary
+                        size="small"
+                        className="ProposalsPage__SubmitButton"
+                        as={Link}
+                        href={locations.submit()}
+                      >
+                        {t('page.proposal_list.new_proposal')}
+                      </Button>
+                    </>
+                  )
+                }
+              >
+                <div className="ProposalsPage__List">
+                  <Loader active={!proposals || isLoadingProposals} />
+                  {type && !searching && <CategoryBanner type={type} />}
+                  {proposals && proposals.data.length === 0 && (
+                    <Empty
+                      className="ProposalsPage__Empty"
+                      description={
+                        searching || status || timeFrame?.length > 0
+                          ? t('navigation.search.no_matches')
+                          : t('page.proposal_list.no_proposals_yet')
+                      }
                     />
                   )}
-                </ActionableLayout>
-              </div>
-            </BurgerMenuLayout>
+                  {proposals &&
+                    proposals.data.map((proposal) => {
+                      return isTabletAndBelow ? (
+                        <ProposalItem
+                          key={proposal.id}
+                          proposal={proposal}
+                          hasCoauthorRequest={!!requestsStatus.find((req) => req.proposal_id === proposal.id)}
+                          votes={votes ? votes[proposal.id] : undefined}
+                          subscribing={subscriptionsState.isSubscribing}
+                          subscribed={!!subscriptions.find((subscription) => subscription.proposal_id === proposal.id)}
+                          onSubscribe={(_, proposal) => subscriptionsState.subscribe(proposal.id)}
+                        />
+                      ) : (
+                        <ProposalPreviewCard
+                          key={proposal.id}
+                          proposal={proposal}
+                          votes={votes ? votes[proposal.id] : undefined}
+                          variant="category"
+                        />
+                      )
+                    })}
+                </div>
+                {proposals && proposals.total > ITEMS_PER_PAGE && (
+                  <Pagination
+                    onPageChange={(e, { activePage }) => handlePageFilter(activePage as number)}
+                    totalPages={Math.ceil(proposals.total / ITEMS_PER_PAGE)}
+                    activePage={page}
+                    firstItem={null}
+                    lastItem={null}
+                  />
+                )}
+              </ActionableLayout>
+            </div>
           </div>
         </WiderContainer>
       )}

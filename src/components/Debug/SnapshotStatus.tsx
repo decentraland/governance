@@ -5,7 +5,6 @@ import classNames from 'classnames'
 import { Governance } from '../../clients/Governance'
 import { ServiceHealth, SnapshotStatus as SnapshotServiceStatus } from '../../clients/SnapshotTypes'
 import { SNAPSHOT_STATUS_ENABLED } from '../../constants'
-import { useBurgerMenu } from '../../hooks/useBurgerMenu'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Markdown from '../Common/Typography/Markdown'
 import WarningTriangle from '../Icon/WarningTriangle'
@@ -23,14 +22,12 @@ function logIfNotNormal(status: SnapshotServiceStatus) {
 export default function SnapshotStatus() {
   const t = useFormatMessage()
   const [showTopBar, setShowTopBar] = useState(false)
-  const { setStatus } = useBurgerMenu()
 
   const updateServiceStatus = async () => {
     const status = await Governance.get().getSnapshotStatus()
     logIfNotNormal(status)
     const show = status.scoresStatus.health === ServiceHealth.Failing && SNAPSHOT_STATUS_ENABLED
     setShowTopBar(show)
-    setStatus((prev) => ({ ...prev, snapshotStatusBarOpen: show }))
   }
 
   useEffect(() => {

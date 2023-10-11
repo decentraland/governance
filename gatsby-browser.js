@@ -22,7 +22,6 @@ import segment from 'decentraland-gatsby/dist/utils/segment/segment'
 import Layout from './src/components/Layout/Layout'
 import Navbar from './src/components/Layout/Navbar'
 import IdentityModalContextProvider from './src/components/Context/IdentityModalContext'
-import BurgerMenuStatusContextProvider from './src/components/Context/BurgerMenuStatusContext'
 import ExternalLinkWarningModal from './src/components/Modal/ExternalLinkWarningModal/ExternalLinkWarningModal'
 import IdentityConnectModal from './src/components/Modal/IdentityConnectModal/IdentityConnectModal'
 import Segment from "decentraland-gatsby/dist/components/Development/Segment"
@@ -47,12 +46,10 @@ export const wrapPageElement = ({ element, props }) => {
     <QueryClientProvider client={queryClient}>
       <IntlProvider defaultLocale='en' locale='en' messages={flattenMessages(en)}>
         <IdentityModalContextProvider>
-          <BurgerMenuStatusContextProvider>
-            <SnapshotStatus />
+            {SNAPSHOT_STATUS_ENABLED && <SnapshotStatus />}
             <Layout {...props} rightMenu={<Navbar />}>
               {element}
             </Layout>
-          </BurgerMenuStatusContextProvider>
           <ExternalLinkWarningModal />
           <IdentityConnectModal />
         </IdentityModalContextProvider>
