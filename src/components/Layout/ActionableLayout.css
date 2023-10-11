@@ -1,4 +1,4 @@
-.ActionableLayout .ActionableLayout__Action {
+.ActionableLayout__Action {
   min-height: 32px;
   display: flex;
   flex-wrap: wrap;
@@ -6,10 +6,12 @@
   align-items: center;
 }
 
-.ActionableLayout .ActionableLayout__Content {
-  height: calc(100% - 32px);
+.ActionableLayout__Right {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
-.ActionableLayout .ActionableLayout__Left .ui.header.sub {
-  margin-bottom: 0;
+.ActionableLayout__Content {
+  height: calc(100% - 32px);
 }

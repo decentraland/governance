@@ -1,11 +1,27 @@
 .SortingMenu {
-	margin-right: 1em;
+  margin-right: 1em;
+  font-size: 12px !important;
 }
 
-.ui.dropdown.SortingMenu.Upwards>.dropdown.icon:before {
-	content: '\F0D8';
+.SortingMenu .divider.text {
+  font-weight: var(--weight-semi-bold) !important;
+  line-height: 24px !important;
 }
 
-.ui.dropdown.SortingMenu.Downwards>.dropdown.icon:before {
-	content: '\F0D7';
+@media (min-width: 768px) {
+  .SortingMenu {
+    font-size: 14px !important;
+  }
+}
+
+.ui.dropdown.SortingMenu .dropdown.icon {
+  margin-left: 7px;
+}
+
+.ui.dropdown.SortingMenu.Upwards > .dropdown.icon:before {
+  content: '\F0D8';
+}
+
+.ui.dropdown.SortingMenu.Downwards > .dropdown.icon:before {
+  content: '\F0D7';
 }

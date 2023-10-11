@@ -51,3 +51,15 @@
   gap: 32px;
   position: relative;
 }
+
+.ProposalsPage__ProposalCount {
+  font-size: 12px !important;
+  text-transform: uppercase;
+  color: var(--black-600);
+}
+
+@media (min-width: 768px) {
+  .ProposalsPage__ProposalCount {
+    font-size: 14px !important;
+  }
+}

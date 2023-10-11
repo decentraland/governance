@@ -4,14 +4,8 @@ import { useLocation } from '@reach/router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import {
-  Mobile,
-  NotMobile,
-  useMobileMediaQuery,
-  useTabletAndBelowMediaQuery,
-} from 'decentraland-ui/dist/components/Media/Media'
+import { Mobile, NotMobile, useTabletAndBelowMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 import { Pagination } from 'decentraland-ui/dist/components/Pagination/Pagination'
 
 import RandomBanner from '../components/Banner/RandomBanner'
@@ -19,6 +13,7 @@ import CategoryBanner from '../components/Category/CategoryBanner'
 import Empty from '../components/Common/Empty'
 import ProposalPreviewCard from '../components/Common/ProposalPreviewCard/ProposalPreviewCard'
 import Link from '../components/Common/Typography/Link'
+import Text from '../components/Common/Typography/Text'
 import WiderContainer from '../components/Common/WiderContainer'
 import ActionableLayout from '../components/Layout/ActionableLayout'
 import LoadingView from '../components/Layout/LoadingView'
@@ -26,6 +21,7 @@ import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import ProposalItem from '../components/Proposal/ProposalItem'
 import CategoryFilter from '../components/Search/CategoryFilter'
+import FilterMenu from '../components/Search/FilterMenu'
 import SearchTitle from '../components/Search/SearchTitle'
 import SortingMenu from '../components/Search/SortingMenu'
 import StatusFilter from '../components/Search/StatusFilter'
@@ -62,7 +58,6 @@ export default function ProposalsPage() {
   const proposalIds = (proposals?.data || []).map((proposal) => proposal.id)
   const { votes, isLoadingVotes } = useProposalsVotes(proposalIds)
   const [subscriptions, subscriptionsState] = useSubscriptions()
-  const isMobile = useMobileMediaQuery()
   const isTabletAndBelow = useTabletAndBelowMediaQuery()
 
   const handlePageFilter = useCallback(
@@ -121,7 +116,11 @@ export default function ProposalsPage() {
           <div className="OnlyDesktop">
             <RandomBanner isVisible={!searching} />
           </div>
-          {!isMobile && search && proposals && <SearchTitle />}
+          {search && proposals && (
+            <NotMobile>
+              <SearchTitle />
+            </NotMobile>
+          )}
           <div className="ProposalsPage__Container">
             <NotMobile>
               <div className="ProposalsPage__Sidebar">
@@ -133,29 +132,43 @@ export default function ProposalsPage() {
               </div>
             </NotMobile>
             <div className="ProposalsPage__Content">
-              {isMobile && proposals && <SearchTitle />}
+              {proposals && (
+                <Mobile>
+                  <SearchTitle />
+                </Mobile>
+              )}
               <ActionableLayout
                 leftAction={
-                  <Header sub>
-                    {!proposals && ''}
-                    {proposals && t('general.count_proposals', { count: proposals.total || 0 })}
-                  </Header>
+                  proposals && (
+                    <Text color="secondary" weight="semi-bold" className="ProposalsPage__ProposalCount">
+                      {t('general.count_proposals', { count: proposals.total || 0 })}
+                    </Text>
+                  )
                 }
                 rightAction={
-                  !searching && (
-                    <>
-                      {proposals && <SortingMenu />}
-                      <Button
-                        primary
-                        size="small"
-                        className="ProposalsPage__SubmitButton"
-                        as={Link}
-                        href={locations.submit()}
-                      >
-                        {t('page.proposal_list.new_proposal')}
-                      </Button>
-                    </>
-                  )
+                  <>
+                    {proposals && (
+                      <>
+                        <SortingMenu />
+                        <Mobile>
+                          <FilterMenu>
+                            <CategoryFilter filterType={ProposalType} startOpen />
+                            <StatusFilter statusType={ProposalStatus} />
+                            <TimeFrameFilter />
+                          </FilterMenu>
+                        </Mobile>
+                      </>
+                    )}
+                    <Button
+                      primary
+                      size="small"
+                      className="ProposalsPage__SubmitButton"
+                      as={Link}
+                      href={locations.submit()}
+                    >
+                      {t('page.proposal_list.new_proposal')}
+                    </Button>
+                  </>
                 }
               >
                 <div className="ProposalsPage__List">
