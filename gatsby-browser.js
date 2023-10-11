@@ -25,7 +25,7 @@ import IdentityModalContextProvider from './src/components/Context/IdentityModal
 import ExternalLinkWarningModal from './src/components/Modal/ExternalLinkWarningModal/ExternalLinkWarningModal'
 import IdentityConnectModal from './src/components/Modal/IdentityConnectModal/IdentityConnectModal'
 import Segment from "decentraland-gatsby/dist/components/Development/Segment"
-import { SEGMENT_KEY, SSO_URL } from "./src/constants"
+import { SEGMENT_KEY, SNAPSHOT_STATUS_ENABLED, SSO_URL } from "./src/constants"
 import { flattenMessages } from "./src/utils/intl"
 import en from "./src/intl/en.json"
 import SnapshotStatus from "./src/components/Debug/SnapshotStatus"
