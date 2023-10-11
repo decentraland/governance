@@ -3,11 +3,10 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: center
+  align-items: center;
 }
 
 .ActionableLayout .ActionableLayout__Content {
-  padding-top: .5rem;
   height: calc(100% - 32px);
 }
 
