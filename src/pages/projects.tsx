@@ -120,13 +120,8 @@ export default function ProjectsPage() {
           <div className="ProjectsPage__Container">
             <div className="ProjectsPage__Sidebar">
               <NotMobile>
-                <CategoryFilter
-                  filterType={ProjectTypeFilter}
-                  categoryCount={counter}
-                  startOpen
-                  showAllFilter={false}
-                />
-                <StatusFilter statusType={ProjectStatus} startOpen />
+                <CategoryFilter filterType={ProjectTypeFilter} categoryCount={counter} showAllFilter={false} />
+                <StatusFilter statusType={ProjectStatus} />
                 <RequestBanner />
               </NotMobile>
             </div>

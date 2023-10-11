@@ -23,7 +23,6 @@ export type FilterType =
   | typeof ProjectTypeFilter
 export type Counter = Record<string, number | undefined>
 export type FilterProps = {
-  onChange?: (open: boolean) => void
   startOpen?: boolean
   categoryCount?: Counter
 }
@@ -32,7 +31,6 @@ const FILTER_KEY = 'type'
 
 export default function CategoryFilter({
   filterType,
-  onChange,
   startOpen,
   categoryCount,
   showAllFilter = true,
@@ -43,7 +41,7 @@ export default function CategoryFilter({
   const type = params.get(FILTER_KEY)
 
   return (
-    <CollapsibleFilter title={t('navigation.search.category_filter_title')} startOpen={!!startOpen} onChange={onChange}>
+    <CollapsibleFilter title={t('navigation.search.category_filter_title')} startOpen={startOpen}>
       {showAllFilter && (
         <CategoryOption
           type="all_proposals"

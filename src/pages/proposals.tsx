@@ -125,7 +125,7 @@ export default function ProposalsPage() {
             <NotMobile>
               <div className="ProposalsPage__Sidebar">
                 <div>
-                  <CategoryFilter filterType={ProposalType} startOpen />
+                  <CategoryFilter filterType={ProposalType} />
                   <StatusFilter statusType={ProposalStatus} />
                   <TimeFrameFilter />
                 </div>
@@ -152,7 +152,7 @@ export default function ProposalsPage() {
                         <SortingMenu />
                         <Mobile>
                           <FilterMenu>
-                            <CategoryFilter filterType={ProposalType} startOpen />
+                            <CategoryFilter filterType={ProposalType} />
                             <StatusFilter statusType={ProposalStatus} />
                             <TimeFrameFilter />
                           </FilterMenu>

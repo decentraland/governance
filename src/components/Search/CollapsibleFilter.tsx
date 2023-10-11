@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import classNames from 'classnames'
+import { NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import Text from '../Common/Typography/Text'
 
@@ -10,35 +11,29 @@ type Props = {
   title: string
   startOpen?: boolean
   children: React.ReactNode
-  onChange?: (open: boolean) => void
 }
 
-function CollapsibleFilter({ title, children, startOpen, onChange }: Props) {
-  const [open, setOpen] = useState(!!startOpen)
+export default function CollapsibleFilter({ title, children, startOpen = true }: Props) {
+  const [open, setOpen] = useState(startOpen)
 
-  useEffect(() => {
-    onChange && onChange(open)
-  }, [onChange, open])
-
-  const toggleHandler = () => {
-    setOpen(!open)
-    onChange && onChange(!open)
+  const handleToggleClick = () => {
+    setOpen((prevOpen) => !prevOpen)
   }
 
   return (
     <div className="CollapsibleFilter">
-      <div className="FilterHeader" onClick={toggleHandler}>
+      <div className="FilterHeader" onClick={handleToggleClick}>
         <Text className="FilterHeader__Title" size="sm" weight="semi-bold" color="secondary">
           {title}
         </Text>
-        <div className="PlusMinusContainer">
-          <div className={classNames('PlusMinus', !open && 'PlusMinus--closed')} />
-          <div className="PlusMinus" />
-        </div>
+        <NotMobile>
+          <div className="PlusMinusContainer">
+            <div className={classNames('PlusMinus', !open && 'PlusMinus--closed')} />
+            <div className="PlusMinus" />
+          </div>
+        </NotMobile>
       </div>
       <div className={classNames('FilterContent', open && 'FilterContent--open')}>{children}</div>
     </div>
   )
 }
-
-export default CollapsibleFilter
