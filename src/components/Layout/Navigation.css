@@ -27,6 +27,10 @@
 }
 
 @media (max-width: 767px) {
+  .Navigation .dcl.tabs {
+    padding-right: 32px;
+  }
+
   .Navigation .dcl.tabs-left {
     width: 100%;
     overflow: scroll;
@@ -39,7 +43,7 @@
     white-space: nowrap;
   }
 
-  .dcl.tabs .ui.container {
+  .Navigation .dcl.tabs .ui.container {
     display: flex;
   }
 

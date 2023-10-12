@@ -33,10 +33,8 @@ export default function SearchInputMobile() {
   const [searchText, setSearchText] = useState(() => search || '')
 
   const focusSearch = () => {
-    setTimeout(() => {
-      searchInput.current?.focus()
-      searchInput.current?.click()
-    }, 500)
+    searchInput.current?.focus()
+    searchInput.current?.click()
   }
 
   useEffect(() => {
@@ -48,7 +46,7 @@ export default function SearchInputMobile() {
     }
   }, [search])
 
-  const handleChange = (e: React.ChangeEvent<any>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value)
   }
 
@@ -73,16 +71,10 @@ export default function SearchInputMobile() {
     }
   }
 
-  const handleOpen = () => {
-    if (!open) {
-      setOpen(true)
-      focusSearch()
-    }
-  }
-
   return (
     <div className={classNames('SearchInputMobile', open && 'SearchInputMobile--open')}>
       <div className="SearchInputMobile__Container">
+        <div className="SearchInputMobile__Gradient" />
         <input
           className={classNames('SearchInputMobile__Input', open && 'SearchInputMobile__Input--open')}
           value={searchText}
@@ -98,6 +90,7 @@ export default function SearchInputMobile() {
           <Cross className="SearchInputMobile__CloseIcon" size="14" color="var(--black-800)" onClick={handleClear} />
         )}
       </div>
+      <div className={classNames('SearchInputMobile__Overlay', open && 'SearchInputMobile__Overlay--open')} />
     </div>
   )
 }
