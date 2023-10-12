@@ -11,6 +11,7 @@ import {
   NewProposalPoll,
   NewProposalTender,
   ProposalType,
+  ProposalTypes,
 } from '../types'
 
 import * as linkedWearables from './LinkedWearables'
@@ -39,7 +40,7 @@ type NewConfiguration =
   | NewProposalPitch
   | NewProposalTender
 
-export const title = ({ type, configuration }: { type: ProposalType; configuration: NewConfiguration }) => {
+export const title = ({ type, configuration }: { type: ProposalTypes; configuration: NewConfiguration }) => {
   switch (type) {
     case ProposalType.POI:
       return poi.title(configuration as any)
@@ -68,7 +69,13 @@ export const title = ({ type, configuration }: { type: ProposalType; configurati
   }
 }
 
-export const description = async ({ type, configuration }: { type: ProposalType; configuration: NewConfiguration }) => {
+export const description = async ({
+  type,
+  configuration,
+}: {
+  type: ProposalTypes
+  configuration: NewConfiguration
+}) => {
   switch (type) {
     case ProposalType.POI:
       return poi.description(configuration as any)
@@ -98,7 +105,7 @@ export const description = async ({ type, configuration }: { type: ProposalType;
 }
 
 export type SnapshotTemplateProps = {
-  type: ProposalType
+  type: ProposalTypes
   configuration: NewConfiguration
   user: string
   profile: Avatar | null
@@ -128,7 +135,7 @@ ${
 `
 
 export type ForumTemplate = {
-  type: ProposalType
+  type: ProposalTypes
   configuration: NewConfiguration
   user: string
   profile: Avatar | null

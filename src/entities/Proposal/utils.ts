@@ -13,7 +13,7 @@ import { UpdateAttributes } from '../Updates/types'
 import { DISCOURSE_API } from '../User/utils'
 
 import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
-import { ProposalAttributes, ProposalStatus, ProposalType } from './types'
+import { ProposalAttributes, ProposalStatus, ProposalType, ProposalTypes } from './types'
 
 export const MIN_PROPOSAL_OFFSET = 0
 export const MAX_PROPOSAL_LIMIT = 100
@@ -151,11 +151,11 @@ export function isProposalInCliffPeriod(enactedDate: number) {
   return Time.unix(enactedDate).add(CLIFF_PERIOD_IN_DAYS, 'day').isAfter(now)
 }
 
-export function isGovernanceProcessProposal(type: ProposalType) {
+export function isGovernanceProcessProposal(type: ProposalTypes) {
   return type === ProposalType.Poll || type === ProposalType.Draft || type === ProposalType.Governance
 }
 
-export function isBiddingAndTenderingProposal(type: ProposalType) {
+export function isBiddingAndTenderingProposal(type: ProposalTypes) {
   return type === ProposalType.Pitch || type === ProposalType.Tender || type === ProposalType.Bid
 }
 
@@ -212,7 +212,7 @@ export function isGrantProposalSubmitEnabled(now: number) {
   return !Time(now).isBefore(ENABLE_START_DATE)
 }
 
-export function getProposalCategory(proposalType: ProposalType, proposalConfiguration: any): string | null {
+export function getProposalCategory(proposalType: ProposalTypes, proposalConfiguration: any): string | null {
   return proposalType === ProposalType.Grant ? proposalConfiguration.category : null
 }
 

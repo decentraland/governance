@@ -1,12 +1,12 @@
 import classNames from 'classnames'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
-import { ProposalType } from '../../entities/Proposal/types'
+import { ProposalType, ProposalTypes } from '../../entities/Proposal/types'
 import locations from '../../utils/locations'
 import Pill, { PillColor } from '../Common/Pill'
 import Link from '../Common/Typography/Link'
 
-export const ColorsConfig: Record<ProposalType, PillColor> = {
+export const ColorsConfig: Record<ProposalTypes, PillColor> = {
   [ProposalType.POI]: PillColor.Green,
   [ProposalType.Catalyst]: PillColor.Blue,
   [ProposalType.BanName]: PillColor.Fuchsia,
@@ -23,17 +23,17 @@ export const ColorsConfig: Record<ProposalType, PillColor> = {
 
 type Props = {
   className?: string
-  proposalType: ProposalType
+  proposalType: ProposalTypes
   size?: 'sm' | 'md'
   isLink?: boolean
   color?: PillColor
 }
 
-function getProposalTypeShortLabel(proposalType: ProposalType) {
+function getProposalTypeShortLabel(proposalType: ProposalTypes) {
   return proposalType === ProposalType.LinkedWearables ? 'LWearables' : getProposalTypeLabel(proposalType)
 }
 
-function getProposalTypeLabel(proposalType: ProposalType) {
+function getProposalTypeLabel(proposalType: ProposalTypes) {
   return proposalType.replaceAll('_', ' ')
 }
 

@@ -124,7 +124,7 @@ export default function CategoryOption({ active, type, className, count, subtype
             {getCategoryIcon(type, CategoryIconVariant.Circled)}
             <Text className="CategoryOption__Title">{t(`category.${type}_title`)}</Text>
           </span>
-          {hasSubtypes && (
+          {/* {hasSubtypes && (
             <span
               className={classNames('CategoryOption__Arrow', isSubtypesOpen && 'CategoryOption__Arrow--active')}
               onClick={(e) => {
@@ -134,7 +134,7 @@ export default function CategoryOption({ active, type, className, count, subtype
             >
               <Arrow filled={false} color="var(--black-700)" />
             </span>
-          )}
+          )} */}
         </span>
         {isNumber(count) && (
           <span className={classNames('CategoryOption__Counter', active && 'CategoryOption__Counter--active')}>
@@ -142,7 +142,7 @@ export default function CategoryOption({ active, type, className, count, subtype
           </span>
         )}
       </Link>
-      {hasSubtypes && (
+      {/* {hasSubtypes && (
         <div
           className={classNames(
             'CategoryOption__Subcategories',
@@ -157,7 +157,7 @@ export default function CategoryOption({ active, type, className, count, subtype
                   isSubtypeActive(subtype) && 'CategoryOption__SubcategoryItem--active'
                 )}
                 key={subtype + `-${index}`}
-                href={getHref(props.href, subtype)}
+                // href={getHref(props.href, subtype)}
               >
                 <SubItem />
                 {t(`category.${toSnakeCase(subtype)}_title`)}
@@ -165,7 +165,7 @@ export default function CategoryOption({ active, type, className, count, subtype
             )
           })}
         </div>
-      )}
+      )} */}
     </>
   )
 }

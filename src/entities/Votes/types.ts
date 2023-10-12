@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SnapshotVote } from '../../clients/SnapshotTypes'
-import { ProposalStatus, ProposalType } from '../Proposal/types'
+import { ProposalStatus, ProposalType, ProposalTypes } from '../Proposal/types'
 
 export type VoteAttributes = {
   proposal_id: string
@@ -20,7 +20,7 @@ export type VotedProposal = SnapshotVote & {
   id: string
   proposal: {
     proposal_id: string
-    type: ProposalType
+    type: ProposalTypes
     status: ProposalStatus
     author: string
     finish_at: number

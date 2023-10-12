@@ -46,7 +46,7 @@ export type ProposalAttributes<C extends Record<string, unknown> = any> = {
   user: string
   title: string
   description: string
-  type: ProposalType
+  type: ProposalTypes
   status: ProposalStatus
   configuration: C
   start_at: Date
@@ -79,20 +79,30 @@ export enum ProposalStatus {
   Deleted = 'deleted',
 }
 
-export enum ProposalType {
-  POI = 'poi',
-  Catalyst = 'catalyst',
-  BanName = 'ban_name',
-  Grant = 'grant',
-  LinkedWearables = 'linked_wearables',
-  Hiring = 'hiring',
-  Poll = 'poll',
-  Draft = 'draft',
-  Governance = 'governance',
-  Pitch = 'pitch',
-  Tender = 'tender',
-  Bid = 'bid',
-}
+export const GovernanceProposalType = {
+  Poll: 'poll',
+  Draft: 'draft',
+  Governance: 'governance',
+} as const
+
+export const BiddingProposalType = {
+  Pitch: 'pitch',
+  Tender: 'tender',
+  Bid: 'bid',
+} as const
+
+export const ProposalType = {
+  POI: 'poi',
+  Catalyst: 'catalyst',
+  BanName: 'ban_name',
+  LinkedWearables: 'linked_wearables',
+  Hiring: 'hiring',
+  ...GovernanceProposalType,
+  Grant: 'grant',
+  ...BiddingProposalType,
+} as const
+
+export type ProposalTypes = typeof ProposalType[keyof typeof ProposalType]
 
 export enum PoiType {
   AddPOI = 'add_poi',
@@ -114,7 +124,7 @@ export function isProposalType(value: string | null | undefined): boolean {
     return false
   }
 
-  return Object.values(ProposalType).includes(value as ProposalType)
+  return Object.values(ProposalType).includes(value as ProposalTypes)
 }
 
 export function isPoiType(value: string | null | undefined): boolean {
@@ -141,8 +151,8 @@ export function toCatalystType(value: string | null | undefined): CatalystType |
   return isCatalystType(value) ? (value as CatalystType) : null
 }
 
-export function toProposalType(value: string | null | undefined): ProposalType | null {
-  return isProposalType(value) ? (value as ProposalType) : null
+export function toProposalType(value: string | null | undefined): ProposalTypes | null {
+  return isProposalType(value) ? (value as ProposalTypes) : null
 }
 
 export function toPoiType(value: string | null | undefined): PoiType | null {
@@ -795,7 +805,7 @@ export type Project = {
   title: string
   user: string
   size: number
-  type: ProposalType
+  type: ProposalTypes
   created_at: number
   configuration: {
     category: ProposalGrantCategory

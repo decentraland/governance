@@ -2,16 +2,18 @@ import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
-import { CatalystType, HiringType, PoiType, ProposalType } from '../../../entities/Proposal/types'
+import { CatalystType, HiringType, PoiType } from '../../../entities/Proposal/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import locations from '../../../utils/locations'
 import CategoryBanner from '../../Category/CategoryBanner'
 import Text from '../../Common/Typography/Text'
 import '../ProposalModal.css'
 
+type AcceptedProposalType = 'poi' | 'hiring' | 'catalyst'
+
 export type AddRemoveProposalModalProps = ModalProps & {
-  title: 'poi' | 'hiring' | 'catalyst'
-  proposalType: ProposalType.POI | ProposalType.Hiring | ProposalType.Catalyst
+  title: AcceptedProposalType
+  proposalType: AcceptedProposalType
   addType: PoiType | HiringType | CatalystType
   isAddDisabled?: boolean
   removeType: PoiType | HiringType | CatalystType

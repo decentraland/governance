@@ -29,6 +29,7 @@ import {
   ProposalCommentsInDiscourse,
   ProposalStatus,
   ProposalType,
+  ProposalTypes,
 } from '../entities/Proposal/types'
 import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { SubscriptionAttributes } from '../entities/Subscription/types'
@@ -67,7 +68,7 @@ type NewProposalMap = {
 
 export type GetProposalsFilter = {
   user: string
-  type: ProposalType
+  type: ProposalTypes
   subtype?: SubtypeOptions
   status: ProposalStatus
   subscribed: boolean | string

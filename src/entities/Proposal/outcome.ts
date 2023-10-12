@@ -82,7 +82,7 @@ export async function calculateOutcome(proposal: ProposalAttributes, context: Jo
 export function getWinnerBiddingAndTenderingProposal(
   pendingProposalsWithOutcome: ProposalWithOutcome[],
   linkedProposalId: string,
-  type: ProposalType.Tender | ProposalType.Bid
+  type: 'tender' | 'bid'
 ) {
   const proposals = pendingProposalsWithOutcome.filter(
     (item) =>

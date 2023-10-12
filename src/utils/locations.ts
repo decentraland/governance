@@ -3,7 +3,7 @@ import API from 'decentraland-gatsby/dist/utils/api/API'
 import { navigate as gatsbyNavigate } from 'gatsby'
 
 import { NewGrantCategory } from '../entities/Grant/types'
-import { CatalystType, HiringType, PoiType, ProposalStatus, ProposalType } from '../entities/Proposal/types'
+import { CatalystType, HiringType, PoiType, ProposalStatus, ProposalTypes } from '../entities/Proposal/types'
 
 const GATSBY_BASE_URL = process.env.GATSBY_BASE_URL || '/'
 
@@ -27,7 +27,7 @@ export type ProposalsStatusFilter = {
 }
 
 export type ProposalsTypeFilter = {
-  type: ProposalType
+  type: ProposalTypes
 }
 
 export type GrantCategoryTypeFilter = {
@@ -54,7 +54,7 @@ export default {
   proposal: (proposal: string, options: { new?: 'true'; newUpdate?: 'true'; pending?: 'true'; bid?: 'true' } = {}) =>
     url('/proposal/', { id: proposal, ...options }),
   submit: (
-    type?: ProposalType,
+    type?: ProposalTypes,
     options: {
       linked_proposal_id?: string
       request?: PoiType | HiringType | CatalystType

@@ -10,7 +10,7 @@ import isDAOCommittee from '../entities/Committee/isDAOCommittee'
 import ProposalModel from '../entities/Proposal/model'
 import * as templates from '../entities/Proposal/templates'
 import { getUpdateMessage } from '../entities/Proposal/templates/messages'
-import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
+import { ProposalAttributes, ProposalStatus, ProposalType, ProposalTypes } from '../entities/Proposal/types'
 import { isGrantProposalSubmitEnabled } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import VotesModel from '../entities/Votes/model'
@@ -115,7 +115,7 @@ export class ProposalService {
     }
   }
 
-  private static getInitialStatus(type: ProposalType) {
+  private static getInitialStatus(type: ProposalTypes) {
     return type === ProposalType.Tender ? ProposalStatus.Pending : ProposalStatus.Active
   }
 

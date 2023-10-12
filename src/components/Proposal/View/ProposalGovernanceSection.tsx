@@ -19,7 +19,7 @@ import './ProposalGovernanceSection.css'
 import ProposalPromotionSection from './ProposalPromotionSection'
 import SidebarHeaderLabel from './SidebarHeaderLabel'
 
-const PROMOTABLE_PROPOSALS = [ProposalType.Poll, ProposalType.Draft, ProposalType.Pitch, ProposalType.Tender]
+const PROMOTABLE_PROPOSALS: string[] = [ProposalType.Poll, ProposalType.Draft, ProposalType.Pitch, ProposalType.Tender]
 
 interface Props {
   proposal?: ProposalAttributes | null

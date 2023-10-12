@@ -12,7 +12,7 @@ import { Budget } from '../Budget/types'
 
 import ProposalModel from './model'
 import { ProposalOutcome, ProposalWithOutcome, calculateOutcome, getWinnerBiddingAndTenderingProposal } from './outcome'
-import { ProposalAttributes, ProposalStatus, ProposalType } from './types'
+import { ProposalAttributes, ProposalStatus, ProposalType, ProposalTypes } from './types'
 import { asNumber } from './utils'
 
 export async function activateProposals(context: JobContext) {
@@ -110,10 +110,7 @@ async function getProposalsWithOutcome(proposals: ProposalAttributes[], context:
   return pendingProposalsWithOutcome
 }
 
-export async function getFinishabledLinkedProposals(
-  pendingProposals: ProposalAttributes[],
-  type: ProposalType.Bid | ProposalType.Tender
-) {
+export async function getFinishabledLinkedProposals(pendingProposals: ProposalAttributes[], type: 'tender' | 'bid') {
   let proposals = pendingProposals.filter((item) => item.type === type)
   if (proposals.length > 0) {
     const linkedProposalIds = [...new Set(proposals.map((item) => item.configuration.linked_proposal_id))]
@@ -127,7 +124,7 @@ export async function getFinishabledLinkedProposals(
   return proposals
 }
 
-function hasCustomOutcome(type: ProposalType) {
+function hasCustomOutcome(type: ProposalTypes) {
   return type === ProposalType.Grant || type === ProposalType.Tender || type === ProposalType.Bid
 }
 

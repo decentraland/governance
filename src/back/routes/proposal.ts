@@ -86,6 +86,8 @@ import Time from '../../utils/date/Time'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { validateAddress, validateProposalId } from '../utils/validations'
 
+import { ProposalTypes } from './../../entities/Proposal/types'
+
 export default routes((route) => {
   const withAuth = auth()
   const withOptionalAuth = auth({ optional: true })
@@ -588,7 +590,7 @@ export async function getProposalComments(req: Request<{ proposal: string }>): P
   }
 }
 
-async function validateLinkedProposal(linkedProposalId: string, expectedProposalType: ProposalType) {
+async function validateLinkedProposal(linkedProposalId: string, expectedProposalType: ProposalTypes) {
   const linkedProposal = await ProposalModel.findOne<ProposalAttributes>({
     id: linkedProposalId,
     type: expectedProposalType,
