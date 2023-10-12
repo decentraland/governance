@@ -7,11 +7,6 @@
   margin: 0 auto;
 }
 
-.dcl.new-user-menu .toggle {
-  width: 42px !important;
-  height: 42px !important;
-}
-
 @media only screen and (min-width: 1200px) {
   .ui.container {
     width: 1124px;
@@ -24,6 +19,11 @@
 }
 
 @media (min-width: 768px) {
+  .dcl.new-user-menu .toggle {
+    width: 42px !important;
+    height: 42px !important;
+  }
+
   .ui.container.WiderFooter {
     padding: 0 24px !important;
   }
