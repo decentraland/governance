@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { useLocation } from '@reach/router'
 import classNames from 'classnames'
@@ -10,41 +10,29 @@ import Cross from '../Icon/Cross'
 
 import './SearchInputMobile.css'
 
-function handleSearch(textSearch: string, location: Location) {
-  const newParams = new URLSearchParams(location.search)
-  if (textSearch) {
-    newParams.set('search', textSearch)
-    newParams.delete('page')
-    newParams.delete('order')
-  } else {
-    newParams.delete('search')
-    newParams.delete('page')
-  }
-
-  navigate(locations.proposals(newParams))
-}
-
 export default function SearchInputMobile() {
   const t = useFormatMessage()
   const location = useLocation()
   const { search } = useProposalsSearchParams()
   const searchInput = useRef<HTMLInputElement>(null)
   const [open, setOpen] = useState(false)
-  const [searchText, setSearchText] = useState(() => search || '')
+  const [searchText, setSearchText] = useState(search || '')
 
-  const focusSearch = () => {
-    searchInput.current?.focus()
-    searchInput.current?.click()
-  }
-
-  useEffect(() => {
-    if (!search) {
-      setSearchText('')
-      setOpen(false)
+  const handleSearch = (textSearch: string, location: Location) => {
+    const newParams = new URLSearchParams(location.search)
+    if (textSearch) {
+      newParams.set('search', textSearch)
+      newParams.delete('page')
+      newParams.delete('order')
     } else {
-      focusSearch()
+      newParams.delete('search')
+      newParams.delete('page')
     }
-  }, [search])
+
+    setOpen(false)
+    searchInput.current?.blur()
+    navigate(locations.proposals(newParams))
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value)
@@ -55,7 +43,8 @@ export default function SearchInputMobile() {
       setOpen(false)
     } else {
       setSearchText('')
-      focusSearch()
+      searchInput.current?.focus()
+      searchInput.current?.click()
     }
   }
 
@@ -65,7 +54,7 @@ export default function SearchInputMobile() {
     }
   }
 
-  const keyUpHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.code === 'Escape') {
       setSearchText('')
     }
@@ -74,17 +63,16 @@ export default function SearchInputMobile() {
   return (
     <div className={classNames('SearchInputMobile', open && 'SearchInputMobile--open')}>
       <div className="SearchInputMobile__Container">
-        <div className="SearchInputMobile__Gradient" />
+        {!open && <div className="SearchInputMobile__Gradient" />}
         <input
+          ref={searchInput}
           className={classNames('SearchInputMobile__Input', open && 'SearchInputMobile__Input--open')}
           value={searchText}
           placeholder={t('navigation.search.placeholder') || ''}
           onChange={handleChange}
           onKeyPress={handleKeyPress}
-          onKeyUp={keyUpHandler}
+          onKeyUp={handleKeyUp}
           onFocus={() => setOpen(true)}
-          onBlur={() => setOpen(!!searchText)}
-          ref={searchInput}
         />
         {open && (
           <Cross className="SearchInputMobile__CloseIcon" size="14" color="var(--black-800)" onClick={handleClear} />

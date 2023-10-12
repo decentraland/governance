@@ -28,7 +28,8 @@
 
 @media (max-width: 767px) {
   .Navigation .dcl.tabs {
-    padding-right: 32px;
+    padding-left: 4px;
+    padding-right: 36px;
   }
 
   .Navigation .dcl.tabs-left {
@@ -37,7 +38,7 @@
   }
 
   .Navigation .dcl.tab {
-    margin: 0 16px;
+    margin: 0 12px;
     padding: 0;
     padding-bottom: 14px;
     white-space: nowrap;

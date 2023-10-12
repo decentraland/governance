@@ -16,8 +16,8 @@
 .SearchInputMobile--open {
   width: 100%;
   height: 34px;
-  padding-left: 16px;
-  padding-right: 10px;
+  padding-left: 10px;
+  padding-right: 16px;
   top: 0;
 }
 
@@ -42,8 +42,6 @@
 .SearchInputMobile__Input--open {
   width: 100%;
   padding: 8px 32px;
-  background: var(--white-900) no-repeat 0 center;
-  background-image: url('../../images/icons/new-magnify.svg');
 }
 
 .SearchInputMobile__CloseIcon {
@@ -57,4 +55,19 @@
   flex-direction: row;
   position: relative;
   width: 100%;
+}
+
+.SearchInputMobile__Overlay {
+  position: fixed;
+  top: 113px; /* TODO: Default: 113px; Snapshot Unstable: 163px */
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--alpha-black-300);
+  z-index: 999;
+  visibility: hidden;
+}
+
+.SearchInputMobile__Overlay--open {
+  visibility: visible;
 }
