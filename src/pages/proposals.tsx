@@ -33,7 +33,6 @@ import useProposals from '../hooks/useProposals'
 import useProposalsByCoAuthor from '../hooks/useProposalsByCoAuthor'
 import { useProposalsSearchParams } from '../hooks/useProposalsSearchParams'
 import useProposalsVotes from '../hooks/useProposalsVotes'
-import useSubscriptions from '../hooks/useSubscriptions'
 import locations, { navigate } from '../utils/locations'
 import { isUnderMaintenance } from '../utils/maintenance'
 
@@ -57,7 +56,6 @@ export default function ProposalsPage() {
   })
   const proposalIds = (proposals?.data || []).map((proposal) => proposal.id)
   const { votes, isLoadingVotes } = useProposalsVotes(proposalIds)
-  const [subscriptions, subscriptionsState] = useSubscriptions()
   const isTabletAndBelow = useTabletAndBelowMediaQuery()
 
   const handlePageFilter = useCallback(
@@ -192,9 +190,6 @@ export default function ProposalsPage() {
                           proposal={proposal}
                           hasCoauthorRequest={!!requestsStatus.find((req) => req.proposal_id === proposal.id)}
                           votes={votes ? votes[proposal.id] : undefined}
-                          subscribing={subscriptionsState.isSubscribing}
-                          subscribed={!!subscriptions.find((subscription) => subscription.proposal_id === proposal.id)}
-                          onSubscribe={(_, proposal) => subscriptionsState.subscribe(proposal.id)}
                         />
                       ) : (
                         <ProposalPreviewCard
