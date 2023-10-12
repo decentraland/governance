@@ -2,7 +2,6 @@ import { useState } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { DelegationResult } from '../../clients/SnapshotTypes'
@@ -38,7 +37,7 @@ function VpDelegationBox({ address, delegation, isLoadingDelegation, ownVp, isLo
   const profileHasADelegation = delegatedTo.length > 0 && !!ownVp
 
   return (
-    <Container fluid>
+    <div>
       <ProfileBox
         title={t('page.profile.delegation.title')}
         info={t('page.profile.delegation.helper')}
@@ -93,7 +92,7 @@ function VpDelegationBox({ address, delegation, isLoadingDelegation, ownVp, isLo
           showPickOtherDelegateButton
         />
       )}
-    </Container>
+    </div>
   )
 }
 
