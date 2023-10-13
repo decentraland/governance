@@ -1,6 +1,6 @@
+import crypto from 'crypto'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
-import { v1 as uuid } from 'uuid'
 
 import { VoteService } from '../back/services/vote'
 import { Discourse, DiscourseComment, DiscoursePost } from '../clients/Discourse'
@@ -44,7 +44,7 @@ export class ProposalService {
       throw new Error('Decentraland DAO Grants Program has been put on hold')
     }
 
-    const proposalId = uuid()
+    const proposalId = crypto.randomUUID()
     const proposalLifespan = this.getLifespan(proposalInCreation)
     const coAuthors = this.getCoAuthors(proposalInCreation)
 

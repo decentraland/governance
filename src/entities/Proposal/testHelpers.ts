@@ -1,6 +1,6 @@
 // eslint-disable @typescript-eslint/no-explicit-any
+import crypto from 'crypto'
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
-import { v1 as uuid } from 'uuid'
 
 import Time from '../../utils/date/Time'
 import { Budget } from '../Budget/types'
@@ -103,7 +103,7 @@ export function createTestProposal(
   grantCategory?: NewGrantCategory
 ): ProposalAttributes {
   const testProposalConfiguration = getTestProposalConfiguration(proposalType, grantSize, grantCategory)
-  const id = uuid()
+  const id = crypto.randomUUID()
   return {
     ...BASIC_ATTRIBUTES,
     id: `id-${proposalType.toString()}-${proposalStatus.toString()}-${id}`,
