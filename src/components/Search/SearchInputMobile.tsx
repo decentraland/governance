@@ -5,6 +5,7 @@ import classNames from 'classnames'
 
 import useFormatMessage from '../../hooks/useFormatMessage'
 import { useProposalsSearchParams } from '../../hooks/useProposalsSearchParams'
+import useSnapshotStatus from '../../hooks/useSnapshotStatus'
 import locations, { navigate } from '../../utils/locations'
 import Cross from '../Icon/Cross'
 
@@ -17,6 +18,7 @@ export default function SearchInputMobile() {
   const searchInput = useRef<HTMLInputElement>(null)
   const [open, setOpen] = useState(false)
   const [searchText, setSearchText] = useState(search || '')
+  const showSnapshotStatus = useSnapshotStatus()
 
   const handleSearch = (textSearch: string, location: Location) => {
     const newParams = new URLSearchParams(location.search)
@@ -78,7 +80,13 @@ export default function SearchInputMobile() {
           <Cross className="SearchInputMobile__CloseIcon" size="14" color="var(--black-800)" onClick={handleClear} />
         )}
       </div>
-      <div className={classNames('SearchInputMobile__Overlay', open && 'SearchInputMobile__Overlay--open')} />
+      <div
+        className={classNames(
+          'SearchInputMobile__Overlay',
+          open && 'SearchInputMobile__Overlay--open',
+          showSnapshotStatus && 'SearchInputMobile__Overlay--with-snapshot-status'
+        )}
+      />
     </div>
   )
 }
