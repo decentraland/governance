@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 
 import { useLocation } from '@reach/router'
 import classNames from 'classnames'
@@ -62,6 +62,19 @@ export default function SearchInputMobile() {
     }
   }
 
+  useLayoutEffect(() => {
+    if (typeof window !== 'undefined') {
+      const onScroll = function () {
+        searchInput.current?.blur()
+        setOpen(false)
+      }
+
+      window.addEventListener('scroll', onScroll)
+
+      return () => window.removeEventListener('scroll', onScroll)
+    }
+  }, [])
+
   return (
     <div className={classNames('SearchInputMobile', open && 'SearchInputMobile--open')}>
       <div className="SearchInputMobile__Container">
@@ -81,6 +94,7 @@ export default function SearchInputMobile() {
         )}
       </div>
       <div
+        onClick={() => setOpen(false)}
         className={classNames(
           'SearchInputMobile__Overlay',
           open && 'SearchInputMobile__Overlay--open',
