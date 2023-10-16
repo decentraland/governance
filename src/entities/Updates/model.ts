@@ -1,5 +1,5 @@
+import crypto from 'crypto'
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
-import { v1 as uuid } from 'uuid'
 
 import { VestingDates } from '../../clients/VestingData'
 import Time from '../../utils/date/Time'
@@ -31,7 +31,7 @@ export default class UpdateModel extends Model<UpdateAttributes> {
 
     const updates = Array.from(Array(updatesQuantity), (_, index) => {
       const update: UpdateAttributes = {
-        id: uuid(),
+        id: crypto.randomUUID(),
         proposal_id: proposalId,
         status: UpdateStatus.Pending,
         due_date: this.getDueDate(firstUpdateStartingDate, index),
@@ -68,7 +68,7 @@ export default class UpdateModel extends Model<UpdateAttributes> {
     const now = new Date()
 
     return await this.create({
-      id: uuid(),
+      id: crypto.randomUUID(),
       status: UpdateStatus.Done,
       due_date: undefined,
       completion_date: now,
