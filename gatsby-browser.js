@@ -20,7 +20,6 @@ import AuthProvider from 'decentraland-gatsby/dist/context/Auth/AuthProvider'
 import FeatureFlagProvider from 'decentraland-gatsby/dist/context/FeatureFlag/FeatureFlagProvider'
 import segment from 'decentraland-gatsby/dist/utils/segment/segment'
 import Layout from './src/components/Layout/Layout'
-import Navbar from './src/components/Layout/Navbar'
 import IdentityModalContextProvider from './src/components/Context/IdentityModalContext'
 import ExternalLinkWarningModal from './src/components/Modal/ExternalLinkWarningModal/ExternalLinkWarningModal'
 import IdentityConnectModal from './src/components/Modal/IdentityConnectModal/IdentityConnectModal'
@@ -29,6 +28,7 @@ import { SEGMENT_KEY, SNAPSHOT_STATUS_ENABLED, SSO_URL } from "./src/constants"
 import { flattenMessages } from "./src/utils/intl"
 import en from "./src/intl/en.json"
 import SnapshotStatus from "./src/components/Debug/SnapshotStatus"
+import UserInformation from 'decentraland-gatsby/dist/components/User/UserInformation'
 
 const queryClient = new QueryClient()
 
@@ -47,7 +47,7 @@ export const wrapPageElement = ({ element, props }) => {
       <IntlProvider defaultLocale='en' locale='en' messages={flattenMessages(en)}>
         <IdentityModalContextProvider>
             {SNAPSHOT_STATUS_ENABLED && <SnapshotStatus />}
-            <Layout {...props} rightMenu={<Navbar />}>
+            <Layout {...props} rightMenu={<UserInformation />}>
               {element}
             </Layout>
           <ExternalLinkWarningModal />
