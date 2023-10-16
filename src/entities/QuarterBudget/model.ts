@@ -1,7 +1,7 @@
+import crypto from 'crypto'
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import { SQL, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 import snakeCase from 'lodash/snakeCase'
-import { v1 as uuid } from 'uuid'
 
 import { TransparencyBudget } from '../../clients/DclData'
 import Time from '../../utils/date/Time'
@@ -61,7 +61,7 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
 
   private static getNewQuarterBudget(transparencyBudget: TransparencyBudget, startAt: Date, finishAt: Date, now: Date) {
     const newQuarterBudget: QuarterBudgetAttributes = {
-      id: uuid(),
+      id: crypto.randomUUID(),
       total: transparencyBudget.total,
       start_at: startAt,
       finish_at: finishAt,

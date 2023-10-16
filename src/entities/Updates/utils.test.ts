@@ -1,4 +1,4 @@
-import { v1 as uuid } from 'uuid'
+import crypto from 'crypto'
 
 import Time from '../../utils/date/Time'
 
@@ -20,8 +20,8 @@ type GenerateUpdate = Pick<
   | 'completion_date'
 >
 const generateUpdate = (update: GenerateUpdate): UpdateAttributes => ({
-  id: uuid(),
-  proposal_id: uuid(),
+  id: crypto.randomUUID(),
+  proposal_id: crypto.randomUUID(),
   health: update.health,
   introduction: update.introduction,
   highlights: update.highlights,

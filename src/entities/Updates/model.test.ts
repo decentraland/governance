@@ -1,5 +1,5 @@
 import { def } from 'bdd-lazy-var/getter'
-import * as uuid from 'uuid'
+import crypto from 'crypto'
 
 import Time from '../../utils/date/Time'
 import { getMonthsBetweenDates } from '../../utils/date/getMonthsBetweenDates'
@@ -7,8 +7,6 @@ import { VestingStartDate } from '../Grant/types'
 
 import UpdateModel from './model'
 import { UpdateStatus } from './types'
-
-jest.mock('uuid')
 
 const PROPOSAL_ID = '123'
 const UUID = '00000000-0000-0000-0000-000000000000'
@@ -20,7 +18,7 @@ describe('UpdateModel', () => {
     jest.clearAllMocks()
     jest.spyOn(UpdateModel, 'createMany').mockImplementation((list: any) => list)
     jest.spyOn(UpdateModel, 'delete').mockResolvedValue([] as any)
-    jest.spyOn(uuid, 'v1').mockReturnValue(UUID)
+    jest.spyOn(crypto, 'randomUUID').mockReturnValue(UUID)
     jest.useFakeTimers('modern')
     jest.setSystemTime(FAKE_NOW)
   })
