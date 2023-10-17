@@ -1,41 +1,24 @@
 import classNames from 'classnames'
 
-import { navigate } from '../../utils/locations'
+import Link from '../Common/Typography/Link'
 import Text from '../Common/Typography/Text'
 
 import './FilterLabel.css'
 
-export type FilterLabelProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'children'> & {
+interface Props {
   active?: boolean
   label: string
+  href: string
 }
 
-export default function FilterLabel({ active, label, className, ...props }: FilterLabelProps) {
-  function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
-    if (props.onClick) {
-      props.onClick(e)
-    }
-
-    if (!e.defaultPrevented) {
-      e.preventDefault()
-
-      if (props.href) {
-        navigate(props.href)
-      }
-    }
-  }
-
+export default function FilterLabel({ active, label, href }: Props) {
   return (
-    <a
-      {...props}
-      onClick={handleClick}
-      className={classNames('FilterLabel', active && 'FilterLabel--active', className)}
-    >
+    <Link href={href} className={classNames('FilterLabel', active && 'FilterLabel--active')}>
       <span>
-        <Text weight="medium" className="FilterLabel__Text">
+        <Text weight={active ? 'medium' : 'normal'} className="FilterLabel__Text">
           {label}
         </Text>
       </span>
-    </a>
+    </Link>
   )
 }
