@@ -171,9 +171,10 @@ export class BudgetService {
     return { minDate: sorted[0]?.start_at, maxDate: sorted[sorted.length - 1]?.start_at }
   }
 
-  static async getBudgetsForProposals(proposals: Pick<ProposalAttributes, 'start_at'>[]): Promise<Budget[]> {
+  static async getBudgetsForProposals(proposals: Pick<ProposalAttributes, 'start_at' | 'type'>[]): Promise<Budget[]> {
+    const grantProposals = proposals.filter((proposal) => proposal.type === ProposalType.Grant)
     const budgetsForProposals: Budget[] = []
-    const { minDate, maxDate } = this.getProposalsBudgetingMinAndMaxDates(proposals)
+    const { minDate, maxDate } = this.getProposalsBudgetingMinAndMaxDates(grantProposals)
     if (!minDate) return budgetsForProposals
     const oldestBudget = await QuarterBudgetModel.getBudgetForDate(minDate)
     if (oldestBudget === null) {
@@ -190,10 +191,8 @@ export class BudgetService {
     return budgetsForProposals
   }
 
-  static async updateBudgets(budgets: Budget[]) {
-    for (const budget of budgets) {
-      await QuarterBudgetModel.updateBudget(budget)
-    }
+  static getBudgetUpdateQueries(budgets: Budget[]) {
+    return budgets.flatMap((budget) => QuarterBudgetModel.getBudgetUpdateQuery(budget))
   }
 
   static async getCurrentContestedBudget() {

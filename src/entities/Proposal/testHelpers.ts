@@ -1,35 +1,35 @@
 // eslint-disable @typescript-eslint/no-explicit-any
+import { v1 as uuid } from 'uuid'
 import crypto from 'crypto'
-import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 
 import Time from '../../utils/date/Time'
 import { Budget } from '../Budget/types'
 import { GrantTier } from '../Grant/GrantTier'
 import { NewGrantCategory, VestingStartDate } from '../Grant/types'
 
-import { ProposalOutcome } from './outcome'
+import { VotingOutcome, VotingResult } from './outcome'
 import { NewProposalGovernance, ProposalAttributes, ProposalRequiredVP, ProposalStatus, ProposalType } from './types'
 import { DEFAULT_CHOICES } from './utils'
 
 const start = new Date('2023-02-01T00:00:00.000Z')
 const SNAPSHOT_DURATION = 600
 const TEST_GRANT_SIZE = 10000
-const TEST_PROPOSAL_USER = '0xProposalCreatorUserAddress'
+const TEST_PROPOSAL_USER = '0x2AC89522CB415AC333E64F52a1a5693218cEBD58'
 
-export const REJECTED_OUTCOME = {
+export const REJECTED_OUTCOME: VotingResult = {
   winnerChoice: DEFAULT_CHOICES[1],
   winnerVotingPower: 100,
-  outcomeStatus: ProposalOutcome.REJECTED,
+  votingOutcome: VotingOutcome.REJECTED,
 }
-export const ACCEPTED_OUTCOME = {
+export const ACCEPTED_OUTCOME: VotingResult = {
   winnerChoice: DEFAULT_CHOICES[0],
   winnerVotingPower: 200,
-  outcomeStatus: ProposalOutcome.ACCEPTED,
+  votingOutcome: VotingOutcome.ACCEPTED,
 }
-export const FINISHED_OUTCOME = {
+export const FINISHED_OUTCOME: VotingResult = {
   winnerChoice: DEFAULT_CHOICES[0],
   winnerVotingPower: 200,
-  outcomeStatus: ProposalOutcome.FINISHED,
+  votingOutcome: VotingOutcome.FINISHED,
 }
 
 export const POI_PROPOSAL_CONFIGURATION = {
@@ -165,30 +165,6 @@ const BASIC_ATTRIBUTES = {
   created_at: Time.utc(start).toDate(),
   updated_at: Time.utc(start).toDate(),
   textsearch: null,
-}
-
-// eslint-disable-next-line @typescript-eslint/ban-types
-interface CustomJobContext extends JobContext<{}> {
-  log: jest.Mock<unknown, unknown[]>
-  error: jest.Mock<unknown, unknown[]>
-}
-
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-export const JOB_CONTEXT_MOCK: CustomJobContext = {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  schedule(name: string | null, date: Date, payload: Record<string, unknown> | undefined): Promise<void> {
-    return Promise.resolve(undefined)
-  },
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  updatePayload(): Promise<void> {
-    return Promise.resolve(undefined)
-  },
-  log: jest.fn(),
-  error: jest.fn(),
-  id: 'some-id',
-  handler: null,
-  payload: {},
 }
 
 export const ACCELERATOR_TOTAL = 105000
