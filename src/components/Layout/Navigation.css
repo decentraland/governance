@@ -1,5 +1,6 @@
 .Navigation {
   position: relative;
+  z-index: 9999;
 }
 
 .Navigation .dcl.tab svg {
@@ -28,8 +29,12 @@
 
 @media (max-width: 767px) {
   .Navigation .dcl.tabs {
+    background-color: var(--white-900);
     padding-left: 4px;
     padding-right: 36px;
+    margin-top: 0;
+    align-items: flex-end;
+    height: 65px;
   }
 
   .Navigation .dcl.tabs-left {

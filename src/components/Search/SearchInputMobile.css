@@ -1,10 +1,10 @@
 .SearchInputMobile {
   position: absolute;
-  top: -1px;
+  bottom: 2px;
   right: 0;
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   background: var(--white-900);
   width: 40px;
@@ -15,10 +15,12 @@
 
 .SearchInputMobile--open {
   width: 100%;
-  height: 32px;
+  display: flex;
+  height: 65px;
   padding-left: 10px;
   padding-right: 16px;
   top: 0;
+  z-index: 9999;
 }
 
 .SearchInputMobile__Gradient {
@@ -26,7 +28,7 @@
   height: 34.5px;
   position: absolute;
   left: -16px;
-  background: linear-gradient(270deg, #fff 0%, rgba(255, 255, 255, 0) 103.13%);
+  background: linear-gradient(270deg, var(--white-900) 0%, rgba(255, 255, 255, 0) 103.13%);
   flex-shrink: 0;
 }
 
@@ -59,7 +61,7 @@
 
 .SearchInputMobile__Overlay {
   position: fixed;
-  top: 113px;
+  top: 0;
   left: 0;
   width: 100%;
   height: 100%;
@@ -74,4 +76,14 @@
 
 .SearchInputMobile__Overlay--open {
   visibility: visible;
+}
+
+.dcl.tabs,
+.dcl.navbar {
+  z-index: 99999 !important;
+}
+
+/* Hide tabs if search input mobile is open to fix position bug */
+.dcl.tabs:has(+ .SearchInputMobile--open) {
+  visibility: hidden;
 }
