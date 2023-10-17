@@ -1,23 +1,18 @@
 import crypto from 'crypto'
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 
 import { NotificationService } from '../back/services/notification'
-import { VoteService } from '../back/services/vote'
-import { Discourse, DiscourseComment, DiscoursePost } from '../clients/Discourse'
+import { DiscoursePost } from '../clients/Discourse'
 import { SnapshotProposalContent } from '../clients/SnapshotTypes'
-import { NOTIFICATIONS_SERVICE_ENABLED } from '../constants'
 import CoauthorModel from '../entities/Coauthor/model'
 import isDAOCommittee from '../entities/Committee/isDAOCommittee'
 import ProposalModel from '../entities/Proposal/model'
-import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import * as templates from '../entities/Proposal/templates'
-import { getUpdateMessage } from '../entities/Proposal/templates/messages'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { isGrantProposalSubmitEnabled } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import VotesModel from '../entities/Votes/model'
-import { getEnvironmentChainId, inBackground } from '../helpers'
+import { getEnvironmentChainId } from '../helpers'
 import { getProfile } from '../utils/Catalyst'
 import Time from '../utils/date/Time'
 
@@ -213,43 +208,5 @@ export class ProposalService {
     }
 
     return ProposalModel.parse(proposal)
-  }
-
-  static commentProposalUpdateInDiscourse(id: string) {
-    inBackground(async () => {
-      const updatedProposal: ProposalAttributes | undefined = await ProposalModel.findOne<ProposalAttributes>({ id })
-      if (!updatedProposal) {
-        logger.error('Invalid proposal id for discourse update', { id })
-        return
-      }
-      const votes = await VoteService.getVotes(updatedProposal.id)
-      const updateMessage = getUpdateMessage(updatedProposal, votes)
-      const discourseComment: DiscourseComment = {
-        topic_id: updatedProposal.discourse_topic_id,
-        raw: updateMessage,
-        created_at: new Date().toJSON(),
-      }
-      await Discourse.get().commentOnPost(discourseComment)
-    })
-  }
-
-  static async finishProposals(proposals: ProposalWithOutcome[], status: ProposalStatus) {
-    await ProposalModel.finishProposal(
-      proposals.map(({ id }) => id),
-      status
-    )
-
-    if (NOTIFICATIONS_SERVICE_ENABLED) {
-      for (const proposal of proposals) {
-        try {
-          NotificationService.votingEndedAuthors(proposal)
-          const votes = await VoteService.getVotes(proposal.id)
-          const voters = Object.keys(votes)
-          NotificationService.votingEndedVoters(proposal, voters)
-        } catch (error) {
-          logger.log('Error sending notifications on proposal finish', { proposalId: proposal.id })
-        }
-      }
-    }
   }
 }

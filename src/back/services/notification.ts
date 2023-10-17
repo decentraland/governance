@@ -1,9 +1,11 @@
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
+import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { ethers } from 'ethers'
 
 import { NOTIFICATIONS_SERVICE_ENABLED, PUSH_CHANNEL_ID } from '../../constants'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { proposalUrl } from '../../entities/Proposal/utils'
+import { inBackground } from '../../helpers'
 import { ErrorService } from '../../services/ErrorService'
 import { NotificationCustomType } from '../../shared/types/notifications'
 import { ErrorCategory } from '../../utils/errorCategories'
@@ -12,6 +14,7 @@ import { NotificationType, getCaipAddress, getPushNotificationsEnv } from '../..
 import { areValidAddresses } from '../utils/validations'
 
 import { CoauthorService } from './coauthor'
+import { VoteService } from './vote'
 
 const PushAPI = NOTIFICATIONS_SERVICE_ENABLED ? require('@pushprotocol/restapi') : null
 
@@ -120,30 +123,32 @@ export class NotificationService {
     }
   }
 
-  static async grantProposalEnacted(proposal: ProposalAttributes) {
-    try {
-      const coauthors = await CoauthorService.getAllFromProposalId(proposal.id)
-      const coauthorsAddresses = coauthors.length > 0 ? coauthors.map((coauthor) => coauthor.address) : []
-      const addresses = [proposal.user, ...coauthorsAddresses]
+  static grantProposalEnacted(proposal: ProposalAttributes) {
+    inBackground(async () => {
+      try {
+        const coauthors = await CoauthorService.getAllFromProposalId(proposal.id)
+        const coauthorsAddresses = coauthors.length > 0 ? coauthors.map((coauthor) => coauthor.address) : []
+        const addresses = [proposal.user, ...coauthorsAddresses]
 
-      if (!areValidAddresses(addresses)) {
-        throw new Error('Invalid addresses')
+        if (!areValidAddresses(addresses)) {
+          throw new Error('Invalid addresses')
+        }
+
+        return await this.sendNotification({
+          title: 'Grant Proposal Enacted',
+          body: 'Congratulations! Your Grant Proposal has been successfully enacted and a Vesting Contract was added',
+          recipient: addresses,
+          url: proposalUrl(proposal.id),
+          customType: NotificationCustomType.Grant,
+        })
+      } catch (error) {
+        ErrorService.report('Error sending proposal enacted notification', {
+          error,
+          category: ErrorCategory.Notifications,
+          proposal,
+        })
       }
-
-      return await this.sendNotification({
-        title: 'Grant Proposal Enacted',
-        body: 'Congratulations! Your Grant Proposal has been successfully enacted and a Vesting Contract was added',
-        recipient: addresses,
-        url: proposalUrl(proposal.id),
-        customType: NotificationCustomType.Grant,
-      })
-    } catch (error) {
-      ErrorService.report('Error sending proposal enacted notification', {
-        error,
-        category: ErrorCategory.Notifications,
-        proposal,
-      })
-    }
+    })
   }
 
   static async coAuthorRequested(proposal: ProposalAttributes, coAuthors: string[]) {
@@ -212,6 +217,23 @@ export class NotificationService {
         error,
         category: ErrorCategory.Notifications,
         proposal,
+      })
+    }
+  }
+
+  static sendFinishProposalNotifications(proposals: ProposalAttributes[]) {
+    if (NOTIFICATIONS_SERVICE_ENABLED) {
+      inBackground(async () => {
+        for (const proposal of proposals) {
+          try {
+            await this.votingEndedAuthors(proposal)
+            const votes = await VoteService.getVotes(proposal.id)
+            const voters = Object.keys(votes)
+            await this.votingEndedVoters(proposal, voters)
+          } catch (error) {
+            logger.log('Error sending notifications on proposal finish', { proposalId: proposal.id })
+          }
+        }
       })
     }
   }

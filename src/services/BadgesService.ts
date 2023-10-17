@@ -34,7 +34,8 @@ import {
 } from '../entities/Badges/utils'
 import CoauthorModel from '../entities/Coauthor/model'
 import { CoauthorStatus } from '../entities/Coauthor/types'
-import { ProposalAttributes, ProposalType } from '../entities/Proposal/types'
+import { ProposalWithOutcome } from '../entities/Proposal/outcome'
+import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { getChecksumAddress } from '../entities/Snapshot/utils'
 import { inBackground, splitArray } from '../helpers'
 import Time from '../utils/date/Time'
@@ -93,8 +94,8 @@ export class BadgesService {
     }
   }
 
-  static async giveLegislatorBadges(acceptedProposals: ProposalAttributes[]) {
-    const governanceProposals = acceptedProposals.filter((proposal) => proposal.type === ProposalType.Governance)
+  static async giveLegislatorBadges(proposals: ProposalAttributes[]) {
+    const governanceProposals = proposals.filter((proposal) => proposal.type === ProposalType.Governance)
     if (governanceProposals.length === 0) {
       return
     }
@@ -268,5 +269,20 @@ export class BadgesService {
       badgeCid,
       recipients.map((recipient) => recipient.address)
     )
+  }
+
+  static giveFinishProposalBadges(proposalsWithOutcome: ProposalWithOutcome[]) {
+    const passedProposals = proposalsWithOutcome.filter((proposal) => proposal.newStatus === ProposalStatus.Passed)
+    inBackground(async () => {
+      try {
+        await BadgesService.giveLegislatorBadges(passedProposals)
+      } catch (error) {
+        ErrorService.report('Error while attempting to give badges', {
+          error,
+          category: ErrorCategory.Badges,
+          passedGovernanceProposals: passedProposals,
+        })
+      }
+    })
   }
 }

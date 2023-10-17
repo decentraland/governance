@@ -155,10 +155,10 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
     return result[0]
   }
 
-  public static async updateBudget(budgetUpdate: Budget) {
+  public static getBudgetUpdateQuery(budgetUpdate: Budget) {
     const now = new Date()
     const categories = Object.keys(budgetUpdate.categories)
-    for (const category of categories) {
+    return categories.map((category) => {
       const newGrantCategory = toNewGrantCategory(category)
       const categoryBudget = budgetUpdate.categories[category]
       const query = SQL`
@@ -168,8 +168,8 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
         WHERE "quarter_budget_id" = ${budgetUpdate.id}
         AND "category" = ${newGrantCategory} 
          `
-      await this.namedQuery('update_budget', query)
-    }
+      return query
+    })
   }
 
   static parseBudget(result: BudgetQueryResult[]): Budget {

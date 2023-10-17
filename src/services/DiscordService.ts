@@ -3,6 +3,7 @@ import type { EmbedBuilder } from 'discord.js'
 
 import { DISCORD_SERVICE_ENABLED } from '../constants'
 import { getProfileUrl } from '../entities/Profile/utils'
+import { ProposalWithOutcome, VotingOutcome } from '../entities/Proposal/outcome'
 import { ProposalType } from '../entities/Proposal/types'
 import { isGovernanceProcessProposal, proposalUrl } from '../entities/Proposal/utils'
 import UpdateModel from '../entities/Updates/model'
@@ -261,6 +262,19 @@ export class DiscordService {
           }
         }
       })
+    }
+  }
+
+  static notifyFinishedProposals(proposalsWithOutcome: ProposalWithOutcome[]) {
+    for (const { id, title, winnerChoice, votingOutcome } of proposalsWithOutcome) {
+      if (votingOutcome) {
+        this.finishProposal(
+          id,
+          title,
+          votingOutcome,
+          votingOutcome === VotingOutcome.FINISHED ? winnerChoice : undefined
+        )
+      }
     }
   }
 }

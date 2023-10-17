@@ -200,10 +200,10 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return result.map(ProposalModel.parse)
   }
 
-  static async finishProposal(proposal_ids: string[], status: ProposalStatus) {
+  static getFinishProposalQuery(proposal_ids: string[], status: ProposalStatus) {
     const valid_ids = (proposal_ids || []).filter((id) => isUUID(id))
     if (valid_ids.length === 0) {
-      return 0
+      return null
     }
 
     const ids = valid_ids.map((id) => SQL`${id}`)
@@ -217,7 +217,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
           AND "id" IN (${join(ids)})
     `
 
-    return this.namedRowCount('finished_proposals_count', query)
+    return query
   }
 
   private static getSubtypeQuery(subtype: string) {
