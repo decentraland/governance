@@ -20,6 +20,7 @@ exports.onCreateWebpackConfig = ({ stage, actions, getConfig }) => {
         stream: false,
         util: false,
         zlib: false,
+        url: false,
       },
     },
   })
