@@ -2,16 +2,17 @@
   display: flex;
   flex-direction: column;
   gap: 22px;
+  width: 100%;
 }
 
-.CurrentProjects__TitleContainer {
+.CurrentProjectsList__TitleContainer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 6px;
 }
 
-.CurrentProjects__Title {
+.CurrentProjectsList__Title {
   font-style: normal;
   font-weight: var(--weight-semi-bold);
   font-size: 13px;
@@ -21,44 +22,29 @@
   margin-bottom: 13px;
 }
 
-.CurrentProjects__Filters {
+.CurrentProjectsList__Filters {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
 @media (min-width: 768px) {
-  .CurrentProjects__Filters {
+  .CurrentProjectsList__Filters {
     flex-direction: row;
     align-items: center;
   }
-
-  .CurrentProjects__Empty {
-    margin-top: 185px;
-  }
 }
 
-.CurrentProjects__Container {
+.CurrentProjectsList__Container {
   display: grid;
   grid-gap: 14px;
   flex-wrap: wrap;
 }
 
 @media (min-width: 992px) {
-  .CurrentProjects__Container {
+  .CurrentProjectsList__Container {
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: subgrid;
     grid-gap: 22px;
   }
-}
-
-.ui.container.CurrentProjects__Container {
-  width: 100% !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-}
-
-.CurrentProjectsList__Wrapper {
-  display: flex;
-  width: 100%;
 }
