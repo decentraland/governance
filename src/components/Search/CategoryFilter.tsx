@@ -1,12 +1,13 @@
 import toSnakeCase from 'lodash/snakeCase'
 
 import { NewGrantCategory, OldGrantCategory, SubtypeAlternativeOptions } from '../../entities/Grant/types'
-import { ProposalType, toProposalType } from '../../entities/Proposal/types'
+import { GovernanceProposalType, ProposalType, toProposalType } from '../../entities/Proposal/types'
 import { getUrlFilters } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useURLSearchParams from '../../hooks/useURLSearchParams'
 import CategoryOption, { CategoryOptionProps } from '../Category/CategoryOption'
 import GrantMultiCategory from '../Category/GrantMultiCategory'
+import GroupedCategoryOption from '../Category/GroupedCategoryOption'
 
 import './CategoryFilter.css'
 import CollapsibleFilter from './CollapsibleFilter'
@@ -85,6 +86,11 @@ export default function CategoryFilter({
           </>
         )
       })}
+      <GroupedCategoryOption
+        className="CategoryFilter__CategoryOption"
+        type="governance"
+        group={Object.values(GovernanceProposalType)}
+      />
     </CollapsibleFilter>
   )
 }
