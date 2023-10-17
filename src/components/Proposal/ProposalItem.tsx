@@ -49,7 +49,7 @@ export default function ProposalItem({ proposal, hasCoauthorRequest, votes }: Pr
       className={classNames('ProposalItem', hasCoauthorRequest && 'ProposalItem--coauthor')}
     >
       <Card.Content>
-        <div>
+        <div className="ProposalItem__TitleContainer">
           <Heading className="ProposalItem__Title" weight="semi-bold" size="sm">
             {title}
           </Heading>

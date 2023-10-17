@@ -8,6 +8,10 @@
   border: 1px solid var(--black-100);
 }
 
+.ProposalItem__TitleContainer {
+  margin-bottom: 4px;
+}
+
 .ProposalItem__Title {
   display: flex;
   flex-direction: row;
@@ -88,12 +92,11 @@
 
 .ProposalItem__FinishLabel {
   padding: 0;
-  height: 24px;
   display: inline-flex;
   color: var(--black-800);
   font-weight: var(--weight-semi-bold);
-  font-size: 12px;
-  line-height: 26px;
+  font-size: 10px;
+  line-height: 16px;
   vertical-align: middle;
   align-content: center;
   align-items: center;
