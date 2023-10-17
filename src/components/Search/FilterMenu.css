@@ -23,7 +23,7 @@
   position: fixed;
   top: 0;
   right: -303px;
-  z-index: 99998;
+  z-index: 11;
   height: 100vh;
   width: 293px;
   overflow-y: scroll;
@@ -45,14 +45,14 @@
   width: 293px;
   min-height: 100%;
   background-color: var(--white-900);
-  z-index: 99999;
+  z-index: 11;
   padding: 15px 32px;
 }
 
 .FilterMenu__Overlay {
   width: 100%;
   height: 100%;
-  z-index: 99995;
+  z-index: 10;
   background-color: var(--alpha-black-300);
   position: fixed;
   top: 0;

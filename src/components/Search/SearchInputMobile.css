@@ -20,7 +20,7 @@
   padding-left: 10px;
   padding-right: 16px;
   top: 0;
-  z-index: 9999;
+  z-index: 10;
 }
 
 .SearchInputMobile__Gradient {
@@ -46,10 +46,12 @@
   padding: 8px 32px;
 }
 
-.SearchInputMobile__CloseIcon {
+.SearchInputMobile__CloseButton {
   position: absolute;
-  top: 10px;
-  right: 0;
+  top: 6px;
+  right: -6px;
+  border: none;
+  background: none;
 }
 
 .SearchInputMobile__Container {
@@ -66,7 +68,7 @@
   width: 100%;
   height: 100%;
   background-color: var(--alpha-black-300);
-  z-index: 999;
+  z-index: 10;
   visibility: hidden;
 }
 
@@ -80,7 +82,7 @@
 
 .dcl.tabs,
 .dcl.navbar {
-  z-index: 99999 !important;
+  z-index: 10 !important;
 }
 
 /* Hide tabs if search input mobile is open to fix position bug */

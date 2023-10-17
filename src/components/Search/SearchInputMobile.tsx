@@ -60,19 +60,20 @@ export default function SearchInputMobile() {
     }
   }
 
-  const handleOpen = () => {
-    setOpen(true)
-  }
-
   const handleClose = useCallback(() => {
+    searchInput.current?.blur()
     setOpen(false)
   }, [])
 
+  const lastScroll = useRef(0)
   useLayoutEffect(() => {
     if (typeof window !== 'undefined') {
-      const onScroll = function () {
-        searchInput.current?.blur()
-        handleClose()
+      const onScroll = () => {
+        const isScrollDown = window.scrollY > lastScroll.current
+        lastScroll.current = window.scrollY
+        if (isScrollDown) {
+          handleClose()
+        }
       }
 
       window.addEventListener('scroll', onScroll)
@@ -98,10 +99,12 @@ export default function SearchInputMobile() {
             onChange={handleChange}
             onKeyPress={handleKeyPress}
             onKeyUp={handleKeyUp}
-            onFocus={handleOpen}
+            onFocus={() => setOpen(true)}
           />
           {open && (
-            <Cross className="SearchInputMobile__CloseIcon" size="14" color="var(--black-800)" onClick={handleClear} />
+            <button className="SearchInputMobile__CloseButton" onClick={handleClear}>
+              <Cross className="SearchInputMobile__CloseIcon" size="14" color="var(--black-800)" />
+            </button>
           )}
         </div>
       </div>
