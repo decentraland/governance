@@ -5,7 +5,8 @@ import { ProposalType, toProposalType } from '../../entities/Proposal/types'
 import { getUrlFilters } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useURLSearchParams from '../../hooks/useURLSearchParams'
-import CategoryOption from '../Category/CategoryOption'
+import CategoryOption, { CategoryOptionProps } from '../Category/CategoryOption'
+import GrantMultiCategory from '../Category/GrantMultiCategory'
 
 import './CategoryFilter.css'
 import CollapsibleFilter from './CollapsibleFilter'
@@ -56,24 +57,32 @@ export default function CategoryFilter({
         const label = toSnakeCase(filter)
         const isGrantType = toProposalType(filter) === ProposalType.Grant || filter === ProjectTypeFilter.Grants
 
+        const props: CategoryOptionProps = {
+          type: label,
+          href: getUrlFilters(FILTER_KEY, params, filter === ProjectTypeFilter.All ? undefined : label),
+          active: type === label,
+          className: 'CategoryFilter__CategoryOption',
+          count: categoryCount?.[filter],
+        }
+
+        const key = 'category_filter' + index
+
         return (
-          <CategoryOption
-            key={'category_filter' + index}
-            type={label}
-            href={getUrlFilters(FILTER_KEY, params, filter === ProjectTypeFilter.All ? undefined : label)}
-            active={type === label}
-            className="CategoryFilter__CategoryOption"
-            count={categoryCount?.[filter]}
-            subtypes={
-              isGrantType
-                ? [
-                    `${SubtypeAlternativeOptions.All}`,
-                    ...Object.values(NewGrantCategory),
-                    `${SubtypeAlternativeOptions.Legacy}`,
-                  ]
-                : undefined
-            }
-          />
+          <>
+            {isGrantType ? (
+              <GrantMultiCategory
+                key={key}
+                {...props}
+                subtypes={[
+                  `${SubtypeAlternativeOptions.All}`,
+                  ...Object.values(NewGrantCategory),
+                  `${SubtypeAlternativeOptions.Legacy}`,
+                ]}
+              />
+            ) : (
+              <CategoryOption key={key} {...props} />
+            )}
+          </>
         )
       })}
     </CollapsibleFilter>
