@@ -88,16 +88,16 @@ export default function CurrentProjectsList({ projects, selectedSubtype, selecte
 
   return (
     <div className="CurrentProjectsList">
-      <div className="CurrentProjects__TitleContainer">
+      <div className="CurrentProjectsList__TitleContainer">
         <div>
-          <h2 className="CurrentProjects__Title">
+          <h2 className="CurrentProjectsList__Title">
             {t('page.grants.projects_category_title', {
               status: status ? `${t(GRANTS_STATUS_KEYS[status])} ` : '',
               category: t(getCategoryKey(selectedSubtype || selectedType)),
             })}
           </h2>
         </div>
-        <div className="CurrentProjects__Filters">
+        <div className="CurrentProjectsList__Filters">
           <CurrentProjectsSortingMenu sortingKey={sortingKey} onSortingKeyChange={setSortingKey} />
         </div>
       </div>
@@ -114,7 +114,7 @@ export default function CurrentProjectsList({ projects, selectedSubtype, selecte
       )}
       {isEmpty(projects) && (
         <Empty
-          className="CurrentProjects__Empty"
+          className="CurrentProjectsList__Empty"
           icon={<Watermelon />}
           description={t('page.grants.empty.description')}
           onLinkClick={() => navigate(locations.projects())}
@@ -122,11 +122,13 @@ export default function CurrentProjectsList({ projects, selectedSubtype, selecte
           actionType={ActionType.BUTTON}
         />
       )}
-      <div className="CurrentProjects__Container">
-        {filteredCurrentGrants?.map((project) => (
-          <ProjectCard key={`CurrentProjectCard_${project.id}`} project={project} />
-        ))}
-      </div>
+      {filteredCurrentGrants && filteredCurrentGrants.length > 0 && (
+        <div className="CurrentProjectsList__Container">
+          {filteredCurrentGrants.map((project) => (
+            <ProjectCard key={`CurrentProjectCard_${project.id}`} project={project} />
+          ))}
+        </div>
+      )}
       {showLoadMoreCurrentGrantsButton && (
         <FullWidthButton onClick={handleLoadMoreCurrentGrantsClick}>
           {t('page.grants.load_more_button')}

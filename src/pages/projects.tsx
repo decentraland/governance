@@ -132,16 +132,14 @@ export default function ProjectsPage() {
                   <RequestBanner />
                 </NotMobile>
               </div>
-              <div>
-                {displayableProjects && (
-                  <CurrentProjectsList
-                    projects={displayableProjects}
-                    selectedType={type}
-                    selectedSubtype={subtype}
-                    status={toProjectStatus(status)}
-                  />
-                )}
-              </div>
+              {displayableProjects && (
+                <CurrentProjectsList
+                  projects={displayableProjects}
+                  selectedType={type}
+                  selectedSubtype={subtype}
+                  status={toProjectStatus(status)}
+                />
+              )}
             </div>
           </WiderContainer>
         </BurgerMenuLayout>
