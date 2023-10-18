@@ -54,27 +54,6 @@
   padding: 15px 32px;
 }
 
-.FilterMenu__Overlay {
-  width: 100%;
-  height: 100%;
-  z-index: 10;
-  background-color: var(--alpha-black-300);
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.5s ease;
-  overflow-y: hidden;
-}
-
-.FilterMenu__Overlay--open {
-  visibility: visible;
-  opacity: 1;
-}
-
 .FilterMenu__CloseButton {
   position: absolute;
   top: 23px;

@@ -6,6 +6,7 @@ import useFormatMessage from '../../hooks/useFormatMessage'
 import Text from '../Common/Typography/Text'
 import Cross from '../Icon/Cross'
 import Filter from '../Icon/Filter'
+import Overlay from '../Sidebar/Overlay'
 
 import './FilterMenu.css'
 
@@ -26,7 +27,7 @@ export default function FilterMenu({ children }: Props) {
         </Text>
         <Filter />
       </div>
-      <div className={classNames('FilterMenu__Overlay', isOpen && 'FilterMenu__Overlay--open')} onClick={handleClose} />
+      <Overlay isOpen={isOpen} onClick={handleClose} />
       <div className={classNames('FilterMenu__Sidebar', isOpen && 'FilterMenu__Sidebar--open')}>
         <div className="FilterMenu__SidebarContent">
           {children}

@@ -1,5 +1,4 @@
 .BadgeCard {
-  max-width: 185px;
   height: 206px;
   background: var(--white-900);
   border: 1px solid var(--alpha-black-300);
@@ -12,6 +11,12 @@
   flex-direction: column;
   align-items: center;
   cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .BadgeCard {
+    max-width: 185px;
+  }
 }
 
 .BadgeCard:hover {
@@ -42,7 +47,12 @@
   overflow: hidden;
   text-overflow: ellipsis;
   margin-bottom: -4px;
-  max-width: 160px;
+}
+
+@media (min-width: 768px) {
+  .BadgeCard {
+    max-width: 160px;
+  }
 }
 
 .BadgeCard__MintDate {

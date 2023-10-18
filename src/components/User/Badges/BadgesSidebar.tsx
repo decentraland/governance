@@ -21,20 +21,13 @@ export default function BadgesSidebar({ isSidebarVisible, onClose, badges, badge
   const t = useFormatMessage()
   const { currentBadges, expiredBadges } = badges
 
-  const handleClose = (e: React.MouseEvent<unknown>) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setBadgeInDetail(null)
-    onClose()
-  }
-
   return (
-    <GovernanceSidebar visible={isSidebarVisible}>
+    <GovernanceSidebar visible={isSidebarVisible} onClose={onClose}>
       {!badgeInDetail && (
         <div className="BadgesSidebar__Content">
           <div className="BadgesSidebar__TitleContainer">
             <span className="BadgesSidebar__Title">{t('page.profile.badges_sidebar.title')}</span>
-            <Close onClick={handleClose} />
+            <Close onClick={onClose} />
           </div>
 
           <div className="BadgesSidebar__Subtitle">
@@ -68,7 +61,7 @@ export default function BadgesSidebar({ isSidebarVisible, onClose, badges, badge
               <ChevronLeft />
               <span className="BadgesSidebar__Title">{t('page.profile.badges_sidebar.detail_title')}</span>
             </button>
-            <Close onClick={handleClose} />
+            <Close onClick={onClose} />
           </div>
           <BadgeDetail badge={badgeInDetail} />
         </div>
