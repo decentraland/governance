@@ -314,7 +314,7 @@ export default function SubmitGrant() {
               <div>
                 <Button
                   primary
-                  disabled={!allSectionsValid || isFormDisabled}
+                  disabled={!allSectionsValid || isFormDisabled || submissionVpNotMet}
                   loading={isFormDisabled}
                   onClick={submit}
                 >
