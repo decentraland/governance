@@ -28,7 +28,7 @@
   font-size: 10px;
   line-height: 24px;
   text-transform: uppercase;
-  color: #000000;
+  color: var(--black-800);
   opacity: 0.6;
 }
 
