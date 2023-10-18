@@ -22,20 +22,25 @@
 .FilterMenu__Sidebar {
   position: fixed;
   top: 0;
-  right: -303px;
+  right: 0;
   z-index: 11;
   height: 100vh;
   width: 293px;
   overflow-y: scroll;
   overscroll-behavior: none;
   visibility: hidden;
-  transition: 0.5s ease;
+  transform: translateX(293px);
+  transition: all 0.5s ease;
   box-shadow: 0px 0px 35px 0px var(--alpha-black-400);
 }
 
+.FilterMenu__Sidebar::-webkit-scrollbar {
+  display: none;
+}
+
 .FilterMenu__Sidebar--open {
+  transform: translateX(0px);
   visibility: visible;
-  right: -10px;
 }
 
 .FilterMenu__SidebarContent {
@@ -61,7 +66,7 @@
   bottom: 0;
   opacity: 0;
   visibility: hidden;
-  transition: 0.5s ease;
+  transition: all 0.5s ease;
   overflow-y: hidden;
 }
 
