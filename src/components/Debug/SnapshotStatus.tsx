@@ -24,7 +24,7 @@ export default function SnapshotStatus() {
   const t = useFormatMessage()
   const [showTopBar, setShowTopBar] = useState(false)
   const { setStatus } = useBurgerMenu()
-  const [ping, setPing] = useState(false)
+  const [ping, setPing] = useState(!document.hidden)
 
   const updateServiceStatus = async () => {
     const status = await Governance.get().getSnapshotStatus()
@@ -35,19 +35,14 @@ export default function SnapshotStatus() {
   }
 
   useEffect(() => {
-    const handleFocus = () => {
-      setPing(true)
-    }
-    const handleBlur = () => {
-      setPing(false)
+    const handleVisibilityChange = () => {
+      setPing(!document.hidden)
     }
 
-    window.addEventListener('focus', handleFocus)
-    window.addEventListener('blur', handleBlur)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
 
     return () => {
-      window.removeEventListener('focus', handleFocus)
-      window.removeEventListener('blur', handleBlur)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [])
 
