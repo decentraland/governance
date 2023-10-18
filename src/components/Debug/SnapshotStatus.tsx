@@ -24,6 +24,7 @@ export default function SnapshotStatus() {
   const t = useFormatMessage()
   const [showTopBar, setShowTopBar] = useState(false)
   const { setStatus } = useBurgerMenu()
+  const [ping, setPing] = useState(false)
 
   const updateServiceStatus = async () => {
     const status = await Governance.get().getSnapshotStatus()
@@ -34,9 +35,31 @@ export default function SnapshotStatus() {
   }
 
   useEffect(() => {
-    const intervalId = setInterval(updateServiceStatus, PING_INTERVAL_IN_MS)
-    return () => clearInterval(intervalId)
+    const handleFocus = () => {
+      setPing(true)
+    }
+    const handleBlur = () => {
+      setPing(false)
+    }
+
+    window.addEventListener('focus', handleFocus)
+    window.addEventListener('blur', handleBlur)
+
+    return () => {
+      window.removeEventListener('focus', handleFocus)
+      window.removeEventListener('blur', handleBlur)
+    }
   }, [])
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (ping) {
+        updateServiceStatus()
+      }
+    }, PING_INTERVAL_IN_MS)
+
+    return () => clearInterval(intervalId)
+  }, [ping])
 
   return (
     <div className={classNames(`SnapshotStatus__TopBar`, showTopBar && 'SnapshotStatus__TopBar--visible')}>
