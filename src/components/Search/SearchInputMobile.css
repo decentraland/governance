@@ -80,12 +80,12 @@
   visibility: visible;
 }
 
-.dcl.tabs,
+.Navigation .dcl.tabs,
 .dcl.navbar {
   z-index: 10 !important;
 }
 
 /* Hide tabs if search input mobile is open to fix position bug */
-.dcl.tabs:has(+ .SearchInputMobile--open) {
+.Navigation .dcl.tabs:has(+ .SearchInputMobile--open) {
   visibility: hidden;
 }
