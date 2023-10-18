@@ -1,7 +1,6 @@
 .SearchTitle__Container {
   display: flex;
   align-items: center;
-  /* gap: 12px; */
 }
 
 .SearchTitle__TextContainer {
