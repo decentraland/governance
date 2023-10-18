@@ -94,6 +94,7 @@ function GrantMultiCategory({ active, type, className, count, subtypes, ...props
       <div
         className={classNames(
           'CategoryOption__Subcategories',
+          `CategoryOption__Subcategories--${type}`,
           isSubtypesOpen && 'CategoryOption__Subcategories--active'
         )}
       >

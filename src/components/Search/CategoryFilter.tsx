@@ -1,7 +1,8 @@
+import isEqual from 'lodash/isEqual'
 import toSnakeCase from 'lodash/snakeCase'
 
 import { NewGrantCategory, OldGrantCategory, SubtypeAlternativeOptions } from '../../entities/Grant/types'
-import { GovernanceProposalType, ProposalType, toProposalType } from '../../entities/Proposal/types'
+import { BiddingProposalType, GovernanceProposalType, ProposalType } from '../../entities/Proposal/types'
 import { getUrlFilters } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useURLSearchParams from '../../hooks/useURLSearchParams'
@@ -31,6 +32,18 @@ export type FilterProps = {
 }
 
 const FILTER_KEY = 'type'
+const GOVERNANCE_GROUP = Object.values(GovernanceProposalType)
+const BIDDING_GROUP = Object.values(BiddingProposalType)
+
+function getUncategorizedProposalTypes(types: typeof ProposalType) {
+  return Object.values(types).filter((type) => {
+    return ![
+      ProposalType.Grant,
+      ...Object.values(BiddingProposalType),
+      ...Object.values(GovernanceProposalType),
+    ].includes(type as never)
+  })
+}
 
 export default function CategoryFilter({
   filterType,
@@ -41,8 +54,22 @@ export default function CategoryFilter({
 }: FilterProps & { filterType: FilterType; showAllFilter?: boolean }) {
   const t = useFormatMessage()
   const params = useURLSearchParams()
-  const filters = Object.values(filterType)
   const type = params.get(FILTER_KEY)
+
+  const areProposals = isEqual(filterType, ProposalType)
+  const filters = areProposals ? getUncategorizedProposalTypes(filterType as never) : Object.values(filterType)
+
+  const getCategoryOptionProps = (filter: string): CategoryOptionProps => {
+    const label = toSnakeCase(filter)
+
+    return {
+      type: label,
+      href: getUrlFilters(FILTER_KEY, params, filter === ProjectTypeFilter.All ? undefined : label),
+      active: type === label,
+      className: 'CategoryFilter__CategoryOption',
+      count: categoryCount?.[filter],
+    }
+  }
 
   return (
     <CollapsibleFilter title={t('navigation.search.category_filter_title')} startOpen={!!startOpen} onChange={onChange}>
@@ -55,42 +82,32 @@ export default function CategoryFilter({
         />
       )}
       {filters.map((filter, index) => {
-        const label = toSnakeCase(filter)
-        const isGrantType = toProposalType(filter) === ProposalType.Grant || filter === ProjectTypeFilter.Grants
-
-        const props: CategoryOptionProps = {
-          type: label,
-          href: getUrlFilters(FILTER_KEY, params, filter === ProjectTypeFilter.All ? undefined : label),
-          active: type === label,
-          className: 'CategoryFilter__CategoryOption',
-          count: categoryCount?.[filter],
-        }
-
-        const key = 'category_filter' + index
-
-        return (
-          <>
-            {isGrantType ? (
-              <GrantMultiCategory
-                key={key}
-                {...props}
-                subtypes={[
-                  `${SubtypeAlternativeOptions.All}`,
-                  ...Object.values(NewGrantCategory),
-                  `${SubtypeAlternativeOptions.Legacy}`,
-                ]}
-              />
-            ) : (
-              <CategoryOption key={key} {...props} />
-            )}
-          </>
-        )
+        return <CategoryOption key={'category_filter' + index} {...getCategoryOptionProps(filter)} />
       })}
-      <GroupedCategoryOption
-        className="CategoryFilter__CategoryOption"
-        type="governance"
-        group={Object.values(GovernanceProposalType)}
-      />
+      {areProposals && (
+        <>
+          <GrantMultiCategory
+            {...getCategoryOptionProps(ProposalType.Grant)}
+            subtypes={[
+              `${SubtypeAlternativeOptions.All}`,
+              ...Object.values(NewGrantCategory),
+              `${SubtypeAlternativeOptions.Legacy}`,
+            ]}
+          />
+          <GroupedCategoryOption
+            className="CategoryFilter__CategoryOption"
+            type="implementation"
+            group={GOVERNANCE_GROUP}
+            active={GOVERNANCE_GROUP.includes(type as never)}
+          />
+          <GroupedCategoryOption
+            className="CategoryFilter__CategoryOption"
+            type="bidding_and_tendering"
+            group={BIDDING_GROUP}
+            active={BIDDING_GROUP.includes(type as never)}
+          />
+        </>
+      )}
     </CollapsibleFilter>
   )
 }

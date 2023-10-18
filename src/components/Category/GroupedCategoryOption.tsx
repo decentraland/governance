@@ -5,12 +5,14 @@ import isNumber from 'lodash/isNumber'
 import toSnakeCase from 'lodash/snakeCase'
 
 import { BiddingProposalType, GovernanceProposalType } from '../../entities/Proposal/types'
+import { getUrlFilters } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useURLSearchParams from '../../hooks/useURLSearchParams'
 import Link from '../Common/Typography/Link'
 import Text from '../Common/Typography/Text'
 import Arrow from '../Icon/Arrow'
-import Grant from '../Icon/ProposalCategories/Grant'
+import Governance from '../Icon/ProposalCategories/Governance'
+import Tender from '../Icon/ProposalCategories/Tender'
 import SubItem from '../Icon/SubItem'
 
 import { CategoryOptionProps } from './CategoryOption'
@@ -19,6 +21,11 @@ type ValueOf<T> = T[keyof T]
 
 type Props = CategoryOptionProps & {
   group: ValueOf<typeof GovernanceProposalType>[] | ValueOf<typeof BiddingProposalType>[]
+}
+
+const icons: Record<string, React.ReactNode> = {
+  implementation: <Governance size={24} />,
+  bidding_and_tendering: <Tender size={24} />,
 }
 
 function GroupedCategoryOption({ active, type, className, count, group, ...props }: Props) {
@@ -58,9 +65,7 @@ function GroupedCategoryOption({ active, type, className, count, group, ...props
       >
         <span className="CategoryOption__TitleContainer">
           <span>
-            <div className="CategoryOption__IconContainer">
-              <Grant size={24} />
-            </div>
+            <div className="CategoryOption__IconContainer">{icons[type]}</div>
             <Text className="CategoryOption__Title">{t(`category.${type}_title`)}</Text>
           </span>
           <span className={classNames('CategoryOption__Arrow', isGroupExpanded && 'CategoryOption__Arrow--active')}>
@@ -76,6 +81,7 @@ function GroupedCategoryOption({ active, type, className, count, group, ...props
       <div
         className={classNames(
           'CategoryOption__Subcategories',
+          `CategoryOption__Subcategories--${type}`,
           isGroupExpanded && 'CategoryOption__Subcategories--active'
         )}
       >
@@ -87,7 +93,7 @@ function GroupedCategoryOption({ active, type, className, count, group, ...props
                 isSubtypeActive(item) && 'CategoryOption__SubcategoryItem--active'
               )}
               key={item + `-${index}`}
-              // href={getHref(props.href, item)}
+              href={getUrlFilters('type', params, item)}
             >
               <SubItem />
               {t(`category.${toSnakeCase(item)}_title`)}
