@@ -11,6 +11,7 @@ import camelCase from 'lodash/camelCase'
 
 import { Governance } from '../../clients/Governance'
 import Markdown from '../../components/Common/Typography/Markdown'
+import Text from '../../components/Common/Typography/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import GrantRequestCategorySection from '../../components/GrantRequest/GrantRequestCategorySection'
 import GrantRequestDueDiligenceSection, {
@@ -32,12 +33,14 @@ import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/Layout/LogIn'
 import CategorySelector from '../../components/Projects/CategorySelector'
 import { GrantRequest, GrantRequestCategoryAssessment, NewGrantCategory } from '../../entities/Grant/types'
+import { SUBMISSION_THRESHOLD_GRANT } from '../../entities/Proposal/constants'
 import { ProposalType } from '../../entities/Proposal/types'
 import { asNumber, isGrantProposalSubmitEnabled, userModifiedForm } from '../../entities/Proposal/utils'
 import { toNewGrantCategory } from '../../entities/QuarterCategoryBudget/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
 import useProjectRequestSectionNumber from '../../hooks/useProjectRequestSectionNumber'
+import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
 import locations, { navigate } from '../../utils/locations'
 
 import './grant.css'
@@ -129,6 +132,8 @@ export default function SubmitGrant() {
   const preventNavigation = useRef(false)
   const [submitError, setSubmitError] = useState<string | undefined>(undefined)
   const { getSectionNumber } = useProjectRequestSectionNumber()
+  const { vpDistribution } = useVotingPowerDistribution(account)
+  const submissionVpNotMet = !!vpDistribution && vpDistribution.total < Number(SUBMISSION_THRESHOLD_GRANT)
 
   useEffect(() => {
     preventNavigation.current = userModifiedForm(grantRequest, initialState)
@@ -198,7 +203,7 @@ export default function SubmitGrant() {
   }
 
   const title = t('page.submit_grant.title') || ''
-  const description = t('page.submit_grant.description') || ''
+  const description = t('page.submit_grant.description', { threshold: SUBMISSION_THRESHOLD_GRANT }) || ''
 
   if (!account) {
     return <LogIn title={title} description={description} />
@@ -298,6 +303,13 @@ export default function SubmitGrant() {
           />
 
           <Container className="ContentLayout__Container">
+            {submissionVpNotMet && (
+              <ContentSection className="ProjectRequestSection__Content">
+                <Text className="GrantRequest__SubmissionVpNotMetText" size="lg" color="primary">
+                  {t('error.grant.submission_vp_not_met', { threshold: SUBMISSION_THRESHOLD_GRANT })}
+                </Text>
+              </ContentSection>
+            )}
             <ContentSection className="ProjectRequestSection__Content">
               <div>
                 <Button

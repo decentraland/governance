@@ -168,6 +168,7 @@
       "server_invalid_status": "Error fetching catalyst statuses"
     },
     "grant": {
+      "submission_vp_not_met": "This action requires at least {threshold} VP.",
       "funding": {
         "invalid": "*Funding is invalid*",
         "too_low": "*Funding is too low.*\n\n*Minimum is 100 USD*",
@@ -1621,7 +1622,7 @@
     },
     "submit_grant": {
       "title": "Request a Grant",
-      "description": "The Decentraland Grants program allocates MANA owned by the DAO to fund the creation of features or content beneficial to the Decentraland platform and its growth. Either individuals or teams may request grant funding through the DAO. Check the Decentraland’s [Content Policy](https://decentraland.org/content)) to make sure your project is covered.\n\nFor your convenience and in preparation for your Grant Request you can download a file with all the questions present in this form [here](https://docs.google.com/document/d/1PSkV756XOUuAPPFlSu0LgqVy0QZ-DueeDj7MwSGRphc/edit#heading=h.xnwultcdr0as).",
+      "description": "The Decentraland Grants program allocates MANA owned by the DAO to fund the creation of features or content beneficial to the Decentraland platform and its growth. Either individuals or teams may request grant funding through the DAO. Check the Decentraland’s [Content Policy](https://decentraland.org/content)) to make sure your project is covered.\n\nFor your convenience and in preparation for your Grant Request you can download a file with all the questions present in this form [here](https://docs.google.com/document/d/1PSkV756XOUuAPPFlSu0LgqVy0QZ-DueeDj7MwSGRphc/edit#heading=h.xnwultcdr0as).\n\nThis action requires at least {threshold} VP. [Buy MANA](https://account.decentraland.org/) to get VP, or [run for delegate](https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840/5).",
       "cancel": "Cancel",
       "category_selection": {
         "description": "Choose a category that best suits your project",

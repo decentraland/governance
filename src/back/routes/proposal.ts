@@ -18,6 +18,10 @@ import isDAOCommittee from '../../entities/Committee/isDAOCommittee'
 import { hasOpenSlots } from '../../entities/Committee/utils'
 import { GrantRequest, getGrantRequestSchema } from '../../entities/Grant/types'
 import {
+  SUBMISSION_THRESHOLD_DRAFT,
+  SUBMISSION_THRESHOLD_GOVERNANCE,
+  SUBMISSION_THRESHOLD_GRANT,
+  SUBMISSION_THRESHOLD_HIRING,
   SUBMISSION_THRESHOLD_PITCH,
   SUBMISSION_THRESHOLD_POLL,
   SUBMISSION_THRESHOLD_TENDER,
@@ -194,7 +198,7 @@ export async function createProposalDraft(req: WithAuth) {
   const configuration = validate<NewProposalDraft>(newProposalDraftValidator, req.body || {})
 
   await validateLinkedProposal(configuration.linked_proposal_id, ProposalType.Poll)
-  await validateSubmissionThreshold(user, process.env.GATSBY_SUBMISSION_THRESHOLD_DRAFT)
+  await validateSubmissionThreshold(user, SUBMISSION_THRESHOLD_DRAFT)
 
   return createProposal({
     user,
@@ -215,7 +219,7 @@ export async function createProposalGovernance(req: WithAuth) {
   const configuration = validate<NewProposalGovernance>(newProposalGovernanceValidator, req.body || {})
 
   await validateLinkedProposal(configuration.linked_proposal_id, ProposalType.Draft)
-  await validateSubmissionThreshold(user, process.env.GATSBY_SUBMISSION_THRESHOLD_GOVERNANCE)
+  await validateSubmissionThreshold(user, SUBMISSION_THRESHOLD_GOVERNANCE)
 
   return createProposal({
     user,
@@ -309,7 +313,7 @@ const newProposalHiringValidator = schema.compile(newProposalHiringScheme)
 export async function createProposalHiring(req: WithAuth) {
   const user = req.auth!
   const configuration = validate<NewProposalHiring>(newProposalHiringValidator, req.body || {})
-  await validateSubmissionThreshold(user, process.env.GATSBY_SUBMISSION_THRESHOLD_HIRING)
+  await validateSubmissionThreshold(user, SUBMISSION_THRESHOLD_HIRING)
 
   if (configuration.type === HiringType.Add) {
     const canHire = await hasOpenSlots(configuration.committee)
@@ -376,6 +380,7 @@ export async function createProposalGrant(req: WithAuth) {
   const grantRequestSchema = getGrantRequestSchema(req.body.category)
   const newProposalGrantValidator = schema.compile(grantRequestSchema)
   const user = req.auth!
+  await validateSubmissionThreshold(user, SUBMISSION_THRESHOLD_GRANT)
   const grantRequest = validate<GrantRequest>(newProposalGrantValidator, req.body || {})
   const grantInCreation = await ProjectService.getGrantInCreation(grantRequest, user)
   return createProposal(grantInCreation)
