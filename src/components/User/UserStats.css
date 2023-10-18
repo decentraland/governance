@@ -1,4 +1,4 @@
-.ui.container.UserStats__Container {
+.UserStats {
   display: flex;
   gap: 41px;
 }

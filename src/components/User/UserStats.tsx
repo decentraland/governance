@@ -37,7 +37,7 @@ export default function UserStats({ address, vpDistribution, isLoadingVpDistribu
   const { total } = vpDistribution || { total: 0 }
 
   return (
-    <div>
+    <div className="UserStats">
       <div className="UserStats__UserInfo">
         <div className="UserStats__UsernameContainer">
           <Username address={address} size={isMobile ? 'small' : 'medium'} className="UserStats__Username" />
