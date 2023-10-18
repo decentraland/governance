@@ -39,7 +39,7 @@
   .BoxTabs .tab {
     text-transform: none;
     padding: 15px 0;
-    font-size: 15px;
+    font-size: 13px !important;
     line-height: 18px;
   }
 
