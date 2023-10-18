@@ -89,14 +89,16 @@ const Username = ({ address, size, linked, variant = UsernameVariant.Full, stron
     </>
   )
 
+  const customClassNames = classNames('Username', `Username--${variant}`, className)
+
   return (
     <>
       {linked ? (
-        <Link className={classNames('Username', className)} href={locations.profile({ address: checksumAddress })}>
+        <Link className={customClassNames} href={locations.profile({ address: checksumAddress })}>
           {userElement}
         </Link>
       ) : (
-        <span className={classNames('Username', className)}>{userElement}</span>
+        <span className={customClassNames}>{userElement}</span>
       )}
     </>
   )

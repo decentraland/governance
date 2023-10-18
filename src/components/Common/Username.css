@@ -1,4 +1,10 @@
-.Username {
+.Username--full {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.Username--address {
   display: inline;
 }
 
@@ -18,6 +24,8 @@ a.Username span.address {
 .Username .dcl.address,
 .Username .Username__Name {
   margin-left: 0.5rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .Username .dcl.blockie-wrapper .dcl.blockie-children {
