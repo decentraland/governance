@@ -50,7 +50,7 @@
 }
 
 @media (min-width: 768px) {
-  .BadgeCard {
+  .BadgeCard__Title {
     max-width: 160px;
   }
 }
