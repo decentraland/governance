@@ -2,69 +2,12 @@
   width: 100%;
 }
 
-.ui.card.HomeCharts > .dcl.tabs {
-  padding: 0 18px;
-  margin: 0;
-  display: flex !important;
-  height: unset;
-}
-
-.ui.card.HomeCharts > .dcl.tabs .tabs-left {
-  display: flex;
-  justify-content: space-evenly;
-}
-
-.ui.card.HomeCharts > .dcl.tabs .tabs-right {
-  display: none;
-}
-
-.ui.card.HomeCharts > .dcl.tabs .dcl.tab {
-  padding: 3px 0;
-  margin: 0;
-  font-size: 11px;
-  font-weight: var(--weight-semi-bold);
-  text-transform: uppercase;
-  color: var(--black-600);
-}
-
-.ui.card.HomeCharts > .dcl.tabs .dcl.tab.active {
-  border-left: none;
-  border-bottom: 2px solid var(--primary);
-}
-
-.ui.card.HomeCharts > .dcl.tabs .Display {
-  margin: 0;
+.HomeCharts__Display.ui.sub.header {
+  margin: 0 !important;
 }
 
 .ui.card.HomeCharts > canvas {
   padding: 12px;
-}
-
-@media (max-width: 425px) {
-  .ui.card.HomeCharts > .dcl.tabs {
-    padding: 0 0;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .ui.card.HomeCharts > .dcl.tabs .tabs-left {
-    display: unset;
-  }
-
-  .ui.card.HomeCharts > .dcl.tabs .tabs-right {
-    display: flex;
-  }
-
-  .ui.card.HomeCharts > .dcl.tabs .dcl.tab {
-    padding: 15px 0;
-    margin-right: 32px;
-    font-size: 13px;
-    line-height: 17px;
-  }
-
-  .ui.card.HomeCharts > .dcl.tabs .dcl.tab.active {
-    border-bottom: unset;
-  }
 }
 
 .Charts__Loader {

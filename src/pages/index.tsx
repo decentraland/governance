@@ -9,7 +9,6 @@ import DaoDelegates from '../components/Home/DaoDelegates'
 import MainBanner from '../components/Home/MainBanner'
 import MetricsCards from '../components/Home/MetricsCards'
 import OpenProposals from '../components/Home/OpenProposals'
-import BurgerMenuLayout from '../components/Layout/BurgerMenu/BurgerMenuLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
@@ -51,25 +50,20 @@ export default function HomePage() {
       <Navigation activeTab={NavigationTab.Home} />
       {!endingSoonProposals && <LoadingView withNavigation />}
       {endingSoonProposals && (
-        <BurgerMenuLayout navigationOnly activeTab={NavigationTab.Home}>
-          <WiderContainer>
-            <MainBanner />
-            <MetricsCards />
-            {isLoadingProposals && <Loader active />}
-            {!isLoadingProposals && (
-              <>
-                <OpenProposals
-                  endingSoonProposals={endingSoonProposals?.data}
-                  isLoadingProposals={isLoadingProposals}
-                />
-                <ActiveCommunityGrants />
-                <DaoDelegates />
-                <CommunityEngagement />
-                <BottomBanner />
-              </>
-            )}
-          </WiderContainer>
-        </BurgerMenuLayout>
+        <WiderContainer>
+          <MainBanner />
+          <MetricsCards />
+          {isLoadingProposals && <Loader active />}
+          {!isLoadingProposals && (
+            <>
+              <OpenProposals endingSoonProposals={endingSoonProposals?.data} isLoadingProposals={isLoadingProposals} />
+              <ActiveCommunityGrants />
+              <DaoDelegates />
+              <CommunityEngagement />
+              <BottomBanner />
+            </>
+          )}
+        </WiderContainer>
       )}
     </>
   )

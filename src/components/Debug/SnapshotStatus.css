@@ -6,7 +6,7 @@
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  z-index: 21;
+  z-index: 10;
   position: relative;
   transition: all 0.75s ease 0s;
   padding-left: 26px;

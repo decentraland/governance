@@ -21,6 +21,9 @@
 }
 
 .ProposalsPage__List {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   margin-bottom: 16px;
 }
 
@@ -52,7 +55,22 @@
   position: relative;
 }
 
-.Animated {
-  width: 100%;
-  transition: all 0.5s ease 0s;
+.ProposalsPage__ProposalCount {
+  font-size: 12px !important;
+  text-transform: uppercase;
+  color: var(--black-600);
+}
+
+@media (min-width: 768px) {
+  .ProposalsPage__ProposalCount {
+    font-size: 14px !important;
+  }
+}
+
+.ProposalsPage__LoaderContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 250px;
 }

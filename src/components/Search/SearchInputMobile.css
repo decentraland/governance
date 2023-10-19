@@ -1,55 +1,91 @@
-.SearchContainerMobile {
-  display: flex;
-  position: relative;
-  justify-content: center;
-}
-
-.SearchContainerMobile > .dcl.close {
-  position: absolute;
-  top: 0;
-  right: 16px;
-  margin: 8px;
-  background-color: #f1f6fe;
-  z-index: 10;
-}
-
 .SearchInputMobile {
-  border: 0;
-  padding: 8px 32px;
-  width: 100%;
-  border-radius: 24px;
-  background: #f2f3f5 url('../../images/icons/magnify.svg') no-repeat 25% center;
-  float: right;
-  outline-width: 0;
-  transition: all 0.1s ease-in-out;
-}
-
-@media (max-width: 374px) {
-  .SearchInputMobile {
-    background: #f2f3f5 url('../../images/icons/magnify.svg') no-repeat 20% center;
-  }
-}
-
-.SearchInputMobile:focus {
-  box-shadow: var(--shadow-2);
-}
-
-input.SearchInputMobile::placeholder {
-  text-align: center;
-  color: var(--secondary-text);
-  transition: all 0.2s ease-in-out 0.15s;
+  position: absolute;
+  bottom: 1px;
+  right: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: center;
+  background: var(--white-900);
+  width: 40px;
+  height: 33px;
+  gap: 8px;
+  font-size: 16px;
 }
 
 .SearchInputMobile--open {
-  background: #f2f3f5 url('../../images/icons/magnify.svg') no-repeat 8px center;
-  transition: all 0.15s ease-in-out 0s;
+  width: 100%;
+  display: flex;
+  height: 65px;
+  padding-left: 10px;
+  padding-right: 16px;
+  top: 0;
+  z-index: 10;
 }
 
-.SearchInputMobile.SearchInputMobile--open:focus {
+.SearchInputMobile__Gradient {
+  width: 16px;
+  height: 34.5px;
+  position: absolute;
+  left: -16px;
+  bottom: 0;
+  background: linear-gradient(270deg, var(--white-900) 0%, rgba(255, 255, 255, 0) 103.13%);
+}
+
+.SearchInputMobile__Input {
+  width: 16px;
+  padding: 8px 13px;
+  border: 0;
+  background: var(--white-900) no-repeat 8px center;
+  background-image: url('../../images/icons/new-magnify.svg');
   outline: none;
 }
 
-input.SearchInputMobile--open::placeholder {
-  text-align: left;
-  transition: all 0.2s ease-in-out 0.15s;
+.SearchInputMobile__Input--open {
+  width: 100%;
+  padding: 8px 32px;
+}
+
+.SearchInputMobile__CloseButton {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  border: none;
+  background: none;
+}
+
+.SearchInputMobile__Container {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  width: 100%;
+}
+
+.SearchInputMobile__Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--alpha-black-300);
+  z-index: 10;
+  visibility: hidden;
+}
+
+.SearchInputMobile__Overlay--with-snapshot-status {
+  top: 163px;
+}
+
+.SearchInputMobile__Overlay--open {
+  visibility: visible;
+}
+
+.Navigation .dcl.tabs,
+.dcl.navbar {
+  z-index: 10 !important;
+}
+
+/* Hide tabs if search input mobile is open to fix position bug */
+.Navigation .dcl.tabs:has(+ .SearchInputMobile--open) {
+  visibility: hidden;
 }

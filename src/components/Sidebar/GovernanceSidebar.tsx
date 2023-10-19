@@ -1,31 +1,39 @@
-import Sidebar from 'semantic-ui-react/dist/commonjs/modules/Sidebar/Sidebar'
+import { useEffect, useRef } from 'react'
 
-import { useClickOutside } from '../../hooks/useClickOutside'
+import classNames from 'classnames'
 
 import './GovernanceSidebar.css'
+import Overlay from './Overlay'
 
 type Props = {
-  visible?: boolean
+  visible: boolean
   children: React.ReactNode
   onShow?: () => void
   onHide?: () => void
-  onClose?: () => void
+  onClose: () => void
 }
 
-export default function GovernanceSidebar({ visible, onShow, onHide, onClose, children }: Props) {
-  useClickOutside('.GovernanceSidebar', !!visible, onClose)
+const ANIMATION_DURATION = 500
+
+export default function GovernanceSidebar({ visible = false, onShow, onHide, onClose, children }: Props) {
+  const prevVisible = useRef(visible)
+  useEffect(() => {
+    if (prevVisible.current && !visible) {
+      if (onHide) {
+        onHide()
+      }
+    } else if (!prevVisible.current && visible) {
+      if (onShow) {
+        setTimeout(onShow, ANIMATION_DURATION)
+      }
+    }
+    prevVisible.current = visible
+  }, [onHide, onShow, visible])
 
   return (
-    <Sidebar
-      className="GovernanceSidebar"
-      animation="push"
-      onShow={onShow}
-      onHide={onHide}
-      direction="right"
-      visible={visible}
-      width="very wide"
-    >
-      {children}
-    </Sidebar>
+    <>
+      <Overlay isOpen={visible} onClick={onClose} />
+      <div className={classNames('GovernanceSidebar', visible && 'GovernanceSidebar--open')}>{children}</div>
+    </>
   )
 }

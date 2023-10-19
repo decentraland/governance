@@ -1,5 +1,3 @@
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
-
 import { DelegationResult, DetailedScores } from '../../clients/SnapshotTypes'
 import { isSameAddress } from '../../entities/Snapshot/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
@@ -38,33 +36,31 @@ export default function VpDelegatorsBox({
     !isLoggedUserProfile && !isLoadingUserVpDistribution && profileAddress && accountHasDelegations
 
   return (
-    <Container fluid>
-      <ProfileBox
-        className="VpDelegatorsBox"
-        title={t('page.profile.delegators.title')}
-        info={t('page.profile.delegators.helper')}
-        action={
-          displayDelegateAction && (
-            <VotingPowerDelegationHandler
-              basic
-              buttonText={t('page.profile.delegators.delegate_action')}
-              userVP={loggedUserVpDistribution?.own}
-              candidateAddress={profileAddress}
-            />
-          )
-        }
-      >
-        {loggedUserVpDistribution && profileAddress && (
-          <DelegationCards
-            delegation={delegation}
-            scores={scores}
-            isLoading={isLoadingDelegation || isLoadingScores}
-            isUserProfile={isLoggedUserProfile}
-            loggedUserVpDistribution={loggedUserVpDistribution}
-            profileAddress={profileAddress}
+    <ProfileBox
+      className="VpDelegatorsBox"
+      title={t('page.profile.delegators.title')}
+      info={t('page.profile.delegators.helper')}
+      action={
+        displayDelegateAction && (
+          <VotingPowerDelegationHandler
+            basic
+            buttonText={t('page.profile.delegators.delegate_action')}
+            userVP={loggedUserVpDistribution?.own}
+            candidateAddress={profileAddress}
           />
-        )}
-      </ProfileBox>
-    </Container>
+        )
+      }
+    >
+      {loggedUserVpDistribution && profileAddress && (
+        <DelegationCards
+          delegation={delegation}
+          scores={scores}
+          isLoading={isLoadingDelegation || isLoadingScores}
+          isUserProfile={isLoggedUserProfile}
+          loggedUserVpDistribution={loggedUserVpDistribution}
+          profileAddress={profileAddress}
+        />
+      )}
+    </ProfileBox>
   )
 }

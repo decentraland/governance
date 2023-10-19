@@ -2,12 +2,13 @@ import { useState } from 'react'
 
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
+import { Desktop } from 'decentraland-ui/dist/components/Media/Media'
 
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useParticipatingVP from '../../hooks/useParticipatingVP'
 import useVotesPerProposal from '../../hooks/useVotesPerProposal'
 import LineChart from '../Charts/LineChart'
+import BoxTabs from '../Common/BoxTabs'
 
 import './Charts.css'
 import HomeLoader from './HomeLoader'
@@ -32,21 +33,26 @@ function Charts() {
 
   return (
     <Card className="HomeCharts">
-      <Tabs>
-        <Tabs.Left>
-          <Tabs.Tab active={isSelectedParticipatingVPTab} onClick={() => setSelectedTab(ChartType.ParticipatingVP)}>
+      <BoxTabs>
+        <BoxTabs.Left>
+          <BoxTabs.Tab active={isSelectedParticipatingVPTab} onClick={() => setSelectedTab(ChartType.ParticipatingVP)}>
             {t('page.home.community_engagement.participating_vp_title')}
-          </Tabs.Tab>
-          <Tabs.Tab active={isSelectedVotesPerProposalTab} onClick={() => setSelectedTab(ChartType.VotesPerProposal)}>
+          </BoxTabs.Tab>
+          <BoxTabs.Tab
+            active={isSelectedVotesPerProposalTab}
+            onClick={() => setSelectedTab(ChartType.VotesPerProposal)}
+          >
             {t('page.home.community_engagement.votes_per_proposal_title')}
-          </Tabs.Tab>
-        </Tabs.Left>
-        <Tabs.Right>
-          <Header sub className="Display">
-            {t('page.home.community_engagement.display_median')}
-          </Header>
-        </Tabs.Right>
-      </Tabs>
+          </BoxTabs.Tab>
+        </BoxTabs.Left>
+        <BoxTabs.Right>
+          <Desktop>
+            <Header sub className="HomeCharts__Display">
+              {t('page.home.community_engagement.display_median')}
+            </Header>
+          </Desktop>
+        </BoxTabs.Right>
+      </BoxTabs>
       {((isSelectedParticipatingVPTab && isLoadingParticipatingVP) ||
         (isSelectedVotesPerProposalTab && isLoadingVotesPerProposal)) && (
         <div className="Charts__Loader">
