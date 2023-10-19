@@ -40,6 +40,10 @@
   .ProposalsPage__Container .ActionableLayout {
     min-height: 300px;
   }
+
+  .ProposalsPage__Sidebar {
+    display: none;
+  }
 }
 
 @media only screen and (min-width: 768px) {
