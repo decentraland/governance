@@ -1,7 +1,6 @@
 import { Suspense, lazy } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { NotMobile, useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
@@ -38,7 +37,7 @@ export default function UserStats({ address, vpDistribution, isLoadingVpDistribu
   const { total } = vpDistribution || { total: 0 }
 
   return (
-    <Container fluid className="UserStats__Container">
+    <div className="UserStats">
       <div className="UserStats__UserInfo">
         <div className="UserStats__UsernameContainer">
           <Username address={address} size={isMobile ? 'small' : 'medium'} className="UserStats__Username" />
@@ -63,6 +62,6 @@ export default function UserStats({ address, vpDistribution, isLoadingVpDistribu
           <UserAvatar address={address} />
         </Suspense>
       </NotMobile>
-    </Container>
+    </div>
   )
 }

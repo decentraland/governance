@@ -1,5 +1,5 @@
+import crypto from 'crypto'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
-import { v1 as uuid } from 'uuid'
 
 import AirdropJobModel from '../back/models/AirdropJob'
 import { VoteService } from '../back/services/vote'
@@ -177,7 +177,7 @@ export class BadgesService {
   private static async queueAirdropJob(badgeSpec: string, recipients: string[]) {
     logger.log(`Enqueueing airdrop job`, { badgeSpec, recipients })
     try {
-      await AirdropJobModel.create({ id: uuid(), badge_spec: badgeSpec, recipients })
+      await AirdropJobModel.create({ id: crypto.randomUUID(), badge_spec: badgeSpec, recipients })
     } catch (error) {
       ErrorService.report('Unable to create AirdropJob', {
         error,

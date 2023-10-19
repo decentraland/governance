@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
 import { CoauthorStatus } from '../../entities/Coauthor/types'
 import { isSameAddress } from '../../entities/Snapshot/utils'
@@ -36,35 +35,31 @@ const ActivityBox = ({ address }: Props) => {
   const { requestsStatus } = useProposalsByCoAuthor(isLoggedUserProfile ? account : null, CoauthorStatus.PENDING)
 
   return (
-    <Container fluid>
-      <BoxTabsContainer>
-        <BoxTabs>
-          <BoxTabs.Left>
-            <BoxTabs.Tab onClick={() => setActiveTab(Tab.MyProposals)} active={activeTab === Tab.MyProposals}>
-              {isLoggedUserProfile
-                ? t('page.profile.activity.my_proposals.title')
-                : t('page.profile.created_proposals.title')}
+    <BoxTabsContainer>
+      <BoxTabs>
+        <BoxTabs.Left>
+          <BoxTabs.Tab onClick={() => setActiveTab(Tab.MyProposals)} active={activeTab === Tab.MyProposals}>
+            {isLoggedUserProfile
+              ? t('page.profile.activity.my_proposals.title')
+              : t('page.profile.created_proposals.title')}
+          </BoxTabs.Tab>
+          {isLoggedUserProfile && (
+            <BoxTabs.Tab onClick={() => setActiveTab(Tab.Watchlist)} active={activeTab === Tab.Watchlist}>
+              {t('page.profile.activity.watchlist.title')}
             </BoxTabs.Tab>
-            {isLoggedUserProfile && (
-              <BoxTabs.Tab onClick={() => setActiveTab(Tab.Watchlist)} active={activeTab === Tab.Watchlist}>
-                {t('page.profile.activity.watchlist.title')}
-              </BoxTabs.Tab>
-            )}
-            <BoxTabs.Tab onClick={() => setActiveTab(Tab.CoAuthoring)} active={activeTab === Tab.CoAuthoring}>
-              {t('page.profile.activity.coauthoring.title')}
-              {requestsStatus.length > 0 && <Dot className="ActivityBox__DotIcon" />}
-            </BoxTabs.Tab>
-          </BoxTabs.Left>
-        </BoxTabs>
-        <BoxTabsContentContainer>
-          {activeTab === Tab.MyProposals && <ProposalsCreatedTab address={address} />}
-          {activeTab === Tab.Watchlist && isLoggedUserProfile && <WatchlistTab />}
-          {activeTab === Tab.CoAuthoring && (
-            <CoAuthoringTab address={address} pendingCoauthorRequests={requestsStatus} />
           )}
-        </BoxTabsContentContainer>
-      </BoxTabsContainer>
-    </Container>
+          <BoxTabs.Tab onClick={() => setActiveTab(Tab.CoAuthoring)} active={activeTab === Tab.CoAuthoring}>
+            {t('page.profile.activity.coauthoring.title')}
+            {requestsStatus.length > 0 && <Dot className="ActivityBox__DotIcon" />}
+          </BoxTabs.Tab>
+        </BoxTabs.Left>
+      </BoxTabs>
+      <BoxTabsContentContainer>
+        {activeTab === Tab.MyProposals && <ProposalsCreatedTab address={address} />}
+        {activeTab === Tab.Watchlist && isLoggedUserProfile && <WatchlistTab />}
+        {activeTab === Tab.CoAuthoring && <CoAuthoringTab address={address} pendingCoauthorRequests={requestsStatus} />}
+      </BoxTabsContentContainer>
+    </BoxTabsContainer>
   )
 }
 

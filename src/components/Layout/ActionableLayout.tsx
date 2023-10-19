@@ -1,21 +1,14 @@
-import classNames from 'classnames'
-
 import './ActionableLayout.css'
 
-export type ActionableLayoutProps = React.HTMLAttributes<HTMLDivElement> & {
+interface Props {
   leftAction?: React.ReactNode
   rightAction?: React.ReactNode
+  children: React.ReactNode
 }
 
-export default function ActionableLayout({
-  className,
-  rightAction,
-  leftAction,
-  children,
-  ...props
-}: ActionableLayoutProps) {
+export default function ActionableLayout({ rightAction, leftAction, children }: Props) {
   return (
-    <div {...props} className={classNames('ActionableLayout', className)}>
+    <div className="ActionableLayout">
       <div className="ActionableLayout__Action">
         <div className="ActionableLayout__Left">{leftAction}</div>
         <div className="ActionableLayout__Right">{rightAction}</div>

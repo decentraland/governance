@@ -15,7 +15,6 @@
   border-radius: 8px;
   border: 1px solid var(--black-300);
   box-shadow: var(--shadow-1);
-  margin: 8px 0;
 }
 
 .ProposalPreviewCard--category:hover {

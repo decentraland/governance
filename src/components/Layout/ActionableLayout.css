@@ -1,16 +1,23 @@
-.ActionableLayout .ActionableLayout__Action {
+.ActionableLayout__Action {
   min-height: 32px;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: center
+  align-items: center;
 }
 
-.ActionableLayout .ActionableLayout__Content {
-  padding-top: .5rem;
+@media (min-width: 768px) {
+  .ActionableLayout__Action {
+    margin-bottom: 16px;
+  }
+}
+
+.ActionableLayout__Right {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.ActionableLayout__Content {
   height: calc(100% - 32px);
-}
-
-.ActionableLayout .ActionableLayout__Left .ui.header.sub {
-  margin-bottom: 0;
 }

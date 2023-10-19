@@ -83,7 +83,9 @@ export default function CategoryOption({ active, type, className, count, onClick
         <span className="CategoryOption__TitleContainer">
           <span>
             {getCategoryIcon(type, CategoryIconVariant.Circled)}
-            <Text className="CategoryOption__Title">{t(`category.${type}_title`)}</Text>
+            <Text weight={active ? 'medium' : 'normal'} className="CategoryOption__Title">
+              {t(`category.${type}_title`)}
+            </Text>
           </span>
         </span>
         {isNumber(count) && (

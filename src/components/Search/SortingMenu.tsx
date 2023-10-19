@@ -17,7 +17,7 @@ export default function SortingMenu() {
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const order = useMemo(() => (params.get('order') === 'ASC' ? 'ASC' : 'DESC'), [params])
-  const arrowDirection = useMemo(() => (order === 'ASC' ? 'Downwards' : 'Upwards'), [order])
+  const arrowDirection = useMemo(() => (order === 'ASC' ? 'Upwards' : 'Downwards'), [order])
   const isMobile = useMobileMediaQuery()
 
   const t = useFormatMessage()

@@ -1,20 +1,36 @@
-.ui.push.right.very.wide.visible.sidebar.GovernanceSidebar {
-  width: 100%;
-}
-
-@media (min-width: 768px) {
-  .ui.push.right.very.wide.visible.sidebar.GovernanceSidebar {
-    width: 650px;
-  }
-}
-
 .GovernanceSidebar {
   display: flex;
   flex-direction: column;
   gap: 32px;
+  width: 100%;
   background: var(--white-900);
-  padding-top: 26px;
-  padding-left: 27px;
-  padding-right: 24px;
-  cursor: default;
+  padding: 26px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 11;
+  height: 100%;
+  overflow-y: scroll;
+  overscroll-behavior: none;
+  visibility: hidden;
+  transform: translateX(650px);
+  transition: all 0.5s ease;
+  box-shadow: 0px 0px 35px 0px var(--alpha-black-400);
+}
+
+@media (min-width: 768px) {
+  .GovernanceSidebar {
+    width: 650px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+
+.GovernanceSidebar::-webkit-scrollbar {
+  display: none;
+}
+
+.GovernanceSidebar--open {
+  transform: translateX(0px);
+  visibility: visible;
 }

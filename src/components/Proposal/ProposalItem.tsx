@@ -1,79 +1,65 @@
 import classNames from 'classnames'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Desktop } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { Vote } from '../../entities/Votes/types'
+import useCountdown, { Countdown } from '../../hooks/useCountdown'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import useWinningChoice from '../../hooks/useWinningChoice'
+import Time from '../../utils/date/Time'
 import locations from '../../utils/locations'
 import CategoryPill from '../Category/CategoryPill'
+import DateTooltip from '../Common/DateTooltip'
+import Heading from '../Common/Typography/Heading'
 import Link from '../Common/Typography/Link'
 import Username from '../Common/Username'
-import Subscribe from '../Icon/Subscribe'
-import Subscribed from '../Icon/Subscribed'
 import CoauthorRequestLabel from '../Status/CoauthorRequestLabel'
-import FinishLabel from '../Status/FinishLabel'
-import LeadingOption from '../Status/LeadingOption'
 import StatusPill from '../Status/StatusPill'
 
 import './ProposalItem.css'
+
+function getTimeLabel(timeout: Countdown, date: Date, format?: 'short') {
+  const time = Time(date)
+
+  return timeout.time > 0 ? time.fromNow() : format === 'short' ? time.format('MM/DD/YY') : time.format('MMM DD, YYYY')
+}
 
 interface Props {
   proposal: ProposalAttributes
   hasCoauthorRequest?: boolean
   votes?: Record<string, Vote>
-  subscribed?: boolean
-  subscribing?: boolean
-  onSubscribe?: (e: React.MouseEvent<unknown>, proposal: ProposalAttributes) => void
 }
 
-export default function ProposalItem({
-  proposal,
-  hasCoauthorRequest,
-  votes,
-  subscribing,
-  subscribed,
-  onSubscribe,
-}: Props) {
-  const [account] = useAuthContext()
-  const { winningChoice, userChoice } = useWinningChoice(proposal)
+export default function ProposalItem({ proposal, hasCoauthorRequest, votes }: Props) {
   const t = useFormatMessage()
-
-  function handleSubscription(e: React.MouseEvent<unknown>) {
-    e.stopPropagation()
-    e.preventDefault()
-    onSubscribe && onSubscribe(e, proposal)
-  }
+  const { id, title, status, type, user, start_at, finish_at } = proposal
+  const timeout = useCountdown(finish_at)
+  const isCountdownRunning = timeout.time > 0
+  const hasStarted = Time().isAfter(start_at)
+  const endLabel = isCountdownRunning
+    ? `${t('page.proposal_list.finish_label.ends')} `
+    : `${t('page.proposal_list.finish_label.ended')} `
+  const label = hasStarted ? endLabel : `${t('page.proposal_list.finish_label.starts')} `
+  const time = hasStarted ? finish_at : start_at
 
   return (
     <Card
       as={Link}
-      href={locations.proposal(proposal.id)}
-      className={classNames(
-        'ProposalItem',
-        subscribed && 'ProposalItem--subscribed',
-        hasCoauthorRequest && 'ProposalItem--coauthor'
-      )}
+      href={locations.proposal(id)}
+      className={classNames('ProposalItem', hasCoauthorRequest && 'ProposalItem--coauthor')}
     >
       <Card.Content>
-        <div className="ProposalItem__Title">
-          <Header>{proposal.title}</Header>
+        <div className="ProposalItem__TitleContainer">
+          <Heading className="ProposalItem__Title" weight="semi-bold" size="sm">
+            {title}
+          </Heading>
           {hasCoauthorRequest && <CoauthorRequestLabel />}
-          {account && (
-            <Button basic onClick={handleSubscription} loading={subscribing} disabled={subscribing}>
-              {subscribed ? <Subscribed size="20" /> : <Subscribe size="20" />}
-            </Button>
-          )}
         </div>
         <div className="ProposalItem__Status">
           <div className="ProposalItem__Details">
-            <StatusPill status={proposal.status} />
-            <CategoryPill proposalType={proposal.type} />
-            <Username address={proposal.user} variant="avatar" />
+            <StatusPill status={status} />
+            <CategoryPill proposalType={type} />
+            <Username address={user} variant="avatar" />
             <div className="ProposalItem__Stats">
               {votes && (
                 <Desktop>
@@ -82,19 +68,11 @@ export default function ProposalItem({
                   </span>
                 </Desktop>
               )}
-              <FinishLabel startAt={proposal.start_at} finishAt={proposal.finish_at} />
+              <span className="ProposalItem__FinishLabel">
+                <DateTooltip date={time}>{`${label} ${getTimeLabel(timeout, time, 'short')}`}</DateTooltip>
+              </span>
             </div>
           </div>
-          {winningChoice.votes > 0 && (
-            <Desktop>
-              <LeadingOption
-                status={proposal.status}
-                leadingOption={winningChoice.choice}
-                metVP={winningChoice.power >= (proposal.required_to_pass || 0)}
-                userChoice={userChoice}
-              />
-            </Desktop>
-          )}
         </div>
       </Card.Content>
     </Card>

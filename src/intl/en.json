@@ -37,6 +37,7 @@
       "placeholder": "Search...",
       "search_results": "Search results for \"{title}",
       "no_matches": "No proposals match the search criteria",
+      "filter": "Filter",
       "sorting": {
         "DESC": "Latest",
         "ASC": "Oldest"

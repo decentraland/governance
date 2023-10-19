@@ -1,5 +1,7 @@
 .BoxTabs .dcl.tabs .ui.container {
   width: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .BoxTabs .dcl.tabs {
@@ -13,10 +15,6 @@
   display: flex;
 }
 
-.BoxTabs .dcl.tabs .tabs-right {
-  display: none;
-}
-
 .BoxTabs .dcl.tabs .dcl.tab.active {
   border-left: none;
   border-bottom: 2px solid var(--primary);
@@ -28,7 +26,7 @@
   display: flex;
   align-items: center;
   padding: 7px 0;
-  font-size: 13px !important;
+  font-size: 11px !important;
   font-weight: var(--weight-medium) !important;
   line-height: 18px;
   text-transform: uppercase !important;
@@ -41,7 +39,7 @@
   .BoxTabs .tab {
     text-transform: none;
     padding: 15px 0;
-    font-size: 15px;
+    font-size: 13px !important;
     line-height: 18px;
   }
 

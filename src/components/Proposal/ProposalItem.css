@@ -1,68 +1,48 @@
+.ProposalItem.ui.card {
+  margin: 0 !important;
+}
+
 .ProposalItem,
 .ui.card.Link.ProposalItem {
   width: 100% !important;
   border: 1px solid var(--black-100);
 }
 
-.ProposalItem .ProposalItem__Title {
+.ProposalItem__TitleContainer {
+  margin-bottom: 4px;
+}
+
+.ProposalItem__Title {
   display: flex;
   flex-direction: row;
   padding-bottom: 0;
-  padding-right: 40px;
 }
 
-.ProposalItem .ProposalItem__Title .ui.header {
-  flex: 1;
-  padding-right: 15px;
-}
-
-.ProposalItem:visited .ProposalItem__Title .ui.header {
+.ProposalItem:visited .ProposalItem__Title {
   color: var(--black-600);
 }
 
-.ProposalItem .ProposalItem__Status {
-  padding-top: 8px;
+.ProposalItem__Status {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
 @media (max-width: 425px) {
-  .ProposalItem .ProposalItem__Status {
-    flex-direction: row;
-  }
-
-  .ProposalItem .ProposalItem__Title {
-    padding-right: 0;
-  }
-
-  .ProposalItem .ProposalItem__Title .ui.header {
-    font-size: 17px;
-  }
-
   .ActionableLayout .ActionableLayout__Content .ui.card > .content {
     padding: 12px;
   }
 }
 
-.ProposalItem .ProposalItem__Title .ui.header:first-child {
+.ProposalItem__Title .ui.header:first-child {
   margin-bottom: 0;
 }
 
-.ProposalItem .ProposalItem__Title .ui.button {
-  position: absolute;
-  padding: 16px 20px;
-  top: 0;
-  right: 0;
-  display: none;
-}
-
-.ProposalItem .ProposalItem__Title .ui.loading.loading.loading.loading.button {
+.ProposalItem__Title .ui.loading.loading.loading.loading.button {
   position: absolute;
 }
 
-.ProposalItem:hover .ProposalItem__Title .ui.button,
-.ProposalItem.ProposalItem--subscribed .ProposalItem__Title .ui.button {
+.ProposalItem:hover .ProposalItem__Title .ui.button {
   display: block;
 }
 
@@ -108,4 +88,20 @@
 
 .ProposalItem__Details > span.Username .dcl.blockie {
   margin: 0 0 0 0;
+}
+
+.ProposalItem__FinishLabel {
+  padding: 0;
+  display: inline-flex;
+  color: var(--black-800);
+  font-weight: var(--weight-semi-bold);
+  font-size: 10px;
+  line-height: 16px;
+  vertical-align: middle;
+  align-content: center;
+  align-items: center;
+  text-transform: uppercase;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
