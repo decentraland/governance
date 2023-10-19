@@ -117,15 +117,15 @@ export default function ProposalsPage() {
           </NotMobile>
         )}
         <div className="ProposalsPage__Container">
-          <NotMobile>
-            <div className="ProposalsPage__Sidebar">
+          <div className="ProposalsPage__Sidebar">
+            <NotMobile>
               <div>
                 <CategoryFilter filterType={ProposalType} />
                 <StatusFilter statusType={ProposalStatus} />
                 <TimeFrameFilter />
               </div>
-            </div>
-          </NotMobile>
+            </NotMobile>
+          </div>
           <div className="ProposalsPage__Content">
             {proposals && (
               <Mobile>
