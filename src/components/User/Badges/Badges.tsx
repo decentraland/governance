@@ -28,7 +28,6 @@ export default function Badges({ address }: Props) {
 
   const handleSidebarClose = useCallback(() => {
     setSidebarOpen(false)
-    setBadgeInDetail(null)
   }, [])
 
   useEffect(() => {

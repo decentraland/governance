@@ -6,7 +6,14 @@
 
 .ContestedBudgetCard__Row {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
+}
+
+@media (min-width: 768px) {
+  .ContestedBudgetCard__Row {
+    flex-direction: row;
+  }
 }
 
 .ContestedBudgetCard__Content {

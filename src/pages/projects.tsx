@@ -5,7 +5,6 @@ import { NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 import toSnakeCase from 'lodash/snakeCase'
 
 import WiderContainer from '../components/Common/WiderContainer'
-import BurgerMenuLayout from '../components/Layout/BurgerMenu/BurgerMenuLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
@@ -116,22 +115,17 @@ export default function ProjectsPage() {
       <Navigation activeTab={NavigationTab.Grants} />
       {isLoadingProjects && <LoadingView withNavigation />}
       {!isLoadingProjects && (
-        <BurgerMenuLayout navigationOnly activeTab={NavigationTab.Grants}>
-          <WiderContainer>
-            <ProjectsBanner />
-            <div className="ProjectsPage__Container">
-              <div className="ProjectsPage__Sidebar">
-                <NotMobile>
-                  <CategoryFilter
-                    filterType={ProjectTypeFilter}
-                    categoryCount={counter}
-                    startOpen
-                    showAllFilter={false}
-                  />
-                  <StatusFilter statusType={ProjectStatus} startOpen />
-                  <RequestBanner />
-                </NotMobile>
-              </div>
+        <WiderContainer>
+          <ProjectsBanner />
+          <div className="ProjectsPage__Container">
+            <div className="ProjectsPage__Sidebar">
+              <NotMobile>
+                <CategoryFilter filterType={ProjectTypeFilter} categoryCount={counter} showAllFilter={false} />
+                <StatusFilter statusType={ProjectStatus} />
+                <RequestBanner />
+              </NotMobile>
+            </div>
+            <div>
               {displayableProjects && (
                 <CurrentProjectsList
                   projects={displayableProjects}
@@ -141,8 +135,8 @@ export default function ProjectsPage() {
                 />
               )}
             </div>
-          </WiderContainer>
-        </BurgerMenuLayout>
+          </div>
+        </WiderContainer>
       )}
     </>
   )

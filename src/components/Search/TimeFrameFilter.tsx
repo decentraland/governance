@@ -4,11 +4,10 @@ import useFormatMessage from '../../hooks/useFormatMessage'
 import useURLSearchParams from '../../hooks/useURLSearchParams'
 import locations from '../../utils/locations'
 
-import { FilterProps } from './CategoryFilter'
-import CollapsibleFilter from './CollapsibleFilter'
+import FilterContainer from './FilterContainer'
 import FilterLabel from './FilterLabel'
 
-export default function TimeFrameFilter({ onChange }: FilterProps) {
+export default function TimeFrameFilter() {
   const t = useFormatMessage()
   const params = useURLSearchParams()
   const timeFrame = useMemo(() => params.get('timeFrame') || null, [params])
@@ -21,11 +20,7 @@ export default function TimeFrameFilter({ onChange }: FilterProps) {
   }
 
   return (
-    <CollapsibleFilter
-      title={t('navigation.search.timeframe_filter.title') || ''}
-      startOpen={false}
-      onChange={onChange}
-    >
+    <FilterContainer title={t('navigation.search.timeframe_filter.title') || ''}>
       <FilterLabel
         label={t('navigation.search.timeframe_filter.all') || ''}
         href={handleTimeFrameFilter(null)}
@@ -46,6 +41,6 @@ export default function TimeFrameFilter({ onChange }: FilterProps) {
         href={handleTimeFrameFilter('3months')}
         active={timeFrame === '3months'}
       />
-    </CollapsibleFilter>
+    </FilterContainer>
   )
 }

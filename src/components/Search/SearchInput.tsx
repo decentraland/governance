@@ -10,7 +10,7 @@ import locations, { navigate } from '../../utils/locations'
 
 import './SearchInput.css'
 
-export function handleSearch(textSearch: string, location: Location) {
+function handleSearch(textSearch: string, location: Location) {
   const newParams = new URLSearchParams(location.search)
   if (textSearch) {
     newParams.set('search', textSearch)
@@ -24,7 +24,7 @@ export function handleSearch(textSearch: string, location: Location) {
   navigate(locations.proposals(newParams))
 }
 
-export default function SearchInput(props: React.HTMLAttributes<HTMLInputElement>) {
+export default function SearchInput() {
   const t = useFormatMessage()
   const location = useLocation()
   const { search } = useProposalsSearchParams()
@@ -69,10 +69,9 @@ export default function SearchInput(props: React.HTMLAttributes<HTMLInputElement
   return (
     <div className="SearchContainer">
       <input
-        {...props}
-        className={classNames('SearchInput', open && 'SearchInput--open', props.className)}
+        className={classNames('SearchInput', open && 'SearchInput--open')}
         value={searchText}
-        placeholder={props.placeholder || t('navigation.search.placeholder') || ''}
+        placeholder={t('navigation.search.placeholder') || ''}
         onChange={handleChange}
         onKeyPress={handleKeyPress}
         onKeyUp={keyUpHandler}

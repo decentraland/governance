@@ -4,6 +4,7 @@
   align-content: stretch;
   position: relative;
   padding: 16px 16px 16px 20px;
+  margin-top: 24px;
   margin-bottom: 8px;
   border-radius: 12px;
   outline: 1px solid #0000000a;
@@ -42,10 +43,6 @@
 }
 
 @media (max-width: 767px) {
-  .OnlyMobile .Banner {
-    display: flex;
-  }
-
   .Banner .Banner__Content {
     display: contents;
     flex-direction: column;
@@ -62,7 +59,7 @@
     z-index: 1;
   }
 
-  .OnlyMobile .Banner .Banner__Button {
+  .Banner .Banner__Button {
     padding-left: 0;
     padding-right: 0;
     min-width: 87px;
@@ -71,6 +68,7 @@
 
 @media (min-width: 768px) {
   .Banner {
+    margin-top: 0;
     margin-bottom: 35px;
   }
 

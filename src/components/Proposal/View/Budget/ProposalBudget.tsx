@@ -26,13 +26,11 @@ export default function ProposalBudget({ proposal, budget }: Props) {
         <RequestedBudgetCard proposal={proposal} budget={budget} />
         <CategoryTotalCard proposal={proposal} budget={budget} />
       </div>
-      <Desktop>
-        {contestantsAmount > 0 && isActive && (
-          <div className="ProposalBudget__Row">
-            <CompetingGrants proposal={proposal} budget={budget} />
-          </div>
-        )}
-      </Desktop>
+      {contestantsAmount > 0 && isActive && (
+        <div className="ProposalBudget__Row">
+          <CompetingGrants proposal={proposal} budget={budget} />
+        </div>
+      )}
     </ContentSection>
   )
 }
