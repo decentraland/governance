@@ -28,5 +28,5 @@ export default function useProfile(address?: string | null) {
   const profileHasName = hasDclProfile && !!profile.name && profile.name.length > 0 && profile.hasClaimedName
   const displayableAddress = profileHasName ? profile.name : address
 
-  return { profile, hasDclProfile, displayableAddress, isLoadingProfile }
+  return { profile, hasDclProfile, displayableAddress, isLoadingProfile, profileHasName }
 }
