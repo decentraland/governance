@@ -8,8 +8,7 @@ E.g: *Closes/Fixes #1234*
     - [ ]  The code is properly commented on and provides context when needed (complex feature or hard to understand)
 - [ ]  **Functionality validation**
     - [ ]  Feature working as described in the related issue
-    - [ ]  Does this PR need environment variables to be set? If yes, have they been set?
-    - [ ]  New API endpoints are properly documented
+    - [ ]  New environmental variables have been set
     - [ ]  New functions are properly tested (When should we add tests?)
     - [ ]  Code errors are being logged in the code health service
 - [ ]  **Product validation**
@@ -17,3 +16,8 @@ E.g: *Closes/Fixes #1234*
     - [ ]  Usage events are being sent to the product analytics service
     - [ ]  New common components have been documented in Storybook
     - [ ]  Preview link if it’s a customer facing issue
+- [ ] **Documentation**
+    - [ ] README updated
+    - [ ] New API changes are properly documented
+- [ ] **Accessibility**
+    - [ ] UI changes are accessible
