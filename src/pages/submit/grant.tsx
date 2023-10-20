@@ -305,13 +305,6 @@ export default function SubmitGrant() {
           />
 
           <Container className="ContentLayout__Container">
-            {submissionVpNotMet && (
-              <ContentSection className="ProjectRequestSection__Content">
-                <Text className="GrantRequest__SubmissionVpNotMetText" size="lg" color="primary">
-                  {t('error.grant.submission_vp_not_met', { threshold: SUBMISSION_THRESHOLD_GRANT })}
-                </Text>
-              </ContentSection>
-            )}
             <ContentSection className="ProjectRequestSection__Content">
               <div>
                 <Button
@@ -324,6 +317,15 @@ export default function SubmitGrant() {
                 </Button>
               </div>
             </ContentSection>
+          </Container>
+          <Container className="ContentLayout__Container">
+            {submissionVpNotMet && (
+              <ContentSection className="ProjectRequestSection__Content">
+                <Text className="GrantRequest__SubmissionVpNotMetText" size="lg" color="primary">
+                  {t('error.grant.submission_vp_not_met', { threshold: SUBMISSION_THRESHOLD_GRANT })}
+                </Text>
+              </ContentSection>
+            )}
           </Container>
         </>
       )}
