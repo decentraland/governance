@@ -58,3 +58,7 @@
 .GrantRequest__Error {
   margin-top: 40px;
 }
+
+.GrantRequest__SubmissionVpNotMetText {
+  margin-bottom: 24px !important;
+}
