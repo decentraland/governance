@@ -181,8 +181,12 @@ export async function publishBids(context: JobContext) {
 }
 
 async function updateProposalsAndBudgets(proposalsWithOutcome: ProposalWithOutcome[], budgetsWithUpdates: Budget[]) {
-  const pool = new Pool()
+  const pool = new Pool({
+    connectionString: process.env.CONNECTION_STRING || '',
+  })
+
   const client = await pool.connect()
+
   try {
     await client.query('BEGIN')
 
@@ -207,9 +211,9 @@ async function updateProposalsAndBudgets(proposalsWithOutcome: ProposalWithOutco
 
     const updateQueries = [...proposalUpdateQueriesByStatus, ...budgetUpdateQueries]
 
-    console.log('updateQueries', updateQueries)
-
     const clientQueries = updateQueries.map(({ text, values }) => {
+      console.log('text', text)
+      console.log('values', values)
       return client.query(text, values)
     })
 
