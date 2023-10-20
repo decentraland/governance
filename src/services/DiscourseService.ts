@@ -154,7 +154,7 @@ export class DiscourseService {
     }
   }
 
-  // TODO: change getUpdateMessage to receive update values instead of updated proposal
+  // TODO: change getUpdateMessage to receive update values instead of having to fetch updated proposal
   // TODO: votes are not necessary in all cases, they could be fetched only when needed
   static commentProposalUpdateInDiscourse(id: string) {
     inBackground(async () => {
@@ -178,6 +178,7 @@ export class DiscourseService {
 
   static commentFinishedProposals(proposalsWithOutcome: ProposalWithOutcome[]) {
     proposalsWithOutcome.forEach((proposal) => {
+      //TODO: is it ok that we only notify finished proposals? (what about passed/rejected/OOB?)
       if (proposal.newStatus === ProposalStatus.Finished) {
         this.commentProposalUpdateInDiscourse(proposal.id)
       }
