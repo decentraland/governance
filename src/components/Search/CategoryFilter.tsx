@@ -1,14 +1,19 @@
+import { useCallback, useMemo } from 'react'
+
 import isEqual from 'lodash/isEqual'
 import toSnakeCase from 'lodash/snakeCase'
 
-import { NewGrantCategory, OldGrantCategory, SubtypeAlternativeOptions } from '../../entities/Grant/types'
+import { NewGrantCategory, SubtypeAlternativeOptions, toGrantSubtype } from '../../entities/Grant/types'
 import { BiddingProcessType, ImplementationProcessType, ProposalType } from '../../entities/Proposal/types'
 import { getUrlFilters } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useURLSearchParams from '../../hooks/useURLSearchParams'
-import CategoryOption, { CategoryOptionProps } from '../Category/CategoryOption'
-import GrantMultiCategory from '../Category/GrantMultiCategory'
-import GroupedCategoryOption from '../Category/GroupedCategoryOption'
+import { categoryIcons } from '../Category/CategoryBanner'
+import CategoryOption from '../Category/CategoryOption'
+import All from '../Icon/ProposalCategories/All'
+import Governance from '../Icon/ProposalCategories/Governance'
+import Grant from '../Icon/ProposalCategories/Grant'
+import Tender from '../Icon/ProposalCategories/Tender'
 
 import './CategoryFilter.css'
 import FilterContainer from './FilterContainer'
@@ -19,11 +24,7 @@ export enum ProjectTypeFilter {
   BiddingAndTendering = 'bidding_and_tendering',
 }
 
-export type FilterType =
-  | typeof ProposalType
-  | typeof NewGrantCategory
-  | typeof OldGrantCategory
-  | typeof ProjectTypeFilter
+export type FilterType = typeof ProposalType | typeof ProjectTypeFilter
 export type Counter = Record<string, number | undefined>
 export type FilterProps = {
   startOpen?: boolean
@@ -40,6 +41,24 @@ function getUncategorizedProposalTypes(types: typeof ProposalType) {
   })
 }
 
+const icons: Record<string, any> = {
+  all_projects: All,
+  grants: Grant,
+  bidding_and_tendering: Tender,
+  ...categoryIcons,
+}
+
+function getGrantSubtypeHref(href: string | undefined, subtype: string) {
+  const url = new URL(href || '/', 'http://localhost') // Create a URL object using a dummy URL
+  if (subtype === SubtypeAlternativeOptions.All) {
+    url.searchParams.delete('subtype')
+  } else {
+    url.searchParams.set('subtype', subtype)
+  }
+  const newHref = url.pathname + '?' + url.searchParams.toString()
+  return newHref
+}
+
 export default function CategoryFilter({
   filterType,
   categoryCount,
@@ -48,21 +67,30 @@ export default function CategoryFilter({
   const t = useFormatMessage()
   const params = useURLSearchParams()
   const type = params.get(FILTER_KEY)
+  const currentSubtype = useMemo(() => toGrantSubtype(params.get('subtype')), [params])
 
   const areProposals = isEqual(filterType, ProposalType)
-  const filters = areProposals ? getUncategorizedProposalTypes(filterType as never) : Object.values(filterType)
+  const filters = areProposals
+    ? getUncategorizedProposalTypes(filterType as never)
+    : (Object.values(filterType) as ProjectTypeFilter[])
 
-  const getCategoryOptionProps = (filter: string): CategoryOptionProps => {
-    const label = toSnakeCase(filter)
+  const isGrantSubtypeActive = useCallback(
+    (subtype: string) => {
+      if (subtype === SubtypeAlternativeOptions.All && !currentSubtype) {
+        return true
+      }
 
-    return {
-      type: label,
-      href: getUrlFilters(FILTER_KEY, params, filter === ProjectTypeFilter.All ? undefined : label),
-      active: type === label,
-      className: 'CategoryFilter__CategoryOption',
-      count: categoryCount?.[filter],
-    }
-  }
+      return toSnakeCase(subtype) === toSnakeCase(currentSubtype)
+    },
+    [currentSubtype]
+  )
+
+  const isGroupActive = useCallback(
+    (item: string) => {
+      return toSnakeCase(item) === toSnakeCase(type ?? '')
+    },
+    [type]
+  )
 
   return (
     <FilterContainer title={t('navigation.search.category_filter_title')}>
@@ -72,32 +100,62 @@ export default function CategoryFilter({
           href={getUrlFilters(FILTER_KEY, params)}
           active={!type}
           className="CategoryFilter__CategoryOption"
+          icon={<All />}
+          title={t(`category.all_proposals_title`)}
         />
       )}
       {filters.map((filter, index) => {
-        return <CategoryOption key={'category_filter' + index} {...getCategoryOptionProps(filter)} />
+        const Icon = icons[filter]
+        return (
+          <CategoryOption
+            key={'category_filter' + index}
+            className="CategoryFilter__CategoryOption"
+            type={filter}
+            href={getUrlFilters(FILTER_KEY, params, filter === ProjectTypeFilter.All ? undefined : filter)}
+            active={type === filter}
+            count={categoryCount?.[filter]}
+            icon={<Icon />}
+            title={t(`category.${filter}_title`)}
+          />
+        )
       })}
       {areProposals && (
         <>
-          <GrantMultiCategory
-            {...getCategoryOptionProps(ProposalType.Grant)}
-            subtypes={[
+          <CategoryOption
+            className="CategoryFilter__CategoryOption"
+            type={ProposalType.Grant}
+            href={getUrlFilters(FILTER_KEY, params, ProposalType.Grant)}
+            active={type === ProposalType.Grant}
+            count={categoryCount?.[ProposalType.Grant]}
+            icon={<Grant />}
+            title={t(`category.${ProposalType.Grant}_title`)}
+            subcategories={[
               `${SubtypeAlternativeOptions.All}`,
               ...Object.values(NewGrantCategory),
               `${SubtypeAlternativeOptions.Legacy}`,
             ]}
+            isSubcategoryActive={isGrantSubtypeActive}
+            subcategoryHref={(href, subcategory) => getGrantSubtypeHref(href, subcategory)}
           />
-          <GroupedCategoryOption
+          <CategoryOption
             className="CategoryFilter__CategoryOption"
             type="implementation"
-            group={GOVERNANCE_GROUP}
             active={GOVERNANCE_GROUP.includes(type as never)}
+            icon={<Governance />}
+            title={t(`category.implementation_title`)}
+            subcategories={GOVERNANCE_GROUP}
+            isSubcategoryActive={isGroupActive}
+            subcategoryHref={(_, subcategory) => getUrlFilters('type', params, subcategory)}
           />
-          <GroupedCategoryOption
+          <CategoryOption
             className="CategoryFilter__CategoryOption"
-            type="bidding_and_tendering"
-            group={BIDDING_GROUP}
+            type={ProjectTypeFilter.BiddingAndTendering}
             active={BIDDING_GROUP.includes(type as never)}
+            icon={<Tender />}
+            title={t(`category.${ProjectTypeFilter.BiddingAndTendering}_title`)}
+            subcategories={BIDDING_GROUP}
+            isSubcategoryActive={isGroupActive}
+            subcategoryHref={(_, subcategory) => getUrlFilters('type', params, subcategory)}
           />
         </>
       )}
