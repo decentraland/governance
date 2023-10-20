@@ -293,7 +293,7 @@ export default function SubmitPoll() {
           </div>
         </ContentSection>
         <ContentSection>
-          <CoAuthors setCoAuthors={setCoAuthors} isDisabled={formDisabled} />
+          <CoAuthors setCoAuthors={setCoAuthors} isDisabled={formDisabled || submissionVpNotMet} />
         </ContentSection>
         <ContentSection>
           <Button type="submit" primary disabled={formDisabled || submissionVpNotMet} loading={isSubmitting}>

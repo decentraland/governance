@@ -255,7 +255,7 @@ export default function SubmitGrant() {
               navigate(locations.submit(ProposalType.Grant), { replace: true })
             }}
             onValidation={handleFundingSectionValidation}
-            isFormDisabled={isFormDisabled}
+            isFormDisabled={isFormDisabled || submissionVpNotMet}
             sectionNumber={getSectionNumber()}
           />
 
@@ -264,7 +264,7 @@ export default function SubmitGrant() {
               patchGrantRequest((prevState) => ({ ...prevState, ...data }))
               patchValidationState({ generalInformationSectionValid: sectionValid })
             }}
-            isFormDisabled={isFormDisabled}
+            isFormDisabled={isFormDisabled || submissionVpNotMet}
             sectionNumber={getSectionNumber()}
           />
 
@@ -274,6 +274,7 @@ export default function SubmitGrant() {
               patchValidationState({ teamSectionValid: sectionValid })
             }}
             sectionNumber={getSectionNumber()}
+            isDisabled={isFormDisabled || submissionVpNotMet}
           />
 
           <GrantRequestDueDiligenceSection
@@ -284,13 +285,14 @@ export default function SubmitGrant() {
             }}
             sectionNumber={getSectionNumber()}
             projectDuration={grantRequest.projectDuration}
+            isDisabled={isFormDisabled || submissionVpNotMet}
           />
 
           {grantRequest.category && (
             <GrantRequestCategorySection
               category={grantRequest.category}
               onValidation={handleCategorySection}
-              isFormDisabled={isFormDisabled}
+              isFormDisabled={isFormDisabled || submissionVpNotMet}
               sectionNumber={getSectionNumber()}
             />
           )}
@@ -298,7 +300,7 @@ export default function SubmitGrant() {
           <GrantRequestFinalConsentSection
             category={grantRequest.category}
             onValidation={(sectionValid) => patchValidationState({ finalConsentSectionValid: sectionValid })}
-            isFormDisabled={isFormDisabled}
+            isFormDisabled={isFormDisabled || submissionVpNotMet}
             sectionNumber={getSectionNumber()}
           />
 

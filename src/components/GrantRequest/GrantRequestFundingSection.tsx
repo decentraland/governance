@@ -211,6 +211,7 @@ export default function GrantRequestFundingSection({
             onChange={(value) => setValue('projectDuration', Number(value))}
             label={t('page.submit_grant.funding_section.project_duration_title')}
             unit="months"
+            disabled={isFormDisabled}
           />
         </div>
       </div>
