@@ -40,7 +40,7 @@ describe('finishProposals', () => {
   beforeAll(() => {
     jest.spyOn(ProposalModel, 'getFinishProposalQuery')
     jest.spyOn(CoauthorModel, 'findAllByProposals').mockResolvedValue([])
-    jest.spyOn(DiscourseService, 'commentProposalUpdateInDiscourse').mockImplementation(() => {})
+    jest.spyOn(DiscourseService, 'commentUpdatedProposal').mockImplementation(() => {})
     jest.spyOn(DiscordService, 'init').mockImplementation(() => {})
     jest.spyOn(DiscordService, 'finishProposal').mockImplementation(() => {})
     jest.spyOn(DiscordService, 'newProposal').mockImplementation(() => {})

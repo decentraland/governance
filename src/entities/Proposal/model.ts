@@ -130,6 +130,19 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return results.map((item) => ProposalModel.parse(item))
   }
 
+  static async findByIds(ids: string[]): Promise<ProposalAttributes[]> {
+    const query = SQL`
+        SELECT *
+        FROM ${table(ProposalModel)}
+        WHERE "id" IN (${join(
+          ids.map((id) => SQL`${id}`),
+          SQL`, `
+        )})`
+
+    const results = await this.namedQuery('find_by_ids', query)
+    return results.map((item) => ProposalModel.parse(item))
+  }
+
   static async getSitemapProposals(page: number): Promise<{ id: string }[]> {
     const query = SQL`
         SELECT id
