@@ -255,7 +255,7 @@ export default function SubmitGrant() {
               navigate(locations.submit(ProposalType.Grant), { replace: true })
             }}
             onValidation={handleFundingSectionValidation}
-            isFormDisabled={isFormDisabled}
+            isFormDisabled={isFormDisabled || submissionVpNotMet}
             sectionNumber={getSectionNumber()}
           />
 
@@ -264,7 +264,7 @@ export default function SubmitGrant() {
               patchGrantRequest((prevState) => ({ ...prevState, ...data }))
               patchValidationState({ generalInformationSectionValid: sectionValid })
             }}
-            isFormDisabled={isFormDisabled}
+            isFormDisabled={isFormDisabled || submissionVpNotMet}
             sectionNumber={getSectionNumber()}
           />
 
@@ -274,6 +274,7 @@ export default function SubmitGrant() {
               patchValidationState({ teamSectionValid: sectionValid })
             }}
             sectionNumber={getSectionNumber()}
+            isDisabled={isFormDisabled || submissionVpNotMet}
           />
 
           <GrantRequestDueDiligenceSection
@@ -284,13 +285,14 @@ export default function SubmitGrant() {
             }}
             sectionNumber={getSectionNumber()}
             projectDuration={grantRequest.projectDuration}
+            isDisabled={isFormDisabled || submissionVpNotMet}
           />
 
           {grantRequest.category && (
             <GrantRequestCategorySection
               category={grantRequest.category}
               onValidation={handleCategorySection}
-              isFormDisabled={isFormDisabled}
+              isFormDisabled={isFormDisabled || submissionVpNotMet}
               sectionNumber={getSectionNumber()}
             />
           )}
@@ -298,18 +300,11 @@ export default function SubmitGrant() {
           <GrantRequestFinalConsentSection
             category={grantRequest.category}
             onValidation={(sectionValid) => patchValidationState({ finalConsentSectionValid: sectionValid })}
-            isFormDisabled={isFormDisabled}
+            isFormDisabled={isFormDisabled || submissionVpNotMet}
             sectionNumber={getSectionNumber()}
           />
 
           <Container className="ContentLayout__Container">
-            {submissionVpNotMet && (
-              <ContentSection className="ProjectRequestSection__Content">
-                <Text className="GrantRequest__SubmissionVpNotMetText" size="lg" color="primary">
-                  {t('error.grant.submission_vp_not_met', { threshold: SUBMISSION_THRESHOLD_GRANT })}
-                </Text>
-              </ContentSection>
-            )}
             <ContentSection className="ProjectRequestSection__Content">
               <div>
                 <Button
@@ -322,6 +317,15 @@ export default function SubmitGrant() {
                 </Button>
               </div>
             </ContentSection>
+          </Container>
+          <Container className="ContentLayout__Container">
+            {submissionVpNotMet && (
+              <ContentSection className="ProjectRequestSection__Content">
+                <Text className="GrantRequest__SubmissionVpNotMetText" size="lg" color="primary">
+                  {t('error.grant.submission_vp_not_met', { threshold: SUBMISSION_THRESHOLD_GRANT })}
+                </Text>
+              </ContentSection>
+            )}
           </Container>
         </>
       )}

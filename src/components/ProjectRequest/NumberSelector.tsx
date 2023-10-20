@@ -20,9 +20,10 @@ interface Props {
   unit: UnitTypeLongPlural | UnitTypeLongPlural[]
   subtitle?: string
   onUnitChange?: (unit: UnitTypeLongPlural) => void
+  disabled?: boolean
 }
 
-const NumberSelector = ({ value, onChange, min, max, label, unit, onUnitChange, subtitle }: Props) => {
+const NumberSelector = ({ value, onChange, min, max, label, unit, onUnitChange, subtitle, disabled }: Props) => {
   const t = useFormatMessage()
   const handleAddClick = useCallback(() => {
     if (value === max) {
@@ -66,11 +67,11 @@ const NumberSelector = ({ value, onChange, min, max, label, unit, onUnitChange, 
       <div className="NumberSelector__Container">
         <div className="NumberSelector__InputContainer">
           <div className="NumberSelector__Input">
-            <button className="NumberSelector__Button" onClick={handleRemoveClick}>
+            <button className="NumberSelector__Button" onClick={handleRemoveClick} disabled={disabled}>
               <Remove />
             </button>
             <span className="NumberSelector__Value">{value}</span>
-            <button className="NumberSelector__Button" onClick={handleAddClick}>
+            <button className="NumberSelector__Button" onClick={handleAddClick} disabled={disabled}>
               <Add />
             </button>
           </div>
@@ -80,6 +81,7 @@ const NumberSelector = ({ value, onChange, min, max, label, unit, onUnitChange, 
             <Dropdown
               className="NumberSelector__Dropdown"
               selection
+              disabled={disabled}
               defaultValue={unit[0]}
               options={getUnitOptions(unit)}
               onChange={(_, { value }) => handleUnitChange(value as UnitTypeLongPlural)}
