@@ -1,6 +1,6 @@
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
-import { ProposalAttributes, ProposalType, ProposalTypes } from '../../../entities/Proposal/types'
+import { ProposalAttributes, ProposalType } from '../../../entities/Proposal/types'
 import useBidsInfoOnTender from '../../../hooks/useBidsInfoOnTender'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import { useTenderProposals } from '../../../hooks/useTenderProposals'
@@ -19,7 +19,7 @@ interface Props {
   loading?: boolean
 }
 
-const getSectionConfig = (type: ProposalTypes) => {
+const getSectionConfig = (type: ProposalType) => {
   switch (type) {
     case ProposalType.Poll:
       return {

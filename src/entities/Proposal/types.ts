@@ -46,7 +46,7 @@ export type ProposalAttributes<C extends Record<string, unknown> = any> = {
   user: string
   title: string
   description: string
-  type: ProposalTypes
+  type: ProposalType
   status: ProposalStatus
   configuration: C
   start_at: Date
@@ -79,30 +79,23 @@ export enum ProposalStatus {
   Deleted = 'deleted',
 }
 
-export const GovernanceProposalType = {
-  Poll: 'poll',
-  Draft: 'draft',
-  Governance: 'governance',
-} as const
+export enum ProposalType {
+  POI = 'poi',
+  Catalyst = 'catalyst',
+  BanName = 'ban_name',
+  Grant = 'grant',
+  LinkedWearables = 'linked_wearables',
+  Hiring = 'hiring',
+  Poll = 'poll',
+  Draft = 'draft',
+  Governance = 'governance',
+  Pitch = 'pitch',
+  Tender = 'tender',
+  Bid = 'bid',
+}
 
-export const BiddingProposalType = {
-  Pitch: 'pitch',
-  Tender: 'tender',
-  Bid: 'bid',
-} as const
-
-export const ProposalType = {
-  POI: 'poi',
-  Catalyst: 'catalyst',
-  BanName: 'ban_name',
-  LinkedWearables: 'linked_wearables',
-  Hiring: 'hiring',
-  ...GovernanceProposalType,
-  Grant: 'grant',
-  ...BiddingProposalType,
-} as const
-
-export type ProposalTypes = typeof ProposalType[keyof typeof ProposalType]
+export type ImplementationProcessType = ProposalType.Poll | ProposalType.Draft | ProposalType.Governance
+export type BiddingProcessType = ProposalType.Pitch | ProposalType.Tender | ProposalType.Bid
 
 export enum PoiType {
   AddPOI = 'add_poi',
@@ -124,7 +117,7 @@ export function isProposalType(value: string | null | undefined): boolean {
     return false
   }
 
-  return Object.values(ProposalType).includes(value as ProposalTypes)
+  return Object.values(ProposalType).includes(value as ProposalType)
 }
 
 export function isPoiType(value: string | null | undefined): boolean {
@@ -151,8 +144,8 @@ export function toCatalystType(value: string | null | undefined): CatalystType |
   return isCatalystType(value) ? (value as CatalystType) : null
 }
 
-export function toProposalType(value: string | null | undefined): ProposalTypes | null {
-  return isProposalType(value) ? (value as ProposalTypes) : null
+export function toProposalType(value: string | null | undefined): ProposalType | null {
+  return isProposalType(value) ? (value as ProposalType) : null
 }
 
 export function toPoiType(value: string | null | undefined): PoiType | null {
@@ -805,7 +798,7 @@ export type Project = {
   title: string
   user: string
   size: number
-  type: ProposalTypes
+  type: ProposalType
   created_at: number
   configuration: {
     category: ProposalGrantCategory

@@ -2,7 +2,7 @@ import isEqual from 'lodash/isEqual'
 import toSnakeCase from 'lodash/snakeCase'
 
 import { NewGrantCategory, OldGrantCategory, SubtypeAlternativeOptions } from '../../entities/Grant/types'
-import { BiddingProposalType, GovernanceProposalType, ProposalType } from '../../entities/Proposal/types'
+import { BiddingProcessType, ImplementationProcessType, ProposalType } from '../../entities/Proposal/types'
 import { getUrlFilters } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useURLSearchParams from '../../hooks/useURLSearchParams'
@@ -31,16 +31,12 @@ export type FilterProps = {
 }
 
 const FILTER_KEY = 'type'
-const GOVERNANCE_GROUP = Object.values(GovernanceProposalType)
-const BIDDING_GROUP = Object.values(BiddingProposalType)
+const GOVERNANCE_GROUP: ImplementationProcessType[] = [ProposalType.Poll, ProposalType.Draft, ProposalType.Governance]
+const BIDDING_GROUP: BiddingProcessType[] = [ProposalType.Pitch, ProposalType.Tender, ProposalType.Bid]
 
 function getUncategorizedProposalTypes(types: typeof ProposalType) {
   return Object.values(types).filter((type) => {
-    return ![
-      ProposalType.Grant,
-      ...Object.values(BiddingProposalType),
-      ...Object.values(GovernanceProposalType),
-    ].includes(type as never)
+    return ![ProposalType.Grant, ...BIDDING_GROUP, ...GOVERNANCE_GROUP].includes(type as never)
   })
 }
 

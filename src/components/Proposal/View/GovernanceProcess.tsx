@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
 
-import { ProposalType, ProposalTypes } from '../../../entities/Proposal/types'
+import { ProposalType } from '../../../entities/Proposal/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 
 import ProposalProcess, { ProcessStatus, ProcessType } from './ProposalProcess'
 
 interface Props {
-  proposalType: ProposalTypes
+  proposalType: ProposalType
 }
 
 export default function GovernanceProcess({ proposalType }: Props) {

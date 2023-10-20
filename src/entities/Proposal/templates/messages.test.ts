@@ -12,7 +12,6 @@ import {
   ProposalRequiredVP,
   ProposalStatus,
   ProposalType,
-  ProposalTypes,
 } from '../types'
 import { DEFAULT_CHOICES } from '../utils'
 
@@ -30,7 +29,7 @@ export function initProposalAttributes(
   passedDescription: string | null,
   rejectedDescription: string | null,
   configuration: Record<string, unknown>,
-  type: ProposalTypes,
+  type: ProposalType,
   updatingUser: string | null
 ): ProposalAttributes {
   return {

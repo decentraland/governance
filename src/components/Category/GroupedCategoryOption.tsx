@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import isNumber from 'lodash/isNumber'
 import toSnakeCase from 'lodash/snakeCase'
 
-import { BiddingProposalType, GovernanceProposalType } from '../../entities/Proposal/types'
+import { BiddingProcessType, ImplementationProcessType } from '../../entities/Proposal/types'
 import { getUrlFilters } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useURLSearchParams from '../../hooks/useURLSearchParams'
@@ -17,10 +17,8 @@ import SubItem from '../Icon/SubItem'
 
 import { CategoryOptionProps } from './CategoryOption'
 
-type ValueOf<T> = T[keyof T]
-
 type Props = CategoryOptionProps & {
-  group: ValueOf<typeof GovernanceProposalType>[] | ValueOf<typeof BiddingProposalType>[]
+  group: ImplementationProcessType[] | BiddingProcessType[]
 }
 
 const icons: Record<string, React.ReactNode> = {

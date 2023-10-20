@@ -8,14 +8,7 @@ import { GrantTier } from '../Grant/GrantTier'
 import { NewGrantCategory, VestingStartDate } from '../Grant/types'
 
 import { ProposalOutcome } from './outcome'
-import {
-  NewProposalGovernance,
-  ProposalAttributes,
-  ProposalRequiredVP,
-  ProposalStatus,
-  ProposalType,
-  ProposalTypes,
-} from './types'
+import { NewProposalGovernance, ProposalAttributes, ProposalRequiredVP, ProposalStatus, ProposalType } from './types'
 import { DEFAULT_CHOICES } from './utils'
 
 const start = new Date('2023-02-01T00:00:00.000Z')
@@ -79,7 +72,7 @@ function getGrantConfiguration(grantSize: number, grantCategory: NewGrantCategor
 }
 
 function getTestProposalConfiguration(
-  proposalType: ProposalTypes,
+  proposalType: ProposalType,
   size?: number,
   grantCategory = NewGrantCategory.Accelerator
 ): any {
@@ -92,7 +85,7 @@ function getTestProposalConfiguration(
   return getGrantConfiguration(size || TEST_GRANT_SIZE, grantCategory)
 }
 
-function getRequiredToPassThreshold(proposalType: ProposalTypes, grantSize?: number) {
+function getRequiredToPassThreshold(proposalType: ProposalType, grantSize?: number) {
   if (proposalType !== ProposalType.Grant) {
     return ProposalRequiredVP[proposalType]
   } else {
@@ -104,7 +97,7 @@ function getRequiredToPassThreshold(proposalType: ProposalTypes, grantSize?: num
 }
 
 export function createTestProposal(
-  proposalType: ProposalTypes,
+  proposalType: ProposalType,
   proposalStatus: ProposalStatus,
   grantSize?: number,
   grantCategory?: NewGrantCategory

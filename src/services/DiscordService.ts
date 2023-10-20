@@ -3,7 +3,7 @@ import type { EmbedBuilder } from 'discord.js'
 
 import { DISCORD_SERVICE_ENABLED } from '../constants'
 import { getProfileUrl } from '../entities/Profile/utils'
-import { ProposalType, ProposalTypes } from '../entities/Proposal/types'
+import { ProposalType } from '../entities/Proposal/types'
 import { isGovernanceProcessProposal, proposalUrl } from '../entities/Proposal/utils'
 import UpdateModel from '../entities/Updates/model'
 import { UpdateAttributes } from '../entities/Updates/types'
@@ -38,7 +38,7 @@ enum MessageColors {
 
 type EmbedMessageProps = {
   title: string
-  proposalType?: ProposalTypes
+  proposalType?: ProposalType
   description?: string
   fields: Field[]
   user?: string
@@ -165,7 +165,7 @@ export class DiscordService {
   static newProposal(
     proposalId: string,
     title: string,
-    type: ProposalTypes,
+    type: ProposalType,
     description: string,
     choices: string[],
     user: string

@@ -1,14 +1,14 @@
 import { useMemo } from 'react'
 
 import { SubtypeOptions, toGrantSubtype } from '../entities/Grant/types'
-import { ProposalStatus, ProposalTypes, toProposalType } from '../entities/Proposal/types'
+import { ProposalStatus, ProposalType, toProposalType } from '../entities/Proposal/types'
 import { toProposalStatus } from '../entities/Proposal/utils'
 import { toProposalListPage } from '../utils/locations'
 
 import useURLSearchParams from './useURLSearchParams'
 
 export type SearchParams = {
-  type: ProposalTypes | undefined
+  type: ProposalType | undefined
   subtype: SubtypeOptions | undefined
   status: ProposalStatus | undefined
   search: string
