@@ -6,7 +6,7 @@ interface Props {
   type: ProposalGrantCategory
 }
 
-const PROJECT_CATEGORY_COLORS: Record<ProposalGrantCategory | 'tender', PillColor> = {
+const PROJECT_CATEGORY_COLORS: Record<ProposalGrantCategory | ProposalType.Tender, PillColor> = {
   [OldGrantCategory.Community]: PillColor.Green,
   [OldGrantCategory.ContentCreator]: PillColor.Orange,
   [OldGrantCategory.PlatformContributor]: PillColor.Purple,
@@ -23,7 +23,9 @@ const PROJECT_CATEGORY_COLORS: Record<ProposalGrantCategory | 'tender', PillColo
   [ProposalType.Tender]: PillColor.Red,
 }
 
-function getProjectCategory(category: ProposalGrantCategory | 'bid'): ProposalGrantCategory | 'tender' {
+function getProjectCategory(
+  category: ProposalGrantCategory | ProposalType.Bid
+): ProposalGrantCategory | ProposalType.Tender {
   if (category === ProposalType.Bid) {
     return ProposalType.Tender
   }

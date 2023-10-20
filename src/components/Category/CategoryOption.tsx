@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import classNames from 'classnames'
 import isNumber from 'lodash/isNumber'
@@ -72,7 +72,7 @@ export default function CategoryOption({
       >
         <span className="CategoryOption__TitleContainer">
           <span>
-            <div className="CategoryOption__IconContainer">{React.cloneElement(icon, { size: 24 })}</div>
+            <div className="CategoryOption__IconContainer">{icon}</div>
             <Text weight={active ? 'medium' : 'normal'} className="CategoryOption__Title">
               {title}
             </Text>

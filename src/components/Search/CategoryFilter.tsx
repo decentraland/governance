@@ -11,7 +11,6 @@ import useURLSearchParams from '../../hooks/useURLSearchParams'
 import { categoryIcons } from '../Category/CategoryBanner'
 import CategoryOption from '../Category/CategoryOption'
 import All from '../Icon/ProposalCategories/All'
-import Governance from '../Icon/ProposalCategories/Governance'
 import Grant from '../Icon/ProposalCategories/Grant'
 import Tender from '../Icon/ProposalCategories/Tender'
 
@@ -46,6 +45,12 @@ const icons: Record<string, any> = {
   grants: Grant,
   bidding_and_tendering: Tender,
   ...categoryIcons,
+}
+
+const getCategoryIcon = (type: string, size?: number) => {
+  const Icon = icons[type]
+
+  return <Icon size={size} />
 }
 
 function getGrantSubtypeHref(href: string | undefined, subtype: string) {
@@ -105,7 +110,6 @@ export default function CategoryFilter({
         />
       )}
       {filters.map((filter, index) => {
-        const Icon = icons[filter]
         return (
           <CategoryOption
             key={'category_filter' + index}
@@ -114,8 +118,15 @@ export default function CategoryFilter({
             href={getUrlFilters(FILTER_KEY, params, filter === ProjectTypeFilter.All ? undefined : filter)}
             active={type === filter}
             count={categoryCount?.[filter]}
-            icon={<Icon />}
+            icon={getCategoryIcon(filter, 24)}
             title={t(`category.${filter}_title`)}
+            subcategories={
+              filter === ProjectTypeFilter.Grants
+                ? [`${SubtypeAlternativeOptions.All}`, ...Object.values(NewGrantCategory)]
+                : undefined
+            }
+            isSubcategoryActive={isGrantSubtypeActive}
+            subcategoryHref={(href, subcategory) => getGrantSubtypeHref(href, subcategory)}
           />
         )
       })}
@@ -127,7 +138,7 @@ export default function CategoryFilter({
             href={getUrlFilters(FILTER_KEY, params, ProposalType.Grant)}
             active={type === ProposalType.Grant}
             count={categoryCount?.[ProposalType.Grant]}
-            icon={<Grant />}
+            icon={getCategoryIcon(ProposalType.Grant, 24)}
             title={t(`category.${ProposalType.Grant}_title`)}
             subcategories={[
               `${SubtypeAlternativeOptions.All}`,
@@ -141,7 +152,7 @@ export default function CategoryFilter({
             className="CategoryFilter__CategoryOption"
             type="implementation"
             active={GOVERNANCE_GROUP.includes(type as never)}
-            icon={<Governance />}
+            icon={getCategoryIcon(ProposalType.Governance, 24)}
             title={t(`category.implementation_title`)}
             subcategories={GOVERNANCE_GROUP}
             isSubcategoryActive={isGroupActive}
@@ -151,7 +162,7 @@ export default function CategoryFilter({
             className="CategoryFilter__CategoryOption"
             type={ProjectTypeFilter.BiddingAndTendering}
             active={BIDDING_GROUP.includes(type as never)}
-            icon={<Tender />}
+            icon={getCategoryIcon(ProposalType.Tender, 24)}
             title={t(`category.${ProjectTypeFilter.BiddingAndTendering}_title`)}
             subcategories={BIDDING_GROUP}
             isSubcategoryActive={isGroupActive}

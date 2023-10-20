@@ -166,7 +166,8 @@
   border-radius: 50%;
 }
 
-.CategoryOption__Subcategories--grant .CategoryOption__SubcategoryItem--active::after {
+.CategoryOption__Subcategories--grant .CategoryOption__SubcategoryItem--active::after,
+.CategoryOption__Subcategories--grants .CategoryOption__SubcategoryItem--active::after {
   background-color: var(--purple-800);
 }
 
