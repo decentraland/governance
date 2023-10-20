@@ -7,7 +7,7 @@ import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
 export default function useSubscriptions() {
   const [account] = useAuthContext()
-  const queryKey = `subscriptions#${account}`
+  const queryKey = `userSubscriptions#${account}`
   const { data: subscriptions, ...subscriptionsState } = useQuery({
     queryKey: [queryKey],
     queryFn: async () => {

@@ -1,5 +1,5 @@
 {
-  "GATSBY_DEFAULT_CHAIN_ID": "11155111",
+  "GATSBY_DEFAULT_CHAIN_ID": "5,11155111",
   "GATSBY_GOVERNANCE_API": "https://localhost:8000/api",
   "GATSBY_BUY_MANA_URL": "https://kyberswap.com/swap/eth-mana",
   "GATSBY_BUY_LAND_URL": "https://market.decentraland.org/browse?section=land",
@@ -16,7 +16,6 @@
   "GATSBY_DISCOURSE_USER": "dao",
   "GATSBY_DISCOURSE_CONNECT_THREAD": "1190",
   "GATSBY_DISCOURSE_API": "https://forum.decentraland.vote/",
-  "GATSBY_DECENTRALAND_API": "https://subscription.decentraland.org",
   "GATSBY_DCL_DATA_API": "https://data.decentraland.vote/",
   "GATSBY_VOTING_POWER_TO_PASS_CATALYST": "0",
   "GATSBY_VOTING_POWER_TO_PASS_BAN_NAME": "0",
@@ -40,5 +39,6 @@
   "GATSBY_VOTING_POWER_TO_PASS_HIRING": "99",
   "GATSBY_DURATION_HIRING": "1200",
   "GATSBY_SUBMISSION_THRESHOLD_HIRING": "99",
-  "GATSBY_SSO_URL": "https://id.decentraland.zone"
+  "GATSBY_SSO_URL": "https://id.decentraland.zone",
+  "GATSBY_PUSH_CHANNEL_ID": "0xBf363AeDd082Ddd8DB2D6457609B03f9ee74a2F1"
 }

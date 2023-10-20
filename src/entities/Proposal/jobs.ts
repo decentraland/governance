@@ -25,20 +25,14 @@ export async function activateProposals(context: JobContext) {
 async function updateRejectedProposals(rejectedProposals: ProposalWithOutcome[], context: JobContext) {
   if (rejectedProposals.length > 0) {
     context.log(`Rejecting ${rejectedProposals.length} proposals...`)
-    await ProposalModel.finishProposal(
-      rejectedProposals.map(({ id }) => id),
-      ProposalStatus.Rejected
-    )
+    await ProposalService.finishProposals(rejectedProposals, ProposalStatus.Rejected)
   }
 }
 
 async function updateAcceptedProposals(acceptedProposals: ProposalWithOutcome[], context: JobContext) {
   if (acceptedProposals.length > 0) {
     context.log(`Accepting ${acceptedProposals.length} proposals...`)
-    await ProposalModel.finishProposal(
-      acceptedProposals.map(({ id }) => id),
-      ProposalStatus.Passed
-    )
+    await ProposalService.finishProposals(acceptedProposals, ProposalStatus.Passed)
 
     try {
       await BadgesService.giveLegislatorBadges(acceptedProposals)
@@ -55,20 +49,14 @@ async function updateAcceptedProposals(acceptedProposals: ProposalWithOutcome[],
 async function updateOutOfBudgetProposals(outOfBudgetProposals: ProposalWithOutcome[], context: JobContext) {
   if (outOfBudgetProposals.length > 0) {
     context.log(`Updating ${outOfBudgetProposals.length} Out of Budget proposals...`)
-    await ProposalModel.finishProposal(
-      outOfBudgetProposals.map(({ id }) => id),
-      ProposalStatus.OutOfBudget
-    )
+    await ProposalService.finishProposals(outOfBudgetProposals, ProposalStatus.OutOfBudget)
   }
 }
 
 async function updateFinishedProposals(finishedProposals: ProposalWithOutcome[], context: JobContext) {
   if (finishedProposals.length > 0) {
     context.log(`Finishing ${finishedProposals.length} proposals...`)
-    await ProposalModel.finishProposal(
-      finishedProposals.map(({ id }) => id),
-      ProposalStatus.Finished
-    )
+    await ProposalService.finishProposals(finishedProposals, ProposalStatus.Finished)
   }
 }
 
@@ -99,6 +87,8 @@ async function getProposalsWithOutcome(proposals: ProposalAttributes[], context:
   const pendingProposalsWithOutcome = []
 
   for (const proposal of proposals) {
+    // TODO: New proposal status could be calculated here and added to outcome.
+    // E.g: OutcomeObject: { ...outcome, newProposalStatus: OutOfBudget }
     const outcome = await calculateOutcome(proposal, context)
     if (!outcome) {
       continue

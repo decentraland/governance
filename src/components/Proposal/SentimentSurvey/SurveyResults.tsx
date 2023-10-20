@@ -72,4 +72,6 @@ const SurveyResults = forwardRef(({ votes, surveyTopics, isLoadingSurveyTopics }
   )
 })
 
+SurveyResults.displayName = 'SurveyResults'
+
 export default SurveyResults

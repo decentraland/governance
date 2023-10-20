@@ -1,0 +1,34 @@
+.Notifications__Button {
+  display: flex;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  transition: filter 0.2s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.Notifications__Button--active {
+  filter: drop-shadow(0 1px 8px var(--alpha-black-300));
+}
+
+.Notifications__DotOuterCircle {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 16px;
+  height: 16px;
+  background-color: var(--white-900);
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Notifications__DotInnerCircle {
+  width: 8px;
+  height: 8px;
+  border-radius: 25px;
+  background-color: var(--dcl-primary);
+}

@@ -24,4 +24,6 @@ const ProposalComments = forwardRef(({ proposal }: ProposalCommentsProps, ref: R
   )
 })
 
+ProposalComments.displayName = 'ProposalComments'
+
 export default ProposalComments

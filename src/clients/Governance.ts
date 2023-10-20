@@ -36,6 +36,7 @@ import { Topic } from '../entities/SurveyTopic/types'
 import { ProjectHealth, UpdateAttributes, UpdateResponse } from '../entities/Updates/types'
 import { Vote, VotedProposal, Voter } from '../entities/Votes/types'
 import { NewsletterSubscriptionResult } from '../shared/types/newsletter'
+import { Notification } from '../shared/types/notifications'
 import Time from '../utils/date/Time'
 
 import { TransparencyBudget } from './DclData'
@@ -662,6 +663,46 @@ export class Governance extends API {
       `/newsletter-subscribe`,
       this.options().method('POST').json({
         email,
+      })
+    )
+    return response.data
+  }
+
+  async getUserNotifications(address: string) {
+    const response = await this.fetch<ApiResponse<Notification[]>>(
+      `/notifications/user/${address}`,
+      this.options().method('GET')
+    )
+    return response.data
+  }
+
+  async sendNotification(recipient: string, title: string, body: string, type: number, url: string) {
+    const response = await this.fetch<ApiResponse<string>>(
+      `/notifications/send`,
+      this.options().method('POST').authorization({ sign: true }).json({
+        recipient,
+        title,
+        body,
+        type,
+        url,
+      })
+    )
+    return response.data
+  }
+
+  async getUserLastNotification() {
+    const response = await this.fetch<ApiResponse<number>>(
+      `/notifications/last-notification`,
+      this.options().method('GET').authorization({ sign: true })
+    )
+    return response.data
+  }
+
+  async updateUserLastNotification(last_notification_id: number) {
+    const response = await this.fetch<ApiResponse<string>>(
+      `/notifications/last-notification`,
+      this.options().method('POST').authorization({ sign: true }).json({
+        last_notification_id,
       })
     )
     return response.data

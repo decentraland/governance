@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { cloneDeep } from 'lodash'
 
+import { NotificationService } from '../../back/services/notification'
 import { BudgetService } from '../../services/BudgetService'
 import { DiscordService } from '../../services/DiscordService'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ProposalService } from '../../services/ProposalService'
 import Time from '../../utils/date/Time'
 import CoauthorModel from '../Coauthor/model'
-import { BUDGETING_START_DATE } from '../Grant/constants'
 import { NewGrantCategory } from '../Grant/types'
 import { getQuarterEndDate } from '../QuarterBudget/utils'
 
@@ -35,6 +35,7 @@ import { ProposalAttributes, ProposalStatus, ProposalType } from './types'
 
 jest.mock('../../constants', () => ({
   DISCORD_SERVICE_ENABLED: false,
+  NOTIFICATIONS_SERVICE_ENABLED: false,
 }))
 
 describe('finishProposals', () => {
@@ -46,6 +47,7 @@ describe('finishProposals', () => {
     jest.spyOn(DiscordService, 'finishProposal').mockImplementation(() => {})
     jest.spyOn(DiscordService, 'newProposal').mockImplementation(() => {})
     jest.spyOn(DiscordService, 'newUpdate').mockImplementation(() => {})
+    jest.spyOn(NotificationService, 'votingEndedAuthors').mockImplementation()
     jest.spyOn(DiscourseService, 'getCategory').mockImplementation(() => 5)
   })
   beforeEach(() => {
@@ -172,23 +174,6 @@ describe('finishProposals', () => {
     it('finishes the proposal without affecting the budget', async () => {
       await finishProposal(JOB_CONTEXT_MOCK)
       expect(ProposalModel.finishProposal).toHaveBeenCalledWith([POI_PROPOSAL.id], ProposalStatus.Passed)
-      expect(BudgetService.updateBudgets).toHaveBeenCalledWith([getTestBudgetWithAvailableSize()])
-    })
-  })
-
-  describe('for an accepted proposal that has a start_at date older than the budgeting system start date', () => {
-    const OLD_GRANT = cloneDeep(GRANT_PROPOSAL_1)
-    OLD_GRANT.start_at = Time.utc(BUDGETING_START_DATE).subtract(1, 'day').toDate()
-
-    beforeEach(() => {
-      jest.spyOn(ProposalModel, 'getFinishableProposals').mockResolvedValue([OLD_GRANT])
-      jest.spyOn(calculateOutcome, 'calculateOutcome').mockResolvedValue(ACCEPTED_OUTCOME)
-      jest.spyOn(BudgetService, 'getBudgetsForProposals').mockResolvedValue([getTestBudgetWithAvailableSize()])
-    })
-
-    it('finishes the proposal', async () => {
-      await finishProposal(JOB_CONTEXT_MOCK)
-      expect(ProposalModel.finishProposal).toHaveBeenCalledWith([OLD_GRANT.id], ProposalStatus.Passed)
       expect(BudgetService.updateBudgets).toHaveBeenCalledWith([getTestBudgetWithAvailableSize()])
     })
   })

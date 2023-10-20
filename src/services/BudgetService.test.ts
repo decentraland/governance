@@ -109,6 +109,7 @@ function asserErrorLogging() {
 
 jest.mock('../constants', () => ({
   DISCORD_SERVICE_ENABLED: false,
+  NOTIFICATIONS_SERVICE_ENABLED: false,
 }))
 
 describe('BudgetService', () => {

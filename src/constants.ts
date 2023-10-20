@@ -1,3 +1,5 @@
+import { ChainId } from '@dcl/schemas'
+import env from 'decentraland-gatsby/dist/utils/env'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { trimOtterspaceId } from './back/utils/contractInteractions'
@@ -6,7 +8,7 @@ import { clientEnv } from './utils/clientEnv'
 import Candidates from './utils/delegates/candidates.json'
 
 function getBooleanStringVar(variableName: string, defaultValue: boolean) {
-  const enabled = clientEnv(variableName)
+  const enabled = env(variableName)
   if (enabled && enabled.length > 0) return enabled === 'true'
   return defaultValue
 }
@@ -23,6 +25,7 @@ export const LOCAL_ENV_VAR = clientEnv('GATSBY_LOCAL_ENV_VAR') || ''
 export const TEST_ENV_VAR = clientEnv('GATSBY_TEST_ENV_VAR') || ''
 export const PROD_ENV_VAR = clientEnv('GATSBY_PROD_ENV_VAR') || ''
 export const DISCORD_SERVICE_ENABLED = getBooleanStringVar('DISCORD_SERVICE_ENABLED', true)
+export const NOTIFICATIONS_SERVICE_ENABLED = getBooleanStringVar('NOTIFICATIONS_SERVICE_ENABLED', true)
 export const VOTES_VP_THRESHOLD = 5
 export const SSO_URL = clientEnv('GATSBY_SSO_URL') ?? undefined
 export const RAFT_OWNER_PK = process.env.RAFT_OWNER_PK || ''
@@ -43,3 +46,6 @@ export const SNAPSHOT_STATUS_ENABLED =
   process.env.SNAPSHOT_STATUS_ENABLED === 'true' || getBooleanStringVar('SNAPSHOT_STATUS_ENABLED', true)
 export const SNAPSHOT_STATUS_MAX_ERROR_BUFFER_SIZE = Number(process.env.SNAPSHOT_STATUS_MAX_ERROR_BUFFER_SIZE || 30)
 export const SNAPSHOT_STATUS_ERROR_RATE_THRESHOLD = Number(process.env.SNAPSHOT_STATUS_ERROR_RATE_THRESHOLD || 0.33)
+export const DEFAULT_CHAIN_ID =
+  process.env.GATSBY_DEFAULT_CHAIN_ID || clientEnv('GATSBY_DEFAULT_CHAIN_ID', String(ChainId.ETHEREUM_MAINNET))
+export const PUSH_CHANNEL_ID = process.env.GATSBY_PUSH_CHANNEL_ID || clientEnv('GATSBY_PUSH_CHANNEL_ID')

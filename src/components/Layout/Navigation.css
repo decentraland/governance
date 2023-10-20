@@ -84,6 +84,8 @@
 .Navigation .dcl.tabs .dcl.tabs-right {
   display: flex;
   align-items: center;
+  gap: 10px;
+  position: relative;
 }
 
 .Navigation__ProfilePopUp {

@@ -1,7 +1,9 @@
+import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isURL from 'validator/lib/isURL'
 
+import { DEFAULT_CHAIN_ID } from '../constants'
 import { clientEnv } from '../utils/clientEnv'
 
 export const CURRENCY_FORMAT_OPTIONS = {
@@ -106,4 +108,25 @@ export function splitArray<Type>(array: Type[], chunkSize: number): Type[][] {
   return Array.from({ length: Math.ceil(array.length / chunkSize) }, (_, index) =>
     array.slice(index * chunkSize, (index + 1) * chunkSize)
   )
+}
+
+export function getSupportedChainIds(): ChainId[] {
+  return (DEFAULT_CHAIN_ID || '')
+    .split(',')
+    .filter(Boolean)
+    .map((chainId) => Number(chainId))
+}
+
+export function getEnvironmentChainId() {
+  const chainId = getSupportedChainIds()[0]
+  switch (chainId) {
+    case ChainId.ETHEREUM_MAINNET.valueOf():
+      return ChainId.ETHEREUM_MAINNET
+    case ChainId.ETHEREUM_GOERLI:
+      return ChainId.ETHEREUM_GOERLI
+    case ChainId.ETHEREUM_SEPOLIA:
+      return ChainId.ETHEREUM_SEPOLIA
+    default:
+      throw new Error(`GATSBY_DEFAULT_CHAIN_ID is not a supported network: ${chainId}`)
+  }
 }

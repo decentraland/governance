@@ -12,6 +12,7 @@ import useIsProfileValidated from '../../hooks/useIsProfileValidated'
 import locations from '../../utils/locations'
 import Link from '../Common/Typography/Link'
 import Dot from '../Icon/Dot'
+import Notifications from '../Notifications/Notifications'
 import SearchInput from '../Search/SearchInput'
 import SearchInputMobile from '../Search/SearchInputMobile'
 
@@ -119,6 +120,7 @@ const Navigation = ({ activeTab }: NavigationProps) => {
         <NotMobile>
           <Tabs.Right>
             <SearchInput />
+            <Notifications />
           </Tabs.Right>
         </NotMobile>
       </Tabs>

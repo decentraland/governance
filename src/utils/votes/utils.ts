@@ -1,30 +1,12 @@
-import { ChainId } from '@dcl/schemas'
 import upperFirst from 'lodash/upperFirst'
 
 import { DelegationsLabelProps } from '../../components/Proposal/View/ProposalVoting/DelegationsLabel'
 import { VotedChoice } from '../../components/Proposal/View/ProposalVoting/VotedChoiceButton'
 import { Vote } from '../../entities/Votes/types'
 import { Scores } from '../../entities/Votes/utils'
-import { clientEnv } from '../clientEnv'
 
 import { DelegationsLabelBuilder } from './helpers/DelegationsLabelBuilder'
 import { VotedChoiceBuilder } from './helpers/VotedChoiceBuilder'
-
-const DEFAULT_CHAIN_ID = process.env.GATSBY_DEFAULT_CHAIN_ID || clientEnv('GATSBY_DEFAULT_CHAIN_ID')
-
-export function getEnvironmentChainId() {
-  const CHAIN_ID = Number(DEFAULT_CHAIN_ID)
-  switch (CHAIN_ID) {
-    case ChainId.ETHEREUM_MAINNET.valueOf():
-      return ChainId.ETHEREUM_MAINNET
-    case ChainId.ETHEREUM_GOERLI:
-      return ChainId.ETHEREUM_GOERLI
-    case ChainId.ETHEREUM_SEPOLIA:
-      return ChainId.ETHEREUM_SEPOLIA
-    default:
-      throw new Error(`GATSBY_DEFAULT_CHAIN_ID is not Mainnet or Testnet: ${DEFAULT_CHAIN_ID}`)
-  }
-}
 
 export interface VotingSectionConfigProps {
   vote: Vote | null

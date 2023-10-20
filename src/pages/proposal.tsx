@@ -175,7 +175,7 @@ export default function ProposalPage() {
   const { votes, isLoadingVotes, reloadVotes } = useProposalVotes(proposal?.id)
   const { highQualityVotes, lowQualityVotes } = useMemo(() => getVoteSegmentation(votes), [votes])
 
-  const subscriptionsQueryKey = `subscriptions#${proposal?.id || ''}`
+  const subscriptionsQueryKey = `proposalSubscriptions#${proposal?.id || ''}`
   const { data: subscriptions, isLoading: isSubscriptionsLoading } = useQuery({
     queryKey: [subscriptionsQueryKey],
     queryFn: () => {

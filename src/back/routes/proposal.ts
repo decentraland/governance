@@ -88,6 +88,7 @@ import { ProposalInCreation, ProposalService } from '../../services/ProposalServ
 import { getProfile } from '../../utils/Catalyst'
 import Time from '../../utils/date/Time'
 import { ErrorCategory } from '../../utils/errorCategories'
+import { NotificationService } from '../services/notification'
 import { validateAddress, validateProposalId } from '../utils/validations'
 
 export default routes((route) => {
@@ -526,10 +527,12 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
     updated_at: new Date(),
   }
 
-  if (update.status === ProposalStatus.Enacted) {
+  const isEnactedStatus = update.status === ProposalStatus.Enacted
+  const isGrantProposal = proposal.type === ProposalType.Grant
+  if (isEnactedStatus) {
     update.enacted = true
     update.enacted_by = user
-    if (proposal.type == ProposalType.Grant) {
+    if (isGrantProposal) {
       const { vesting_addresses } = configuration
       if (!vesting_addresses || vesting_addresses.length === 0) {
         throw new RequestError('Vesting addresses are required for grant proposals', RequestError.BadRequest)
@@ -557,6 +560,9 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
   }
 
   await ProposalModel.update<ProposalAttributes>(update, { id })
+  if (isEnactedStatus && isGrantProposal) {
+    NotificationService.grantProposalEnacted(proposal)
+  }
 
   ProposalService.commentProposalUpdateInDiscourse(id)
 

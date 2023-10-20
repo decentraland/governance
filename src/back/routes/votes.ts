@@ -1,3 +1,4 @@
+import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
@@ -28,7 +29,7 @@ export async function getProposalVotes(req: Request<{ proposal: string }>) {
   const id = validateProposalId(req.params.proposal)
 
   const proposal = await ProposalService.getProposal(id)
-  const latestVotes = await VoteService.getVotes(id)
+  const latestVotes = await VoteService.getVotes(proposal.id)
 
   if (!!latestVotes.hash && Time.date(proposal.finish_at).getTime() + Time.Hour < Date.now() && !refresh) {
     return latestVotes.votes
@@ -66,6 +67,10 @@ export async function updateSnapshotProposalVotes(proposal: ProposalAttributes, 
 }
 
 export async function getCachedVotes(req: Request) {
+  if (!req.query.id) {
+    throw new RequestError('Missing proposal IDs', RequestError.BadRequest)
+  }
+
   const list = toProposalIds(req.query.id as string[])
   const scores = await VotesModel.findAny(list)
   return scores.reduce((result, vote) => {

@@ -72,6 +72,9 @@ export function validateAddress(address?: string) {
   return address
 }
 
+export const areValidAddresses = (addresses: string[]) =>
+  Array.isArray(addresses) && addresses.every((item) => isEthereumAddress(item))
+
 export function validateProposalSnapshotId(proposalSnapshotId?: string) {
   if (!proposalSnapshotId || proposalSnapshotId.length === 0) {
     throw new RequestError('Invalid snapshot id')

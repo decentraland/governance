@@ -1,0 +1,23 @@
+.NotificationItem {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  padding: 8px 16px;
+}
+
+.NotificationItem--new {
+  background-color: var(--alpha-blue-200);
+}
+
+.NotificationItem__IconContainer {
+  width: 24px;
+  height: 24px;
+}
+
+.NotificationItem__Text {
+  margin-bottom: 0;
+}
+
+.NotificationItem__Date {
+  text-transform: uppercase;
+}
