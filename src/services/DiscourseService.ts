@@ -8,7 +8,7 @@ import ProposalModel from '../entities/Proposal/model'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import * as proposalTemplates from '../entities/Proposal/templates'
 import { getUpdateMessage } from '../entities/Proposal/templates/messages'
-import { ProposalAttributes, ProposalStatus } from '../entities/Proposal/types'
+import { ProposalAttributes } from '../entities/Proposal/types'
 import { forumUrl, proposalUrl } from '../entities/Proposal/utils'
 import * as updateTemplates from '../entities/Updates/templates'
 import { UpdateAttributes } from '../entities/Updates/types'
@@ -154,18 +154,10 @@ export class DiscourseService {
     }
   }
 
-  // TODO: change getUpdateMessage to receive update values instead of having to fetch updated proposal
-  // TODO: votes are not necessary in all cases, they could be fetched only when needed
-  static commentProposalUpdateInDiscourse(id: string) {
+  static commentUpdatedProposal(updatedProposal: ProposalAttributes) {
     inBackground(async () => {
-      const updatedProposal: ProposalAttributes | undefined = await ProposalModel.findOne<ProposalAttributes>({
-        id,
-      })
-      if (!updatedProposal) {
-        logger.error('Invalid proposal id for discourse update', { id })
-        return
-      }
-      const votes = await VoteService.getVotes(id)
+      // TODO: votes are not necessary in all cases, they could be fetched only when needed
+      const votes = await VoteService.getVotes(updatedProposal.id)
       const updateMessage = getUpdateMessage(updatedProposal, votes)
       const discourseComment: DiscourseComment = {
         topic_id: updatedProposal.discourse_topic_id,
@@ -177,11 +169,12 @@ export class DiscourseService {
   }
 
   static commentFinishedProposals(proposalsWithOutcome: ProposalWithOutcome[]) {
-    proposalsWithOutcome.forEach((proposal) => {
-      //TODO: is it ok that we only notify finished proposals? (what about passed/rejected/OOB?)
-      if (proposal.newStatus === ProposalStatus.Finished) {
-        this.commentProposalUpdateInDiscourse(proposal.id)
-      }
+    inBackground(async () => {
+      const ids = proposalsWithOutcome.map(({ id }) => id)
+      const updatedProposals = await ProposalModel.findByIds(ids)
+      updatedProposals.forEach((proposal) => {
+        this.commentUpdatedProposal(proposal)
+      })
     })
   }
 }

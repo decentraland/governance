@@ -560,7 +560,10 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
     NotificationService.grantProposalEnacted(proposal)
   }
 
-  DiscourseService.commentProposalUpdateInDiscourse(proposal.id)
+  const updatedProposal: ProposalAttributes | undefined = await ProposalModel.findOne<ProposalAttributes>({
+    id,
+  })
+  updatedProposal && DiscourseService.commentUpdatedProposal(updatedProposal)
 
   return {
     ...proposal,

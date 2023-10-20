@@ -56,15 +56,15 @@ function updateCategoryBudget(proposal: ProposalAttributes, budgetForProposal: B
 }
 
 async function getProposalsVotingResult(proposals: ProposalAttributes[]) {
-  const pendingProposalsVotingResult: ProposalVotingResult[] = []
+  const proposalsWithVotingResult: ProposalVotingResult[] = []
   for (const proposal of proposals) {
     const outcome = await calculateVotingResult(proposal)
     if (!outcome) {
       continue
     }
-    pendingProposalsVotingResult.push({ ...proposal, ...outcome })
+    proposalsWithVotingResult.push({ ...proposal, ...outcome })
   }
-  return pendingProposalsVotingResult
+  return proposalsWithVotingResult
 }
 
 export async function getFinishableLinkedProposals(
