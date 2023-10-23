@@ -20,13 +20,11 @@ function DelegatorCardProfile({ address, vp }: Props) {
   return (
     <Link className="DelegatorCardProfile" href={locations.profile({ address })}>
       <div className="DelegatorCardProfile__Section">
-        <Username className="DelegatorCardProfile__Avatar" address={address} variant="avatar" size="medium" />
-        <div>
+        <Username className="DelegatorCardProfile__Avatar" address={address} variant="avatar" size="small" />
+        <div className="DelegatorCardProfile__Details">
           <Username className="DelegatorCardProfile__Title" variant="address" address={address} />
-          <span className="DelegatorCardProfile__Details">
-            <span className="DelegatorCardProfile__DetailsItem">
-              {t('page.profile.delegators.delegated', { vp: intl.formatNumber(vp) })}
-            </span>
+          <span className="DelegatorCardProfile__DelegatedVp">
+            {t('page.profile.delegators.delegated', { vp: intl.formatNumber(vp) })}
           </span>
         </div>
       </div>

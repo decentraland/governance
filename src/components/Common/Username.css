@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  gap: 0.5rem;
 }
 
 .Username--address {
@@ -23,7 +24,6 @@ a.Username span.address {
 
 .Username .dcl.address,
 .Username .Username__Name {
-  margin-left: 0.5rem;
   text-overflow: ellipsis;
   overflow: hidden;
 }
