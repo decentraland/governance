@@ -4,7 +4,7 @@ import isEqual from 'lodash/isEqual'
 import toSnakeCase from 'lodash/snakeCase'
 
 import { NewGrantCategory, SubtypeAlternativeOptions, toGrantSubtype } from '../../entities/Grant/types'
-import { BiddingProcessType, ImplementationProcessType, ProposalType } from '../../entities/Proposal/types'
+import { BiddingProcessType, GovernanceProcessType, ProposalType } from '../../entities/Proposal/types'
 import { getUrlFilters } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useURLSearchParams from '../../hooks/useURLSearchParams'
@@ -31,7 +31,7 @@ export type FilterProps = {
 }
 
 const FILTER_KEY = 'type'
-const GOVERNANCE_GROUP: ImplementationProcessType[] = [ProposalType.Poll, ProposalType.Draft, ProposalType.Governance]
+const GOVERNANCE_GROUP: GovernanceProcessType[] = [ProposalType.Poll, ProposalType.Draft, ProposalType.Governance]
 const BIDDING_GROUP: BiddingProcessType[] = [ProposalType.Pitch, ProposalType.Tender, ProposalType.Bid]
 
 function getUncategorizedProposalTypes(types: typeof ProposalType) {
@@ -134,6 +134,16 @@ export default function CategoryFilter({
         <>
           <CategoryOption
             className="CategoryFilter__CategoryOption"
+            type="governance_process"
+            active={GOVERNANCE_GROUP.includes(type as never)}
+            icon={getCategoryIcon(ProposalType.Governance, 24)}
+            title={t(`category.governance_process_title`)}
+            subcategories={GOVERNANCE_GROUP}
+            isSubcategoryActive={isGroupActive}
+            subcategoryHref={(_, subcategory) => getUrlFilters('type', params, subcategory)}
+          />
+          <CategoryOption
+            className="CategoryFilter__CategoryOption"
             type={ProposalType.Grant}
             href={getUrlFilters(FILTER_KEY, params, ProposalType.Grant)}
             active={type === ProposalType.Grant}
@@ -147,16 +157,6 @@ export default function CategoryFilter({
             ]}
             isSubcategoryActive={isGrantSubtypeActive}
             subcategoryHref={(href, subcategory) => getGrantSubtypeHref(href, subcategory)}
-          />
-          <CategoryOption
-            className="CategoryFilter__CategoryOption"
-            type="implementation"
-            active={GOVERNANCE_GROUP.includes(type as never)}
-            icon={getCategoryIcon(ProposalType.Governance, 24)}
-            title={t(`category.implementation_title`)}
-            subcategories={GOVERNANCE_GROUP}
-            isSubcategoryActive={isGroupActive}
-            subcategoryHref={(_, subcategory) => getUrlFilters('type', params, subcategory)}
           />
           <CategoryOption
             className="CategoryFilter__CategoryOption"

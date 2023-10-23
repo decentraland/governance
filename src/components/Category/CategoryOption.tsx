@@ -5,7 +5,7 @@ import isNumber from 'lodash/isNumber'
 import toSnakeCase from 'lodash/snakeCase'
 
 import { SubtypeOptions } from '../../entities/Grant/types'
-import { BiddingProcessType, ImplementationProcessType, ProposalType } from '../../entities/Proposal/types'
+import { BiddingProcessType, GovernanceProcessType, ProposalType } from '../../entities/Proposal/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useURLSearchParams from '../../hooks/useURLSearchParams'
 import Link from '../Common/Typography/Link'
@@ -18,12 +18,12 @@ import './CategoryOption.css'
 
 type Props = {
   active?: boolean
-  type: ProposalType | 'all_proposals' | ProjectTypeFilter | 'implementation'
+  type: ProposalType | 'all_proposals' | ProjectTypeFilter | 'governance_process'
   count?: number
   onClick?: () => void
   href?: string
   className?: string
-  subcategories?: SubtypeOptions[] | ImplementationProcessType[] | BiddingProcessType[]
+  subcategories?: SubtypeOptions[] | GovernanceProcessType[] | BiddingProcessType[]
   isSubcategoryActive?: (subcategory: string) => boolean
   subcategoryHref?: (href: string | undefined, subcategory: string) => string
   icon: React.ReactElement
@@ -46,7 +46,10 @@ export default function CategoryOption({
   const t = useFormatMessage()
   const params = useURLSearchParams()
   const currentType = useMemo(() => params.get('type'), [params])
-  const isGroupSelected = useMemo(() => !!subcategories?.includes(currentType as never), [subcategories, currentType])
+  const isGroupSelected = useMemo(
+    () => !!subcategories?.includes(currentType as never) || currentType === type,
+    [subcategories, currentType, type]
+  )
 
   const [isGroupExpanded, setIsGroupExpanded] = useState(isGroupSelected)
 

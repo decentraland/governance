@@ -68,8 +68,8 @@
 .CategoryOption.CategoryOption--draft.CategoryOption--active,
 .CategoryOption.CategoryOption--governance:hover,
 .CategoryOption.CategoryOption--governance.CategoryOption--active,
-.CategoryOption.CategoryOption--implementation:hover,
-.CategoryOption.CategoryOption--implementation.CategoryOption--active {
+.CategoryOption.CategoryOption--governance_process:hover,
+.CategoryOption.CategoryOption--governance_process.CategoryOption--active {
   background-color: var(--background-poll);
 }
 
@@ -171,7 +171,7 @@
   background-color: var(--purple-800);
 }
 
-.CategoryOption__Subcategories--implementation .CategoryOption__SubcategoryItem--active::after {
+.CategoryOption__Subcategories--governance_process .CategoryOption__SubcategoryItem--active::after {
   background-color: var(--orange-800);
 }
 
