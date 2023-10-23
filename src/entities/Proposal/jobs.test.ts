@@ -39,6 +39,7 @@ jest.mock('../../constants', () => ({
 describe('finishProposals', () => {
   beforeAll(() => {
     jest.spyOn(ProposalModel, 'getFinishProposalQuery')
+    jest.spyOn(ProposalModel, 'findByIds').mockResolvedValue([])
     jest.spyOn(CoauthorModel, 'findAllByProposals').mockResolvedValue([])
     jest.spyOn(DiscourseService, 'commentUpdatedProposal').mockImplementation(() => {})
     jest.spyOn(DiscordService, 'init').mockImplementation(() => {})
