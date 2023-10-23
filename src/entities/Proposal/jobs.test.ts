@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
+import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { cloneDeep } from 'lodash'
 
 import { NotificationService } from '../../back/services/notification'
@@ -31,6 +32,22 @@ import {
 } from './testHelpers'
 import { ProposalAttributes, ProposalStatus, ProposalType } from './types'
 
+jest.mock('decentraland-server')
+jest.mock('pg', () => {
+  const mClient = {
+    query: jest.fn(),
+    end: jest.fn(),
+    release: jest.fn(),
+  }
+  const mPool = {
+    connect: jest.fn(() => mClient),
+  }
+  const mPG = {
+    Pool: jest.fn(() => mPool),
+  }
+  return mPG
+})
+
 jest.mock('../../constants', () => ({
   DISCORD_SERVICE_ENABLED: false,
   NOTIFICATIONS_SERVICE_ENABLED: false,
@@ -38,6 +55,7 @@ jest.mock('../../constants', () => ({
 
 describe('finishProposals', () => {
   beforeAll(() => {
+    jest.spyOn(logger, 'error').mockImplementation(() => {})
     jest.spyOn(ProposalModel, 'getFinishProposalQuery')
     jest.spyOn(ProposalModel, 'findByIds').mockResolvedValue([])
     jest.spyOn(CoauthorModel, 'findAllByProposals').mockResolvedValue([])

@@ -168,6 +168,7 @@ export async function finishProposal() {
     DiscourseService.commentFinishedProposals(proposalsWithOutcome)
     DiscordService.notifyFinishedProposals(proposalsWithOutcome)
   } catch (error) {
+    console.log('error', error)
     ErrorService.report('Error finishing proposals', { error, category: ErrorCategory.Job })
   }
 }
@@ -181,9 +182,7 @@ export async function publishBids(context: JobContext) {
 }
 
 async function updateProposalsAndBudgets(proposalsWithOutcome: ProposalWithOutcome[], budgetsWithUpdates: Budget[]) {
-  const useConnectionString = !!process.env.CONNECTION_STRING && process.env.CONNECTION_STRING.length > 0
-  const pool = new Pool(useConnectionString ? { connectionString: process.env.CONNECTION_STRING } : {})
-
+  const pool = new Pool({ connectionString: process.env.CONNECTION_STRING })
   const client = await pool.connect()
 
   try {
@@ -211,6 +210,7 @@ async function updateProposalsAndBudgets(proposalsWithOutcome: ProposalWithOutco
     const updateQueries = [...proposalUpdateQueriesByStatus, ...budgetUpdateQueries]
 
     const clientQueries = updateQueries.map(({ text, values }) => {
+      //TODO: remove after we check it works in staging
       console.log('text', text)
       console.log('values', values)
       return client.query(text, values)
