@@ -140,7 +140,7 @@ export default function CategoryFilter({
             title={t(`category.governance_process_title`)}
             subcategories={GOVERNANCE_GROUP}
             isSubcategoryActive={isGroupActive}
-            subcategoryHref={(_, subcategory) => getUrlFilters('type', params, subcategory)}
+            subcategoryHref={(_, subcategory) => getUrlFilters(FILTER_KEY, params, subcategory)}
           />
           <CategoryOption
             className="CategoryFilter__CategoryOption"
@@ -166,7 +166,7 @@ export default function CategoryFilter({
             title={t(`category.${ProjectTypeFilter.BiddingAndTendering}_title`)}
             subcategories={BIDDING_GROUP}
             isSubcategoryActive={isGroupActive}
-            subcategoryHref={(_, subcategory) => getUrlFilters('type', params, subcategory)}
+            subcategoryHref={(_, subcategory) => getUrlFilters(FILTER_KEY, params, subcategory)}
           />
         </>
       )}
