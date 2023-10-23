@@ -241,7 +241,7 @@ export class DiscordService {
   static finishProposal(id: string, title: string, outcome: ProposalStatus, winnerChoice?: string) {
     if (DISCORD_SERVICE_ENABLED) {
       inBackground(async () => {
-        const action = `Proposal has ended with outcome ${outcome}`
+        const action = `Proposal has ended with outcome ${outcome.toUpperCase().replaceAll('_', ' ')}`
         const message = await this.formatMessage({
           url: proposalUrl(id),
           title,
