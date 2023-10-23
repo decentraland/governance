@@ -84,7 +84,7 @@ export default function Notifications() {
     queryFn: () => (user ? Governance.get().getUserNotifications(user) : null),
     enabled: !!user && isSubscribed,
   })
-  const latestNotification = userNotifications?.[0].payload_id
+  const latestNotification = userNotifications?.[0]?.payload_id
 
   const { data: lastNotificationId } = useQuery({
     queryKey: [lastNotificationQueryKey],
