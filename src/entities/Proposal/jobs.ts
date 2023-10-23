@@ -181,9 +181,8 @@ export async function publishBids(context: JobContext) {
 }
 
 async function updateProposalsAndBudgets(proposalsWithOutcome: ProposalWithOutcome[], budgetsWithUpdates: Budget[]) {
-  const pool = new Pool({
-    connectionString: process.env.CONNECTION_STRING || '',
-  })
+  const useConnectionString = !!process.env.CONNECTION_STRING && process.env.CONNECTION_STRING.length > 0
+  const pool = new Pool(useConnectionString ? { connectionString: process.env.CONNECTION_STRING } : {})
 
   const client = await pool.connect()
 
