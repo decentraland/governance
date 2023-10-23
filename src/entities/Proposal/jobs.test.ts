@@ -38,6 +38,17 @@ jest.mock('../../constants', () => ({
 
 describe('finishProposals', () => {
   beforeAll(() => {
+    jest.mock('decentraland-server')
+    jest.mock('pg', () => ({
+      Pool: jest.fn(() => ({
+        connect: jest.fn(() => {
+          return {
+            query: jest.fn(),
+            release: jest.fn(),
+          }
+        }),
+      })),
+    }))
     jest.spyOn(ProposalModel, 'getFinishProposalQuery')
     jest.spyOn(ProposalModel, 'findByIds').mockResolvedValue([])
     jest.spyOn(CoauthorModel, 'findAllByProposals').mockResolvedValue([])
