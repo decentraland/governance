@@ -3,8 +3,8 @@ import type { EmbedBuilder } from 'discord.js'
 
 import { DISCORD_SERVICE_ENABLED } from '../constants'
 import { getProfileUrl } from '../entities/Profile/utils'
-import { ProposalWithOutcome, VotingOutcome } from '../entities/Proposal/outcome'
-import { ProposalType } from '../entities/Proposal/types'
+import { ProposalWithOutcome } from '../entities/Proposal/outcome'
+import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { isGovernanceProcessProposal, proposalUrl } from '../entities/Proposal/utils'
 import UpdateModel from '../entities/Updates/model'
 import { UpdateAttributes } from '../entities/Updates/types'
@@ -238,7 +238,7 @@ export class DiscordService {
     }
   }
 
-  static finishProposal(id: string, title: string, outcome: string, winnerChoice?: string) {
+  static finishProposal(id: string, title: string, outcome: ProposalStatus, winnerChoice?: string) {
     if (DISCORD_SERVICE_ENABLED) {
       inBackground(async () => {
         const action = `Proposal has ended with outcome ${outcome}`
@@ -266,14 +266,9 @@ export class DiscordService {
   }
 
   static notifyFinishedProposals(proposalsWithOutcome: ProposalWithOutcome[]) {
-    for (const { id, title, winnerChoice, votingOutcome } of proposalsWithOutcome) {
-      if (votingOutcome) {
-        this.finishProposal(
-          id,
-          title,
-          votingOutcome,
-          votingOutcome === VotingOutcome.FINISHED ? winnerChoice : undefined
-        )
+    for (const { id, title, winnerChoice, newStatus } of proposalsWithOutcome) {
+      if (newStatus) {
+        this.finishProposal(id, title, newStatus, newStatus === ProposalStatus.Finished ? winnerChoice : undefined)
       }
     }
   }

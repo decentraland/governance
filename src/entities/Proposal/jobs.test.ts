@@ -70,7 +70,7 @@ describe('finishProposals', () => {
         expect(DiscordService.finishProposal).toHaveBeenCalledWith(
           GRANT_PROPOSAL_1.id,
           GRANT_PROPOSAL_1.title,
-          REJECTED_OUTCOME.votingOutcome,
+          ProposalStatus.Rejected,
           undefined
         )
       })
@@ -85,7 +85,7 @@ describe('finishProposals', () => {
         expect(DiscordService.finishProposal).toHaveBeenCalledWith(
           GRANT_PROPOSAL_1.id,
           GRANT_PROPOSAL_1.title,
-          ACCEPTED_OUTCOME.votingOutcome,
+          ProposalStatus.Passed,
           undefined
         )
       })
@@ -172,7 +172,7 @@ describe('finishProposals', () => {
         expect(DiscordService.finishProposal).toHaveBeenCalledWith(
           GRANT_PROPOSAL_1.id,
           GRANT_PROPOSAL_1.title,
-          FINISHED_OUTCOME.votingOutcome,
+          ProposalStatus.Finished,
           FINISHED_OUTCOME.winnerChoice
         )
       })
