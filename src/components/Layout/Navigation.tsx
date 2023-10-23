@@ -120,7 +120,7 @@ const Navigation = ({ activeTab }: NavigationProps) => {
         <NotMobile>
           <Tabs.Right>
             <SearchInput />
-            <Notifications />
+            {user && <Notifications />}
           </Tabs.Right>
         </NotMobile>
       </Tabs>
