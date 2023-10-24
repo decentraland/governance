@@ -36,7 +36,7 @@ const BIDDING_GROUP: BiddingProcessType[] = [ProposalType.Pitch, ProposalType.Te
 
 function getUncategorizedProposalTypes(types: typeof ProposalType) {
   return Object.values(types).filter((type) => {
-    return ![ProposalType.Grant, ...BIDDING_GROUP, ...GOVERNANCE_GROUP].includes(type as never)
+    return ![ProposalType.Grant, ...BIDDING_GROUP, ...GOVERNANCE_GROUP].includes(type)
   })
 }
 
@@ -85,7 +85,7 @@ export default function CategoryFilter({
         return true
       }
 
-      return toSnakeCase(subtype) === toSnakeCase(currentSubtype)
+      return subtype === currentSubtype
     },
     [currentSubtype]
   )
