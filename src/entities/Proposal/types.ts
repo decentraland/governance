@@ -94,6 +94,9 @@ export enum ProposalType {
   Bid = 'bid',
 }
 
+export type GovernanceProcessType = ProposalType.Poll | ProposalType.Draft | ProposalType.Governance
+export type BiddingProcessType = ProposalType.Pitch | ProposalType.Tender | ProposalType.Bid
+
 export enum PoiType {
   AddPOI = 'add_poi',
   RemovePOI = 'remove_poi',

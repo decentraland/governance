@@ -67,8 +67,15 @@
 .CategoryOption.CategoryOption--draft:hover,
 .CategoryOption.CategoryOption--draft.CategoryOption--active,
 .CategoryOption.CategoryOption--governance:hover,
-.CategoryOption.CategoryOption--governance.CategoryOption--active {
+.CategoryOption.CategoryOption--governance.CategoryOption--active,
+.CategoryOption.CategoryOption--governance_process:hover,
+.CategoryOption.CategoryOption--governance_process.CategoryOption--active {
   background-color: var(--background-poll);
+}
+
+.CategoryOption.CategoryOption--bidding_and_tendering:hover,
+.CategoryOption.CategoryOption--bidding_and_tendering.CategoryOption--active {
+  background-color: var(--background-pitch);
 }
 
 .CategoryOption__Counter {
@@ -156,8 +163,20 @@
   transform: translateY(-50%);
   width: var(--size);
   height: var(--size);
-  background-color: var(--purple-800);
   border-radius: 50%;
+}
+
+.CategoryOption__Subcategories--grant .CategoryOption__SubcategoryItem--active::after,
+.CategoryOption__Subcategories--grants .CategoryOption__SubcategoryItem--active::after {
+  background-color: var(--purple-800);
+}
+
+.CategoryOption__Subcategories--governance_process .CategoryOption__SubcategoryItem--active::after {
+  background-color: var(--orange-800);
+}
+
+.CategoryOption__Subcategories--bidding_and_tendering .CategoryOption__SubcategoryItem--active::after {
+  background-color: var(--red-800);
 }
 
 .CategoryOption__SubcategoryItem svg {

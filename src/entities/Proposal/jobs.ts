@@ -102,7 +102,7 @@ async function getProposalsWithOutcome(proposals: ProposalAttributes[], context:
 
 export async function getFinishabledLinkedProposals(
   pendingProposals: ProposalAttributes[],
-  type: ProposalType.Bid | ProposalType.Tender
+  type: ProposalType.Tender | ProposalType.Bid
 ) {
   let proposals = pendingProposals.filter((item) => item.type === type)
   if (proposals.length > 0) {
