@@ -58,11 +58,11 @@ function updateCategoryBudget(proposal: ProposalAttributes, budgetForProposal: B
 async function getProposalsVotingResult(proposals: ProposalAttributes[]) {
   const proposalsWithVotingResult: ProposalVotingResult[] = []
   for (const proposal of proposals) {
-    const outcome = await calculateVotingResult(proposal)
-    if (!outcome) {
+    const votingResult = await calculateVotingResult(proposal)
+    if (!votingResult) {
       continue
     }
-    proposalsWithVotingResult.push({ ...proposal, ...outcome })
+    proposalsWithVotingResult.push({ ...proposal, ...votingResult })
   }
   return proposalsWithVotingResult
 }
@@ -168,7 +168,6 @@ export async function finishProposal() {
     DiscourseService.commentFinishedProposals(proposalsWithOutcome)
     DiscordService.notifyFinishedProposals(proposalsWithOutcome)
   } catch (error) {
-    console.log('error', error)
     ErrorService.report('Error finishing proposals', { error, category: ErrorCategory.Job })
   }
 }
@@ -182,13 +181,13 @@ export async function publishBids(context: JobContext) {
 }
 
 async function updateProposalsAndBudgets(proposalsWithOutcome: ProposalWithOutcome[], budgetsWithUpdates: Budget[]) {
+  if (proposalsWithOutcome.length === 0) return
+
   const pool = new Pool({ connectionString: process.env.CONNECTION_STRING })
   const client = await pool.connect()
 
   try {
     await client.query('BEGIN')
-
-    if (proposalsWithOutcome.length === 0) return
 
     const proposalUpdateQueriesByStatus: SQLStatement[] = []
     Object.values(ProposalStatus).forEach((proposalStatus) => {

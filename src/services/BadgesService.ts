@@ -280,7 +280,7 @@ export class BadgesService {
         ErrorService.report('Error while attempting to give badges', {
           error,
           category: ErrorCategory.Badges,
-          passedGovernanceProposals: passedProposals,
+          passedProposals,
         })
       }
     })

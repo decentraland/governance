@@ -565,7 +565,7 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
     NotificationService.grantProposalEnacted(proposal)
   }
 
-  const updatedProposal: ProposalAttributes | undefined = await ProposalModel.findOne<ProposalAttributes>({
+  const updatedProposal = await ProposalModel.findOne<ProposalAttributes>({
     id,
   })
   updatedProposal && DiscourseService.commentUpdatedProposal(updatedProposal)

@@ -9,7 +9,7 @@ import { isGovernanceProcessProposal, proposalUrl } from '../entities/Proposal/u
 import UpdateModel from '../entities/Updates/model'
 import { UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates, getUpdateNumber, getUpdateUrl } from '../entities/Updates/utils'
-import { capitalizeFirstLetter, inBackground } from '../helpers'
+import { capitalizeFirstLetter, getEnumDisplayName, inBackground } from '../helpers'
 import { getProfile } from '../utils/Catalyst'
 import { ErrorCategory } from '../utils/errorCategories'
 import { isProdEnv } from '../utils/governanceEnvs'
@@ -111,7 +111,7 @@ export class DiscordService {
         : getPreviewText(description)
 
       fields.push({
-        name: proposalType.toUpperCase().replaceAll('_', ' '),
+        name: getEnumDisplayName(proposalType),
         value: embedDescription,
       })
     }
@@ -241,7 +241,7 @@ export class DiscordService {
   static finishProposal(id: string, title: string, outcome: ProposalStatus, winnerChoice?: string) {
     if (DISCORD_SERVICE_ENABLED) {
       inBackground(async () => {
-        const action = `Proposal has ended with outcome ${outcome.toUpperCase().replaceAll('_', ' ')}`
+        const action = `Proposal has ended with outcome ${getEnumDisplayName(outcome)}`
         const message = await this.formatMessage({
           url: proposalUrl(id),
           title,
