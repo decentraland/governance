@@ -112,6 +112,8 @@ jest.mock('../constants', () => ({
   NOTIFICATIONS_SERVICE_ENABLED: false,
 }))
 
+jest.mock('@pushprotocol/restapi/src/index.js', () => jest.fn())
+
 describe('BudgetService', () => {
   describe('getTransparencyBudgets', () => {
     beforeAll(() => {

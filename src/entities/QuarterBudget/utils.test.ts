@@ -30,6 +30,8 @@ const EXISTING_BUDGETS: QuarterBudgetAttributes[] = [
   { ...TEST_DATA, start_at: QUARTER_2_START_DATE, finish_at: QUARTER_2_END_DATE },
 ]
 
+jest.mock('@pushprotocol/restapi/src/index.js', () => jest.fn())
+
 describe('thereAreNoOverlappingBudgets', () => {
   it('returns true when no budgets overlap with the given dates', () => {
     const startAt = Time(QUARTER_2_END_DATE).add(1, 'day').toDate()
