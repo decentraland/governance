@@ -72,6 +72,11 @@
   white-space: initial;
 }
 
+.ProposalPreviewCard__DetailsItem {
+  display: inline-flex;
+  white-space: nowrap;
+}
+
 .ProposalPreviewCard__DetailsItem:after {
   content: '·';
   padding: 0 5px;
@@ -99,4 +104,16 @@
   font-weight: var(--weight-semi-bold);
   color: var(--black-800) !important;
   margin-left: 2px !important;
+}
+
+.ProposalPreviewCard__DetailsItemVotedChoice {
+  max-width: 175px;
+}
+
+.ProposalPreviewCard__Vote {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin-left: 2px;
+  color: var(--black-800);
 }
