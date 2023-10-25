@@ -7,7 +7,6 @@ import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { NotMobile, useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ErrorClient } from '../clients/ErrorClient'
