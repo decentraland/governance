@@ -113,7 +113,7 @@ export default function ProposalsPage() {
         <div className="OnlyDesktop">
           <RandomBanner isVisible={!searching} />
         </div>
-        {search && proposals && (
+        {search && (
           <NotMobile>
             <SearchTitle />
           </NotMobile>
@@ -129,33 +129,27 @@ export default function ProposalsPage() {
             </NotMobile>
           </div>
           <div className="ProposalsPage__Content">
-            {proposals && (
+            {search && (
               <Mobile>
                 <SearchTitle />
               </Mobile>
             )}
             <ActionableLayout
               leftAction={
-                proposals && (
-                  <Text color="secondary" weight="semi-bold" className="ProposalsPage__ProposalCount">
-                    {t('general.count_proposals', { count: proposals.total || 0 })}
-                  </Text>
-                )
+                <Text color="secondary" weight="semi-bold" className="ProposalsPage__ProposalCount">
+                  {t('general.count_proposals', { count: proposals?.total || 0 })}
+                </Text>
               }
               rightAction={
                 <>
-                  {proposals && (
-                    <>
-                      <SortingMenu />
-                      <Mobile>
-                        <FilterMenu>
-                          <CategoryFilter filterType={ProposalType} />
-                          <StatusFilter statusType={ProposalStatus} />
-                          <TimeFrameFilter />
-                        </FilterMenu>
-                      </Mobile>
-                    </>
-                  )}
+                  <SortingMenu />
+                  <Mobile>
+                    <FilterMenu>
+                      <CategoryFilter filterType={ProposalType} />
+                      <StatusFilter statusType={ProposalStatus} />
+                      <TimeFrameFilter />
+                    </FilterMenu>
+                  </Mobile>
                   <Button
                     primary
                     size="small"
@@ -168,14 +162,14 @@ export default function ProposalsPage() {
                 </>
               }
             >
-              {type && !searching && <CategoryBanner type={type} />}
               {isLoading && (
                 <div className="ProposalsPage__LoaderContainer">
-                  <Loader size="medium" active={!proposals || isLoading} />
+                  <Loader size="medium" active={isLoading} />
                 </div>
               )}
               {!isLoading && (
                 <>
+                  {type && !searching && <CategoryBanner type={type} />}
                   {proposals && proposals.data.length === 0 && (
                     <Empty
                       className="ProposalsPage__Empty"
