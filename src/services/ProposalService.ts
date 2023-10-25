@@ -2,6 +2,7 @@ import crypto from 'crypto'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 
+import { DiscordService } from '../back/services/discord'
 import { NotificationService } from '../back/services/notification'
 import { VoteService } from '../back/services/vote'
 import { Discourse, DiscourseComment, DiscoursePost } from '../clients/Discourse'
@@ -21,7 +22,6 @@ import { getEnvironmentChainId, inBackground } from '../helpers'
 import { getProfile } from '../utils/Catalyst'
 import Time from '../utils/date/Time'
 
-import { DiscordService } from './DiscordService'
 import { DiscourseService } from './DiscourseService'
 import { SnapshotService } from './SnapshotService'
 

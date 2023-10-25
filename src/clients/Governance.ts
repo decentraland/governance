@@ -36,7 +36,7 @@ import { Topic } from '../entities/SurveyTopic/types'
 import { ProjectHealth, UpdateAttributes, UpdateResponse } from '../entities/Updates/types'
 import { Vote, VotedProposal, Voter } from '../entities/Votes/types'
 import { NewsletterSubscriptionResult } from '../shared/types/newsletter'
-import { Notification } from '../shared/types/notifications'
+import { PushNotification } from '../shared/types/notifications'
 import Time from '../utils/date/Time'
 
 import { TransparencyBudget } from './DclData'
@@ -669,14 +669,21 @@ export class Governance extends API {
   }
 
   async getUserNotifications(address: string) {
-    const response = await this.fetch<ApiResponse<Notification[]>>(
+    const response = await this.fetch<ApiResponse<PushNotification[]>>(
       `/notifications/user/${address}`,
       this.options().method('GET')
     )
     return response.data
   }
 
-  async sendNotification(recipient: string, title: string, body: string, type: number, url: string) {
+  async sendNotification(
+    recipient: string,
+    title: string,
+    body: string,
+    type: number,
+    url: string,
+    discordId?: string
+  ) {
     const response = await this.fetch<ApiResponse<string>>(
       `/notifications/send`,
       this.options().method('POST').authorization({ sign: true }).json({
@@ -685,6 +692,7 @@ export class Governance extends API {
         body,
         type,
         url,
+        discordId,
       })
     )
     return response.data

@@ -5,7 +5,14 @@ import { NOTIFICATIONS_SERVICE_ENABLED, PUSH_CHANNEL_ID } from '../../constants'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { proposalUrl } from '../../entities/Proposal/utils'
 import { ErrorService } from '../../services/ErrorService'
-import { NotificationCustomType } from '../../shared/types/notifications'
+import {
+  GovernanceNotificationType,
+  Notification,
+  NotificationBody,
+  NotificationCustomType,
+  NotificationTitle,
+  Recipient,
+} from '../../shared/types/notifications'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
 import { NotificationType, getCaipAddress, getPushNotificationsEnv } from '../../utils/notifications'
@@ -26,24 +33,8 @@ const NotificationIdentityType = {
 const ADDITIONAL_META_CUSTOM_TYPE = 0
 const ADDITIONAL_META_CUSTOM_TYPE_VERSION = 1
 
-type Recipient = string | string[] | undefined
-
 export class NotificationService {
-  static async sendNotification({
-    type,
-    title,
-    body,
-    recipient,
-    url,
-    customType,
-  }: {
-    type?: number
-    title: string
-    body: string
-    recipient: Recipient
-    url: string
-    customType: NotificationCustomType
-  }) {
+  static async sendNotification({ type, title, body, recipient, url, customType }: Notification) {
     if (!NOTIFICATIONS_SERVICE_ENABLED) {
       return
     }
@@ -131,8 +122,8 @@ export class NotificationService {
       }
 
       return await this.sendNotification({
-        title: 'Grant Proposal Enacted',
-        body: 'Congratulations! Your Grant Proposal has been successfully enacted and a Vesting Contract was added',
+        title: NotificationTitle[GovernanceNotificationType.GrantEnacted],
+        body: NotificationBody[GovernanceNotificationType.GrantEnacted],
         recipient: addresses,
         url: proposalUrl(proposal.id),
         customType: NotificationCustomType.Grant,
@@ -153,8 +144,8 @@ export class NotificationService {
       }
 
       return await this.sendNotification({
-        title: 'Co-author Request Received',
-        body: "You've been invited to collaborate as a co-author on a published proposal. Accept it or reject it here",
+        title: NotificationTitle[GovernanceNotificationType.CoAuthorRequestReceived],
+        body: NotificationBody[GovernanceNotificationType.CoAuthorRequestReceived],
         recipient: coAuthors,
         url: proposalUrl(proposal.id),
         customType: NotificationCustomType.Proposal,
@@ -179,8 +170,8 @@ export class NotificationService {
       }
 
       return await this.sendNotification({
-        title: `Voting Ended on Your Proposal ${proposal.title}`,
-        body: 'The votes are in! Find out the outcome of the voting on your proposal now',
+        title: `${NotificationTitle[GovernanceNotificationType.ProposalAuthoredFinished]} ${proposal.title}`,
+        body: NotificationBody[GovernanceNotificationType.ProposalAuthoredFinished],
         recipient: addresses,
         url: proposalUrl(proposal.id),
         customType: NotificationCustomType.Proposal,
@@ -201,8 +192,8 @@ export class NotificationService {
       }
 
       return await this.sendNotification({
-        title: 'Voting Ended on a Proposal You Voted On',
-        body: 'Discover the results of the proposal you participated in as a voter. Your input matters!',
+        title: NotificationTitle[GovernanceNotificationType.ProposalVotedFinished],
+        body: NotificationBody[GovernanceNotificationType.ProposalVotedFinished],
         recipient: addresses,
         url: proposalUrl(proposal.id),
         customType: NotificationCustomType.Proposal,

@@ -1,19 +1,18 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import type { Client, EmbedBuilder, Snowflake } from 'discord.js'
 
-import { DISCORD_SERVICE_ENABLED } from '../constants'
-import { getProfileUrl } from '../entities/Profile/utils'
-import { ProposalType } from '../entities/Proposal/types'
-import { isGovernanceProcessProposal, proposalUrl } from '../entities/Proposal/utils'
-import UpdateModel from '../entities/Updates/model'
-import { UpdateAttributes } from '../entities/Updates/types'
-import { getPublicUpdates, getUpdateNumber, getUpdateUrl } from '../entities/Updates/utils'
-import { capitalizeFirstLetter, inBackground } from '../helpers'
-import { getProfile } from '../utils/Catalyst'
-import { ErrorCategory } from '../utils/errorCategories'
-import { isProdEnv } from '../utils/governanceEnvs'
-
-import { ErrorService } from './ErrorService'
+import { DISCORD_SERVICE_ENABLED } from '../../constants'
+import { getProfileUrl } from '../../entities/Profile/utils'
+import { ProposalType } from '../../entities/Proposal/types'
+import { isGovernanceProcessProposal, proposalUrl } from '../../entities/Proposal/utils'
+import UpdateModel from '../../entities/Updates/model'
+import { UpdateAttributes } from '../../entities/Updates/types'
+import { getPublicUpdates, getUpdateNumber, getUpdateUrl } from '../../entities/Updates/utils'
+import { capitalizeFirstLetter, inBackground } from '../../helpers'
+import { ErrorService } from '../../services/ErrorService'
+import { getProfile } from '../../utils/Catalyst'
+import { ErrorCategory } from '../../utils/errorCategories'
+import { isProdEnv } from '../../utils/governanceEnvs'
 
 const CHANNEL_ID = process.env.DISCORD_CHANNEL_ID
 const TOKEN = process.env.DISCORD_TOKEN
@@ -44,7 +43,7 @@ type EmbedMessageProps = {
   user?: string
   action: string
   color: MessageColors
-  url: string
+  url?: string
 }
 
 function getChoices(choices: string[]): Field[] {
@@ -122,7 +121,7 @@ export class DiscordService {
     const embed = new Discord.EmbedBuilder()
       .setColor(color)
       .setTitle(title)
-      .setURL(url)
+      .setURL(!!url && url.length > 0 ? url : null)
       .setDescription(action)
       .setThumbnail(DCL_LOGO)
       .addFields(...fields)
@@ -264,13 +263,14 @@ export class DiscordService {
     }
   }
 
-  static sendDirectMessage(userId: Snowflake, message: string) {
+  static sendDirectMessage(userId: Snowflake, message: Omit<EmbedMessageProps, 'color'>) {
     if (DISCORD_SERVICE_ENABLED) {
       inBackground(async () => {
         try {
           const user = await this.client.users.fetch(userId)
           const dmChannel = await user.createDM()
-          await dmChannel.send(message)
+          const embedMessage = await this.formatMessage({ ...message, color: MessageColors.NEW_PROPOSAL })
+          return await dmChannel.send({ embeds: [embedMessage] })
         } catch (error) {
           if (isProdEnv()) {
             ErrorService.report(`Error sending direct message to user with ID ${userId}`, {
@@ -278,6 +278,8 @@ export class DiscordService {
               error,
               category: ErrorCategory.Discord,
             })
+          } else {
+            console.error(`Error sending direct message to user with ID ${userId}`, error)
           }
         }
       })

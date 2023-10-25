@@ -7,6 +7,7 @@ import { Request } from 'express'
 import { NotificationCustomType } from '../../shared/types/notifications'
 import { NotificationType } from '../../utils/notifications'
 import UserNotificationConfigModel, { UserNotificationConfigAttributes } from '../models/UserNotificationConfig'
+import { DiscordService } from '../services/discord'
 import { NotificationService } from '../services/notification'
 import { validateDebugAddress } from '../utils/validations'
 
@@ -20,7 +21,9 @@ export default routes((router) => {
 
 async function sendNotification(req: WithAuth) {
   validateDebugAddress(req.auth)
-  const { title, body, recipient, url, type } = req.body
+  const { title, body, recipient, url, type, discordId } = req.body
+
+  console.log('Discord ID:', discordId)
 
   if (type === NotificationType.TARGET && !recipient) {
     throw new RequestError('Target type needs recipient', RequestError.BadRequest)
@@ -28,6 +31,15 @@ async function sendNotification(req: WithAuth) {
 
   if (!title || !body) {
     throw new RequestError('Invalid data', RequestError.BadRequest)
+  }
+
+  if (discordId) {
+    await DiscordService.sendDirectMessage(discordId, {
+      title,
+      url,
+      fields: [],
+      action: body,
+    })
   }
 
   return await NotificationService.sendNotification({

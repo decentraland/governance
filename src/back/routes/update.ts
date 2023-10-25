@@ -16,11 +16,11 @@ import {
   getPublicUpdates,
   isBetweenLateThresholdDate,
 } from '../../entities/Updates/utils'
-import { DiscordService } from '../../services/DiscordService'
 import { DiscourseService } from '../../services/DiscourseService'
 import Time from '../../utils/date/Time'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { CoauthorService } from '../services/coauthor'
+import { DiscordService } from '../services/discord'
 import { UpdateService } from '../services/update'
 
 export default routes((route) => {

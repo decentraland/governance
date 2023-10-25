@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { cloneDeep } from 'lodash'
 
+import { DiscordService } from '../../back/services/discord'
 import { NotificationService } from '../../back/services/notification'
 import { BudgetService } from '../../services/BudgetService'
-import { DiscordService } from '../../services/DiscordService'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ProposalService } from '../../services/ProposalService'
 import Time from '../../utils/date/Time'

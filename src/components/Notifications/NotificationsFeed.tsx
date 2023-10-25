@@ -11,7 +11,7 @@ import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { PUSH_CHANNEL_ID } from '../../constants'
 import { useClickOutside } from '../../hooks/useClickOutside'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import { Notification } from '../../shared/types/notifications'
+import { PushNotification } from '../../shared/types/notifications'
 import { getCaipAddress, getPushNotificationsEnv } from '../../utils/notifications'
 import FullWidthButton from '../Common/FullWidthButton'
 import Heading from '../Common/Typography/Heading'
@@ -29,7 +29,7 @@ interface Props {
   isOpen: boolean
   onClose: () => void
   onSubscriptionChangeSuccess: () => void
-  userNotifications: Notification[] | null | undefined
+  userNotifications: PushNotification[] | null | undefined
   isSubscribed: boolean
   isLoadingNotifications: boolean
   isRefetchingNotifications: boolean

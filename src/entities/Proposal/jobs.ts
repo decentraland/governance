@@ -1,10 +1,10 @@
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 import snakeCase from 'lodash/snakeCase'
 
+import { DiscordService } from '../../back/services/discord'
 import { BadgesService } from '../../services/BadgesService'
 import BidService from '../../services/BidService'
 import { BudgetService } from '../../services/BudgetService'
-import { DiscordService } from '../../services/DiscordService'
 import { ErrorService } from '../../services/ErrorService'
 import { ProposalService } from '../../services/ProposalService'
 import { ErrorCategory } from '../../utils/errorCategories'
