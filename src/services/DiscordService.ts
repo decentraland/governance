@@ -1,5 +1,5 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
-import type { EmbedBuilder } from 'discord.js'
+import type { Client, EmbedBuilder, Snowflake } from 'discord.js'
 
 import { DISCORD_SERVICE_ENABLED } from '../constants'
 import { getProfileUrl } from '../entities/Profile/utils'
@@ -18,7 +18,7 @@ import { ErrorService } from './ErrorService'
 const CHANNEL_ID = process.env.DISCORD_CHANNEL_ID
 const TOKEN = process.env.DISCORD_TOKEN
 
-const Discord = DISCORD_SERVICE_ENABLED ? require('discord.js') : null
+import Discord = require('discord.js')
 
 const DCL_LOGO = 'https://decentraland.org/images/decentraland.png'
 const DEFAULT_AVATAR = 'https://decentraland.org/images/male.png'
@@ -59,7 +59,7 @@ function getPreviewText(text: string) {
 }
 
 export class DiscordService {
-  private static client: any
+  private static client: Client
   static init() {
     if (!DISCORD_SERVICE_ENABLED) {
       logger.log('Discord service disabled')
@@ -132,7 +132,7 @@ export class DiscordService {
     if (user) {
       try {
         const profile = await getProfile(user)
-        const profileHasName = !!profile && !!profile.name && profile.name.length > 0
+        const profileHasName = !!profile && profile.hasClaimedName && !!profile.name && profile.name.length > 0
         const displayableUser = profileHasName ? profile.name : user
 
         const hasAvatar = !!profile && !!profile.avatar
@@ -255,6 +255,26 @@ export class DiscordService {
           if (isProdEnv()) {
             ErrorService.report(`Error sending finish proposal message to Discord`, {
               proposalId: id,
+              error,
+              category: ErrorCategory.Discord,
+            })
+          }
+        }
+      })
+    }
+  }
+
+  static sendDirectMessage(userId: Snowflake, message: string) {
+    if (DISCORD_SERVICE_ENABLED) {
+      inBackground(async () => {
+        try {
+          const user = await this.client.users.fetch(userId)
+          const dmChannel = await user.createDM()
+          await dmChannel.send(message)
+        } catch (error) {
+          if (isProdEnv()) {
+            ErrorService.report(`Error sending direct message to user with ID ${userId}`, {
+              userId,
               error,
               category: ErrorCategory.Discord,
             })

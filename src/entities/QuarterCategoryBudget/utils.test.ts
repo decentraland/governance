@@ -6,6 +6,8 @@ import { NewGrantCategory } from '../Grant/types'
 
 import { getCategoryBudgetTotal, toNewGrantCategory, validateCategoryBudgets } from './utils'
 
+jest.mock('discord.js', () => jest.fn())
+
 describe('getCategoryBudgetTotal', () => {
   it('returns a percentage of the budget total', () => {
     expect(getCategoryBudgetTotal(10, 100)).toEqual(10)
