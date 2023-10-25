@@ -72,7 +72,10 @@ const ProposalPreviewCard = ({ proposal, votes, variant }: Props) => {
             {showVotedChoice && (
               <span
                 title={userChoice.toUpperCase()}
-                className="ProposalPreviewCard__DetailsItem ProposalPreviewCard__DetailsItemVotedChoice"
+                className={classNames(
+                  'ProposalPreviewCard__DetailsItem',
+                  'ProposalPreviewCard__DetailsItemVotedChoice'
+                )}
               >
                 {t('page.proposal_detail.your_vote_label')}
                 <span className="ProposalPreviewCard__Vote">{userChoice}</span>
