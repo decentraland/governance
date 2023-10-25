@@ -100,7 +100,7 @@ export default function ProposalsPage() {
     return <MaintenanceLayout title={title} description={description} activeTab={NavigationTab.Proposals} />
   }
 
-  const isLoading = isLoadingProposals || isLoadingVotes
+  const isLoading = !proposals || isLoadingProposals || isLoadingVotes
 
   return (
     <>
