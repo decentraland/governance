@@ -33,6 +33,7 @@ enum MessageColors {
   NEW_PROPOSAL = 0x0099ff,
   FINISH_PROPOSAL = 0x8142f5,
   NEW_UPDATE = 0x00ff80,
+  NOTIFICATION = 0xf5c63b,
 }
 
 type EmbedMessageProps = {
@@ -41,7 +42,7 @@ type EmbedMessageProps = {
   description?: string
   fields: Field[]
   user?: string
-  action: string
+  action?: string
   color: MessageColors
   url?: string
 }
@@ -122,7 +123,7 @@ export class DiscordService {
       .setColor(color)
       .setTitle(title)
       .setURL(!!url && url.length > 0 ? url : null)
-      .setDescription(action)
+      .setDescription(!!action && action.length > 0 ? action : null)
       .setThumbnail(DCL_LOGO)
       .addFields(...fields)
       .setTimestamp()
@@ -269,11 +270,11 @@ export class DiscordService {
         try {
           const user = await this.client.users.fetch(userId)
           const dmChannel = await user.createDM()
-          const embedMessage = await this.formatMessage({ ...message, color: MessageColors.NEW_PROPOSAL })
+          const embedMessage = await this.formatMessage({ ...message, color: MessageColors.NOTIFICATION })
           return await dmChannel.send({ embeds: [embedMessage] })
         } catch (error) {
           if (isProdEnv()) {
-            ErrorService.report(`Error sending direct message to user with ID ${userId}`, {
+            ErrorService.report(`Error sending direct message to user`, {
               userId,
               error,
               category: ErrorCategory.Discord,

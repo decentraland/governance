@@ -19,6 +19,7 @@ import { NotificationType, getCaipAddress, getPushNotificationsEnv } from '../..
 import { areValidAddresses } from '../utils/validations'
 
 import { CoauthorService } from './coauthor'
+import { DiscordService } from './discord'
 
 const PushAPI = NOTIFICATIONS_SERVICE_ENABLED ? require('@pushprotocol/restapi') : null
 
@@ -121,9 +122,19 @@ export class NotificationService {
         throw new Error('Invalid addresses')
       }
 
+      const title = NotificationTitle[GovernanceNotificationType.GrantEnacted]
+      const body = NotificationBody[GovernanceNotificationType.GrantEnacted]
+
+      await DiscordService.sendDirectMessage('DISCORD_ID_PLACEHOLDER', {
+        title,
+        action: body,
+        url: proposalUrl(proposal.id),
+        fields: [],
+      })
+
       return await this.sendNotification({
-        title: NotificationTitle[GovernanceNotificationType.GrantEnacted],
-        body: NotificationBody[GovernanceNotificationType.GrantEnacted],
+        title,
+        body,
         recipient: addresses,
         url: proposalUrl(proposal.id),
         customType: NotificationCustomType.Grant,
@@ -143,9 +154,20 @@ export class NotificationService {
         throw new Error('Invalid addresses')
       }
 
+      const title = NotificationTitle[GovernanceNotificationType.CoAuthorRequestReceived]
+      const body = NotificationBody[GovernanceNotificationType.CoAuthorRequestReceived]
+
+      // for each coauthor, send a DM
+      await DiscordService.sendDirectMessage('DISCORD_ID_PLACEHOLDER', {
+        title,
+        action: body,
+        url: proposalUrl(proposal.id),
+        fields: [],
+      })
+
       return await this.sendNotification({
-        title: NotificationTitle[GovernanceNotificationType.CoAuthorRequestReceived],
-        body: NotificationBody[GovernanceNotificationType.CoAuthorRequestReceived],
+        title,
+        body,
         recipient: coAuthors,
         url: proposalUrl(proposal.id),
         customType: NotificationCustomType.Proposal,
@@ -169,9 +191,19 @@ export class NotificationService {
         throw new Error('Invalid addresses')
       }
 
+      const title = `${NotificationTitle[GovernanceNotificationType.ProposalVotedFinished]} ${proposal.title}`
+      const body = NotificationBody[GovernanceNotificationType.ProposalVotedFinished]
+
+      await DiscordService.sendDirectMessage('DISCORD_ID_PLACEHOLDER', {
+        title,
+        action: body,
+        url: proposalUrl(proposal.id),
+        fields: [],
+      })
+
       return await this.sendNotification({
-        title: `${NotificationTitle[GovernanceNotificationType.ProposalAuthoredFinished]} ${proposal.title}`,
-        body: NotificationBody[GovernanceNotificationType.ProposalAuthoredFinished],
+        title,
+        body,
         recipient: addresses,
         url: proposalUrl(proposal.id),
         customType: NotificationCustomType.Proposal,
@@ -191,9 +223,19 @@ export class NotificationService {
         throw new Error('Invalid addresses')
       }
 
+      const title = NotificationTitle[GovernanceNotificationType.ProposalVotedFinished]
+      const body = NotificationBody[GovernanceNotificationType.ProposalVotedFinished]
+
+      await DiscordService.sendDirectMessage('DISCORD_ID_PLACEHOLDER', {
+        title,
+        action: body,
+        url: proposalUrl(proposal.id),
+        fields: [],
+      })
+
       return await this.sendNotification({
-        title: NotificationTitle[GovernanceNotificationType.ProposalVotedFinished],
-        body: NotificationBody[GovernanceNotificationType.ProposalVotedFinished],
+        title,
+        body,
         recipient: addresses,
         url: proposalUrl(proposal.id),
         customType: NotificationCustomType.Proposal,
