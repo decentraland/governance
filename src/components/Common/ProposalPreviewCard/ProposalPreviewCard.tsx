@@ -69,6 +69,18 @@ const ProposalPreviewCard = ({ proposal, votes, variant }: Props) => {
                 <Username className="ProposalPreviewCard__Username" address={user} variant="address" />
               </span>
             )}
+            {showVotedChoice && (
+              <span
+                title={userChoice.toUpperCase()}
+                className={classNames(
+                  'ProposalPreviewCard__DetailsItem',
+                  'ProposalPreviewCard__DetailsItemVotedChoice'
+                )}
+              >
+                {t('page.proposal_detail.your_vote_label')}
+                <span className="ProposalPreviewCard__Vote">{userChoice}</span>
+              </span>
+            )}
             <Desktop>
               <span className="ProposalPreviewCard__DetailsItem">
                 {t('page.home.open_proposals.votes', { total: Object.keys(votes || {}).length })}
@@ -85,12 +97,6 @@ const ProposalPreviewCard = ({ proposal, votes, variant }: Props) => {
             >
               {dateText}
             </span>
-            {showVotedChoice && (
-              <span className="ProposalPreviewCard__DetailsItem">
-                {t('page.proposal_detail.your_vote_label')}
-                <strong>{userChoice}</strong>
-              </span>
-            )}
           </span>
         </div>
       </ProposalPreviewCardSection>
