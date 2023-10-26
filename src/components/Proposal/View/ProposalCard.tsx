@@ -75,7 +75,7 @@ export default function ProposalCard({
                 <span>{' · '}</span>
               </>
             )}
-            <span className="ProposalCard__DetailsItem ProposalCard__DetailsOnlyDesktop">
+            <span className="ProposalCard__DetailsItem">
               {showLeadingVP
                 ? t('page.home.open_proposals.leading_vp', {
                     total: formatNumber(winningChoice.power),

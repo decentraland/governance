@@ -1,0 +1,5 @@
+@media (min-width: 768px) {
+  .MediaQuery__Mobile {
+    display: none;
+  }
+}

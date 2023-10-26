@@ -5,12 +5,14 @@ import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { Mobile, NotMobile, useTabletAndBelowMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
+import { useTabletAndBelowMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 import { Pagination } from 'decentraland-ui/dist/components/Pagination/Pagination'
 
 import RandomBanner from '../components/Banner/RandomBanner'
 import CategoryBanner from '../components/Category/CategoryBanner'
 import Empty from '../components/Common/Empty'
+import Mobile from '../components/Common/MediaQuery/Mobile'
+import NotMobile from '../components/Common/MediaQuery/NotMobile'
 import ProposalPreviewCard from '../components/Common/ProposalPreviewCard/ProposalPreviewCard'
 import Link from '../components/Common/Typography/Link'
 import Text from '../components/Common/Typography/Text'
@@ -98,7 +100,7 @@ export default function ProposalsPage() {
     return <MaintenanceLayout title={title} description={description} activeTab={NavigationTab.Proposals} />
   }
 
-  const isLoading = isLoadingProposals || isLoadingVotes
+  const isLoading = !proposals || isLoadingProposals || isLoadingVotes
 
   return (
     <>
@@ -111,7 +113,7 @@ export default function ProposalsPage() {
         <div className="OnlyDesktop">
           <RandomBanner isVisible={!searching} />
         </div>
-        {search && proposals && (
+        {search && (
           <NotMobile>
             <SearchTitle />
           </NotMobile>
@@ -127,33 +129,27 @@ export default function ProposalsPage() {
             </NotMobile>
           </div>
           <div className="ProposalsPage__Content">
-            {proposals && (
+            {search && (
               <Mobile>
                 <SearchTitle />
               </Mobile>
             )}
             <ActionableLayout
               leftAction={
-                proposals && (
-                  <Text color="secondary" weight="semi-bold" className="ProposalsPage__ProposalCount">
-                    {t('general.count_proposals', { count: proposals.total || 0 })}
-                  </Text>
-                )
+                <Text color="secondary" weight="semi-bold" className="ProposalsPage__ProposalCount">
+                  {t('general.count_proposals', { count: proposals?.total || 0 })}
+                </Text>
               }
               rightAction={
                 <>
-                  {proposals && (
-                    <>
-                      <SortingMenu />
-                      <Mobile>
-                        <FilterMenu>
-                          <CategoryFilter filterType={ProposalType} />
-                          <StatusFilter statusType={ProposalStatus} />
-                          <TimeFrameFilter />
-                        </FilterMenu>
-                      </Mobile>
-                    </>
-                  )}
+                  <SortingMenu />
+                  <Mobile>
+                    <FilterMenu>
+                      <CategoryFilter filterType={ProposalType} />
+                      <StatusFilter statusType={ProposalStatus} />
+                      <TimeFrameFilter />
+                    </FilterMenu>
+                  </Mobile>
                   <Button
                     primary
                     size="small"
@@ -166,14 +162,14 @@ export default function ProposalsPage() {
                 </>
               }
             >
-              {type && !searching && <CategoryBanner type={type} />}
               {isLoading && (
                 <div className="ProposalsPage__LoaderContainer">
-                  <Loader size="medium" active={!proposals || isLoading} />
+                  <Loader size="medium" active={isLoading} />
                 </div>
               )}
               {!isLoading && (
                 <>
+                  {type && !searching && <CategoryBanner type={type} />}
                   {proposals && proposals.data.length === 0 && (
                     <Empty
                       className="ProposalsPage__Empty"
