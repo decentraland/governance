@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { SubtypeOptions, toGrantSubtype } from '../entities/Grant/types'
-import { ProposalStatus, ProposalType, toProposalType } from '../entities/Proposal/types'
+import { ProposalStatus, ProposalType, SortingOrder, toProposalType, toSearchSorting } from '../entities/Proposal/types'
 import { toProposalStatus } from '../entities/Proposal/utils'
 import { toProposalListPage } from '../utils/locations'
 
@@ -14,7 +14,7 @@ export type SearchParams = {
   search: string
   searching: boolean
   timeFrame: string
-  order: 'ASC' | 'DESC' | undefined
+  order?: SortingOrder | 'RELEVANCE'
   page: number
 }
 
@@ -27,7 +27,7 @@ export function useProposalsSearchParams(): SearchParams {
     const status = toProposalStatus(params.get('status'), () => undefined)
     const search = params.get('search') || ''
     const timeFrame = params.get('timeFrame') || ''
-    const order = params.get('order') ? (params.get('order') === 'ASC' ? 'ASC' : 'DESC') : undefined
+    const order = toSearchSorting(params.get('order'))
     const searching = !!search && search.length > 0
     const page = toProposalListPage(params.get('page')) ?? undefined
 

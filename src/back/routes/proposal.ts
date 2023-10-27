@@ -16,7 +16,7 @@ import CoauthorModel from '../../entities/Coauthor/model'
 import { CoauthorStatus } from '../../entities/Coauthor/types'
 import isDAOCommittee from '../../entities/Committee/isDAOCommittee'
 import { hasOpenSlots } from '../../entities/Committee/utils'
-import { GrantRequest, getGrantRequestSchema } from '../../entities/Grant/types'
+import { GrantRequest, SubtypeOptions, getGrantRequestSchema } from '../../entities/Grant/types'
 import {
   SUBMISSION_THRESHOLD_DRAFT,
   SUBMISSION_THRESHOLD_GOVERNANCE,
@@ -49,6 +49,7 @@ import {
   ProposalRequiredVP,
   ProposalStatus,
   ProposalType,
+  SortingOrder,
   UpdateProposalStatusProposal,
   newProposalBanNameScheme,
   newProposalCatalystScheme,
@@ -60,6 +61,7 @@ import {
   newProposalPitchScheme,
   newProposalPollScheme,
   newProposalTenderScheme,
+  toSearchSorting,
   updateProposalStatusScheme,
 } from '../../entities/Proposal/types'
 import {
@@ -118,15 +120,15 @@ export default routes((route) => {
 
 export async function getProposals(req: WithAuth) {
   const query = req.query
-  const type = query.type && String(query.type)
-  const subtype = query.subtype && String(query.subtype)
-  const status = query.status && String(query.status)
+  const type = query.type ? (String(query.type) as ProposalType) : undefined
+  const subtype = query.subtype ? (String(query.subtype) as SubtypeOptions) : undefined
+  const status = query.status ? (String(query.status) as ProposalStatus) : undefined
   const user = query.user && String(query.user)
   const search = query.search && String(query.search)
   const timeFrame = query.timeFrame && String(query.timeFrame)
   const timeFrameKey = query.timeFrameKey && String(query.timeFrameKey)
   const coauthor = (query.coauthor && Boolean(query.coauthor)) || false
-  const order = query.order && String(query.order) === 'ASC' ? 'ASC' : 'DESC'
+  const order = toSearchSorting(String(query.order))
   const snapshotIds = query.snapshotIds && String(query.snapshotIds)
   const subscribed = query.subscribed ? req.auth || '' : undefined
   const offset = query.offset && Number.isFinite(Number(query.offset)) ? Number(query.offset) : MIN_PROPOSAL_OFFSET
@@ -436,7 +438,7 @@ export async function createProposalTender(req: WithAuth) {
 
   const tenderProposals = await ProposalModel.getProposalList({
     linkedProposalId: configuration.linked_proposal_id,
-    order: 'ASC',
+    order: SortingOrder.ASC,
   })
 
   if (hasTenderProcessFinished(tenderProposals)) {

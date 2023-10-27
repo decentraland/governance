@@ -21,23 +21,15 @@ import { OldGrantCategory, SubtypeAlternativeOptions, isGrantSubtype } from '../
 import SubscriptionModel from '../Subscription/model'
 
 import tsquery from './tsquery'
-import { ProposalAttributes, ProposalStatus, ProposalType, isProposalType } from './types'
+import {
+  FilterProposalList,
+  ProposalAttributes,
+  ProposalStatus,
+  ProposalType,
+  SortingOrder,
+  isProposalType,
+} from './types'
 import { SITEMAP_ITEMS_PER_PAGE, isProposalStatus } from './utils'
-
-export type FilterProposalList = {
-  type: string
-  subtype?: string
-  user: string
-  status: string
-  subscribed: string
-  coauthor: boolean
-  search?: string
-  timeFrame?: string
-  timeFrameKey?: string
-  order?: 'ASC' | 'DESC'
-  snapshotIds?: string
-  linkedProposalId?: string
-}
 
 export type FilterPagination = {
   limit: number
@@ -45,7 +37,7 @@ export type FilterPagination = {
 }
 
 const VALID_TIMEFRAME_KEYS = ['created_at', 'finish_at']
-const VALID_ORDER_DIRECTION = ['ASC', 'DESC']
+const VALID_ORDER_DIRECTION = Object.values(SortingOrder)
 
 export default class ProposalModel extends Model<ProposalAttributes> {
   static tableName = 'proposals'
@@ -245,7 +237,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       return 0
     }
 
-    if (subscribed && !isEthereumAddress(subscribed)) {
+    if (subscribed && !isEthereumAddress(String(subscribed))) {
       return 0
     }
 
@@ -336,7 +328,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       return []
     }
 
-    if (subscribed && !isEthereumAddress(subscribed)) {
+    if (subscribed && !isEthereumAddress(String(subscribed))) {
       return []
     }
 
@@ -358,13 +350,13 @@ export default class ProposalModel extends Model<ProposalAttributes> {
 
     const timeFrame = this.parseTimeframe(filter.timeFrame)
     const timeFrameKey = filter.timeFrameKey || 'created_at'
-    const orderDirection = order || 'DESC'
+    const orderDirection = !order || order === 'RELEVANCE' ? SortingOrder.DESC : order
 
     if (!VALID_TIMEFRAME_KEYS.includes(timeFrameKey) || !VALID_ORDER_DIRECTION.includes(orderDirection)) {
       return []
     }
 
-    const orderBy = search ? '"rank"' : `p.${timeFrameKey}`
+    const orderBy = search && (!order || order === 'RELEVANCE') ? '"rank"' : `p.${timeFrameKey}`
 
     const sqlSnapshotIds = snapshotIds?.split(',').map((id) => SQL`${id}`)
     const sqlSnapshotIdsJoin = sqlSnapshotIds ? join(sqlSnapshotIds) : null

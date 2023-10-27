@@ -40,7 +40,8 @@
       "filter": "Filter",
       "sorting": {
         "DESC": "Latest",
-        "ASC": "Oldest"
+        "ASC": "Oldest",
+        "RELEVANCE": "Relevance"
       },
       "category_filter_title": "Filter by Category",
       "legacy_filter_title": "Filter by Legacy Grants",

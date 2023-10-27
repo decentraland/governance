@@ -5,6 +5,7 @@ import classNames from 'classnames'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
+import { SortingOrder, toSearchSorting } from '../../entities/Proposal/types'
 import { getUrlFilters } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import { navigate } from '../../utils/locations'
@@ -16,8 +17,12 @@ const SORT_KEY = 'order'
 export default function SortingMenu() {
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
-  const order = useMemo(() => (params.get('order') === 'ASC' ? 'ASC' : 'DESC'), [params])
-  const arrowDirection = useMemo(() => (order === 'ASC' ? 'Upwards' : 'Downwards'), [order])
+  const isSearching = useMemo(() => !!params.get('search'), [params])
+  const order = useMemo(
+    () => toSearchSorting(params.get('order')) ?? (isSearching ? 'RELEVANCE' : SortingOrder.DESC),
+    [isSearching, params]
+  )
+  const arrowDirection = useMemo(() => (order === SortingOrder.ASC ? 'Upwards' : 'Downwards'), [order])
   const isMobile = useMobileMediaQuery()
 
   const t = useFormatMessage()
@@ -29,13 +34,19 @@ export default function SortingMenu() {
       text={t(`navigation.search.sorting.${order}`) || ''}
     >
       <Dropdown.Menu>
+        {isSearching && (
+          <Dropdown.Item
+            text={t('navigation.search.sorting.RELEVANCE')}
+            onClick={() => navigate(getUrlFilters(SORT_KEY, params, 'RELEVANCE'))}
+          />
+        )}
         <Dropdown.Item
           text={t('navigation.search.sorting.DESC')}
-          onClick={() => navigate(getUrlFilters(SORT_KEY, params, 'DESC'))}
+          onClick={() => navigate(getUrlFilters(SORT_KEY, params, SortingOrder.DESC))}
         />
         <Dropdown.Item
           text={t('navigation.search.sorting.ASC')}
-          onClick={() => navigate(getUrlFilters(SORT_KEY, params, 'ASC'))}
+          onClick={() => navigate(getUrlFilters(SORT_KEY, params, SortingOrder.ASC))}
         />
       </Dropdown.Menu>
     </Dropdown>
