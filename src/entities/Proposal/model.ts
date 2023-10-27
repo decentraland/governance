@@ -118,6 +118,8 @@ export default class ProposalModel extends Model<ProposalAttributes> {
   }
 
   static async findFromSnapshotIds(ids: string[]): Promise<ProposalAttributes[]> {
+    if (ids.length === 0) return []
+
     const query = SQL`
         SELECT *
         FROM ${table(ProposalModel)}
@@ -131,6 +133,8 @@ export default class ProposalModel extends Model<ProposalAttributes> {
   }
 
   static async findByIds(ids: string[]): Promise<ProposalAttributes[]> {
+    if (ids.length === 0) return []
+
     const query = SQL`
         SELECT *
         FROM ${table(ProposalModel)}

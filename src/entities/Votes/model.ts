@@ -47,6 +47,8 @@ export default class VotesModel extends Model<VoteAttributes> {
   }
 
   static async findAny(ids: string[]): Promise<VoteAttributes[]> {
+    if (ids.length === 0) return []
+
     const query = SQL`
       SELECT *
       FROM ${table(VotesModel)}
