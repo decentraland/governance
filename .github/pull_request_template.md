@@ -3,13 +3,10 @@
 **Related Issue**
 E.g: *Closes/Fixes #1234*
 
-- [ ]  **Code Quality**
-    - [ ]  The code follows established coding standards and style guidelines
-    - [ ]  The code is properly commented on and provides context when needed (complex feature or hard to understand)
 - [ ]  **Functionality validation**
     - [ ]  Feature working as described in the related issue
     - [ ]  New environmental variables have been set
-    - [ ]  New functions are properly tested (When should we add tests?)
+    - [ ]  New services methods are properly tested
     - [ ]  Code errors are being logged in the code health service
 - [ ]  **Product validation**
     - [ ]  UI changes look the same as in Figma
@@ -18,6 +15,6 @@ E.g: *Closes/Fixes #1234*
     - [ ]  Preview link if it’s a customer facing issue
 - [ ] **Documentation**
     - [ ] README updated
-    - [ ] New API changes are properly documented
+    - [ ] New API changes are documented
 - [ ] **Accessibility**
     - [ ] UI changes are accessible
