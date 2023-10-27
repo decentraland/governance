@@ -165,6 +165,10 @@ export class Governance extends API {
     return await this.fetch<{ total: number }>(`/projects/tenders-total`, this.options().method('GET'))
   }
 
+  async getPriorityProjects() {
+    return await this.fetch<Partial<ProposalAttributes>[]>(`/projects/priority`, this.options().method('GET'))
+  }
+
   async getGrantsByUser(user: string, coauthoring?: boolean) {
     const grants = await this.fetch<ApiResponse<CategorizedGrants>>(
       `/proposals/grants/${user}?coauthoring=${!!coauthoring}`

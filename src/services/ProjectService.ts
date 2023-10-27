@@ -335,4 +335,9 @@ export class ProjectService {
       total: Number(data.total),
     }
   }
+
+  static async getPriorityProjects() {
+    // TODO: filter by votes if user
+    return await ProposalModel.getPriorityProjects()
+  }
 }
