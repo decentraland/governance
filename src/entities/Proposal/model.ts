@@ -482,11 +482,76 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     )})`
   }
 
+  /**
+   * Returns the amount of pitches in open submission period, that have submitted tenders waiting for voting to start
+   */
   static async getOpenPitchesTotal() {
     const query = SQL`
     SELECT COUNT(DISTINCT (configuration->>'linked_proposal_id')) AS total
     FROM ${table(this)} WHERE type = ${ProposalType.Tender} AND status = ${ProposalStatus.Pending};`
 
     return (await this.namedQuery('get_open_pitches_total', query))[0]
+  }
+
+  static async getPriorityProposals() {
+    /**
+     * -- Open Governance proposals
+     * SELECT proposals.title, proposals.start_at, proposals.type, proposals.status, proposals.user
+     * FROM proposals
+     * WHERE type = 'governance' AND status = 'active'
+     *
+     * UNION ALL
+     *
+     * -- Pitches open for submission, that have no tenders yet
+     * SELECT proposals.title, proposals.start_at, proposals.type, proposals.status, proposals.user
+     * FROM proposals
+     * WHERE type = 'pitch'
+     *   AND status = 'passed'
+     *   AND id NOT IN (SELECT (p2.configuration->>'linked_proposal_id') FROM proposals AS p2 WHERE type = 'tender')
+     *
+     * UNION ALL
+     *
+     * -- Pitches still open for submission, with submitted tenders pending to start
+     * SELECT proposals.title, proposals.start_at, proposals.type, proposals.status, proposals.user
+     * FROM proposals
+     * WHERE type = 'pitch'
+     *   AND status = 'passed'
+     *   AND id IN (SELECT (p2.configuration->>'linked_proposal_id') FROM proposals AS p2 WHERE type = 'tender' AND status = 'pending')
+     *
+     * UNION ALL
+     *
+     * -- Pitches closed for submission, with tenders open for voting
+     * SELECT proposals.title, proposals.start_at, proposals.type, proposals.status, proposals.user
+     * FROM proposals
+     * WHERE type = 'pitch'
+     *   AND status = 'passed'
+     *   AND id IN (SELECT (p2.configuration->>'linked_proposal_id') FROM proposals AS p2 WHERE type = 'tender' AND status = 'active')
+     *
+     * UNION ALL
+     *
+     * -- Tenders open for submission, that have no bids yet
+     * SELECT proposals.title, proposals.start_at, proposals.type, proposals.status, proposals.user
+     * FROM proposals
+     * WHERE type = 'tender'
+     *   AND status = 'passed'
+     *   AND id NOT IN (SELECT (p2.configuration->>'linked_proposal_id') FROM proposals AS p2 WHERE type = 'bid')
+     *
+     * UNION ALL
+     *
+     * -- Tenders open for submission, that have bids pending to start
+     * SELECT proposals.title, proposals.start_at, proposals.type, proposals.status, proposals.user
+     * FROM proposals
+     * WHERE type = 'tender'
+     *   AND status = 'passed'
+     *   AND id IN (SELECT (p2.configuration->>'linked_proposal_id') FROM proposals AS p2 WHERE type = 'bid' AND status = 'pending')
+     *
+     * UNION ALL
+     *
+     * -- Bids open for voting
+     * SELECT proposals.title, proposals.start_at, proposals.type, proposals.status, proposals.user
+     * FROM proposals
+     * WHERE type = 'bid'
+     *   AND status = 'active';
+     */
   }
 }
