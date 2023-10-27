@@ -6,22 +6,25 @@ import SkeletonBars from '../Common/SkeletonBars'
 import Watermelon from '../Icon/Watermelon'
 import ProfileProposalItem from '../Proposal/ProfileProposalItem'
 
-import { ProfileBox } from './ProfileBox'
+import { ActionBox } from './ActionBox'
 import './VotedProposalsBox.css'
 
 interface Props {
+  title: string
+  info?: string
   address: string
+  collapsible?: boolean
 }
 
 const PROPOSALS_PER_PAGE = 5
 
-function VotedProposalsBox({ address }: Props) {
+function ProposalsBox({ title, info, address, collapsible }: Props) {
   const t = useFormatMessage()
 
   const { votes, isLoading, handleViewMore, hasMoreProposals } = useVotedProposals(address, PROPOSALS_PER_PAGE)
 
   return (
-    <ProfileBox title={t('page.profile.voted_proposals.title')}>
+    <ActionBox title={title} info={info} collapsible={collapsible}>
       {isLoading && <SkeletonBars amount={votes.length || 3} height={89} />}
       {!isLoading &&
         (votes.length > 0 ? (
@@ -38,8 +41,8 @@ function VotedProposalsBox({ address }: Props) {
       {hasMoreProposals && (
         <FullWidthButton onClick={handleViewMore}>{t('page.profile.voted_proposals.button')}</FullWidthButton>
       )}
-    </ProfileBox>
+    </ActionBox>
   )
 }
 
-export default VotedProposalsBox
+export default ProposalsBox

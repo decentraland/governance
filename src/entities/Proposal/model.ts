@@ -491,7 +491,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         SELECT title, start_at, type, status, ${table(this)}.user
         FROM ${table(this)}
         WHERE type = 'governance' AND status = 'active'
-    UNION ALL
+    UNION
         SELECT title, start_at, type, status, ${table(this)}.user
         FROM ${table(this)}
         WHERE type = 'pitch'
@@ -499,7 +499,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
           AND id NOT IN (SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(
             this
           )} AS p2 WHERE type = 'tender')
-    UNION ALL
+    UNION
         SELECT title, start_at, type, status, ${table(this)}.user
         FROM ${table(this)}
         WHERE type = 'pitch'
@@ -510,7 +510,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
             WHERE type = 'tender'
               AND status = 'pending'
             )
-    UNION ALL
+    UNION
         SELECT title, start_at, type, status, ${table(this)}.user
         FROM ${table(this)}
         WHERE type = 'pitch'
@@ -521,7 +521,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
             WHERE type = 'tender' 
               AND status = 'active'
             )
-    UNION ALL
+    UNION
         SELECT title, start_at, type, status, ${table(this)}.user
         FROM ${table(this)}
         WHERE type = 'tender'
@@ -531,7 +531,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
             FROM ${table(this)} AS p2 
             WHERE type = 'bid'
           )
-    UNION ALL
+    UNION
         SELECT title, start_at, type, status, ${table(this)}.user
         FROM ${table(this)}
         WHERE type = 'tender'
@@ -540,16 +540,12 @@ export default class ProposalModel extends Model<ProposalAttributes> {
             SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(
               this
             )}  AS p2 WHERE type = 'bid' AND status = 'pending')
-
-    UNION ALL
-
+    UNION
       SELECT title, start_at, type, status, ${table(this)}.user
-    FROM ${table(this)} 
-    WHERE type = 'bid'
-    AND status = 'active';`
+      FROM ${table(this)}
+      WHERE type = 'bid'
+        AND status = 'active';`
 
-    const proposals = await this.namedQuery('get_priority_proposals', query)
-    console.log('proposals', proposals)
-    return proposals
+    return await this.namedQuery('get_priority_proposals', query)
   }
 }

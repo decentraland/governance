@@ -4,8 +4,8 @@ import { Governance } from '../../clients/Governance'
 import { DEFAULT_QUERY_STALE_TIME } from '../../hooks/constants'
 import useFormatMessage from '../../hooks/useFormatMessage'
 
+import { ActionBox } from './ActionBox'
 import GrantBeneficiaryList from './GrantBeneficiaryList'
-import { ProfileBox } from './ProfileBox'
 
 interface Props {
   address: string | null
@@ -29,8 +29,8 @@ export default function GrantBeneficiaryBox({ address }: Props) {
   }
 
   return (
-    <ProfileBox title={t('page.profile.grants.title')} info={t('page.profile.grants.info')}>
+    <ActionBox title={t('page.profile.grants.title')} info={t('page.profile.grants.info')}>
       <GrantBeneficiaryList grants={grants?.data} address={address} />
-    </ProfileBox>
+    </ActionBox>
   )
 }
