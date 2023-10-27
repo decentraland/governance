@@ -12,6 +12,7 @@ import { DiscordService } from '../../services/DiscordService'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
 import { ErrorCategory } from '../../utils/errorCategories'
+import { isProdEnv } from '../../utils/governanceEnvs'
 import { Budget } from '../Budget/types'
 
 import ProposalModel from './model'
@@ -88,6 +89,26 @@ function hasCustomOutcome(type: ProposalType) {
   return type === ProposalType.Grant || type === ProposalType.Tender || type === ProposalType.Bid
 }
 
+function reportPendingProposalsWithoutVotingResults(
+  pendingProposals: ProposalAttributes[],
+  proposalsWithVotingResult: ProposalVotingResult[]
+) {
+  if (isProdEnv()) {
+    pendingProposals.map((pendingProposal) => {
+      if (
+        !proposalsWithVotingResult.some(
+          (proposalsWithVotingResult) => proposalsWithVotingResult.id === pendingProposal.id
+        )
+      ) {
+        ErrorService.report('Could not find voting results for pending proposal', {
+          proposal: pendingProposal,
+          category: ErrorCategory.Job,
+        })
+      }
+    })
+  }
+}
+
 async function categorizeProposals(
   pendingProposals: ProposalAttributes[],
   currentBudgets: Budget[]
@@ -101,6 +122,8 @@ async function categorizeProposals(
     ...finishableTenderProposals,
     ...finishableBidProposals,
   ])
+
+  reportPendingProposalsWithoutVotingResults(pendingProposals, proposalsWithVotingResult)
 
   for (const proposal of proposalsWithVotingResult) {
     switch (proposal.votingOutcome) {
@@ -180,10 +203,9 @@ export async function publishBids(context: JobContext) {
   }
 }
 
+const pool = new Pool({ connectionString: process.env.CONNECTION_STRING })
 async function updateProposalsAndBudgets(proposalsWithOutcome: ProposalWithOutcome[], budgetsWithUpdates: Budget[]) {
   if (proposalsWithOutcome.length === 0) return
-
-  const pool = new Pool({ connectionString: process.env.CONNECTION_STRING })
   const client = await pool.connect()
 
   try {
