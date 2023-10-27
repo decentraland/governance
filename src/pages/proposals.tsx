@@ -21,6 +21,7 @@ import ActionableLayout from '../components/Layout/ActionableLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
+import ProposalsBox from '../components/Profile/ProposalsBox'
 import ProposalItem from '../components/Proposal/ProposalItem'
 import CategoryFilter from '../components/Search/CategoryFilter'
 import FilterMenu from '../components/Search/FilterMenu'
@@ -138,6 +139,16 @@ export default function ProposalsPage() {
                     <SearchTitle />
                   </Mobile>
                 )}
+                <NotMobile>
+                  <div className="ProposalsPage__Priority">
+                    <ProposalsBox
+                      title={'Time Sensitive'}
+                      info={'Proposals that need your attention reit neu'}
+                      address={'0x549a9021661a85b6bc51c07b3a451135848d0048'}
+                      collapsible
+                    />
+                  </div>
+                </NotMobile>
                 <ActionableLayout
                   leftAction={
                     <Text color="secondary" weight="semi-bold" className="ProposalsPage__ProposalCount">

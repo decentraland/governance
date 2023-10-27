@@ -20,6 +20,10 @@
   width: 100%;
 }
 
+.ProposalsPage__Priority {
+  margin-bottom: 37px;
+}
+
 .ProposalsPage__List {
   display: flex;
   flex-direction: column;

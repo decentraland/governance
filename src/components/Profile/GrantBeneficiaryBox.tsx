@@ -1,8 +1,8 @@
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useGrantsByUser from '../../hooks/useGrantsByUser'
 
+import { ActionBox } from './ActionBox'
 import GrantBeneficiaryList from './GrantBeneficiaryList'
-import { ProfileBox } from './ProfileBox'
 
 interface Props {
   address: string | null
@@ -16,8 +16,8 @@ export default function GrantBeneficiaryBox({ address }: Props) {
   if (!hasGrants) return null
 
   return (
-    <ProfileBox title={t('page.profile.grants.title')} info={t('page.profile.grants.info')}>
+    <ActionBox title={t('page.profile.grants.title')} info={t('page.profile.grants.info')}>
       <GrantBeneficiaryList grants={grants} />
-    </ProfileBox>
+    </ActionBox>
   )
 }
