@@ -13,7 +13,18 @@ import { UpdateAttributes } from '../Updates/types'
 import { DISCOURSE_API } from '../User/utils'
 
 import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
-import { ProposalAttributes, ProposalStatus, ProposalType } from './types'
+import {
+  CatalystType,
+  PoiType,
+  ProposalAttributes,
+  ProposalStatus,
+  ProposalType,
+  SortingOrder,
+  isCatalystType,
+  isPoiType,
+  isProposalType,
+  isSortingOrder,
+} from './types'
 
 export const MIN_PROPOSAL_OFFSET = 0
 export const MAX_PROPOSAL_LIMIT = 100
@@ -175,8 +186,32 @@ export function isProposalStatus(value: string | null | undefined): boolean {
   }
 }
 
-export function toProposalStatus(value: string | null | undefined, orElse: () => any): ProposalStatus | any {
-  return isProposalStatus(value) ? (value as ProposalStatus) : orElse()
+function toCustomType<FinalType, OrElse, ValueType>(
+  value: ValueType,
+  isType: (value: ValueType) => boolean,
+  orElse: () => OrElse
+): FinalType | OrElse {
+  return isType(value) ? (value as unknown as FinalType) : orElse()
+}
+
+export function toProposalStatus<OrElse>(value: string | null | undefined, orElse: () => OrElse) {
+  return toCustomType<ProposalStatus, OrElse, typeof value>(value, isProposalStatus, orElse)
+}
+
+export function toCatalystType<OrElse>(value: string | null | undefined, orElse: () => OrElse) {
+  return toCustomType<CatalystType, OrElse, typeof value>(value, isCatalystType, orElse)
+}
+
+export function toProposalType<OrElse>(value: string | null | undefined, orElse: () => OrElse) {
+  return toCustomType<ProposalType, OrElse, typeof value>(value, isProposalType, orElse)
+}
+
+export function toPoiType<OrElse>(value: string | null | undefined, orElse: () => OrElse) {
+  return toCustomType<PoiType, OrElse, typeof value>(value, isPoiType, orElse)
+}
+
+export function toSortingOrder<OrElse>(value: string | null | undefined, orElse: () => OrElse) {
+  return toCustomType<SortingOrder, OrElse, typeof value>(value, isSortingOrder, orElse)
 }
 
 export function isProposalDeletable(proposalStatus?: ProposalStatus) {

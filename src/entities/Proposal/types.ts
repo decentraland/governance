@@ -79,7 +79,7 @@ export type FilterProposalList = {
   search?: string | null
   timeFrame?: string | null
   timeFrameKey?: string | null
-  order?: SortingOrder | 'RELEVANCE'
+  order?: SortingOrder
   snapshotIds?: string
   linkedProposalId?: string
 }
@@ -161,26 +161,13 @@ export function isCatalystType(value: string | null | undefined): boolean {
   }
 }
 
-export function toCatalystType(value: string | null | undefined): CatalystType | null {
-  return isCatalystType(value) ? (value as CatalystType) : null
-}
-
-export function toProposalType(value: string | null | undefined): ProposalType | null {
-  return isProposalType(value) ? (value as ProposalType) : null
-}
-
-export function toPoiType(value: string | null | undefined): PoiType | null {
-  return isPoiType(value) ? (value as PoiType) : null
-}
-
-export function toSearchSorting(value: string | null | undefined): 'RELEVANCE' | SortingOrder | undefined {
+export function isSortingOrder(value: string | null | undefined): boolean {
   switch (value) {
-    case 'RELEVANCE':
     case SortingOrder.ASC:
     case SortingOrder.DESC:
-      return value
+      return true
     default:
-      return undefined
+      return false
   }
 }
 

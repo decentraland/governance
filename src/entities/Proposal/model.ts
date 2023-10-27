@@ -350,13 +350,13 @@ export default class ProposalModel extends Model<ProposalAttributes> {
 
     const timeFrame = this.parseTimeframe(filter.timeFrame)
     const timeFrameKey = filter.timeFrameKey || 'created_at'
-    const orderDirection = !order || order === 'RELEVANCE' ? SortingOrder.DESC : order
+    const orderDirection = !order ? SortingOrder.DESC : order
 
     if (!VALID_TIMEFRAME_KEYS.includes(timeFrameKey) || !VALID_ORDER_DIRECTION.includes(orderDirection)) {
       return []
     }
 
-    const orderBy = search && (!order || order === 'RELEVANCE') ? '"rank"' : `p.${timeFrameKey}`
+    const orderBy = search && !order ? '"rank"' : `p.${timeFrameKey}`
 
     const sqlSnapshotIds = snapshotIds?.split(',').map((id) => SQL`${id}`)
     const sqlSnapshotIdsJoin = sqlSnapshotIds ? join(sqlSnapshotIds) : null

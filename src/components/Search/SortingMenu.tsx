@@ -5,7 +5,8 @@ import classNames from 'classnames'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
-import { SortingOrder, toSearchSorting } from '../../entities/Proposal/types'
+import { SortingOrder } from '../../entities/Proposal/types'
+import { toSortingOrder } from '../../entities/Proposal/utils'
 import { getUrlFilters } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import { navigate } from '../../utils/locations'
@@ -17,12 +18,9 @@ const SORT_KEY = 'order'
 export default function SortingMenu() {
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
-  const isSearching = useMemo(() => !!params.get('search'), [params])
-  const order = useMemo(
-    () => toSearchSorting(params.get('order')) ?? (isSearching ? 'RELEVANCE' : SortingOrder.DESC),
-    [isSearching, params]
-  )
-  const arrowDirection = useMemo(() => (order === SortingOrder.ASC ? 'Upwards' : 'Downwards'), [order])
+  const isSearching = !!params.get('search')
+  const order = toSortingOrder(params.get('order'), () => (isSearching ? 'RELEVANCE' : SortingOrder.DESC))
+  const arrowDirection = order === SortingOrder.ASC ? 'Upwards' : 'Downwards'
   const isMobile = useMobileMediaQuery()
 
   const t = useFormatMessage()
@@ -37,7 +35,7 @@ export default function SortingMenu() {
         {isSearching && (
           <Dropdown.Item
             text={t('navigation.search.sorting.RELEVANCE')}
-            onClick={() => navigate(getUrlFilters(SORT_KEY, params, 'RELEVANCE'))}
+            onClick={() => navigate(getUrlFilters(SORT_KEY, params, undefined))}
           />
         )}
         <Dropdown.Item
