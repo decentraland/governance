@@ -12,7 +12,7 @@ import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import ActivityBox from '../components/Profile/ActivityBox'
 import GrantBeneficiaryBox from '../components/Profile/GrantBeneficiaryBox'
-import VotedProposalsBox from '../components/Profile/VotedProposalsBox'
+import ProposalsBox from '../components/Profile/ProposalsBox'
 import VpDelegationBox from '../components/Profile/VpDelegationBox'
 import VpDelegatorsBox from '../components/Profile/VpDelegatorsBox'
 import UserStats from '../components/User/UserStats'
@@ -91,7 +91,7 @@ export default function ProfilePage() {
           scores={scores}
           isLoadingScores={isLoadingScores}
         />
-        <VotedProposalsBox address={address} />
+        <ProposalsBox title={t('page.profile.voted_proposals.title')} address={address} />
       </WiderContainer>
     </>
   )

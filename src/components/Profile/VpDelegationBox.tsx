@@ -15,7 +15,7 @@ import Scale from '../Icon/Scale'
 import { Candidate } from '../Modal/VotingPowerDelegationModal/VotingPowerDelegationCandidatesList'
 import VotingPowerDelegationModal from '../Modal/VotingPowerDelegationModal/VotingPowerDelegationModal'
 
-import { ProfileBox } from './ProfileBox'
+import { ActionBox } from './ActionBox'
 
 interface Props {
   address: string | null
@@ -38,7 +38,7 @@ function VpDelegationBox({ address, delegation, isLoadingDelegation, ownVp, isLo
 
   return (
     <div>
-      <ProfileBox
+      <ActionBox
         title={t('page.profile.delegation.title')}
         info={t('page.profile.delegation.helper')}
         action={
@@ -81,7 +81,7 @@ function VpDelegationBox({ address, delegation, isLoadingDelegation, ownVp, isLo
             )}
           </>
         )}
-      </ProfileBox>
+      </ActionBox>
       {!isLoadingVpDistribution && vpDistribution && (
         <VotingPowerDelegationModal
           vpDistribution={vpDistribution}
