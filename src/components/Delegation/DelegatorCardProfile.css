@@ -22,7 +22,6 @@
   padding-right: 20px;
   font-weight: var(--weight-semi-bold);
   font-size: 15px;
-  line-height: 28px;
   letter-spacing: 0.4px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -32,23 +31,16 @@
 
 .DelegatorCardProfile__Details {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+}
+
+.DelegatorCardProfile__DelegatedVp {
   color: var(--black-600);
   text-transform: uppercase;
   align-items: center;
   font-weight: var(--weight-normal);
   font-size: 11px;
-  line-height: 26px;
-}
-
-.DelegatorCardProfile__DetailsItem:after {
-  content: '·';
-  padding: 0 5px;
-}
-
-.DelegatorCardProfile__DetailsItem:last-child:after {
-  content: '';
-  padding: 0;
+  line-height: 16px;
 }
 
 .DelegatorCardProfile__Avatar {

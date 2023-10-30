@@ -7,6 +7,7 @@ import { NewGrantCategory } from '../Grant/types'
 import { getCategoryBudgetTotal, toNewGrantCategory, validateCategoryBudgets } from './utils'
 
 jest.mock('discord.js', () => jest.fn())
+jest.mock('@pushprotocol/restapi/src/index.js', () => jest.fn())
 
 describe('getCategoryBudgetTotal', () => {
   it('returns a percentage of the budget total', () => {

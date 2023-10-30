@@ -31,6 +31,7 @@ const EXISTING_BUDGETS: QuarterBudgetAttributes[] = [
 ]
 
 jest.mock('discord.js', () => jest.fn())
+jest.mock('@pushprotocol/restapi/src/index.js', () => jest.fn())
 
 describe('thereAreNoOverlappingBudgets', () => {
   it('returns true when no budgets overlap with the given dates', () => {

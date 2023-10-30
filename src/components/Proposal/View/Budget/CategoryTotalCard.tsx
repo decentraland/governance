@@ -5,8 +5,8 @@ import { ProposalAttributes, ProposalType } from '../../../../entities/Proposal/
 import { CategoryIconVariant } from '../../../../helpers/styles'
 import useFormatMessage from '../../../../hooks/useFormatMessage'
 import locations from '../../../../utils/locations'
-import { getCategoryIcon } from '../../../Category/CategoryOption'
 import { GrantRequestSectionCard } from '../../../GrantRequest/GrantRequestSectionCard'
+import { getNewGrantIcon } from '../../../Projects/Current/BudgetBanner'
 
 import './CategoryTotalCard.css'
 
@@ -23,7 +23,7 @@ export default function CategoryTotalCard({ proposal, budget }: Props) {
     <GrantRequestSectionCard
       title={
         <>
-          {getCategoryIcon(snakeCase(grantCategory), CategoryIconVariant.Circled)}
+          {getNewGrantIcon(snakeCase(grantCategory), CategoryIconVariant.Circled)}
           <span className="CategoryTotalCard__Title">
             {t('page.proposal_detail.grant.category_budget.title', { category: grantCategory })}
           </span>

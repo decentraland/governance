@@ -1,15 +1,21 @@
 import { useIntl } from 'react-intl'
 
 import classNames from 'classnames'
-import snakeCase from 'lodash/snakeCase'
+import toSnakeCase from 'lodash/snakeCase'
 
-import { ProjectStatus, SubtypeAlternativeOptions, SubtypeOptions, isGrantSubtype } from '../../../entities/Grant/types'
+import {
+  NewGrantCategory,
+  ProjectStatus,
+  SubtypeAlternativeOptions,
+  SubtypeOptions,
+  isGrantSubtype,
+} from '../../../entities/Grant/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../../helpers'
 import { CategoryIconVariant } from '../../../helpers/styles'
 import useBudgetByCategory from '../../../hooks/useBudgetByCategory'
 import useFormatMessage from '../../../hooks/useFormatMessage'
-import { getCategoryIcon } from '../../Category/CategoryOption'
 import ProgressBar from '../../Common/ProgressBar'
+import { getNewGrantsCategoryIcon } from '../../Icon/NewGrantsCategoryIcons'
 
 import './BudgetBanner.css'
 import BudgetBannerItem from './BudgetBannerItem'
@@ -18,6 +24,18 @@ interface Props {
   category: SubtypeOptions
   status?: ProjectStatus | null
   initiativesCount?: number
+}
+
+export const getNewGrantIcon = (type: string, variant?: CategoryIconVariant, size?: number) => {
+  const newGrants = Object.values(NewGrantCategory)
+  const newGrantIndex = newGrants.map(toSnakeCase).indexOf(type)
+  const isNewGrant = newGrantIndex !== -1
+  if (isNewGrant) {
+    const icon = getNewGrantsCategoryIcon(newGrants[newGrantIndex])
+    return icon({ variant: variant || CategoryIconVariant.Filled, size: size })
+  }
+
+  return <></>
 }
 
 export default function BudgetBanner({ category, status, initiativesCount }: Props) {
@@ -35,7 +53,7 @@ export default function BudgetBanner({ category, status, initiativesCount }: Pro
     <div className={classNames('BudgetBanner', !showProgress && 'BudgetBanner--start')}>
       <div className="BudgetBanner__LabelWithIcon">
         {category && (isGrantSubtype(category) || category === SubtypeAlternativeOptions.Legacy) && (
-          <span>{getCategoryIcon(snakeCase(category), CategoryIconVariant.Circled, 48)}</span>
+          <span>{getNewGrantIcon(toSnakeCase(category), CategoryIconVariant.Circled, 48)}</span>
         )}
         <BudgetBannerItem
           value={intl.formatNumber(totalBudget, CURRENCY_FORMAT_OPTIONS as any)}

@@ -21,7 +21,7 @@ import { areValidAddresses } from '../utils/validations'
 import { CoauthorService } from './coauthor'
 import { DiscordService } from './discord'
 
-const PushAPI = NOTIFICATIONS_SERVICE_ENABLED ? require('@pushprotocol/restapi') : null
+import PushAPI = require('@pushprotocol/restapi')
 
 const chainId = isProdEnv() ? ChainId.ETHEREUM_MAINNET : ChainId.ETHEREUM_GOERLI
 const PUSH_CHANNEL_OWNER_PK = process.env.PUSH_CHANNEL_OWNER_PK

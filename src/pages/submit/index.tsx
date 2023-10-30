@@ -22,7 +22,6 @@ const NOW = Date.now()
 
 const POI_MODAL_PROPS: AddRemoveProposalModalProps = {
   open: false,
-  title: 'poi',
   proposalType: ProposalType.POI,
   addType: PoiType.AddPOI,
   removeType: PoiType.RemovePOI,
@@ -30,7 +29,6 @@ const POI_MODAL_PROPS: AddRemoveProposalModalProps = {
 
 const HIRING_MODAL_PROPS: AddRemoveProposalModalProps = {
   open: false,
-  title: 'hiring',
   proposalType: ProposalType.Hiring,
   addType: HiringType.Add,
   isAddDisabled: true,
@@ -39,7 +37,6 @@ const HIRING_MODAL_PROPS: AddRemoveProposalModalProps = {
 
 const CATALYST_MODAL_PROPS: AddRemoveProposalModalProps = {
   open: false,
-  title: 'catalyst',
   proposalType: ProposalType.Catalyst,
   addType: CatalystType.Add,
   removeType: CatalystType.Remove,

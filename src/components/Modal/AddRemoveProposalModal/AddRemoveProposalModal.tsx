@@ -9,9 +9,10 @@ import CategoryBanner from '../../Category/CategoryBanner'
 import Text from '../../Common/Typography/Text'
 import '../ProposalModal.css'
 
+type AddRemoveProposalTypes = ProposalType.POI | ProposalType.Hiring | ProposalType.Catalyst
+
 export type AddRemoveProposalModalProps = ModalProps & {
-  title: 'poi' | 'hiring' | 'catalyst'
-  proposalType: ProposalType.POI | ProposalType.Hiring | ProposalType.Catalyst
+  proposalType: AddRemoveProposalTypes
   addType: PoiType | HiringType | CatalystType
   isAddDisabled?: boolean
   removeType: PoiType | HiringType | CatalystType
@@ -19,7 +20,6 @@ export type AddRemoveProposalModalProps = ModalProps & {
 }
 
 export function AddRemoveProposalModal({
-  title,
   proposalType,
   addType,
   isAddDisabled,
@@ -35,7 +35,7 @@ export function AddRemoveProposalModal({
     <Modal {...props} size="tiny" className="GovernanceContentModal ProposalModal" closeIcon={<Close />}>
       <Modal.Content>
         <div className="ProposalModal__Title">
-          <Header>{t(`category.${title}_title`)}</Header>
+          <Header>{t(`category.${proposalType}_title`)}</Header>
           <Text size="lg">{t('modal.poi_proposal.description')}</Text>
         </div>
       </Modal.Content>

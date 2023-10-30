@@ -39,6 +39,7 @@ jest.mock('../../constants', () => ({
 }))
 
 jest.mock('discord.js', () => jest.fn())
+jest.mock('@pushprotocol/restapi/src/index.js', () => jest.fn())
 
 describe('finishProposals', () => {
   beforeAll(() => {
