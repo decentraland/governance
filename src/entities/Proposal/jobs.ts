@@ -1,4 +1,3 @@
-import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 import snakeCase from 'lodash/snakeCase'
@@ -11,6 +10,7 @@ import { BudgetService } from '../../services/BudgetService'
 import { DiscordService } from '../../services/DiscordService'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
+import { ProposalService } from '../../services/ProposalService'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
 import { Budget } from '../Budget/types'
@@ -109,7 +109,7 @@ function reportPendingProposalsWithoutVotingResults(
   }
 }
 
-async function categorizeProposals(
+async function prepareProposalsAndBudgetsUpdates(
   pendingProposals: ProposalAttributes[],
   currentBudgets: Budget[]
 ): Promise<{ proposalsWithOutcome: ProposalWithOutcome[]; budgetsWithUpdates: Budget[] }> {
@@ -182,7 +182,10 @@ export async function finishProposal() {
 
     const currentBudgets = await BudgetService.getBudgetsForProposals(finishableProposals)
 
-    const { proposalsWithOutcome, budgetsWithUpdates } = await categorizeProposals(finishableProposals, currentBudgets)
+    const { proposalsWithOutcome, budgetsWithUpdates } = await prepareProposalsAndBudgetsUpdates(
+      finishableProposals,
+      currentBudgets
+    )
 
     await updateProposalsAndBudgets(proposalsWithOutcome, budgetsWithUpdates)
 
@@ -204,6 +207,7 @@ export async function publishBids(context: JobContext) {
 }
 
 const pool = new Pool({ connectionString: process.env.CONNECTION_STRING })
+
 async function updateProposalsAndBudgets(proposalsWithOutcome: ProposalWithOutcome[], budgetsWithUpdates: Budget[]) {
   if (proposalsWithOutcome.length === 0) return
   const client = await pool.connect()
@@ -211,23 +215,8 @@ async function updateProposalsAndBudgets(proposalsWithOutcome: ProposalWithOutco
   try {
     await client.query('BEGIN')
 
-    const proposalUpdateQueriesByStatus: SQLStatement[] = []
-    Object.values(ProposalStatus).forEach((proposalStatus) => {
-      const proposalsToUpdate = proposalsWithOutcome.filter((proposal) => proposal.newStatus === proposalStatus)
-      if (proposalsToUpdate.length > 0) {
-        const query = ProposalModel.getFinishProposalQuery(
-          proposalsToUpdate.map(({ id }) => id),
-          proposalStatus
-        )
-
-        if (query !== null) {
-          proposalUpdateQueriesByStatus.push(query)
-        }
-      }
-    })
-
+    const proposalUpdateQueriesByStatus = ProposalService.getFinishProposalQueries(proposalsWithOutcome)
     const budgetUpdateQueries = BudgetService.getBudgetUpdateQueries(budgetsWithUpdates)
-
     const updateQueries = [...proposalUpdateQueriesByStatus, ...budgetUpdateQueries]
 
     const clientQueries = updateQueries.map(({ text, values }) => {

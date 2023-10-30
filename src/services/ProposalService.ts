@@ -1,4 +1,5 @@
 import crypto from 'crypto'
+import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 
 import { NotificationService } from '../back/services/notification'
@@ -7,6 +8,7 @@ import { SnapshotProposalContent } from '../clients/SnapshotTypes'
 import CoauthorModel from '../entities/Coauthor/model'
 import isDAOCommittee from '../entities/Committee/isDAOCommittee'
 import ProposalModel from '../entities/Proposal/model'
+import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import * as templates from '../entities/Proposal/templates'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { isGrantProposalSubmitEnabled } from '../entities/Proposal/utils'
@@ -208,5 +210,23 @@ export class ProposalService {
     }
 
     return ProposalModel.parse(proposal)
+  }
+
+  static getFinishProposalQueries(proposalsWithOutcome: ProposalWithOutcome[]) {
+    const proposalUpdateQueriesByStatus: SQLStatement[] = []
+    Object.values(ProposalStatus).forEach((proposalStatus) => {
+      const proposalsToUpdate = proposalsWithOutcome.filter((proposal) => proposal.newStatus === proposalStatus)
+      if (proposalsToUpdate.length > 0) {
+        const query = ProposalModel.getFinishProposalQuery(
+          proposalsToUpdate.map(({ id }) => id),
+          proposalStatus
+        )
+
+        if (query !== null) {
+          proposalUpdateQueriesByStatus.push(query)
+        }
+      }
+    })
+    return proposalUpdateQueriesByStatus
   }
 }
