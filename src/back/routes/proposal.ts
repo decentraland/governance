@@ -514,16 +514,17 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
 
   const proposal = await getProposal(req)
   const configuration = validate<UpdateProposalStatusProposal>(updateProposalStatusValidator, req.body || {})
-  if (!isValidUpdateProposalStatus(proposal.status, configuration.status)) {
+  const newStatus = configuration.status
+  if (!isValidUpdateProposalStatus(proposal.status, newStatus)) {
     throw new RequestError(
-      `${proposal.status} can't be updated to ${configuration.status}`,
+      `${proposal.status} can't be updated to ${newStatus}`,
       RequestError.BadRequest,
       configuration
     )
   }
 
   const update: Partial<ProposalAttributes> = {
-    status: configuration.status,
+    status: newStatus,
     updated_at: new Date(),
   }
 
@@ -564,7 +565,10 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
     NotificationService.grantProposalEnacted(proposal)
   }
 
-  ProposalService.commentProposalUpdateInDiscourse(id)
+  const updatedProposal = await ProposalModel.findOne<ProposalAttributes>({
+    id,
+  })
+  updatedProposal && DiscourseService.commentUpdatedProposal(updatedProposal)
 
   return {
     ...proposal,

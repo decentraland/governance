@@ -1,17 +1,28 @@
+import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 import snakeCase from 'lodash/snakeCase'
+import { Pool } from 'pg'
 
+import { NotificationService } from '../../back/services/notification'
 import { BadgesService } from '../../services/BadgesService'
 import BidService from '../../services/BidService'
 import { BudgetService } from '../../services/BudgetService'
 import { DiscordService } from '../../services/DiscordService'
+import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
 import { ProposalService } from '../../services/ProposalService'
 import { ErrorCategory } from '../../utils/errorCategories'
+import { isProdEnv } from '../../utils/governanceEnvs'
 import { Budget } from '../Budget/types'
 
 import ProposalModel from './model'
-import { ProposalOutcome, ProposalWithOutcome, calculateOutcome, getWinnerBiddingAndTenderingProposal } from './outcome'
+import {
+  ProposalVotingResult,
+  ProposalWithOutcome,
+  VotingOutcome,
+  calculateVotingResult,
+  getWinnerBiddingAndTenderingProposal,
+} from './outcome'
 import { ProposalAttributes, ProposalStatus, ProposalType } from './types'
 import { asNumber } from './utils'
 
@@ -22,60 +33,22 @@ export async function activateProposals(context: JobContext) {
   }
 }
 
-async function updateRejectedProposals(rejectedProposals: ProposalWithOutcome[], context: JobContext) {
-  if (rejectedProposals.length > 0) {
-    context.log(`Rejecting ${rejectedProposals.length} proposals...`)
-    await ProposalService.finishProposals(rejectedProposals, ProposalStatus.Rejected)
-  }
-}
-
-async function updateAcceptedProposals(acceptedProposals: ProposalWithOutcome[], context: JobContext) {
-  if (acceptedProposals.length > 0) {
-    context.log(`Accepting ${acceptedProposals.length} proposals...`)
-    await ProposalService.finishProposals(acceptedProposals, ProposalStatus.Passed)
-
-    try {
-      await BadgesService.giveLegislatorBadges(acceptedProposals)
-    } catch (error) {
-      ErrorService.report('Error while attempting to give badges', {
-        error,
-        category: ErrorCategory.Badges,
-        acceptedProposals,
-      })
-    }
-  }
-}
-
-async function updateOutOfBudgetProposals(outOfBudgetProposals: ProposalWithOutcome[], context: JobContext) {
-  if (outOfBudgetProposals.length > 0) {
-    context.log(`Updating ${outOfBudgetProposals.length} Out of Budget proposals...`)
-    await ProposalService.finishProposals(outOfBudgetProposals, ProposalStatus.OutOfBudget)
-  }
-}
-
-async function updateFinishedProposals(finishedProposals: ProposalWithOutcome[], context: JobContext) {
-  if (finishedProposals.length > 0) {
-    context.log(`Finishing ${finishedProposals.length} proposals...`)
-    await ProposalService.finishProposals(finishedProposals, ProposalStatus.Finished)
-  }
-}
-
-function getBudgetForProposal(currentBudgets: Budget[], proposal: ProposalWithOutcome) {
+function getBudgetForProposal(currentBudgets: Budget[], proposal: ProposalAttributes) {
   return currentBudgets.find((budget) => budget.start_at <= proposal.start_at && budget.finish_at > proposal.start_at)
 }
 
-function getCategoryBudget(proposal: ProposalWithOutcome, proposalBudget: Budget) {
+function getCategoryBudget(proposal: ProposalAttributes, proposalBudget: Budget) {
   const categoryName = snakeCase(proposal.configuration.category)
   return proposalBudget.categories[categoryName]
 }
 
-function grantCanBeFunded(proposal: ProposalWithOutcome, proposalBudget: Budget) {
+function grantCanBeFunded(proposal: ProposalAttributes, proposalBudget: Budget) {
   const categoryBudget = getCategoryBudget(proposal, proposalBudget)
   const size = asNumber(proposal.configuration.size)
   return categoryBudget.allocated + size <= categoryBudget.total
 }
 
-function updateCategoryBudget(proposal: ProposalWithOutcome, budgetForProposal: Budget) {
+function updateCategoryBudget(proposal: ProposalAttributes, budgetForProposal: Budget) {
   const categoryBudget = getCategoryBudget(proposal, budgetForProposal)
   const size = asNumber(proposal.configuration.size)
   categoryBudget.allocated += size
@@ -83,24 +56,19 @@ function updateCategoryBudget(proposal: ProposalWithOutcome, budgetForProposal: 
   budgetForProposal.allocated += size
 }
 
-async function getProposalsWithOutcome(proposals: ProposalAttributes[], context: JobContext) {
-  const pendingProposalsWithOutcome = []
-
+async function getProposalsVotingResult(proposals: ProposalAttributes[]) {
+  const proposalsWithVotingResult: ProposalVotingResult[] = []
   for (const proposal of proposals) {
-    // TODO: New proposal status could be calculated here and added to outcome.
-    // E.g: OutcomeObject: { ...outcome, newProposalStatus: OutOfBudget }
-    const outcome = await calculateOutcome(proposal, context)
-    if (!outcome) {
+    const votingResult = await calculateVotingResult(proposal)
+    if (!votingResult) {
       continue
     }
-
-    pendingProposalsWithOutcome.push({ ...proposal, ...outcome })
+    proposalsWithVotingResult.push({ ...proposal, ...votingResult })
   }
-
-  return pendingProposalsWithOutcome
+  return proposalsWithVotingResult
 }
 
-export async function getFinishabledLinkedProposals(
+export async function getFinishableLinkedProposals(
   pendingProposals: ProposalAttributes[],
   type: ProposalType.Tender | ProposalType.Bid
 ) {
@@ -121,51 +89,66 @@ function hasCustomOutcome(type: ProposalType) {
   return type === ProposalType.Grant || type === ProposalType.Tender || type === ProposalType.Bid
 }
 
-async function categorizeProposals(
+function reportPendingProposalsWithoutVotingResults(
   pendingProposals: ProposalAttributes[],
-  currentBudgets: Budget[],
-  context: JobContext
+  proposalsWithVotingResult: ProposalVotingResult[]
 ) {
-  const finishedProposals: ProposalWithOutcome[] = []
-  const acceptedProposals: ProposalWithOutcome[] = []
-  const outOfBudgetProposals: ProposalWithOutcome[] = []
-  const rejectedProposals: ProposalWithOutcome[] = []
-  const updatedBudgets = [...currentBudgets]
-  const finishableTenderProposals = await getFinishabledLinkedProposals(pendingProposals, ProposalType.Tender)
-  const finishableBidProposals = await getFinishabledLinkedProposals(pendingProposals, ProposalType.Bid)
-  const pendingProposalsWithOutcome = await getProposalsWithOutcome(
-    [
-      ...pendingProposals.filter((item) => item.type !== ProposalType.Tender && item.type !== ProposalType.Bid),
-      ...finishableTenderProposals,
-      ...finishableBidProposals,
-    ],
-    context
-  )
+  if (isProdEnv()) {
+    pendingProposals.map((pendingProposal) => {
+      if (
+        !proposalsWithVotingResult.some(
+          (proposalsWithVotingResult) => proposalsWithVotingResult.id === pendingProposal.id
+        )
+      ) {
+        ErrorService.report('Could not find voting results for pending proposal', {
+          proposal: pendingProposal,
+          category: ErrorCategory.Job,
+        })
+      }
+    })
+  }
+}
 
-  for (const proposal of pendingProposalsWithOutcome) {
-    switch (proposal.outcomeStatus) {
-      case ProposalOutcome.REJECTED:
-        rejectedProposals.push(proposal)
+async function prepareProposalsAndBudgetsUpdates(
+  pendingProposals: ProposalAttributes[],
+  currentBudgets: Budget[]
+): Promise<{ proposalsWithOutcome: ProposalWithOutcome[]; budgetsWithUpdates: Budget[] }> {
+  const proposalsWithOutcome: ProposalWithOutcome[] = []
+  const budgetsWithUpdates = [...currentBudgets]
+  const finishableTenderProposals = await getFinishableLinkedProposals(pendingProposals, ProposalType.Tender)
+  const finishableBidProposals = await getFinishableLinkedProposals(pendingProposals, ProposalType.Bid)
+  const proposalsWithVotingResult = await getProposalsVotingResult([
+    ...pendingProposals.filter((item) => item.type !== ProposalType.Tender && item.type !== ProposalType.Bid),
+    ...finishableTenderProposals,
+    ...finishableBidProposals,
+  ])
+
+  reportPendingProposalsWithoutVotingResults(pendingProposals, proposalsWithVotingResult)
+
+  for (const proposal of proposalsWithVotingResult) {
+    switch (proposal.votingOutcome) {
+      case VotingOutcome.REJECTED:
+        proposalsWithOutcome.push({ ...proposal, newStatus: ProposalStatus.Rejected })
         break
-      case ProposalOutcome.FINISHED:
-        finishedProposals.push(proposal)
+      case VotingOutcome.FINISHED:
+        proposalsWithOutcome.push({ ...proposal, newStatus: ProposalStatus.Finished })
         break
-      case ProposalOutcome.ACCEPTED:
+      case VotingOutcome.ACCEPTED:
         if (!hasCustomOutcome(proposal.type)) {
-          acceptedProposals.push(proposal)
+          proposalsWithOutcome.push({ ...proposal, newStatus: ProposalStatus.Passed })
         } else if (proposal.type === ProposalType.Tender || proposal.type === ProposalType.Bid) {
           const winnerProposal = getWinnerBiddingAndTenderingProposal(
-            pendingProposalsWithOutcome,
+            proposalsWithVotingResult,
             proposal.configuration.linked_proposal_id,
             proposal.type
           )
           if (winnerProposal?.id === proposal.id) {
-            acceptedProposals.push(proposal)
+            proposalsWithOutcome.push({ ...proposal, newStatus: ProposalStatus.Passed })
           } else {
-            rejectedProposals.push(proposal)
+            proposalsWithOutcome.push({ ...proposal, newStatus: ProposalStatus.Rejected })
           }
         } else {
-          const budgetForProposal = getBudgetForProposal(updatedBudgets, proposal)
+          const budgetForProposal = getBudgetForProposal(budgetsWithUpdates, proposal)
           if (!budgetForProposal) {
             ErrorService.report(`Unable to find quarter budget`, {
               proposalId: proposal.id,
@@ -175,55 +158,41 @@ async function categorizeProposals(
           }
           if (grantCanBeFunded(proposal, budgetForProposal)) {
             updateCategoryBudget(proposal, budgetForProposal)
-            acceptedProposals.push(proposal)
+            proposalsWithOutcome.push({ ...proposal, newStatus: ProposalStatus.Passed })
           } else {
-            outOfBudgetProposals.push(proposal)
+            proposalsWithOutcome.push({ ...proposal, newStatus: ProposalStatus.OutOfBudget })
           }
         }
     }
   }
 
   return {
-    finishedProposals,
-    acceptedProposals,
-    outOfBudgetProposals,
-    rejectedProposals,
-    updatedBudgets,
+    proposalsWithOutcome,
+    budgetsWithUpdates: budgetsWithUpdates,
   }
 }
 
-export async function finishProposal(context: JobContext) {
+export async function finishProposal() {
   try {
     const finishableProposals = await ProposalModel.getFinishableProposals()
     if (finishableProposals.length === 0) {
       return
     }
+    logger.log(`Updating ${finishableProposals.length} proposals...`)
 
     const currentBudgets = await BudgetService.getBudgetsForProposals(finishableProposals)
 
-    context.log(`Updating ${finishableProposals.length} proposals...`)
-    const { finishedProposals, acceptedProposals, outOfBudgetProposals, rejectedProposals, updatedBudgets } =
-      await categorizeProposals(finishableProposals, currentBudgets, context)
+    const { proposalsWithOutcome, budgetsWithUpdates } = await prepareProposalsAndBudgetsUpdates(
+      finishableProposals,
+      currentBudgets
+    )
 
-    await updateFinishedProposals(finishedProposals, context)
-    await updateAcceptedProposals(acceptedProposals, context)
-    await updateOutOfBudgetProposals(outOfBudgetProposals, context)
-    await updateRejectedProposals(rejectedProposals, context)
-    await BudgetService.updateBudgets(updatedBudgets)
+    await updateProposalsAndBudgets(proposalsWithOutcome, budgetsWithUpdates)
 
-    const proposals = [...finishedProposals, ...acceptedProposals, ...rejectedProposals]
-    context.log(`Updating ${proposals.length} proposals in discourse... \n\n`)
-    for (const { id, title, winnerChoice, outcomeStatus } of proposals) {
-      ProposalService.commentProposalUpdateInDiscourse(id)
-      if (outcomeStatus) {
-        DiscordService.finishProposal(
-          id,
-          title,
-          outcomeStatus,
-          outcomeStatus === ProposalOutcome.FINISHED ? winnerChoice : undefined
-        )
-      }
-    }
+    NotificationService.sendFinishProposalNotifications(proposalsWithOutcome)
+    BadgesService.giveFinishProposalBadges(proposalsWithOutcome)
+    DiscourseService.commentFinishedProposals(proposalsWithOutcome)
+    DiscordService.notifyFinishedProposals(proposalsWithOutcome)
   } catch (error) {
     ErrorService.report('Error finishing proposals', { error, category: ErrorCategory.Job })
   }
@@ -234,5 +203,36 @@ export async function publishBids(context: JobContext) {
     await BidService.publishBids(context)
   } catch (error) {
     ErrorService.report('Error publishing bids', { error, category: ErrorCategory.Job })
+  }
+}
+
+const pool = new Pool({ connectionString: process.env.CONNECTION_STRING })
+
+async function updateProposalsAndBudgets(proposalsWithOutcome: ProposalWithOutcome[], budgetsWithUpdates: Budget[]) {
+  if (proposalsWithOutcome.length === 0) return
+  const client = await pool.connect()
+
+  try {
+    await client.query('BEGIN')
+
+    const proposalUpdateQueriesByStatus = ProposalService.getFinishProposalQueries(proposalsWithOutcome)
+    const budgetUpdateQueries = BudgetService.getBudgetUpdateQueries(budgetsWithUpdates)
+    const updateQueries = [...proposalUpdateQueriesByStatus, ...budgetUpdateQueries]
+
+    const clientQueries = updateQueries.map(({ text, values }) => {
+      //TODO: remove after we check it works in staging
+      console.log('text', text)
+      console.log('values', values)
+      return client.query(text, values)
+    })
+
+    await Promise.all(clientQueries)
+
+    await client.query('COMMIT')
+  } catch (err) {
+    await client.query('ROLLBACK')
+    throw err
+  } finally {
+    client.release()
   }
 }
