@@ -88,6 +88,7 @@ import { ProposalInCreation, ProposalService } from '../../services/ProposalServ
 import { getProfile } from '../../utils/Catalyst'
 import Time from '../../utils/date/Time'
 import { ErrorCategory } from '../../utils/errorCategories'
+import { isProdEnv } from '../../utils/governanceEnvs'
 import { NotificationService } from '../services/notification'
 import { validateAddress, validateProposalId } from '../utils/validations'
 
@@ -590,12 +591,14 @@ export async function getProposalComments(req: Request<{ proposal: string }>): P
   try {
     return await DiscourseService.getPostComments(proposal.discourse_topic_id)
   } catch (error) {
-    logger.log('Error fetching discourse topic', {
-      error,
-      discourseTopicId: proposal.discourse_topic_id,
-      proposalId: proposal.id,
-      category: ErrorCategory.Discourse,
-    })
+    if (isProdEnv()) {
+      logger.log('Error fetching discourse topic', {
+        error,
+        discourseTopicId: proposal.discourse_topic_id,
+        proposalId: proposal.id,
+        category: ErrorCategory.Discourse,
+      })
+    }
     return {
       comments: [],
       totalComments: 0,
