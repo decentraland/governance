@@ -15,6 +15,7 @@ import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
 
 const CHANNEL_ID = process.env.DISCORD_CHANNEL_ID
+const PROFILE_VERIFICATION_CHANNEL_ID = process.env.DISCORD_PROFILE_VERIFICATION_CHANNEL_ID || ''
 const TOKEN = process.env.DISCORD_TOKEN
 
 import Discord = require('discord.js')
@@ -70,7 +71,12 @@ export class DiscordService {
       throw new Error('Discord token missing')
     }
 
-    this.client = new Discord.Client({ intents: [Discord.GatewayIntentBits.Guilds] })
+    this.client = new Discord.Client({
+      intents: [Discord.GatewayIntentBits.Guilds, Discord.GatewayIntentBits.MessageContent],
+    })
+    this.client.on('unhandledRejection', (error) => {
+      console.log('Test error:', error)
+    })
     this.client.login(TOKEN)
   }
 
@@ -285,5 +291,31 @@ export class DiscordService {
         }
       })
     }
+  }
+
+  static async getProfileVerificationMessages() {
+    if (DISCORD_SERVICE_ENABLED) {
+      try {
+        const channel = this.client.channels.cache.get(PROFILE_VERIFICATION_CHANNEL_ID)
+        if (!channel) {
+          throw new Error(`Discord channel not found: ${PROFILE_VERIFICATION_CHANNEL_ID}`)
+        }
+        if (channel?.type !== Discord.ChannelType.GuildText) {
+          throw new Error(`Discord channel type is not supported: ${channel?.type}`)
+        }
+        const messages = (await channel.messages.fetch({ limit: 5 })).filter((message) => !message.author.bot)
+        return messages.map((message) => message)
+      } catch (error) {
+        if (isProdEnv()) {
+          ErrorService.report('Error getting profile verification messages', {
+            error,
+            category: ErrorCategory.Discord,
+          })
+        } else {
+          console.error('Error getting profile verification message', error)
+        }
+      }
+    }
+    return []
   }
 }

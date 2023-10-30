@@ -38,3 +38,19 @@
   line-height: 24px;
   font-weight: var(--weight-normal);
 }
+
+svg.ForumConnectStepIcon circle {
+  fill: #fce9ec;
+}
+
+svg.ForumConnectStepIcon path {
+  fill: #ff2d55;
+}
+
+svg.DiscordConnectStepIcon circle {
+  fill: #e0dcf3;
+}
+
+svg.DiscordConnectStepIcon path {
+  fill: #5d5fef;
+}

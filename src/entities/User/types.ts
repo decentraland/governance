@@ -14,3 +14,9 @@ export type ValidatedAccount = {
   address: string
   forum_id: number
 }
+
+export type ValidationComment = {
+  id: number
+  content: string
+  timestamp: string
+}

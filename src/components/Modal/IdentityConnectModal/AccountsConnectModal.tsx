@@ -8,6 +8,7 @@ import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { SegmentEvent } from '../../../entities/Events/types'
 import { openUrl } from '../../../helpers'
+import useDiscordConnect from '../../../hooks/useDiscordConnect'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useForumConnect, { THREAD_URL } from '../../../hooks/useForumConnect'
 import locations from '../../../utils/locations'
@@ -35,6 +36,7 @@ type AccountModal = Omit<AccountConnectionProps, 'timerText'>
 enum ModalType {
   ChooseAccount,
   Forum,
+  Discord,
 }
 
 type ModalState = {
@@ -76,6 +78,7 @@ const STEPS_HELPERS_KEYS: Record<AccountType, Record<number, CardHelperKeys>> = 
 }
 
 const FORUM_CONNECT_STEPS_AMOUNT = 3
+const DISCORD_CONNECT_STEPS_AMOUNT = 3
 
 const INITIAL_STATE: ModalState = {
   currentType: ModalType.ChooseAccount,
@@ -163,6 +166,8 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
     reset: resetForumConnect,
   } = useForumConnect()
 
+  const { getSignedMessage: discordMessage, copyMessageToClipboard: discordCopy, validate } = useDiscordConnect()
+
   const [modalState, setModalState] = useState<ModalState>(INITIAL_STATE)
 
   const setCurrentStep = (currentStep: number) => setModalState((state) => ({ ...state, currentStep }))
@@ -206,7 +211,7 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
     }
   }, [isValidated])
 
-  const handleSign = useCallback(async () => {
+  const handleForumSign = useCallback(async () => {
     const STEP_NUMBER = 1
     try {
       setIsTimerActive(true)
@@ -222,14 +227,14 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
     }
   }, [address, getSignedMessage, track])
 
-  const handleCopy = useCallback(() => {
+  const handleForumCopy = useCallback(() => {
     const STEP_NUMBER = 2
     copyMessageToClipboard()
     setStepHelper(STEP_NUMBER, 'success')
     setCurrentStep(STEP_NUMBER + 1)
   }, [copyMessageToClipboard])
 
-  const handleValidate = useCallback(() => {
+  const handleForumValidate = useCallback(() => {
     setIsValidating(true)
     openThread()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -253,6 +258,10 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
             title: t('modal.identity_setup.discord.card_title'),
             description: t('modal.identity_setup.discord.card_description'),
             icon: <CircledDiscord />,
+            onCardClick: () => {
+              setCurrentType(ModalType.Discord)
+              initializeStepHelpers(AccountType.Discord)
+            },
           },
           {
             title: t('modal.identity_setup.twitter.card_title'),
@@ -266,8 +275,12 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
         actions: getAccountActionSteps(
           AccountType.Forum,
           FORUM_CONNECT_STEPS_AMOUNT,
-          [<Sign key="sign" />, <Copy key="copy" />, <Comment key="comment" />],
-          [handleSign, handleCopy, handleValidate],
+          [
+            <Sign className="ForumConnectStepIcon" key="sign" />,
+            <Copy className="ForumConnectStepIcon" key="copy" />,
+            <Comment className="ForumConnectStepIcon" key="comment" />,
+          ],
+          [handleForumSign, handleForumCopy, handleForumValidate],
           modalState.currentStep,
           t,
           modalState.stepsCurrentHelper
@@ -275,12 +288,30 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
         button: getModalButton(t('modal.identity_setup.forum.action'), modalState.isValidating),
         helperText: t(getForumHelperTextKey(modalState.currentStep)),
       },
+      [ModalType.Discord]: {
+        title: t('modal.identity_setup.discord.title'),
+        actions: getAccountActionSteps(
+          AccountType.Discord,
+          DISCORD_CONNECT_STEPS_AMOUNT,
+          [
+            <Sign className="DiscordConnectStepIcon" key="sign" />,
+            <Copy className="DiscordConnectStepIcon" key="copy" />,
+            <Comment className="DiscordConnectStepIcon" key="comment" />,
+          ],
+          [],
+          modalState.currentStep,
+          t,
+          modalState.stepsCurrentHelper
+        ),
+        button: getModalButton(t('modal.identity_setup.discord.action'), modalState.isValidating),
+        helperText: 'HELPER TEXT',
+      },
     }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
-      handleCopy,
-      handleSign,
-      handleValidate,
+      t,
+      handleForumSign,
+      handleForumCopy,
+      handleForumValidate,
       modalState.currentStep,
       modalState.stepsCurrentHelper,
       modalState.isValidating,

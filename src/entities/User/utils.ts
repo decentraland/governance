@@ -7,7 +7,7 @@ import { ProposalComment, ProposalCommentsInDiscourse } from '../Proposal/types'
 import { isSameAddress } from '../Snapshot/utils'
 
 import { MESSAGE_TIMEOUT_TIME } from './constants'
-import { ValidatedAccount } from './types'
+import { ValidatedAccount, ValidationComment } from './types'
 
 export const DISCOURSE_USER = process.env.GATSBY_DISCOURSE_USER || clientEnv('GATSBY_DISCOURSE_USER') || ''
 export const DISCOURSE_API = process.env.GATSBY_DISCOURSE_API || clientEnv('GATSBY_DISCOURSE_API') || ''
@@ -58,26 +58,28 @@ export function filterComments(
   }
 }
 
-export function formatValidationMessage(address: string, timestamp: string) {
-  return `By signing and posting this message I'm linking my Decentraland DAO account ${address} with this Discourse forum account\n\nDate: ${timestamp}`
+export function formatValidationMessage(address: string, timestamp: string, account?: string) {
+  return `By signing and posting this message I'm linking my Decentraland DAO account ${address} with this ${
+    account ? `${account} ` : ''
+  }account\n\nDate: ${timestamp}`
 }
 
-export function getValidationComment(comments: ProposalComment[], address: string, timestamp: string) {
+export function getValidationComment(comments: ValidationComment[], address: string, timestamp: string) {
   const timeWindow = new Date(new Date().getTime() - MESSAGE_TIMEOUT_TIME)
 
-  const filteredComments = comments.filter((comment) => new Date(comment.created_at) > timeWindow)
+  const filteredComments = comments.filter((comment) => new Date(comment.timestamp) > timeWindow)
 
   return filteredComments.find((comment) => {
     const addressRegex = new RegExp(address, 'i')
     const dateRegex = new RegExp(timestamp, 'i')
 
-    return addressRegex.test(comment.cooked) && dateRegex.test(comment.cooked)
+    return addressRegex.test(comment.content) && dateRegex.test(comment.content)
   })
 }
 
-export function validateComment(validationComment: ProposalComment, address: string, timestamp: string) {
+export function validateComment(validationComment: ValidationComment, address: string, timestamp: string) {
   const signatureRegex = /0x([a-fA-F\d]{130})/
-  const signature = '0x' + validationComment.cooked.match(signatureRegex)?.[1]
+  const signature = '0x' + validationComment.content.match(signatureRegex)?.[1]
   const recoveredAddress = recoverAddress(hashMessage(formatValidationMessage(address, timestamp)), signature)
 
   return isSameAddress(recoveredAddress, address)

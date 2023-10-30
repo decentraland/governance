@@ -695,7 +695,19 @@
       },
       "discord": {
         "card_title": "Discord",
-        "card_description": "Elevate your credibility by letting others know which account is behind your chat interactions."
+        "card_description": "Receive personalized notifications so you don't miss important events.",
+        "title": "Discord Account",
+        "action": "Confirm link",
+        "title_step_1": "1. Sign message",
+        "description_step_1": "Use your web3 wallet to securely sign a message to start the linking process.",
+        "action_step_1": "Sign",
+        "title_step_2": "2. Copy to clipboard",
+        "description_step_2": "You'll be using the same content as the signature for the next step.",
+        "action_step_2": "Copy",
+        "title_step_3": "3. Post on Discord channel",
+        "description_step_3": "Paste the content onto the designated channel to complete the linking.",
+        "action_step_3": "Open",
+        "helper_step_3": "Finally, send the signed message on the designated channel."
       },
       "twitter": {
         "card_title": "Twitter",

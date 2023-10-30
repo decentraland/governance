@@ -477,18 +477,31 @@ export class Governance extends API {
     return result.data
   }
 
-  async getValidationMessage() {
+  async getValidationMessage(account?: string) {
+    const url = new URLSearchParams()
+    if (account) {
+      url.append('account', account)
+    }
     const result = await this.fetch<ApiResponse<string>>(
-      '/user/validate',
+      `/user/validate?${url.toString()}`,
       this.options().method('GET').authorization({ sign: true })
     )
 
     return result.data
   }
 
-  async validateProfile() {
+  async validateForumProfile() {
     const result = await this.fetch<ApiResponse<{ valid: boolean }>>(
-      '/user/validate',
+      '/user/validate/forum',
+      this.options().method('POST').authorization({ sign: true })
+    )
+
+    return result.data
+  }
+
+  async validateDiscordProfile() {
+    const result = await this.fetch<ApiResponse<{ valid: boolean }>>(
+      '/user/validate/discord',
       this.options().method('POST').authorization({ sign: true })
     )
 

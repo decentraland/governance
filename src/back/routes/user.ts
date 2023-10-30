@@ -7,16 +7,18 @@ import { Request } from 'express'
 import { isSameAddress } from '../../entities/Snapshot/utils'
 import { GATSBY_DISCOURSE_CONNECT_THREAD, MESSAGE_TIMEOUT_TIME } from '../../entities/User/constants'
 import UserModel from '../../entities/User/model'
-import { UserAttributes, ValidationMessage } from '../../entities/User/types'
+import { UserAttributes, ValidationComment, ValidationMessage } from '../../entities/User/types'
 import { formatValidationMessage, getValidationComment, validateComment } from '../../entities/User/utils'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
+import { DiscordService } from '../services/discord'
 import { validateAddress } from '../utils/validations'
 
 export default routes((route) => {
   const withAuth = auth()
   route.get('/user/validate', withAuth, handleAPI(getValidationMessage))
-  route.post('/user/validate', withAuth, handleAPI(checkValidationMessage))
+  route.post('/user/validate/forum', withAuth, handleAPI(checkForumValidationMessage))
+  route.post('/user/validate/discord', withAuth, handleAPI(checkDiscordValidationMessage))
   route.get('/user/:address/is-validated', handleAPI(isValidated))
   route.get('/user/:address', handleAPI(getProfile))
 })
@@ -33,6 +35,7 @@ function clearValidationInProgress(user: string) {
 
 async function getValidationMessage(req: WithAuth) {
   const address = req.auth!
+  const account = typeof req.query.account === 'string' ? req.query.account : undefined
   const message = {
     address,
     timestamp: new Date().toISOString(),
@@ -47,10 +50,10 @@ async function getValidationMessage(req: WithAuth) {
     message_timeout,
   }
 
-  return formatValidationMessage(address, message.timestamp)
+  return formatValidationMessage(address, message.timestamp, account)
 }
 
-async function checkValidationMessage(req: WithAuth) {
+async function checkForumValidationMessage(req: WithAuth) {
   const user = req.auth!
   try {
     const messageProperties = VALIDATIONS_IN_PROGRESS[user]
@@ -61,20 +64,46 @@ async function checkValidationMessage(req: WithAuth) {
     const { address, timestamp } = messageProperties
 
     const comments = await DiscourseService.getPostComments(Number(GATSBY_DISCOURSE_CONNECT_THREAD))
-    const validationComment = getValidationComment(comments.comments, address, timestamp)
+    const formattedComments = comments.comments.map((comment) => ({
+      id: comment.user_forum_id,
+      content: comment.cooked,
+      timestamp: comment.created_at,
+    }))
+    const validationComment = getValidationComment(formattedComments, address, timestamp)
 
     if (validationComment) {
       if (!isSameAddress(address, user) || !validateComment(validationComment, address, timestamp)) {
         throw new Error('Validation failed')
       }
 
-      await UserModel.createForumConnection(user, validationComment.user_forum_id)
+      await UserModel.createForumConnection(user, validationComment.id)
       clearValidationInProgress(user)
     }
 
     return {
       valid: !!validationComment,
     }
+  } catch (error) {
+    throw new Error("Couldn't validate the user. " + error)
+  }
+}
+
+async function checkDiscordValidationMessage(req: WithAuth) {
+  const user = req.auth!
+  try {
+    const messageProperties = VALIDATIONS_IN_PROGRESS[user]
+    if (!messageProperties) {
+      throw new Error('Validation timed out')
+    }
+    const messages = await DiscordService.getProfileVerificationMessages()
+    const formattedMessages = messages.map<ValidationComment>((message) => ({
+      id: Number(message.author.id),
+      content: message.content,
+      timestamp: String(message.createdTimestamp),
+    }))
+    const { address, timestamp } = messageProperties
+    const validationComment = getValidationComment(formattedMessages, address, timestamp)
+    console.log('validationComment', validationComment)
   } catch (error) {
     throw new Error("Couldn't validate the user. " + error)
   }

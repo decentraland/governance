@@ -1,49 +1,40 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback } from 'react'
 
 import { Web3Provider } from '@ethersproject/providers'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useTrackContext from 'decentraland-gatsby/dist/context/Track/useTrackContext'
 
 import { Governance } from '../clients/Governance'
 import { AccountType } from '../components/Modal/IdentityConnectModal/AccountsConnectModal'
 import { SegmentEvent } from '../entities/Events/types'
-import { GATSBY_DISCOURSE_CONNECT_THREAD, MESSAGE_TIMEOUT_TIME } from '../entities/User/constants'
+import { GATSBY_DISCOURSE_CONNECT_THREAD } from '../entities/User/constants'
 import { DISCOURSE_API } from '../entities/User/utils'
 import { openUrl } from '../helpers'
-import Time from '../utils/date/Time'
 
-import useClipboardCopy from './useClipboardCopy'
-import useTimer from './useTimer'
+import useValidationSetup from './useValidationSetup'
 
 export const THREAD_URL = `${DISCOURSE_API}${
   DISCOURSE_API.endsWith('/') ? '' : '/'
 }t/${GATSBY_DISCOURSE_CONNECT_THREAD}/10000`
 const VALIDATION_CHECK_INTERVAL = 10 * 1000 // 10 seconds
 
-const getMessage = async () => Governance.get().getValidationMessage()
+const getMessage = async () => Governance.get().getValidationMessage('Discourse forum')
 
 export default function useForumConnect() {
-  const [user, userState] = useAuthContext()
-  const track = useTrackContext()
-
-  const [clipboardMessage, setClipboardMessage] = useState('')
-  const { handleCopy } = useClipboardCopy(Time.Second)
-  const { startTimer, resetTimer, time } = useTimer(MESSAGE_TIMEOUT_TIME / 1000 - 1)
-  const [validatingProfile, setValidatingProfile] = useState<NodeJS.Timer>()
-  const [isValidated, setIsValidated] = useState<boolean>()
-
-  useEffect(() => {
-    if (time <= 0 && validatingProfile) {
-      clearInterval(validatingProfile)
-      setValidatingProfile(undefined)
-    }
-  }, [time, validatingProfile])
-
-  useEffect(() => {
-    if (isValidated !== undefined) {
-      resetTimer()
-    }
-  }, [isValidated, resetTimer])
+  const {
+    user,
+    userState,
+    track,
+    clipboardMessage,
+    setClipboardMessage,
+    handleCopy,
+    startTimer,
+    resetTimer,
+    time,
+    validatingProfile,
+    setValidatingProfile,
+    isValidated,
+    setIsValidated,
+    resetValidation,
+  } = useValidationSetup()
 
   const getSignedMessage = useCallback(async () => {
     if (!userState.provider) {
@@ -66,7 +57,7 @@ export default function useForumConnect() {
 
     setClipboardMessage(`${message}\nSignature: ${signedMessage}`)
     return signedMessage
-  }, [startTimer, resetTimer, userState.provider])
+  }, [userState.provider, startTimer, setIsValidated, setClipboardMessage, resetTimer])
 
   const copyMessageToClipboard = useCallback(() => {
     if (clipboardMessage) {
@@ -79,7 +70,7 @@ export default function useForumConnect() {
     if (validatingProfile === undefined) {
       const validationChecker = setInterval(async () => {
         try {
-          const { valid } = await Governance.get().validateProfile()
+          const { valid } = await Governance.get().validateForumProfile()
           if (valid) {
             clearInterval(validationChecker)
             resetTimer()
@@ -95,21 +86,12 @@ export default function useForumConnect() {
     }
   }
 
-  const reset = useCallback(() => {
-    if (validatingProfile) {
-      clearInterval(validatingProfile)
-      setValidatingProfile(undefined)
-    }
-    setIsValidated(undefined)
-    resetTimer()
-  }, [resetTimer, validatingProfile])
-
   return {
     getSignedMessage,
     copyMessageToClipboard,
     openThread,
     time,
     isValidated,
-    reset,
+    reset: resetValidation,
   }
 }
