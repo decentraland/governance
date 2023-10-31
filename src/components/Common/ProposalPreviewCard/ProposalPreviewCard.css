@@ -17,7 +17,16 @@
   box-shadow: var(--shadow-1);
 }
 
-.ProposalPreviewCard--category:hover {
+.ProposalPreviewCard--slim {
+  padding: 12px 32px 14px 16px !important;
+  margin-bottom: 14px;
+  border-radius: 8px;
+  border: 1px solid var(--black-300);
+  box-shadow: var(--shadow-1);
+}
+
+.ProposalPreviewCard--category:hover,
+.ProposalPreviewCard--slim:hover {
   border: 1px solid var(--black-100);
   box-shadow: var(--shadow-2);
   cursor: pointer;

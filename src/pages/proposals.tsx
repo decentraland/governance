@@ -21,7 +21,7 @@ import ActionableLayout from '../components/Layout/ActionableLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
-import VotedProposalsBox from '../components/Profile/VotedProposalsBox'
+import PriorityProposalsBox from '../components/Profile/PriorityProposalsBox'
 import ProposalItem from '../components/Proposal/ProposalItem'
 import CategoryFilter from '../components/Search/CategoryFilter'
 import FilterMenu from '../components/Search/FilterMenu'
@@ -141,7 +141,8 @@ export default function ProposalsPage() {
                 )}
                 <NotMobile>
                   <div className="ProposalsPage__Priority">
-                    <VotedProposalsBox
+                    {/*TODO: internationalization*/}
+                    <PriorityProposalsBox
                       title={'Time Sensitive'}
                       info={'Proposals that need your attention reit neu'}
                       address={'0x549a9021661a85b6bc51c07b3a451135848d0048'}
