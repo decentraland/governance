@@ -9,6 +9,7 @@ import DaoDelegates from '../components/Home/DaoDelegates'
 import MainBanner from '../components/Home/MainBanner'
 import MetricsCards from '../components/Home/MetricsCards'
 import OpenProposals from '../components/Home/OpenProposals'
+import UpcomingOpportunities from '../components/Home/UpcomingOpportunities'
 import LoadingView from '../components/Layout/LoadingView'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
@@ -57,6 +58,7 @@ export default function HomePage() {
           {!isLoadingProposals && (
             <>
               <OpenProposals endingSoonProposals={endingSoonProposals?.data} isLoadingProposals={isLoadingProposals} />
+              <UpcomingOpportunities />
               <ActiveCommunityGrants />
               <DaoDelegates />
               <CommunityEngagement />
