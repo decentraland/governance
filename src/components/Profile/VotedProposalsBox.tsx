@@ -18,14 +18,14 @@ interface Props {
 
 const PROPOSALS_PER_PAGE = 5
 
-function ProposalsBox({ title, info, address, collapsible }: Props) {
+function VotedProposalsBox({ title, info, address, collapsible }: Props) {
   const t = useFormatMessage()
 
   const { votes, isLoading, handleViewMore, hasMoreProposals } = useVotedProposals(address, PROPOSALS_PER_PAGE)
 
   return (
     <ActionBox title={title} info={info} collapsible={collapsible}>
-      {isLoading && <SkeletonBars amount={votes.length || 3} height={89} />}
+      {isLoading && <SkeletonBars amount={votes.length || 3} height={83.5} />}
       {!isLoading &&
         (votes.length > 0 ? (
           votes.map((vote) => {
@@ -45,4 +45,4 @@ function ProposalsBox({ title, info, address, collapsible }: Props) {
   )
 }
 
-export default ProposalsBox
+export default VotedProposalsBox
