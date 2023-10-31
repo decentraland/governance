@@ -32,3 +32,7 @@
 .CategoryModule__Chevron--visible {
   visibility: visible;
 }
+
+.CategoryModule__Container--slim {
+  min-width: 264px;
+}
