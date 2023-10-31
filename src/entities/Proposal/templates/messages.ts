@@ -1,13 +1,13 @@
+import { getEnumDisplayName } from '../../../helpers'
 import { formatChoice } from '../../../utils/votes/utils'
 import { Vote } from '../../Votes/types'
 import { calculateResult } from '../../Votes/utils'
 import { ProposalAttributes, ProposalStatus } from '../types'
-import { getProposalStatusDisplayName } from '../utils'
 
 export function getUpdateMessage(proposal: ProposalAttributes, votes: Record<string, Vote>) {
   let updatingUser: string | null
 
-  const statusDisplayName = getProposalStatusDisplayName(proposal.status)
+  const statusDisplayName = getEnumDisplayName(proposal.status)
   if (proposal.enacted) {
     updatingUser = proposal.enacted_by
     if (!updatingUser) {

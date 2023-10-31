@@ -88,6 +88,7 @@ import { ProposalInCreation, ProposalService } from '../../services/ProposalServ
 import { getProfile } from '../../utils/Catalyst'
 import Time from '../../utils/date/Time'
 import { ErrorCategory } from '../../utils/errorCategories'
+import { isProdEnv } from '../../utils/governanceEnvs'
 import { NotificationService } from '../services/notification'
 import { validateAddress, validateProposalId } from '../utils/validations'
 
@@ -514,16 +515,17 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
 
   const proposal = await getProposal(req)
   const configuration = validate<UpdateProposalStatusProposal>(updateProposalStatusValidator, req.body || {})
-  if (!isValidUpdateProposalStatus(proposal.status, configuration.status)) {
+  const newStatus = configuration.status
+  if (!isValidUpdateProposalStatus(proposal.status, newStatus)) {
     throw new RequestError(
-      `${proposal.status} can't be updated to ${configuration.status}`,
+      `${proposal.status} can't be updated to ${newStatus}`,
       RequestError.BadRequest,
       configuration
     )
   }
 
   const update: Partial<ProposalAttributes> = {
-    status: configuration.status,
+    status: newStatus,
     updated_at: new Date(),
   }
 
@@ -564,7 +566,10 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
     NotificationService.grantProposalEnacted(proposal)
   }
 
-  ProposalService.commentProposalUpdateInDiscourse(id)
+  const updatedProposal = await ProposalModel.findOne<ProposalAttributes>({
+    id,
+  })
+  updatedProposal && DiscourseService.commentUpdatedProposal(updatedProposal)
 
   return {
     ...proposal,
@@ -586,12 +591,14 @@ export async function getProposalComments(req: Request<{ proposal: string }>): P
   try {
     return await DiscourseService.getPostComments(proposal.discourse_topic_id)
   } catch (error) {
-    logger.log('Error fetching discourse topic', {
-      error,
-      discourseTopicId: proposal.discourse_topic_id,
-      proposalId: proposal.id,
-      category: ErrorCategory.Discourse,
-    })
+    if (isProdEnv()) {
+      logger.log('Error fetching discourse topic', {
+        error,
+        discourseTopicId: proposal.discourse_topic_id,
+        proposalId: proposal.id,
+        category: ErrorCategory.Discourse,
+      })
+    }
     return {
       comments: [],
       totalComments: 0,

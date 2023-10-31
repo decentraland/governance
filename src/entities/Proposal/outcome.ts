@@ -1,37 +1,37 @@
-import { Env } from '@dcl/ui-env'
-import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
+import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import orderBy from 'lodash/orderBy'
 
-import { config } from '../../config'
+import { isProdEnv } from '../../utils/governanceEnvs'
 import { Scores } from '../Votes/utils'
 
 import { calculateWinnerChoice, getVotingResults, sameOptions } from './outcomeUtils'
-import { INVALID_PROPOSAL_POLL_OPTIONS, ProposalAttributes, ProposalType } from './types'
+import { INVALID_PROPOSAL_POLL_OPTIONS, ProposalAttributes, ProposalStatus, ProposalType } from './types'
 import { DEFAULT_CHOICES } from './utils'
 
-export type Outcome = {
-  winnerChoice: string
-  winnerVotingPower: number
-  outcomeStatus?: ProposalOutcome
-}
-
-export type ProposalWithOutcome = ProposalAttributes & Outcome
-
-export const enum ProposalOutcome {
+export const enum VotingOutcome {
   REJECTED = 'REJECTED',
   ACCEPTED = 'ACCEPTED',
   FINISHED = 'FINISHED',
 }
 
+export type VotingResult = {
+  winnerChoice: string
+  winnerVotingPower: number
+  votingOutcome?: VotingOutcome
+}
+
+export type ProposalVotingResult = ProposalAttributes & VotingResult
+export type ProposalWithOutcome = ProposalVotingResult & { newStatus: ProposalStatus }
+
 const YES_NO_OPTIONS = ['yes', 'no']
 
-const getOutcomeStatus = (
+const getVotingOutcome = (
   winnerChoice: string,
   winnerVotingPower: number,
   choices: any,
   results: Scores,
   requiredToPass?: number | null
-) => {
+): VotingOutcome => {
   const invalidOption = INVALID_PROPOSAL_POLL_OPTIONS.toLocaleLowerCase()
   const isUsingDefaultOptions = sameOptions(choices, DEFAULT_CHOICES) || sameOptions(choices, YES_NO_OPTIONS)
 
@@ -40,7 +40,7 @@ const getOutcomeStatus = (
 
   const minimumVotingPowerRequired = requiredToPass || 0
   if (winnerVotingPower === 0 || winnerVotingPower < minimumVotingPowerRequired || winnerChoice === invalidOption) {
-    return ProposalOutcome.REJECTED
+    return VotingOutcome.REJECTED
   }
 
   if (isUsingDefaultOptions || isAcceptReject || isForAgainst) {
@@ -49,15 +49,15 @@ const getOutcomeStatus = (
       (isAcceptReject && results['accept'] > results['reject']) ||
       (isForAgainst && results['for'] > results['against'])
     ) {
-      return ProposalOutcome.ACCEPTED
+      return VotingOutcome.ACCEPTED
     }
-    return ProposalOutcome.REJECTED
+    return VotingOutcome.REJECTED
   }
 
-  return ProposalOutcome.FINISHED
+  return VotingOutcome.FINISHED
 }
 
-export async function calculateOutcome(proposal: ProposalAttributes, context: JobContext<Record<string, unknown>>) {
+export async function calculateVotingResult(proposal: ProposalAttributes): Promise<VotingResult | undefined> {
   try {
     const choices = (proposal.configuration.choices || []).map((choice: string) => choice.toLowerCase())
     const results = await getVotingResults(proposal, choices)
@@ -66,12 +66,11 @@ export async function calculateOutcome(proposal: ProposalAttributes, context: Jo
     return {
       winnerChoice,
       winnerVotingPower,
-      outcomeStatus: getOutcomeStatus(winnerChoice, winnerVotingPower, choices, results, proposal.required_to_pass),
+      votingOutcome: getVotingOutcome(winnerChoice, winnerVotingPower, choices, results, proposal.required_to_pass),
     }
   } catch (e) {
-    //TODO: move this logging decisions to the ErrorService
-    if (config.getEnv() !== Env.LOCAL && config.getEnv() !== Env.DEVELOPMENT) {
-      context.error(
+    if (isProdEnv()) {
+      logger.error(
         `Unable to calculate outcome for proposal: ${proposal.id}, snapshot id: ${proposal.snapshot_id}`,
         e as Error
       )
@@ -80,15 +79,15 @@ export async function calculateOutcome(proposal: ProposalAttributes, context: Jo
 }
 
 export function getWinnerBiddingAndTenderingProposal(
-  pendingProposalsWithOutcome: ProposalWithOutcome[],
+  proposalsWithVotingResult: ProposalVotingResult[],
   linkedProposalId: string,
   type: ProposalType.Tender | ProposalType.Bid
 ) {
-  const proposals = pendingProposalsWithOutcome.filter(
+  const proposals = proposalsWithVotingResult.filter(
     (item) =>
       item.type === type &&
       item.configuration.linked_proposal_id === linkedProposalId &&
-      item.outcomeStatus === ProposalOutcome.ACCEPTED
+      item.votingOutcome === VotingOutcome.ACCEPTED
   )
 
   const sortedProposals = orderBy(proposals, 'winnerVotingPower', 'desc')

@@ -1,9 +1,11 @@
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
+import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { ethers } from 'ethers'
 
 import { NOTIFICATIONS_SERVICE_ENABLED, PUSH_CHANNEL_ID } from '../../constants'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { proposalUrl } from '../../entities/Proposal/utils'
+import { inBackground } from '../../helpers'
 import { ErrorService } from '../../services/ErrorService'
 import {
   GovernanceNotificationType,
@@ -20,6 +22,7 @@ import { areValidAddresses } from '../utils/validations'
 
 import { CoauthorService } from './coauthor'
 import { DiscordService } from './discord'
+import { VoteService } from './vote'
 
 import PushAPI = require('@pushprotocol/restapi')
 
@@ -112,40 +115,42 @@ export class NotificationService {
     }
   }
 
-  static async grantProposalEnacted(proposal: ProposalAttributes) {
-    try {
-      const coauthors = await CoauthorService.getAllFromProposalId(proposal.id)
-      const coauthorsAddresses = coauthors.length > 0 ? coauthors.map((coauthor) => coauthor.address) : []
-      const addresses = [proposal.user, ...coauthorsAddresses]
+  static grantProposalEnacted(proposal: ProposalAttributes) {
+    inBackground(async () => {
+      try {
+        const coauthors = await CoauthorService.getAllFromProposalId(proposal.id)
+        const coauthorsAddresses = coauthors.length > 0 ? coauthors.map((coauthor) => coauthor.address) : []
+        const addresses = [proposal.user, ...coauthorsAddresses]
 
-      if (!areValidAddresses(addresses)) {
-        throw new Error('Invalid addresses')
+        if (!areValidAddresses(addresses)) {
+          throw new Error('Invalid addresses')
+        }
+
+        const title = NotificationTitle[GovernanceNotificationType.GrantEnacted]
+        const body = NotificationBody[GovernanceNotificationType.GrantEnacted]
+
+        await DiscordService.sendDirectMessage('DISCORD_ID_PLACEHOLDER', {
+          title,
+          action: body,
+          url: proposalUrl(proposal.id),
+          fields: [],
+        })
+
+        return await this.sendNotification({
+          title,
+          body,
+          recipient: addresses,
+          url: proposalUrl(proposal.id),
+          customType: NotificationCustomType.Grant,
+        })
+      } catch (error) {
+        ErrorService.report('Error sending proposal enacted notification', {
+          error,
+          category: ErrorCategory.Notifications,
+          proposal,
+        })
       }
-
-      const title = NotificationTitle[GovernanceNotificationType.GrantEnacted]
-      const body = NotificationBody[GovernanceNotificationType.GrantEnacted]
-
-      await DiscordService.sendDirectMessage('DISCORD_ID_PLACEHOLDER', {
-        title,
-        action: body,
-        url: proposalUrl(proposal.id),
-        fields: [],
-      })
-
-      return await this.sendNotification({
-        title,
-        body,
-        recipient: addresses,
-        url: proposalUrl(proposal.id),
-        customType: NotificationCustomType.Grant,
-      })
-    } catch (error) {
-      ErrorService.report('Error sending proposal enacted notification', {
-        error,
-        category: ErrorCategory.Notifications,
-        proposal,
-      })
-    }
+    })
   }
 
   static async coAuthorRequested(proposal: ProposalAttributes, coAuthors: string[]) {
@@ -245,6 +250,23 @@ export class NotificationService {
         error,
         category: ErrorCategory.Notifications,
         proposal,
+      })
+    }
+  }
+
+  static sendFinishProposalNotifications(proposals: ProposalAttributes[]) {
+    if (NOTIFICATIONS_SERVICE_ENABLED) {
+      inBackground(async () => {
+        for (const proposal of proposals) {
+          try {
+            await this.votingEndedAuthors(proposal)
+            const votes = await VoteService.getVotes(proposal.id)
+            const voters = Object.keys(votes)
+            await this.votingEndedVoters(proposal, voters)
+          } catch (error) {
+            logger.log('Error sending notifications on proposal finish', { proposalId: proposal.id })
+          }
+        }
       })
     }
   }

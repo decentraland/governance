@@ -5,7 +5,7 @@ import Bold from 'decentraland-gatsby/dist/components/Text/Bold'
 import 'flickity/css/flickity.css'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
-import { getProposalStatusDisplayName } from '../../../entities/Proposal/utils'
+import { getEnumDisplayName } from '../../../helpers'
 import useAbbreviatedFormatter from '../../../hooks/useAbbreviatedFormatter'
 import useCountdown from '../../../hooks/useCountdown'
 import useFormatMessage from '../../../hooks/useFormatMessage'
@@ -92,7 +92,7 @@ export default function ProposalThresholdsSummary({ proposal, partialResults }: 
           <div className="ProposalThresholdsSummary__Title">
             <Bold>
               {t('page.proposal_detail.proposal_status', {
-                status: getProposalStatusDisplayName(proposal?.status).toLowerCase(),
+                status: getEnumDisplayName(proposal?.status).toLowerCase(),
               })}
             </Bold>
           </div>

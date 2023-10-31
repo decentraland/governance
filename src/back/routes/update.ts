@@ -19,6 +19,7 @@ import {
 import { DiscourseService } from '../../services/DiscourseService'
 import Time from '../../utils/date/Time'
 import { ErrorCategory } from '../../utils/errorCategories'
+import { isProdEnv } from '../../utils/governanceEnvs'
 import { CoauthorService } from '../services/coauthor'
 import { DiscordService } from '../services/discord'
 import { UpdateService } from '../services/update'
@@ -84,12 +85,14 @@ async function getProposalUpdateComments(req: Request<{ update_id: string }>) {
   try {
     return await DiscourseService.getPostComments(discourse_topic_id)
   } catch (error) {
-    logger.log('Error fetching discourse topic', {
-      error,
-      discourseTopicId: discourse_topic_id,
-      updateId: id,
-      category: ErrorCategory.Discourse,
-    })
+    if (isProdEnv()) {
+      logger.log('Error fetching discourse topic', {
+        error,
+        discourseTopicId: discourse_topic_id,
+        updateId: id,
+        category: ErrorCategory.Discourse,
+      })
+    }
     return {
       comments: [],
       totalComments: 0,

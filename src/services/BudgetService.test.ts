@@ -7,6 +7,7 @@ import { BUDGETING_START_DATE } from '../entities/Grant/constants'
 import { NewGrantCategory } from '../entities/Grant/types'
 import ProposalModel from '../entities/Proposal/model'
 import { CURRENT_TEST_BUDGET, GRANT_PROPOSAL_1, GRANT_PROPOSAL_2 } from '../entities/Proposal/testHelpers'
+import { ProposalType } from '../entities/Proposal/types'
 import QuarterBudgetModel from '../entities/QuarterBudget/model'
 import { QuarterCategoryBudgetAttributes } from '../entities/QuarterCategoryBudget/types'
 import { getUncappedRoundedPercentage } from '../helpers'
@@ -324,7 +325,9 @@ describe('BudgetService', () => {
     const QUARTER_2_DATE = Time.utc('2023-05-02 00:00:00Z').toDate()
 
     describe('if there are no proposals with starting dates after the budgeting system implementation', () => {
-      const PROPOSALS = [{ start_at: Time.utc(BUDGETING_START_DATE).subtract(1, 'day').toDate() }]
+      const PROPOSALS = [
+        { start_at: Time.utc(BUDGETING_START_DATE).subtract(1, 'day').toDate(), type: ProposalType.Grant },
+      ]
       beforeEach(() => {
         jest
           .spyOn(BudgetService, 'getProposalsBudgetingMinAndMaxDates')
@@ -336,7 +339,10 @@ describe('BudgetService', () => {
     })
 
     describe('if proposals min and max dates are the same', () => {
-      const PROPOSALS = [{ start_at: QUARTER_1_DATE }, { start_at: QUARTER_1_DATE }]
+      const PROPOSALS = [
+        { start_at: QUARTER_1_DATE, type: ProposalType.Grant },
+        { start_at: QUARTER_1_DATE, type: ProposalType.Grant },
+      ]
       const BUDGET_1 = cloneDeep(NULL_BUDGET)
       it('returns only one budget', async () => {
         jest.spyOn(QuarterBudgetModel, 'getBudgetForDate').mockResolvedValueOnce(BUDGET_1)
@@ -345,7 +351,10 @@ describe('BudgetService', () => {
     })
 
     describe('if proposals min and max dates are different but are for the same budget', () => {
-      const PROPOSALS = [{ start_at: QUARTER_1_DATE }, { start_at: Time.utc(QUARTER_1_DATE).add(1, 'day').toDate() }]
+      const PROPOSALS = [
+        { start_at: QUARTER_1_DATE, type: ProposalType.Grant },
+        { start_at: Time.utc(QUARTER_1_DATE).add(1, 'day').toDate(), type: ProposalType.Grant },
+      ]
       const BUDGET_1 = cloneDeep(NULL_BUDGET)
       BUDGET_1.id = 'budget_1'
       beforeEach(() => {
@@ -358,7 +367,10 @@ describe('BudgetService', () => {
     })
 
     describe('if proposals min and max dates are for different budgets', () => {
-      const PROPOSALS = [{ start_at: QUARTER_1_DATE }, { start_at: QUARTER_2_DATE }]
+      const PROPOSALS = [
+        { start_at: QUARTER_1_DATE, type: ProposalType.Grant },
+        { start_at: QUARTER_2_DATE, type: ProposalType.Grant },
+      ]
       const BUDGET_1 = cloneDeep(NULL_BUDGET)
       BUDGET_1.id = 'budget_1'
       const BUDGET_2 = cloneDeep(NULL_BUDGET)

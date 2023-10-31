@@ -2,8 +2,13 @@ import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 
 import { UpdateService } from '../back/services/update'
-import { Discourse, DiscoursePost, DiscoursePostInTopic } from '../clients/Discourse'
+import { VoteService } from '../back/services/vote'
+import { Discourse, DiscourseComment, DiscoursePost, DiscoursePostInTopic } from '../clients/Discourse'
+import ProposalModel from '../entities/Proposal/model'
+import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import * as proposalTemplates from '../entities/Proposal/templates'
+import { getUpdateMessage } from '../entities/Proposal/templates/messages'
+import { ProposalAttributes } from '../entities/Proposal/types'
 import { forumUrl, proposalUrl } from '../entities/Proposal/utils'
 import * as updateTemplates from '../entities/Updates/templates'
 import { UpdateAttributes } from '../entities/Updates/types'
@@ -147,5 +152,29 @@ export class DiscourseService {
       console.error(`Error getting Discourse user: ${id}`, error)
       return null
     }
+  }
+
+  static commentUpdatedProposal(updatedProposal: ProposalAttributes) {
+    inBackground(async () => {
+      // TODO: votes are not necessary in all cases, they could be fetched only when needed
+      const votes = await VoteService.getVotes(updatedProposal.id)
+      const updateMessage = getUpdateMessage(updatedProposal, votes)
+      const discourseComment: DiscourseComment = {
+        topic_id: updatedProposal.discourse_topic_id,
+        raw: updateMessage,
+        created_at: new Date().toJSON(),
+      }
+      await Discourse.get().commentOnPost(discourseComment)
+    })
+  }
+
+  static commentFinishedProposals(proposalsWithOutcome: ProposalWithOutcome[]) {
+    inBackground(async () => {
+      const ids = proposalsWithOutcome.map(({ id }) => id)
+      const updatedProposals = await ProposalModel.findByIds(ids)
+      updatedProposals.forEach((proposal) => {
+        this.commentUpdatedProposal(proposal)
+      })
+    })
   }
 }

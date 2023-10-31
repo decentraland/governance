@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
+import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { cloneDeep } from 'lodash'
 
 import { DiscordService } from '../../back/services/discord'
 import { NotificationService } from '../../back/services/notification'
 import { BudgetService } from '../../services/BudgetService'
 import { DiscourseService } from '../../services/DiscourseService'
-import { ProposalService } from '../../services/ProposalService'
 import Time from '../../utils/date/Time'
 import CoauthorModel from '../Coauthor/model'
 import { NewGrantCategory } from '../Grant/types'
 import { getQuarterEndDate } from '../QuarterBudget/utils'
 
-import { finishProposal, getFinishabledLinkedProposals } from './jobs'
+import { finishProposal, getFinishableLinkedProposals } from './jobs'
 import ProposalModel from './model'
 import * as calculateOutcome from './outcome'
 import {
@@ -23,7 +23,6 @@ import {
   GRANT_PROPOSAL_1,
   GRANT_PROPOSAL_2,
   GRANT_PROPOSAL_3,
-  JOB_CONTEXT_MOCK,
   POI_PROPOSAL,
   REJECTED_OUTCOME,
   createTestBid,
@@ -32,6 +31,22 @@ import {
   getTestBudgetWithAvailableSize,
 } from './testHelpers'
 import { ProposalAttributes, ProposalStatus, ProposalType } from './types'
+
+jest.mock('decentraland-server')
+jest.mock('pg', () => {
+  const mClient = {
+    query: jest.fn(),
+    end: jest.fn(),
+    release: jest.fn(),
+  }
+  const mPool = {
+    connect: jest.fn(() => mClient),
+  }
+  const mPG = {
+    Pool: jest.fn(() => mPool),
+  }
+  return mPG
+})
 
 jest.mock('../../constants', () => ({
   DISCORD_SERVICE_ENABLED: false,
@@ -43,9 +58,11 @@ jest.mock('@pushprotocol/restapi/src/index.js', () => jest.fn())
 
 describe('finishProposals', () => {
   beforeAll(() => {
-    jest.spyOn(ProposalModel, 'finishProposal')
+    jest.spyOn(logger, 'error').mockImplementation(() => {})
+    jest.spyOn(ProposalModel, 'getFinishProposalQuery')
+    jest.spyOn(ProposalModel, 'findByIds').mockResolvedValue([])
     jest.spyOn(CoauthorModel, 'findAllByProposals').mockResolvedValue([])
-    jest.spyOn(ProposalService, 'commentProposalUpdateInDiscourse').mockImplementation(() => {})
+    jest.spyOn(DiscourseService, 'commentUpdatedProposal').mockImplementation(() => {})
     jest.spyOn(DiscordService, 'init').mockImplementation(() => {})
     jest.spyOn(DiscordService, 'finishProposal').mockImplementation(() => {})
     jest.spyOn(DiscordService, 'newProposal').mockImplementation(() => {})
@@ -55,7 +72,7 @@ describe('finishProposals', () => {
   })
   beforeEach(() => {
     jest.spyOn(BudgetService, 'getBudgetsForProposals').mockResolvedValue([getTestBudgetWithAvailableSize()])
-    jest.spyOn(BudgetService, 'updateBudgets').mockImplementation(async () => {})
+    jest.spyOn(BudgetService, 'getBudgetUpdateQueries').mockReturnValue([])
   })
   describe('for a grant proposal with ACTIVE status', () => {
     beforeEach(() => {
@@ -63,30 +80,33 @@ describe('finishProposals', () => {
     })
     describe('when the outcome is REJECTED', () => {
       beforeEach(() => {
-        jest.spyOn(calculateOutcome, 'calculateOutcome').mockResolvedValue(REJECTED_OUTCOME)
+        jest.spyOn(calculateOutcome, 'calculateVotingResult').mockResolvedValue(REJECTED_OUTCOME)
       })
       it('finishes the proposal as rejected', async () => {
-        await finishProposal(JOB_CONTEXT_MOCK)
-        expect(ProposalModel.finishProposal).toHaveBeenCalledWith([GRANT_PROPOSAL_1.id], ProposalStatus.Rejected)
+        await finishProposal()
+        expect(ProposalModel.getFinishProposalQuery).toHaveBeenCalledWith(
+          [GRANT_PROPOSAL_1.id],
+          ProposalStatus.Rejected
+        )
         expect(DiscordService.finishProposal).toHaveBeenCalledWith(
           GRANT_PROPOSAL_1.id,
           GRANT_PROPOSAL_1.title,
-          REJECTED_OUTCOME.outcomeStatus,
+          ProposalStatus.Rejected,
           undefined
         )
       })
     })
     describe('when the outcome is ACCEPTED', () => {
       beforeEach(() => {
-        jest.spyOn(calculateOutcome, 'calculateOutcome').mockResolvedValue(ACCEPTED_OUTCOME)
+        jest.spyOn(calculateOutcome, 'calculateVotingResult').mockResolvedValue(ACCEPTED_OUTCOME)
       })
       it('finishes the proposal as passed, and creates the pending updates for them', async () => {
-        await finishProposal(JOB_CONTEXT_MOCK)
-        expect(ProposalModel.finishProposal).toHaveBeenCalledWith([GRANT_PROPOSAL_1.id], ProposalStatus.Passed)
+        await finishProposal()
+        expect(ProposalModel.getFinishProposalQuery).toHaveBeenCalledWith([GRANT_PROPOSAL_1.id], ProposalStatus.Passed)
         expect(DiscordService.finishProposal).toHaveBeenCalledWith(
           GRANT_PROPOSAL_1.id,
           GRANT_PROPOSAL_1.title,
-          ACCEPTED_OUTCOME.outcomeStatus,
+          ProposalStatus.Passed,
           undefined
         )
       })
@@ -103,11 +123,14 @@ describe('finishProposals', () => {
           EXPECTED_BUDGET.categories.accelerator.allocated += GRANT_1_SIZE
           EXPECTED_BUDGET.categories.accelerator.available -= GRANT_1_SIZE
           EXPECTED_BUDGET.allocated += GRANT_1_SIZE
-          await finishProposal(JOB_CONTEXT_MOCK)
-          expect(BudgetService.updateBudgets).toHaveBeenCalledWith([EXPECTED_BUDGET])
+          await finishProposal()
+          expect(BudgetService.getBudgetUpdateQueries).toHaveBeenCalledWith([EXPECTED_BUDGET])
         })
         it('marks the proposal as PASSED', () => {
-          expect(ProposalModel.finishProposal).toHaveBeenCalledWith([GRANT_PROPOSAL_1.id], ProposalStatus.Passed)
+          expect(ProposalModel.getFinishProposalQuery).toHaveBeenCalledWith(
+            [GRANT_PROPOSAL_1.id],
+            ProposalStatus.Passed
+          )
         })
       })
 
@@ -124,11 +147,14 @@ describe('finishProposals', () => {
           EXPECTED_BUDGET.categories.accelerator.allocated += GRANT_1_SIZE
           EXPECTED_BUDGET.categories.accelerator.available -= GRANT_1_SIZE
           EXPECTED_BUDGET.allocated += GRANT_1_SIZE
-          await finishProposal(JOB_CONTEXT_MOCK)
-          expect(BudgetService.updateBudgets).toHaveBeenCalledWith([EXPECTED_BUDGET])
+          await finishProposal()
+          expect(BudgetService.getBudgetUpdateQueries).toHaveBeenCalledWith([EXPECTED_BUDGET])
         })
         it('marks the proposal as PASSED', () => {
-          expect(ProposalModel.finishProposal).toHaveBeenCalledWith([GRANT_PROPOSAL_1.id], ProposalStatus.Passed)
+          expect(ProposalModel.getFinishProposalQuery).toHaveBeenCalledWith(
+            [GRANT_PROPOSAL_1.id],
+            ProposalStatus.Passed
+          )
         })
       })
 
@@ -140,28 +166,34 @@ describe('finishProposals', () => {
             .mockResolvedValue([getTestBudgetWithAvailableSize(AVAILABLE_FOR_ACCELERATOR)])
         })
         it('does not discount the grant funding from the corresponding category budget', async () => {
-          await finishProposal(JOB_CONTEXT_MOCK)
-          expect(BudgetService.updateBudgets).toHaveBeenCalledWith([
+          await finishProposal()
+          expect(BudgetService.getBudgetUpdateQueries).toHaveBeenCalledWith([
             getTestBudgetWithAvailableSize(AVAILABLE_FOR_ACCELERATOR),
           ])
         })
         it('marks the proposal as OUT OF BUDGET', () => {
-          expect(ProposalModel.finishProposal).toHaveBeenCalledWith([GRANT_PROPOSAL_1.id], ProposalStatus.OutOfBudget)
+          expect(ProposalModel.getFinishProposalQuery).toHaveBeenCalledWith(
+            [GRANT_PROPOSAL_1.id],
+            ProposalStatus.OutOfBudget
+          )
         })
       })
     })
 
     describe('when the outcome is FINISHED', () => {
       beforeEach(() => {
-        jest.spyOn(calculateOutcome, 'calculateOutcome').mockResolvedValue(FINISHED_OUTCOME)
+        jest.spyOn(calculateOutcome, 'calculateVotingResult').mockResolvedValue(FINISHED_OUTCOME)
       })
       it('finishes the proposal as passed, and creates the pending updates for them', async () => {
-        await finishProposal(JOB_CONTEXT_MOCK)
-        expect(ProposalModel.finishProposal).toHaveBeenCalledWith([GRANT_PROPOSAL_1.id], ProposalStatus.Finished)
+        await finishProposal()
+        expect(ProposalModel.getFinishProposalQuery).toHaveBeenCalledWith(
+          [GRANT_PROPOSAL_1.id],
+          ProposalStatus.Finished
+        )
         expect(DiscordService.finishProposal).toHaveBeenCalledWith(
           GRANT_PROPOSAL_1.id,
           GRANT_PROPOSAL_1.title,
-          FINISHED_OUTCOME.outcomeStatus,
+          ProposalStatus.Finished,
           FINISHED_OUTCOME.winnerChoice
         )
       })
@@ -171,20 +203,20 @@ describe('finishProposals', () => {
   describe('for an accepted proposal that is not a grant', () => {
     beforeEach(() => {
       jest.spyOn(ProposalModel, 'getFinishableProposals').mockResolvedValue([POI_PROPOSAL])
-      jest.spyOn(calculateOutcome, 'calculateOutcome').mockResolvedValue(ACCEPTED_OUTCOME)
+      jest.spyOn(calculateOutcome, 'calculateVotingResult').mockResolvedValue(ACCEPTED_OUTCOME)
       jest.spyOn(BudgetService, 'getBudgetsForProposals').mockResolvedValue([getTestBudgetWithAvailableSize()])
     })
     it('finishes the proposal without affecting the budget', async () => {
-      await finishProposal(JOB_CONTEXT_MOCK)
-      expect(ProposalModel.finishProposal).toHaveBeenCalledWith([POI_PROPOSAL.id], ProposalStatus.Passed)
-      expect(BudgetService.updateBudgets).toHaveBeenCalledWith([getTestBudgetWithAvailableSize()])
+      await finishProposal()
+      expect(ProposalModel.getFinishProposalQuery).toHaveBeenCalledWith([POI_PROPOSAL.id], ProposalStatus.Passed)
+      expect(BudgetService.getBudgetUpdateQueries).toHaveBeenCalledWith([getTestBudgetWithAvailableSize()])
     })
   })
 
   describe('for several grant proposals of the same category', () => {
     beforeEach(() => {
       jest.spyOn(ProposalModel, 'getFinishableProposals').mockResolvedValue([GRANT_PROPOSAL_1, GRANT_PROPOSAL_2])
-      jest.spyOn(calculateOutcome, 'calculateOutcome').mockResolvedValue(ACCEPTED_OUTCOME)
+      jest.spyOn(calculateOutcome, 'calculateVotingResult').mockResolvedValue(ACCEPTED_OUTCOME)
     })
 
     describe('if there is budget to fund all grants', () => {
@@ -195,12 +227,12 @@ describe('finishProposals', () => {
           .mockResolvedValue([getTestBudgetWithAvailableSize(AVAILABLE_FOR_ACCELERATOR)])
       })
       it('discounts the budget of the corresponding categories', async () => {
-        await finishProposal(JOB_CONTEXT_MOCK)
-        expect(ProposalModel.finishProposal).toHaveBeenCalledWith(
+        await finishProposal()
+        expect(ProposalModel.getFinishProposalQuery).toHaveBeenCalledWith(
           [GRANT_PROPOSAL_1.id, GRANT_PROPOSAL_2.id],
           ProposalStatus.Passed
         )
-        expect(BudgetService.updateBudgets).toHaveBeenCalledWith([getTestBudgetWithAvailableSize(0)])
+        expect(BudgetService.getBudgetUpdateQueries).toHaveBeenCalledWith([getTestBudgetWithAvailableSize(0)])
       })
     })
 
@@ -212,14 +244,17 @@ describe('finishProposals', () => {
           .mockResolvedValue([getTestBudgetWithAvailableSize(AVAILABLE_FOR_ACCELERATOR)])
       })
       it('the latest grants in the list are updated as OUT OF BUDGET', async () => {
-        await finishProposal(JOB_CONTEXT_MOCK)
+        await finishProposal()
         const EXPECTED_BUDGET = getTestBudgetWithAvailableSize(AVAILABLE_FOR_ACCELERATOR)
         EXPECTED_BUDGET.categories.accelerator.allocated += GRANT_1_SIZE
         EXPECTED_BUDGET.categories.accelerator.available -= GRANT_1_SIZE
         EXPECTED_BUDGET.allocated += GRANT_1_SIZE
-        expect(ProposalModel.finishProposal).toHaveBeenCalledWith([GRANT_PROPOSAL_1.id], ProposalStatus.Passed)
-        expect(ProposalModel.finishProposal).toHaveBeenCalledWith([GRANT_PROPOSAL_2.id], ProposalStatus.OutOfBudget)
-        expect(BudgetService.updateBudgets).toHaveBeenCalledWith([EXPECTED_BUDGET])
+        expect(ProposalModel.getFinishProposalQuery).toHaveBeenCalledWith([GRANT_PROPOSAL_1.id], ProposalStatus.Passed)
+        expect(ProposalModel.getFinishProposalQuery).toHaveBeenCalledWith(
+          [GRANT_PROPOSAL_2.id],
+          ProposalStatus.OutOfBudget
+        )
+        expect(BudgetService.getBudgetUpdateQueries).toHaveBeenCalledWith([EXPECTED_BUDGET])
       })
     })
 
@@ -231,14 +266,17 @@ describe('finishProposals', () => {
           .mockResolvedValue([getTestBudgetWithAvailableSize(AVAILABLE_FOR_ACCELERATOR)])
       })
       it('marks the first grant as OOB and passes the second grant, discounting only the second grant size from the budget', async () => {
-        await finishProposal(JOB_CONTEXT_MOCK)
+        await finishProposal()
         const EXPECTED_BUDGET = getTestBudgetWithAvailableSize(AVAILABLE_FOR_ACCELERATOR)
         EXPECTED_BUDGET.categories.accelerator.allocated += GRANT_2_SIZE
         EXPECTED_BUDGET.categories.accelerator.available -= GRANT_2_SIZE
         EXPECTED_BUDGET.allocated += GRANT_2_SIZE
-        expect(ProposalModel.finishProposal).toHaveBeenCalledWith([GRANT_PROPOSAL_1.id], ProposalStatus.OutOfBudget)
-        expect(ProposalModel.finishProposal).toHaveBeenCalledWith([GRANT_PROPOSAL_2.id], ProposalStatus.Passed)
-        expect(BudgetService.updateBudgets).toHaveBeenCalledWith([EXPECTED_BUDGET])
+        expect(ProposalModel.getFinishProposalQuery).toHaveBeenCalledWith(
+          [GRANT_PROPOSAL_1.id],
+          ProposalStatus.OutOfBudget
+        )
+        expect(ProposalModel.getFinishProposalQuery).toHaveBeenCalledWith([GRANT_PROPOSAL_2.id], ProposalStatus.Passed)
+        expect(BudgetService.getBudgetUpdateQueries).toHaveBeenCalledWith([EXPECTED_BUDGET])
       })
     })
   })
@@ -246,7 +284,7 @@ describe('finishProposals', () => {
   describe('for several grant proposals of different categories', () => {
     beforeEach(() => {
       jest.spyOn(ProposalModel, 'getFinishableProposals').mockResolvedValue([GRANT_PROPOSAL_1, GRANT_PROPOSAL_3])
-      jest.spyOn(calculateOutcome, 'calculateOutcome').mockResolvedValue(ACCEPTED_OUTCOME)
+      jest.spyOn(calculateOutcome, 'calculateVotingResult').mockResolvedValue(ACCEPTED_OUTCOME)
     })
 
     describe('if there is no category budget to fund one grant, but there is for another', () => {
@@ -258,10 +296,13 @@ describe('finishProposals', () => {
           .mockResolvedValue([getTestBudgetWithAvailableSize(AVAILABLE_FOR_ACCELERATOR, AVAILABLE_FOR_CORE_UNIT)])
       })
       it('discounts the budget of the corresponding categories', async () => {
-        await finishProposal(JOB_CONTEXT_MOCK)
-        expect(ProposalModel.finishProposal).toHaveBeenCalledWith([GRANT_PROPOSAL_3.id], ProposalStatus.Passed)
-        expect(ProposalModel.finishProposal).toHaveBeenCalledWith([GRANT_PROPOSAL_1.id], ProposalStatus.OutOfBudget)
-        expect(BudgetService.updateBudgets).toHaveBeenCalledWith([
+        await finishProposal()
+        expect(ProposalModel.getFinishProposalQuery).toHaveBeenCalledWith([GRANT_PROPOSAL_3.id], ProposalStatus.Passed)
+        expect(ProposalModel.getFinishProposalQuery).toHaveBeenCalledWith(
+          [GRANT_PROPOSAL_1.id],
+          ProposalStatus.OutOfBudget
+        )
+        expect(BudgetService.getBudgetUpdateQueries).toHaveBeenCalledWith([
           getTestBudgetWithAvailableSize(AVAILABLE_FOR_ACCELERATOR, 0),
         ])
       })
@@ -288,7 +329,7 @@ describe('finishProposals', () => {
 
     beforeEach(() => {
       jest.spyOn(ProposalModel, 'getFinishableProposals').mockResolvedValue([PROPOSAL_OF_DATE_1, PROPOSAL_OF_DATE_2])
-      jest.spyOn(calculateOutcome, 'calculateOutcome').mockResolvedValue(ACCEPTED_OUTCOME)
+      jest.spyOn(calculateOutcome, 'calculateVotingResult').mockResolvedValue(ACCEPTED_OUTCOME)
       jest.spyOn(BudgetService, 'getBudgetsForProposals').mockResolvedValue([BUDGET_1, BUDGET_2])
     })
 
@@ -303,13 +344,13 @@ describe('finishProposals', () => {
       EXPECTED_BUDGET_2.categories.accelerator.available -= GRANT_2_SIZE
       EXPECTED_BUDGET_2.allocated += GRANT_2_SIZE
 
-      await finishProposal(JOB_CONTEXT_MOCK)
+      await finishProposal()
 
-      expect(ProposalModel.finishProposal).toHaveBeenCalledWith(
+      expect(ProposalModel.getFinishProposalQuery).toHaveBeenCalledWith(
         [PROPOSAL_OF_DATE_1.id, PROPOSAL_OF_DATE_2.id],
         ProposalStatus.Passed
       )
-      expect(BudgetService.updateBudgets).toHaveBeenCalledWith([EXPECTED_BUDGET_1, EXPECTED_BUDGET_2])
+      expect(BudgetService.getBudgetUpdateQueries).toHaveBeenCalledWith([EXPECTED_BUDGET_1, EXPECTED_BUDGET_2])
     })
   })
 })
@@ -344,7 +385,7 @@ describe('getFinishabledLinkedProposals', () => {
       })
     })
 
-    const finishableTenderProposals = await getFinishabledLinkedProposals(pendingProposals, ProposalType.Tender)
+    const finishableTenderProposals = await getFinishableLinkedProposals(pendingProposals, ProposalType.Tender)
     expect(finishableTenderProposals.length).toEqual(8)
   })
 
@@ -357,7 +398,7 @@ describe('getFinishabledLinkedProposals', () => {
       })
     })
 
-    const finishableBidProposals = await getFinishabledLinkedProposals(pendingProposals, ProposalType.Bid)
+    const finishableBidProposals = await getFinishableLinkedProposals(pendingProposals, ProposalType.Bid)
     expect(finishableBidProposals.length).toEqual(4)
   })
 })

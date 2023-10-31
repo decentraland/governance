@@ -2,6 +2,7 @@ import classNames from 'classnames'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalType } from '../../entities/Proposal/types'
+import { getEnumDisplayName } from '../../helpers'
 import locations from '../../utils/locations'
 import Pill, { PillColor } from '../Common/Pill'
 import Link from '../Common/Typography/Link'
@@ -30,16 +31,12 @@ type Props = {
 }
 
 function getProposalTypeShortLabel(proposalType: ProposalType) {
-  return proposalType === ProposalType.LinkedWearables ? 'LWearables' : getProposalTypeLabel(proposalType)
-}
-
-function getProposalTypeLabel(proposalType: ProposalType) {
-  return proposalType.replaceAll('_', ' ')
+  return proposalType === ProposalType.LinkedWearables ? 'LWearables' : getEnumDisplayName(proposalType)
 }
 
 export default function CategoryPill({ className, proposalType, size = 'md', isLink = false, color }: Props) {
   const isMobile = useMobileMediaQuery()
-  const label = isMobile ? getProposalTypeShortLabel(proposalType) : getProposalTypeLabel(proposalType)
+  const label = isMobile ? getProposalTypeShortLabel(proposalType) : getEnumDisplayName(proposalType)
   const pillColor = color || ColorsConfig[proposalType]
   const pillClassNames = classNames('CategoryPill', className)
   const href = isLink ? locations.proposals({ type: proposalType }) : undefined
