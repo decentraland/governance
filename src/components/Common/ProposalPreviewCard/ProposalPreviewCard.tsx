@@ -41,7 +41,7 @@ const ProposalPreviewCard = ({ proposal, votes, variant }: Props) => {
   const dateText = t(`page.home.open_proposals.${isProposalActive ? 'ends_date' : 'ended_date'}`, {
     value: Time(finish_at).fromNow(),
   })
-  const [isHovered, setisHovered] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
 
   const isProposalAboutToEnd = isProposalActive && Time(finish_at).diff(Time(), 'hours') < 24
   const showVotedChoice = variant !== Variant.Vote && !!userChoice
@@ -50,8 +50,8 @@ const ProposalPreviewCard = ({ proposal, votes, variant }: Props) => {
     <Link
       className={classNames('ProposalPreviewCard', `ProposalPreviewCard--${variant}`)}
       href={locations.proposal(proposal.id)}
-      onMouseEnter={() => setisHovered(true)}
-      onMouseLeave={() => setisHovered(false)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <ProposalPreviewCardSection>
         <Username className="ProposalPreviewCard__Avatar" address={user} variant="avatar" size="medium" />

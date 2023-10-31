@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react'
-
 import { useQuery } from '@tanstack/react-query'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
@@ -7,35 +5,21 @@ import { Governance } from '../clients/Governance'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
-//TODO: use priority proposals endpoint
-function usePriorityProposals(address: string, first?: number) {
-  const [skip, setSkip] = useState(0)
-
-  const { data: responseVotes, isLoading } = useQuery({
-    queryKey: [`votedProposals#${address}#${first}#${skip}`],
+function usePriorityProposals(address?: string) {
+  const { data: priorityProposals, isLoading } = useQuery({
+    queryKey: [`priorityProposals#${address}`],
     queryFn: async () => {
-      if (!isEthereumAddress(address)) {
+      if (address && !isEthereumAddress(address)) {
         return []
       }
-      return await Governance.get().getAddressVotesWithProposals(address, first, skip)
+      return await Governance.get().getPriorityProposals(address)
     },
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
-  const [votes, setVotes] = useState(responseVotes ?? [])
-  useEffect(() => {
-    if (responseVotes && responseVotes.length > 0) {
-      setVotes((prev) => [...prev, ...responseVotes])
-    }
-  }, [responseVotes])
-
-  const handleViewMore = () => setSkip((prev) => (first ? prev + first : prev))
-
   return {
-    votes,
+    priorityProposals,
     isLoading,
-    handleViewMore,
-    hasMoreProposals: responseVotes?.length === first,
   }
 }
 

@@ -115,6 +115,7 @@ export default routes((route) => {
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
   route.get('/proposals/:proposal/comments', handleAPI(getProposalComments))
   route.get('/proposals/linked-wearables/image', handleAPI(checkImage))
+  route.get('/proposals/priority/:address', handleJSON(getPriorityProposals))
 })
 
 export async function getProposals(req: WithAuth) {
@@ -686,4 +687,9 @@ async function checkImage(req: Request) {
         resolve(false)
       })
   })
+}
+
+async function getPriorityProposals(req: Request) {
+  const address = req.params.address ? validateAddress(req.params.address) : undefined
+  return await ProposalService.getPriorityProposals(address)
 }

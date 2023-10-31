@@ -229,4 +229,9 @@ export class ProposalService {
     })
     return proposalUpdateQueriesByStatus
   }
+
+  static async getPriorityProposals(address?: string) {
+    // TODO: filter by votes, author, coauthor if user
+    return await ProposalModel.getPriorityProposals()
+  }
 }
