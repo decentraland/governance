@@ -220,9 +220,6 @@ async function updateProposalsAndBudgets(proposalsWithOutcome: ProposalWithOutco
     const updateQueries = [...proposalUpdateQueriesByStatus, ...budgetUpdateQueries]
 
     const clientQueries = updateQueries.map(({ text, values }) => {
-      //TODO: remove after we check it works in staging
-      console.log('text', text)
-      console.log('values', values)
       return client.query(text, values)
     })
 
