@@ -2,7 +2,8 @@ import classNames from 'classnames'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalStatus } from '../../entities/Proposal/types'
-import { getProposalStatusDisplayName, getProposalStatusShortName } from '../../entities/Proposal/utils'
+import { getProposalStatusShortName } from '../../entities/Proposal/utils'
+import { getEnumDisplayName } from '../../helpers'
 import locations from '../../utils/locations'
 import Pill, { PillColor, Props as PillProps } from '../Common/Pill'
 import Link from '../Common/Typography/Link'
@@ -35,7 +36,7 @@ export default function StatusPill({ className, status, size, isLink, color }: P
   const iconColor = status === ProposalStatus.Enacted ? 'var(--white-900)' : 'var(--green-800)'
   const icon = showIcon ? <Check color={iconColor} /> : null
   const href = isLink ? locations.proposals({ status: status }) : undefined
-  const name = isMobile ? getProposalStatusShortName(status) : getProposalStatusDisplayName(status)
+  const name = isMobile ? getProposalStatusShortName(status) : getEnumDisplayName(status)
   const pillSize = isMobile ? 'sm' : size || 'md'
 
   const component = (

@@ -134,3 +134,7 @@ export function getEnvironmentChainId() {
       throw new Error(`GATSBY_DEFAULT_CHAIN_ID is not a supported network: ${chainId}`)
   }
 }
+
+export function getEnumDisplayName<T extends { [key: string]: string | number }>(anyEnum: keyof T & string): string {
+  return anyEnum.split('_').join(' ').toUpperCase()
+}

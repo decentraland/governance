@@ -110,6 +110,8 @@ export default class ProposalModel extends Model<ProposalAttributes> {
   }
 
   static async findFromSnapshotIds(ids: string[]): Promise<ProposalAttributes[]> {
+    if (ids.length === 0) return []
+
     const query = SQL`
         SELECT *
         FROM ${table(ProposalModel)}
@@ -119,6 +121,21 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         )})`
 
     const results = await this.namedQuery('find_from_snapshot_ids', query)
+    return results.map((item) => ProposalModel.parse(item))
+  }
+
+  static async findByIds(ids: string[]): Promise<ProposalAttributes[]> {
+    if (ids.length === 0) return []
+
+    const query = SQL`
+        SELECT *
+        FROM ${table(ProposalModel)}
+        WHERE "id" IN (${join(
+          ids.map((id) => SQL`${id}`),
+          SQL`, `
+        )})`
+
+    const results = await this.namedQuery('find_by_ids', query)
     return results.map((item) => ProposalModel.parse(item))
   }
 
@@ -192,10 +209,10 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return result.map(ProposalModel.parse)
   }
 
-  static async finishProposal(proposal_ids: string[], status: ProposalStatus) {
+  static getFinishProposalQuery(proposal_ids: string[], status: ProposalStatus) {
     const valid_ids = (proposal_ids || []).filter((id) => isUUID(id))
     if (valid_ids.length === 0) {
-      return 0
+      return null
     }
 
     const ids = valid_ids.map((id) => SQL`${id}`)
@@ -209,7 +226,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
           AND "id" IN (${join(ids)})
     `
 
-    return this.namedRowCount('finished_proposals_count', query)
+    return query
   }
 
   private static getSubtypeQuery(subtype: string) {

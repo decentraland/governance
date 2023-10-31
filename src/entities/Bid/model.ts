@@ -71,6 +71,8 @@ export default class UnpublishedBidModel extends Model<UnpublishedBidAttributes>
   }
 
   static async rejectBidsFromTenders(linked_proposal_ids: string[]) {
+    if (linked_proposal_ids.length === 0) return []
+
     checkEncryptionKey()
 
     const decryptedBidsToRejectQuery = SQL`

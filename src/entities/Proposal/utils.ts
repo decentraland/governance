@@ -5,6 +5,7 @@ import numeral from 'numeral'
 
 import { Governance } from '../../clients/Governance'
 import { GOVERNANCE_API } from '../../constants'
+import { getEnumDisplayName } from '../../helpers'
 import { getTile } from '../../utils/Land'
 import { clientEnv } from '../../utils/clientEnv'
 import Time from '../../utils/date/Time'
@@ -234,12 +235,8 @@ export function getProposalEndDate(duration: number) {
   return Time.utc().set('seconds', 0).add(duration, 'seconds').toDate()
 }
 
-export function getProposalStatusDisplayName(proposalStatus: ProposalStatus) {
-  return proposalStatus.split('_').join(' ').toUpperCase()
-}
-
 export function getProposalStatusShortName(status: ProposalStatus) {
-  return status === ProposalStatus.OutOfBudget ? 'OOB' : getProposalStatusDisplayName(status)
+  return status === ProposalStatus.OutOfBudget ? 'OOB' : getEnumDisplayName(status)
 }
 
 export function isGrantProposalSubmitEnabled(now: number) {

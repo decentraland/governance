@@ -5,7 +5,7 @@
   width: 100%;
   padding: 30px;
   border-radius: 8px;
-  color: #fff;
+  color: var(--white-900);
   gap: 50px;
   background: linear-gradient(180deg, var(--fuchsia-500) 0%, var(--dcl-primary) 100%);
   box-shadow: 0 6px 24px rgba(253, 45, 88, 0.3);

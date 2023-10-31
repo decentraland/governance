@@ -1,8 +1,12 @@
 import { Scores } from '../Votes/utils'
 
-import { ProposalOutcome, ProposalWithOutcome, calculateOutcome, getWinnerBiddingAndTenderingProposal } from './outcome'
+import {
+  ProposalWithOutcome,
+  VotingOutcome,
+  calculateVotingResult,
+  getWinnerBiddingAndTenderingProposal,
+} from './outcome'
 import * as utils from './outcomeUtils'
-import { JOB_CONTEXT_MOCK } from './testHelpers'
 import { ProposalAttributes, ProposalStatus, ProposalType } from './types'
 import { DEFAULT_CHOICES } from './utils'
 
@@ -130,45 +134,45 @@ describe('calculateOutcome for options with abstain', () => {
   })
   it('should return the accepted outcome for a proposal with a valid winner and sufficient voting power', async () => {
     mockChoicesResult({ yes: 100, no: 0, abstain: 0 })
-    const outcome = await calculateOutcome(DEFAULT_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
-    expect(outcome).toBeDefined()
-    expect(outcome?.winnerChoice).toBe('yes')
-    expect(outcome?.outcomeStatus).toBe(ProposalOutcome.ACCEPTED)
+    const votingResult = await calculateVotingResult(DEFAULT_VALID_PROPOSAL)
+    expect(votingResult).toBeDefined()
+    expect(votingResult?.winnerChoice).toBe('yes')
+    expect(votingResult?.votingOutcome).toBe(VotingOutcome.ACCEPTED)
   })
   it('should return the rejected outcome for a proposal with more voting power in No than Yes', async () => {
     mockChoicesResult({ yes: 100, no: 200, abstain: 0 })
-    const outcome = await calculateOutcome(DEFAULT_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
-    expect(outcome).toBeDefined()
-    expect(outcome?.winnerChoice).toBe('no')
-    expect(outcome?.outcomeStatus).toBe(ProposalOutcome.REJECTED)
+    const votingResult = await calculateVotingResult(DEFAULT_VALID_PROPOSAL)
+    expect(votingResult).toBeDefined()
+    expect(votingResult?.winnerChoice).toBe('no')
+    expect(votingResult?.votingOutcome).toBe(VotingOutcome.REJECTED)
   })
   it('should return the accepted outcome for a proposal with more voting more voting power in Yes than No and majority Abstention', async () => {
     mockChoicesResult({ yes: 100, no: 50, abstain: 1000 })
-    const outcome = await calculateOutcome(DEFAULT_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
-    expect(outcome).toBeDefined()
-    expect(outcome?.winnerChoice).toBe('yes')
-    expect(outcome?.outcomeStatus).toBe(ProposalOutcome.ACCEPTED)
+    const votingResult = await calculateVotingResult(DEFAULT_VALID_PROPOSAL)
+    expect(votingResult).toBeDefined()
+    expect(votingResult?.winnerChoice).toBe('yes')
+    expect(votingResult?.votingOutcome).toBe(VotingOutcome.ACCEPTED)
   })
   it('should return the rejected outcome for a proposal with only Abstention', async () => {
     mockChoicesResult({ yes: 0, no: 0, abstain: 1000 })
-    const outcome = await calculateOutcome(DEFAULT_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
-    expect(outcome).toBeDefined()
-    expect(outcome?.winnerChoice).toBe('no')
-    expect(outcome?.outcomeStatus).toBe(ProposalOutcome.REJECTED)
+    const votingResult = await calculateVotingResult(DEFAULT_VALID_PROPOSAL)
+    expect(votingResult).toBeDefined()
+    expect(votingResult?.winnerChoice).toBe('no')
+    expect(votingResult?.votingOutcome).toBe(VotingOutcome.REJECTED)
   })
   it('should return the rejected outcome for a proposal with tie between Yes and No', async () => {
     mockChoicesResult({ yes: 100, no: 100, abstain: 0 })
-    const outcome = await calculateOutcome(DEFAULT_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
-    expect(outcome).toBeDefined()
-    expect(outcome?.winnerChoice).toBe('no')
-    expect(outcome?.outcomeStatus).toBe(ProposalOutcome.REJECTED)
+    const votingResult = await calculateVotingResult(DEFAULT_VALID_PROPOSAL)
+    expect(votingResult).toBeDefined()
+    expect(votingResult?.winnerChoice).toBe('no')
+    expect(votingResult?.votingOutcome).toBe(VotingOutcome.REJECTED)
   })
   it('should return the accepted outcome for a proposal with tie between Yes and Abstain', async () => {
     mockChoicesResult({ yes: 100, no: 0, abstain: 100 })
-    const outcome = await calculateOutcome(DEFAULT_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
-    expect(outcome).toBeDefined()
-    expect(outcome?.winnerChoice).toBe('yes')
-    expect(outcome?.outcomeStatus).toBe(ProposalOutcome.ACCEPTED)
+    const votingResult = await calculateVotingResult(DEFAULT_VALID_PROPOSAL)
+    expect(votingResult).toBeDefined()
+    expect(votingResult?.winnerChoice).toBe('yes')
+    expect(votingResult?.votingOutcome).toBe(VotingOutcome.ACCEPTED)
   })
 })
 
@@ -178,31 +182,31 @@ describe('calculateOutcome for legacy options', () => {
   })
   it('should return the accepted outcome for a proposal with a valid winner and sufficient voting power', async () => {
     mockChoicesResult({ yes: 100, no: 0 })
-    const outcome = await calculateOutcome(YES_NO_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
-    expect(outcome).toBeDefined()
-    expect(outcome?.winnerChoice).toBe('yes')
-    expect(outcome?.outcomeStatus).toBe(ProposalOutcome.ACCEPTED)
+    const votingResult = await calculateVotingResult(YES_NO_VALID_PROPOSAL)
+    expect(votingResult).toBeDefined()
+    expect(votingResult?.winnerChoice).toBe('yes')
+    expect(votingResult?.votingOutcome).toBe(VotingOutcome.ACCEPTED)
   })
   it('should return the rejected outcome for a proposal with more voting power in No than Yes', async () => {
     mockChoicesResult({ yes: 100, no: 200 })
-    const outcome = await calculateOutcome(YES_NO_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
-    expect(outcome).toBeDefined()
-    expect(outcome?.winnerChoice).toBe('no')
-    expect(outcome?.outcomeStatus).toBe(ProposalOutcome.REJECTED)
+    const votingResult = await calculateVotingResult(YES_NO_VALID_PROPOSAL)
+    expect(votingResult).toBeDefined()
+    expect(votingResult?.winnerChoice).toBe('no')
+    expect(votingResult?.votingOutcome).toBe(VotingOutcome.REJECTED)
   })
   it('should return the rejected outcome for a proposal without votes', async () => {
     mockChoicesResult({ yes: 0, no: 0 })
-    const outcome = await calculateOutcome(YES_NO_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
-    expect(outcome).toBeDefined()
-    expect(outcome?.winnerChoice).toBe('no')
-    expect(outcome?.outcomeStatus).toBe(ProposalOutcome.REJECTED)
+    const votingResult = await calculateVotingResult(YES_NO_VALID_PROPOSAL)
+    expect(votingResult).toBeDefined()
+    expect(votingResult?.winnerChoice).toBe('no')
+    expect(votingResult?.votingOutcome).toBe(VotingOutcome.REJECTED)
   })
   it('should return the rejected outcome for a proposal with tie between Yes and No', async () => {
     mockChoicesResult({ yes: 100, no: 100 })
-    const outcome = await calculateOutcome(YES_NO_VALID_PROPOSAL, JOB_CONTEXT_MOCK)
-    expect(outcome).toBeDefined()
-    expect(outcome?.winnerChoice).toBe('no')
-    expect(outcome?.outcomeStatus).toBe(ProposalOutcome.REJECTED)
+    const votingResult = await calculateVotingResult(YES_NO_VALID_PROPOSAL)
+    expect(votingResult).toBeDefined()
+    expect(votingResult?.winnerChoice).toBe('no')
+    expect(votingResult?.votingOutcome).toBe(VotingOutcome.REJECTED)
   })
 })
 
@@ -213,7 +217,7 @@ describe('getWinnerBiddingAndTenderingProposal', () => {
         type: ProposalType.Tender,
         configuration: { linked_proposal_id: '123' },
         winnerVotingPower: 10,
-        outcomeStatus: ProposalOutcome.ACCEPTED,
+        votingOutcome: VotingOutcome.ACCEPTED,
       },
     ] as ProposalWithOutcome[]
     const result = getWinnerBiddingAndTenderingProposal(proposals, '123', ProposalType.Tender)
@@ -222,7 +226,7 @@ describe('getWinnerBiddingAndTenderingProposal', () => {
       type: ProposalType.Tender,
       configuration: { linked_proposal_id: '123' },
       winnerVotingPower: 10,
-      outcomeStatus: ProposalOutcome.ACCEPTED,
+      votingOutcome: VotingOutcome.ACCEPTED,
     })
   })
 
@@ -232,31 +236,31 @@ describe('getWinnerBiddingAndTenderingProposal', () => {
         type: ProposalType.Tender,
         configuration: { linked_proposal_id: '123' },
         winnerVotingPower: 10,
-        outcomeStatus: ProposalOutcome.ACCEPTED,
+        votingOutcome: VotingOutcome.ACCEPTED,
       },
       {
         type: ProposalType.Tender,
         configuration: { linked_proposal_id: '123' },
         winnerVotingPower: 15,
-        outcomeStatus: ProposalOutcome.ACCEPTED,
+        votingOutcome: VotingOutcome.ACCEPTED,
       },
       {
         type: ProposalType.Tender,
         configuration: { linked_proposal_id: '123' },
         winnerVotingPower: 8,
-        outcomeStatus: ProposalOutcome.ACCEPTED,
+        votingOutcome: VotingOutcome.ACCEPTED,
       },
       {
         type: ProposalType.Bid,
         configuration: { linked_proposal_id: '789' },
         winnerVotingPower: 8,
-        outcomeStatus: ProposalOutcome.ACCEPTED,
+        votingOutcome: VotingOutcome.ACCEPTED,
       },
       {
         type: ProposalType.Bid,
         configuration: { linked_proposal_id: '789' },
         winnerVotingPower: 8,
-        outcomeStatus: ProposalOutcome.ACCEPTED,
+        votingOutcome: VotingOutcome.ACCEPTED,
       },
     ] as ProposalWithOutcome[]
     const result = getWinnerBiddingAndTenderingProposal(proposals, '123', ProposalType.Tender)
@@ -265,7 +269,7 @@ describe('getWinnerBiddingAndTenderingProposal', () => {
       type: ProposalType.Tender,
       configuration: { linked_proposal_id: '123' },
       winnerVotingPower: 15,
-      outcomeStatus: ProposalOutcome.ACCEPTED,
+      votingOutcome: VotingOutcome.ACCEPTED,
     })
   })
 
@@ -275,25 +279,25 @@ describe('getWinnerBiddingAndTenderingProposal', () => {
         type: ProposalType.Tender,
         configuration: { linked_proposal_id: '456' },
         winnerVotingPower: 15,
-        outcomeStatus: ProposalOutcome.ACCEPTED,
+        votingOutcome: VotingOutcome.ACCEPTED,
       },
       {
         type: ProposalType.Tender,
         configuration: { linked_proposal_id: '789' },
         winnerVotingPower: 8,
-        outcomeStatus: ProposalOutcome.ACCEPTED,
+        votingOutcome: VotingOutcome.ACCEPTED,
       },
       {
         type: ProposalType.Bid,
         configuration: { linked_proposal_id: '789' },
         winnerVotingPower: 8,
-        outcomeStatus: ProposalOutcome.ACCEPTED,
+        votingOutcome: VotingOutcome.ACCEPTED,
       },
       {
         type: ProposalType.Bid,
         configuration: { linked_proposal_id: '789' },
         winnerVotingPower: 8,
-        outcomeStatus: ProposalOutcome.ACCEPTED,
+        votingOutcome: VotingOutcome.ACCEPTED,
       },
     ] as ProposalWithOutcome[]
     const result = getWinnerBiddingAndTenderingProposal(proposals, '123', ProposalType.Tender)
@@ -307,37 +311,37 @@ describe('getWinnerBiddingAndTenderingProposal', () => {
         type: ProposalType.Tender,
         configuration: { linked_proposal_id: '123' },
         winnerVotingPower: 10,
-        outcomeStatus: ProposalOutcome.ACCEPTED,
+        votingOutcome: VotingOutcome.ACCEPTED,
       },
       {
         type: ProposalType.Tender,
         configuration: { linked_proposal_id: '123' },
         winnerVotingPower: 15,
-        outcomeStatus: ProposalOutcome.ACCEPTED,
+        votingOutcome: VotingOutcome.ACCEPTED,
       },
       {
         type: ProposalType.Tender,
         configuration: { linked_proposal_id: '456' },
         winnerVotingPower: 15,
-        outcomeStatus: ProposalOutcome.ACCEPTED,
+        votingOutcome: VotingOutcome.ACCEPTED,
       },
       {
         type: ProposalType.Tender,
         configuration: { linked_proposal_id: '789' },
         winnerVotingPower: 8,
-        outcomeStatus: ProposalOutcome.ACCEPTED,
+        votingOutcome: VotingOutcome.ACCEPTED,
       },
       {
         type: ProposalType.Bid,
         configuration: { linked_proposal_id: '789' },
         winnerVotingPower: 8,
-        outcomeStatus: ProposalOutcome.ACCEPTED,
+        votingOutcome: VotingOutcome.ACCEPTED,
       },
       {
         type: ProposalType.Bid,
         configuration: { linked_proposal_id: '789' },
         winnerVotingPower: 8,
-        outcomeStatus: ProposalOutcome.ACCEPTED,
+        votingOutcome: VotingOutcome.ACCEPTED,
       },
     ] as ProposalWithOutcome[]
     const result = getWinnerBiddingAndTenderingProposal(proposals, '123', ProposalType.Tender)
@@ -346,7 +350,7 @@ describe('getWinnerBiddingAndTenderingProposal', () => {
       type: ProposalType.Tender,
       configuration: { linked_proposal_id: '123' },
       winnerVotingPower: 15,
-      outcomeStatus: ProposalOutcome.ACCEPTED,
+      votingOutcome: VotingOutcome.ACCEPTED,
     })
   })
 
@@ -356,37 +360,37 @@ describe('getWinnerBiddingAndTenderingProposal', () => {
         type: ProposalType.Tender,
         configuration: { linked_proposal_id: '456' },
         winnerVotingPower: 15,
-        outcomeStatus: ProposalOutcome.ACCEPTED,
+        votingOutcome: VotingOutcome.ACCEPTED,
       },
       {
         type: ProposalType.Tender,
         configuration: { linked_proposal_id: '123' },
         winnerVotingPower: 15,
-        outcomeStatus: ProposalOutcome.ACCEPTED,
+        votingOutcome: VotingOutcome.ACCEPTED,
       },
       {
         type: ProposalType.Tender,
         configuration: { linked_proposal_id: '123' },
         winnerVotingPower: 15,
-        outcomeStatus: ProposalOutcome.ACCEPTED,
+        votingOutcome: VotingOutcome.ACCEPTED,
       },
       {
         type: ProposalType.Tender,
         configuration: { linked_proposal_id: '123' },
         winnerVotingPower: 10,
-        outcomeStatus: ProposalOutcome.ACCEPTED,
+        votingOutcome: VotingOutcome.ACCEPTED,
       },
       {
         type: ProposalType.Bid,
         configuration: { linked_proposal_id: '789' },
         winnerVotingPower: 8,
-        outcomeStatus: ProposalOutcome.ACCEPTED,
+        votingOutcome: VotingOutcome.ACCEPTED,
       },
       {
         type: ProposalType.Bid,
         configuration: { linked_proposal_id: '789' },
         winnerVotingPower: 8,
-        outcomeStatus: ProposalOutcome.ACCEPTED,
+        votingOutcome: VotingOutcome.ACCEPTED,
       },
     ] as ProposalWithOutcome[]
     const result = getWinnerBiddingAndTenderingProposal(proposals, '123', ProposalType.Tender)

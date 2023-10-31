@@ -3,12 +3,13 @@ import type { EmbedBuilder } from 'discord.js'
 
 import { DISCORD_SERVICE_ENABLED } from '../constants'
 import { getProfileUrl } from '../entities/Profile/utils'
-import { ProposalType } from '../entities/Proposal/types'
+import { ProposalWithOutcome } from '../entities/Proposal/outcome'
+import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { isGovernanceProcessProposal, proposalUrl } from '../entities/Proposal/utils'
 import UpdateModel from '../entities/Updates/model'
 import { UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates, getUpdateNumber, getUpdateUrl } from '../entities/Updates/utils'
-import { capitalizeFirstLetter, inBackground } from '../helpers'
+import { capitalizeFirstLetter, getEnumDisplayName, inBackground } from '../helpers'
 import { getProfile } from '../utils/Catalyst'
 import { ErrorCategory } from '../utils/errorCategories'
 import { isProdEnv } from '../utils/governanceEnvs'
@@ -110,7 +111,7 @@ export class DiscordService {
         : getPreviewText(description)
 
       fields.push({
-        name: proposalType.toUpperCase().replaceAll('_', ' '),
+        name: getEnumDisplayName(proposalType),
         value: embedDescription,
       })
     }
@@ -237,10 +238,10 @@ export class DiscordService {
     }
   }
 
-  static finishProposal(id: string, title: string, outcome: string, winnerChoice?: string) {
+  static finishProposal(id: string, title: string, outcome: ProposalStatus, winnerChoice?: string) {
     if (DISCORD_SERVICE_ENABLED) {
       inBackground(async () => {
-        const action = `Proposal has ended with outcome ${outcome}`
+        const action = `Proposal has ended with outcome ${getEnumDisplayName(outcome)}`
         const message = await this.formatMessage({
           url: proposalUrl(id),
           title,
@@ -261,6 +262,14 @@ export class DiscordService {
           }
         }
       })
+    }
+  }
+
+  static notifyFinishedProposals(proposalsWithOutcome: ProposalWithOutcome[]) {
+    for (const { id, title, winnerChoice, newStatus } of proposalsWithOutcome) {
+      if (newStatus) {
+        this.finishProposal(id, title, newStatus, newStatus === ProposalStatus.Finished ? winnerChoice : undefined)
+      }
     }
   }
 }
