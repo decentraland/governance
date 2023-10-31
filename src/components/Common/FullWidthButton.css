@@ -12,3 +12,7 @@ a.ui.fluid.primary.button.FullWidthButton {
   align-items: center;
   justify-content: center;
 }
+
+.FullWidthButton__Loader {
+  position: relative;
+}
