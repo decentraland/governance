@@ -91,7 +91,7 @@ export default function ProfilePage() {
           scores={scores}
           isLoadingScores={isLoadingScores}
         />
-        <VotedProposalsBox title={t('page.profile.voted_proposals.title')} address={address} />
+        <VotedProposalsBox address={address} />
       </WiderContainer>
     </>
   )

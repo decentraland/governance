@@ -485,7 +485,9 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return (await this.namedQuery('get_open_pitches_total', query))[0]
   }
 
-  static async getPriorityProjects() {
+  static async getPriorityProposals(): Promise<
+    Pick<ProposalAttributes, 'title' | 'start_at' | 'type' | 'status' | 'user'>[]
+  > {
     // TODO: filter by author if user
     const query = SQL`
         SELECT title, start_at, type, status, ${table(this)}.user

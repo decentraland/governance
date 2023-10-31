@@ -1,13 +1,12 @@
-import useFormatMessage from '../../hooks/useFormatMessage'
+import { useState } from 'react'
+
+import { ProposalAttributes } from '../../entities/Proposal/types'
 import usePriorityProposals from '../../hooks/usePriorityProposals'
-import Empty from '../Common/Empty'
 import FullWidthButton from '../Common/FullWidthButton'
-import SkeletonBars from '../Common/SkeletonBars'
-import Watermelon from '../Icon/Watermelon'
-import ProfileProposalItem from '../Proposal/ProfileProposalItem'
+import SlimProposalCard from '../Proposal/SlimProposalCard'
 
 import { ActionBox } from './ActionBox'
-import './VotedProposalsBox.css'
+import './PriorityProposalsBox.css'
 
 interface Props {
   title: string
@@ -20,28 +19,30 @@ const PROPOSALS_PER_PAGE = 5
 
 //TODO: extract common behavior with voted proposals box
 function PriorityProposalsBox({ title, info, address, collapsible }: Props) {
-  const t = useFormatMessage()
+  const { priorityProposals, isLoading } = usePriorityProposals(address)
+  const [displayedProposals, setDisplayedProposals] = useState(PROPOSALS_PER_PAGE)
+  const hasMoreProposals = priorityProposals && priorityProposals.length > PROPOSALS_PER_PAGE
+  const showViewMoreButton = hasMoreProposals && displayedProposals < priorityProposals.length
+  const showViewLessButton = hasMoreProposals && displayedProposals >= priorityProposals.length
 
-  const { votes, isLoading, handleViewMore, hasMoreProposals } = usePriorityProposals(address, PROPOSALS_PER_PAGE)
+  const handleViewMore = () => {
+    if (priorityProposals) setDisplayedProposals(priorityProposals.length)
+  }
 
-  return (
+  const handleViewLess = () => {
+    if (priorityProposals) setDisplayedProposals(PROPOSALS_PER_PAGE)
+  }
+
+  return isLoading || (!isLoading && priorityProposals && priorityProposals.length === 0) ? null : (
     <ActionBox title={title} info={info} collapsible={collapsible}>
-      {isLoading && <SkeletonBars amount={votes.length || 3} height={83.5} />}
-      {!isLoading &&
-        (votes.length > 0 ? (
-          votes.map((vote) => {
-            return <ProfileProposalItem key={vote.id} votedProposal={vote} />
-          })
-        ) : (
-          <Empty
-            className="VotedProposalsBox__Empty"
-            icon={<Watermelon />}
-            description={t('page.profile.voted_proposals.empty')}
-          />
-        ))}
-      {hasMoreProposals && (
-        <FullWidthButton onClick={handleViewMore}>{t('page.profile.voted_proposals.button')}</FullWidthButton>
+      {priorityProposals &&
+        priorityProposals.slice(0, displayedProposals).map((proposal) => {
+          return <SlimProposalCard key={proposal.id} proposal={proposal as ProposalAttributes} />
+        })}
+      {showViewMoreButton && (
+        <FullWidthButton onClick={handleViewMore}>{`Show all ${priorityProposals?.length} proposals`}</FullWidthButton>
       )}
+      {showViewLessButton && <FullWidthButton onClick={handleViewLess}>{`Show less`}</FullWidthButton>}
     </ActionBox>
   )
 }
