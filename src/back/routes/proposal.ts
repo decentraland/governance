@@ -645,33 +645,25 @@ async function getGrants(): Promise<CategorizedGrants> {
   return await ProjectService.getGrants()
 }
 
-// TODO: Still in use by user profile page.
-async function getGrantsByUser(req: Request): ReturnType<typeof getGrants> {
+async function getGrantsByUser(req: Request) {
   const address = validateAddress(req.params.address)
-  const isCoauthoring = req.query.coauthor === 'true'
 
-  let coauthoringProposalIds = new Set<string>()
+  const coauthoring = await CoauthorModel.findProposals(address, CoauthorStatus.APPROVED)
+  const coauthoringProposalIds = new Set(coauthoring.map((coauthoringAttributes) => coauthoringAttributes.proposal_id))
 
-  if (isCoauthoring) {
-    const coauthoring = await CoauthorModel.findProposals(address, CoauthorStatus.APPROVED)
-    coauthoringProposalIds = new Set(coauthoring.map((coauthoringAttributes) => coauthoringAttributes.proposal_id))
-  }
+  const grantsResult = await ProjectService.getProjects()
 
-  const grantsResult = await getGrants()
-
-  const filterGrants = (grants: ProjectWithUpdate[]) => {
-    return grants.filter(
-      (grant) => grant.user.toLowerCase() === address.toLowerCase() || coauthoringProposalIds.has(grant.id)
+  const filterGrants = (projects: ProjectWithUpdate[]) => {
+    return projects.filter(
+      (project) =>
+        project.type === ProposalType.Grant &&
+        (project.user.toLowerCase() === address.toLowerCase() || coauthoringProposalIds.has(project.id))
     )
   }
 
-  const current = filterGrants(grantsResult.current)
-  const past = filterGrants(grantsResult.past)
-
   return {
-    current,
-    past,
-    total: current.length + past.length,
+    data: filterGrants(grantsResult.data),
+    total: grantsResult.data.length,
   }
 }
 
