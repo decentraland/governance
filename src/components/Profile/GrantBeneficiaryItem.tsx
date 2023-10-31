@@ -3,7 +3,6 @@ import { useIntl } from 'react-intl'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
-import { TransparencyGrantsTiers } from '../../clients/DclData'
 import { Project } from '../../entities/Proposal/types'
 import { isProposalInCliffPeriod } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
@@ -24,12 +23,14 @@ interface Props {
   grant: Project
 }
 
+const TRANSPARENCY_TIERS_IN_MANA = ['Tier 1', 'Tier 2', 'Tier 3', 'Tier 4']
+
 function GrantBeneficiaryItem({ grant }: Props) {
   const t = useFormatMessage()
   const intl = useIntl()
   const { user, title, enacted_at, token, configuration } = grant
   const proposalInCliffPeriod = !!enacted_at && isProposalInCliffPeriod(enacted_at)
-  const isInMana = Object.keys(TransparencyGrantsTiers).slice(0, 3).includes(configuration.tier)
+  const isInMana = TRANSPARENCY_TIERS_IN_MANA.includes(configuration.tier)
   const formattedEnactedDate = enacted_at ? formatDate(new Date(enacted_at * 1000)) : null
 
   return (
