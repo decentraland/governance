@@ -10,7 +10,7 @@ import { BadgeCreationResult, RevokeOrReinstateResult, UserBadges } from '../ent
 import { BidRequest, UnpublishedBidAttributes } from '../entities/Bid/types'
 import { Budget, BudgetWithContestants, CategoryBudget } from '../entities/Budget/types'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
-import { GrantRequest, ProposalGrantCategory, SubtypeOptions } from '../entities/Grant/types'
+import { GrantRequest, ProposalGrantCategory } from '../entities/Grant/types'
 import {
   CategorizedGrants,
   NewProposalBanName,
@@ -27,8 +27,8 @@ import {
   ProjectWithUpdate,
   ProposalAttributes,
   ProposalCommentsInDiscourse,
+  ProposalListFilter,
   ProposalStatus,
-  ProposalType,
 } from '../entities/Proposal/types'
 import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { SubscriptionAttributes } from '../entities/Subscription/types'
@@ -66,21 +66,9 @@ type NewProposalMap = {
   [`/proposals/hiring`]: NewProposalHiring
 }
 
-export type GetProposalsFilter = {
-  user: string
-  type: ProposalType
-  subtype?: SubtypeOptions
-  status: ProposalStatus
-  subscribed: boolean | string
-  coauthor: boolean
-  search?: string | null
-  timeFrame?: string | null
-  timeFrameKey?: string | null
-  order?: 'ASC' | 'DESC'
+export type GetProposalsFilter = ProposalListFilter & {
   limit: number
   offset: number
-  snapshotIds?: string
-  linkedProposalId?: string
 }
 
 const getGovernanceApiUrl = () => {

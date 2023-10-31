@@ -72,7 +72,7 @@ export default function CategoryFilter({
   const t = useFormatMessage()
   const params = useURLSearchParams()
   const type = params.get(FILTER_KEY)
-  const currentSubtype = useMemo(() => toGrantSubtype(params.get('subtype')), [params])
+  const currentSubtype = useMemo(() => toGrantSubtype(params.get('subtype'), () => null), [params])
 
   const areProposals = isEqual(filterType, ProposalType)
   const filters = areProposals
