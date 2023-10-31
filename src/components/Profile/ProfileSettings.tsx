@@ -1,6 +1,7 @@
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 
+import { USER_FULLY_VALIDATED } from '../../entities/User/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useIdentityModalContext from '../../hooks/useIdentityModalContext'
 import useIsProfileValidated from '../../hooks/useIsProfileValidated'
@@ -13,7 +14,7 @@ function ProfileSettings() {
   const t = useFormatMessage()
   const { setIsModalOpen } = useIdentityModalContext()
   const [user] = useAuthContext()
-  const { isProfileValidated, validationChecked } = useIsProfileValidated(user)
+  const { isProfileValidated, validationChecked } = useIsProfileValidated(user, USER_FULLY_VALIDATED)
   const showDot = validationChecked && !isProfileValidated
 
   const handleLinkedProfilesClick = () => setIsModalOpen(true)

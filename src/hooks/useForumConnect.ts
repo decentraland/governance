@@ -6,6 +6,7 @@ import { Governance } from '../clients/Governance'
 import { AccountType } from '../components/Modal/IdentityConnectModal/AccountsConnectModal'
 import { SegmentEvent } from '../entities/Events/types'
 import { GATSBY_DISCOURSE_CONNECT_THREAD } from '../entities/User/constants'
+import { Account } from '../entities/User/types'
 import { DISCOURSE_API } from '../entities/User/utils'
 import { openUrl } from '../helpers'
 
@@ -16,7 +17,7 @@ export const THREAD_URL = `${DISCOURSE_API}${
 }t/${GATSBY_DISCOURSE_CONNECT_THREAD}/10000`
 const VALIDATION_CHECK_INTERVAL = 10 * 1000 // 10 seconds
 
-const getMessage = async () => Governance.get().getValidationMessage('Discourse forum')
+const getMessage = async () => Governance.get().getValidationMessage(Account.Forum)
 
 export default function useForumConnect() {
   const {

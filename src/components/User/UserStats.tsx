@@ -1,11 +1,13 @@
-import { Suspense, lazy } from 'react'
+import { Suspense, lazy, useEffect, useState } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { NotMobile, useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
+import { Governance } from '../../clients/Governance'
 import { VpDistribution } from '../../clients/SnapshotTypes'
 import { isSameAddress } from '../../entities/Snapshot/utils'
+import { USER_FULLY_VALIDATED } from '../../entities/User/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useGovernanceProfile from '../../hooks/useGovernanceProfile'
 import Username from '../Common/Username'
@@ -31,8 +33,16 @@ const UserAvatar = lazy(() => import('./UserAvatar'))
 export default function UserStats({ address, vpDistribution, isLoadingVpDistribution }: Props) {
   const t = useFormatMessage()
   const isMobile = useMobileMediaQuery()
-  const { profile, isLoadingGovernanceProfile, isProfileValidated } = useGovernanceProfile(address)
+  const { profile, isLoadingGovernanceProfile } = useGovernanceProfile(address)
+  const [isProfileValidated, setIsProfileValidated] = useState(false)
   const [user] = useAuthContext()
+  useEffect(() => {
+    Governance.get()
+      .isProfileValidated(address, USER_FULLY_VALIDATED)
+      .then(setIsProfileValidated)
+      .catch((error) => console.error(error))
+  }, [address])
+
   const showSettings = isSameAddress(user, address) && !isLoadingGovernanceProfile && !isProfileValidated
   const { total } = vpDistribution || { total: 0 }
 

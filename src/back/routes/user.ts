@@ -7,8 +7,14 @@ import { Request } from 'express'
 import { isSameAddress } from '../../entities/Snapshot/utils'
 import { GATSBY_DISCOURSE_CONNECT_THREAD, MESSAGE_TIMEOUT_TIME } from '../../entities/User/constants'
 import UserModel from '../../entities/User/model'
-import { UserAttributes, ValidationComment, ValidationMessage } from '../../entities/User/types'
-import { formatValidationMessage, getValidationComment, validateComment } from '../../entities/User/utils'
+import { Account, UserAttributes, ValidationComment, ValidationMessage } from '../../entities/User/types'
+import {
+  formatValidationMessage,
+  getValidationComment,
+  parseAccountTypes,
+  toAccount,
+  validateComment,
+} from '../../entities/User/utils'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
 import { DiscordService } from '../services/discord'
@@ -50,7 +56,7 @@ async function getValidationMessage(req: WithAuth) {
     message_timeout,
   }
 
-  return formatValidationMessage(address, message.timestamp, account)
+  return formatValidationMessage(address, message.timestamp, toAccount(account))
 }
 
 async function checkForumValidationMessage(req: WithAuth) {
@@ -65,14 +71,14 @@ async function checkForumValidationMessage(req: WithAuth) {
 
     const comments = await DiscourseService.getPostComments(Number(GATSBY_DISCOURSE_CONNECT_THREAD))
     const formattedComments = comments.comments.map((comment) => ({
-      id: comment.user_forum_id,
+      id: String(comment.user_forum_id),
       content: comment.cooked,
-      timestamp: comment.created_at,
+      timestamp: new Date(comment.created_at).getTime(),
     }))
     const validationComment = getValidationComment(formattedComments, address, timestamp)
 
     if (validationComment) {
-      if (!isSameAddress(address, user) || !validateComment(validationComment, address, timestamp)) {
+      if (!isSameAddress(address, user) || !validateComment(validationComment, address, timestamp, Account.Forum)) {
         throw new Error('Validation failed')
       }
 
@@ -97,13 +103,21 @@ async function checkDiscordValidationMessage(req: WithAuth) {
     }
     const messages = await DiscordService.getProfileVerificationMessages()
     const formattedMessages = messages.map<ValidationComment>((message) => ({
-      id: Number(message.author.id),
+      id: message.author.id,
       content: message.content,
-      timestamp: String(message.createdTimestamp),
+      timestamp: message.createdTimestamp,
     }))
     const { address, timestamp } = messageProperties
     const validationComment = getValidationComment(formattedMessages, address, timestamp)
-    console.log('validationComment', validationComment)
+
+    if (validationComment) {
+      if (!isSameAddress(address, user) || !validateComment(validationComment, address, timestamp, Account.Discord)) {
+        throw new Error('Validation failed')
+      }
+
+      await UserModel.createDiscordConnection(user, validationComment.id)
+      clearValidationInProgress(user)
+    }
   } catch (error) {
     throw new Error("Couldn't validate the user. " + error)
   }
@@ -111,8 +125,9 @@ async function checkDiscordValidationMessage(req: WithAuth) {
 
 async function isValidated(req: Request) {
   const address = validateAddress(req.params.address)
+  const accounts = parseAccountTypes(req.query.account as string | string[] | undefined)
   try {
-    return await UserModel.isForumValidated(address)
+    return await UserModel.isValidated(address, new Set(accounts))
   } catch (error) {
     const message = 'Error while fetching validation data'
     ErrorService.report(message, { error })

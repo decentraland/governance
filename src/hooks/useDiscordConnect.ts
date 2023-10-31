@@ -3,10 +3,11 @@ import { useCallback, useEffect } from 'react'
 import { Web3Provider } from '@ethersproject/providers'
 
 import { Governance } from '../clients/Governance'
+import { Account } from '../entities/User/types'
 
 import useValidationSetup from './useValidationSetup'
 
-const getMessage = async () => Governance.get().getValidationMessage('Discord')
+const getMessage = async () => Governance.get().getValidationMessage(Account.Discord)
 
 function useDiscordConnect() {
   const {

@@ -34,6 +34,7 @@ import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { Topic } from '../entities/SurveyTopic/types'
 import { ProjectHealth, UpdateAttributes, UpdateResponse } from '../entities/Updates/types'
+import { Account, AccountType } from '../entities/User/types'
 import { Vote, VotedProposal, Voter } from '../entities/Votes/types'
 import { NewsletterSubscriptionResult } from '../shared/types/newsletter'
 import { PushNotification } from '../shared/types/notifications'
@@ -477,7 +478,7 @@ export class Governance extends API {
     return result.data
   }
 
-  async getValidationMessage(account?: string) {
+  async getValidationMessage(account?: Account) {
     const url = new URLSearchParams()
     if (account) {
       url.append('account', account)
@@ -508,8 +509,15 @@ export class Governance extends API {
     return result.data
   }
 
-  async isProfileValidated(address: string) {
-    const result = await this.fetch<ApiResponse<boolean>>(`/user/${address}/is-validated`, this.options().method('GET'))
+  async isProfileValidated(address: string, accounts: AccountType[]) {
+    const url = new URLSearchParams()
+    for (const account of accounts) {
+      url.append('account', account)
+    }
+    const result = await this.fetch<ApiResponse<boolean>>(
+      `/user/${address}/is-validated/?${url.toString()}`,
+      this.options().method('GET')
+    )
 
     return result.data
   }

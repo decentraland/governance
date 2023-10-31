@@ -4,6 +4,7 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
+import { USER_FULLY_VALIDATED } from '../../../entities/User/utils'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useIdentityModalContext from '../../../hooks/useIdentityModalContext'
 import useIsProfileValidated from '../../../hooks/useIsProfileValidated'
@@ -38,7 +39,10 @@ function IdentityConnectModal() {
   }
 
   const checkProfile = useMemo(() => !timestamp || new Date() > new Date(timestamp), [timestamp])
-  const { isProfileValidated, validationChecked } = useIsProfileValidated(checkProfile ? user : null)
+  const { isProfileValidated, validationChecked } = useIsProfileValidated(
+    checkProfile ? user : null,
+    USER_FULLY_VALIDATED
+  )
 
   useEffect(() => {
     if (!!setIsModalOpen && validationChecked) {

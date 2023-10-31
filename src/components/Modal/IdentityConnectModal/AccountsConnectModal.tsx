@@ -7,6 +7,7 @@ import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { SegmentEvent } from '../../../entities/Events/types'
+import { AccountType } from '../../../entities/User/types'
 import { openUrl } from '../../../helpers'
 import useDiscordConnect from '../../../hooks/useDiscordConnect'
 import useFormatMessage from '../../../hooks/useFormatMessage'
@@ -24,12 +25,6 @@ import Sign from '../../Icon/Sign'
 
 import AccountConnection, { AccountConnectionProps } from './AccountConnection'
 import PostConnection from './PostConnection'
-
-export enum AccountType {
-  Forum = 'forum',
-  Discord = 'discord',
-  Twitter = 'twitter',
-}
 
 type AccountModal = Omit<AccountConnectionProps, 'timerText'>
 
@@ -356,6 +351,11 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
       ) : (
         <PostConnection address={address || undefined} isValidated={isValidated} onPostAction={handlePostAction} />
       )}
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <button onClick={discordMessage}>message</button>
+        <button onClick={discordCopy}>copy</button>
+        <button onClick={validate}>validate</button>
+      </div>
     </Modal>
   )
 }

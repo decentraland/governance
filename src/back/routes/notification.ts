@@ -23,8 +23,6 @@ async function sendNotification(req: WithAuth) {
   validateDebugAddress(req.auth)
   const { title, body, recipient, url, type, discordId } = req.body
 
-  console.log('Discord ID:', discordId)
-
   if (type === NotificationType.TARGET && !recipient) {
     throw new RequestError('Target type needs recipient', RequestError.BadRequest)
   }
@@ -35,7 +33,7 @@ async function sendNotification(req: WithAuth) {
 
   if (discordId) {
     await DiscordService.sendDirectMessage(discordId, {
-      title,
+      title: `[DEBUG] ${title}`,
       url,
       fields: [],
       action: body,
