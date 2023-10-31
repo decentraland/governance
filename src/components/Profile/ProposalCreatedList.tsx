@@ -25,13 +25,14 @@ export function ProposalCreatedList({
   const t = useFormatMessage()
   const { proposals, isLoadingProposals, isFetchingNextPage, hasMoreProposals, loadMore } =
     useInfiniteProposals(proposalsFilter)
+  const hasProposals = proposals && proposals?.[0]?.total > 0
 
   return (
     <>
       {isLoadingProposals && <SkeletonBars amount={3} height={89} />}
       {!isLoadingProposals && (
         <>
-          {proposals ? (
+          {hasProposals ? (
             proposals.map((page) =>
               page.data.map((proposal) => (
                 <ProposalCreatedItem
