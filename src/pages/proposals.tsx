@@ -141,13 +141,7 @@ export default function ProposalsPage() {
                 )}
                 <NotMobile>
                   <div className="ProposalsPage__Priority">
-                    {/*TODO: internationalization*/}
-                    <PriorityProposalsBox
-                      title={'Time Sensitive'}
-                      info={'Proposals that need your attention reit neu'}
-                      address={'0x549a9021661a85b6bc51c07b3a451135848d0048'}
-                      collapsible
-                    />
+                    <PriorityProposalsBox address={'0x549a9021661a85b6bc51c07b3a451135848d0048'} collapsible />
                   </div>
                 </NotMobile>
                 <ActionableLayout
