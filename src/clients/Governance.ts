@@ -13,7 +13,6 @@ import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
 import { GrantRequest, ProposalGrantCategory } from '../entities/Grant/types'
 import {
   CategorizedGrants,
-  FilterProposalList,
   NewProposalBanName,
   NewProposalCatalyst,
   NewProposalDraft,
@@ -28,6 +27,7 @@ import {
   ProjectWithUpdate,
   ProposalAttributes,
   ProposalCommentsInDiscourse,
+  ProposalListFilter,
   ProposalStatus,
 } from '../entities/Proposal/types'
 import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
@@ -66,7 +66,7 @@ type NewProposalMap = {
   [`/proposals/hiring`]: NewProposalHiring
 }
 
-export type GetProposalsFilter = FilterProposalList & {
+export type GetProposalsFilter = ProposalListFilter & {
   limit: number
   offset: number
 }

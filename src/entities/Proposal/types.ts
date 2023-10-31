@@ -69,7 +69,7 @@ export type ProposalAttributes<C extends Record<string, unknown> = any> = {
   textsearch: SQLStatement | string | null | undefined
 }
 
-export type FilterProposalList = {
+export type ProposalListFilter = {
   user: string
   type: ProposalType
   subtype?: SubtypeOptions

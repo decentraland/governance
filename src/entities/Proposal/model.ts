@@ -22,8 +22,8 @@ import SubscriptionModel from '../Subscription/model'
 
 import tsquery from './tsquery'
 import {
-  FilterProposalList,
   ProposalAttributes,
+  ProposalListFilter,
   ProposalStatus,
   ProposalType,
   SortingOrder,
@@ -248,7 +248,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     )
   }
 
-  static async getProposalTotal(filter: Partial<FilterProposalList> = {}): Promise<number> {
+  static async getProposalTotal(filter: Partial<ProposalListFilter> = {}): Promise<number> {
     const { user, subscribed, type, subtype, status, search, snapshotIds, coauthor, linkedProposalId } = filter
     if (user && !isEthereumAddress(user)) {
       return 0
@@ -324,7 +324,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
   }
 
   static async getProposalList(
-    filter: Partial<FilterProposalList & FilterPagination> = {}
+    filter: Partial<ProposalListFilter & FilterPagination> = {}
   ): Promise<(ProposalAttributes & { coauthors?: string[] | null })[]> {
     const {
       user,
@@ -367,7 +367,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
 
     const timeFrame = this.parseTimeframe(filter.timeFrame)
     const timeFrameKey = filter.timeFrameKey || 'created_at'
-    const orderDirection = !order ? SortingOrder.DESC : order
+    const orderDirection = order || SortingOrder.DESC
 
     if (!VALID_TIMEFRAME_KEYS.includes(timeFrameKey) || !VALID_ORDER_DIRECTION.includes(orderDirection)) {
       return []
