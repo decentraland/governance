@@ -24,6 +24,7 @@ import VoteModule from './VoteModule'
 enum Variant {
   Vote = 'vote',
   Category = 'category',
+  Slim = 'slim',
 }
 
 interface Props {
@@ -35,8 +36,8 @@ interface Props {
 const ProposalPreviewCard = ({ proposal, votes, variant }: Props) => {
   const t = useFormatMessage()
   const { title, user, finish_at } = proposal
-  const { comments } = useProposalComments(proposal.id)
-  const { userChoice } = useWinningChoice(proposal)
+  const { comments } = useProposalComments(proposal.id, variant !== Variant.Slim)
+  const { userChoice } = useWinningChoice(proposal, variant !== Variant.Slim)
   const isProposalActive = Time().isBefore(Time(finish_at))
   const dateText = t(`page.home.open_proposals.${isProposalActive ? 'ends_date' : 'ended_date'}`, {
     value: Time(finish_at).fromNow(),
@@ -44,7 +45,7 @@ const ProposalPreviewCard = ({ proposal, votes, variant }: Props) => {
   const [isHovered, setIsHovered] = useState(false)
 
   const isProposalAboutToEnd = isProposalActive && Time(finish_at).diff(Time(), 'hours') < 24
-  const showVotedChoice = variant !== Variant.Vote && !!userChoice
+  const showVotedChoice = variant === Variant.Category && !!userChoice
 
   return (
     <Link
@@ -54,7 +55,9 @@ const ProposalPreviewCard = ({ proposal, votes, variant }: Props) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <ProposalPreviewCardSection>
-        <Username className="ProposalPreviewCard__Avatar" address={user} variant="avatar" size="medium" />
+        {variant !== Variant.Slim && (
+          <Username className="ProposalPreviewCard__Avatar" address={user} variant="avatar" size="medium" />
+        )}
         <div className="ProposalPreviewCard__TextContainer">
           <Heading as="h3" size="xs" weight="semi-bold" className="ProposalPreviewCard__Title">
             {title}
@@ -63,32 +66,37 @@ const ProposalPreviewCard = ({ proposal, votes, variant }: Props) => {
             <TabletAndBelow>
               <CategoryPill className="ProposalPreviewCard__Pill" proposalType={proposal.type} size="sm" />
             </TabletAndBelow>
-            {!showVotedChoice && (
-              <span className="ProposalPreviewCard__DetailsItem ProposalPreviewCard__UsernameContainer">
-                {t('page.home.open_proposals.by_user')}
-                <Username className="ProposalPreviewCard__Username" address={user} variant="address" />
-              </span>
-            )}
-            {showVotedChoice && (
-              <span
-                title={userChoice.toUpperCase()}
-                className={classNames(
-                  'ProposalPreviewCard__DetailsItem',
-                  'ProposalPreviewCard__DetailsItemVotedChoice'
+            {variant !== Variant.Slim && (
+              <>
+                {!showVotedChoice && (
+                  <span className="ProposalPreviewCard__DetailsItem ProposalPreviewCard__UsernameContainer">
+                    {t('page.home.open_proposals.by_user')}
+                    <Username className="ProposalPreviewCard__Username" address={user} variant="address" />
+                  </span>
                 )}
-              >
-                {t('page.proposal_detail.your_vote_label')}
-                <span className="ProposalPreviewCard__Vote">{userChoice}</span>
-              </span>
+                {showVotedChoice && (
+                  <span
+                    title={userChoice.toUpperCase()}
+                    className={classNames(
+                      'ProposalPreviewCard__DetailsItem',
+                      'ProposalPreviewCard__DetailsItemVotedChoice'
+                    )}
+                  >
+                    {t('page.proposal_detail.your_vote_label')}
+                    <span className="ProposalPreviewCard__Vote">{userChoice}</span>
+                  </span>
+                )}
+                <Desktop>
+                  <span className="ProposalPreviewCard__DetailsItem">
+                    {t('page.home.open_proposals.votes', { total: Object.keys(votes || {}).length })}
+                  </span>
+                  <span className="ProposalPreviewCard__DetailsItem">
+                    {t('page.home.open_proposals.comments', { total: comments?.totalComments || 0 })}
+                  </span>
+                </Desktop>
+              </>
             )}
-            <Desktop>
-              <span className="ProposalPreviewCard__DetailsItem">
-                {t('page.home.open_proposals.votes', { total: Object.keys(votes || {}).length })}
-              </span>
-              <span className="ProposalPreviewCard__DetailsItem">
-                {t('page.home.open_proposals.comments', { total: comments?.totalComments || 0 })}
-              </span>
-            </Desktop>
+
             <span
               className={classNames(
                 'ProposalPreviewCard__DetailsItem',
@@ -101,7 +109,9 @@ const ProposalPreviewCard = ({ proposal, votes, variant }: Props) => {
         </div>
       </ProposalPreviewCardSection>
       {variant === Variant.Vote && <VoteModule proposal={proposal} votes={votes} />}
-      {variant === Variant.Category && <CategoryModule proposal={proposal} isHovered={isHovered} />}
+      {variant !== Variant.Vote && (
+        <CategoryModule proposal={proposal} isHovered={isHovered} slim={variant === Variant.Slim} />
+      )}
       <TabletAndBelow>
         <div>
           <ChevronRight color="var(--black-400)" />

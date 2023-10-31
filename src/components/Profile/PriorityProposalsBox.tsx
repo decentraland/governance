@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import usePriorityProposals from '../../hooks/usePriorityProposals'
 import FullWidthButton from '../Common/FullWidthButton'
-import SlimProposalCard from '../Proposal/SlimProposalCard'
+import ProposalPreviewCard from '../Common/ProposalPreviewCard/ProposalPreviewCard'
 
 import { ActionBox } from './ActionBox'
 import './PriorityProposalsBox.css'
@@ -37,7 +37,7 @@ function PriorityProposalsBox({ title, info, address, collapsible }: Props) {
     <ActionBox title={title} info={info} collapsible={collapsible}>
       {priorityProposals &&
         priorityProposals.slice(0, displayedProposals).map((proposal) => {
-          return <SlimProposalCard key={proposal.id} proposal={proposal as ProposalAttributes} />
+          return <ProposalPreviewCard key={proposal.id} proposal={proposal as ProposalAttributes} variant="slim" />
         })}
       {showViewMoreButton && (
         <FullWidthButton onClick={handleViewMore}>{`Show all ${priorityProposals?.length} proposals`}</FullWidthButton>

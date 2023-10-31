@@ -9,12 +9,15 @@ import useProposalVotes from './useProposalVotes'
 
 type WinningChoice = ReturnType<typeof calculateResultWinner>
 
-function useWinningChoice(proposal: ProposalAttributes): {
+function useWinningChoice(
+  proposal: ProposalAttributes,
+  shouldFetch = true
+): {
   winningChoice: WinningChoice
   userChoice: string | null
 } {
   const [account] = useAuthContext()
-  const { votes } = useProposalVotes(proposal.id)
+  const { votes } = useProposalVotes(proposal.id, shouldFetch)
   const userVote = account ? votes?.[account] : undefined
   const choices = useMemo((): string[] => proposal.snapshot_proposal?.choices || [], [proposal])
   const winningChoice = useMemo(() => calculateResultWinner(choices, votes || {}), [choices, votes])

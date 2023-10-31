@@ -5,7 +5,7 @@ import { ProposalAttributes } from '../entities/Proposal/types'
 
 import { FIVE_MINUTES_MS } from './constants'
 
-const useProposalVotes = (proposalId?: ProposalAttributes['id']) => {
+const useProposalVotes = (proposalId?: ProposalAttributes['id'], shouldFetch = true) => {
   const {
     data: votes,
     isLoading: isLoadingVotes,
@@ -19,7 +19,7 @@ const useProposalVotes = (proposalId?: ProposalAttributes['id']) => {
       return Governance.get().getProposalCachedVotes(proposalId)
     },
     staleTime: FIVE_MINUTES_MS,
-    enabled: !!proposalId,
+    enabled: !!proposalId && shouldFetch,
   })
 
   return { votes: votes ?? null, isLoadingVotes, reloadVotes }
