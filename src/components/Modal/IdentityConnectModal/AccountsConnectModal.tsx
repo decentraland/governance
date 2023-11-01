@@ -7,6 +7,7 @@ import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { SegmentEvent } from '../../../entities/Events/types'
+import { GATSBY_DISCORD_PROFILE_VERIFICATION_URL } from '../../../entities/User/constants'
 import { AccountType } from '../../../entities/User/types'
 import { openUrl } from '../../../helpers'
 import useDiscordConnect from '../../../hooks/useDiscordConnect'
@@ -68,7 +69,24 @@ const STEPS_HELPERS_KEYS: Record<AccountType, Record<number, CardHelperKeys>> = 
       success: THREAD_URL,
     },
   },
-  [AccountType.Discord]: {},
+  [AccountType.Discord]: {
+    1: {
+      start: 'modal.identity_setup.discord.card_helper.step_1_start',
+      active: 'modal.identity_setup.discord.card_helper.step_1_active',
+      success: 'modal.identity_setup.discord.card_helper.step_1_success',
+      error: 'modal.identity_setup.discord.card_helper.step_1_error',
+    },
+    2: {
+      start: 'modal.identity_setup.discord.card_helper.step_2_start',
+      active: 'modal.identity_setup.discord.card_helper.step_2_active',
+      success: 'modal.identity_setup.discord.card_helper.step_2_success',
+    },
+    3: {
+      start: GATSBY_DISCORD_PROFILE_VERIFICATION_URL,
+      active: GATSBY_DISCORD_PROFILE_VERIFICATION_URL,
+      success: GATSBY_DISCORD_PROFILE_VERIFICATION_URL,
+    },
+  },
   [AccountType.Twitter]: {},
 }
 
@@ -153,15 +171,22 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
   const [address] = useAuthContext()
   const track = useTrackContext()
   const {
-    getSignedMessage,
-    copyMessageToClipboard,
-    openThread,
-    time,
-    isValidated,
+    getSignedMessage: getForumMessage,
+    copyMessageToClipboard: copyForumMessage,
+    openThread: openForumThread,
+    time: forumVerificationTime,
+    isValidated: isValidatedOnForum,
     reset: resetForumConnect,
   } = useForumConnect()
 
-  const { getSignedMessage: discordMessage, copyMessageToClipboard: discordCopy, validate } = useDiscordConnect()
+  const {
+    getSignedMessage: getDiscordMessage,
+    copyMessageToClipboard: copyDiscordMessage,
+    openChannel: openDiscordChannel,
+    time: discordVerificationTime,
+    isValidated: isValidatedOnDiscord,
+    reset: resetDiscordConnect,
+  } = useDiscordConnect()
 
   const [modalState, setModalState] = useState<ModalState>(INITIAL_STATE)
 
@@ -177,28 +202,32 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
         {}
       ),
     }))
-  const setStepHelper = (step: number, helperState: keyof CardHelperKeys) => {
-    const helperTextKey = STEPS_HELPERS_KEYS.forum[step][helperState]
+  const setStepHelper = useCallback((step: number, account: AccountType, helperState: keyof CardHelperKeys) => {
+    const helperTextKey = STEPS_HELPERS_KEYS[account][step][helperState]
     if (!helperTextKey) return
     const newHelpers = { [step]: helperTextKey }
     if (helperState === 'success') {
-      newHelpers[step + 1] = STEPS_HELPERS_KEYS.forum[step + 1].active
+      newHelpers[step + 1] = STEPS_HELPERS_KEYS[account][step + 1]?.active
     }
     setModalState((state) => ({ ...state, stepsCurrentHelper: { ...state.stepsCurrentHelper, ...newHelpers } }))
-  }
+  }, [])
   const resetState = (account: AccountType) => {
     setModalState((state) => ({ ...state, currentStep: 1 }))
     setIsValidating(false)
     initializeStepHelpers(account)
   }
+  const resetValidation = modalState.currentType === ModalType.Forum ? resetForumConnect : resetDiscordConnect
+  const time = modalState.currentType === ModalType.Forum ? forumVerificationTime : discordVerificationTime
   const isTimerExpired = time <= 0
+  const isValidated = isValidatedOnForum || isValidatedOnDiscord
+  const currentAccount = modalState.currentType === ModalType.Forum ? AccountType.Forum : AccountType.Discord
 
   useEffect(() => {
     if (isTimerExpired) {
-      resetState(AccountType.Forum)
+      resetState(currentAccount)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isTimerExpired])
+  }, [modalState.currentType, isTimerExpired])
 
   useEffect(() => {
     if (isValidated !== undefined) {
@@ -208,30 +237,63 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
 
   const handleForumSign = useCallback(async () => {
     const STEP_NUMBER = 1
+    const account = AccountType.Forum
     try {
       setIsTimerActive(true)
-      setStepHelper(STEP_NUMBER, 'active')
-      await getSignedMessage()
-      setStepHelper(STEP_NUMBER, 'success')
+      setStepHelper(STEP_NUMBER, account, 'active')
+      await getForumMessage()
+      setStepHelper(STEP_NUMBER, account, 'success')
       setCurrentStep(STEP_NUMBER + 1)
       track(SegmentEvent.IdentityStarted, { address, account: AccountType.Forum })
     } catch (error) {
       setIsTimerActive(false)
-      setStepHelper(STEP_NUMBER, 'error')
+      setStepHelper(STEP_NUMBER, account, 'error')
       console.error(error)
     }
-  }, [address, getSignedMessage, track])
+  }, [address, getForumMessage, setStepHelper, track])
 
   const handleForumCopy = useCallback(() => {
     const STEP_NUMBER = 2
-    copyMessageToClipboard()
-    setStepHelper(STEP_NUMBER, 'success')
+    const account = AccountType.Forum
+    copyForumMessage()
+    setStepHelper(STEP_NUMBER, account, 'success')
     setCurrentStep(STEP_NUMBER + 1)
-  }, [copyMessageToClipboard])
+  }, [copyForumMessage, setStepHelper])
 
   const handleForumValidate = useCallback(() => {
     setIsValidating(true)
-    openThread()
+    openForumThread()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const handleDiscordSign = useCallback(async () => {
+    const STEP_NUMBER = 1
+    const account = AccountType.Discord
+    try {
+      setIsTimerActive(true)
+      setStepHelper(STEP_NUMBER, account, 'active')
+      await getDiscordMessage()
+      setStepHelper(STEP_NUMBER, account, 'success')
+      setCurrentStep(STEP_NUMBER + 1)
+      track(SegmentEvent.IdentityStarted, { address, account: AccountType.Discord })
+    } catch (error) {
+      setIsTimerActive(false)
+      setStepHelper(STEP_NUMBER, account, 'error')
+      console.error(error)
+    }
+  }, [address, getDiscordMessage, setStepHelper, track])
+
+  const handleDiscordCopy = useCallback(() => {
+    const STEP_NUMBER = 2
+    const account = AccountType.Discord
+    copyDiscordMessage()
+    setStepHelper(STEP_NUMBER, account, 'success')
+    setCurrentStep(STEP_NUMBER + 1)
+  }, [copyDiscordMessage, setStepHelper])
+
+  const handleDiscordValidate = useCallback(() => {
+    setIsValidating(true)
+    openDiscordChannel()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -293,7 +355,7 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
             <Copy className="DiscordConnectStepIcon" key="copy" />,
             <Comment className="DiscordConnectStepIcon" key="comment" />,
           ],
-          [],
+          [handleDiscordSign, handleDiscordCopy, handleDiscordValidate],
           modalState.currentStep,
           t,
           modalState.stepsCurrentHelper
@@ -302,14 +364,17 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
         helperText: 'HELPER TEXT',
       },
     }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
-      t,
       handleForumSign,
       handleForumCopy,
       handleForumValidate,
       modalState.currentStep,
       modalState.stepsCurrentHelper,
       modalState.isValidating,
+      handleDiscordSign,
+      handleDiscordCopy,
+      handleDiscordValidate,
     ]
   )
   const currentType = modalState.currentType
@@ -318,7 +383,7 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
     if (isValidated) {
       openUrl(locations.profile({ address: address || '' }), false)
     } else {
-      resetForumConnect()
+      resetValidation()
       setModalState(INITIAL_STATE)
     }
   }
@@ -330,9 +395,9 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
       open={open}
       size="tiny"
       onClose={() => {
-        resetForumConnect()
+        resetValidation()
         setIsTimerActive(false)
-        resetState(AccountType.Forum)
+        resetState(currentAccount)
         setCurrentType(ModalType.ChooseAccount)
         onClose()
       }}
@@ -341,7 +406,13 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
       {isValidated === undefined ? (
         <AccountConnection
           title={stateMap[currentType].title}
-          timerText={modalState.isTimerActive ? t(timerTextKey, { time: getTimeFormatted(time) }) : undefined}
+          timerText={
+            modalState.isTimerActive
+              ? t(timerTextKey, {
+                  time: getTimeFormatted(time),
+                })
+              : undefined
+          }
           actions={stateMap[currentType].actions}
           button={stateMap[currentType].button}
           helperText={
@@ -349,13 +420,13 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
           }
         />
       ) : (
-        <PostConnection address={address || undefined} isValidated={isValidated} onPostAction={handlePostAction} />
+        <PostConnection
+          account={currentAccount}
+          address={address || undefined}
+          isValidated={isValidated}
+          onPostAction={handlePostAction}
+        />
       )}
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
-        <button onClick={discordMessage}>message</button>
-        <button onClick={discordCopy}>copy</button>
-        <button onClick={validate}>validate</button>
-      </div>
     </Modal>
   )
 }

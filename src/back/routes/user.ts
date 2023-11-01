@@ -118,6 +118,10 @@ async function checkDiscordValidationMessage(req: WithAuth) {
       await UserModel.createDiscordConnection(user, validationComment.id)
       clearValidationInProgress(user)
     }
+
+    return {
+      valid: !!validationComment,
+    }
   } catch (error) {
     throw new Error("Couldn't validate the user. " + error)
   }

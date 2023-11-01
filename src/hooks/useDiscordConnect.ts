@@ -1,13 +1,17 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback } from 'react'
 
 import { Web3Provider } from '@ethersproject/providers'
 
 import { Governance } from '../clients/Governance'
-import { Account } from '../entities/User/types'
+import { SegmentEvent } from '../entities/Events/types'
+import { GATSBY_DISCORD_PROFILE_VERIFICATION_URL } from '../entities/User/constants'
+import { Account, AccountType } from '../entities/User/types'
+import { openUrl } from '../helpers'
 
 import useValidationSetup from './useValidationSetup'
 
 const getMessage = async () => Governance.get().getValidationMessage(Account.Discord)
+const VALIDATION_CHECK_INTERVAL = 10 * 1000 // 10 seconds
 
 function useDiscordConnect() {
   const {
@@ -24,6 +28,7 @@ function useDiscordConnect() {
     setValidatingProfile,
     isValidated,
     setIsValidated,
+    resetValidation,
   } = useValidationSetup()
 
   const getSignedMessage = useCallback(async () => {
@@ -55,18 +60,34 @@ function useDiscordConnect() {
     }
   }, [clipboardMessage, handleCopy])
 
-  const validate = useCallback(async () => {
-    try {
-      await Governance.get().validateDiscordProfile()
-    } catch (error) {
-      console.error(error)
+  const openChannel = useCallback(() => {
+    openUrl(GATSBY_DISCORD_PROFILE_VERIFICATION_URL)
+    if (validatingProfile === undefined) {
+      const validationChecker = setInterval(async () => {
+        try {
+          const { valid } = await Governance.get().validateDiscordProfile()
+          if (valid) {
+            clearInterval(validationChecker)
+            resetTimer()
+            setIsValidated(true)
+            track(SegmentEvent.IdentityCompleted, { address: user, account: AccountType.Discord })
+          }
+        } catch (error) {
+          clearInterval(validationChecker)
+          setIsValidated(false)
+        }
+      }, VALIDATION_CHECK_INTERVAL)
+      setValidatingProfile(validationChecker)
     }
-  }, [])
+  }, [resetTimer, setIsValidated, setValidatingProfile, track, user, validatingProfile])
 
   return {
     getSignedMessage,
     copyMessageToClipboard,
-    validate,
+    openChannel,
+    time,
+    isValidated,
+    reset: resetValidation,
   }
 }
 

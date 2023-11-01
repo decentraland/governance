@@ -707,7 +707,22 @@
         "title_step_3": "3. Post on Discord channel",
         "description_step_3": "Paste the content onto the designated channel to complete the linking.",
         "action_step_3": "Open",
-        "helper_step_3": "Finally, send the signed message on the designated channel."
+        "helper_step_3": "Finally, send the signed message on the designated channel.",
+        "card_helper": {
+          "step_1_start": "Your web3 wallet will trigger a signing request",
+          "step_1_active": "Awaiting signature…",
+          "step_1_success": "Signed correctly",
+          "step_1_error": "Something went wrong, try again",
+          "step_2_start": "Signature required",
+          "step_2_active": "Click to copy to clipboard",
+          "step_2_success": "Content copied. Click to copy again"
+        },
+        "success_text": "**DISCORD_TITLE**\n\nDISCORD_SUBTITLE",
+        "success_subtext": "DISCORD_SUBTEXT",
+        "success_button": "Take me to my Profile",
+        "error_text": "**DISCORD_ERROR_TITLE**\n\nDISCORD_ERROR_SUBTITLE",
+        "error_subtext": "DISCORD_ERROR_SUBTEXT",
+        "error_button": "Retry"
       },
       "twitter": {
         "card_title": "Twitter",

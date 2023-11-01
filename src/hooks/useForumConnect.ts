@@ -3,10 +3,9 @@ import { useCallback } from 'react'
 import { Web3Provider } from '@ethersproject/providers'
 
 import { Governance } from '../clients/Governance'
-import { AccountType } from '../components/Modal/IdentityConnectModal/AccountsConnectModal'
 import { SegmentEvent } from '../entities/Events/types'
 import { GATSBY_DISCOURSE_CONNECT_THREAD } from '../entities/User/constants'
-import { Account } from '../entities/User/types'
+import { Account, AccountType } from '../entities/User/types'
 import { DISCOURSE_API } from '../entities/User/utils'
 import { openUrl } from '../helpers'
 
