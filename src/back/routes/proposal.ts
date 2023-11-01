@@ -43,7 +43,6 @@ import {
   NewProposalPoll,
   NewProposalTender,
   PoiType,
-  ProjectWithUpdate,
   ProposalAttributes,
   ProposalCommentsInDiscourse,
   ProposalRequiredVP,
@@ -82,6 +81,7 @@ import {
   toSortingOrder,
 } from '../../entities/Proposal/utils'
 import { SNAPSHOT_DURATION } from '../../entities/Snapshot/constants'
+import { isSameAddress } from '../../entities/Snapshot/utils'
 import { validateUniqueAddresses } from '../../entities/Transparency/utils'
 import UpdateModel from '../../entities/Updates/model'
 import BidService from '../../services/BidService'
@@ -651,17 +651,12 @@ async function getGrantsByUser(req: Request) {
   const coauthoring = await CoauthorModel.findProposals(address, CoauthorStatus.APPROVED)
   const coauthoringProposalIds = new Set(coauthoring.map((coauthoringAttributes) => coauthoringAttributes.proposal_id))
 
-  const grantsResult = await ProjectService.getProjects()
-
-  const filterGrants = (projects: ProjectWithUpdate[]) => {
-    return projects.filter(
-      (project) =>
-        project.type === ProposalType.Grant &&
-        (project.user.toLowerCase() === address.toLowerCase() || coauthoringProposalIds.has(project.id))
-    )
-  }
-
-  const filteredGrants = filterGrants(grantsResult.data)
+  const projects = await ProjectService.getProjects()
+  const filteredGrants = projects.data.filter(
+    (project) =>
+      project.type === ProposalType.Grant &&
+      (isSameAddress(project.user, address) || coauthoringProposalIds.has(project.id))
+  )
 
   return {
     data: filteredGrants,

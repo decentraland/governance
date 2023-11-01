@@ -12,7 +12,7 @@ interface Props {
   grants: Project[]
 }
 
-const MAX_GRANTS = 4
+const MAX_GRANTS = 3
 
 function GrantBeneficiaryList({ grants, address }: Props) {
   const t = useFormatMessage()
