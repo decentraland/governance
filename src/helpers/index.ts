@@ -136,5 +136,8 @@ export function getEnvironmentChainId() {
 }
 
 export function getEnumDisplayName<T extends { [key: string]: string | number }>(anyEnum: keyof T & string): string {
+  if (!anyEnum) {
+    return 'undefined'
+  }
   return anyEnum.split('_').join(' ').toUpperCase()
 }
