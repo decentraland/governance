@@ -3,7 +3,7 @@ import { useState } from 'react'
 import classNames from 'classnames'
 import { Desktop, TabletAndBelow } from 'decentraland-ui/dist/components/Media/Media'
 
-import { ProposalAttributes } from '../../../entities/Proposal/types'
+import { PriorityProposal, PriorityProposalType, ProposalAttributes } from '../../../entities/Proposal/types'
 import { VoteByAddress } from '../../../entities/Votes/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useProposalComments from '../../../hooks/useProposalComments'
@@ -28,9 +28,37 @@ enum Variant {
 }
 
 interface Props {
-  proposal: ProposalAttributes
+  proposal: ProposalAttributes | PriorityProposal
   votes?: VoteByAddress
   variant: `${Variant}`
+}
+
+function getPriorityText(proposal: PriorityProposal, t: (...args: any[]) => any) {
+  const isProposalActive = Time().isBefore(Time(proposal.finish_at))
+  const dateText = getDateText(t, isProposalActive, proposal.finish_at)
+
+  switch (proposal.priority_type) {
+    case PriorityProposalType.ActiveGovernance:
+      return dateText
+    case PriorityProposalType.OpenPitch:
+      return 'Open for submissions'
+    case PriorityProposalType.PitchWithSubmissions:
+      return `Tender submissions end in lalala`
+    case PriorityProposalType.PitchOnVotingPhase:
+      return `Tenders open for voting`
+    case PriorityProposalType.OpenTender:
+      return dateText
+    case PriorityProposalType.TenderWithSubmissions:
+      return `Bid submissions end in lalala`
+    case PriorityProposalType.ActiveBid:
+      return dateText
+  }
+}
+
+function getDateText(t: (...args: any[]) => any, isProposalActive: boolean, finish_at: Date) {
+  return t(`page.home.open_proposals.${isProposalActive ? 'ends_date' : 'ended_date'}`, {
+    value: Time(finish_at).fromNow(),
+  })
 }
 
 const ProposalPreviewCard = ({ proposal, votes, variant }: Props) => {
@@ -39,9 +67,7 @@ const ProposalPreviewCard = ({ proposal, votes, variant }: Props) => {
   const { comments } = useProposalComments(proposal.id, variant !== Variant.Slim)
   const { userChoice } = useWinningChoice(proposal, variant !== Variant.Slim)
   const isProposalActive = Time().isBefore(Time(finish_at))
-  const dateText = t(`page.home.open_proposals.${isProposalActive ? 'ends_date' : 'ended_date'}`, {
-    value: Time(finish_at).fromNow(),
-  })
+  const dateText = getDateText(t, isProposalActive, finish_at)
   const [isHovered, setIsHovered] = useState(false)
 
   const isProposalAboutToEnd = isProposalActive && Time(finish_at).diff(Time(), 'hours') < 24
@@ -97,18 +123,24 @@ const ProposalPreviewCard = ({ proposal, votes, variant }: Props) => {
               </>
             )}
 
-            <span
-              className={classNames(
-                'ProposalPreviewCard__DetailsItem',
-                isProposalAboutToEnd && 'ProposalPreviewCard__DetailsItem--highlight'
-              )}
-            >
-              {dateText}
-            </span>
+            {variant !== Variant.Slim ? (
+              <span
+                className={classNames(
+                  'ProposalPreviewCard__DetailsItem',
+                  isProposalAboutToEnd && 'ProposalPreviewCard__DetailsItem--highlight'
+                )}
+              >
+                {dateText}
+              </span>
+            ) : (
+              <span className={classNames('ProposalPreviewCard__DetailsItem')}>
+                {getPriorityText(proposal as PriorityProposal, t)}
+              </span>
+            )}
           </span>
         </div>
       </ProposalPreviewCardSection>
-      {variant === Variant.Vote && <VoteModule proposal={proposal} votes={votes} />}
+      {variant === Variant.Vote && <VoteModule proposal={proposal as ProposalAttributes} votes={votes} />}
       {variant !== Variant.Vote && (
         <CategoryModule proposal={proposal} isHovered={isHovered} slim={variant === Variant.Slim} />
       )}
