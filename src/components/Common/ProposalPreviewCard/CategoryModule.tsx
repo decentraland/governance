@@ -10,7 +10,7 @@ import './CategoryModule.css'
 import ProposalPreviewCardSection from './ProposalPreviewCardSection'
 
 interface Props {
-  proposal: ProposalAttributes
+  proposal: Pick<ProposalAttributes, 'type' | 'status' | 'configuration'>
   isHovered?: boolean
   slim?: boolean
 }

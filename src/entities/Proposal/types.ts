@@ -838,3 +838,20 @@ export type ProjectWithUpdate = Project & {
 }
 
 export type PendingProposalsQuery = { start: Date; end: Date; fields: (keyof SnapshotProposal)[]; limit: number }
+
+export enum PriorityProposalType {
+  ActiveGovernance = 'active_governance',
+  OpenPitch = 'open_pitch',
+  PitchWithSubmissions = 'pitch_with_submissions',
+  PitchOnVotingPhase = 'pitch_on_voting_phase',
+  OpenTender = 'open_tender',
+  TenderWithSubmissions = 'tender_with_submissions',
+  ActiveBid = 'active_bid',
+}
+
+export type PriorityProposal = Pick<
+  ProposalAttributes,
+  'id' | 'title' | 'finish_at' | 'start_at' | 'type' | 'status' | 'configuration' | 'user' | 'snapshot_proposal'
+> & {
+  priority_type: PriorityProposalType
+}

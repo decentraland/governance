@@ -22,12 +22,12 @@ import SubscriptionModel from '../Subscription/model'
 
 import tsquery from './tsquery'
 import {
+  PriorityProposal,
+  PriorityProposalType,
   ProposalAttributes,
-  ProposalListFilter,
-  ProposalStatus,
+ ProposalListFilter, ProposalStatus,
   ProposalType,
-  SortingOrder,
-  isProposalType,
+ SortingOrder, isProposalType,
 } from './types'
 import { SITEMAP_ITEMS_PER_PAGE, isProposalStatus } from './utils'
 
@@ -485,24 +485,30 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return (await this.namedQuery('get_open_pitches_total', query))[0]
   }
 
-  static async getPriorityProposals(): Promise<
-    Pick<ProposalAttributes, 'title' | 'start_at' | 'type' | 'status' | 'user'>[]
-  > {
-    // TODO: filter by author if user
+  static async getPriorityProposals(address?: string): Promise<PriorityProposal[]> {
+    const aMonthAgo = Time.utc().subtract(1, 'month').toDate()
+
+    // const coauthorJoin = address ? `INNER JOIN coauthors ON ${table(this)}.id = coauthors.proposal_id AND coauthors.status = 'APPROVED' AND coauthors.address = ${address}` : '';
+    // const authorCondition = address ? `AND (${table(this)}.user = ${address} OR coauthors.address = ${address})` : '';
+
     const query = SQL`
-        SELECT title, start_at, type, status, ${table(this)}.user
+        SELECT id, title, start_at, finish_at, type, status, configuration, snapshot_proposal, ${table(this)}.user,
+               ${PriorityProposalType.ActiveGovernance} AS priority_type
         FROM ${table(this)}
         WHERE type = 'governance' AND status = 'active'
     UNION
-        SELECT title, start_at, type, status, ${table(this)}.user
+        SELECT id, title, start_at, finish_at, type, status, configuration, snapshot_proposal, ${table(this)}.user,
+               ${PriorityProposalType.OpenPitch} AS priority_type
         FROM ${table(this)}
         WHERE type = 'pitch'
           AND status = 'passed'
+          AND finish_at >= ${aMonthAgo}
           AND id NOT IN (SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(
             this
           )} AS p2 WHERE type = 'tender')
     UNION
-        SELECT title, start_at, type, status, ${table(this)}.user
+        SELECT id, title, start_at, finish_at, type, status, configuration, snapshot_proposal, ${table(this)}.user,
+               ${PriorityProposalType.PitchWithSubmissions} AS priority_type
         FROM ${table(this)}
         WHERE type = 'pitch'
           AND status = 'passed'
@@ -513,7 +519,8 @@ export default class ProposalModel extends Model<ProposalAttributes> {
               AND status = 'pending'
             )
     UNION
-        SELECT title, start_at, type, status, ${table(this)}.user
+        SELECT id, title, start_at, finish_at, type, status, configuration, snapshot_proposal, ${table(this)}.user,
+               ${PriorityProposalType.PitchOnVotingPhase} AS priority_type
         FROM ${table(this)}
         WHERE type = 'pitch'
           AND status = 'passed'
@@ -524,17 +531,20 @@ export default class ProposalModel extends Model<ProposalAttributes> {
               AND status = 'active'
             )
     UNION
-        SELECT title, start_at, type, status, ${table(this)}.user
+        SELECT id, title, start_at, finish_at, type, status, configuration, snapshot_proposal, ${table(this)}.user,
+               ${PriorityProposalType.OpenTender} AS priority_type
         FROM ${table(this)}
         WHERE type = 'tender'
           AND status = 'passed'
+          AND finish_at >= ${aMonthAgo}
           AND id NOT IN (
             SELECT (p2.configuration->>'linked_proposal_id') 
             FROM ${table(this)} AS p2 
             WHERE type = 'bid'
           )
     UNION
-        SELECT title, start_at, type, status, ${table(this)}.user
+        SELECT id, title, start_at, finish_at, type, status, configuration, snapshot_proposal, ${table(this)}.user,
+               ${PriorityProposalType.TenderWithSubmissions} AS priority_type
         FROM ${table(this)}
         WHERE type = 'tender'
           AND status = 'passed'
@@ -543,7 +553,8 @@ export default class ProposalModel extends Model<ProposalAttributes> {
               this
             )}  AS p2 WHERE type = 'bid' AND status = 'pending')
     UNION
-      SELECT title, start_at, type, status, ${table(this)}.user
+      SELECT id, title, start_at, finish_at, type, status, configuration, snapshot_proposal, ${table(this)}.user,
+      ${PriorityProposalType.ActiveBid} AS priority_type
       FROM ${table(this)}
       WHERE type = 'bid'
         AND status = 'active';`
