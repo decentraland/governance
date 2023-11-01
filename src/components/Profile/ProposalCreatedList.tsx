@@ -23,7 +23,7 @@ export function ProposalCreatedList({
   showCoauthoring = false,
 }: Props) {
   const t = useFormatMessage()
-  const { proposals, isLoadingProposals, isFetchingNextPage, hasMoreProposals, loadMore } =
+  const { proposals, isLoadingProposals, isFetchingNextPage, isFetchingProposals, hasMoreProposals, loadMore } =
     useInfiniteProposals(proposalsFilter)
   const hasProposals = proposals && proposals?.[0]?.total > 0
 
@@ -47,7 +47,7 @@ export function ProposalCreatedList({
             <Empty className="ActivityBox__Empty" icon={<Watermelon />} description={emptyDescriptionText} />
           )}
           {hasMoreProposals && (
-            <FullWidthButton loading={isFetchingNextPage} onClick={loadMore}>
+            <FullWidthButton loading={isFetchingNextPage || isFetchingProposals} onClick={loadMore}>
               {t('page.profile.activity.button')}
             </FullWidthButton>
           )}

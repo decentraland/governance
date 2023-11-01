@@ -9,6 +9,7 @@ export default function useInfiniteProposals(filter: Partial<UseProposalsFilter>
   const {
     data: proposals,
     isLoading: isLoadingProposals,
+    isFetching: isFetchingProposals,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
@@ -25,6 +26,7 @@ export default function useInfiniteProposals(filter: Partial<UseProposalsFilter>
   return {
     proposals: proposals?.pages,
     isLoadingProposals,
+    isFetchingProposals,
     isFetchingNextPage,
     hasMoreProposals: !!hasNextPage,
     loadMore: fetchNextPage,
