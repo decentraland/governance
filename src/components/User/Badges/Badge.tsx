@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 
-import { BadgeStatus, Badge as GovernanceBadge } from '../../../entities/Badges/types'
+import { Badge as GovernanceBadge } from '../../../entities/Badges/types'
 
 import './Badge.css'
 
