@@ -10,6 +10,7 @@ import {
   table,
 } from 'decentraland-gatsby/dist/entities/Database/utils'
 import { QueryPart } from 'decentraland-server/dist/db/types'
+import { toLower } from 'lodash'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
@@ -487,77 +488,97 @@ export default class ProposalModel extends Model<ProposalAttributes> {
 
   static async getPriorityProposals(address?: string): Promise<PriorityProposal[]> {
     const aMonthAgo = Time.utc().subtract(1, 'month').toDate()
-
-    // const coauthorJoin = address ? `INNER JOIN coauthors ON ${table(this)}.id = coauthors.proposal_id AND coauthors.status = 'APPROVED' AND coauthors.address = ${address}` : '';
-    // const authorCondition = address ? `AND (${table(this)}.user = ${address} OR coauthors.address = ${address})` : '';
+    const lowerAddress = !!address && address.length > 0 ? toLower(address) : null
+    const cols = SQL`id, title, p.user, type, p.status, start_at, finish_at, snapshot_proposal, configuration`
+    const coauthorsLeftJoin = SQL`
+        LEFT JOIN ${table(CoauthorModel)} c ON 
+        p.id = c.proposal_id AND 
+        c.status = 'APPROVED' AND 
+        c.address = ${lowerAddress}
+    `
 
     const query = SQL`
-        SELECT id, title, start_at, finish_at, type, status, configuration, snapshot_proposal, ${table(this)}.user,
+        SELECT ${cols}${conditional(!!lowerAddress, SQL`, c.address as coauthor`)},
                ${PriorityProposalType.ActiveGovernance} AS priority_type
-        FROM ${table(this)}
-        WHERE type = 'governance' AND status = 'active'
+        FROM ${table(this)} p 
+             ${conditional(!!lowerAddress, coauthorsLeftJoin)}
+        WHERE
+            type = ${ProposalType.Governance} AND 
+            p.status = ${ProposalStatus.Active}
+            ${conditional(!!lowerAddress, SQL`AND c.address IS NULL`)}
+            ${conditional(!!lowerAddress, SQL`AND p.user <> ${lowerAddress}`)}
     UNION
-        SELECT id, title, start_at, finish_at, type, status, configuration, snapshot_proposal, ${table(this)}.user,
+        SELECT ${cols}${conditional(!!lowerAddress, SQL`, c.address as coauthor`)},
                ${PriorityProposalType.OpenPitch} AS priority_type
-        FROM ${table(this)}
-        WHERE type = 'pitch'
-          AND status = 'passed'
-          AND finish_at >= ${aMonthAgo}
-          AND id NOT IN (SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(
-            this
-          )} AS p2 WHERE type = 'tender')
+        FROM ${table(this)} p
+             ${conditional(!!lowerAddress, coauthorsLeftJoin)}
+        WHERE
+            type = ${ProposalType.Pitch} AND
+            p.status = ${ProposalStatus.Passed} AND 
+            p.finish_at >= ${aMonthAgo} AND
+            p.id NOT IN (
+                SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(this)} AS p2 
+                WHERE type = ${ProposalType.Tender})
+            ${conditional(!!lowerAddress, SQL`AND c.address IS NULL`)}
+            ${conditional(!!lowerAddress, SQL`AND p.user <> ${lowerAddress}`)}
     UNION
-        SELECT id, title, start_at, finish_at, type, status, configuration, snapshot_proposal, ${table(this)}.user,
+        SELECT ${cols}${conditional(!!lowerAddress, SQL`, c.address as coauthor`)},
                ${PriorityProposalType.PitchWithSubmissions} AS priority_type
-        FROM ${table(this)}
-        WHERE type = 'pitch'
-          AND status = 'passed'
-          AND id IN (
-            SELECT (p2.configuration->>'linked_proposal_id') 
-            FROM ${table(this)} AS p2
-            WHERE type = 'tender'
-              AND status = 'pending'
-            )
+        FROM ${table(this)} p
+             ${conditional(!!lowerAddress, coauthorsLeftJoin)}
+        WHERE type = ${ProposalType.Pitch} AND
+             p.status = ${ProposalStatus.Passed} AND
+             p.id IN (
+                SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(this)} AS p2 
+                WHERE type = ${ProposalType.Tender} AND status = ${ProposalStatus.Pending})
+             ${conditional(!!lowerAddress, SQL`AND c.address IS NULL`)}
+             ${conditional(!!lowerAddress, SQL`AND p.user <> ${lowerAddress}`)}
     UNION
-        SELECT id, title, start_at, finish_at, type, status, configuration, snapshot_proposal, ${table(this)}.user,
-               ${PriorityProposalType.PitchOnVotingPhase} AS priority_type
-        FROM ${table(this)}
-        WHERE type = 'pitch'
-          AND status = 'passed'
-          AND id IN (
-            SELECT (p2.configuration->>'linked_proposal_id') 
-            FROM ${table(this)} AS p2 
-            WHERE type = 'tender' 
-              AND status = 'active'
-            )
+        SELECT ${cols}${conditional(!!lowerAddress, SQL`, c.address as coauthor`)},
+                ${PriorityProposalType.PitchOnVotingPhase} AS priority_type
+        FROM ${table(this)} p
+             ${conditional(!!lowerAddress, coauthorsLeftJoin)}
+        WHERE type = ${ProposalType.Pitch} AND
+             p.status = ${ProposalStatus.Passed} AND
+             p.id IN (
+                SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(this)} AS p2 
+                WHERE type = ${ProposalType.Tender} AND status = ${ProposalStatus.Active})
+             ${conditional(!!lowerAddress, SQL`AND c.address IS NULL`)}
+             ${conditional(!!lowerAddress, SQL`AND p.user <> ${lowerAddress}`)}
     UNION
-        SELECT id, title, start_at, finish_at, type, status, configuration, snapshot_proposal, ${table(this)}.user,
-               ${PriorityProposalType.OpenTender} AS priority_type
-        FROM ${table(this)}
-        WHERE type = 'tender'
-          AND status = 'passed'
-          AND finish_at >= ${aMonthAgo}
-          AND id NOT IN (
-            SELECT (p2.configuration->>'linked_proposal_id') 
-            FROM ${table(this)} AS p2 
-            WHERE type = 'bid'
-          )
+        SELECT ${cols}${conditional(!!lowerAddress, SQL`, c.address as coauthor`)},
+                ${PriorityProposalType.OpenTender} AS priority_type
+        FROM ${table(this)} p
+             ${conditional(!!lowerAddress, coauthorsLeftJoin)}
+        WHERE type = ${ProposalType.Tender} AND
+             p.status = ${ProposalStatus.Passed} AND
+             p.finish_at >= ${aMonthAgo} AND
+             id NOT IN (
+                 SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(this)} AS p2
+                 WHERE type = ${ProposalType.Bid})
+             ${conditional(!!lowerAddress, SQL`AND c.address IS NULL`)}
+             ${conditional(!!lowerAddress, SQL`AND p.user <> ${lowerAddress}`)}
     UNION
-        SELECT id, title, start_at, finish_at, type, status, configuration, snapshot_proposal, ${table(this)}.user,
+        SELECT ${cols}${conditional(!!lowerAddress, SQL`, c.address as coauthor`)},
                ${PriorityProposalType.TenderWithSubmissions} AS priority_type
-        FROM ${table(this)}
-        WHERE type = 'tender'
-          AND status = 'passed'
-          AND id IN (
-            SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(
-              this
-            )}  AS p2 WHERE type = 'bid' AND status = 'pending')
+        FROM ${table(this)} p
+             ${conditional(!!lowerAddress, coauthorsLeftJoin)}
+        WHERE type = ${ProposalType.Tender} AND
+             p.status = ${ProposalStatus.Passed} AND
+             p.id IN (
+                SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(this)} AS p2 
+                WHERE type = ${ProposalType.Bid} AND status = ${ProposalStatus.Pending})
+             ${conditional(!!lowerAddress, SQL`AND c.address IS NULL`)}
+             ${conditional(!!lowerAddress, SQL`AND p.user <> ${lowerAddress}`)}
     UNION
-      SELECT id, title, start_at, finish_at, type, status, configuration, snapshot_proposal, ${table(this)}.user,
-      ${PriorityProposalType.ActiveBid} AS priority_type
-      FROM ${table(this)}
-      WHERE type = 'bid'
-        AND status = 'active';`
+        SELECT ${cols}${conditional(!!lowerAddress, SQL`, c.address as coauthor`)},
+               ${PriorityProposalType.ActiveBid} AS priority_type
+        FROM ${table(this)} p 
+             ${conditional(!!lowerAddress, coauthorsLeftJoin)}
+        WHERE type = ${ProposalType.Bid} AND
+            p.status = ${ProposalStatus.Active}
+            ${conditional(!!lowerAddress, SQL`AND c.address IS NULL`)}
+            ${conditional(!!lowerAddress, SQL`AND p.user <> ${lowerAddress}`)};`
 
     return await this.namedQuery('get_priority_proposals', query)
   }
