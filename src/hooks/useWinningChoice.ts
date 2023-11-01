@@ -10,7 +10,7 @@ import useProposalVotes from './useProposalVotes'
 type WinningChoice = ReturnType<typeof calculateResultWinner>
 
 function useWinningChoice(
-  proposal: ProposalAttributes,
+  proposal: Pick<ProposalAttributes, 'id' | 'snapshot_proposal'>,
   shouldFetch = true
 ): {
   winningChoice: WinningChoice

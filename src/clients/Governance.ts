@@ -24,6 +24,7 @@ import {
   NewProposalPoll,
   NewProposalTender,
   PendingProposalsQuery,
+  PriorityProposal,
   ProjectWithUpdate,
   ProposalAttributes,
   ProposalCommentsInDiscourse,
@@ -166,10 +167,7 @@ export class Governance extends API {
   }
 
   async getPriorityProposals(address?: string) {
-    return await this.fetch<Partial<ProposalAttributes>[]>(
-      `/proposals/priority/${address}`,
-      this.options().method('GET')
-    )
+    return await this.fetch<PriorityProposal[]>(`/proposals/priority/${address}`, this.options().method('GET'))
   }
 
   async getGrantsByUser(user: string, coauthoring?: boolean) {
