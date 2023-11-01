@@ -11,6 +11,7 @@
   flex-direction: column;
   align-items: center;
   cursor: pointer;
+  transition: box-shadow 0.1s ease, transform 0.1s ease;
 }
 
 @media (min-width: 768px) {
@@ -20,7 +21,8 @@
 }
 
 .BadgeCard:hover {
-  box-shadow: 0 0 8px var(--black-600);
+  box-shadow: var(--shadow-2);
+  transform: translateY(-4px);
 }
 
 .BadgeCard__Icon {
