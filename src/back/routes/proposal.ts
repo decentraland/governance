@@ -108,6 +108,7 @@ export default routes((route) => {
   route.post('/proposals/tender', withAuth, handleAPI(createProposalTender))
   route.post('/proposals/bid', withAuth, handleAPI(createProposalBid))
   route.post('/proposals/hiring', withAuth, handleAPI(createProposalHiring))
+  route.get('/proposals/priority/:address', handleJSON(getPriorityProposals))
   route.get('/proposals/grants', handleAPI(getGrants)) // TODO: Deprecate
   route.get('/proposals/grants/:address', handleAPI(getGrantsByUser)) // TODO: Deprecate
   route.get('/proposals/:proposal', handleAPI(getProposal))
@@ -115,7 +116,6 @@ export default routes((route) => {
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
   route.get('/proposals/:proposal/comments', handleAPI(getProposalComments))
   route.get('/proposals/linked-wearables/image', handleAPI(checkImage))
-  route.get('/proposals/priority/:address', handleJSON(getPriorityProposals))
 })
 
 export async function getProposals(req: WithAuth) {
@@ -496,6 +496,11 @@ export async function createProposal(proposalInCreation: ProposalInCreation) {
   }
 }
 
+async function getPriorityProposals(req: Request) {
+  const address = req.params.address && req.params.address.length > 0 ? validateAddress(req.params.address) : undefined
+  return await ProposalService.getPriorityProposals(address)
+}
+
 export async function getProposal(req: Request<{ proposal: string }>) {
   const id = validateProposalId(req.params.proposal)
   try {
@@ -687,9 +692,4 @@ async function checkImage(req: Request) {
         resolve(false)
       })
   })
-}
-
-async function getPriorityProposals(req: Request) {
-  const address = req.params.address ? validateAddress(req.params.address) : undefined
-  return await ProposalService.getPriorityProposals(address)
 }

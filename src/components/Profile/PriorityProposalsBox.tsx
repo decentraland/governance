@@ -11,7 +11,7 @@ import { ActionBox } from './ActionBox'
 import './PriorityProposalsBox.css'
 
 interface Props {
-  address: string
+  address?: string | null
   collapsible?: boolean
 }
 
