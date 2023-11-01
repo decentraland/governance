@@ -661,9 +661,11 @@ async function getGrantsByUser(req: Request) {
     )
   }
 
+  const filteredGrants = filterGrants(grantsResult.data)
+
   return {
-    data: filterGrants(grantsResult.data),
-    total: grantsResult.data.length,
+    data: filteredGrants,
+    total: filteredGrants.length,
   }
 }
 
