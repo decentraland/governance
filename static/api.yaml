@@ -57,14 +57,6 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/200'
-  /proposals/grants:
-    get:
-      tags:
-        - Proposals
-      summary: Get active and past enacted grants, as well as the total number of submitted grants requests
-      responses:
-        '200':
-          $ref: '#/components/responses/200'
   /proposals/grants/{address}:
     get:
       tags:

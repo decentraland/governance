@@ -29,7 +29,6 @@ import {
 import ProposalModel from '../../entities/Proposal/model'
 import {
   CatalystType,
-  CategorizedGrants,
   HiringType,
   INVALID_PROPOSAL_POLL_OPTIONS,
   NewProposalBanName,
@@ -112,8 +111,7 @@ export default routes((route) => {
   route.post('/proposals/tender', withAuth, handleAPI(createProposalTender))
   route.post('/proposals/bid', withAuth, handleAPI(createProposalBid))
   route.post('/proposals/hiring', withAuth, handleAPI(createProposalHiring))
-  route.get('/proposals/grants', handleAPI(getGrants)) // TODO: Deprecate
-  route.get('/proposals/grants/:address', handleAPI(getGrantsByUser)) // TODO: Deprecate
+  route.get('/proposals/grants/:address', handleAPI(getGrantsByUser))
   route.get('/proposals/:proposal', handleAPI(getProposal))
   route.patch('/proposals/:proposal', withAuth, handleAPI(updateProposalStatus))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
@@ -638,11 +636,6 @@ async function validateSubmissionThreshold(user: string, submissionThreshold?: s
   if (vpDistribution.total < requiredVp) {
     throw new RequestError(`User does not meet the required "${requiredVp}" VP`, RequestError.Forbidden)
   }
-}
-
-// TODO: Remove. Deprecated.
-async function getGrants(): Promise<CategorizedGrants> {
-  return await ProjectService.getGrants()
 }
 
 async function getGrantsByUser(req: Request) {

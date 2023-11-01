@@ -12,7 +12,6 @@ import { Budget, BudgetWithContestants, CategoryBudget } from '../entities/Budge
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
 import { GrantRequest, ProposalGrantCategory } from '../entities/Grant/types'
 import {
-  CategorizedGrants,
   NewProposalBanName,
   NewProposalCatalyst,
   NewProposalDraft,
@@ -133,11 +132,6 @@ export class Governance extends API {
       ...proposals,
       data: proposals.data.map((proposal) => Governance.parseProposal(proposal)),
     }
-  }
-
-  async getGrants() {
-    const proposals = await this.fetch<ApiResponse<CategorizedGrants>>('/proposals/grants')
-    return proposals.data
   }
 
   async getProjects() {
