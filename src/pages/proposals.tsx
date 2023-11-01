@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 
 import { useLocation } from '@reach/router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
@@ -7,6 +7,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { useTabletAndBelowMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 import { Pagination } from 'decentraland-ui/dist/components/Pagination/Pagination'
+import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import RandomBanner from '../components/Banner/RandomBanner'
 import CategoryBanner from '../components/Category/CategoryBanner'
@@ -46,6 +47,11 @@ const ITEMS_PER_PAGE = 25
 export default function ProposalsPage() {
   const t = useFormatMessage()
   const location = useLocation()
+  const params = useMemo(() => new URLSearchParams(location.search), [location.search])
+  const [userAddress, authState] = useAuthContext()
+  const paramAddress = params.get('address')
+  const hasAddress = isEthereumAddress(paramAddress || '')
+  const address = hasAddress ? paramAddress : userAddress
   const { type, subtype, status, search, searching, timeFrame, order, page } = useProposalsSearchParams()
   const { proposals, isLoadingProposals } = useProposals({
     type,
@@ -102,7 +108,7 @@ export default function ProposalsPage() {
     return <MaintenanceLayout title={title} description={description} activeTab={NavigationTab.Proposals} />
   }
 
-  const isLoading = !proposals || isLoadingProposals || isLoadingVotes
+  const isLoading = !proposals || isLoadingProposals || isLoadingVotes || authState.loading
 
   return (
     <>
@@ -141,7 +147,7 @@ export default function ProposalsPage() {
                 )}
                 <NotMobile>
                   <div className="ProposalsPage__Priority">
-                    <PriorityProposalsBox address={'0x549a9021661a85b6bc51c07b3a451135848d0048'} collapsible />
+                    <PriorityProposalsBox address={address} collapsible />
                   </div>
                 </NotMobile>
                 <ActionableLayout
