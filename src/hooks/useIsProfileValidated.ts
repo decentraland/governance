@@ -9,7 +9,7 @@ import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
 function useIsProfileValidated(address: string | null, accounts: AccountType[]) {
   const { data: isProfileValidated } = useQuery({
-    queryKey: [`isProfileValidated#${address}`],
+    queryKey: [`isProfileValidated#${address}#${accounts.join(',')}}`],
     queryFn: async () => {
       if (address && isEthereumAddress(address)) {
         return await Governance.get().isProfileValidated(address, accounts)

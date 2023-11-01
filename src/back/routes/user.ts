@@ -117,6 +117,11 @@ async function checkDiscordValidationMessage(req: WithAuth) {
 
       await UserModel.createDiscordConnection(user, validationComment.id)
       clearValidationInProgress(user)
+      DiscordService.sendDirectMessage(validationComment.id, {
+        title: 'Profile verification completed ✅',
+        action: `You have been verified as ${address}\n\nFrom now on you will receive important notifications for you through this channel.`,
+        fields: [],
+      })
     }
 
     return {

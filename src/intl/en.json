@@ -728,7 +728,8 @@
         "card_title": "Twitter",
         "card_description": "Let the world know that you are behind those witty tweets about the Metaverse."
       },
-      "soon": "Soon"
+      "soon": "Soon",
+      "verified": "Verified"
     },
     "wallet_selector": {
       "title": "Sign In",

@@ -61,6 +61,19 @@
   margin-left: 4px;
 }
 
+.ui.card.ActionCard .ActionCard__VerifiedLabel {
+  background: var(--green-200);
+  border-radius: 4px;
+  color: var(--green-900);
+  font-style: normal;
+  font-weight: var(--weight-semi-bold);
+  font-size: 10px;
+  letter-spacing: -0.2px;
+  text-transform: uppercase;
+  padding: 1px 5px;
+  margin-left: 4px;
+}
+
 .ui.card.ActionCard .ActionCard__Action svg {
   margin: 0 24px;
 }

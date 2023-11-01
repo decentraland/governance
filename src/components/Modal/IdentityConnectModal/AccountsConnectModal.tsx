@@ -13,6 +13,8 @@ import { openUrl } from '../../../helpers'
 import useDiscordConnect from '../../../hooks/useDiscordConnect'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useForumConnect, { THREAD_URL } from '../../../hooks/useForumConnect'
+import useIsProfileValidatedOnDiscord from '../../../hooks/useIsProfileValidatedOnDiscord'
+import useIsProfileValidatedOnForum from '../../../hooks/useIsProfileValidatedOnForum'
 import locations from '../../../utils/locations'
 import { ActionCardProps } from '../../ActionCard/ActionCard'
 import CheckCircle from '../../Icon/CheckCircle'
@@ -175,7 +177,7 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
     copyMessageToClipboard: copyForumMessage,
     openThread: openForumThread,
     time: forumVerificationTime,
-    isValidated: isValidatedOnForum,
+    isValidated: isForumValidationFinished,
     reset: resetForumConnect,
   } = useForumConnect()
 
@@ -184,9 +186,12 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
     copyMessageToClipboard: copyDiscordMessage,
     openChannel: openDiscordChannel,
     time: discordVerificationTime,
-    isValidated: isValidatedOnDiscord,
+    isValidated: isDiscordValidationFinished,
     reset: resetDiscordConnect,
   } = useDiscordConnect()
+
+  const isValidatedOnForum = useIsProfileValidatedOnForum(address)
+  const isValidatedOnDiscord = useIsProfileValidatedOnDiscord(address)
 
   const [modalState, setModalState] = useState<ModalState>(INITIAL_STATE)
 
@@ -219,7 +224,7 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
   const resetValidation = modalState.currentType === ModalType.Forum ? resetForumConnect : resetDiscordConnect
   const time = modalState.currentType === ModalType.Forum ? forumVerificationTime : discordVerificationTime
   const isTimerExpired = time <= 0
-  const isValidated = isValidatedOnForum || isValidatedOnDiscord
+  const isValidated = isForumValidationFinished || isDiscordValidationFinished
   const currentAccount = modalState.currentType === ModalType.Forum ? AccountType.Forum : AccountType.Discord
 
   useEffect(() => {
@@ -310,6 +315,7 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
               setCurrentType(ModalType.Forum)
               initializeStepHelpers(AccountType.Forum)
             },
+            isVerified: isValidatedOnForum,
           },
           {
             title: t('modal.identity_setup.discord.card_title'),
@@ -319,6 +325,7 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
               setCurrentType(ModalType.Discord)
               initializeStepHelpers(AccountType.Discord)
             },
+            isVerified: isValidatedOnDiscord,
           },
           {
             title: t('modal.identity_setup.twitter.card_title'),
