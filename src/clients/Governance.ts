@@ -24,6 +24,7 @@ import {
   NewProposalPoll,
   NewProposalTender,
   PendingProposalsQuery,
+  Project,
   ProjectWithUpdate,
   ProposalAttributes,
   ProposalCommentsInDiscourse,
@@ -153,10 +154,8 @@ export class Governance extends API {
     return await this.fetch<{ total: number }>(`/projects/tenders-total`, this.options().method('GET'))
   }
 
-  async getGrantsByUser(user: string, coauthoring?: boolean) {
-    const grants = await this.fetch<ApiResponse<CategorizedGrants>>(
-      `/proposals/grants/${user}?coauthoring=${!!coauthoring}`
-    )
+  async getGrantsByUser(user: string) {
+    const grants = await this.fetch<ApiResponse<{ total: number; data: Project[] }>>(`/proposals/grants/${user}`)
 
     return grants.data
   }

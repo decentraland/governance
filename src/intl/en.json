@@ -1364,7 +1364,8 @@
         "one_time_tx": "One-time payment {time}",
         "vested": "{amount} {token} vested",
         "released": "{amount} {token} released",
-        "all_released": "All funds successfully released"
+        "all_released": "All funds successfully released",
+        "button": "View more proposals"
       },
       "delegation": {
         "title": "Delegated VP to",
