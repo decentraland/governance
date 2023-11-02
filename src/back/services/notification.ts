@@ -5,6 +5,7 @@ import { ethers } from 'ethers'
 import { NOTIFICATIONS_SERVICE_ENABLED, PUSH_CHANNEL_ID } from '../../constants'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { proposalUrl } from '../../entities/Proposal/utils'
+import UserModel from '../../entities/User/model'
 import { inBackground } from '../../helpers'
 import { ErrorService } from '../../services/ErrorService'
 import {
@@ -129,12 +130,15 @@ export class NotificationService {
         const title = NotificationTitle[GovernanceNotificationType.GrantEnacted]
         const body = NotificationBody[GovernanceNotificationType.GrantEnacted]
 
-        await DiscordService.sendDirectMessage('DISCORD_ID_PLACEHOLDER', {
-          title,
-          action: body,
-          url: proposalUrl(proposal.id),
-          fields: [],
-        })
+        const validatedUsers = await UserModel.getDiscordIdsByAddresses(addresses)
+        for (const user of validatedUsers) {
+          DiscordService.sendDirectMessage(user.discord_id, {
+            title,
+            action: body,
+            url: proposalUrl(proposal.id),
+            fields: [],
+          })
+        }
 
         return await this.sendNotification({
           title,
@@ -162,13 +166,15 @@ export class NotificationService {
       const title = NotificationTitle[GovernanceNotificationType.CoAuthorRequestReceived]
       const body = NotificationBody[GovernanceNotificationType.CoAuthorRequestReceived]
 
-      // for each coauthor, send a DM
-      await DiscordService.sendDirectMessage('DISCORD_ID_PLACEHOLDER', {
-        title,
-        action: body,
-        url: proposalUrl(proposal.id),
-        fields: [],
-      })
+      const validatedUsers = await UserModel.getDiscordIdsByAddresses(coAuthors)
+      for (const user of validatedUsers) {
+        DiscordService.sendDirectMessage(user.discord_id, {
+          title,
+          action: body,
+          url: proposalUrl(proposal.id),
+          fields: [],
+        })
+      }
 
       return await this.sendNotification({
         title,
@@ -199,12 +205,15 @@ export class NotificationService {
       const title = `${NotificationTitle[GovernanceNotificationType.ProposalVotedFinished]} ${proposal.title}`
       const body = NotificationBody[GovernanceNotificationType.ProposalVotedFinished]
 
-      await DiscordService.sendDirectMessage('DISCORD_ID_PLACEHOLDER', {
-        title,
-        action: body,
-        url: proposalUrl(proposal.id),
-        fields: [],
-      })
+      const validatedUsers = await UserModel.getDiscordIdsByAddresses(addresses)
+      for (const user of validatedUsers) {
+        DiscordService.sendDirectMessage(user.discord_id, {
+          title,
+          action: body,
+          url: proposalUrl(proposal.id),
+          fields: [],
+        })
+      }
 
       return await this.sendNotification({
         title,
@@ -231,12 +240,15 @@ export class NotificationService {
       const title = NotificationTitle[GovernanceNotificationType.ProposalVotedFinished]
       const body = NotificationBody[GovernanceNotificationType.ProposalVotedFinished]
 
-      await DiscordService.sendDirectMessage('DISCORD_ID_PLACEHOLDER', {
-        title,
-        action: body,
-        url: proposalUrl(proposal.id),
-        fields: [],
-      })
+      const validatedUsers = await UserModel.getDiscordIdsByAddresses(addresses)
+      for (const user of validatedUsers) {
+        DiscordService.sendDirectMessage(user.discord_id, {
+          title,
+          action: body,
+          url: proposalUrl(proposal.id),
+          fields: [],
+        })
+      }
 
       return await this.sendNotification({
         title,

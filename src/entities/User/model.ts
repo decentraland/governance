@@ -44,16 +44,16 @@ export default class UserModel extends Model<UserAttributes> {
     return await this.namedQuery('get_addresses_by_forum_ids', query)
   }
 
-  static async getAddressesByDiscordId(discord_ids: string[]): Promise<ValidatedDiscordAccount[]> {
-    if (discord_ids.length === 0) return Promise.resolve([])
+  static async getDiscordIdsByAddresses(addresses: string[]): Promise<ValidatedDiscordAccount[]> {
+    if (addresses.length === 0) return Promise.resolve([])
 
     const query = SQL`
-      SELECT address, forum_id, discord_id FROM ${table(this)} WHERE discord_id IN (${join(
-      discord_ids.map((id) => SQL`${id}`),
+      SELECT address, forum_id, discord_id FROM ${table(this)} WHERE address IN (${join(
+      addresses.map((addr) => SQL`${addr.toLowerCase()}`),
       SQL`,`
     )})
     `
-    return await this.namedQuery('get_addresses_by_discord_ids', query)
+    return await this.namedQuery('get_discord_ids_by_addresses', query)
   }
 
   static async isValidated(address: string, accounts: Set<AccountType>): Promise<boolean> {
