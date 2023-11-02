@@ -167,7 +167,11 @@ export class Governance extends API {
   }
 
   async getPriorityProposals(address?: string) {
-    return await this.fetch<PriorityProposal[]>(`/proposals/priority/${address}`, this.options().method('GET'))
+    const url = `/proposals/priority/`
+    return await this.fetch<PriorityProposal[]>(
+      address && address.length > 0 ? url.concat(address) : url,
+      this.options().method('GET')
+    )
   }
 
   async getGrantsByUser(user: string, coauthoring?: boolean) {
