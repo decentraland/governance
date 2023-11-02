@@ -111,7 +111,7 @@ export default routes((route) => {
   route.post('/proposals/tender', withAuth, handleAPI(createProposalTender))
   route.post('/proposals/bid', withAuth, handleAPI(createProposalBid))
   route.post('/proposals/hiring', withAuth, handleAPI(createProposalHiring))
-  route.get('/proposals/priority/:address', handleJSON(getPriorityProposals))
+  route.get('/proposals/priority/:address?', handleJSON(getPriorityProposals))
   route.get('/proposals/grants/:address', handleAPI(getGrantsByUser))
   route.get('/proposals/:proposal', handleAPI(getProposal))
   route.patch('/proposals/:proposal', withAuth, handleAPI(updateProposalStatus))
@@ -499,7 +499,7 @@ export async function createProposal(proposalInCreation: ProposalInCreation) {
 }
 
 async function getPriorityProposals(req: Request) {
-  const address = req.params.address && req.params.address.length > 0 ? validateAddress(req.params.address) : undefined
+  const address = req.params?.address && req.params.address.length > 0 ? validateAddress(req.params.address) : undefined
   return await ProposalService.getPriorityProposals(address)
 }
 
