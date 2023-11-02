@@ -490,122 +490,92 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     const aMonthAgo = Time.utc().subtract(1, 'month').toDate()
     const lowerAddress = !!address && address.length > 0 ? toLower(address) : null
     const cols = SQL`id, title, p.user, type, p.status, start_at, finish_at, snapshot_proposal, configuration`
-    const coauthorsLeftJoin = SQL`
-        LEFT JOIN ${table(CoauthorModel)} c ON 
-        p.id = c.proposal_id AND 
-        c.status = 'APPROVED' AND 
-        c.address = ${lowerAddress}
-    `
 
     const query = SQL`
+        WITH all_priority_proposals AS (
+        -- Open Governance Proposals
         SELECT 
-            -- Open Governance Proposals
-               ${cols}${conditional(!!lowerAddress, SQL`, c.address as coauthor`)}, 
-               ${PriorityProposalType.ActiveGovernance} AS priority_type
+             ${cols}
+            ,${PriorityProposalType.ActiveGovernance} AS priority_type
         FROM ${table(this)} p 
-             ${conditional(!!lowerAddress, coauthorsLeftJoin)}
         WHERE
             type = ${ProposalType.Governance} AND 
             p.status = ${ProposalStatus.Active}
-            ${conditional(!!lowerAddress, SQL`AND c.address IS NULL`)}
-            ${conditional(!!lowerAddress, SQL`AND p.user <> ${lowerAddress}`)}
-    UNION  
-        -- Open pitches with no submissions
-        SELECT ${cols}${conditional(!!lowerAddress, SQL`, c.address as coauthor`)},
-               ${PriorityProposalType.OpenPitch} AS priority_type
+        
+        UNION -- Open pitches with no submissions
+        SELECT ${cols}
+               ,${PriorityProposalType.OpenPitch} AS priority_type
         FROM ${table(this)} p
-             ${conditional(!!lowerAddress, coauthorsLeftJoin)}
         WHERE
             type = ${ProposalType.Pitch} AND
             p.status = ${ProposalStatus.Passed} AND 
             p.finish_at >= ${aMonthAgo} AND
             p.id NOT IN (
                 SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(this)} AS p2 
-                WHERE type = ${ProposalType.Tender}) -- exclude if submitted own tender
-            ${conditional(!!lowerAddress, SQL`AND c.address IS NULL`)} -- exclude coauthored pitches
-            ${conditional(!!lowerAddress, SQL`AND p.user <> ${lowerAddress}`)} -- exclude own pitches
+                WHERE type = ${ProposalType.Tender})
         
-    UNION 
-        -- Open pitches with submissions
-        SELECT ${cols}${conditional(!!lowerAddress, SQL`, c.address as coauthor`)},
-               ${PriorityProposalType.PitchWithSubmissions} AS priority_type
+        UNION -- Open pitches with submissions
+        SELECT ${cols}
+               ,${PriorityProposalType.PitchWithSubmissions} AS priority_type
         FROM ${table(this)} p
-            ${conditional(!!lowerAddress, coauthorsLeftJoin)}
         WHERE type = ${ProposalType.Pitch} AND
              p.status = ${ProposalStatus.Passed} AND
              p.id IN (
                 SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(this)} AS p2 
                 WHERE type = ${ProposalType.Tender} AND status = ${ProposalStatus.Pending}
-                ${conditional(!!lowerAddress, SQL`AND p2.user <> ${lowerAddress}`)} -- exclude if submitted own tender
              )
-              ${conditional(
-                !!lowerAddress,
-                SQL`
-                AND NOT EXISTS (
-                    SELECT 1 
-                    FROM ${table(this)} linked_tender
-                    LEFT JOIN coauthors ca ON 
-                    linked_tender.id = ca.proposal_id AND
-                    ca.status = 'APPROVED' AND
-                   ca.address = ${lowerAddress}
-                    WHERE linked_tender.configuration->>'linked_proposal_id' = p.id
-                    AND (linked_tender.user = ${lowerAddress} OR ca.address IS NOT NULL)
-                )
-              `
-              )} -- exclude if coauthored submitted tender
-             ${conditional(!!lowerAddress, SQL`AND c.address IS NULL`)} -- exclude coauthored pitches
-             ${conditional(!!lowerAddress, SQL`AND p.user <> ${lowerAddress}`)} -- exclude own pitches
         
-    UNION 
-        -- Closed pitches with submissions in voting phase
-        SELECT ${cols}${conditional(!!lowerAddress, SQL`, c.address as coauthor`)},
-                ${PriorityProposalType.PitchOnVotingPhase} AS priority_type
+        UNION -- Closed pitches with submissions in voting phase
+        SELECT ${cols}
+                ,${PriorityProposalType.PitchOnVotingPhase} AS priority_type
         FROM ${table(this)} p
-             ${conditional(!!lowerAddress, coauthorsLeftJoin)}
         WHERE type = ${ProposalType.Pitch} AND
              p.status = ${ProposalStatus.Passed} AND
              p.id IN (
                 SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(this)} AS p2 
                 WHERE type = ${ProposalType.Tender} AND status = ${ProposalStatus.Active})
-             ${conditional(!!lowerAddress, SQL`AND c.address IS NULL`)}
-             ${conditional(!!lowerAddress, SQL`AND p.user <> ${lowerAddress}`)}
-    UNION 
-        -- Open tenders with no submissions
-        SELECT ${cols}${conditional(!!lowerAddress, SQL`, c.address as coauthor`)},
-                ${PriorityProposalType.OpenTender} AS priority_type
+        
+        UNION -- Open tenders with no submissions
+        SELECT ${cols}
+                ,${PriorityProposalType.OpenTender} AS priority_type
         FROM ${table(this)} p
-             ${conditional(!!lowerAddress, coauthorsLeftJoin)}
         WHERE type = ${ProposalType.Tender} AND
              p.status = ${ProposalStatus.Passed} AND
              p.finish_at >= ${aMonthAgo} AND
              id NOT IN (
                  SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(this)} AS p2
                  WHERE type = ${ProposalType.Bid})
-             ${conditional(!!lowerAddress, SQL`AND c.address IS NULL`)}
-             ${conditional(!!lowerAddress, SQL`AND p.user <> ${lowerAddress}`)}
-    UNION
-        -- Open tenders with submissions
-        SELECT ${cols}${conditional(!!lowerAddress, SQL`, c.address as coauthor`)},
-               ${PriorityProposalType.TenderWithSubmissions} AS priority_type
+    
+        UNION -- Open tenders with submissions
+        SELECT ${cols}
+               ,${PriorityProposalType.TenderWithSubmissions} AS priority_type
         FROM ${table(this)} p
-             ${conditional(!!lowerAddress, coauthorsLeftJoin)}
         WHERE type = ${ProposalType.Tender} AND
              p.status = ${ProposalStatus.Passed} AND
              p.id IN (
                 SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(this)} AS p2 
                 WHERE type = ${ProposalType.Bid} AND status = ${ProposalStatus.Pending})
-             ${conditional(!!lowerAddress, SQL`AND c.address IS NULL`)}
-             ${conditional(!!lowerAddress, SQL`AND p.user <> ${lowerAddress}`)}
-    UNION
-        -- Active bids
-        SELECT ${cols}${conditional(!!lowerAddress, SQL`, c.address as coauthor`)},
-               ${PriorityProposalType.ActiveBid} AS priority_type
+        
+        UNION -- Active bids
+        SELECT ${cols}
+               ,${PriorityProposalType.ActiveBid} AS priority_type
         FROM ${table(this)} p 
-             ${conditional(!!lowerAddress, coauthorsLeftJoin)}
         WHERE type = ${ProposalType.Bid} AND
             p.status = ${ProposalStatus.Active}
-            ${conditional(!!lowerAddress, SQL`AND c.address IS NULL`)}
-            ${conditional(!!lowerAddress, SQL`AND p.user <> ${lowerAddress}`)};`
+        )
+        
+        SELECT * 
+        FROM all_priority_proposals p
+            ${conditional(
+              !!lowerAddress,
+              SQL`
+                    LEFT JOIN ${table(CoauthorModel)} c ON
+                    p.id = c.proposal_id AND
+                    c.status = 'APPROVED' AND
+                    c.address = ${lowerAddress}
+                    WHERE c.address IS NULL AND p.user <> ${lowerAddress}`
+            )}; -- exclude coauthored and authored proposals;
+    `
 
     return await this.namedQuery('get_priority_proposals', query)
   }
