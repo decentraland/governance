@@ -513,7 +513,9 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     `
 
     const query = SQL`
-        SELECT ${cols}${conditional(!!lowerAddress, SQL`, c.address as coauthor`)},
+        SELECT 
+            -- Open Governance Proposals
+               ${cols}${conditional(!!lowerAddress, SQL`, c.address as coauthor`)}, 
                ${PriorityProposalType.ActiveGovernance} AS priority_type
         FROM ${table(this)} p 
              ${conditional(!!lowerAddress, coauthorsLeftJoin)}
@@ -522,7 +524,8 @@ export default class ProposalModel extends Model<ProposalAttributes> {
             p.status = ${ProposalStatus.Active}
             ${conditional(!!lowerAddress, SQL`AND c.address IS NULL`)}
             ${conditional(!!lowerAddress, SQL`AND p.user <> ${lowerAddress}`)}
-    UNION
+    UNION  
+        -- Open pitches with no submissions
         SELECT ${cols}${conditional(!!lowerAddress, SQL`, c.address as coauthor`)},
                ${PriorityProposalType.OpenPitch} AS priority_type
         FROM ${table(this)} p
@@ -533,22 +536,43 @@ export default class ProposalModel extends Model<ProposalAttributes> {
             p.finish_at >= ${aMonthAgo} AND
             p.id NOT IN (
                 SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(this)} AS p2 
-                WHERE type = ${ProposalType.Tender})
-            ${conditional(!!lowerAddress, SQL`AND c.address IS NULL`)}
-            ${conditional(!!lowerAddress, SQL`AND p.user <> ${lowerAddress}`)}
-    UNION
+                WHERE type = ${ProposalType.Tender}) -- exclude if submitted own tender
+            ${conditional(!!lowerAddress, SQL`AND c.address IS NULL`)} -- exclude coauthored pitches
+            ${conditional(!!lowerAddress, SQL`AND p.user <> ${lowerAddress}`)} -- exclude own pitches
+        
+    UNION 
+        -- Open pitches with submissions
         SELECT ${cols}${conditional(!!lowerAddress, SQL`, c.address as coauthor`)},
                ${PriorityProposalType.PitchWithSubmissions} AS priority_type
         FROM ${table(this)} p
-             ${conditional(!!lowerAddress, coauthorsLeftJoin)}
+            ${conditional(!!lowerAddress, coauthorsLeftJoin)}
         WHERE type = ${ProposalType.Pitch} AND
              p.status = ${ProposalStatus.Passed} AND
              p.id IN (
                 SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(this)} AS p2 
-                WHERE type = ${ProposalType.Tender} AND status = ${ProposalStatus.Pending})
-             ${conditional(!!lowerAddress, SQL`AND c.address IS NULL`)}
-             ${conditional(!!lowerAddress, SQL`AND p.user <> ${lowerAddress}`)}
-    UNION
+                WHERE type = ${ProposalType.Tender} AND status = ${ProposalStatus.Pending}
+                ${conditional(!!lowerAddress, SQL`AND p2.user <> ${lowerAddress}`)} -- exclude if submitted own tender
+             )
+              ${conditional(
+                !!lowerAddress,
+                SQL`
+                AND NOT EXISTS (
+                    SELECT 1 
+                    FROM ${table(this)} linked_tender
+                    LEFT JOIN coauthors ca ON 
+                    linked_tender.id = ca.proposal_id AND
+                    ca.status = 'APPROVED' AND
+                   ca.address = ${lowerAddress}
+                    WHERE linked_tender.configuration->>'linked_proposal_id' = p.id
+                    AND (linked_tender.user = ${lowerAddress} OR ca.address IS NOT NULL)
+                )
+              `
+              )} -- exclude if coauthored submitted tender
+             ${conditional(!!lowerAddress, SQL`AND c.address IS NULL`)} -- exclude coauthored pitches
+             ${conditional(!!lowerAddress, SQL`AND p.user <> ${lowerAddress}`)} -- exclude own pitches
+        
+    UNION 
+        -- Closed pitches with submissions in voting phase
         SELECT ${cols}${conditional(!!lowerAddress, SQL`, c.address as coauthor`)},
                 ${PriorityProposalType.PitchOnVotingPhase} AS priority_type
         FROM ${table(this)} p
@@ -560,7 +584,8 @@ export default class ProposalModel extends Model<ProposalAttributes> {
                 WHERE type = ${ProposalType.Tender} AND status = ${ProposalStatus.Active})
              ${conditional(!!lowerAddress, SQL`AND c.address IS NULL`)}
              ${conditional(!!lowerAddress, SQL`AND p.user <> ${lowerAddress}`)}
-    UNION
+    UNION 
+        -- Open tenders with no submissions
         SELECT ${cols}${conditional(!!lowerAddress, SQL`, c.address as coauthor`)},
                 ${PriorityProposalType.OpenTender} AS priority_type
         FROM ${table(this)} p
@@ -574,6 +599,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
              ${conditional(!!lowerAddress, SQL`AND c.address IS NULL`)}
              ${conditional(!!lowerAddress, SQL`AND p.user <> ${lowerAddress}`)}
     UNION
+        -- Open tenders with submissions
         SELECT ${cols}${conditional(!!lowerAddress, SQL`, c.address as coauthor`)},
                ${PriorityProposalType.TenderWithSubmissions} AS priority_type
         FROM ${table(this)} p
@@ -586,6 +612,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
              ${conditional(!!lowerAddress, SQL`AND c.address IS NULL`)}
              ${conditional(!!lowerAddress, SQL`AND p.user <> ${lowerAddress}`)}
     UNION
+        -- Active bids
         SELECT ${cols}${conditional(!!lowerAddress, SQL`, c.address as coauthor`)},
                ${PriorityProposalType.ActiveBid} AS priority_type
         FROM ${table(this)} p 
