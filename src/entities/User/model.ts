@@ -51,7 +51,7 @@ export default class UserModel extends Model<UserAttributes> {
       SELECT address, forum_id, discord_id FROM ${table(this)} WHERE address IN (${join(
       addresses.map((addr) => SQL`${addr.toLowerCase()}`),
       SQL`,`
-    )})
+    )}) AND discord_id IS NOT NULL
     `
     return await this.namedQuery('get_discord_ids_by_addresses', query)
   }
