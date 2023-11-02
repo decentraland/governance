@@ -697,14 +697,7 @@ export class Governance extends API {
     return response.data
   }
 
-  async sendNotification(
-    recipient: string,
-    title: string,
-    body: string,
-    type: number,
-    url: string,
-    discordId?: string
-  ) {
+  async sendNotification(recipient: string, title: string, body: string, type: number, url: string) {
     const response = await this.fetch<ApiResponse<string>>(
       `/notifications/send`,
       this.options().method('POST').authorization({ sign: true }).json({
@@ -713,7 +706,6 @@ export class Governance extends API {
         body,
         type,
         url,
-        discordId,
       })
     )
     return response.data

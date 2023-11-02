@@ -4,6 +4,7 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
+import UserModel from '../../entities/User/model'
 import { NotificationCustomType } from '../../shared/types/notifications'
 import { NotificationType } from '../../utils/notifications'
 import UserNotificationConfigModel, { UserNotificationConfigAttributes } from '../models/UserNotificationConfig'
@@ -21,7 +22,7 @@ export default routes((router) => {
 
 async function sendNotification(req: WithAuth) {
   validateDebugAddress(req.auth)
-  const { title, body, recipient, url, type, discordId } = req.body
+  const { title, body, recipient, url, type } = req.body
 
   if (type === NotificationType.TARGET && !recipient) {
     throw new RequestError('Target type needs recipient', RequestError.BadRequest)
@@ -31,8 +32,10 @@ async function sendNotification(req: WithAuth) {
     throw new RequestError('Invalid data', RequestError.BadRequest)
   }
 
-  if (discordId) {
-    await DiscordService.sendDirectMessage(discordId, {
+  const users = await UserModel.getDiscordIdsByAddresses([recipient])
+
+  for (const user of users) {
+    await DiscordService.sendDirectMessage(user.discord_id, {
       title: `[DEBUG] ${title}`,
       url,
       fields: [],

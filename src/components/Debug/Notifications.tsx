@@ -19,7 +19,6 @@ export default function Notifications({ className }: Props) {
   const [notificationTitle, setNotificationTitle] = useState('')
   const [notificationBody, setNotificationBody] = useState('')
   const [notificationURL, setNotificationURL] = useState('')
-  const [discordId, setDiscordId] = useState('')
   const [isSendingNotification, setIsSendingNotification] = useState(false)
 
   const handleSendNotification = async (e: any) => {
@@ -32,8 +31,7 @@ export default function Notifications({ className }: Props) {
         notificationTitle,
         notificationBody,
         notificationType,
-        notificationURL,
-        discordId
+        notificationURL
       )
       setNotificationAddress('')
       setNotificationTitle('')
@@ -66,11 +64,6 @@ export default function Notifications({ className }: Props) {
                 required
                 placeholder="Address (0x...)"
                 onChange={(e) => setNotificationAddress(e.target.value)}
-              />
-              <Field
-                value={discordId}
-                placeholder="Discord ID (optional)"
-                onChange={(e) => setDiscordId(e.target.value)}
               />
             </>
           )}
