@@ -56,7 +56,7 @@ export default function BudgetBanner({ category, status, initiativesCount }: Pro
           <span>{getNewGrantIcon(toSnakeCase(category), CategoryIconVariant.Circled, 48)}</span>
         )}
         <BudgetBannerItem
-          value={intl.formatNumber(totalBudget, CURRENCY_FORMAT_OPTIONS as any)}
+          value={intl.formatNumber(totalBudget, CURRENCY_FORMAT_OPTIONS)}
           label={t('page.grants.budget_banner.budget_label')}
         />
       </div>
@@ -74,9 +74,7 @@ export default function BudgetBanner({ category, status, initiativesCount }: Pro
           <div className="BudgetBannerItem__Label">
             <div>
               <span>{t('page.grants.budget_banner.spent_label')}</span>
-              <span className="BudgetBanner__Amount">
-                {intl.formatNumber(currentAmount, CURRENCY_FORMAT_OPTIONS as any)}
-              </span>
+              <span className="BudgetBanner__Amount">{intl.formatNumber(currentAmount, CURRENCY_FORMAT_OPTIONS)}</span>
             </div>
             <div className="BudgetBanner__Percentage">{`${percentage}%`}</div>
           </div>
