@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useIntl } from 'react-intl'
 
 import { ProjectStatus } from '../../../entities/Grant/types'
@@ -30,14 +31,28 @@ export default function AuthorDetails({ address }: Props) {
   const intl = useIntl()
   const hasPreviouslySubmittedGrants = !!grants && grants?.total > 0
 
-  const { data } = useVestings(hasPreviouslySubmittedGrants)
-  const grantsWithVesting = grants?.data.map((grant) => ({
-    ...grant,
-    vesting_released: data?.find((item) => grant.id === item.proposal_id)?.vesting_released || 0,
-    vesting_status: data?.find((item) => grant.id === item.proposal_id)?.vesting_status,
-  }))
-  const fundsReleased = grantsWithVesting?.reduce((total, grant) => total + grant.vesting_released, 0)
-  const finishedProjects = grantsWithVesting?.filter((item) => item.vesting_status === ProjectStatus.Finished)
+  const { data: vestings } = useVestings(hasPreviouslySubmittedGrants)
+  const grantsWithVesting = useMemo(
+    () =>
+      grants?.data.map((grant) => {
+        const vesting = vestings?.find((item) => grant.id === item.proposal_id)
+
+        return {
+          ...grant,
+          vesting_released: vesting?.vesting_released || 0,
+          vesting_status: vesting?.vesting_status,
+        }
+      }),
+    [vestings, grants?.data]
+  )
+  const fundsReleased = useMemo(
+    () => grantsWithVesting?.reduce((total, grant) => total + grant.vesting_released, 0),
+    [grantsWithVesting]
+  )
+  const finishedProjects = useMemo(
+    () => grantsWithVesting?.filter((item) => item.vesting_status === ProjectStatus.Finished),
+    [grantsWithVesting]
+  )
 
   return (
     <Section title={t('page.proposal_detail.author_details.title')}>

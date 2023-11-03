@@ -379,8 +379,8 @@ export default function ProposalPage() {
   const showVotesChart =
     proposalPageState.showResults && !isLoadingProposal && proposal?.type !== ProposalType.Poll && highQualityVotes
 
-  // TODO: Show author details only on active grants
-  const showAuthorDetails = proposal?.user
+  const showAuthorDetails =
+    proposal?.user && proposal?.type === ProposalType.Grant && proposal?.status === ProposalStatus.Active
 
   const title = proposal?.title || t('page.proposal_detail.title') || ''
   const description =
