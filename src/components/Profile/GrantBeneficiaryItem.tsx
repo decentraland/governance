@@ -3,6 +3,7 @@ import { useIntl } from 'react-intl'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
+import { GrantTierType } from '../../entities/Grant/types'
 import { Project } from '../../entities/Proposal/types'
 import { isProposalInCliffPeriod } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
@@ -23,7 +24,7 @@ interface Props {
   grant: Project
 }
 
-const TRANSPARENCY_TIERS_IN_MANA = ['Tier 1', 'Tier 2', 'Tier 3', 'Tier 4']
+const TRANSPARENCY_TIERS_IN_MANA: string[] = [GrantTierType.Tier1, GrantTierType.Tier2, GrantTierType.Tier3]
 
 function GrantBeneficiaryItem({ grant }: Props) {
   const t = useFormatMessage()
@@ -94,7 +95,7 @@ function GrantBeneficiaryItem({ grant }: Props) {
                     {t('page.profile.grants.item_short_description', {
                       time: abbreviateTimeDifference(formattedEnactedDate),
                       amount: intl.formatNumber(grant.size),
-                      token: token,
+                      token: isInMana ? 'USD' : token,
                     })}
                   </Markdown>
                 )}
