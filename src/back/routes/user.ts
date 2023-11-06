@@ -101,13 +101,14 @@ async function checkDiscordValidationMessage(req: WithAuth) {
     if (!messageProperties) {
       throw new Error('Validation timed out')
     }
+    const { address, timestamp } = messageProperties
+
     const messages = await DiscordService.getProfileVerificationMessages()
     const formattedMessages = messages.map<ValidationComment>((message) => ({
       id: message.author.id,
       content: message.content,
       timestamp: message.createdTimestamp,
     }))
-    const { address, timestamp } = messageProperties
     const validationComment = getValidationComment(formattedMessages, address, timestamp)
 
     if (validationComment) {

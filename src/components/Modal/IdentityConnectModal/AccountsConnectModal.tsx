@@ -27,6 +27,7 @@ import Lock from '../../Icon/Lock'
 import Sign from '../../Icon/Sign'
 
 import AccountConnection, { AccountConnectionProps } from './AccountConnection'
+import './AccountsConnectModal.css'
 import PostConnection from './PostConnection'
 
 type AccountModal = Omit<AccountConnectionProps, 'timerText'>
@@ -148,9 +149,9 @@ function getAccountActionSteps(
   })
 }
 
-function getForumHelperTextKey(currentStep: number): string | undefined {
+function getHelperTextKey(currentStep: number, account: AccountType): string | undefined {
   return currentStep <= FORUM_CONNECT_STEPS_AMOUNT
-    ? `modal.identity_setup.${AccountType.Forum}.helper_step_${currentStep}`
+    ? `modal.identity_setup.${account}.helper_step_${currentStep}`
     : undefined
 }
 
@@ -350,7 +351,7 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
           modalState.stepsCurrentHelper
         ),
         button: getModalButton(t('modal.identity_setup.forum.action'), modalState.isValidating),
-        helperText: t(getForumHelperTextKey(modalState.currentStep)),
+        helperText: t(getHelperTextKey(modalState.currentStep, AccountType.Forum)),
       },
       [ModalType.Discord]: {
         title: t('modal.identity_setup.discord.title'),
@@ -368,11 +369,13 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
           modalState.stepsCurrentHelper
         ),
         button: getModalButton(t('modal.identity_setup.discord.action'), modalState.isValidating),
-        helperText: 'HELPER TEXT',
+        helperText: t(getHelperTextKey(modalState.currentStep, AccountType.Discord)),
       },
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
+      isValidatedOnForum,
+      isValidatedOnDiscord,
       handleForumSign,
       handleForumCopy,
       handleForumValidate,
