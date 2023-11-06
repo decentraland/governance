@@ -40,7 +40,8 @@
       "filter": "Filter",
       "sorting": {
         "DESC": "Latest",
-        "ASC": "Oldest"
+        "ASC": "Oldest",
+        "RELEVANCE": "Relevance"
       },
       "category_filter_title": "Filter by Category",
       "legacy_filter_title": "Filter by Legacy Grants",
@@ -1391,7 +1392,8 @@
         "one_time_tx": "One-time payment {time}",
         "vested": "{amount} {token} vested",
         "released": "{amount} {token} released",
-        "all_released": "All funds successfully released"
+        "all_released": "All funds successfully released",
+        "button": "View more proposals"
       },
       "delegation": {
         "title": "Delegated VP to",

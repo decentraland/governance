@@ -10,9 +10,8 @@ import { BadgeCreationResult, RevokeOrReinstateResult, UserBadges } from '../ent
 import { BidRequest, UnpublishedBidAttributes } from '../entities/Bid/types'
 import { Budget, BudgetWithContestants, CategoryBudget } from '../entities/Budget/types'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
-import { GrantRequest, ProposalGrantCategory, SubtypeOptions } from '../entities/Grant/types'
+import { GrantRequest, ProposalGrantCategory } from '../entities/Grant/types'
 import {
-  CategorizedGrants,
   NewProposalBanName,
   NewProposalCatalyst,
   NewProposalDraft,
@@ -24,11 +23,12 @@ import {
   NewProposalPoll,
   NewProposalTender,
   PendingProposalsQuery,
+  Project,
   ProjectWithUpdate,
   ProposalAttributes,
   ProposalCommentsInDiscourse,
+  ProposalListFilter,
   ProposalStatus,
-  ProposalType,
 } from '../entities/Proposal/types'
 import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { SubscriptionAttributes } from '../entities/Subscription/types'
@@ -67,21 +67,9 @@ type NewProposalMap = {
   [`/proposals/hiring`]: NewProposalHiring
 }
 
-export type GetProposalsFilter = {
-  user: string
-  type: ProposalType
-  subtype?: SubtypeOptions
-  status: ProposalStatus
-  subscribed: boolean | string
-  coauthor: boolean
-  search?: string | null
-  timeFrame?: string | null
-  timeFrameKey?: string | null
-  order?: 'ASC' | 'DESC'
+export type GetProposalsFilter = ProposalListFilter & {
   limit: number
   offset: number
-  snapshotIds?: string
-  linkedProposalId?: string
 }
 
 const getGovernanceApiUrl = () => {
@@ -147,11 +135,6 @@ export class Governance extends API {
     }
   }
 
-  async getGrants() {
-    const proposals = await this.fetch<ApiResponse<CategorizedGrants>>('/proposals/grants')
-    return proposals.data
-  }
-
   async getProjects() {
     const proposals = await this.fetch<ApiResponse<ProjectWithUpdate[]>>(`/projects`, this.options().method('GET'))
 
@@ -166,10 +149,8 @@ export class Governance extends API {
     return await this.fetch<{ total: number }>(`/projects/tenders-total`, this.options().method('GET'))
   }
 
-  async getGrantsByUser(user: string, coauthoring?: boolean) {
-    const grants = await this.fetch<ApiResponse<CategorizedGrants>>(
-      `/proposals/grants/${user}?coauthoring=${!!coauthoring}`
-    )
+  async getGrantsByUser(user: string) {
+    const grants = await this.fetch<ApiResponse<{ total: number; data: Project[] }>>(`/proposals/grants/${user}`)
 
     return grants.data
   }

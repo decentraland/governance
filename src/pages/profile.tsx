@@ -37,6 +37,7 @@ export default function ProfilePage() {
   if (!hasAddress) {
     navigate(`/profile/?address=${userAddress}`, { replace: true })
   }
+
   const { displayableAddress } = useProfile(address)
   const { delegation, isDelegationLoading, scores, isLoadingScores, vpDistribution, isLoadingVpDistribution } =
     useVotingPowerInformation(address)

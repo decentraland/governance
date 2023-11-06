@@ -76,8 +76,8 @@ export function isGrantSubtype(value: string | null | undefined) {
   )
 }
 
-export function toGrantSubtype(value: string | null | undefined): SubtypeOptions | undefined {
-  return isGrantSubtype(value) ? (value as SubtypeOptions) : undefined
+export function toGrantSubtype<OrElse>(value: string | null | undefined, orElse: () => OrElse) {
+  return isGrantSubtype(value) ? (value as SubtypeOptions) : orElse()
 }
 
 export const GrantRequestGeneralInfoSchema = {

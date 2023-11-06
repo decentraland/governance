@@ -12,7 +12,7 @@ import OpenProposals from '../components/Home/OpenProposals'
 import LoadingView from '../components/Layout/LoadingView'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
-import { ProposalStatus } from '../entities/Proposal/types'
+import { ProposalStatus, SortingOrder } from '../entities/Proposal/types'
 import useFormatMessage from '../hooks/useFormatMessage'
 import useProposals from '../hooks/useProposals'
 import { isUnderMaintenance } from '../utils/maintenance'
@@ -23,7 +23,7 @@ export default function HomePage() {
   const t = useFormatMessage()
 
   const { proposals: endingSoonProposals, isLoadingProposals } = useProposals({
-    order: 'ASC',
+    order: SortingOrder.ASC,
     status: ProposalStatus.Active,
     timeFrameKey: 'finish_at',
     page: 1,
