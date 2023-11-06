@@ -49,9 +49,55 @@ export default function AuthorDetails({ address }: Props) {
     () => grantsWithVesting?.reduce((total, grant) => total + grant.vesting_released, 0),
     [grantsWithVesting]
   )
-  const finishedProjects = useMemo(
-    () => grantsWithVesting?.filter((item) => item.vesting_status === ProjectStatus.Finished),
+  const finishedProjectsLength = useMemo(
+    () => grantsWithVesting?.filter((item) => item.vesting_status === ProjectStatus.Finished).length || 0,
     [grantsWithVesting]
+  )
+  const revokedProjectsLength = useMemo(
+    () => grantsWithVesting?.filter((item) => item.vesting_status === ProjectStatus.Revoked).length || 0,
+    [grantsWithVesting]
+  )
+  const ongoingProjectsLength = useMemo(
+    () => grantsWithVesting?.filter((item) => item.vesting_status === ProjectStatus.InProgress).length || 0,
+    [grantsWithVesting]
+  )
+  const pausedProjectsLength = useMemo(
+    () => grantsWithVesting?.filter((item) => item.vesting_status === ProjectStatus.Paused).length || 0,
+    [grantsWithVesting]
+  )
+
+  const ongoingProjectsText =
+    ongoingProjectsLength > 0
+      ? t('page.proposal_detail.author_details.project_performance_ongoing', {
+          total: ongoingProjectsLength,
+        })
+      : null
+
+  const finishedProjectsText =
+    finishedProjectsLength > 0
+      ? t('page.proposal_detail.author_details.project_performance_finished', {
+          total: finishedProjectsLength,
+        })
+      : null
+
+  const pausedProjectsText =
+    pausedProjectsLength > 0
+      ? t('page.proposal_detail.author_details.project_performance_paused', {
+          total: pausedProjectsLength,
+        })
+      : null
+
+  const revokedProjectsText =
+    revokedProjectsLength > 0
+      ? t('page.proposal_detail.author_details.project_performance_revoked', {
+          total: revokedProjectsLength,
+        })
+      : null
+
+  const projectPerformanceText = useMemo(
+    () =>
+      [ongoingProjectsText, finishedProjectsText, pausedProjectsText, revokedProjectsText].filter(Boolean).join(', '),
+    [ongoingProjectsText, finishedProjectsText, pausedProjectsText, revokedProjectsText]
   )
 
   return (
@@ -91,9 +137,7 @@ export default function AuthorDetails({ address }: Props) {
             />
             <AuthorDetailsStat
               label={t('page.proposal_detail.author_details.project_performance_label')}
-              description={t('page.proposal_detail.author_details.project_performance_description', {
-                total: finishedProjects?.length,
-              })}
+              description={projectPerformanceText}
             />
           </>
         )}

@@ -1124,8 +1124,11 @@
         "grant_stats_label": "Grant stats",
         "first_grant_description": "First-ever grant request",
         "grant_stats_description": "{total} Past Grant {total, plural, one {Request} other {Requests}}",
-        "project_performance_label": "Project performance",
-        "project_performance_description": "{total} finished"
+        "project_performance_label": "Projects performance",
+        "project_performance_finished": "{total} Finished",
+        "project_performance_ongoing": "{total} Ongoing",
+        "project_performance_revoked": "{total} Revoked",
+        "project_performance_paused": "{total} Paused"
       },
       "grant": {
         "requested_budget": {
