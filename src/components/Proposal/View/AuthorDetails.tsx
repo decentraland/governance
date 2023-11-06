@@ -55,7 +55,7 @@ export default function AuthorDetails({ address }: Props) {
   )
 
   return (
-    <Section title={t('page.proposal_detail.author_details.title')}>
+    <Section title={t('page.proposal_detail.author_details.title')} isNew>
       <div className="AuthorDetails__UserContainer">
         <div className="AuthorDetails__UserInfo">
           <Username className="AuthorDetails__Avatar" variant="avatar" address={address} size="big" />
