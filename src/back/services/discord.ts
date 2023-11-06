@@ -76,7 +76,14 @@ export class DiscordService {
       intents: [Discord.GatewayIntentBits.Guilds, Discord.GatewayIntentBits.MessageContent],
     })
     this.client.on('unhandledRejection', (error) => {
-      console.log('Test error:', error)
+      if (isProdEnv()) {
+        ErrorService.report('Unhandled rejection in Discord client', {
+          error,
+          category: ErrorCategory.Discord,
+        })
+      } else {
+        console.error('Unhandled rejection in Discord client', error)
+      }
     })
     this.client.login(TOKEN)
   }
@@ -304,7 +311,7 @@ export class DiscordService {
         if (channel?.type !== Discord.ChannelType.GuildText) {
           throw new Error(`Discord channel type is not supported: ${channel?.type}`)
         }
-        const messages = (await channel.messages.fetch({ limit: 5 })).filter((message) => !message.author.bot)
+        const messages = (await channel.messages.fetch({ limit: 10 })).filter((message) => !message.author.bot)
         return messages.map((message) => message)
       } catch (error) {
         if (isProdEnv()) {

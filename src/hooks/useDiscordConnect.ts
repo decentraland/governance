@@ -1,64 +1,27 @@
 import { useCallback } from 'react'
 
-import { Web3Provider } from '@ethersproject/providers'
-
 import { Governance } from '../clients/Governance'
 import { SegmentEvent } from '../entities/Events/types'
 import { GATSBY_DISCORD_PROFILE_VERIFICATION_URL } from '../entities/User/constants'
-import { Account, AccountType } from '../entities/User/types'
+import { AccountType } from '../entities/User/types'
 import { openUrl } from '../helpers'
 
-import useValidationSetup from './useValidationSetup'
-
-const getMessage = async () => Governance.get().getValidationMessage(Account.Discord)
-const VALIDATION_CHECK_INTERVAL = 10 * 1000 // 10 seconds
+import useValidationSetup, { VALIDATION_CHECK_INTERVAL } from './useValidationSetup'
 
 function useDiscordConnect() {
   const {
     user,
-    userState,
     track,
-    clipboardMessage,
-    setClipboardMessage,
-    handleCopy,
-    startTimer,
     resetTimer,
+    getSignedMessage,
+    copyMessageToClipboard,
     time,
     validatingProfile,
     setValidatingProfile,
     isValidated,
     setIsValidated,
     resetValidation,
-  } = useValidationSetup()
-
-  const getSignedMessage = useCallback(async () => {
-    if (!userState.provider) {
-      return
-    }
-
-    const message = await getMessage()
-    if (!message) {
-      throw new Error('No message')
-    }
-
-    const signer = new Web3Provider(userState.provider).getSigner()
-    startTimer()
-    setIsValidated(undefined)
-    const signedMessage = await signer.signMessage(message)
-    if (!signedMessage) {
-      resetTimer()
-      throw new Error('Failed to sign message')
-    }
-
-    setClipboardMessage(`${message}\nSignature: ${signedMessage}`)
-    return signedMessage
-  }, [resetTimer, setClipboardMessage, setIsValidated, startTimer, userState.provider])
-
-  const copyMessageToClipboard = useCallback(() => {
-    if (clipboardMessage) {
-      handleCopy(clipboardMessage)
-    }
-  }, [clipboardMessage, handleCopy])
+  } = useValidationSetup(AccountType.Discord)
 
   const openChannel = useCallback(() => {
     openUrl(GATSBY_DISCORD_PROFILE_VERIFICATION_URL)

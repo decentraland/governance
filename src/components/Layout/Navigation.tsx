@@ -6,7 +6,6 @@ import { Mobile, NotMobile, useMobileMediaQuery } from 'decentraland-ui/dist/com
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 
-import { USER_FULLY_VALIDATED } from '../../entities/User/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useIsDebugAddress from '../../hooks/useIsDebugAddress'
 import useIsProfileValidated from '../../hooks/useIsProfileValidated'
@@ -44,7 +43,7 @@ const Navigation = ({ activeTab }: NavigationProps) => {
   const t = useFormatMessage()
   const [user] = useAuthContext()
   const { isDebugAddress } = useIsDebugAddress(user)
-  const { isProfileValidated, validationChecked } = useIsProfileValidated(user, USER_FULLY_VALIDATED)
+  const { isProfileValidated, validationChecked } = useIsProfileValidated(user)
   const [dismissState, setDismissState] = useState<DismissState>({
     isDismissClicked: false,
     isPopUpDismissed: false,

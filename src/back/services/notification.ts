@@ -8,17 +8,16 @@ import { proposalUrl } from '../../entities/Proposal/utils'
 import UserModel from '../../entities/User/model'
 import { inBackground } from '../../helpers'
 import { ErrorService } from '../../services/ErrorService'
-import {
-  GovernanceNotificationType,
-  Notification,
-  NotificationBody,
-  NotificationCustomType,
-  NotificationTitle,
-  Recipient,
-} from '../../shared/types/notifications'
+import { Notification, NotificationCustomType, Recipient } from '../../shared/types/notifications'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
-import { NotificationType, getCaipAddress, getPushNotificationsEnv } from '../../utils/notifications'
+import {
+  NotificationBody,
+  NotificationTitle,
+  NotificationType,
+  getCaipAddress,
+  getPushNotificationsEnv,
+} from '../../utils/notifications'
 import { areValidAddresses } from '../utils/validations'
 
 import { CoauthorService } from './coauthor'
@@ -127,8 +126,8 @@ export class NotificationService {
           throw new Error('Invalid addresses')
         }
 
-        const title = NotificationTitle[GovernanceNotificationType.GrantEnacted]
-        const body = NotificationBody[GovernanceNotificationType.GrantEnacted]
+        const title = NotificationTitle.GrantEnacted
+        const body = NotificationBody.GrantEnacted
 
         const validatedUsers = await UserModel.getDiscordIdsByAddresses(addresses)
         for (const user of validatedUsers) {
@@ -163,8 +162,8 @@ export class NotificationService {
         throw new Error('Invalid addresses')
       }
 
-      const title = NotificationTitle[GovernanceNotificationType.CoAuthorRequestReceived]
-      const body = NotificationBody[GovernanceNotificationType.CoAuthorRequestReceived]
+      const title = NotificationTitle.CoAuthorRequestReceived
+      const body = NotificationBody.CoAuthorRequestReceived
 
       const validatedUsers = await UserModel.getDiscordIdsByAddresses(coAuthors)
       for (const user of validatedUsers) {
@@ -202,8 +201,8 @@ export class NotificationService {
         throw new Error('Invalid addresses')
       }
 
-      const title = `${NotificationTitle[GovernanceNotificationType.ProposalVotedFinished]} ${proposal.title}`
-      const body = NotificationBody[GovernanceNotificationType.ProposalVotedFinished]
+      const title = `${NotificationTitle.ProposalVotedFinished} ${proposal.title}`
+      const body = NotificationBody.ProposalVotedFinished
 
       const validatedUsers = await UserModel.getDiscordIdsByAddresses(addresses)
       for (const user of validatedUsers) {
@@ -237,8 +236,8 @@ export class NotificationService {
         throw new Error('Invalid addresses')
       }
 
-      const title = NotificationTitle[GovernanceNotificationType.ProposalVotedFinished]
-      const body = NotificationBody[GovernanceNotificationType.ProposalVotedFinished]
+      const title = NotificationTitle.ProposalVotedFinished
+      const body = NotificationBody.ProposalVotedFinished
 
       const validatedUsers = await UserModel.getDiscordIdsByAddresses(addresses)
       for (const user of validatedUsers) {

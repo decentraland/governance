@@ -1,4 +1,5 @@
 import { hashMessage, recoverAddress } from 'ethers/lib/utils'
+import capitalize from 'lodash/capitalize'
 
 import { DiscoursePostInTopic } from '../../clients/Discourse'
 import { FORUM_URL } from '../../constants'
@@ -7,11 +8,10 @@ import { ProposalComment, ProposalCommentsInDiscourse } from '../Proposal/types'
 import { isSameAddress } from '../Snapshot/utils'
 
 import { MESSAGE_TIMEOUT_TIME } from './constants'
-import { Account, AccountType, ValidatedForumAccount, ValidationComment } from './types'
+import { AccountType, ValidatedForumAccount, ValidationComment } from './types'
 
 export const DISCOURSE_USER = process.env.GATSBY_DISCOURSE_USER || clientEnv('GATSBY_DISCOURSE_USER') || ''
 export const DISCOURSE_API = process.env.GATSBY_DISCOURSE_API || clientEnv('GATSBY_DISCOURSE_API') || ''
-export const USER_FULLY_VALIDATED = [AccountType.Forum, AccountType.Discord]
 const DEFAULT_AVATAR_SIZE = '45'
 
 function getDefaultAvatarSizeUrl(avatar_url: string) {
@@ -59,9 +59,9 @@ export function filterComments(
   }
 }
 
-export function formatValidationMessage(address: string, timestamp: string, account?: Account) {
+export function formatValidationMessage(address: string, timestamp: string, account?: AccountType) {
   return `By signing and posting this message I'm linking my Decentraland DAO account ${address} with this ${
-    account ? `${account} ` : ''
+    account ? `${capitalize(account)} ` : ''
   }account\n\nDate: ${timestamp}`
 }
 
@@ -84,17 +84,13 @@ export function validateComment(
   validationComment: ValidationComment,
   address: string,
   timestamp: string,
-  account?: Account
+  account?: AccountType
 ) {
   const signatureRegex = /0x([a-fA-F\d]{130})/
   const signature = '0x' + validationComment.content.match(signatureRegex)?.[1]
   const recoveredAddress = recoverAddress(hashMessage(formatValidationMessage(address, timestamp, account)), signature)
 
   return isSameAddress(recoveredAddress, address)
-}
-
-export function toAccount(account: string | undefined | null): Account | undefined {
-  return Object.values(Account).find((a) => a.toLowerCase() === account?.toLowerCase())
 }
 
 export function toAccountType(account: string | undefined | null): AccountType | undefined {

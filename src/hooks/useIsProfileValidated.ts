@@ -7,7 +7,9 @@ import { AccountType } from '../entities/User/types'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
-function useIsProfileValidated(address: string | null, accounts: AccountType[]) {
+const USER_FULLY_VALIDATED = [AccountType.Forum, AccountType.Discord]
+
+function useIsProfileValidated(address: string | null, accounts = USER_FULLY_VALIDATED) {
   const { data: isProfileValidated } = useQuery({
     queryKey: [`isProfileValidated#${address}#${accounts.join(',')}}`],
     queryFn: async () => {

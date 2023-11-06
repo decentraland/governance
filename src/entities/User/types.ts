@@ -26,11 +26,6 @@ export type ValidationComment = {
   timestamp: number
 }
 
-export enum Account {
-  Forum = 'Discourse forum',
-  Discord = 'Discord',
-}
-
 export enum AccountType {
   Forum = 'forum',
   Discord = 'discord',

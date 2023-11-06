@@ -13,8 +13,7 @@ import { openUrl } from '../../../helpers'
 import useDiscordConnect from '../../../hooks/useDiscordConnect'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useForumConnect, { THREAD_URL } from '../../../hooks/useForumConnect'
-import useIsProfileValidatedOnDiscord from '../../../hooks/useIsProfileValidatedOnDiscord'
-import useIsProfileValidatedOnForum from '../../../hooks/useIsProfileValidatedOnForum'
+import useIsProfileValidated from '../../../hooks/useIsProfileValidated'
 import locations from '../../../utils/locations'
 import { ActionCardProps } from '../../ActionCard/ActionCard'
 import CheckCircle from '../../Icon/CheckCircle'
@@ -191,8 +190,8 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
     reset: resetDiscordConnect,
   } = useDiscordConnect()
 
-  const isValidatedOnForum = useIsProfileValidatedOnForum(address)
-  const isValidatedOnDiscord = useIsProfileValidatedOnDiscord(address)
+  const { isProfileValidated: isValidatedOnForum } = useIsProfileValidated(address, [AccountType.Forum])
+  const { isProfileValidated: isValidatedOnDiscord } = useIsProfileValidated(address, [AccountType.Discord])
 
   const [modalState, setModalState] = useState<ModalState>(INITIAL_STATE)
 

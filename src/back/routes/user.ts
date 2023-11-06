@@ -7,12 +7,12 @@ import { Request } from 'express'
 import { isSameAddress } from '../../entities/Snapshot/utils'
 import { GATSBY_DISCOURSE_CONNECT_THREAD, MESSAGE_TIMEOUT_TIME } from '../../entities/User/constants'
 import UserModel from '../../entities/User/model'
-import { Account, UserAttributes, ValidationComment, ValidationMessage } from '../../entities/User/types'
+import { AccountType, UserAttributes, ValidationComment, ValidationMessage } from '../../entities/User/types'
 import {
   formatValidationMessage,
   getValidationComment,
   parseAccountTypes,
-  toAccount,
+  toAccountType,
   validateComment,
 } from '../../entities/User/utils'
 import { DiscourseService } from '../../services/DiscourseService'
@@ -56,7 +56,7 @@ async function getValidationMessage(req: WithAuth) {
     message_timeout,
   }
 
-  return formatValidationMessage(address, message.timestamp, toAccount(account))
+  return formatValidationMessage(address, message.timestamp, toAccountType(account))
 }
 
 async function checkForumValidationMessage(req: WithAuth) {
@@ -78,7 +78,7 @@ async function checkForumValidationMessage(req: WithAuth) {
     const validationComment = getValidationComment(formattedComments, address, timestamp)
 
     if (validationComment) {
-      if (!isSameAddress(address, user) || !validateComment(validationComment, address, timestamp, Account.Forum)) {
+      if (!isSameAddress(address, user) || !validateComment(validationComment, address, timestamp, AccountType.Forum)) {
         throw new Error('Validation failed')
       }
 
@@ -112,7 +112,10 @@ async function checkDiscordValidationMessage(req: WithAuth) {
     const validationComment = getValidationComment(formattedMessages, address, timestamp)
 
     if (validationComment) {
-      if (!isSameAddress(address, user) || !validateComment(validationComment, address, timestamp, Account.Discord)) {
+      if (
+        !isSameAddress(address, user) ||
+        !validateComment(validationComment, address, timestamp, AccountType.Discord)
+      ) {
         throw new Error('Validation failed')
       }
 

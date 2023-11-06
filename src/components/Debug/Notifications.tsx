@@ -58,14 +58,12 @@ export default function Notifications({ className }: Props) {
             ]}
           />
           {notificationType === NotificationType.TARGET && (
-            <>
-              <Field
-                value={notificationAddress}
-                required
-                placeholder="Address (0x...)"
-                onChange={(e) => setNotificationAddress(e.target.value)}
-              />
-            </>
+            <Field
+              value={notificationAddress}
+              required
+              placeholder="Address (0x...)"
+              onChange={(e) => setNotificationAddress(e.target.value)}
+            />
           )}
           <Field
             value={notificationTitle}

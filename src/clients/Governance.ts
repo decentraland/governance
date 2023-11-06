@@ -34,7 +34,7 @@ import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { Topic } from '../entities/SurveyTopic/types'
 import { ProjectHealth, UpdateAttributes, UpdateResponse } from '../entities/Updates/types'
-import { Account, AccountType } from '../entities/User/types'
+import { AccountType } from '../entities/User/types'
 import { Vote, VotedProposal, Voter } from '../entities/Votes/types'
 import { NewsletterSubscriptionResult } from '../shared/types/newsletter'
 import { PushNotification } from '../shared/types/notifications'
@@ -459,7 +459,7 @@ export class Governance extends API {
     return result.data
   }
 
-  async getValidationMessage(account?: Account) {
+  async getValidationMessage(account?: AccountType) {
     const url = new URLSearchParams()
     if (account) {
       url.append('account', account)

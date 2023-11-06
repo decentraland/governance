@@ -3,6 +3,7 @@ import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
+import isArray from 'lodash/isArray'
 
 import UserModel from '../../entities/User/model'
 import { NotificationCustomType } from '../../shared/types/notifications'
@@ -32,11 +33,11 @@ async function sendNotification(req: WithAuth) {
     throw new RequestError('Invalid data', RequestError.BadRequest)
   }
 
-  const users = await UserModel.getDiscordIdsByAddresses([recipient])
+  const users = await UserModel.getDiscordIdsByAddresses(isArray(recipient) ? recipient : [recipient])
 
   for (const user of users) {
     await DiscordService.sendDirectMessage(user.discord_id, {
-      title: `[DEBUG] ${title}`,
+      title,
       url,
       fields: [],
       action: body,

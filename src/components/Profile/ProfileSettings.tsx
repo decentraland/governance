@@ -3,7 +3,6 @@ import { useState } from 'react'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 
-import { USER_FULLY_VALIDATED } from '../../entities/User/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useIsProfileValidated from '../../hooks/useIsProfileValidated'
 import Gear from '../Icon/Gear'
@@ -15,7 +14,7 @@ import './ProfileSettings.css'
 function ProfileSettings() {
   const t = useFormatMessage()
   const [user] = useAuthContext()
-  const { isProfileValidated, validationChecked } = useIsProfileValidated(user, USER_FULLY_VALIDATED)
+  const { isProfileValidated, validationChecked } = useIsProfileValidated(user)
   const [isSetUpOpen, setIsSetUpOpen] = useState(false)
   const showDot = validationChecked && !isProfileValidated
 

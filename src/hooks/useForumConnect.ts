@@ -1,32 +1,24 @@
 import { useCallback } from 'react'
 
-import { Web3Provider } from '@ethersproject/providers'
-
 import { Governance } from '../clients/Governance'
 import { SegmentEvent } from '../entities/Events/types'
 import { GATSBY_DISCOURSE_CONNECT_THREAD } from '../entities/User/constants'
-import { Account, AccountType } from '../entities/User/types'
+import { AccountType } from '../entities/User/types'
 import { DISCOURSE_API } from '../entities/User/utils'
 import { openUrl } from '../helpers'
 
-import useValidationSetup from './useValidationSetup'
+import useValidationSetup, { VALIDATION_CHECK_INTERVAL } from './useValidationSetup'
 
 export const THREAD_URL = `${DISCOURSE_API}${
   DISCOURSE_API.endsWith('/') ? '' : '/'
 }t/${GATSBY_DISCOURSE_CONNECT_THREAD}/10000`
-const VALIDATION_CHECK_INTERVAL = 10 * 1000 // 10 seconds
-
-const getMessage = async () => Governance.get().getValidationMessage(Account.Forum)
 
 export default function useForumConnect() {
   const {
     user,
-    userState,
     track,
-    clipboardMessage,
-    setClipboardMessage,
-    handleCopy,
-    startTimer,
+    getSignedMessage,
+    copyMessageToClipboard,
     resetTimer,
     time,
     validatingProfile,
@@ -34,38 +26,9 @@ export default function useForumConnect() {
     isValidated,
     setIsValidated,
     resetValidation,
-  } = useValidationSetup()
+  } = useValidationSetup(AccountType.Forum)
 
-  const getSignedMessage = useCallback(async () => {
-    if (!userState.provider) {
-      return
-    }
-
-    const message = await getMessage()
-    if (!message) {
-      throw new Error('No message')
-    }
-
-    const signer = new Web3Provider(userState.provider).getSigner()
-    startTimer()
-    setIsValidated(undefined)
-    const signedMessage = await signer.signMessage(message)
-    if (!signedMessage) {
-      resetTimer()
-      throw new Error('Failed to sign message')
-    }
-
-    setClipboardMessage(`${message}\nSignature: ${signedMessage}`)
-    return signedMessage
-  }, [userState.provider, startTimer, setIsValidated, setClipboardMessage, resetTimer])
-
-  const copyMessageToClipboard = useCallback(() => {
-    if (clipboardMessage) {
-      handleCopy(clipboardMessage)
-    }
-  }, [clipboardMessage, handleCopy])
-
-  const openThread = () => {
+  const openThread = useCallback(() => {
     openUrl(THREAD_URL)
     if (validatingProfile === undefined) {
       const validationChecker = setInterval(async () => {
@@ -84,7 +47,7 @@ export default function useForumConnect() {
       }, VALIDATION_CHECK_INTERVAL)
       setValidatingProfile(validationChecker)
     }
-  }
+  }, [resetTimer, setIsValidated, setValidatingProfile, track, user, validatingProfile])
 
   return {
     getSignedMessage,
