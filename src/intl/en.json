@@ -651,11 +651,6 @@
       "title": "We'd appreciate some extra feedback",
       "selected_choice": "You're about to vote "
     },
-    "identity_connect": {
-      "description": "**New Feature: Linked Profiles**\n\nEnhance your Profile by linking different third-party accounts used in the Decentraland DAO ecosystem.\n\nUsers with linked accounts will get an eye-catching indicator next to their username.",
-      "connect_button": "Link Accounts",
-      "cancel_button": "Maybe later"
-    },
     "identity_setup": {
       "title": "Choose accounts to link",
       "timer": "Time sensitive task. {time} left to complete",
