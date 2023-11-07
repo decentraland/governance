@@ -578,18 +578,35 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         WHERE type = ${ProposalType.Bid} AND
             p.status = ${ProposalStatus.Active}
         )
-        
-        SELECT * 
-        FROM all_priority_proposals p
-            ${conditional(
-              !!lowerAddress,
-              SQL`
+
+        SELECT
+            app.*,
+            COALESCE(lp.linked_ids, ARRAY[]::TEXT[]) as linked_proposals_ids
+        FROM
+            all_priority_proposals app
+                LEFT JOIN (
+                SELECT
+                    (configuration->>'linked_proposal_id') linked_proposal_id,
+                    ARRAY_AGG(id) as linked_ids
+                FROM
+                    ${table(this)}
+                WHERE
+                    (configuration->>'linked_proposal_id') IS NOT NULL
+                GROUP BY
+                    (configuration->>'linked_proposal_id')
+            ) lp ON app.id = lp.linked_proposal_id
+                
+        ${conditional(
+          !!lowerAddress,
+          SQL`
                     LEFT JOIN ${table(CoauthorModel)} c ON
-                    p.id = c.proposal_id AND
-                    c.status = 'APPROVED' AND
-                    c.address = ${lowerAddress}
-                    WHERE c.address IS NULL AND p.user <> ${lowerAddress}`
-            )}; -- exclude coauthored and authored proposals;
+                                app.id = c.proposal_id AND
+                                c.status = 'APPROVED' AND
+                                c.address = ${lowerAddress}
+                    WHERE c.address IS NULL 
+                    AND app.user <> ${lowerAddress}`
+        )}; -- exclude coauthored and authored proposals;
+
     `
 
     return await this.namedQuery('get_priority_proposals', query)
