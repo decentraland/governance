@@ -854,4 +854,5 @@ export type PriorityProposal = Pick<
   'id' | 'title' | 'finish_at' | 'start_at' | 'type' | 'status' | 'configuration' | 'user' | 'snapshot_proposal'
 > & {
   priority_type: PriorityProposalType
+  linked_proposals_ids: string[]
 }

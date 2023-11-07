@@ -35,6 +35,7 @@ function renderPriorityProposals(
 function PriorityProposalsBox({ address, collapsible = false }: Props) {
   const t = useFormatMessage()
   const { priorityProposals, isLoading } = usePriorityProposals(address)
+  console.log('priorityProposals', priorityProposals)
   const { votes, isLoadingVotes } = useProposalsCachedVotes(priorityProposals?.map((proposal) => proposal.id) || [])
   console.log('votes', votes) // TODO: remove after debugging
   const displayedProposals =
