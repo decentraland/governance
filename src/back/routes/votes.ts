@@ -19,7 +19,7 @@ import { validateAddress, validateDates, validateProposalId } from '../utils/val
 
 export default routes((route) => {
   route.get('/proposals/:proposal/votes', handleAPI(getProposalVotes))
-  route.get('/votes', handleAPI(getCachedVotes))
+  route.get('/votes', handleAPI(getProposalsCachedVotes))
   route.get('/votes/:address', handleAPI(getAddressVotesWithProposals))
   route.post('/votes/top-voters', handleAPI(getTopVoters))
 })
@@ -66,7 +66,7 @@ export async function updateSnapshotProposalVotes(proposal: ProposalAttributes, 
   return votes
 }
 
-export async function getCachedVotes(req: Request) {
+export async function getProposalsCachedVotes(req: Request) {
   if (!req.query.id) {
     throw new RequestError('Missing proposal IDs', RequestError.BadRequest)
   }

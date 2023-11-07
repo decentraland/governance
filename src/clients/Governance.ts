@@ -299,7 +299,7 @@ export class Governance extends API {
     return result.data
   }
 
-  async getVotes(proposal_ids: string[]) {
+  async getProposalsCachedVotes(proposal_ids: string[]) {
     if (proposal_ids.length === 0) {
       return {}
     }
@@ -541,7 +541,7 @@ export class Governance extends API {
     return result.data
   }
 
-  async getProposalVotes(proposalId: string) {
+  async getProposalVotesFromSnapshot(proposalId: string) {
     const response = await this.fetch<ApiResponse<SnapshotVote[]>>(
       `/snapshot/votes/${proposalId}`,
       this.options().method('GET')
