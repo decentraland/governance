@@ -36,12 +36,26 @@ function PriorityProposalsBox({ address, collapsible = false }: Props) {
   const t = useFormatMessage()
   const { priorityProposals, isLoading } = usePriorityProposals(address)
   console.log('priorityProposals', priorityProposals)
-  const { votes, isLoadingVotes } = useProposalsCachedVotes(priorityProposals?.map((proposal) => proposal.id) || [])
-  console.log('votes', votes) // TODO: remove after debugging
+  const proposalIds =
+    priorityProposals?.reduce((acc: string[], priorityProposal) => {
+      acc.push(priorityProposal.id)
+      if (priorityProposal.linked_proposals_ids && priorityProposal.linked_proposals_ids.length > 0) {
+        acc.push(...priorityProposal.linked_proposals_ids)
+      }
+      return acc
+    }, []) || []
+
+  const { votes, isLoadingVotes } = useProposalsCachedVotes(proposalIds || [])
+  console.log('votes', votes)
   const displayedProposals =
-    votes && priorityProposals
+    votes && priorityProposals && address
       ? priorityProposals?.filter((proposal) => {
-          return !(votes && address && votes[proposal.id] && !!votes[proposal.id][address])
+          const hasVotedOnMain = votes && address && votes[proposal.id] && !!votes[proposal.id][address]
+          const hasVotedOnLinked = proposal.linked_proposals_ids.some(
+            (linkedId) => votes[linkedId] && !!votes[linkedId][address]
+          )
+
+          return !hasVotedOnMain && !hasVotedOnLinked
         })
       : priorityProposals
   const [displayedProposalsAmount, setDisplayedProposalsAmount] = useState(PROPOSALS_PER_PAGE)
