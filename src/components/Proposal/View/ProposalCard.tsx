@@ -42,7 +42,7 @@ export default function ProposalCard({
   const dateText = useProposalDateText(start_at, finish_at)
   const { formatNumber } = useIntl()
   const budget = getBudget(proposal)
-  const { winningChoice, userChoice } = useWinningChoice(proposal)
+  const { winningChoice, userChoice } = useWinningChoice(proposal, votes)
 
   return (
     <Link
