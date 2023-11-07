@@ -1,6 +1,8 @@
 import { useMemo } from 'react'
 import { useIntl } from 'react-intl'
 
+import snakeCase from 'lodash/snakeCase'
+
 import { ProjectStatus } from '../../../entities/Grant/types'
 import { ProposalType } from '../../../entities/Proposal/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../../helpers'
@@ -25,6 +27,8 @@ interface Props {
   address: string
 }
 
+const SHOWN_PERFORMANCE_STATUSES = Object.values(ProjectStatus).filter((item) => item !== ProjectStatus.Pending)
+
 export default function AuthorDetails({ address }: Props) {
   const t = useFormatMessage()
   const { profile, isLoadingGovernanceProfile } = useGovernanceProfile(address)
@@ -41,7 +45,7 @@ export default function AuthorDetails({ address }: Props) {
 
         return {
           ...grant,
-          vesting_released: vesting?.vesting_released || 0,
+          vesting_released: vesting?.vesting_total_amount || 0,
           vesting_status: vesting?.vesting_status,
         }
       }),
@@ -51,55 +55,26 @@ export default function AuthorDetails({ address }: Props) {
     () => grantsWithVesting?.reduce((total, grant) => total + grant.vesting_released, 0),
     [grantsWithVesting]
   )
-  const finishedProjectsLength = useMemo(
-    () => grantsWithVesting?.filter((item) => item.vesting_status === ProjectStatus.Finished).length || 0,
+
+  const projectPerformanceTotals = useMemo(
+    () =>
+      SHOWN_PERFORMANCE_STATUSES.reduce((acc, cur) => {
+        const total = grantsWithVesting?.filter((item) => item.vesting_status === cur).length || 0
+        return total > 0 ? { ...acc, [cur]: total } : acc
+      }, {} as Record<string, number>),
     [grantsWithVesting]
   )
-  const revokedProjectsLength = useMemo(
-    () => grantsWithVesting?.filter((item) => item.vesting_status === ProjectStatus.Revoked).length || 0,
-    [grantsWithVesting]
-  )
-  const ongoingProjectsLength = useMemo(
-    () => grantsWithVesting?.filter((item) => item.vesting_status === ProjectStatus.InProgress).length || 0,
-    [grantsWithVesting]
-  )
-  const pausedProjectsLength = useMemo(
-    () => grantsWithVesting?.filter((item) => item.vesting_status === ProjectStatus.Paused).length || 0,
-    [grantsWithVesting]
-  )
-
-  const ongoingProjectsText =
-    ongoingProjectsLength > 0
-      ? t('page.proposal_detail.author_details.project_performance_ongoing', {
-          total: ongoingProjectsLength,
-        })
-      : null
-
-  const finishedProjectsText =
-    finishedProjectsLength > 0
-      ? t('page.proposal_detail.author_details.project_performance_finished', {
-          total: finishedProjectsLength,
-        })
-      : null
-
-  const pausedProjectsText =
-    pausedProjectsLength > 0
-      ? t('page.proposal_detail.author_details.project_performance_paused', {
-          total: pausedProjectsLength,
-        })
-      : null
-
-  const revokedProjectsText =
-    revokedProjectsLength > 0
-      ? t('page.proposal_detail.author_details.project_performance_revoked', {
-          total: revokedProjectsLength,
-        })
-      : null
 
   const projectPerformanceText = useMemo(
     () =>
-      [ongoingProjectsText, finishedProjectsText, pausedProjectsText, revokedProjectsText].filter(Boolean).join(', '),
-    [ongoingProjectsText, finishedProjectsText, pausedProjectsText, revokedProjectsText]
+      Object.keys(projectPerformanceTotals)
+        .map((item) =>
+          t(`page.proposal_detail.author_details.project_performance_${snakeCase(item)}`, {
+            total: projectPerformanceTotals[item],
+          })
+        )
+        .join(', '),
+    [projectPerformanceTotals, t]
   )
 
   const { votes } = useAddressVotes(address)

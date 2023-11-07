@@ -2,13 +2,13 @@ import { useQuery } from '@tanstack/react-query'
 
 import { DclData } from '../clients/DclData'
 
-import { DEFAULT_QUERY_STALE_TIME } from './constants'
+import { ONE_DAY_MS } from './constants'
 
 function useVestings(shouldFetch: boolean) {
   const { data, isLoading: isLoadingVestingsData } = useQuery({
     queryKey: ['vestings'],
     queryFn: () => DclData.get().getVestings(),
-    staleTime: DEFAULT_QUERY_STALE_TIME,
+    staleTime: ONE_DAY_MS,
     enabled: shouldFetch,
   })
 
