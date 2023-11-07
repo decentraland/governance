@@ -1118,6 +1118,7 @@
       "author_details": {
         "title": "Author details",
         "view_profile": "View profile",
+        "active_since": "Active since {date}",
         "30_day_participation_label": "30-day participation",
         "30_day_participation_description": "Voted on {total} {total, plural, one {proposal} other {proposals}}",
         "funds_granted_label": "Funds granted",

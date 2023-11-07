@@ -1,6 +1,5 @@
 .AuthorDetails__UserContainer,
-.AuthorDetails__UserInfo,
-.AuthorDetails__Username {
+.AuthorDetails__UserInfo {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -16,14 +15,15 @@
 }
 
 .AuthorDetails__Username {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   gap: 6px;
 }
 
 .AuthorDetails__Address {
   color: var(--black-800);
-  font-family: SF Pro Text;
   font-size: 17px;
-  font-style: normal;
   font-weight: 500;
   line-height: 26px;
   letter-spacing: -0.2px;
@@ -33,6 +33,15 @@
   display: flex;
   width: 12px;
   height: 16px;
+}
+
+.AuthorDetails__ActiveSince {
+  color: var(--black-600);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
 }
 
 .AuthorDetails__StatsContainer {

@@ -4,11 +4,13 @@ import { useIntl } from 'react-intl'
 import { ProjectStatus } from '../../../entities/Grant/types'
 import { ProposalType } from '../../../entities/Proposal/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../../helpers'
+import useAddressVotes from '../../../hooks/useAddressVotes'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useGovernanceProfile from '../../../hooks/useGovernanceProfile'
 import useProposals from '../../../hooks/useProposals'
 import useVestings from '../../../hooks/useVestings'
 import useVotingStats from '../../../hooks/useVotingStats'
+import Time from '../../../utils/date/Time'
 import locations from '../../../utils/locations'
 import InvertedButton from '../../Common/InvertedButton'
 import Link from '../../Common/Typography/Link'
@@ -100,16 +102,24 @@ export default function AuthorDetails({ address }: Props) {
     [ongoingProjectsText, finishedProjectsText, pausedProjectsText, revokedProjectsText]
   )
 
+  const { votes } = useAddressVotes(address)
+  const activeSinceFormattedDate = votes ? Time.unix(votes[0].created).format('MMMM, YYYY') : ''
+
   return (
     <Section title={t('page.proposal_detail.author_details.title')} isNew>
       <div className="AuthorDetails__UserContainer">
         <div className="AuthorDetails__UserInfo">
           <Username className="AuthorDetails__Avatar" variant="avatar" address={address} size="big" />
-          <div className="AuthorDetails__Username">
-            <Username className="AuthorDetails__Address" variant="address" address={address} size="big" />
-            <div className="AuthorDetails__ValidatedIcon">
-              <ValidatedProfileCheck forumUsername={profile?.forum_username} isLoading={isLoadingGovernanceProfile} />
+          <div>
+            <div className="AuthorDetails__Username">
+              <Username className="AuthorDetails__Address" variant="address" address={address} size="big" />
+              <div className="AuthorDetails__ValidatedIcon">
+                <ValidatedProfileCheck forumUsername={profile?.forum_username} isLoading={isLoadingGovernanceProfile} />
+              </div>
             </div>
+            <span className="AuthorDetails__ActiveSince">
+              {t('page.proposal_detail.author_details.active_since', { date: activeSinceFormattedDate })}
+            </span>
           </div>
         </div>
         <Link href={locations.profile({ address })}>
@@ -135,10 +145,12 @@ export default function AuthorDetails({ address }: Props) {
                 total: grants.total - 1,
               })}
             />
-            <AuthorDetailsStat
-              label={t('page.proposal_detail.author_details.project_performance_label')}
-              description={projectPerformanceText}
-            />
+            {projectPerformanceText && (
+              <AuthorDetailsStat
+                label={t('page.proposal_detail.author_details.project_performance_label')}
+                description={projectPerformanceText}
+              />
+            )}
           </>
         )}
         <AuthorDetailsStat

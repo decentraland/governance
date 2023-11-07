@@ -27,7 +27,7 @@ const fetchVotes = async (addresses: string[]) => {
 
 export default function useAddressesVotesTotals(addresses: string[]) {
   const { data: addressesVotesTotals, isLoading } = useQuery({
-    queryKey: [`votes#${addresses.join('-')}`],
+    queryKey: [`votesTotals#${addresses.join('-')}`],
     queryFn: () => fetchVotes(addresses),
     staleTime: TWENTY_MINUTES_MS,
   })
