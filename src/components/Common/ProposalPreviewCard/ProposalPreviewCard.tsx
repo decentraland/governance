@@ -65,7 +65,7 @@ const ProposalPreviewCard = ({ proposal, votes, variant }: Props) => {
   const t = useFormatMessage()
   const { title, user, finish_at } = proposal
   const { comments } = useProposalComments(proposal.id, variant !== Variant.Slim)
-  const { userChoice } = useWinningChoice(proposal, variant !== Variant.Slim)
+  const { userChoice } = useWinningChoice(proposal, votes)
   const isProposalActive = Time().isBefore(Time(finish_at))
   const dateText = getDateText(t, isProposalActive, finish_at)
   const [isHovered, setIsHovered] = useState(false)

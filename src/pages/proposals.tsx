@@ -35,8 +35,8 @@ import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import useFormatMessage from '../hooks/useFormatMessage'
 import useProposals from '../hooks/useProposals'
 import useProposalsByCoAuthor from '../hooks/useProposalsByCoAuthor'
+import useProposalsCachedVotes from '../hooks/useProposalsCachedVotes'
 import { useProposalsSearchParams } from '../hooks/useProposalsSearchParams'
-import useProposalsVotes from '../hooks/useProposalsVotes'
 import locations, { navigate } from '../utils/locations'
 import { isUnderMaintenance } from '../utils/maintenance'
 
@@ -64,7 +64,7 @@ export default function ProposalsPage() {
     itemsPerPage: ITEMS_PER_PAGE,
   })
   const proposalIds = (proposals?.data || []).map((proposal) => proposal.id)
-  const { segmentedVotes, isLoadingVotes } = useProposalsVotes(proposalIds)
+  const { segmentedVotes, isLoadingVotes } = useProposalsCachedVotes(proposalIds)
   const isTabletAndBelow = useTabletAndBelowMediaQuery()
 
   const handlePageFilter = useCallback(

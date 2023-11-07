@@ -35,11 +35,11 @@ export default function ProposalCard({
 }: Props) {
   const t = useFormatMessage()
   const { id, title, user, start_at, finish_at } = proposal
-  const { segmentedVotes } = useProposalVotes(id)
+  const { votes, segmentedVotes } = useProposalVotes(id)
   const dateText = useProposalDateText(start_at, finish_at)
   const { formatNumber } = useIntl()
   const budget = getBudget(proposal)
-  const { winningChoice, userChoice } = useWinningChoice(proposal)
+  const { winningChoice, userChoice } = useWinningChoice(proposal, votes)
   const highlightClassName = isOverBudget ? 'ProposalCard--overbudget' : 'ProposalCard--highlight'
 
   return (
