@@ -10,7 +10,7 @@ import { DEFAULT_QUERY_STALE_TIME } from './constants'
 const ALL_ACCOUNTS = [AccountType.Forum, AccountType.Discord]
 
 function useIsProfileValidated(address: string | null, accounts = ALL_ACCOUNTS) {
-  const { data: isProfileValidated } = useQuery({
+  const { data: isProfileValidated, refetch } = useQuery({
     queryKey: [`isProfileValidated#${address}#${accounts.join(',')}}`],
     queryFn: async () => {
       if (address && isEthereumAddress(address)) {
@@ -23,7 +23,7 @@ function useIsProfileValidated(address: string | null, accounts = ALL_ACCOUNTS) 
 
   const validationChecked = isBoolean(isProfileValidated)
 
-  return { isProfileValidated: !!isProfileValidated, validationChecked }
+  return { isProfileValidated: !!isProfileValidated, validationChecked, refetch }
 }
 
 export default useIsProfileValidated

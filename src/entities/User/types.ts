@@ -6,6 +6,7 @@ export type UserAttributes = {
   forum_verification_date?: string
   discord_id?: string
   discord_verification_date?: string
+  is_discord_active?: boolean
 }
 
 export type ValidationMessage = {
@@ -18,7 +19,7 @@ export type ValidatedAccount = Required<Pick<UserAttributes, 'address' | 'forum_
 
 export type ValidatedForumAccount = Optional<ValidatedAccount, 'discord_id'>
 
-export type ValidatedDiscordAccount = Optional<ValidatedAccount, 'forum_id'>
+export type ValidatedDiscordAccount = Optional<ValidatedAccount, 'forum_id'> & Pick<UserAttributes, 'is_discord_active'>
 
 export type ValidationComment = {
   id: string

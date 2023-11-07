@@ -1,0 +1,13 @@
+.NotificationsFeed__EmptyView {
+  display: flex;
+  flex-direction: column;
+  padding: 0 16px 16px 16px;
+  align-items: center;
+  text-align: center;
+}
+
+.NotificationsFeed__EmptyView {
+  height: 100%;
+  justify-content: center;
+  gap: 16px;
+}

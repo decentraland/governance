@@ -25,6 +25,7 @@ export default routes((route) => {
   route.get('/user/validate', withAuth, handleAPI(getValidationMessage))
   route.post('/user/validate/forum', withAuth, handleAPI(checkForumValidationMessage))
   route.post('/user/validate/discord', withAuth, handleAPI(checkDiscordValidationMessage))
+  route.post('/user/discord-status', withAuth, handleAPI(updateDiscordStatus))
   route.get('/user/:address/is-validated', handleAPI(isValidated))
   route.get('/user/:address', handleAPI(getProfile))
 })
@@ -133,6 +134,20 @@ async function checkDiscordValidationMessage(req: WithAuth) {
     }
   } catch (error) {
     throw new Error("Couldn't validate the user. " + error)
+  }
+}
+
+async function updateDiscordStatus(req: WithAuth) {
+  const address = req.auth!
+  const { is_discord_active } = req.body
+
+  try {
+    if (typeof is_discord_active !== 'boolean') {
+      throw new Error('Invalid discord status')
+    }
+    await UserModel.updateDiscordActiveStatus(address, is_discord_active)
+  } catch (error) {
+    throw new Error(`Error while updating discord status. ${error}`)
   }
 }
 

@@ -57,16 +57,22 @@
     "notifications": {
       "button_label": "Notifications menu",
       "title": "Notifications",
-      "opt_out": "Opt out",
+      "settings": "Settings",
       "unsubscribed": {
         "title": "Don't miss a beat",
         "description": "We rely on a 3rd party service that you’ll have to opt-in to in order to proceed.",
-        "button": "Activate notifications"
+        "button": "In-app notifications",
+        "discord": "Discord notifications"
       },
       "subscribing": {
         "title": "Setting up notifications",
         "description": "Before we begin populating your inbox, we need you to sign a transaction...",
         "button": "Signature pending"
+      },
+      "discord": {
+        "title": "Notifications enabled in Discord",
+        "description": "In-app notifications are also available for you to opt-in to.",
+        "button": "Enable in-app notifications"
       },
       "empty": "No notifications at this time",
       "load_more": "Load more"

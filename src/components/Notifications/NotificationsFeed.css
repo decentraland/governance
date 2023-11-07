@@ -1,8 +1,7 @@
 .NotificationsFeed {
   min-width: 346px;
-  min-height: 370px;
-  max-height: 385px;
-  height: 100%;
+  max-height: 390px;
+  height: fit-content;
   overflow-y: auto;
   pointer-events: none;
   opacity: 0;
@@ -25,17 +24,8 @@
   opacity: 1;
 }
 
-.NotificationsFeed__Button {
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-  transition: filter 0.2s ease;
-  cursor: pointer;
-}
-
-.NotificationsFeed__Button--active {
-  filter: drop-shadow(0 1px 8px var(--alpha-black-300));
+.NotificationsFeed--loading {
+  min-height: 370px;
 }
 
 .NotificationsFeed__Header {
@@ -51,7 +41,7 @@
   text-transform: uppercase;
 }
 
-.NotificationsFeed__OptOut {
+.NotificationsFeed__SettingsButton {
   margin: 0;
   background: none;
   border: none;
@@ -62,46 +52,6 @@
   cursor: pointer;
 }
 
-.NotificationsFeed__ListContainer {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  justify-content: space-between;
-}
-
-.NotificationsFeed__List {
-  display: flex;
-  flex-direction: column;
-}
-
 .NotificationsFeed__Content {
-  height: 100%;
-}
-
-.NotificationsFeed__EmptyView,
-.NotificationsFeed__UnsubscribedView {
-  display: flex;
-  flex-direction: column;
-  padding: 0 16px;
-  align-items: center;
-  text-align: center;
-}
-
-.NotificationsFeed__UnsubscribedView {
-  margin-top: 8px;
-  justify-content: flex-start;
-}
-
-.NotificationsFeed__UnsubscribedViewHeading {
-  margin-top: 20px;
-}
-
-.NotificationsFeed__EmptyView {
-  height: 100%;
-  justify-content: center;
-  gap: 16px;
-}
-
-.NotificationsFeed__LoadMoreButtonContainer {
-  padding: 16px;
+  height: fit-content;
 }

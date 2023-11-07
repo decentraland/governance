@@ -29,6 +29,11 @@ import AccountConnection, { AccountConnectionProps } from './AccountConnection'
 import './AccountsConnectModal.css'
 import PostConnection from './PostConnection'
 
+type Props = ModalProps & {
+  onClose: () => void
+  account?: AccountType
+}
+
 type AccountModal = Omit<AccountConnectionProps, 'timerText'>
 
 enum ModalType {
@@ -168,7 +173,7 @@ function getTimeFormatted(totalSeconds: number) {
   return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`
 }
 
-function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => void }) {
+function AccountsConnectModal({ open, onClose, account }: Props) {
   const t = useFormatMessage()
   const [address] = useAuthContext()
   const track = useTrackContext()
@@ -227,12 +232,37 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
   const isValidated = isForumValidationFinished || isDiscordValidationFinished
   const currentAccount = modalState.currentType === ModalType.Forum ? AccountType.Forum : AccountType.Discord
 
+  const initializeAccount = useCallback((modal: ModalType, account: AccountType) => {
+    setCurrentType(modal)
+    initializeStepHelpers(account)
+  }, [])
+
+  const initializeForum = useCallback(() => initializeAccount(ModalType.Forum, AccountType.Forum), [initializeAccount])
+  const initializeDiscord = useCallback(
+    () => initializeAccount(ModalType.Discord, AccountType.Discord),
+    [initializeAccount]
+  )
+
   useEffect(() => {
     if (isTimerExpired) {
       resetState(currentAccount)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modalState.currentType, isTimerExpired])
+
+  useEffect(() => {
+    switch (account) {
+      case AccountType.Forum:
+        initializeForum()
+        break
+      case AccountType.Discord:
+        initializeDiscord()
+        break
+      default:
+        break
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (isValidated !== undefined) {
@@ -311,20 +341,14 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
             title: t('modal.identity_setup.forum.card_title'),
             description: t('modal.identity_setup.forum.card_description'),
             icon: <CircledForum />,
-            onCardClick: () => {
-              setCurrentType(ModalType.Forum)
-              initializeStepHelpers(AccountType.Forum)
-            },
+            onCardClick: initializeForum,
             isVerified: isValidatedOnForum,
           },
           {
             title: t('modal.identity_setup.discord.card_title'),
             description: t('modal.identity_setup.discord.card_description'),
             icon: <CircledDiscord />,
-            onCardClick: () => {
-              setCurrentType(ModalType.Discord)
-              initializeStepHelpers(AccountType.Discord)
-            },
+            onCardClick: initializeDiscord,
             isVerified: isValidatedOnDiscord,
           },
           {
@@ -373,7 +397,9 @@ function AccountsConnectModal({ open, onClose }: ModalProps & { onClose: () => v
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
+      initializeForum,
       isValidatedOnForum,
+      initializeDiscord,
       isValidatedOnDiscord,
       handleForumSign,
       handleForumCopy,

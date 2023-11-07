@@ -1,0 +1,17 @@
+.NotificationsFeed__DiscordView {
+  display: flex;
+  flex-direction: column;
+  padding: 0 16px 16px 16px;
+  align-items: center;
+  text-align: center;
+}
+
+.NotificationsFeed__DiscordView {
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.NotificationsFeed__DiscordViewHeading,
+.NotificationsFeed__DiscordViewText {
+  margin: 0;
+}
