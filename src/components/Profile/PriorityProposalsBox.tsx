@@ -87,7 +87,7 @@ function PriorityProposalsBox({ address, collapsible = false }: Props) {
       ) : (
         <>
           {renderPriorityProposals(displayedProposals, displayedProposalsAmount)}
-          <FullWidthButton link={locations.proposals()}>
+          <FullWidthButton href={locations.proposals()}>
             {t('page.home.open_proposals.view_all_proposals')}
           </FullWidthButton>
         </>
