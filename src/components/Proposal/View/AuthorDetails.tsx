@@ -78,7 +78,7 @@ export default function AuthorDetails({ address }: Props) {
   )
 
   const { votes } = useAddressVotes(address)
-  const activeSinceFormattedDate = votes ? Time.unix(votes[0].created).format('MMMM, YYYY') : ''
+  const activeSinceFormattedDate = votes && votes.length > 0 ? Time.unix(votes[0].created).format('MMMM, YYYY') : ''
 
   return (
     <Section title={t('page.proposal_detail.author_details.title')} isNew>
