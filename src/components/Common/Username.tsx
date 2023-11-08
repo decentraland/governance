@@ -52,14 +52,17 @@ function getBlockieScale(size?: string) {
 }
 
 const Username = ({ address, size, linked, variant = UsernameVariant.Full, strong = false, className }: Props) => {
-  const { profile, hasDclProfile, displayableAddress, profileHasName } = useProfile(address)
+  const { hasDclProfile, displayableAddress, profileHasName } = useProfile(address)
   const blockieScale = getBlockieScale(size)
   const isAddressVariant = variant === UsernameVariant.Address
-  const isAvatarVariant = variant === UsernameVariant.Avatar
+  const isFullVariant = variant === UsernameVariant.Full
   const checksumAddress = address ? getChecksumAddress(address) : ''
+  const customClassNames = classNames('Username', `Username--${variant}`, className)
 
-  const userElement = (
-    <>
+  const Component = linked ? Link : 'span'
+
+  return (
+    <Component className={customClassNames} href={linked ? locations.profile({ address: checksumAddress }) : undefined}>
       {isAddressVariant && (
         <>
           {profileHasName && displayableAddress}
@@ -72,34 +75,20 @@ const Username = ({ address, size, linked, variant = UsernameVariant.Full, stron
           {hasDclProfile && (
             <>
               <Avatar size={size} address={address} />
-              {profileHasName && !isAvatarVariant && <span className="Username__Name">{displayableAddress}</span>}
-              {!profileHasName && !isAvatarVariant && <Address value={checksumAddress} strong={strong} />}
+              {profileHasName && isFullVariant && <span className="Username__Name">{displayableAddress}</span>}
+              {!profileHasName && isFullVariant && <Address value={checksumAddress} strong={strong} />}
             </>
           )}
 
-          {(!hasDclProfile || !profile) && (
+          {!hasDclProfile && (
             <>
               <Blockie scale={blockieScale} seed={checksumAddress} />
-              {!isAvatarVariant && <Address value={checksumAddress} strong={strong} />}
+              {isFullVariant && <Address value={checksumAddress} strong={strong} />}
             </>
           )}
         </>
       )}
-    </>
-  )
-
-  const customClassNames = classNames('Username', `Username--${variant}`, className)
-
-  return (
-    <>
-      {linked ? (
-        <Link className={customClassNames} href={locations.profile({ address: checksumAddress })}>
-          {userElement}
-        </Link>
-      ) : (
-        <span className={customClassNames}>{userElement}</span>
-      )}
-    </>
+    </Component>
   )
 }
 

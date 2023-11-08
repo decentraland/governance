@@ -24,16 +24,3 @@
   color: var(--black-600);
   margin-bottom: 16px;
 }
-
-.ui.fluid.button.RequestBanner__Button {
-  background: var(--white-900);
-  border: 1px solid var(--black-400);
-  border-radius: 6px;
-  padding: 9px;
-  font-style: normal;
-  font-weight: var(--weight-semi-bold);
-  font-size: 13px;
-  line-height: 18px;
-  text-transform: uppercase;
-  color: var(--dcl-primary);
-}

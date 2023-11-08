@@ -37,6 +37,7 @@ import ProposalHero from '../components/Proposal/ProposalHero'
 import ProposalSidebar from '../components/Proposal/ProposalSidebar'
 import SurveyResults from '../components/Proposal/SentimentSurvey/SurveyResults'
 import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
+import AuthorDetails from '../components/Proposal/View/AuthorDetails'
 import BiddingAndTendering from '../components/Proposal/View/BiddingAndTendering'
 import ProposalBudget from '../components/Proposal/View/Budget/ProposalBudget'
 import BidProposalView from '../components/Proposal/View/Categories/BidProposalView'
@@ -378,6 +379,9 @@ export default function ProposalPage() {
   const showVotesChart =
     proposalPageState.showResults && !isLoadingProposal && proposal?.type !== ProposalType.Poll && highQualityVotes
 
+  const showAuthorDetails =
+    proposal?.user && proposal?.type === ProposalType.Grant && proposal?.status === ProposalStatus.Active
+
   const title = proposal?.title || t('page.proposal_detail.title') || ''
   const description =
     (proposal?.description && formatDescription(proposal.description)) || t('page.proposal_detail.description') || ''
@@ -432,6 +436,7 @@ export default function ProposalPage() {
               ref={reactionsSectionRef}
             />
           )}
+          {showAuthorDetails && <AuthorDetails address={proposal?.user} />}
           {showVotesChart && (
             <ProposalVPChart
               requiredToPass={proposal?.required_to_pass}

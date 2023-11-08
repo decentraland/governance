@@ -1115,6 +1115,22 @@
         "show_sidebar_label": "This proposal is contesting with {amount} {amount, plural, one {other} other {others}}",
         "sidebar_title": "Competing bid proposals"
       },
+      "author_details": {
+        "title": "Author details",
+        "view_profile": "View profile",
+        "active_since": "Active since {date}",
+        "30_day_participation_label": "30-day participation",
+        "30_day_participation_description": "Voted on {total} {total, plural, one {proposal} other {proposals}}",
+        "funds_vested_label": "Funds vested",
+        "grant_stats_label": "Grant stats",
+        "first_grant_description": "First-ever grant request",
+        "grant_stats_description": "{total} Grant {total, plural, one {Request} other {Requests}}",
+        "project_performance_label": "Projects performance",
+        "project_performance_finished": "{total} Finished",
+        "project_performance_in_progress": "{total} Ongoing",
+        "project_performance_revoked": "{total} Revoked",
+        "project_performance_paused": "{total} Paused"
+      },
       "grant": {
         "requested_budget": {
           "active_title": "Requesting",

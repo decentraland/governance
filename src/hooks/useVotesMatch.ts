@@ -4,18 +4,10 @@ import { Governance } from '../clients/Governance'
 import { calculateMatch } from '../entities/Snapshot/utils'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
+import useAddressVotes from './useAddressVotes'
 
 export default function useVotesMatch(userAccount: string | null, otherAccount: string | null) {
-  const { data: userVotes, isLoading: userVotesLoading } = useQuery({
-    queryKey: [`userVotes#${userAccount}`],
-    queryFn: async () => {
-      if (!userAccount) {
-        return null
-      }
-      return Governance.get().getAddressesVotes([userAccount])
-    },
-    staleTime: DEFAULT_QUERY_STALE_TIME,
-  })
+  const { votes: userVotes, isLoadingVotes: userVotesLoading } = useAddressVotes(userAccount)
 
   const { data: otherAccountVotes, isLoading: otherAccountVotesLoading } = useQuery({
     queryKey: [`otherAccountVotes#${otherAccount}`],

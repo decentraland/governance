@@ -1,0 +1,13 @@
+.InvertedButton {
+  padding: 0 9px !important;
+  height: 36px;
+  background: var(--white-900) !important;
+  border: 1px solid var(--black-300) !important;
+  border-radius: 6px !important;
+  font-style: normal !important;
+  font-weight: var(--weight-semi-bold) !important;
+  font-size: 13px !important;
+  line-height: 18px !important;
+  text-transform: uppercase !important;
+  color: var(--dcl-primary) !important;
+}
