@@ -78,7 +78,8 @@ export default function AuthorDetails({ address }: Props) {
   )
 
   const { votes } = useAddressVotes(address)
-  const activeSinceFormattedDate = votes && votes.length > 0 ? Time.unix(votes[0].created).format('MMMM, YYYY') : ''
+  const hasVoted = votes && votes.length > 0
+  const activeSinceFormattedDate = hasVoted ? Time.unix(votes[0].created).format('MMMM, YYYY') : ''
 
   return (
     <Section title={t('page.proposal_detail.author_details.title')} isNew>
@@ -92,9 +93,11 @@ export default function AuthorDetails({ address }: Props) {
                 <ValidatedProfileCheck forumUsername={profile?.forum_username} isLoading={isLoadingGovernanceProfile} />
               </div>
             </div>
-            <span className="AuthorDetails__ActiveSince">
-              {t('page.proposal_detail.author_details.active_since', { date: activeSinceFormattedDate })}
-            </span>
+            {hasVoted && (
+              <span className="AuthorDetails__ActiveSince">
+                {t('page.proposal_detail.author_details.active_since', { date: activeSinceFormattedDate })}
+              </span>
+            )}
           </div>
         </div>
         <Link href={locations.profile({ address })}>
