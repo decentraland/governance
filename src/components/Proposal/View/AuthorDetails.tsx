@@ -35,7 +35,7 @@ export default function AuthorDetails({ address }: Props) {
   const { participationTotal } = useVotingStats(address)
   const { proposals: grants } = useProposals({ user: address, type: ProposalType.Grant })
   const intl = useIntl()
-  const hasPreviouslySubmittedGrants = !!grants && grants?.total > 0
+  const hasPreviouslySubmittedGrants = !!grants && grants?.total > 1
 
   const { data: vestings } = useVestings(hasPreviouslySubmittedGrants)
   const grantsWithVesting = useMemo(
