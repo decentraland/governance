@@ -64,7 +64,7 @@ export default class UserModel extends Model<UserAttributes> {
     const query = SQL`
       UPDATE ${table(this)} 
       SET is_discord_active = ${is_discord_active}
-      WHERE address = ${address.toLowerCase()}
+      WHERE address = ${address.toLowerCase()} AND discord_id IS NOT NULL
     `
     return await this.namedQuery('update_discord_active_status', query)
   }

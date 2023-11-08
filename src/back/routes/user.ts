@@ -26,6 +26,7 @@ export default routes((route) => {
   route.post('/user/validate/forum', withAuth, handleAPI(checkForumValidationMessage))
   route.post('/user/validate/discord', withAuth, handleAPI(checkDiscordValidationMessage))
   route.post('/user/discord-status', withAuth, handleAPI(updateDiscordStatus))
+  route.get('/user/discord-status', withAuth, handleAPI(getIsDiscordActive))
   route.get('/user/:address/is-validated', handleAPI(isValidated))
   route.get('/user/:address', handleAPI(getProfile))
 })
@@ -140,14 +141,44 @@ async function checkDiscordValidationMessage(req: WithAuth) {
 async function updateDiscordStatus(req: WithAuth) {
   const address = req.auth!
   const { is_discord_active } = req.body
+  const enabledMessage =
+    'You have enabled the notifications through Discord, from now on you will receive notifications that may concern you through this channel.'
+  const disabledMessage =
+    'You have disabled the notifications through Discord, from now on you will no longer receive notifications through this channel.'
 
   try {
     if (typeof is_discord_active !== 'boolean') {
       throw new Error('Invalid discord status')
     }
     await UserModel.updateDiscordActiveStatus(address, is_discord_active)
+    const account = await UserModel.getDiscordIdsByAddresses([address], false)
+    if (account.length > 0) {
+      if (is_discord_active) {
+        DiscordService.sendDirectMessage(account[0].discord_id, {
+          title: 'Notifications enabled ✅',
+          action: enabledMessage,
+          fields: [],
+        })
+      } else {
+        DiscordService.sendDirectMessage(account[0].discord_id, {
+          title: 'Notifications disabled ❌',
+          action: disabledMessage,
+          fields: [],
+        })
+      }
+    }
   } catch (error) {
     throw new Error(`Error while updating discord status. ${error}`)
+  }
+}
+
+async function getIsDiscordActive(req: WithAuth) {
+  const address = req.auth!
+  try {
+    const users = await UserModel.getDiscordIdsByAddresses([address], false)
+    return users.length > 0 && !!users[0].is_discord_active
+  } catch (error) {
+    throw new Error(`Error while fetching discord status. ${error}`)
   }
 }
 

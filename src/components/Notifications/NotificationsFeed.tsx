@@ -7,19 +7,26 @@ import classNames from 'classnames'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
+import { ErrorClient } from '../../clients/ErrorClient'
+import { Governance } from '../../clients/Governance'
 import { PUSH_CHANNEL_ID } from '../../constants'
 import { AccountType } from '../../entities/User/types'
 import { useClickOutside } from '../../hooks/useClickOutside'
 import useFormatMessage from '../../hooks/useFormatMessage'
+import useIsDiscordActive from '../../hooks/useIsDiscordActive'
 import useIsProfileValidated from '../../hooks/useIsProfileValidated'
 import { PushNotification } from '../../shared/types/notifications'
+import { ErrorCategory } from '../../utils/errorCategories'
+import { isProdEnv } from '../../utils/governanceEnvs'
 import { getCaipAddress, getPushNotificationsEnv } from '../../utils/notifications'
 import Text from '../Common/Typography/Text'
+import ChevronLeft from '../Icon/ChevronLeft'
 import AccountsConnectModal from '../Modal/IdentityConnectModal/AccountsConnectModal'
 
 import DiscordView from './NotificationsFeedView/DiscordView'
 import EmptyView from './NotificationsFeedView/EmptyView'
 import ListView from './NotificationsFeedView/ListView'
+import SettingsView from './NotificationsFeedView/SettingsView'
 import UnsubscribedView from './NotificationsFeedView/UnsubscribedView'
 
 import './NotificationsFeed.css'
@@ -58,6 +65,9 @@ export default function NotificationsFeed({
   const [notificationsPerPage, setNotificationsPerPage] = useState(NOTIFICATIONS_PER_PAGE)
   const lastNotificationIdIndex = userNotifications?.findIndex((item) => item.payload_id === lastNotificationId)
   const { isProfileValidated: isValidatedOnDiscord, refetch } = useIsProfileValidated(user, [AccountType.Discord])
+  const [isDiscordChanging, setIsDiscordChanging] = useState(false)
+  const [isSettingsOpened, setIsSettingsOpened] = useState(false)
+  const { isDiscordActive, refetch: refetchIsDiscordActive } = useIsDiscordActive()
 
   useEffect(() => {
     if (isOpen && !isValidatedOnDiscord) {
@@ -95,6 +105,7 @@ export default function NotificationsFeed({
 
     const signer = new Web3Provider(userState.provider).getSigner()
 
+    setIsSubscribing(true)
     await PushAPI.channels.unsubscribe({
       signer,
       channelAddress: getCaipAddress(PUSH_CHANNEL_ID, chainId),
@@ -102,6 +113,7 @@ export default function NotificationsFeed({
       onSuccess: onSubscriptionChangeSuccess,
       env,
     })
+    setIsSubscribing(false)
   }
 
   const handleLoadMoreClick = () => {
@@ -115,9 +127,41 @@ export default function NotificationsFeed({
     onClose()
   }
 
+  const handlePushSettingsChange = async (isEnabled: boolean) => {
+    if (isEnabled) {
+      await handleSubscribeUserToChannel()
+    } else {
+      await handleUnsubscribeUserToChannel()
+    }
+    setIsSettingsOpened(false)
+  }
+
+  const handleDiscordSettingsChange = async (isEnabled: boolean) => {
+    if (!isValidatedOnDiscord) {
+      handleDiscordConnect()
+      return
+    }
+    setIsDiscordChanging(true)
+    try {
+      await Governance.get().updateDiscordStatus(isEnabled)
+      await refetchIsDiscordActive()
+    } catch (error) {
+      if (isProdEnv()) {
+        ErrorClient.report(`Error changing discord status`, {
+          error,
+          userAddress: user,
+          category: ErrorCategory.Discord,
+        })
+      } else {
+        console.error('Error changing discord status', error)
+      }
+    }
+    setIsDiscordChanging(false)
+  }
+
   const filteredNotifications = userNotifications?.slice(0, notificationsPerPage)
   const hasNotifications = filteredNotifications && filteredNotifications.length > 0
-  const showNotifications = isSubscribed && !isLoadingNotifications && hasNotifications
+  const showNotifications = isSubscribed && !isLoadingNotifications && hasNotifications && !isSettingsOpened
   const showLoadMoreButton = filteredNotifications?.length !== userNotifications?.length
   const unsubscribedKey = isSubscribing ? 'subscribing' : 'unsubscribed'
   const isLoading =
@@ -125,7 +169,9 @@ export default function NotificationsFeed({
     isRefetchingSubscriptions ||
     isRefetchingNotifications ||
     (isSubscribed && isLoadingNotifications)
-  const showEmptyView = isSubscribed && !isLoadingNotifications && !hasNotifications
+  const showEmptyView = isSubscribed && !isLoadingNotifications && !hasNotifications && !isSettingsOpened
+  const showSettingsButton = (isSubscribed || isValidatedOnDiscord) && !isSettingsOpened
+  const showDiscordViw = isValidatedOnDiscord && !isSubscribed && !isSettingsOpened
 
   return (
     <div
@@ -136,12 +182,17 @@ export default function NotificationsFeed({
       )}
     >
       <div className="NotificationsFeed__Header">
+        {isSettingsOpened && (
+          <div className="NotificationsFeed__BackButton" onClick={() => setIsSettingsOpened(false)}>
+            <ChevronLeft color="var(--black-600)" />
+          </div>
+        )}
         <Text color="secondary" size="sm" className="NotificationsFeed__Title">
-          {t('navigation.notifications.title')}
+          {t(isSettingsOpened ? 'navigation.notifications.settings_title' : 'navigation.notifications.title')}
         </Text>
-        {(isSubscribed || isValidatedOnDiscord) && (
-          <button className="NotificationsFeed__SettingsButton" onClick={handleUnsubscribeUserToChannel}>
-            {t('navigation.notifications.settings')}
+        {showSettingsButton && (
+          <button className="NotificationsFeed__SettingsButton" onClick={() => setIsSettingsOpened(true)}>
+            {t('navigation.notifications.settings_button')}
           </button>
         )}
       </div>
@@ -155,7 +206,7 @@ export default function NotificationsFeed({
               handleDiscordConnect={handleDiscordConnect}
             />
           )}
-          {isValidatedOnDiscord && !isSubscribed && (
+          {showDiscordViw && (
             <DiscordView isSubscribing={isSubscribing} handleSubscribeUserToChannel={handleSubscribeUserToChannel} />
           )}
           {showEmptyView && <EmptyView />}
@@ -165,6 +216,15 @@ export default function NotificationsFeed({
               lastNotificationIdIndex={lastNotificationIdIndex}
               showLoadMoreButton={showLoadMoreButton}
               handleLoadMoreClick={handleLoadMoreClick}
+            />
+          )}
+          {isSettingsOpened && (
+            <SettingsView
+              isPushEnabled={isSubscribed}
+              isDiscordEnabled={isDiscordActive}
+              onPushChange={handlePushSettingsChange}
+              onDiscordChange={handleDiscordSettingsChange}
+              isLoading={isSubscribing || isDiscordChanging}
             />
           )}
         </div>

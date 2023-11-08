@@ -503,6 +503,24 @@ export class Governance extends API {
     return result.data
   }
 
+  async getIsDiscordActive() {
+    const result = await this.fetch<ApiResponse<boolean>>(
+      `/user/discord-status`,
+      this.options().method('GET').authorization({ sign: true })
+    )
+
+    return result.data
+  }
+
+  async updateDiscordStatus(is_discord_active: boolean) {
+    const result = await this.fetch<ApiResponse<void>>(
+      `/user/discord-status`,
+      this.options().method('POST').authorization({ sign: true }).json({ is_discord_active })
+    )
+
+    return result.data
+  }
+
   async getUserProfile(address: string) {
     const result = await this.fetch<ApiResponse<{ forum_id: number | null; forum_username: string | null }>>(
       `/user/${address}`,

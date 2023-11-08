@@ -57,7 +57,8 @@
     "notifications": {
       "button_label": "Notifications menu",
       "title": "Notifications",
-      "settings": "Settings",
+      "settings_title": "Notification Settings",
+      "settings_button": "Settings",
       "unsubscribed": {
         "title": "Don't miss a beat",
         "description": "We rely on a 3rd party service that you’ll have to opt-in to in order to proceed.",
