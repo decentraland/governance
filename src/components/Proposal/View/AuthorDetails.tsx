@@ -42,17 +42,19 @@ export default function AuthorDetails({ address }: Props) {
     () =>
       grants?.data.map((grant) => {
         const vesting = vestings?.find((item) => grant.id === item.proposal_id)
+        const releaseable = vesting?.vesting_releasable || 0
+        const released = vesting?.vesting_released || 0
 
         return {
           ...grant,
-          vesting_released: vesting?.vesting_total_amount || 0,
+          vested: releaseable + released,
           vesting_status: vesting?.vesting_status,
         }
       }),
     [vestings, grants?.data]
   )
-  const fundsReleased = useMemo(
-    () => grantsWithVesting?.reduce((total, grant) => total + grant.vesting_released, 0),
+  const fundsVested = useMemo(
+    () => grantsWithVesting?.reduce((total, grant) => total + grant.vested, 0),
     [grantsWithVesting]
   )
 
@@ -115,7 +117,7 @@ export default function AuthorDetails({ address }: Props) {
           <>
             <AuthorDetailsStat
               label={t('page.proposal_detail.author_details.funds_vested_label')}
-              description={intl.formatNumber(fundsReleased || 0, CURRENCY_FORMAT_OPTIONS)}
+              description={intl.formatNumber(fundsVested || 0, CURRENCY_FORMAT_OPTIONS)}
             />
             <AuthorDetailsStat
               label={t('page.proposal_detail.author_details.grant_stats_label')}
