@@ -5,7 +5,7 @@ E.g: *Closes/Fixes #1234*
 
 - [ ]  **Functionality validation**
     - [ ]  Feature working as described in the related issue
-    - [ ]  New environmental variables have been set
+    - [ ]  New environment variables have been set
     - [ ]  New API services methods have tests
     - [ ]  Code errors are being logged in the code health service
 - [ ]  **Product validation**
