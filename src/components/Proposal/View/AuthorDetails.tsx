@@ -114,13 +114,13 @@ export default function AuthorDetails({ address }: Props) {
         {hasPreviouslySubmittedGrants && (
           <>
             <AuthorDetailsStat
-              label={t('page.proposal_detail.author_details.funds_granted_label')}
+              label={t('page.proposal_detail.author_details.funds_vested_label')}
               description={intl.formatNumber(fundsReleased || 0, CURRENCY_FORMAT_OPTIONS)}
             />
             <AuthorDetailsStat
               label={t('page.proposal_detail.author_details.grant_stats_label')}
               description={t('page.proposal_detail.author_details.grant_stats_description', {
-                total: grants.total - 1,
+                total: grants.total,
               })}
             />
             {projectPerformanceText && (
