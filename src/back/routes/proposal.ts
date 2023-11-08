@@ -16,7 +16,7 @@ import CoauthorModel from '../../entities/Coauthor/model'
 import { CoauthorStatus } from '../../entities/Coauthor/types'
 import isDAOCommittee from '../../entities/Committee/isDAOCommittee'
 import { hasOpenSlots } from '../../entities/Committee/utils'
-import { GrantRequest, getGrantRequestSchema } from '../../entities/Grant/types'
+import { GrantRequest, getGrantRequestSchema, toGrantSubtype } from '../../entities/Grant/types'
 import {
   SUBMISSION_THRESHOLD_DRAFT,
   SUBMISSION_THRESHOLD_GOVERNANCE,
@@ -29,7 +29,6 @@ import {
 import ProposalModel from '../../entities/Proposal/model'
 import {
   CatalystType,
-  CategorizedGrants,
   HiringType,
   INVALID_PROPOSAL_POLL_OPTIONS,
   NewProposalBanName,
@@ -43,12 +42,12 @@ import {
   NewProposalPoll,
   NewProposalTender,
   PoiType,
-  ProjectWithUpdate,
   ProposalAttributes,
   ProposalCommentsInDiscourse,
   ProposalRequiredVP,
   ProposalStatus,
   ProposalType,
+  SortingOrder,
   UpdateProposalStatusProposal,
   newProposalBanNameScheme,
   newProposalCatalystScheme,
@@ -76,8 +75,12 @@ import {
   isValidName,
   isValidPointOfInterest,
   isValidUpdateProposalStatus,
+  toProposalStatus,
+  toProposalType,
+  toSortingOrder,
 } from '../../entities/Proposal/utils'
 import { SNAPSHOT_DURATION } from '../../entities/Snapshot/constants'
+import { isSameAddress } from '../../entities/Snapshot/utils'
 import { validateUniqueAddresses } from '../../entities/Transparency/utils'
 import UpdateModel from '../../entities/Updates/model'
 import BidService from '../../services/BidService'
@@ -109,8 +112,7 @@ export default routes((route) => {
   route.post('/proposals/bid', withAuth, handleAPI(createProposalBid))
   route.post('/proposals/hiring', withAuth, handleAPI(createProposalHiring))
   route.get('/proposals/priority/:address?', handleJSON(getPriorityProposals))
-  route.get('/proposals/grants', handleAPI(getGrants)) // TODO: Deprecate
-  route.get('/proposals/grants/:address', handleAPI(getGrantsByUser)) // TODO: Deprecate
+  route.get('/proposals/grants/:address', handleAPI(getGrantsByUser))
   route.get('/proposals/:proposal', handleAPI(getProposal))
   route.patch('/proposals/:proposal', withAuth, handleAPI(updateProposalStatus))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
@@ -120,15 +122,15 @@ export default routes((route) => {
 
 export async function getProposals(req: WithAuth) {
   const query = req.query
-  const type = query.type && String(query.type)
-  const subtype = query.subtype && String(query.subtype)
-  const status = query.status && String(query.status)
+  const type = toProposalType(String(query.type), () => undefined)
+  const subtype = toGrantSubtype(String(query.subtype), () => undefined)
+  const status = toProposalStatus(String(query.status), () => undefined)
   const user = query.user && String(query.user)
   const search = query.search && String(query.search)
   const timeFrame = query.timeFrame && String(query.timeFrame)
   const timeFrameKey = query.timeFrameKey && String(query.timeFrameKey)
   const coauthor = (query.coauthor && Boolean(query.coauthor)) || false
-  const order = query.order && String(query.order) === 'ASC' ? 'ASC' : 'DESC'
+  const order = toSortingOrder(String(query.order), () => undefined)
   const snapshotIds = query.snapshotIds && String(query.snapshotIds)
   const subscribed = query.subscribed ? req.auth || '' : undefined
   const offset = query.offset && Number.isFinite(Number(query.offset)) ? Number(query.offset) : MIN_PROPOSAL_OFFSET
@@ -438,7 +440,7 @@ export async function createProposalTender(req: WithAuth) {
 
   const tenderProposals = await ProposalModel.getProposalList({
     linkedProposalId: configuration.linked_proposal_id,
-    order: 'ASC',
+    order: SortingOrder.ASC,
   })
 
   if (hasTenderProcessFinished(tenderProposals)) {
@@ -642,38 +644,22 @@ async function validateSubmissionThreshold(user: string, submissionThreshold?: s
   }
 }
 
-// TODO: Remove. Deprecated.
-async function getGrants(): Promise<CategorizedGrants> {
-  return await ProjectService.getGrants()
-}
-
-// TODO: Still in use by user profile page.
-async function getGrantsByUser(req: Request): ReturnType<typeof getGrants> {
+async function getGrantsByUser(req: Request) {
   const address = validateAddress(req.params.address)
-  const isCoauthoring = req.query.coauthor === 'true'
 
-  let coauthoringProposalIds = new Set<string>()
+  const coauthoring = await CoauthorModel.findProposals(address, CoauthorStatus.APPROVED)
+  const coauthoringProposalIds = new Set(coauthoring.map((coauthoringAttributes) => coauthoringAttributes.proposal_id))
 
-  if (isCoauthoring) {
-    const coauthoring = await CoauthorModel.findProposals(address, CoauthorStatus.APPROVED)
-    coauthoringProposalIds = new Set(coauthoring.map((coauthoringAttributes) => coauthoringAttributes.proposal_id))
-  }
-
-  const grantsResult = await getGrants()
-
-  const filterGrants = (grants: ProjectWithUpdate[]) => {
-    return grants.filter(
-      (grant) => grant.user.toLowerCase() === address.toLowerCase() || coauthoringProposalIds.has(grant.id)
-    )
-  }
-
-  const current = filterGrants(grantsResult.current)
-  const past = filterGrants(grantsResult.past)
+  const projects = await ProjectService.getProjects()
+  const filteredGrants = projects.data.filter(
+    (project) =>
+      project.type === ProposalType.Grant &&
+      (isSameAddress(project.user, address) || coauthoringProposalIds.has(project.id))
+  )
 
   return {
-    current,
-    past,
-    total: current.length + past.length,
+    data: filteredGrants,
+    total: filteredGrants.length,
   }
 }
 

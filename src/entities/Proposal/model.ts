@@ -26,26 +26,13 @@ import {
   PriorityProposal,
   PriorityProposalType,
   ProposalAttributes,
+  ProposalListFilter,
   ProposalStatus,
   ProposalType,
+  SortingOrder,
   isProposalType,
 } from './types'
 import { SITEMAP_ITEMS_PER_PAGE, isProposalStatus } from './utils'
-
-export type FilterProposalList = {
-  type: string
-  subtype?: string
-  user: string
-  status: string
-  subscribed: string
-  coauthor: boolean
-  search?: string
-  timeFrame?: string
-  timeFrameKey?: string
-  order?: 'ASC' | 'DESC'
-  snapshotIds?: string
-  linkedProposalId?: string
-}
 
 export type FilterPagination = {
   limit: number
@@ -53,7 +40,7 @@ export type FilterPagination = {
 }
 
 const VALID_TIMEFRAME_KEYS = ['created_at', 'finish_at']
-const VALID_ORDER_DIRECTION = ['ASC', 'DESC']
+const VALID_ORDER_DIRECTION = Object.values(SortingOrder)
 
 export default class ProposalModel extends Model<ProposalAttributes> {
   static tableName = 'proposals'
@@ -264,13 +251,13 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     )
   }
 
-  static async getProposalTotal(filter: Partial<FilterProposalList> = {}): Promise<number> {
+  static async getProposalTotal(filter: Partial<ProposalListFilter> = {}): Promise<number> {
     const { user, subscribed, type, subtype, status, search, snapshotIds, coauthor, linkedProposalId } = filter
     if (user && !isEthereumAddress(user)) {
       return 0
     }
 
-    if (subscribed && !isEthereumAddress(subscribed)) {
+    if (subscribed && !isEthereumAddress(String(subscribed))) {
       return 0
     }
 
@@ -340,7 +327,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
   }
 
   static async getProposalList(
-    filter: Partial<FilterProposalList & FilterPagination> = {}
+    filter: Partial<ProposalListFilter & FilterPagination> = {}
   ): Promise<(ProposalAttributes & { coauthors?: string[] | null })[]> {
     const {
       user,
@@ -361,7 +348,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       return []
     }
 
-    if (subscribed && !isEthereumAddress(subscribed)) {
+    if (subscribed && !isEthereumAddress(String(subscribed))) {
       return []
     }
 
@@ -383,13 +370,13 @@ export default class ProposalModel extends Model<ProposalAttributes> {
 
     const timeFrame = this.parseTimeframe(filter.timeFrame)
     const timeFrameKey = filter.timeFrameKey || 'created_at'
-    const orderDirection = order || 'DESC'
+    const orderDirection = order || SortingOrder.DESC
 
     if (!VALID_TIMEFRAME_KEYS.includes(timeFrameKey) || !VALID_ORDER_DIRECTION.includes(orderDirection)) {
       return []
     }
 
-    const orderBy = search ? '"rank"' : `p.${timeFrameKey}`
+    const orderBy = search && !order ? '"rank"' : `p.${timeFrameKey}`
 
     const sqlSnapshotIds = snapshotIds?.split(',').map((id) => SQL`${id}`)
     const sqlSnapshotIdsJoin = sqlSnapshotIds ? join(sqlSnapshotIds) : null

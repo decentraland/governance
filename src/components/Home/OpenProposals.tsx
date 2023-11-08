@@ -93,7 +93,7 @@ const OpenProposals = ({ endingSoonProposals, isLoadingProposals }: Props) => {
           </>
         )}
       </BoxTabsContainer>
-      <FullWidthButton className="OpenProposals__ViewAllButton" link={locations.proposals()}>
+      <FullWidthButton className="OpenProposals__ViewAllButton" href={locations.proposals()}>
         {t('page.home.open_proposals.view_all_proposals')}
       </FullWidthButton>
     </div>

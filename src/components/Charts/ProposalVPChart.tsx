@@ -182,7 +182,7 @@ function ProposalVPChart({ requiredToPass, voteMap, isLoadingVotes, startTimesta
   }
 
   return (
-    <Section title={t('page.proposal_view.votes_chart.title')} isNew isLoading={isLoadingVotes || isLoadingProfiles}>
+    <Section title={t('page.proposal_view.votes_chart.title')} isLoading={isLoadingVotes || isLoadingProfiles}>
       <Chart id="ProposalVPChart" ref={chartRef} options={options} data={chartData} type="line" />
     </Section>
   )

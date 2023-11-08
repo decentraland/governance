@@ -3,7 +3,7 @@ import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
-import { ProposalAttributes, ProposalType } from '../../../entities/Proposal/types'
+import { ProposalAttributes, ProposalType, SortingOrder } from '../../../entities/Proposal/types'
 import { SelectedVoteChoice } from '../../../entities/Votes/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useProposals from '../../../hooks/useProposals'
@@ -28,7 +28,7 @@ function BidVotingModal({ onCastVote, castingVote, linkedTenderId, proposalPageS
   const { proposals } = useProposals({
     type: ProposalType.Bid,
     linkedProposalId: linkedTenderId,
-    order: 'ASC',
+    order: SortingOrder.ASC,
   })
   const { selectedChoice, showBidVotingModal, showVotingError, retryTimer, showSnapshotRedirect } = proposalPageState
   const { snapshot_id: currentProposal } = proposal

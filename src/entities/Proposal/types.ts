@@ -14,6 +14,7 @@ import {
   PaymentToken,
   ProjectStatus,
   ProposalGrantCategory,
+  SubtypeOptions,
   VestingStartDate,
 } from '../Grant/types'
 import { IndexedUpdate } from '../Updates/types'
@@ -68,6 +69,21 @@ export type ProposalAttributes<C extends Record<string, unknown> = any> = {
   textsearch: SQLStatement | string | null | undefined
 }
 
+export type ProposalListFilter = {
+  user: string
+  type: ProposalType
+  subtype?: SubtypeOptions
+  status: ProposalStatus
+  subscribed: boolean | string
+  coauthor: boolean
+  search?: string | null
+  timeFrame?: string | null
+  timeFrameKey?: string | null
+  order?: SortingOrder
+  snapshotIds?: string
+  linkedProposalId?: string
+}
+
 export enum ProposalStatus {
   Pending = 'pending',
   Active = 'active',
@@ -92,6 +108,11 @@ export enum ProposalType {
   Pitch = 'pitch',
   Tender = 'tender',
   Bid = 'bid',
+}
+
+export enum SortingOrder {
+  ASC = 'ASC',
+  DESC = 'DESC',
 }
 
 export type GovernanceProcessType = ProposalType.Poll | ProposalType.Draft | ProposalType.Governance
@@ -140,16 +161,14 @@ export function isCatalystType(value: string | null | undefined): boolean {
   }
 }
 
-export function toCatalystType(value: string | null | undefined): CatalystType | null {
-  return isCatalystType(value) ? (value as CatalystType) : null
-}
-
-export function toProposalType(value: string | null | undefined): ProposalType | null {
-  return isProposalType(value) ? (value as ProposalType) : null
-}
-
-export function toPoiType(value: string | null | undefined): PoiType | null {
-  return isPoiType(value) ? (value as PoiType) : null
+export function isSortingOrder(value: string | null | undefined): boolean {
+  switch (value) {
+    case SortingOrder.ASC:
+    case SortingOrder.DESC:
+      return true
+    default:
+      return false
+  }
 }
 
 export function getPoiTypeAction(poiType: PoiType) {

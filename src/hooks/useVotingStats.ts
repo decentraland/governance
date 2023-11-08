@@ -5,18 +5,18 @@ import { useQuery } from '@tanstack/react-query'
 import { Governance } from '../clients/Governance'
 import { getQueryTimestamp } from '../clients/SnapshotGraphql'
 import { SnapshotProposal, SnapshotVote } from '../clients/SnapshotTypes'
-import { calculateMatch, getChecksumAddress, outcomeMatch } from '../entities/Snapshot/utils'
+import { calculateMatch, isSameAddress, outcomeMatch } from '../entities/Snapshot/utils'
 import { getFormattedPercentage } from '../helpers'
 import Time from '../utils/date/Time'
 import { getAMonthAgo } from '../utils/date/aMonthAgo'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
-function sortAddressesVotes(votes: SnapshotVote[], userAddress: string | null) {
+function sortAddressesVotes(votes: SnapshotVote[], userAddress?: string | null) {
   const addressVotes: SnapshotVote[] = []
   const userVotes: SnapshotVote[] = []
   votes.forEach((vote) => {
-    if (userAddress && getChecksumAddress(vote.voter!) === getChecksumAddress(userAddress!)) {
+    if (userAddress && isSameAddress(vote.voter, userAddress)) {
       userVotes.push(vote)
     } else {
       addressVotes.push(vote)
@@ -48,9 +48,9 @@ function getParticipation(
   return { participationTotal: proposalsVotedInTheLast30Days.size, participationPercentage }
 }
 
-export default function useVotingStats(address: string, userAddress: string | null) {
+export default function useVotingStats(address: string, userAddress?: string | null) {
   const now = useMemo(() => Time().toDate(), [])
-  const aMonthAgo = useMemo(() => getAMonthAgo(now), [])
+  const aMonthAgo = useMemo(() => getAMonthAgo(now), [now])
 
   const { data: last30DaysProposals, isLoading: isLoadingProposals } = useQuery({
     queryKey: [`last30DaysProposals#${aMonthAgo.getTime()}`],

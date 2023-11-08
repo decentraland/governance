@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
-import { TransparencyGrantsTiers } from '../../clients/DclData'
+import { GrantTierType } from '../../entities/Grant/types'
 import { Project } from '../../entities/Proposal/types'
 import { isProposalInCliffPeriod } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
@@ -24,12 +24,14 @@ interface Props {
   grant: Project
 }
 
+const TRANSPARENCY_TIERS_IN_MANA: string[] = [GrantTierType.Tier1, GrantTierType.Tier2, GrantTierType.Tier3]
+
 function GrantBeneficiaryItem({ grant }: Props) {
   const t = useFormatMessage()
   const intl = useIntl()
   const { user, title, enacted_at, token, configuration } = grant
   const proposalInCliffPeriod = !!enacted_at && isProposalInCliffPeriod(enacted_at)
-  const isInMana = Object.keys(TransparencyGrantsTiers).slice(0, 3).includes(configuration.tier)
+  const isInMana = TRANSPARENCY_TIERS_IN_MANA.includes(configuration.tier)
   const formattedEnactedDate = enacted_at ? formatDate(new Date(enacted_at * 1000)) : null
 
   return (
@@ -93,7 +95,7 @@ function GrantBeneficiaryItem({ grant }: Props) {
                     {t('page.profile.grants.item_short_description', {
                       time: abbreviateTimeDifference(formattedEnactedDate),
                       amount: intl.formatNumber(grant.size),
-                      token: token,
+                      token: isInMana ? 'USD' : token,
                     })}
                   </Markdown>
                 )}

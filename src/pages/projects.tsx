@@ -85,7 +85,7 @@ export default function ProjectsPage() {
   const params = useURLSearchParams()
   const type = toProjectTypeFilter(params.get('type'))
   const status = toProjectStatus(params.get('status'))
-  const subtype = toGrantSubtype(params.get('subtype'))
+  const subtype = toGrantSubtype(params.get('subtype'), () => undefined)
 
   const { projects, isLoadingProjects } = useProjects()
   const displayableProjects = useMemo(
