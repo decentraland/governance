@@ -57,8 +57,14 @@
     "notifications": {
       "button_label": "Notifications menu",
       "title": "Notifications",
-      "settings_title": "Notification Settings",
-      "settings_button": "Settings",
+      "settings": {
+        "title": "Notification Settings",
+        "button": "Settings",
+        "push_title": "In-app Notifications",
+        "push_description": "Powered by Push.org",
+        "discord_title": "Discord Notifications",
+        "discord_description": "Get direct messages from Marvin when something relavant to you happens"
+      },
       "unsubscribed": {
         "title": "Don't miss a beat",
         "description": "We rely on a 3rd party service that you’ll have to opt-in to in order to proceed.",

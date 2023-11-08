@@ -20,10 +20,10 @@ function SettingsView({ isPushEnabled, onPushChange, isDiscordEnabled, onDiscord
       <div className="NotificationSettings__Item">
         <div className="NotificationSettings__TextContainer">
           <Text size="md" weight="semi-bold" className="NotificationSettings__TextTitle">
-            In-App Notifications
+            {t('navigation.notifications.settings.push_title')}
           </Text>
           <Text size="sm" weight="normal" color="secondary">
-            Powered by Push.org
+            {t('navigation.notifications.settings.push_description')}
           </Text>
         </div>
         <Radio toggle checked={isPushEnabled} disabled={isLoading} onChange={() => onPushChange(!isPushEnabled)} />
@@ -31,10 +31,10 @@ function SettingsView({ isPushEnabled, onPushChange, isDiscordEnabled, onDiscord
       <div className="NotificationSettings__Item">
         <div className="NotificationSettings__TextContainer">
           <Text size="md" weight="semi-bold" className="NotificationSettings__TextTitle">
-            Discord Notifications
+            {t('navigation.notifications.settings.discord_title')}
           </Text>
           <Text size="sm" weight="normal" color="secondary">
-            Powered by Discord
+            {t('navigation.notifications.settings.discord_description')}
           </Text>
         </div>
         <Radio

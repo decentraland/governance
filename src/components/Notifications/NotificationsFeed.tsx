@@ -188,11 +188,11 @@ export default function NotificationsFeed({
           </div>
         )}
         <Text color="secondary" size="sm" className="NotificationsFeed__Title">
-          {t(isSettingsOpened ? 'navigation.notifications.settings_title' : 'navigation.notifications.title')}
+          {t(isSettingsOpened ? 'navigation.notifications.settings.title' : 'navigation.notifications.title')}
         </Text>
         {showSettingsButton && (
           <button className="NotificationsFeed__SettingsButton" onClick={() => setIsSettingsOpened(true)}>
-            {t('navigation.notifications.settings_button')}
+            {t('navigation.notifications.settings.button')}
           </button>
         )}
       </div>
