@@ -93,27 +93,15 @@ export default function Notifications() {
         return null
       }
 
-      try {
-        return await Governance.get().getUserLastNotification()
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (error: any) {
-        if (error.statusCode === 404 && latestNotification) {
-          mutation.mutate(latestNotification)
-          return latestNotification
-        }
+      const id = await Governance.get().getUserLastNotification()
 
-        return null
-      }
+      return id || null
     },
     enabled: !!user && isSubscribed,
-    retry: 3,
   })
 
   const hasNewNotifications =
-    Number(userNotifications?.length) > 0 &&
-    !!lastNotificationId &&
-    latestNotification &&
-    latestNotification !== Number(lastNotificationId)
+    Number(userNotifications?.length) > 0 && latestNotification && latestNotification !== Number(lastNotificationId)
 
   const handleFeedClose = () => {
     setOpen(false)
