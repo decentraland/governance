@@ -2,10 +2,10 @@ import { DelegationResult, DetailedScores } from '../../clients/SnapshotTypes'
 import { isSameAddress } from '../../entities/Snapshot/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useVotingPowerInformation from '../../hooks/useVotingPowerInformation'
+import { ActionBox } from '../Common/ActionBox'
 import DelegationCards from '../Delegation/DelegationCards'
 import VotingPowerDelegationHandler from '../Modal/VotingPowerDelegationDetail/VotingPowerDelegationHandler'
 
-import { ActionBox } from './ActionBox'
 import './VpDelegatorsBox.css'
 
 interface Props {

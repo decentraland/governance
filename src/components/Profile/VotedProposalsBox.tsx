@@ -1,12 +1,12 @@
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useVotedProposals from '../../hooks/useVotedProposals'
+import { ActionBox } from '../Common/ActionBox'
 import Empty from '../Common/Empty'
 import FullWidthButton from '../Common/FullWidthButton'
 import SkeletonBars from '../Common/SkeletonBars'
 import Watermelon from '../Icon/Watermelon'
 import ProfileProposalItem from '../Proposal/ProfileProposalItem'
 
-import { ActionBox } from './ActionBox'
 import './VotedProposalsBox.css'
 
 interface Props {

@@ -8,14 +8,13 @@ import { DelegationResult } from '../../clients/SnapshotTypes'
 import { isSameAddress } from '../../entities/Snapshot/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
+import { ActionBox } from '../Common/ActionBox'
 import Empty, { ActionType } from '../Common/Empty'
 import SkeletonBars from '../Common/SkeletonBars'
 import DelegatorCardProfile from '../Delegation/DelegatorCardProfile'
 import Scale from '../Icon/Scale'
 import { Candidate } from '../Modal/VotingPowerDelegationModal/VotingPowerDelegationCandidatesList'
 import VotingPowerDelegationModal from '../Modal/VotingPowerDelegationModal/VotingPowerDelegationModal'
-
-import { ActionBox } from './ActionBox'
 
 interface Props {
   address: string | null

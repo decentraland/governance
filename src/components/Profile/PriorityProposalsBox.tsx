@@ -5,10 +5,10 @@ import useFormatMessage from '../../hooks/useFormatMessage'
 import usePriorityProposals from '../../hooks/usePriorityProposals'
 import useProposalsCachedVotes from '../../hooks/useProposalsCachedVotes'
 import locations from '../../utils/locations'
+import { ActionBox } from '../Common/ActionBox'
 import FullWidthButton from '../Common/FullWidthButton'
 import ProposalPreviewCard from '../Common/ProposalPreviewCard/ProposalPreviewCard'
 
-import { ActionBox } from './ActionBox'
 import './PriorityProposalsBox.css'
 
 interface Props {
@@ -35,7 +35,6 @@ function renderPriorityProposals(
 function PriorityProposalsBox({ address, collapsible = false }: Props) {
   const t = useFormatMessage()
   const { priorityProposals, isLoading } = usePriorityProposals(address)
-  console.log('priorityProposals', priorityProposals)
   const proposalIds =
     priorityProposals?.reduce((acc: string[], priorityProposal) => {
       acc.push(priorityProposal.id)
@@ -46,7 +45,6 @@ function PriorityProposalsBox({ address, collapsible = false }: Props) {
     }, []) || []
 
   const { votes, isLoadingVotes } = useProposalsCachedVotes(proposalIds || [])
-  console.log('votes', votes)
   const displayedProposals =
     votes && priorityProposals && address
       ? priorityProposals?.filter((proposal) => {
@@ -71,16 +69,19 @@ function PriorityProposalsBox({ address, collapsible = false }: Props) {
     if (displayedProposals) setDisplayedProposalsAmount(PROPOSALS_PER_PAGE)
   }
 
-  // TODO: internationalization
   return isLoading || isLoadingVotes || (!isLoading && priorityProposals && priorityProposals.length === 0) ? null : (
     <>
       {collapsible ? (
-        <ActionBox title={'Time Sensitive'} info={'Proposals that need your attention reit neu'} collapsible>
+        <ActionBox
+          title={t('component.priority_proposals.title')}
+          info={t('component.priority_proposals.info')}
+          collapsible
+        >
           {renderPriorityProposals(displayedProposals, displayedProposalsAmount)}
           {showViewMoreButton && (
-            <FullWidthButton
-              onClick={handleViewMore}
-            >{`Show all ${displayedProposals?.length} proposals`}</FullWidthButton>
+            <FullWidthButton onClick={handleViewMore}>
+              {t('component.priority_proposals.show_all', { count: displayedProposals?.length })}
+            </FullWidthButton>
           )}
           {showViewLessButton && <FullWidthButton onClick={handleViewLess}>{`Show less`}</FullWidthButton>}
         </ActionBox>
