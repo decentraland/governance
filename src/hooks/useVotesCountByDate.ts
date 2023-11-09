@@ -8,7 +8,7 @@ export default function useVotesCountByDate(start: Date, end: Date) {
   const { data: votes, isLoading } = useQuery({
     queryKey: [`votesCount#${start}#${end}`],
     queryFn: async () => {
-      return await Governance.get().getAllVotesBetweenDates(start, end)
+      return await Governance.get().getVotesByDates(start, end)
     },
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })

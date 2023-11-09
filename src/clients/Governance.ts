@@ -294,12 +294,12 @@ export class Governance extends API {
     return result.data
   }
 
-  async getProposalCachedVotes(proposal_id: string) {
+  async getVotesByProposal(proposal_id: string) {
     const result = await this.fetch<ApiResponse<Record<string, Vote>>>(`/proposals/${proposal_id}/votes`)
     return result.data
   }
 
-  async getProposalsCachedVotes(proposal_ids: string[]) {
+  async getCachedVotesByProposals(proposal_ids: string[]) {
     if (proposal_ids.length === 0) {
       return {}
     }
@@ -313,7 +313,7 @@ export class Governance extends API {
     return result.data
   }
 
-  async getAddressVotesWithProposals(address: string, first?: number, skip?: number) {
+  async getVotesAndProposalsByAddress(address: string, first?: number, skip?: number) {
     const result = await this.fetch<ApiResponse<VotedProposal[]>>(`/votes/${address}?first=${first}&skip=${skip}`)
     return result.data
   }
@@ -533,7 +533,7 @@ export class Governance extends API {
     return response.data
   }
 
-  async getAddressesVotes(addresses: string[]) {
+  async getVotesByAddresses(addresses: string[]) {
     const result = await this.fetch<ApiResponse<SnapshotVote[]>>(
       `/snapshot/votes/`,
       this.options().method('POST').json({ addresses })
@@ -541,7 +541,7 @@ export class Governance extends API {
     return result.data
   }
 
-  async getProposalVotesFromSnapshot(proposalId: string) {
+  async getVotesByProposalFromSnapshot(proposalId: string) {
     const response = await this.fetch<ApiResponse<SnapshotVote[]>>(
       `/snapshot/votes/${proposalId}`,
       this.options().method('GET')
@@ -549,7 +549,7 @@ export class Governance extends API {
     return response.data
   }
 
-  async getAllVotesBetweenDates(start: Date, end: Date) {
+  async getVotesByDates(start: Date, end: Date) {
     const response = await this.fetch<ApiResponse<SnapshotVote[]>>(
       `/snapshot/votes/all`,
       this.options().method('POST').json({ start, end })

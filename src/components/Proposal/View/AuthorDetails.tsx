@@ -6,11 +6,11 @@ import snakeCase from 'lodash/snakeCase'
 import { ProjectStatus } from '../../../entities/Grant/types'
 import { ProposalType } from '../../../entities/Proposal/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../../helpers'
-import useAddressVotes from '../../../hooks/useAddressVotes'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useGovernanceProfile from '../../../hooks/useGovernanceProfile'
 import useProposals from '../../../hooks/useProposals'
 import useVestings from '../../../hooks/useVestings'
+import useVotesByAddress from '../../../hooks/useVotesByAddress'
 import useVotingStats from '../../../hooks/useVotingStats'
 import Time from '../../../utils/date/Time'
 import locations from '../../../utils/locations'
@@ -79,7 +79,7 @@ export default function AuthorDetails({ address }: Props) {
     [projectPerformanceTotals, t]
   )
 
-  const { votes } = useAddressVotes(address)
+  const { votes } = useVotesByAddress(address)
   const hasVoted = votes && votes.length > 0
   const activeSinceFormattedDate = hasVoted ? Time.unix(votes[0].created).format('MMMM, YYYY') : ''
 

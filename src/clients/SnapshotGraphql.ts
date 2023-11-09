@@ -129,7 +129,7 @@ export class SnapshotGraphql extends API {
     return result?.data?.votes
   }
 
-  async getProposalVotes(proposalId: string): Promise<SnapshotVote[]> {
+  async getVotesByProposal(proposalId: string): Promise<SnapshotVote[]> {
     return await inBatches(this.fetchProposalVotes, proposalId, BATCH_SIZE)
   }
 
@@ -156,9 +156,9 @@ export class SnapshotGraphql extends API {
     }
   }
 
-  async getAddressesVotes(addresses: string[]) {
+  async getVotesByAddresses(addresses: string[]) {
     const query = `
-      query AddressesVotes($space: String!, $addresses: [String]!, $created: Int!, $first: Int!) {
+      query VotesByAddresses($space: String!, $addresses: [String]!, $created: Int!, $first: Int!) {
         votes (
           where: { space: $space, voter_in: $addresses, created_gt: $created },
           first: $first,
@@ -212,9 +212,9 @@ export class SnapshotGraphql extends API {
     return allResults
   }
 
-  async getAddressesVotesInBatches(addresses: string[], first: number, skip: number) {
+  async getVotesByAddressesInBatches(addresses: string[], first: number, skip: number) {
     const query = `
-      query AddressesVotes($space: String!, $addresses: [String]!, $first: Int!, $skip: Int!) {
+      query getVotesByAddressesInBatches($space: String!, $addresses: [String]!, $first: Int!, $skip: Int!) {
         votes (
           where: { space: $space, voter_in: $addresses}
           first: $first, skip: $skip
@@ -249,7 +249,7 @@ export class SnapshotGraphql extends API {
     return result?.data?.votes
   }
 
-  async getAllVotesBetweenDates(start: Date, end: Date): Promise<SnapshotVote[]> {
+  async getVotesByDates(start: Date, end: Date): Promise<SnapshotVote[]> {
     let allResults: SnapshotVote[] = []
     let hasNext = true
     let created = getQueryTimestamp(start.getTime())

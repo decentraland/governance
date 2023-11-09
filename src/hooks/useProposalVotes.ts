@@ -16,7 +16,7 @@ const useProposalVotes = (proposalId?: ProposalAttributes['id'], shouldFetch = t
       if (!proposalId) {
         return null
       }
-      return Governance.get().getProposalCachedVotes(proposalId)
+      return Governance.get().getVotesByProposal(proposalId)
     },
     staleTime: FIVE_MINUTES_MS,
     enabled: !!proposalId && shouldFetch,

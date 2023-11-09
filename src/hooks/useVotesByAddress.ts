@@ -4,12 +4,12 @@ import { Governance } from '../clients/Governance'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
-export default function useAddressVotes(address: string | null) {
+export default function useVotesByAddress(address: string | null) {
   const { data: votes, isLoading } = useQuery({
     queryKey: [`addressVotes#${address}`],
     queryFn: async () => {
       if (address) {
-        return Governance.get().getAddressesVotes([address])
+        return Governance.get().getVotesByAddresses([address])
       }
     },
     enabled: !!address,

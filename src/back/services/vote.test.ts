@@ -16,7 +16,7 @@ describe('getTopVoters', () => {
     const { start, end } = getPreviousMonthStartAndEnd(firstOfAugust)
     beforeEach(() => {
       jest.clearAllMocks()
-      jest.spyOn(SnapshotService, 'getAllVotesBetweenDates').mockResolvedValue(SNAPSHOT_VOTES_AUGUST_2023)
+      jest.spyOn(SnapshotService, 'getVotesByDates').mockResolvedValue(SNAPSHOT_VOTES_AUGUST_2023)
     })
 
     describe('when fetching the top 3 voters', () => {
@@ -78,7 +78,7 @@ describe('getTopVoters', () => {
       describe('when there are no votes on the selected time period', () => {
         beforeEach(() => {
           clearAllMocks()
-          jest.spyOn(SnapshotService, 'getAllVotesBetweenDates').mockResolvedValue([])
+          jest.spyOn(SnapshotService, 'getVotesByDates').mockResolvedValue([])
         })
 
         it('should return an empty array', async () => {
@@ -93,7 +93,7 @@ describe('getTopVoters', () => {
     const aMonthBefore = septemberSeventh.subtract(1, 'month').startOf('day').toDate()
     beforeAll(() => {
       jest.clearAllMocks()
-      jest.spyOn(SnapshotService, 'getAllVotesBetweenDates').mockResolvedValue(SNAPSHOT_VOTES_30_DAYS)
+      jest.spyOn(SnapshotService, 'getVotesByDates').mockResolvedValue(SNAPSHOT_VOTES_30_DAYS)
     })
 
     describe('when fetching the top 10 voters', () => {
