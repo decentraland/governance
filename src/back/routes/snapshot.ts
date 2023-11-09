@@ -16,9 +16,9 @@ import {
 export default routes((router) => {
   router.get('/snapshot/status', handleAPI(getStatus))
   router.get('/snapshot/config/:spaceName', handleAPI(getConfig))
-  router.post('/snapshot/votes', handleAPI(getAddressesVotes))
-  router.get('/snapshot/votes/:proposalSnapshotId', handleAPI(getProposalVotes))
-  router.post('/snapshot/votes/all', handleAPI(getAllVotesBetweenDates))
+  router.post('/snapshot/votes', handleAPI(getVotesByAddresses))
+  router.get('/snapshot/votes/:proposalSnapshotId', handleAPI(getVotesByProposal))
+  router.post('/snapshot/votes/all', handleAPI(getVotesByDates))
   router.post('/snapshot/proposals', handleAPI(getProposals))
   router.post('/snapshot/proposals/pending', handleAPI(getPendingProposals))
   router.get('/snapshot/vp-distribution/:address/:proposalSnapshotId?', handleAPI(getVpDistribution))
@@ -35,21 +35,21 @@ async function getConfig(req: Request<{ spaceName?: string }>) {
   return await SnapshotService.getConfig(spaceName)
 }
 
-async function getAddressesVotes(req: Request) {
+async function getVotesByAddresses(req: Request) {
   const { addresses } = req.body
-  return await SnapshotService.getAddressesVotes(addresses)
+  return await SnapshotService.getVotesByAddresses(addresses)
 }
 
-async function getProposalVotes(req: Request<{ proposalSnapshotId?: string }>) {
+async function getVotesByProposal(req: Request<{ proposalSnapshotId?: string }>) {
   const proposalSnapshotId = validateProposalSnapshotId(req.params.proposalSnapshotId)
-  return await SnapshotService.getProposalVotes(proposalSnapshotId)
+  return await SnapshotService.getVotesByProposal(proposalSnapshotId)
 }
 
-async function getAllVotesBetweenDates(req: Request): Promise<SnapshotVote[]> {
+async function getVotesByDates(req: Request): Promise<SnapshotVote[]> {
   const { start, end } = req.body
   const { validatedStart, validatedEnd } = validateDates(start, end)
 
-  return await SnapshotService.getAllVotesBetweenDates(validatedStart, validatedEnd)
+  return await SnapshotService.getVotesByDates(validatedStart, validatedEnd)
 }
 
 async function getProposals(req: Request) {
