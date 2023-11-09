@@ -460,12 +460,12 @@ export class Governance extends API {
   }
 
   async getValidationMessage(account?: AccountType) {
-    const url = new URLSearchParams()
+    const params = new URLSearchParams()
     if (account) {
-      url.append('account', account)
+      params.append('account', account)
     }
     const result = await this.fetch<ApiResponse<string>>(
-      `/user/validate?${url.toString()}`,
+      `/user/validate?${params.toString()}`,
       this.options().method('GET').authorization({ sign: true })
     )
 
@@ -491,12 +491,12 @@ export class Governance extends API {
   }
 
   async isProfileValidated(address: string, accounts: AccountType[]) {
-    const url = new URLSearchParams()
+    const params = new URLSearchParams()
     for (const account of accounts) {
-      url.append('account', account)
+      params.append('account', account)
     }
     const result = await this.fetch<ApiResponse<boolean>>(
-      `/user/${address}/is-validated/?${url.toString()}`,
+      `/user/${address}/is-validated/?${params.toString()}`,
       this.options().method('GET')
     )
 
