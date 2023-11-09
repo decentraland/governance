@@ -4,10 +4,10 @@ import { Governance } from '../clients/Governance'
 import { calculateMatch } from '../entities/Snapshot/utils'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
-import useAddressVotes from './useAddressVotes'
+import useVotesByAddress from './useVotesByAddress'
 
 export default function useVotesMatch(userAccount: string | null, otherAccount: string | null) {
-  const { votes: userVotes, isLoadingVotes: userVotesLoading } = useAddressVotes(userAccount)
+  const { votes: userVotes, isLoadingVotes: userVotesLoading } = useVotesByAddress(userAccount)
 
   const { data: otherAccountVotes, isLoading: otherAccountVotesLoading } = useQuery({
     queryKey: [`otherAccountVotes#${otherAccount}`],
@@ -15,7 +15,7 @@ export default function useVotesMatch(userAccount: string | null, otherAccount: 
       if (!otherAccount) {
         return null
       }
-      return Governance.get().getAddressVotesWithProposals(otherAccount)
+      return Governance.get().getVotesAndProposalsByAddress(otherAccount)
     },
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })

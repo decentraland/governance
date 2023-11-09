@@ -8,9 +8,9 @@ import { TWENTY_MINUTES_MS } from './constants'
 export type VoteHistory = { lastVoted: number; timesVoted: number }
 
 const fetchVotes = async (addresses: string[]) => {
-  const addressesVotesByDate = await Governance.get().getAddressesVotes(addresses)
+  const addressesVotes = await Governance.get().getVotesByAddresses(addresses)
   const aggregatedVotes: Record<string, VoteHistory> = {}
-  addressesVotesByDate.map((voteByDate) => {
+  addressesVotes.map((voteByDate) => {
     const voter = voteByDate.voter.toLowerCase()
     if (aggregatedVotes[voter]) {
       aggregatedVotes[voter].timesVoted += 1

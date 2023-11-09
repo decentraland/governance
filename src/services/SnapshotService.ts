@@ -100,19 +100,19 @@ export class SnapshotService {
     return { config, space }
   }
 
-  static async getAddressesVotes(addresses: string[], first?: number, skip?: number) {
+  static async getVotesByAddresses(addresses: string[], first?: number, skip?: number) {
     if (isNumber(first) && isNumber(skip)) {
-      return await SnapshotGraphql.get().getAddressesVotesInBatches(addresses, first, skip)
+      return await SnapshotGraphql.get().getVotesByAddressesInBatches(addresses, first, skip)
     }
-    return await SnapshotGraphql.get().getAddressesVotes(addresses)
+    return await SnapshotGraphql.get().getVotesByAddresses(addresses)
   }
 
-  static async getProposalVotes(proposalSnapshotId: string): Promise<SnapshotVote[]> {
-    return await SnapshotGraphql.get().getProposalVotes(proposalSnapshotId)
+  static async getVotesByProposal(proposalSnapshotId: string): Promise<SnapshotVote[]> {
+    return await SnapshotGraphql.get().getVotesByProposal(proposalSnapshotId)
   }
 
-  static async getAllVotesBetweenDates(start: Date, end: Date): Promise<SnapshotVote[]> {
-    return await SnapshotGraphql.get().getAllVotesBetweenDates(start, end)
+  static async getVotesByDates(start: Date, end: Date): Promise<SnapshotVote[]> {
+    return await SnapshotGraphql.get().getVotesByDates(start, end)
   }
 
   static async getProposals(start: Date, end: Date, fields: (keyof SnapshotProposal)[]) {

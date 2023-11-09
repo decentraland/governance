@@ -13,7 +13,7 @@ export class VoteService {
   }
 
   static async getTopVoters(start: Date, end: Date, limit = DEFAULT_TOP_VOTERS_LIMIT) {
-    const votes = await SnapshotService.getAllVotesBetweenDates(start, end)
+    const votes = await SnapshotService.getVotesByDates(start, end)
     return this.getSortedVoteCountPerUser(votes).slice(0, limit)
   }
 

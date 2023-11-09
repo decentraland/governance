@@ -18,13 +18,13 @@ import { VoteService } from '../services/vote'
 import { validateAddress, validateDates, validateProposalId } from '../utils/validations'
 
 export default routes((route) => {
-  route.get('/proposals/:proposal/votes', handleAPI(getProposalVotes))
-  route.get('/votes', handleAPI(getProposalsCachedVotes))
-  route.get('/votes/:address', handleAPI(getAddressVotesWithProposals))
+  route.get('/proposals/:proposal/votes', handleAPI(getVotesByProposal))
+  route.get('/votes', handleAPI(getCachedVotesByProposals))
+  route.get('/votes/:address', handleAPI(getVotesAndProposalsByAddress))
   route.post('/votes/top-voters', handleAPI(getTopVoters))
 })
 
-export async function getProposalVotes(req: Request<{ proposal: string }>) {
+export async function getVotesByProposal(req: Request<{ proposal: string }>) {
   const refresh = req.query.refresh === 'true'
   const id = validateProposalId(req.params.proposal)
 
@@ -37,7 +37,7 @@ export async function getProposalVotes(req: Request<{ proposal: string }>) {
 
   let snapshotVotes: SnapshotVote[]
   try {
-    snapshotVotes = await SnapshotGraphql.get().getProposalVotes(proposal.snapshot_id)
+    snapshotVotes = await SnapshotGraphql.get().getVotesByProposal(proposal.snapshot_id)
   } catch (err) {
     return latestVotes?.votes || {}
   }
@@ -66,7 +66,7 @@ export async function updateSnapshotProposalVotes(proposal: ProposalAttributes, 
   return votes
 }
 
-export async function getProposalsCachedVotes(req: Request) {
+export async function getCachedVotesByProposals(req: Request) {
   if (!req.query.id) {
     throw new RequestError('Missing proposal IDs', RequestError.BadRequest)
   }
@@ -79,7 +79,7 @@ export async function getProposalsCachedVotes(req: Request) {
   }, {} as Record<string, VoteByAddress>)
 }
 
-async function getAddressVotesWithProposals(req: Request) {
+async function getVotesAndProposalsByAddress(req: Request) {
   const address = validateAddress(req.params.address)
   const numFirst = Number(req.query.first)
   const numSkip = Number(req.query.skip)
@@ -87,7 +87,7 @@ async function getAddressVotesWithProposals(req: Request) {
   const first = Number.isInteger(numFirst) ? numFirst : undefined
   const skip = Number.isInteger(numSkip) ? numSkip : undefined
 
-  const votes = await SnapshotService.getAddressesVotes([address], first, skip)
+  const votes = await SnapshotService.getVotesByAddresses([address], first, skip)
 
   if (votes.length === 0) {
     return []
