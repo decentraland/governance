@@ -750,6 +750,19 @@
       "view_reactions_label": "View Reactions",
       "total_comments_label": "{count} {count, plural, one {Comment} other {Comments}}",
       "forum_label": "Join Discussion"
+    },
+    "action_box": {
+      "show": "Show",
+      "hide": "Hide"
+    },
+    "priority_proposals": {
+      "title": "Time sensitive",
+      "info": "Proposals that need your attention reit neu",
+      "show_all": "Show all {count} proposals",
+      "pitch_with_submissions": "Tender submissions end in lalala",
+      "tender_with_submissions": "Bids submissions end in lalala",
+      "open_pitch": "Open for submissions",
+      "pitch_on_voting_phase": "Tenders open for voting"
     }
   },
   "page": {
@@ -808,6 +821,10 @@
         "view_all_proposals": "View all proposals",
         "you_voted": "You voted",
         "vote": "Vote"
+      },
+      "upcoming_opportunities": {
+        "title": "Upcoming Opportunities",
+        "description": "Our DAO has implemented a new, inbound Bidding & Tendering mechanism that aims to surface project ideas to be scoped accordingly by potentially new and external teams."
       },
       "active_community_grants": {
         "title": "Active Community Grants",

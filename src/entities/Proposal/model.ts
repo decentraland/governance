@@ -379,49 +379,49 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     const sqlSnapshotIds = snapshotIds?.split(',').map((id) => SQL`${id}`)
     const sqlSnapshotIdsJoin = sqlSnapshotIds ? join(sqlSnapshotIds) : null
 
-    const proposals = await this.namedQuery(
-      'proposals_list',
-      SQL`
-    SELECT p.*${conditional(!!coauthor && !user, SQL`, c."coauthors"`)}
-    FROM ${table(ProposalModel)} p
-        ${conditional(!!subscribed, SQL`INNER JOIN ${table(SubscriptionModel)} s ON s."proposal_id" = p."id"`)}
-        ${conditional(!!coauthor && !!user, SQL`INNER JOIN ${table(CoauthorModel)} c ON c."proposal_id" = p."id"`)} 
-        ${conditional(
-          !!coauthor && !user,
-          SQL`LEFT OUTER JOIN (
-            select proposal_id, array_agg(address) coauthors
-            from ${table(CoauthorModel)}
-            where status = ${CoauthorStatus.APPROVED}
-            group by proposal_id) c
-        on p.id = c.proposal_id`
-        )} 
-        ${conditional(!!search, SQL`, ts_rank_cd(textsearch, to_tsquery(${tsquery(search || '')})) AS "rank"`)}
-    WHERE "deleted" = FALSE 
-    ${conditional(!!sqlSnapshotIds, SQL`AND p."snapshot_id" IN (${sqlSnapshotIdsJoin})`)} 
-    ${conditional(!!user && !coauthor, SQL`AND p."user" = ${user}`)} 
-    ${conditional(
-      !!coauthor && !!user,
-      SQL`AND lower(c."address") = lower(${user}) AND (CASE WHEN p."finish_at" < NOW() THEN c."status" IN (${CoauthorStatus.APPROVED}, ${CoauthorStatus.REJECTED}) ELSE TRUE END)`
-    )} 
-    ${conditional(!!type, SQL`AND "type" = ${type}`)} 
-    ${conditional(!!status, SQL`AND "status" = ${status}`)} 
-    ${conditional(!!subscribed, SQL`AND s."user" = ${subscribed}`)} 
-    ${conditional(!!timeFrame && timeFrameKey === 'created_at', SQL`AND p."created_at" > ${timeFrame}`)} 
-    ${conditional(
-      !!timeFrame && timeFrameKey === 'finish_at',
-      SQL`AND p."finish_at" > NOW() AND p."finish_at" < ${timeFrame}`
-    )}
-    ${conditional(!!subtype, SQL`AND (${this.getSubtypeQuery(subtype || '')})`)}
-    ${conditional(!!linkedProposalId, SQL`AND (${this.getLinkedProposalQuery(linkedProposalId || '')})`)}
-    ${conditional(!!search, SQL`AND "rank" > 0`)}
-    ORDER BY ${conditional(!!coauthor && !!user, SQL`CASE c.status WHEN 'PENDING' THEN 1 END,`)} 
-    ${SQL.raw(orderBy)} ${SQL.raw(orderDirection)} 
-    ${limitQuery(limit, {
-      min: 0,
-      max: 100,
-      defaultValue: 100,
-    })} ${offsetQuery(offset)}`
-    )
+    const query = SQL`
+  SELECT p.*${conditional(!!coauthor && !user, SQL`, c."coauthors"`)}
+  FROM ${table(ProposalModel)} p
+      ${conditional(!!subscribed, SQL`INNER JOIN ${table(SubscriptionModel)} s ON s."proposal_id" = p."id"`)}
+      ${conditional(!!coauthor && !!user, SQL`INNER JOIN ${table(CoauthorModel)} c ON c."proposal_id" = p."id"`)} 
+      ${conditional(
+        !!coauthor && !user,
+        SQL`LEFT OUTER JOIN (
+          select proposal_id, array_agg(address) coauthors
+          from ${table(CoauthorModel)}
+          where status = ${CoauthorStatus.APPROVED}
+          group by proposal_id) c
+      on p.id = c.proposal_id`
+      )} 
+      ${conditional(!!search, SQL`, ts_rank_cd(textsearch, to_tsquery(${tsquery(search || '')})) AS "rank"`)}
+  WHERE "deleted" = FALSE 
+  ${conditional(!!sqlSnapshotIds, SQL`AND p."snapshot_id" IN (${sqlSnapshotIdsJoin})`)} 
+  ${conditional(!!user && !coauthor, SQL`AND p."user" = ${user}`)} 
+  ${conditional(
+    !!coauthor && !!user,
+    SQL`AND lower(c."address") = lower(${user}) AND (CASE WHEN p."finish_at" < NOW() THEN c."status" IN (${CoauthorStatus.APPROVED}, ${CoauthorStatus.REJECTED}) ELSE TRUE END)`
+  )} 
+  ${conditional(!!type, SQL`AND "type" = ${type}`)} 
+  ${conditional(!!status, SQL`AND "status" = ${status}`)} 
+  ${conditional(!!subscribed, SQL`AND s."user" = ${subscribed}`)} 
+  ${conditional(!!timeFrame && timeFrameKey === 'created_at', SQL`AND p."created_at" > ${timeFrame}`)} 
+  ${conditional(
+    !!timeFrame && timeFrameKey === 'finish_at',
+    SQL`AND p."finish_at" > NOW() AND p."finish_at" < ${timeFrame}`
+  )}
+  ${conditional(!!subtype, SQL`AND (${this.getSubtypeQuery(subtype || '')})`)}
+  ${conditional(!!linkedProposalId, SQL`AND (${this.getLinkedProposalQuery(linkedProposalId || '')})`)}
+  ${conditional(!!search, SQL`AND "rank" > 0`)}
+  ORDER BY ${conditional(!!coauthor && !!user, SQL`CASE c.status WHEN 'PENDING' THEN 1 END,`)} 
+  ${SQL.raw(orderBy)} ${SQL.raw(orderDirection)} 
+  ${limitQuery(limit, {
+    min: 0,
+    max: 100,
+    defaultValue: 100,
+  })} ${offsetQuery(offset)}`
+
+    console.log('PROPOSAL query', query)
+    const proposals = await this.namedQuery('proposals_list', query)
 
     return proposals.map(this.parse)
   }
@@ -594,6 +594,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
 
     `
 
+    console.log('PRIORITY query', query)
     return await this.namedQuery('get_priority_proposals', query)
   }
 }
