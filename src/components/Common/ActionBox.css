@@ -1,15 +1,15 @@
-.ProfileBox__Container {
+.ActionBox__Container {
   background: var(--white-900);
   border: 1px solid var(--black-100);
   box-shadow: 0 1px 8px var(--black-100);
   border-radius: 8px;
 }
 
-.ProfileBox__Padded {
+.ActionBox__Padded {
   padding: 16px;
 }
 
-.ProfileBox__Header {
+.ActionBox__Header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -17,7 +17,7 @@
   padding-bottom: 13px;
 }
 
-.ProfileBox__HeaderTitle > span {
+.ActionBox__HeaderTitle > span {
   font-weight: var(--weight-semi-bold);
   font-size: 13px;
   line-height: 18px;
@@ -26,15 +26,15 @@
   margin-right: 4px;
 }
 
-.ProfileBox__HeaderTitle {
+.ActionBox__HeaderTitle {
   display: inline-flex;
   text-transform: uppercase;
 }
 
-.ProfileBox__Divider {
+.ActionBox__Divider {
   margin-top: 0 !important;
 }
 
-.ProfileBox__Container .ProfileBox__HeaderAction .ui.button {
+.ActionBox__Container .ActionBox__HeaderAction .ui.button {
   padding: 0;
 }
