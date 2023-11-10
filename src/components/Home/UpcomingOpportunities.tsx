@@ -9,8 +9,8 @@ const UpcomingOpportunities = () => {
   return (
     <div className="ActiveCommunityGrants">
       <HomeSectionHeader
-        title={t('home.upcoming_opportunities.title')}
-        description={t('home.upcoming_opportunities.description')}
+        title={t('home.priority_homepage.title')}
+        description={t('home.priority_homepage.description')}
       />
       <PriorityProposalsBox />
     </div>

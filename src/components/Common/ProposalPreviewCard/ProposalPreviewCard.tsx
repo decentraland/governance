@@ -35,31 +35,28 @@ interface Props {
 }
 
 function getPriorityText(proposal: PriorityProposal, t: (...args: any[]) => any) {
-  const isProposalActive = Time().isBefore(Time(proposal.finish_at))
-  const dateText = getDateText(t, isProposalActive, proposal.finish_at)
-
   switch (proposal.priority_type) {
     case PriorityProposalType.ActiveGovernance:
-      return dateText
+      return t('component.priority_proposals.active_governance', { time: Time(proposal.finish_at).fromNow() })
     case PriorityProposalType.OpenPitch:
       return t('component.priority_proposals.open_pitch')
     case PriorityProposalType.PitchWithSubmissions:
-      return t('component.priority_proposals.pitch_with_submissions')
-    case PriorityProposalType.PitchOnVotingPhase:
-      return t('component.priority_proposals.pitch_on_voting_phase')
+      return t('component.priority_proposals.pitch_with_submissions', {
+        time: Time(proposal.linked_proposals_data[0].start_at).fromNow(),
+      })
+    case PriorityProposalType.PitchOnTenderVotingPhase:
+      return t('component.priority_proposals.pitch_on_tender_voting_phase', {
+        time: Time(proposal.linked_proposals_data[0].finish_at).fromNow(),
+      })
     case PriorityProposalType.OpenTender:
-      return dateText
+      return t('component.priority_proposals.open_tender')
     case PriorityProposalType.TenderWithSubmissions:
-      return t('component.priority_proposals.tender_with_submissions')
+      return t('component.priority_proposals.tender_with_submissions', {
+        time: Time(proposal.linked_proposals_data[0].start_at).fromNow(), // TODO: this would be bids publish_at
+      })
     case PriorityProposalType.ActiveBid:
-      return dateText
+      return t('component.priority_proposals.active_bid', { time: Time(proposal.finish_at).fromNow() })
   }
-}
-
-function getDateText(t: (...args: any[]) => any, isProposalActive: boolean, finish_at: Date) {
-  return t(`page.home.open_proposals.${isProposalActive ? 'ends_date' : 'ended_date'}`, {
-    value: Time(finish_at).fromNow(),
-  })
 }
 
 const ProposalPreviewCard = ({ proposal, votes, variant }: Props) => {
