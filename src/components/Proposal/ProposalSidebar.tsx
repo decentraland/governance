@@ -46,9 +46,9 @@ type Props = {
   subscribe: (subscribe: boolean) => void
   subscriptions: SubscriptionAttributes[] | null
   subscriptionsLoading: boolean
-  votes: Record<string, Vote> | null
+  votes?: Record<string, Vote> | null
   votesLoading: boolean
-  highQualityVotes: Record<string, Vote> | null
+  highQualityVotes?: Record<string, Vote> | null
   isOwner: boolean
   isCoauthor: boolean
 }
