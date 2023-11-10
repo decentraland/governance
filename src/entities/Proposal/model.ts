@@ -527,7 +527,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         
         UNION -- Closed pitches with submissions in voting phase
         SELECT ${cols}
-                ,${PriorityProposalType.PitchOnVotingPhase} AS priority_type
+                ,${PriorityProposalType.PitchOnTenderVotingPhase} AS priority_type
         FROM ${table(this)} p
         WHERE type = ${ProposalType.Pitch} AND
              p.status = ${ProposalStatus.Passed} AND
@@ -546,7 +546,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
                  SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(this)} AS p2
                  WHERE type = ${ProposalType.Bid})
     
-        UNION -- Open tenders with submissions
+        UNION -- Open tenders with submissions TODO: join with BIDS table instead of proposals
         SELECT ${cols}
                ,${PriorityProposalType.TenderWithSubmissions} AS priority_type
         FROM ${table(this)} p
@@ -566,31 +566,43 @@ export default class ProposalModel extends Model<ProposalAttributes> {
 
         SELECT
             app.*,
-            COALESCE(lp.linked_ids, ARRAY[]::TEXT[]) as linked_proposals_ids
+            COALESCE(
+                            JSON_AGG(
+                            JSON_BUILD_OBJECT(
+                                    'id', lp.id,
+                                    'start_at', lp.start_at,
+                                    'finish_at', lp.finish_at,
+                                    'created_at', lp.created_at
+                            ) ORDER BY lp.created_at
+                                    ) FILTER (WHERE lp.id IS NOT NULL),
+                            '[]'::JSON
+            ) AS linked_proposals_data
         FROM
             all_priority_proposals app
                 LEFT JOIN (
                 SELECT
-                    (configuration->>'linked_proposal_id') linked_proposal_id,
-                    ARRAY_AGG(id) as linked_ids
+                    id,
+                    start_at,
+                    finish_at,
+                    created_at,
+                    (configuration->>'linked_proposal_id') AS linked_proposal_id
                 FROM
                     ${table(this)}
                 WHERE
                     (configuration->>'linked_proposal_id') IS NOT NULL
-                GROUP BY
-                    (configuration->>'linked_proposal_id')
             ) lp ON app.id = lp.linked_proposal_id
-                
-        ${conditional(
-          !!lowerAddress,
-          SQL`
+        GROUP BY app.id, app.title, app.user, app.type, app.status, app.start_at, app.finish_at, app.snapshot_proposal, app.configuration, app.priority_type
+
+            ${conditional(
+              !!lowerAddress,
+              SQL`
                     LEFT JOIN ${table(CoauthorModel)} c ON
                                 app.id = c.proposal_id AND
                                 c.status = 'APPROVED' AND
                                 c.address = ${lowerAddress}
                     WHERE c.address IS NULL 
                     AND app.user <> ${lowerAddress}`
-        )}; -- exclude coauthored and authored proposals;
+            )}; -- exclude coauthored and authored proposals;
 
     `
 

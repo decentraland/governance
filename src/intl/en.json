@@ -756,13 +756,16 @@
       "hide": "Hide"
     },
     "priority_proposals": {
-      "title": "Time sensitive",
-      "info": "Proposals that need your attention reit neu",
+      "title": "Priority Proposals Spotlight",
+      "info": "This section highlights binding Governance and project-related proposals that need your attention.",
       "show_all": "Show all {count} proposals",
-      "pitch_with_submissions": "Tender submissions end in lalala",
-      "tender_with_submissions": "Bids submissions end in lalala",
-      "open_pitch": "Open for submissions",
-      "pitch_on_voting_phase": "Tenders open for voting"
+      "active_governance": "Voting ends in {time}",
+      "open_pitch": "Open for Tenders",
+      "pitch_with_submissions": "Tender submissions end in {time}",
+      "pitch_on_tender_voting_phase": "Tender proposal voting ends in {time}",
+      "open_tender": "Open for Bids",
+      "tender_with_submissions": "Bids submission ends in {time}",
+      "active_bids": "Bid proposals voting ends in {time}"
     }
   },
   "page": {
@@ -822,9 +825,9 @@
         "you_voted": "You voted",
         "vote": "Vote"
       },
-      "upcoming_opportunities": {
-        "title": "Upcoming Opportunities",
-        "description": "Our DAO has implemented a new, inbound Bidding & Tendering mechanism that aims to surface project ideas to be scoped accordingly by potentially new and external teams."
+      "priority_homepage": {
+        "title": "Priority Proposals Spotlight",
+        "description": "Your vote matters. This section highlights binding Governance and project-related proposals that need your attention now."
       },
       "active_community_grants": {
         "title": "Active Community Grants",
