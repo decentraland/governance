@@ -849,7 +849,7 @@ export enum PriorityProposalType {
   ActiveGovernance = 'active_governance',
   OpenPitch = 'open_pitch',
   PitchWithSubmissions = 'pitch_with_submissions',
-  PitchOnVotingPhase = 'pitch_on_voting_phase',
+  PitchOnTenderVotingPhase = 'pitch_on_tender_voting_phase',
   OpenTender = 'open_tender',
   TenderWithSubmissions = 'tender_with_submissions',
   ActiveBid = 'active_bid',
@@ -860,5 +860,7 @@ export type PriorityProposal = Pick<
   'id' | 'title' | 'finish_at' | 'start_at' | 'type' | 'status' | 'configuration' | 'user' | 'snapshot_proposal'
 > & {
   priority_type: PriorityProposalType
-  linked_proposals_ids: string[]
+  linked_proposals_data: LinkedProposal[]
 }
+
+export type LinkedProposal = Pick<ProposalAttributes, 'id' | 'finish_at' | 'start_at' | 'created_at'>

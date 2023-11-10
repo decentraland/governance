@@ -38,8 +38,8 @@ function PriorityProposalsBox({ address, collapsible = false }: Props) {
   const proposalIds =
     priorityProposals?.reduce((acc: string[], priorityProposal) => {
       acc.push(priorityProposal.id)
-      if (priorityProposal.linked_proposals_ids && priorityProposal.linked_proposals_ids.length > 0) {
-        acc.push(...priorityProposal.linked_proposals_ids)
+      if (priorityProposal.linked_proposals_data && priorityProposal.linked_proposals_data.length > 0) {
+        priorityProposal.linked_proposals_data.map((linkedProposal) => acc.push(linkedProposal.id))
       }
       return acc
     }, []) || []
@@ -49,8 +49,8 @@ function PriorityProposalsBox({ address, collapsible = false }: Props) {
     votes && priorityProposals && address
       ? priorityProposals?.filter((proposal) => {
           const hasVotedOnMain = votes && address && votes[proposal.id] && !!votes[proposal.id][address]
-          const hasVotedOnLinked = proposal.linked_proposals_ids.some(
-            (linkedId) => votes[linkedId] && !!votes[linkedId][address]
+          const hasVotedOnLinked = proposal.linked_proposals_data.some(
+            (linkedProposal) => votes[linkedProposal.id] && !!votes[linkedProposal.id][address]
           )
 
           return !hasVotedOnMain && !hasVotedOnLinked
