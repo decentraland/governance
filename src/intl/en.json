@@ -706,6 +706,7 @@
         "card_title": "Discord",
         "card_description": "Receive personalized notifications so you don't miss important events.",
         "title": "Discord Account",
+        "subtitle": "Follow these steps to link your account to your wallet and start getting notifications in Discord.",
         "action": "Confirm link",
         "title_step_1": "1. Sign message",
         "description_step_1": "Use your web3 wallet to securely sign a message to start the linking process.",
@@ -728,11 +729,11 @@
           "step_2_active": "Click to copy to clipboard",
           "step_2_success": "Content copied. Click to copy again"
         },
-        "success_text": "**DISCORD_TITLE**\n\nDISCORD_SUBTITLE",
-        "success_subtext": "DISCORD_SUBTEXT",
+        "success_text": "**Discord and Governance accounts linked successfully 🎉**\n\nYou'll start getting notified via Discord DM when there's new activity in proposals relevant to you.",
+        "success_subtext": " ",
         "success_button": "Take me to my Profile",
-        "error_text": "**DISCORD_ERROR_TITLE**\n\nDISCORD_ERROR_SUBTITLE",
-        "error_subtext": "DISCORD_ERROR_SUBTEXT",
+        "error_text": "**Discord Account linking failed**\n\nSomething happened. It must have been aliens or a malevolent AI but we can't be sure.",
+        "error_subtext": "Maybe have a go at it one more time?",
         "error_button": "Retry"
       },
       "twitter": {

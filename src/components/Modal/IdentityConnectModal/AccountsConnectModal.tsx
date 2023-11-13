@@ -378,6 +378,7 @@ function AccountsConnectModal({ open, onClose, account }: Props) {
       },
       [ModalType.Discord]: {
         title: t('modal.identity_setup.discord.title'),
+        subtitle: t('modal.identity_setup.discord.subtitle'),
         actions: getAccountActionSteps(
           AccountType.Discord,
           DISCORD_CONNECT_STEPS_AMOUNT,
@@ -450,6 +451,7 @@ function AccountsConnectModal({ open, onClose, account }: Props) {
       {isValidated === undefined ? (
         <AccountConnection
           title={stateMap[currentType].title}
+          subtitle={stateMap[currentType].subtitle}
           timerText={
             modalState.isTimerActive
               ? t(timerTextKey, {

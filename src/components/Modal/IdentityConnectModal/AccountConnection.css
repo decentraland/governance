@@ -5,6 +5,9 @@
   font-size: 17px !important;
   line-height: 26px !important;
   letter-spacing: -0.2px;
+  display: flex !important;
+  align-items: center;
+  flex-direction: column;
 }
 
 .AccountConnection__HelperContainer {
@@ -21,6 +24,11 @@
   font-size: 13px;
   text-align: center;
   color: var(--black-600);
+}
+
+.AccountConnection__Subtitle {
+  margin: 0;
+  max-width: 80%;
 }
 
 .AccountConnection__Timer {
