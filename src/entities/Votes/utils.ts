@@ -35,11 +35,11 @@ function _createVotes<T>(votes: SnapshotVote[], returnValue: (vote: Vote, prevVa
   }, {} as Record<string, T>)
 }
 
-export function createVotes(votes: SnapshotVote[]): VoteByAddress {
+export function getVoteByAddress(votes: SnapshotVote[]): VoteByAddress {
   return _createVotes(votes, (vote) => vote)
 }
 
-export function createMultipleVotes(votes: SnapshotVote[]): VotesByAddress {
+export function getVotesArrayByAddress(votes: SnapshotVote[]): VotesByAddress {
   return _createVotes(votes, (vote, prevValue) => {
     if (prevValue) {
       return [...prevValue, vote]

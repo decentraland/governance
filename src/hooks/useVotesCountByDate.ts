@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { Governance } from '../clients/Governance'
-import { createMultipleVotes, getMultipleVotesSegmentation } from '../entities/Votes/utils'
+import { getMultipleVotesSegmentation, getVotesArrayByAddress } from '../entities/Votes/utils'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
@@ -14,7 +14,7 @@ export default function useVotesCountByDate(start: Date, end: Date) {
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
-  const parsedVotes = votes ? createMultipleVotes(votes) : undefined
+  const parsedVotes = votes ? getVotesArrayByAddress(votes) : undefined
   const { highQualityVotes } = getMultipleVotesSegmentation(parsedVotes)
 
   const votesCount = Object.values(highQualityVotes).reduce((acc, votes) => {

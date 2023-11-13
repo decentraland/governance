@@ -10,7 +10,7 @@ import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import VotesModel from '../../entities/Votes/model'
 import { VoteAttributes, VoteByAddress } from '../../entities/Votes/types'
-import { createVotes, toProposalIds } from '../../entities/Votes/utils'
+import { getVoteByAddress, toProposalIds } from '../../entities/Votes/utils'
 import { ProposalService } from '../../services/ProposalService'
 import { SnapshotService } from '../../services/SnapshotService'
 import Time from '../../utils/date/Time'
@@ -53,7 +53,7 @@ export async function getProposalVotes(req: Request<{ proposal: string }>) {
 export async function updateSnapshotProposalVotes(proposal: ProposalAttributes, snapshotVotes: SnapshotVote[]) {
   const now = new Date()
   const hash = VotesModel.hashVotes(snapshotVotes)
-  const votes = createVotes(snapshotVotes)
+  const votes = getVoteByAddress(snapshotVotes)
   await VotesModel.update<VoteAttributes>(
     {
       hash,
