@@ -10,7 +10,8 @@ import './ActionBox.css'
 import Divider from './Divider'
 
 interface Props {
-  title: string
+  title: React.ReactNode
+  collapsedTitle?: React.ReactNode
   info?: string
   action?: React.ReactNode
   children: React.ReactNode
@@ -18,7 +19,7 @@ interface Props {
   collapsible?: boolean
 }
 
-export function ActionBox({ children, title, info, action, className, collapsible }: Props) {
+export function ActionBox({ children, title, collapsedTitle, info, action, className, collapsible }: Props) {
   const t = useFormatMessage()
   const [expanded, setExpanded] = useState(true)
 
@@ -27,7 +28,7 @@ export function ActionBox({ children, title, info, action, className, collapsibl
       <div className={classNames('ActionBox__Container', className)}>
         <div className={classNames('ActionBox__Header', 'ActionBox__Padded')}>
           <div className="ActionBox__HeaderTitle">
-            <span>{title}</span>
+            {!expanded && collapsedTitle ? collapsedTitle : <span>{title}</span>}
             {info && <Helper text={info} size="12" position="right center" />}
           </div>
           <div className="ActionBox__HeaderAction">
