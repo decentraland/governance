@@ -759,13 +759,13 @@
       "title": "Priority Proposals Spotlight",
       "info": "This section highlights binding Governance and project-related proposals that need your attention.",
       "show_all": "Show all {count} proposals",
-      "active_governance": "Voting ends in {time}",
+      "active_governance": "Voting ends {time}",
       "open_pitch": "Open for Tenders",
-      "pitch_with_submissions": "Tender submissions end in {time}",
-      "pitch_on_tender_voting_phase": "Tender proposal voting ends in {time}",
+      "pitch_with_submissions": "Tender submissions end {time}",
+      "pitch_on_tender_voting_phase": "Tender proposal voting ends {time}",
       "open_tender": "Open for Bids",
-      "tender_with_submissions": "Bids submission ends in {time}",
-      "active_bids": "Bid proposals voting ends in {time}"
+      "tender_with_submissions": "Bids submission ends {time}",
+      "active_bids": "Bid proposals voting ends {time}"
     }
   },
   "page": {
@@ -825,7 +825,7 @@
         "you_voted": "You voted",
         "vote": "Vote"
       },
-      "priority_homepage": {
+      "priority_spotlight": {
         "title": "Priority Proposals Spotlight",
         "description": "Your vote matters. This section highlights binding Governance and project-related proposals that need your attention now."
       },
