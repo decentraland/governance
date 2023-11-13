@@ -2,7 +2,7 @@ import upperFirst from 'lodash/upperFirst'
 
 import { DelegationsLabelProps } from '../../components/Proposal/View/ProposalVoting/DelegationsLabel'
 import { VotedChoice } from '../../components/Proposal/View/ProposalVoting/VotedChoiceButton'
-import { Vote } from '../../entities/Votes/types'
+import { Vote, VoteByAddress } from '../../entities/Votes/types'
 import { Scores } from '../../entities/Votes/utils'
 
 import { DelegationsLabelBuilder } from './helpers/DelegationsLabelBuilder'
@@ -17,7 +17,7 @@ export interface VotingSectionConfigProps {
 }
 
 export function getVotingSectionConfig(
-  votes: Record<string, Vote> | null | undefined,
+  votes: VoteByAddress | null | undefined,
   choices: string[],
   delegate: string | null,
   delegators: string[] | null,
@@ -64,7 +64,7 @@ export function getVotingSectionConfig(
 
 export function getPartyVotes(
   delegators: string[],
-  votes: Record<string, Vote> | null | undefined,
+  votes: VoteByAddress | null | undefined,
   choices: string[]
 ): { votesByChoices: Scores; totalVotes: number } {
   let totalVotes = 0

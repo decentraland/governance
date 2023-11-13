@@ -5,7 +5,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { ProposalAttributes, ProposalStatus } from '../../../../entities/Proposal/types'
-import { SelectedVoteChoice, Vote } from '../../../../entities/Votes/types'
+import { SelectedVoteChoice, VoteByAddress } from '../../../../entities/Votes/types'
 import useDelegationOnProposal from '../../../../hooks/useDelegationOnProposal'
 import useFormatMessage from '../../../../hooks/useFormatMessage'
 import useVotesMatch from '../../../../hooks/useVotesMatch'
@@ -26,7 +26,7 @@ import VotingSectionFooter from './VotingSectionFooter'
 
 interface Props {
   proposal?: ProposalAttributes | null
-  votes?: Record<string, Vote> | null
+  votes?: VoteByAddress | null
   loading?: boolean
   choices: string[]
   finished: boolean

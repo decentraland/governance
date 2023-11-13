@@ -1,5 +1,5 @@
 import { ProposalAttributes } from '../entities/Proposal/types'
-import { Vote } from '../entities/Votes/types'
+import { VoteByAddress } from '../entities/Votes/types'
 
 import useSurveyTopics from './useSurveyTopics'
 
@@ -7,7 +7,7 @@ const SURVEY_FEATURE_LAUNCH = new Date(2023, 3, 5, 0, 0)
 
 export default function useSurvey(
   proposal?: ProposalAttributes | null,
-  votes?: Record<string, Vote> | null,
+  votes?: VoteByAddress | null,
   isLoadingVotes?: boolean,
   isMobile?: boolean
 ) {

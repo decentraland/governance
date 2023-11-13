@@ -8,7 +8,7 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { VOTES_VP_THRESHOLD } from '../../../constants'
 import { ProposalAttributes } from '../../../entities/Proposal/types'
-import { Vote } from '../../../entities/Votes/types'
+import { VoteByAddress } from '../../../entities/Votes/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import FullWidthButton from '../../Common/FullWidthButton'
 import '../ProposalModal.css'
@@ -18,8 +18,8 @@ import './VotesList.css'
 
 type Props = Omit<ModalProps, 'children'> & {
   proposal?: ProposalAttributes | null
-  highQualityVotes?: Record<string, Vote> | null
-  lowQualityVotes?: Record<string, Vote> | null
+  highQualityVotes?: VoteByAddress | null
+  lowQualityVotes?: VoteByAddress | null
 }
 
 export default function VotesListModal({ proposal, highQualityVotes, lowQualityVotes, onClose, ...props }: Props) {

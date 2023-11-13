@@ -6,7 +6,7 @@ import 'chart.js/auto'
 import 'chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm'
 import annotationPlugin from 'chartjs-plugin-annotation'
 
-import { Vote } from '../../entities/Votes/types'
+import { VoteByAddress } from '../../entities/Votes/types'
 import useAbbreviatedFormatter from '../../hooks/useAbbreviatedFormatter'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useProfiles from '../../hooks/useProfiles'
@@ -29,7 +29,7 @@ ChartJS.register(annotationPlugin)
 
 interface Props {
   requiredToPass?: number | null
-  voteMap: Record<string, Vote>
+  voteMap: VoteByAddress
   isLoadingVotes?: boolean
   startTimestamp?: number
   endTimestamp?: number

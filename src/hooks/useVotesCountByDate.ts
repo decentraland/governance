@@ -22,7 +22,7 @@ export default function useVotesCountByDate(start: Date, end: Date) {
   }, 0)
 
   return {
-    votesCount: votes ? votesCount : undefined,
+    votesCount,
     isLoadingVotesCount: isLoading,
   }
 }

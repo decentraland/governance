@@ -3,9 +3,10 @@ import isUUID from 'validator/lib/isUUID'
 import { SnapshotVote } from '../../clients/SnapshotTypes'
 import { VOTES_VP_THRESHOLD } from '../../constants'
 
-import { ChoiceColor, Vote, VoteSegmentation } from './types'
+import { ChoiceColor, Vote, VoteByAddress, VoteSegmentation } from './types'
 
 export type Scores = Record<string, number>
+type VotesByAddress = Record<string, Vote[]>
 
 export function toProposalIds(ids?: undefined | null | string | string[]) {
   if (!ids) {
@@ -34,11 +35,11 @@ function _createVotes<T>(votes: SnapshotVote[], returnValue: (vote: Vote, prevVa
   }, {} as Record<string, T>)
 }
 
-export function createVotes(votes: SnapshotVote[]): Record<string, Vote> {
+export function createVotes(votes: SnapshotVote[]): VoteByAddress {
   return _createVotes(votes, (vote) => vote)
 }
 
-export function createMultipleVotes(votes: SnapshotVote[]): Record<string, Vote[]> {
+export function createMultipleVotes(votes: SnapshotVote[]): VotesByAddress {
   return _createVotes(votes, (vote, prevValue) => {
     if (prevValue) {
       return [...prevValue, vote]
@@ -48,7 +49,7 @@ export function createMultipleVotes(votes: SnapshotVote[]): Record<string, Vote[
   })
 }
 
-export function calculateResult(choices: string[], votes: Record<string, Vote>, requiredVotingPower = 0) {
+export function calculateResult(choices: string[], votes: VoteByAddress, requiredVotingPower = 0) {
   let totalPower = 0
   const balance: Scores = {}
   const choiceCount: Scores = {}
@@ -152,7 +153,7 @@ export function calculateChoiceColor(value: string, index: number): ChoiceColor 
   }
 }
 
-export function calculateResultWinner(choices: string[], votes: Record<string, Vote>, requiredVotingPower = 0) {
+export function calculateResultWinner(choices: string[], votes: VoteByAddress, requiredVotingPower = 0) {
   const result = calculateResult(choices, votes, requiredVotingPower)
 
   return result.reduce((winner, current) => {
@@ -183,9 +184,9 @@ function getFloorOrZero(number?: number) {
   return Math.floor(number || 0)
 }
 
-export function getVoteSegmentation(votes: Record<string, Vote> | null | undefined): VoteSegmentation<Vote> {
-  const highQualityVotes: Record<string, Vote> = {}
-  const lowQualityVotes: Record<string, Vote> = {}
+export function getVoteSegmentation(votes: VoteByAddress | null | undefined): VoteSegmentation<Vote> {
+  const highQualityVotes: VoteByAddress = {}
+  const lowQualityVotes: VoteByAddress = {}
 
   if (votes) {
     Object.entries(votes).forEach(([address, vote]) => {
@@ -203,11 +204,9 @@ export function getVoteSegmentation(votes: Record<string, Vote> | null | undefin
   }
 }
 
-export function getMultipleVotesSegmentation(
-  votes: Record<string, Vote[]> | null | undefined
-): VoteSegmentation<Vote[]> {
-  const highQualityVotes: Record<string, Vote[]> = {}
-  const lowQualityVotes: Record<string, Vote[]> = {}
+export function getMultipleVotesSegmentation(votes: VotesByAddress | null | undefined): VoteSegmentation<Vote[]> {
+  const highQualityVotes: VotesByAddress = {}
+  const lowQualityVotes: VotesByAddress = {}
 
   if (votes) {
     Object.entries(votes).forEach(([address, votes]) => {
