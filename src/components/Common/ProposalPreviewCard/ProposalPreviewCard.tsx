@@ -42,17 +42,17 @@ function getPriorityText(proposal: PriorityProposal, t: (...args: any[]) => any)
       return t('component.priority_proposals.open_pitch')
     case PriorityProposalType.PitchWithSubmissions:
       return t('component.priority_proposals.pitch_with_submissions', {
-        time: Time(proposal.linked_proposals_data[0].start_at).fromNow(),
+        time: Time(proposal.linked_proposals_data![0].start_at).fromNow(),
       })
     case PriorityProposalType.PitchOnTenderVotingPhase:
       return t('component.priority_proposals.pitch_on_tender_voting_phase', {
-        time: Time(proposal.linked_proposals_data[0].finish_at).fromNow(),
+        time: Time(proposal.linked_proposals_data![0].finish_at).fromNow(),
       })
     case PriorityProposalType.OpenTender:
       return t('component.priority_proposals.open_tender')
     case PriorityProposalType.TenderWithSubmissions:
       return t('component.priority_proposals.tender_with_submissions', {
-        time: Time(proposal.linked_proposals_data[0].start_at).fromNow(), // TODO: this would be bids publish_at
+        time: Time(proposal.unpublished_bids_data![0].publish_at).fromNow(),
       })
     case PriorityProposalType.ActiveBid:
       return t('component.priority_proposals.active_bid', { time: Time(proposal.finish_at).fromNow() })

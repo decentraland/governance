@@ -15,6 +15,7 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
 import Time from '../../utils/date/Time'
+import { BidStatus } from '../Bid/types'
 import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'
 import { BUDGETING_START_DATE } from '../Grant/constants'
@@ -545,18 +546,18 @@ export default class ProposalModel extends Model<ProposalAttributes> {
              p.status = ${ProposalStatus.Passed} AND
              p.finish_at >= ${aMonthAgo} AND
              id NOT IN (
-                 SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(this)} AS p2
-                 WHERE type = ${ProposalType.Bid})
+                 SELECT linked_proposal_id FROM unpublished_bids AS ub
+                 WHERE status = ${BidStatus.Pending})
     
-        UNION -- Open tenders with submissions TODO: join with BIDS table instead of proposals
+        UNION -- Open tenders with submissions
         SELECT ${cols}
                ,${PriorityProposalType.TenderWithSubmissions} AS priority_type
         FROM ${table(this)} p
         WHERE type = ${ProposalType.Tender} AND
              p.status = ${ProposalStatus.Passed} AND
              p.id IN (
-                SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(this)} AS p2 
-                WHERE type = ${ProposalType.Bid} AND status = ${ProposalStatus.Pending})
+                SELECT linked_proposal_id FROM unpublished_bids AS ub 
+                WHERE status = ${BidStatus.Pending})
         
         UNION -- Active bids
         SELECT ${cols}
@@ -593,7 +594,6 @@ export default class ProposalModel extends Model<ProposalAttributes> {
                 WHERE
                     (configuration->>'linked_proposal_id') IS NOT NULL
             ) lp ON app.id = lp.linked_proposal_id
-        GROUP BY app.id, app.title, app.user, app.type, app.status, app.start_at, app.finish_at, app.snapshot_proposal, app.configuration, app.priority_type
 
             ${conditional(
               !!lowerAddress,
@@ -604,9 +604,9 @@ export default class ProposalModel extends Model<ProposalAttributes> {
                                 c.address = ${lowerAddress}
                     WHERE c.address IS NULL 
                     AND app.user <> ${lowerAddress}`
-            )}; -- exclude coauthored and authored proposals;
-
-    `
+            )} -- exclude coauthored and authored proposals;
+        GROUP BY app.id, app.title, app.user, app.type, app.status, app.start_at, app.finish_at, app.snapshot_proposal, app.configuration, app.priority_type
+    ;`
 
     console.log('PRIORITY query', query)
     return await this.namedQuery('get_priority_proposals', query)

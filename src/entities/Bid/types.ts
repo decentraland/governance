@@ -19,6 +19,11 @@ export type UnpublishedBidAttributes = {
   status: BidStatus
 }
 
+export type UnpublishedBidInfo = Pick<
+  UnpublishedBidAttributes,
+  'id' | 'publish_at' | 'author_address' | 'linked_proposal_id'
+>
+
 export type BidRequestFunding = {
   funding: string | number
   projectDuration: number

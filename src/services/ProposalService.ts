@@ -5,12 +5,19 @@ import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import { NotificationService } from '../back/services/notification'
 import { DiscoursePost } from '../clients/Discourse'
 import { SnapshotProposalContent } from '../clients/SnapshotTypes'
+import UnpublishedBidModel from '../entities/Bid/model'
 import CoauthorModel from '../entities/Coauthor/model'
 import isDAOCommittee from '../entities/Committee/isDAOCommittee'
 import ProposalModel from '../entities/Proposal/model'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import * as templates from '../entities/Proposal/templates'
-import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
+import {
+  PriorityProposal,
+  PriorityProposalType,
+  ProposalAttributes,
+  ProposalStatus,
+  ProposalType,
+} from '../entities/Proposal/types'
 import { isGrantProposalSubmitEnabled } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import VotesModel from '../entities/Votes/model'
@@ -231,6 +238,27 @@ export class ProposalService {
   }
 
   static async getPriorityProposals(address?: string) {
-    return await ProposalModel.getPriorityProposals(address)
+    const priorityProposals = await ProposalModel.getPriorityProposals(address)
+
+    const tendersWithSubmissionsIds = priorityProposals
+      .filter((proposal) => proposal.priority_type === PriorityProposalType.TenderWithSubmissions)
+      .map((tender) => tender.id)
+
+    const unpublishedBidsForTenders = await UnpublishedBidModel.getBidsInfoByTenders(tendersWithSubmissionsIds)
+
+    const tendersWithSubmissions: PriorityProposal[] = priorityProposals
+      .filter((proposal) => proposal.priority_type === PriorityProposalType.TenderWithSubmissions)
+      .map((tender) => {
+        const bids = unpublishedBidsForTenders.filter((bid) => bid.linked_proposal_id === tender.id)
+        return {
+          ...tender,
+          unpublished_bids_data: bids,
+        }
+      })
+
+    return [
+      ...priorityProposals.filter((proposal) => proposal.priority_type != PriorityProposalType.TenderWithSubmissions),
+      ...tendersWithSubmissions,
+    ]
   }
 }

@@ -1,7 +1,7 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import { SQL, join, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 
-import { BidStatus, UnpublishedBidAttributes } from './types'
+import { BidStatus, UnpublishedBidAttributes, UnpublishedBidInfo } from './types'
 
 const DB_ENCRYPTION_KEY = String(process.env.DB_ENCRYPTION_KEY || '')
 
@@ -114,5 +114,18 @@ export default class UnpublishedBidModel extends Model<UnpublishedBidAttributes>
     FROM ${table(this)} WHERE status = ${BidStatus.Pending};`
 
     return (await this.namedQuery('get_open_tenders_count', query))[0]
+  }
+
+  static async getBidsInfoByTenders(tenderIds: string[]): Promise<UnpublishedBidInfo[]> {
+    if (tenderIds.length === 0) return []
+    const query = SQL`
+    SELECT  id, publish_at, author_address, linked_proposal_id
+    FROM ${table(this)} 
+    WHERE linked_proposal_id IN (${join(
+      tenderIds.map((id) => SQL`${id}`),
+      SQL`, `
+    )}) AND status = ${BidStatus.Pending};`
+
+    return await this.namedQuery('get_bids_info_by_tenders', query)
   }
 }
