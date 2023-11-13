@@ -23,13 +23,13 @@ export default class UserModel extends Model<UserAttributes> {
 
   static async createDiscordConnection(address: string, discord_id: string) {
     const query = SQL`
-      INSERT INTO ${table(this)} (address, discord_id, discord_verification_date, is_discord_active) 
+      INSERT INTO ${table(this)} (address, discord_id, discord_verification_date, is_discord_notifications_active) 
       VALUES (${address.toLowerCase()}, ${discord_id}, ${new Date().toISOString()}, true)
       ON CONFLICT (address)
       DO UPDATE SET
         discord_id = EXCLUDED.discord_id,
         discord_verification_date = EXCLUDED.discord_verification_date,
-        is_discord_active = EXCLUDED.is_discord_active
+        is_discord_notifications_active = EXCLUDED.is_discord_notifications_active
     `
 
     return await this.namedQuery('create_discord_connection', query)
@@ -52,18 +52,23 @@ export default class UserModel extends Model<UserAttributes> {
     if (addresses.length === 0) return Promise.resolve([])
 
     const query = SQL`
-      SELECT address, forum_id, discord_id, is_discord_active FROM ${table(this)} WHERE address IN (${join(
+      SELECT address, forum_id, discord_id, is_discord_notifications_active FROM ${table(
+        this
+      )} WHERE address IN (${join(
       addresses.map((addr) => SQL`${addr.toLowerCase()}`),
       SQL`,`
-    )}) AND discord_id IS NOT NULL ${conditional(shouldDiscordBeActive, SQL`AND is_discord_active = true`)}
+    )}) AND discord_id IS NOT NULL ${conditional(
+      shouldDiscordBeActive,
+      SQL`AND is_discord_notifications_active = true`
+    )}
     `
     return await this.namedQuery('get_discord_ids_by_addresses', query)
   }
 
-  static async updateDiscordActiveStatus(address: string, is_discord_active: boolean) {
+  static async updateDiscordActiveStatus(address: string, is_discord_notifications_active: boolean) {
     const query = SQL`
       UPDATE ${table(this)} 
-      SET is_discord_active = ${is_discord_active}
+      SET is_discord_notifications_active = ${is_discord_notifications_active}
       WHERE address = ${address.toLowerCase()} AND discord_id IS NOT NULL
     `
     return await this.namedQuery('update_discord_active_status', query)

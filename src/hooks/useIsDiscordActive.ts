@@ -8,7 +8,7 @@ import { DEFAULT_QUERY_STALE_TIME } from './constants'
 function useIsDiscordActive() {
   const [user] = useAuthContext()
   const { data, refetch } = useQuery({
-    queryKey: [`isDiscordActive#${user}`],
+    queryKey: [`isDiscordActive`, user],
     queryFn: () => Governance.get().getIsDiscordActive(),
     enabled: !!user,
     staleTime: DEFAULT_QUERY_STALE_TIME,

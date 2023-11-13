@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { useQueryClient } from '@tanstack/react-query'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useTrackContext from 'decentraland-gatsby/dist/context/Track/useTrackContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -9,12 +10,11 @@ import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 import { SegmentEvent } from '../../../entities/Events/types'
 import { GATSBY_DISCORD_PROFILE_VERIFICATION_URL } from '../../../entities/User/constants'
 import { AccountType } from '../../../entities/User/types'
-import { openUrl } from '../../../helpers'
 import useDiscordConnect from '../../../hooks/useDiscordConnect'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useForumConnect, { THREAD_URL } from '../../../hooks/useForumConnect'
 import useIsProfileValidated from '../../../hooks/useIsProfileValidated'
-import locations from '../../../utils/locations'
+import locations, { navigate } from '../../../utils/locations'
 import { ActionCardProps } from '../../ActionCard/ActionCard'
 import CheckCircle from '../../Icon/CheckCircle'
 import CircledDiscord from '../../Icon/CircledDiscord'
@@ -414,9 +414,29 @@ function AccountsConnectModal({ open, onClose, account }: Props) {
   )
   const currentType = modalState.currentType
 
+  const queryClient = useQueryClient()
+
+  const handleOnClose = () => {
+    resetValidation()
+    setIsTimerActive(false)
+    resetState(currentAccount)
+    setCurrentType(ModalType.ChooseAccount)
+    queryClient.invalidateQueries({
+      queryKey: ['isProfileValidated', address],
+    })
+    queryClient.invalidateQueries({
+      queryKey: ['userGovernanceProfile', address],
+    })
+    queryClient.invalidateQueries({
+      queryKey: ['isDiscordActive', address],
+    })
+    onClose()
+  }
+
   const handlePostAction = () => {
     if (isValidated) {
-      openUrl(locations.profile({ address: address || '' }), false)
+      navigate(locations.profile({ address: address || '' }))
+      handleOnClose()
     } else {
       resetValidation()
       setModalState(INITIAL_STATE)
@@ -426,18 +446,7 @@ function AccountsConnectModal({ open, onClose, account }: Props) {
   const timerTextKey = isTimerExpired ? 'modal.identity_setup.timer_expired' : 'modal.identity_setup.timer'
 
   return (
-    <Modal
-      open={open}
-      size="tiny"
-      onClose={() => {
-        resetValidation()
-        setIsTimerActive(false)
-        resetState(currentAccount)
-        setCurrentType(ModalType.ChooseAccount)
-        onClose()
-      }}
-      closeIcon={<Close />}
-    >
+    <Modal open={open} size="tiny" onClose={handleOnClose} closeIcon={<Close />}>
       {isValidated === undefined ? (
         <AccountConnection
           title={stateMap[currentType].title}

@@ -64,18 +64,19 @@ export default function NotificationsFeed({
   const [user, userState] = useAuthContext()
   const [notificationsPerPage, setNotificationsPerPage] = useState(NOTIFICATIONS_PER_PAGE)
   const lastNotificationIdIndex = userNotifications?.findIndex((item) => item.payload_id === lastNotificationId)
-  const { isProfileValidated: isValidatedOnDiscord, refetch } = useIsProfileValidated(user, [AccountType.Discord])
+  const { isProfileValidated: isValidatedOnDiscord } = useIsProfileValidated(user, [AccountType.Discord])
   const [isDiscordChanging, setIsDiscordChanging] = useState(false)
   const [isSettingsOpened, setIsSettingsOpened] = useState(false)
   const { isDiscordActive, refetch: refetchIsDiscordActive } = useIsDiscordActive()
 
-  useEffect(() => {
-    if (isOpen && !isValidatedOnDiscord) {
-      refetch()
-    }
-  }, [isValidatedOnDiscord, isOpen, refetch])
+  const handleOnClose = () => {
+    onClose()
+    setTimeout(() => {
+      setIsSettingsOpened(false)
+    }, 500)
+  }
 
-  useClickOutside('.NotificationsFeed', isOpen, onClose)
+  useClickOutside('.NotificationsFeed', isOpen, handleOnClose)
   const chainId = userState.chainId || ChainId.ETHEREUM_GOERLI
   const env = getPushNotificationsEnv(chainId)
 
@@ -171,7 +172,7 @@ export default function NotificationsFeed({
     (isSubscribed && isLoadingNotifications)
   const showEmptyView = isSubscribed && !isLoadingNotifications && !hasNotifications && !isSettingsOpened
   const showSettingsButton = (isSubscribed || isValidatedOnDiscord) && !isSettingsOpened
-  const showDiscordViw = isValidatedOnDiscord && !isSubscribed && !isSettingsOpened
+  const showDiscordView = isValidatedOnDiscord && !isSubscribed && !isSettingsOpened
 
   return (
     <div
@@ -206,7 +207,7 @@ export default function NotificationsFeed({
               handleDiscordConnect={handleDiscordConnect}
             />
           )}
-          {showDiscordViw && (
+          {showDiscordView && (
             <DiscordView isSubscribing={isSubscribing} handleSubscribeUserToChannel={handleSubscribeUserToChannel} />
           )}
           {showEmptyView && <EmptyView />}

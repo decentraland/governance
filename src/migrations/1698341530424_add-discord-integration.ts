@@ -8,7 +8,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
 
   pgm.addColumn(Model.tableName, { discord_id: { type: 'VARCHAR' } })
   pgm.addColumn(Model.tableName, { discord_verification_date: { type: 'TIMESTAMP' } })
-  pgm.addColumn(Model.tableName, { is_discord_active: { type: 'BOOLEAN' } })
+  pgm.addColumn(Model.tableName, { is_discord_notifications_active: { type: 'BOOLEAN' } })
 
   pgm.addConstraint(Model.tableName, 'discord_id_unique', { unique: 'discord_id' })
 }
@@ -16,7 +16,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
 export async function down(pgm: MigrationBuilder): Promise<void> {
 
   pgm.dropColumn(Model.tableName, 'discord_verification_date')
-  pgm.dropColumn(Model.tableName, 'is_discord_active')
+  pgm.dropColumn(Model.tableName, 'is_discord_notifications_active')
   pgm.dropColumn(Model.tableName, 'discord_id')
 
   pgm.alterColumn(Model.tableName, 'forum_verification_date', { notNull: true })

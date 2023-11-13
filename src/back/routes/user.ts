@@ -140,20 +140,20 @@ async function checkDiscordValidationMessage(req: WithAuth) {
 
 async function updateDiscordStatus(req: WithAuth) {
   const address = req.auth!
-  const { is_discord_active } = req.body
+  const { is_discord_notifications_active } = req.body
   const enabledMessage =
     'You have enabled the notifications through Discord, from now on you will receive notifications that may concern you through this channel.'
   const disabledMessage =
     'You have disabled the notifications through Discord, from now on you will no longer receive notifications through this channel.'
 
   try {
-    if (typeof is_discord_active !== 'boolean') {
+    if (typeof is_discord_notifications_active !== 'boolean') {
       throw new Error('Invalid discord status')
     }
-    await UserModel.updateDiscordActiveStatus(address, is_discord_active)
+    await UserModel.updateDiscordActiveStatus(address, is_discord_notifications_active)
     const account = await UserModel.getDiscordIdsByAddresses([address], false)
     if (account.length > 0) {
-      if (is_discord_active) {
+      if (is_discord_notifications_active) {
         DiscordService.sendDirectMessage(account[0].discord_id, {
           title: 'Notifications enabled ✅',
           action: enabledMessage,
@@ -176,7 +176,7 @@ async function getIsDiscordActive(req: WithAuth) {
   const address = req.auth!
   try {
     const users = await UserModel.getDiscordIdsByAddresses([address], false)
-    return users.length > 0 && !!users[0].is_discord_active
+    return users.length > 0 && !!users[0].is_discord_notifications_active
   } catch (error) {
     throw new Error(`Error while fetching discord status. ${error}`)
   }

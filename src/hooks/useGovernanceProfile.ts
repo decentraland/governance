@@ -10,7 +10,7 @@ import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
 export default function useGovernanceProfile(address?: string | null) {
   const { data, isLoading: isLoadingGovernanceProfile } = useQuery({
-    queryKey: [`userGovernanceProfile#${address?.toLowerCase()}`],
+    queryKey: [`userGovernanceProfile`, address],
     queryFn: async () => {
       if (!address || !isEthereumAddress(address)) return null
 

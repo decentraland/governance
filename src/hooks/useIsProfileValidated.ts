@@ -11,7 +11,7 @@ const ALL_ACCOUNTS = [AccountType.Forum, AccountType.Discord]
 
 function useIsProfileValidated(address: string | null, accounts = ALL_ACCOUNTS) {
   const { data: isProfileValidated, refetch } = useQuery({
-    queryKey: [`isProfileValidated#${address}#${accounts.join(',')}}`],
+    queryKey: [`isProfileValidated`, address, accounts.join(`,`)],
     queryFn: async () => {
       if (address && isEthereumAddress(address)) {
         return await Governance.get().isProfileValidated(address, accounts)
