@@ -32,7 +32,7 @@ export function ActionBox({ children, title, info, action, className, collapsibl
           </div>
           <div className="ActionBox__HeaderAction">
             {collapsible ? (
-              <Button basic onClick={() => setExpanded(false)}>
+              <Button basic onClick={() => setExpanded(!expanded)}>
                 {t(`component.action_box.${expanded ? 'hide' : 'show'}`)}
               </Button>
             ) : (
