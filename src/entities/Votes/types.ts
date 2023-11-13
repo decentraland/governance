@@ -40,3 +40,5 @@ export type VoteCount = {
 export type Voter = {
   address: string
 } & VoteCount
+
+export type VotesForProposals = Record<string, Record<string, Vote>>

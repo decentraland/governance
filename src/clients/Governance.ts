@@ -35,7 +35,7 @@ import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { Topic } from '../entities/SurveyTopic/types'
 import { ProjectHealth, UpdateAttributes, UpdateResponse } from '../entities/Updates/types'
-import { Vote, VotedProposal, Voter } from '../entities/Votes/types'
+import { Vote, VotedProposal, Voter, VotesForProposals } from '../entities/Votes/types'
 import { NewsletterSubscriptionResult } from '../shared/types/newsletter'
 import { Notification } from '../shared/types/notifications'
 import Time from '../utils/date/Time'
@@ -309,7 +309,7 @@ export class Governance extends API {
       return result
     }, new URLSearchParams())
 
-    const result = await this.fetch<ApiResponse<Record<string, Record<string, Vote>>>>(`/votes?${params.toString()}`)
+    const result = await this.fetch<ApiResponse<VotesForProposals>>(`/votes?${params.toString()}`)
     return result.data
   }
 
