@@ -5,6 +5,7 @@ import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
 import { CommitteeName } from '../../clients/DclData'
 import { SnapshotProposal } from '../../clients/SnapshotTypes'
+import { UnpublishedBidInfo } from '../Bid/types'
 import {
   CategoryAssessmentQuestions,
   GrantRequestDueDiligence,
@@ -854,7 +855,8 @@ export type PriorityProposal = Pick<
   'id' | 'title' | 'finish_at' | 'start_at' | 'type' | 'status' | 'configuration' | 'user' | 'snapshot_proposal'
 > & {
   priority_type: PriorityProposalType
-  linked_proposals_data: LinkedProposal[]
+  linked_proposals_data?: LinkedProposal[]
+  unpublished_bids_data?: UnpublishedBidInfo[]
 }
 
 export type LinkedProposal = Pick<ProposalAttributes, 'id' | 'finish_at' | 'start_at' | 'created_at'>
