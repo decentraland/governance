@@ -11,13 +11,7 @@ import isDAOCommittee from '../entities/Committee/isDAOCommittee'
 import ProposalModel from '../entities/Proposal/model'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import * as templates from '../entities/Proposal/templates'
-import {
-  PriorityProposal,
-  PriorityProposalType,
-  ProposalAttributes,
-  ProposalStatus,
-  ProposalType,
-} from '../entities/Proposal/types'
+import { PriorityProposalType, ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { isGrantProposalSubmitEnabled } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import VotesModel from '../entities/Votes/model'
@@ -246,19 +240,15 @@ export class ProposalService {
 
     const unpublishedBidsForTenders = await UnpublishedBidModel.getBidsInfoByTenders(tendersWithSubmissionsIds)
 
-    const tendersWithSubmissions: PriorityProposal[] = priorityProposals
-      .filter((proposal) => proposal.priority_type === PriorityProposalType.TenderWithSubmissions)
-      .map((tender) => {
-        const bids = unpublishedBidsForTenders.filter((bid) => bid.linked_proposal_id === tender.id)
-        return {
-          ...tender,
-          unpublished_bids_data: bids,
-        }
-      })
+    const priorityProposalsWithBidsInfo = priorityProposals.map((proposal) => {
+      if (proposal.priority_type === PriorityProposalType.TenderWithSubmissions) {
+        const bids = unpublishedBidsForTenders.filter((bid) => bid.linked_proposal_id === proposal.id)
+        return { ...proposal, unpublished_bids_data: bids }
+      } else {
+        return proposal
+      }
+    })
 
-    return [
-      ...priorityProposals.filter((proposal) => proposal.priority_type != PriorityProposalType.TenderWithSubmissions),
-      ...tendersWithSubmissions,
-    ]
+    return priorityProposalsWithBidsInfo
   }
 }
