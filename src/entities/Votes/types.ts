@@ -43,6 +43,8 @@ export type Voter = {
   address: string
 } & VoteCount
 
+export type VotesForProposals = Record<string, VoteByAddress>
+
 export type VoteSegmentation<T> = {
   highQualityVotes: Record<string, T>
   lowQualityVotes: Record<string, T>
