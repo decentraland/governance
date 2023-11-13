@@ -9,7 +9,7 @@ import { SnapshotVote } from '../../clients/SnapshotTypes'
 import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import VotesModel from '../../entities/Votes/model'
-import { VoteAttributes, VoteByAddress } from '../../entities/Votes/types'
+import { VoteAttributes, VotesForProposals } from '../../entities/Votes/types'
 import { getVoteByAddress, toProposalIds } from '../../entities/Votes/utils'
 import { ProposalService } from '../../services/ProposalService'
 import { SnapshotService } from '../../services/SnapshotService'
@@ -76,7 +76,7 @@ export async function getCachedVotesByProposals(req: Request) {
   return scores.reduce((result, vote) => {
     result[vote.proposal_id] = vote.votes
     return result
-  }, {} as Record<string, VoteByAddress>)
+  }, {} as VotesForProposals)
 }
 
 async function getVotesAndProposalsByAddress(req: Request) {

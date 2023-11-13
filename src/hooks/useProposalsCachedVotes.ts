@@ -22,7 +22,7 @@ function useProposalsCachedVotes(proposalIds: ProposalAttributes['id'][]) {
       }, {} as Record<string, VoteSegmentation<Vote>>)
     : undefined
 
-  return { segmentedVotes, isLoadingVotes }
+  return { votes, segmentedVotes, isLoadingVotes }
 }
 
 export default useProposalsCachedVotes
