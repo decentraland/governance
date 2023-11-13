@@ -1,3 +1,9 @@
 .PriorityProposals__ProposalCard {
   margin-bottom: 12px;
 }
+
+.PriorityProposalsBox__CollapsedTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

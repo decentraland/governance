@@ -7,6 +7,7 @@ import usePriorityProposals from '../../hooks/usePriorityProposals'
 import useProposalsCachedVotes from '../../hooks/useProposalsCachedVotes'
 import locations from '../../utils/locations'
 import { ActionBox } from '../Common/ActionBox'
+import Counter from '../Common/Counter'
 import FullWidthButton from '../Common/FullWidthButton'
 import ProposalPreviewCard from '../Common/ProposalPreviewCard/ProposalPreviewCard'
 
@@ -83,6 +84,12 @@ function PriorityProposalsBox({ address, collapsible = false }: Props) {
           title={t('component.priority_proposals.title')}
           info={t('component.priority_proposals.info')}
           collapsible
+          collapsedTitle={
+            <span className="PriorityProposalsBox__CollapsedTitle">
+              <Counter count={displayedProposals?.length} />
+              {t('component.priority_proposals.title')}
+            </span>
+          }
         >
           {renderPriorityProposals(displayedProposals, displayedProposalsAmount)}
           {showViewMoreButton && (

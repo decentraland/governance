@@ -1,0 +1,12 @@
+.Counter {
+  background: var(--primary);
+  color: var(--white-900);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: bold;
+}
