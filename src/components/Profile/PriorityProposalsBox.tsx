@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
+import { isSameAddress } from '../../entities/Snapshot/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import usePriorityProposals from '../../hooks/usePriorityProposals'
 import useProposalsCachedVotes from '../../hooks/useProposalsCachedVotes'
@@ -34,7 +35,8 @@ function renderPriorityProposals(
 
 function PriorityProposalsBox({ address, collapsible = false }: Props) {
   const t = useFormatMessage()
-  const { priorityProposals, isLoading } = usePriorityProposals(address)
+  const lowerAddress = address?.toLowerCase()
+  const { priorityProposals, isLoading } = usePriorityProposals(lowerAddress)
   const proposalIds =
     priorityProposals?.reduce((acc: string[], priorityProposal) => {
       acc.push(priorityProposal.id)
@@ -46,14 +48,19 @@ function PriorityProposalsBox({ address, collapsible = false }: Props) {
 
   const { votes, isLoadingVotes } = useProposalsCachedVotes(proposalIds || [])
   const displayedProposals =
-    votes && priorityProposals && address
+    votes && priorityProposals && lowerAddress
       ? priorityProposals?.filter((proposal) => {
-          const hasVotedOnMain = votes && address && votes[proposal.id] && !!votes[proposal.id][address]
-          const hasVotedOnLinked = proposal.linked_proposals_data.some(
-            (linkedProposal) => votes[linkedProposal.id] && !!votes[linkedProposal.id][address]
-          )
+          const hasVotedOnMain = votes && lowerAddress && votes[proposal.id] && !!votes[proposal.id][lowerAddress]
+          const hasVotedOnLinked =
+            proposal.linked_proposals_data &&
+            proposal.linked_proposals_data.some(
+              (linkedProposal) => votes[linkedProposal.id] && !!votes[linkedProposal.id][lowerAddress]
+            )
+          const hasAuthoredBid =
+            proposal.unpublished_bids_data &&
+            proposal.unpublished_bids_data.some((linkedBid) => isSameAddress(linkedBid.author_address, lowerAddress))
 
-          return !hasVotedOnMain && !hasVotedOnLinked
+          return !hasVotedOnMain && !hasVotedOnLinked && !hasAuthoredBid
         })
       : priorityProposals
   const [displayedProposalsAmount, setDisplayedProposalsAmount] = useState(PROPOSALS_PER_PAGE)
