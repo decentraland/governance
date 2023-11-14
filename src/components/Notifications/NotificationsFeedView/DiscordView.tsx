@@ -9,10 +9,10 @@ import './DiscordView.css'
 
 interface Props {
   isSubscribing: boolean
-  handleSubscribeUserToChannel: () => void
+  onSubscribeUserToChannel: () => void
 }
 
-function DiscordView({ isSubscribing, handleSubscribeUserToChannel }: Props) {
+function DiscordView({ isSubscribing, onSubscribeUserToChannel }: Props) {
   const t = useFormatMessage()
   return (
     <div className="NotificationsFeed__DiscordView">
@@ -21,7 +21,7 @@ function DiscordView({ isSubscribing, handleSubscribeUserToChannel }: Props) {
         {t(`navigation.notifications.discord.title`)}
       </Heading>
       <Text className="NotificationsFeed__DiscordViewText">{t(`navigation.notifications.discord.description`)}</Text>
-      <Button size="small" primary disabled={isSubscribing} onClick={handleSubscribeUserToChannel}>
+      <Button size="small" primary disabled={isSubscribing} onClick={onSubscribeUserToChannel}>
         {t(`navigation.notifications.discord.button`)}
       </Button>
     </div>

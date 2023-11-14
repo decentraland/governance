@@ -33,15 +33,17 @@ async function sendNotification(req: WithAuth) {
     throw new RequestError('Invalid data', RequestError.BadRequest)
   }
 
-  const users = await UserModel.getDiscordIdsByAddresses(isArray(recipient) ? recipient : [recipient])
+  if (type === NotificationType.TARGET) {
+    const users = await UserModel.getDiscordIdsByAddresses(isArray(recipient) ? recipient : [recipient])
 
-  for (const user of users) {
-    DiscordService.sendDirectMessage(user.discord_id, {
-      title,
-      url,
-      fields: [],
-      action: body,
-    })
+    for (const user of users) {
+      DiscordService.sendDirectMessage(user.discord_id, {
+        title,
+        url,
+        fields: [],
+        action: body,
+      })
+    }
   }
 
   return await NotificationService.sendNotification({

@@ -503,7 +503,7 @@ export class Governance extends API {
     return result.data
   }
 
-  async getIsDiscordActive() {
+  async isDiscordActive() {
     const result = await this.fetch<ApiResponse<boolean>>(
       `/user/discord-status`,
       this.options().method('GET').authorization({ sign: true })

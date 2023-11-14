@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 import { Web3Provider } from '@ethersproject/providers'
@@ -208,7 +208,7 @@ export default function NotificationsFeed({
             />
           )}
           {showDiscordView && (
-            <DiscordView isSubscribing={isSubscribing} handleSubscribeUserToChannel={handleSubscribeUserToChannel} />
+            <DiscordView isSubscribing={isSubscribing} onSubscribeUserToChannel={handleSubscribeUserToChannel} />
           )}
           {showEmptyView && <EmptyView />}
           {showNotifications && (
@@ -216,7 +216,7 @@ export default function NotificationsFeed({
               notifications={filteredNotifications}
               lastNotificationIdIndex={lastNotificationIdIndex}
               showLoadMoreButton={showLoadMoreButton}
-              handleLoadMoreClick={handleLoadMoreClick}
+              onLoadMoreClick={handleLoadMoreClick}
             />
           )}
           {isSettingsOpened && (

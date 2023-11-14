@@ -9,10 +9,10 @@ interface Props {
   notifications?: PushNotification[]
   lastNotificationIdIndex?: number
   showLoadMoreButton?: boolean
-  handleLoadMoreClick?: () => void
+  onLoadMoreClick?: () => void
 }
 
-function ListView({ notifications, lastNotificationIdIndex, showLoadMoreButton, handleLoadMoreClick }: Props) {
+function ListView({ notifications, lastNotificationIdIndex, showLoadMoreButton, onLoadMoreClick }: Props) {
   const t = useFormatMessage()
   return (
     <div className="NotificationsFeed__ListContainer">
@@ -27,7 +27,7 @@ function ListView({ notifications, lastNotificationIdIndex, showLoadMoreButton, 
       </div>
       {showLoadMoreButton && (
         <div className="NotificationsFeed__LoadMoreButtonContainer">
-          <FullWidthButton onClick={handleLoadMoreClick}>{t('navigation.notifications.load_more')}</FullWidthButton>
+          <FullWidthButton onClick={onLoadMoreClick}>{t('navigation.notifications.load_more')}</FullWidthButton>
         </div>
       )}
     </div>

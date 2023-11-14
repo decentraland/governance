@@ -9,7 +9,7 @@ function useIsDiscordActive() {
   const [user] = useAuthContext()
   const { data, refetch } = useQuery({
     queryKey: [`isDiscordActive`, user],
-    queryFn: () => Governance.get().getIsDiscordActive(),
+    queryFn: () => Governance.get().isDiscordActive(),
     enabled: !!user,
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })
