@@ -15,7 +15,7 @@ interface Props {
 export default function ButtonWithArrow({ label, arrowDirection, onClick }: Props) {
   return (
     <Button basic className="ButtonWithArrow" onClick={onClick}>
-      {label}
+      <span className="ButtonWithArrow__Label">{label}</span>
       <Sort descending={arrowDirection === 'down'} selectedColor="primary" />
     </Button>
   )

@@ -759,6 +759,7 @@
       "title": "Priority Proposals Spotlight",
       "info": "This section highlights binding Governance and project-related proposals that need your attention.",
       "show_all": "Show all {count} proposals",
+      "show_less": "Show less",
       "active_governance": "Voting ends {time}",
       "open_pitch": "Open for Tenders",
       "pitch_with_submissions": "Tender submissions end {time}",
