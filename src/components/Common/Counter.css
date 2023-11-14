@@ -1,6 +1,4 @@
 .Counter {
-  background: var(--primary);
-  color: var(--white-900);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -9,4 +7,14 @@
   border-radius: 50%;
   font-size: 12px;
   font-weight: bold;
+}
+
+.Counter--primary {
+  background: var(--primary);
+  color: var(--white-900);
+}
+
+.Counter--gray {
+  background: var(--black-400);
+  color: var(--white-900);
 }

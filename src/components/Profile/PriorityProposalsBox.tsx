@@ -96,11 +96,16 @@ function PriorityProposalsBox({ address, collapsible = false }: Props) {
     <>
       {collapsible ? (
         <ActionBox
-          title={t('component.priority_proposals.title')}
+          title={
+            <span className="PriorityProposalsBox__Title">
+              <Counter gray count={displayedProposals?.length} />
+              {t('component.priority_proposals.title')}
+            </span>
+          }
           info={t('component.priority_proposals.info')}
           collapsible
           collapsedTitle={
-            <span className="PriorityProposalsBox__CollapsedTitle">
+            <span className="PriorityProposalsBox__Title">
               <Counter count={displayedProposals?.length} />
               {t('component.priority_proposals.title')}
             </span>

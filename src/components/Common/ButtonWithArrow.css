@@ -1,0 +1,9 @@
+.ButtonWithArrow {
+  display: flex !important;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.ui.button.basic.ButtonWithArrow {
+  color: var(--black-600) !important;
+}
