@@ -18,7 +18,7 @@ export function toProposalIds(ids?: undefined | null | string | string[]) {
   return list.filter((id) => isUUID(String(id)))
 }
 
-function _createVotes<T>(votes: SnapshotVote[], returnValue: (vote: Vote, prevValue?: T) => T): Record<string, T> {
+function createVotes<T>(votes: SnapshotVote[], returnValue: (vote: Vote, prevValue?: T) => T): Record<string, T> {
   return votes.reduce((result, vote) => {
     const address = vote.voter.toLowerCase()
     const prevValue = result[address]
@@ -36,11 +36,11 @@ function _createVotes<T>(votes: SnapshotVote[], returnValue: (vote: Vote, prevVa
 }
 
 export function getVoteByAddress(votes: SnapshotVote[]): VoteByAddress {
-  return _createVotes(votes, (vote) => vote)
+  return createVotes(votes, (vote) => vote)
 }
 
 export function getVotesArrayByAddress(votes: SnapshotVote[]): VotesByAddress {
-  return _createVotes(votes, (vote, prevValue) => {
+  return createVotes(votes, (vote, prevValue) => {
     if (prevValue) {
       return [...prevValue, vote]
     }
