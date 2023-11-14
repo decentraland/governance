@@ -107,6 +107,14 @@ export class Governance extends API {
     }
   }
 
+  static parsePriorityProposal(proposal: PriorityProposal): PriorityProposal {
+    return {
+      ...proposal,
+      start_at: Time.date(proposal.start_at),
+      finish_at: Time.date(proposal.finish_at),
+    }
+  }
+
   async getProposal(proposalId: string) {
     const result = await this.fetch<ApiResponse<ProposalAttributes>>(`/proposals/${proposalId}`)
     return result.data ? Governance.parseProposal(result.data) : null
@@ -151,10 +159,11 @@ export class Governance extends API {
 
   async getPriorityProposals(address?: string) {
     const url = `/proposals/priority/`
-    return await this.fetch<PriorityProposal[]>(
+    const proposals = await this.fetch<PriorityProposal[]>(
       address && address.length > 0 ? url.concat(address) : url,
       this.options().method('GET')
     )
+    return proposals.map((proposal) => Governance.parsePriorityProposal(proposal))
   }
 
   async getGrantsByUser(user: string) {

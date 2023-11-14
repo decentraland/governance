@@ -6,4 +6,11 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  font-size: 11px !important;
+}
+
+@media (min-width: 384px) {
+  .PriorityProposalsBox__Title {
+    font-size: 13px !important;
+  }
 }

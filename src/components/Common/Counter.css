@@ -2,11 +2,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
   border-radius: 50%;
-  font-size: 12px;
   font-weight: bold;
+  width: 16px;
+  height: 16px;
+  font-size: 9px;
 }
 
 .Counter--primary {
@@ -17,4 +17,12 @@
 .Counter--gray {
   background: var(--black-400);
   color: var(--white-900);
+}
+
+@media (min-width: 425px) {
+  .Counter {
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+  }
 }

@@ -3,7 +3,7 @@ import { useState } from 'react'
 import classNames from 'classnames'
 import { Desktop, TabletAndBelow } from 'decentraland-ui/dist/components/Media/Media'
 
-import { PriorityProposal, PriorityProposalType, ProposalAttributes } from '../../../entities/Proposal/types'
+import { PriorityProposal, ProposalAttributes } from '../../../entities/Proposal/types'
 import { Vote } from '../../../entities/Votes/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useProposalComments from '../../../hooks/useProposalComments'
@@ -32,34 +32,10 @@ interface Props {
   proposal: ProposalAttributes | PriorityProposal
   votes?: Record<string, Vote>
   variant: `${Variant}`
+  customText?: string
 }
 
-function getPriorityText(proposal: PriorityProposal, t: (...args: any[]) => any) {
-  switch (proposal.priority_type) {
-    case PriorityProposalType.ActiveGovernance:
-      return t('component.priority_proposals.active_governance', { time: Time(proposal.finish_at).fromNow() })
-    case PriorityProposalType.OpenPitch:
-      return t('component.priority_proposals.open_pitch')
-    case PriorityProposalType.PitchWithSubmissions:
-      return t('component.priority_proposals.pitch_with_submissions', {
-        time: Time(proposal.linked_proposals_data![0].start_at).fromNow(),
-      })
-    case PriorityProposalType.PitchOnTenderVotingPhase:
-      return t('component.priority_proposals.pitch_on_tender_voting_phase', {
-        time: Time(proposal.linked_proposals_data![0].finish_at).fromNow(),
-      })
-    case PriorityProposalType.OpenTender:
-      return t('component.priority_proposals.open_tender')
-    case PriorityProposalType.TenderWithSubmissions:
-      return t('component.priority_proposals.tender_with_submissions', {
-        time: Time(proposal.unpublished_bids_data![0].publish_at).fromNow(),
-      })
-    case PriorityProposalType.ActiveBid:
-      return t('component.priority_proposals.active_bid', { time: Time(proposal.finish_at).fromNow() })
-  }
-}
-
-const ProposalPreviewCard = ({ proposal, votes, variant }: Props) => {
+const ProposalPreviewCard = ({ proposal, votes, variant, customText }: Props) => {
   const t = useFormatMessage()
   const { title, user, start_at, finish_at } = proposal
   const { comments } = useProposalComments(proposal.id, variant !== Variant.Slim)
@@ -71,6 +47,7 @@ const ProposalPreviewCard = ({ proposal, votes, variant }: Props) => {
   const isProposalAboutToEnd = isProposalActive && Time(finish_at).diff(Time(), 'hours') < 24
   const showVotedChoice = variant === Variant.Category && !!userChoice
   const showCategoryModule = variant === Variant.Category || variant === Variant.Slim
+  const renderCustomText = customText && customText.length > 0
 
   return (
     <Link
@@ -128,7 +105,7 @@ const ProposalPreviewCard = ({ proposal, votes, variant }: Props) => {
                 isProposalAboutToEnd && variant !== Variant.Slim && 'ProposalPreviewCard__DetailsItem--highlight'
               )}
             >
-              {variant !== Variant.Slim ? dateText : getPriorityText(proposal as PriorityProposal, t)}
+              {renderCustomText ? customText : dateText}
             </span>
           </span>
         </div>
@@ -138,11 +115,13 @@ const ProposalPreviewCard = ({ proposal, votes, variant }: Props) => {
       {showCategoryModule && (
         <CategoryModule proposal={proposal} isHovered={isHovered} slim={variant === Variant.Slim} />
       )}
-      <TabletAndBelow>
-        <div>
-          <ChevronRight color="var(--black-400)" />
-        </div>
-      </TabletAndBelow>
+      {variant !== Variant.Slim && (
+        <TabletAndBelow>
+          <div>
+            <ChevronRight color="var(--black-400)" />
+          </div>
+        </TabletAndBelow>
+      )}
     </Link>
   )
 }

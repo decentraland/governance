@@ -2,8 +2,27 @@
   display: flex !important;
   align-items: baseline;
   gap: 6px;
+  font-size: 11px !important;
+  line-height: 18px !important;
 }
 
 .ui.button.basic.ButtonWithArrow {
   color: var(--black-600) !important;
+}
+
+@media (max-width: 350px) {
+  .ButtonWithArrow__Label {
+    display: none;
+  }
+
+  .ButtonWithArrow {
+    padding-top: 4px !important;
+  }
+}
+
+@media (min-width: 390px) {
+  .ButtonWithArrow__Label {
+    font-size: 13px !important;
+    line-height: 18px !important;
+  }
 }

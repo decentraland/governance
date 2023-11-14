@@ -608,7 +608,6 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         GROUP BY app.id, app.title, app.user, app.type, app.status, app.start_at, app.finish_at, app.snapshot_proposal, app.configuration, app.priority_type
     ;`
 
-    console.log('PRIORITY query', query)
     return await this.namedQuery('get_priority_proposals', query)
   }
 }

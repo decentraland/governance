@@ -1,16 +1,20 @@
 import { useEffect, useState } from 'react'
 
-import { PriorityProposal, ProposalAttributes } from '../../entities/Proposal/types'
+import { useTabletAndBelowMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
+
+import { PriorityProposal, PriorityProposalType } from '../../entities/Proposal/types'
 import { isSameAddress } from '../../entities/Snapshot/utils'
 import { VotesForProposals } from '../../entities/Votes/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import usePriorityProposals from '../../hooks/usePriorityProposals'
 import useProposalsCachedVotes from '../../hooks/useProposalsCachedVotes'
+import Time from '../../utils/date/Time'
 import locations from '../../utils/locations'
 import { ActionBox } from '../Common/ActionBox'
 import Counter from '../Common/Counter'
 import FullWidthButton from '../Common/FullWidthButton'
 import ProposalPreviewCard from '../Common/ProposalPreviewCard/ProposalPreviewCard'
+import ProposalItem from '../Proposal/ProposalItem'
 
 import './PriorityProposalsBox.css'
 
@@ -21,15 +25,47 @@ interface Props {
 
 const PROPOSALS_PER_PAGE = 5
 
+function getPriorityText(proposal: PriorityProposal, t: (...args: any[]) => any) {
+  switch (proposal.priority_type) {
+    case PriorityProposalType.ActiveGovernance:
+      return t('component.priority_proposals.active_governance', { time: Time(proposal.finish_at).fromNow() })
+    case PriorityProposalType.OpenPitch:
+      return t('component.priority_proposals.open_pitch')
+    case PriorityProposalType.PitchWithSubmissions:
+      return t('component.priority_proposals.pitch_with_submissions', {
+        time: Time(proposal.linked_proposals_data![0].start_at).fromNow(),
+      })
+    case PriorityProposalType.PitchOnTenderVotingPhase:
+      return t('component.priority_proposals.pitch_on_tender_voting_phase', {
+        time: Time(proposal.linked_proposals_data![0].finish_at).fromNow(),
+      })
+    case PriorityProposalType.OpenTender:
+      return t('component.priority_proposals.open_tender')
+    case PriorityProposalType.TenderWithSubmissions:
+      return t('component.priority_proposals.tender_with_submissions', {
+        time: Time(proposal.unpublished_bids_data![0].publish_at).fromNow(),
+      })
+    case PriorityProposalType.ActiveBid:
+      return t('component.priority_proposals.active_bid', { time: Time(proposal.finish_at).fromNow() })
+  }
+}
+
 function renderPriorityProposals(
-  priorityProposals: any[] | Partial<ProposalAttributes>[] | undefined,
-  displayedProposals: number
+  priorityProposals: PriorityProposal[] | undefined,
+  displayedProposals: number,
+  isTabletAndBelow: boolean,
+  t: (...args: any[]) => any
 ) {
   return (
     <>
       {priorityProposals &&
         priorityProposals.slice(0, displayedProposals).map((proposal) => {
-          return <ProposalPreviewCard key={proposal.id} proposal={proposal as ProposalAttributes} variant="slim" />
+          const customText = getPriorityText(proposal as PriorityProposal, t)
+          return isTabletAndBelow ? (
+            <ProposalItem key={proposal.id} proposal={proposal} slim customText={customText} />
+          ) : (
+            <ProposalPreviewCard key={proposal.id} proposal={proposal} variant="slim" customText={customText} />
+          )
         })}
     </>
   )
@@ -59,6 +95,7 @@ function getDisplayedProposals(
 
 function PriorityProposalsBox({ address, collapsible = false }: Props) {
   const t = useFormatMessage()
+  const isTabletAndBelow = useTabletAndBelowMediaQuery()
   const lowerAddress = address?.toLowerCase()
   const { priorityProposals, isLoading } = usePriorityProposals(lowerAddress)
   const proposalIds =
@@ -111,17 +148,19 @@ function PriorityProposalsBox({ address, collapsible = false }: Props) {
             </span>
           }
         >
-          {renderPriorityProposals(displayedProposals, displayedProposalsAmount)}
+          {renderPriorityProposals(displayedProposals, displayedProposalsAmount, isTabletAndBelow, t)}
           {showViewMoreButton && (
             <FullWidthButton onClick={handleViewMore}>
               {t('component.priority_proposals.show_all', { count: displayedProposals?.length })}
             </FullWidthButton>
           )}
-          {showViewLessButton && <FullWidthButton onClick={handleViewLess}>{`Show less`}</FullWidthButton>}
+          {showViewLessButton && (
+            <FullWidthButton onClick={handleViewLess}>{t('component.priority_proposals.show_less')}</FullWidthButton>
+          )}
         </ActionBox>
       ) : (
         <>
-          {renderPriorityProposals(displayedProposals, displayedProposalsAmount)}
+          {renderPriorityProposals(displayedProposals, displayedProposalsAmount, isTabletAndBelow, t)}
           <FullWidthButton href={locations.proposals()}>
             {t('page.home.open_proposals.view_all_proposals')}
           </FullWidthButton>
