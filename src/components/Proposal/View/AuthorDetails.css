@@ -59,3 +59,28 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+.AuthorDetails__StatsContainer--clickable {
+  cursor: pointer;
+  transition: var(--card-transition);
+}
+
+.AuthorDetails__StatsContainer--clickable:hover {
+  cursor: pointer;
+  box-shadow: var(--shadow-2);
+  transform: translateY(-4px);
+}
+
+.AuthorDetails__SidebarList {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  margin-bottom: 8px;
+}
+
+.AuthorDetails__SidebarSubtitle {
+  color: var(--black-800);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 24px;
+}

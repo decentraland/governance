@@ -16,10 +16,6 @@
   margin-bottom: 11px;
 }
 
-.CompetingProposalsSidebar__TitleContainer > .dcl.close {
-  width: 20px;
-}
-
 .CompetingProposalsSidebar__Title {
   font-weight: var(--weight-semi-bold);
   font-size: 17px;

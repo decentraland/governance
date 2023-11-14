@@ -1,3 +1,4 @@
+import { TransparencyVesting } from '../clients/DclData'
 import { ProjectStatus } from '../entities/Grant/types'
 
 import Time from './date/Time'
@@ -35,4 +36,36 @@ export function isCurrentProject(status?: ProjectStatus) {
 export function isCurrentQuarterProject(startAt?: number) {
   const currentQuarterStartDate = Time().startOf('quarter')
   return Time(startAt).isAfter(currentQuarterStartDate)
+}
+
+export function getContractDataFromTransparencyVesting(vesting?: TransparencyVesting) {
+  if (!vesting) {
+    return {
+      status: ProjectStatus.Pending,
+    }
+  }
+
+  const {
+    vesting_status: status,
+    token,
+    vesting_start_at,
+    vesting_finish_at,
+    vesting_total_amount,
+    vesting_released,
+    vesting_releasable,
+  } = vesting
+
+  return {
+    status,
+    token,
+    enacted_at: Time(vesting_start_at).unix(),
+    contract: {
+      vesting_total_amount: Math.round(vesting_total_amount),
+      vestedAmount: Math.round(vesting_released + vesting_releasable),
+      releasable: Math.round(vesting_releasable),
+      released: Math.round(vesting_released),
+      start_at: Time(vesting_start_at).unix(),
+      finish_at: Time(vesting_finish_at).unix(),
+    },
+  }
 }

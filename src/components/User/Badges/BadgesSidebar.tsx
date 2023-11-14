@@ -1,5 +1,3 @@
-import { Close } from 'decentraland-ui/dist/components/Close/Close'
-
 import { Badge, UserBadges } from '../../../entities/Badges/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import ChevronLeft from '../../Icon/ChevronLeft'
@@ -21,15 +19,19 @@ export default function BadgesSidebar({ isSidebarVisible, onClose, badges, badge
   const t = useFormatMessage()
   const { currentBadges, expiredBadges } = badges
 
+  const title = !badgeInDetail ? (
+    t('page.profile.badges_sidebar.title')
+  ) : (
+    <button className="BadgesSidebar__Back" onClick={() => setBadgeInDetail(null)}>
+      <ChevronLeft />
+      <span className="BadgesSidebar__Title">{t('page.profile.badges_sidebar.detail_title')}</span>
+    </button>
+  )
+
   return (
-    <GovernanceSidebar visible={isSidebarVisible} onClose={onClose}>
+    <GovernanceSidebar title={title} visible={isSidebarVisible} onClose={onClose}>
       {!badgeInDetail && (
         <div className="BadgesSidebar__Content">
-          <div className="BadgesSidebar__TitleContainer">
-            <span className="BadgesSidebar__Title">{t('page.profile.badges_sidebar.title')}</span>
-            <Close onClick={onClose} />
-          </div>
-
           <div className="BadgesSidebar__Subtitle">
             <span>{t('page.profile.badges_sidebar.current', { amount: currentBadges.length })}</span>
           </div>
@@ -56,13 +58,6 @@ export default function BadgesSidebar({ isSidebarVisible, onClose, badges, badge
       )}
       {badgeInDetail && (
         <div className="BadgesSidebar__Content">
-          <div className="BadgesSidebar__TitleContainer">
-            <button className="BadgesSidebar__Back" onClick={() => setBadgeInDetail(null)}>
-              <ChevronLeft />
-              <span className="BadgesSidebar__Title">{t('page.profile.badges_sidebar.detail_title')}</span>
-            </button>
-            <Close onClick={onClose} />
-          </div>
           <BadgeDetail badge={badgeInDetail} />
         </div>
       )}

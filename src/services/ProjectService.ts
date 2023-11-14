@@ -20,6 +20,7 @@ import { getPublicUpdates } from '../entities/Updates/utils'
 import { formatError } from '../helpers'
 import Time from '../utils/date/Time'
 import { isProdEnv } from '../utils/governanceEnvs'
+import { getContractDataFromTransparencyVesting } from '../utils/projects'
 
 import { BudgetService } from './BudgetService'
 import { ProposalInCreation } from './ProposalService'
@@ -90,35 +91,7 @@ export class ProjectService {
       }
     }
 
-    if (!vesting) {
-      return {
-        status: ProjectStatus.Pending,
-      }
-    }
-
-    const {
-      token,
-      vesting_start_at,
-      vesting_finish_at,
-      vesting_total_amount,
-      vesting_releasable,
-      vesting_released,
-      vesting_status,
-    } = vesting
-
-    return {
-      status: vesting_status,
-      token,
-      enacted_at: Time(vesting_start_at).unix(),
-      contract: {
-        vesting_total_amount: Math.round(vesting_total_amount),
-        vestedAmount: Math.round(vesting_released + vesting_releasable),
-        releasable: Math.round(vesting_releasable),
-        released: Math.round(vesting_released),
-        start_at: Time(vesting_start_at).unix(),
-        finish_at: Time(vesting_finish_at).unix(),
-      },
-    }
+    return getContractDataFromTransparencyVesting(vesting)
   }
 
   private static getUpdateData(update: (UpdateAttributes & { index: number }) | null) {

@@ -11,7 +11,7 @@
   flex-direction: column;
   align-items: center;
   cursor: pointer;
-  transition: box-shadow 0.1s ease, transform 0.1s ease;
+  transition: var(--card-transition);
 }
 
 @media (min-width: 768px) {
