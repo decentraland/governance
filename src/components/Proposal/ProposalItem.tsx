@@ -25,12 +25,14 @@ function getTimeLabel(timeout: Countdown, date: Date, format?: 'short') {
 }
 
 interface Props {
-  proposal: ProposalAttributes
+  proposal: Pick<ProposalAttributes, 'id' | 'title' | 'finish_at' | 'start_at' | 'type' | 'status' | 'user'>
   hasCoauthorRequest?: boolean
   votes?: VoteByAddress
+  slim?: boolean
+  customText?: string
 }
 
-export default function ProposalItem({ proposal, hasCoauthorRequest, votes }: Props) {
+export default function ProposalItem({ proposal, hasCoauthorRequest, votes, slim = false, customText }: Props) {
   const t = useFormatMessage()
   const { id, title, status, type, user, start_at, finish_at } = proposal
   const timeout = useCountdown(finish_at)
@@ -41,6 +43,7 @@ export default function ProposalItem({ proposal, hasCoauthorRequest, votes }: Pr
     : `${t('page.proposal_list.finish_label.ended')} `
   const label = hasStarted ? endLabel : `${t('page.proposal_list.finish_label.starts')} `
   const time = hasStarted ? finish_at : start_at
+  const renderCustomText = customText && customText.length > 0
 
   return (
     <Card
@@ -57,21 +60,27 @@ export default function ProposalItem({ proposal, hasCoauthorRequest, votes }: Pr
         </div>
         <div className="ProposalItem__Status">
           <div className="ProposalItem__Details">
-            <StatusPill status={status} />
+            {!slim && <StatusPill status={status} />}
             <CategoryPill proposalType={type} />
-            <Username address={user} variant="avatar" />
-            <div className="ProposalItem__Stats">
-              {votes && (
-                <Desktop>
-                  <span className="ProposalItem__Votes">
-                    {t('page.proposal_list.votes', { total: Object.keys(votes).length })}
+            {renderCustomText ? (
+              <span className="ProposalItem__CustomText">{customText}</span>
+            ) : (
+              <>
+                <Username address={user} variant="avatar" />
+                <div className="ProposalItem__Stats">
+                  {votes && (
+                    <Desktop>
+                      <span className="ProposalItem__Votes">
+                        {t('page.proposal_list.votes', { total: Object.keys(votes).length })}
+                      </span>
+                    </Desktop>
+                  )}
+                  <span className="ProposalItem__FinishLabel">
+                    <DateTooltip date={time}>{`${label} ${getTimeLabel(timeout, time, 'short')}`}</DateTooltip>
                   </span>
-                </Desktop>
-              )}
-              <span className="ProposalItem__FinishLabel">
-                <DateTooltip date={time}>{`${label} ${getTimeLabel(timeout, time, 'short')}`}</DateTooltip>
-              </span>
-            </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </Card.Content>
