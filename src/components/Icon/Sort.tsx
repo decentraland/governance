@@ -1,11 +1,13 @@
 type SortProps = {
   descending?: boolean
   selected?: boolean
+  selectedColor?: string
 }
 
-function Sort({ descending = true, selected = true }: SortProps) {
+function Sort({ descending = true, selected = true, selectedColor = 'black-400' }: SortProps) {
   const rotate = descending ? 0 : 180
-  const color = selected ? 'black-400' : 'black-100'
+  const color = selected ? selectedColor : 'black-100'
+
   return (
     <svg
       width="10"
