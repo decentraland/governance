@@ -22,6 +22,7 @@ import InvertedButton from '../../Common/InvertedButton'
 import Heading from '../../Common/Typography/Heading'
 import Link from '../../Common/Typography/Link'
 import Username from '../../Common/Username'
+import ChevronRight from '../../Icon/ChevronRight'
 import GovernanceSidebar from '../../Sidebar/GovernanceSidebar'
 import ValidatedProfileCheck from '../../User/ValidatedProfileCheck'
 
@@ -154,6 +155,9 @@ export default function AuthorDetails({ address }: Props) {
             total: participationTotal,
           })}
         />
+        <div className="AuthorDetails__Chevron">
+          <ChevronRight color="var(--black-400)" />
+        </div>
       </div>
       <GovernanceSidebar
         title={t('page.proposal_detail.author_details.sidebar.title', { username: displayableAddress })}

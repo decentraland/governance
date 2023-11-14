@@ -52,6 +52,14 @@
   border-radius: 8px;
   border: 1px solid var(--alpha-black-300);
   background: var(--white-900);
+  position: relative;
+}
+
+.AuthorDetails__Chevron {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  right: 14px;
 }
 
 @media (min-width: 768px) {
