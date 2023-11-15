@@ -1,5 +1,6 @@
 import { TransparencyVesting } from '../clients/DclData'
 import { ProjectStatus } from '../entities/Grant/types'
+import { Project, ProposalAttributes } from '../entities/Proposal/types'
 
 import Time from './date/Time'
 
@@ -38,7 +39,15 @@ export function isCurrentQuarterProject(startAt?: number) {
   return Time(startAt).isAfter(currentQuarterStartDate)
 }
 
-export function getContractDataFromTransparencyVesting(vesting?: TransparencyVesting) {
+function getProjectVestingData(proposal: ProposalAttributes, vesting: TransparencyVesting) {
+  if (proposal.enacting_tx) {
+    return {
+      status: ProjectStatus.Finished,
+      enacting_tx: proposal.enacting_tx,
+      enacted_at: Time(proposal.updated_at).unix(),
+    }
+  }
+
   if (!vesting) {
     return {
       status: ProjectStatus.Pending,
@@ -67,5 +76,23 @@ export function getContractDataFromTransparencyVesting(vesting?: TransparencyVes
       start_at: Time(vesting_start_at).unix(),
       finish_at: Time(vesting_finish_at).unix(),
     },
+  }
+}
+
+export function createProject(proposal: ProposalAttributes, vesting?: TransparencyVesting): Project {
+  const vestingData = vesting ? getProjectVestingData(proposal, vesting) : {}
+
+  return {
+    id: proposal.id,
+    title: proposal.title,
+    user: proposal.user,
+    type: proposal.type,
+    size: proposal.configuration.size || proposal.configuration.funding,
+    created_at: proposal.created_at.getTime(),
+    configuration: {
+      category: proposal.configuration.category || proposal.type,
+      tier: proposal.configuration.tier,
+    },
+    ...vestingData,
   }
 }

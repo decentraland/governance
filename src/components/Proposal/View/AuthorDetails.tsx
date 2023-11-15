@@ -16,7 +16,7 @@ import useVestings from '../../../hooks/useVestings'
 import useVotingStats from '../../../hooks/useVotingStats'
 import Time from '../../../utils/date/Time'
 import locations from '../../../utils/locations'
-import { getContractDataFromTransparencyVesting } from '../../../utils/projects'
+import { createProject } from '../../../utils/projects'
 import FullWidthButton from '../../Common/FullWidthButton'
 import InvertedButton from '../../Common/InvertedButton'
 import Heading from '../../Common/Typography/Heading'
@@ -53,10 +53,7 @@ export default function AuthorDetails({ address }: Props) {
       grants?.data.map((grant) => {
         const vesting = vestings?.find((item) => grant.id === item.proposal_id)
 
-        return {
-          ...grant,
-          ...getContractDataFromTransparencyVesting(vesting),
-        }
+        return createProject(grant, vesting)
       }) || [],
     [vestings, grants?.data]
   )
@@ -168,14 +165,17 @@ export default function AuthorDetails({ address }: Props) {
           <div className="AuthorDetails__SidebarList">
             {projectPerformanceTotals &&
               Object.keys(projectPerformanceTotals).map((item) => {
-                const items = projectPerformanceTotals[item].items as ProposalAttributes[]
+                const projects = projectPerformanceTotals[item].items as ProposalAttributes[]
 
                 return (
                   <div key={item}>
                     <Heading size="2xs" weight="semi-bold">
-                      {t('page.proposal_detail.author_details.sidebar.subtitle', { total: items.length, status: item })}
+                      {t('page.proposal_detail.author_details.sidebar.subtitle', {
+                        total: projects.length,
+                        status: item,
+                      })}
                     </Heading>
-                    <ProjectCardList projects={items} />
+                    <ProjectCardList projects={projects} />
                   </div>
                 )
               })}

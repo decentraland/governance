@@ -10,11 +10,11 @@ const STATUS_COLORS: Record<ProjectStatus, PillColor> = {
   [ProjectStatus.InProgress]: PillColor.Green,
   [ProjectStatus.Finished]: PillColor.Orange,
   [ProjectStatus.Revoked]: PillColor.Purple,
-  [ProjectStatus.Paused]: PillColor.Blue,
-  [ProjectStatus.Pending]: PillColor.Blue,
+  [ProjectStatus.Paused]: PillColor.Gray,
+  [ProjectStatus.Pending]: PillColor.Gray,
 }
 
-export default function ProjectPill({ status }: Props) {
+export default function ProjectStatusPill({ status }: Props) {
   const displayedStatus = getEnumDisplayName(status)
 
   return (
