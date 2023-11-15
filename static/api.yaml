@@ -92,6 +92,25 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/200'
+  /proposals/priority/{address}:
+    get:
+      tags:
+        - Proposals
+      summary: Get priority proposals
+      description: Retrieve a list of Governance and project-related proposals. Optionally filter by a specific address.
+      parameters:
+        - name: address
+          in: path
+          required: false
+          description: User Ethereum address to filter priority proposals
+          allowEmptyValue: true
+          schema:
+            $ref: '#/components/schemas/ethAddress'
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+        '400':
+          $ref: '#/components/responses/400'
   /proposals/linked-wearables/image:
     get:
       tags:
