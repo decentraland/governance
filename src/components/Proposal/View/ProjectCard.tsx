@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
+import { Desktop } from 'decentraland-ui/dist/components/Media/Media'
 
 import { Project } from '../../../entities/Proposal/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../../helpers'
@@ -16,22 +16,17 @@ interface Props {
   project: Project
 }
 
-function formatDate(date: Time.Dayjs, isMobile: boolean) {
-  return isMobile ? date.format('MM/DD/YY') : date.fromNow()
-}
-
 export default function ProjectCard({ project }: Props) {
   const t = useFormatMessage()
   const { id, title, contract, configuration, status, size } = project
-  const isMobile = useMobileMediaQuery()
   const finishAt = Time.unix(contract?.finish_at || 0)
   const startAt = Time.unix(contract?.start_at || 0)
   const dateText = finishAt.isBefore(Time())
     ? t('page.proposal_detail.author_details.sidebar.project_ended', {
-        date: formatDate(finishAt, isMobile),
+        date: finishAt.fromNow(),
       })
     : t('page.proposal_detail.author_details.sidebar.project_began', {
-        date: formatDate(startAt, isMobile),
+        date: startAt.fromNow(),
       })
   const { formatNumber } = useIntl()
 
@@ -42,8 +37,10 @@ export default function ProjectCard({ project }: Props) {
         <ProjectPill type={configuration.category} style="light" />
         <div className="ProjectCard__BudgetAndDate">
           <span>{formatNumber(size || 0, CURRENCY_FORMAT_OPTIONS)}</span>
-          <span>{' · '}</span>
-          <span>{dateText}</span>
+          <Desktop>
+            <span>{' · '}</span>
+            <span>{dateText}</span>
+          </Desktop>
         </div>
       </div>
     </ProposalCardContainer>
