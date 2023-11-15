@@ -9,8 +9,14 @@
   font-size: 11px !important;
 }
 
-@media (min-width: 384px) {
+@media (min-width: 384px) and (max-width: 767px) {
   .PriorityProposalsBox__Title {
-    font-size: 13px !important;
+    font-size: 12px !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .PriorityProposalsBox__Title {
+    font-size: 14px !important;
   }
 }
