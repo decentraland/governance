@@ -1,13 +1,13 @@
 import { useMemo, useState } from 'react'
 
-import { ProposalAttributes } from '../../../entities/Proposal/types'
+import { Project } from '../../../entities/Proposal/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import FullWidthButton from '../../Common/FullWidthButton'
 
 import ProjectCard from './ProjectCard'
 
 interface Props {
-  projects: ProposalAttributes[]
+  projects: Project[]
 }
 
 const MAX_PROJECTS = 3
@@ -19,8 +19,8 @@ export default function ProjectCardList({ projects }: Props) {
 
   return (
     <>
-      {displayedProjects.map((item: ProposalAttributes) => (
-        <ProjectCard key={item.id} proposal={item} />
+      {displayedProjects.map((project) => (
+        <ProjectCard key={project.id} project={project} />
       ))}
       {projects.length > limit && (
         <FullWidthButton onClick={() => setLimit(limit + MAX_PROJECTS)}>

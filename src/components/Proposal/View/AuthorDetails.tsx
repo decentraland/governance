@@ -2,10 +2,11 @@ import { useMemo, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import classNames from 'classnames'
+import isEmpty from 'lodash/isEmpty'
 import snakeCase from 'lodash/snakeCase'
 
 import { ProjectStatus } from '../../../entities/Grant/types'
-import { ProposalAttributes, ProposalType } from '../../../entities/Proposal/types'
+import { Project, ProposalType } from '../../../entities/Proposal/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../../helpers'
 import useAddressVotes from '../../../hooks/useAddressVotes'
 import useFormatMessage from '../../../hooks/useFormatMessage'
@@ -48,46 +49,48 @@ export default function AuthorDetails({ address }: Props) {
   const { displayableAddress } = useProfile(address)
 
   const { data: vestings } = useVestings(hasPreviouslySubmittedGrants)
-  const grantsWithVesting = useMemo(
+  const projects = useMemo(
     () =>
-      grants?.data.map((grant) => {
-        const vesting = vestings?.find((item) => grant.id === item.proposal_id)
-
-        return createProject(grant, vesting)
-      }) || [],
+      grants?.data.map((grant) =>
+        createProject(
+          grant,
+          vestings?.find((item) => grant.id === item.proposal_id)
+        )
+      ) || [],
     [vestings, grants?.data]
   )
   const fundsVested = useMemo(
-    () => grantsWithVesting?.reduce((total, grant) => total + (grant?.contract?.vestedAmount || 0), 0),
-    [grantsWithVesting]
+    () => projects?.reduce((total, grant) => total + (grant?.contract?.vestedAmount || 0), 0),
+    [projects]
   )
 
-  const projectPerformanceTotals = useMemo(
+  const projectsByStatus = useMemo(
     () =>
       SHOWN_PERFORMANCE_STATUSES.reduce((acc, cur) => {
-        const items = grantsWithVesting?.filter((item) => item.status === cur)
+        const items = projects?.filter((item) => item.status === cur)
         const total = items?.length || 0
         return total > 0 ? { ...acc, [cur]: { items, total } } : acc
-      }, {} as Record<string, { items: any[]; total: number }>),
-    [grantsWithVesting]
+      }, {} as Record<string, { items: Project[]; total: number }>),
+    [projects]
   )
 
   const projectPerformanceText = useMemo(
     () =>
-      Object.keys(projectPerformanceTotals)
+      Object.keys(projectsByStatus)
         .map((item) =>
           t(`page.proposal_detail.author_details.project_performance_${snakeCase(item)}`, {
-            total: projectPerformanceTotals[item].total,
+            total: projectsByStatus[item].total,
           })
         )
         .join(', '),
-    [projectPerformanceTotals, t]
+    [projectsByStatus, t]
   )
 
   const { votes } = useAddressVotes(address)
   const hasVoted = votes && votes.length > 0
   const activeSinceFormattedDate = hasVoted ? Time.unix(votes[0].created).format('MMMM, YYYY') : ''
 
+  const hasProjects = !isEmpty(projectsByStatus)
   const handleClose = () => setIsSidebarVisible(false)
 
   return (
@@ -116,9 +119,9 @@ export default function AuthorDetails({ address }: Props) {
       <div
         className={classNames(
           'AuthorDetails__StatsContainer',
-          hasPreviouslySubmittedGrants && 'AuthorDetails__StatsContainer--clickable'
+          hasProjects && 'AuthorDetails__StatsContainer--clickable'
         )}
-        onClick={() => setIsSidebarVisible(true)}
+        onClick={() => hasProjects && setIsSidebarVisible(true)}
       >
         {!hasPreviouslySubmittedGrants && (
           <AuthorDetailsStat
@@ -152,9 +155,11 @@ export default function AuthorDetails({ address }: Props) {
             total: participationTotal,
           })}
         />
-        <div className="AuthorDetails__Chevron">
-          <ChevronRight color="var(--black-400)" />
-        </div>
+        {hasProjects && (
+          <div className="AuthorDetails__Chevron">
+            <ChevronRight color="var(--black-400)" />
+          </div>
+        )}
       </div>
       <GovernanceSidebar
         title={t('page.proposal_detail.author_details.sidebar.title', { username: displayableAddress })}
@@ -163,9 +168,9 @@ export default function AuthorDetails({ address }: Props) {
       >
         <div>
           <div className="AuthorDetails__SidebarList">
-            {projectPerformanceTotals &&
-              Object.keys(projectPerformanceTotals).map((item) => {
-                const projects = projectPerformanceTotals[item].items as ProposalAttributes[]
+            {projectsByStatus &&
+              Object.keys(projectsByStatus).map((item) => {
+                const projects = projectsByStatus[item].items
 
                 return (
                   <div key={item}>
