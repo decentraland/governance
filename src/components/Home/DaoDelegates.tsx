@@ -35,7 +35,7 @@ const DaoDelegates = () => {
   }
 
   return (
-    <div>
+    <div className="DaoDelegates">
       <HomeSectionHeader
         title={t('page.home.dao_delegates.title')}
         description={t('page.home.dao_delegates.description')}
