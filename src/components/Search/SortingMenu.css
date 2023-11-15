@@ -9,6 +9,7 @@
 
 .SortingMenu .divider.text {
   font-weight: var(--weight-semi-bold) !important;
+  color: var(--black-600);
   line-height: 24px !important;
 }
 

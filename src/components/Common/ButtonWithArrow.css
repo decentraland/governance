@@ -8,6 +8,7 @@
 
 .ui.button.basic.ButtonWithArrow {
   color: var(--black-600) !important;
+  font-weight: var(--weight-semi-bold) !important;
 }
 
 @media (max-width: 350px) {
@@ -20,9 +21,15 @@
   }
 }
 
-@media (min-width: 390px) {
+@media (min-width: 384px) and (max-width: 767px) {
   .ButtonWithArrow__Label {
-    font-size: 13px !important;
+    font-size: 12px !important;
     line-height: 18px !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .ButtonWithArrow {
+    font-size: 14px !important;
   }
 }

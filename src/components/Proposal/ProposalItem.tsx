@@ -49,7 +49,11 @@ export default function ProposalItem({ proposal, hasCoauthorRequest, votes, slim
     <Card
       as={Link}
       href={locations.proposal(id)}
-      className={classNames('ProposalItem', hasCoauthorRequest && 'ProposalItem--coauthor')}
+      className={classNames(
+        'ProposalItem',
+        hasCoauthorRequest && 'ProposalItem--coauthor',
+        slim && 'ProposalItem--slim'
+      )}
     >
       <Card.Content>
         <div className="ProposalItem__TitleContainer">
