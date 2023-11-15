@@ -8,17 +8,18 @@ interface Props {
 
 const STATUS_COLORS: Record<ProjectStatus, PillColor> = {
   [ProjectStatus.InProgress]: PillColor.Green,
-  [ProjectStatus.Finished]: PillColor.Orange,
-  [ProjectStatus.Revoked]: PillColor.Purple,
+  [ProjectStatus.Finished]: PillColor.Green,
+  [ProjectStatus.Revoked]: PillColor.Red,
   [ProjectStatus.Paused]: PillColor.Gray,
   [ProjectStatus.Pending]: PillColor.Gray,
 }
 
 export default function ProjectStatusPill({ status }: Props) {
   const displayedStatus = getEnumDisplayName(status)
+  const style = status === ProjectStatus.InProgress ? 'outline' : 'shiny'
 
   return (
-    <Pill size="sm" color={STATUS_COLORS[status]}>
+    <Pill size="sm" color={STATUS_COLORS[status]} style={style}>
       {displayedStatus}
     </Pill>
   )
