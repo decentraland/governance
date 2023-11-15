@@ -28,7 +28,7 @@ import ValidatedProfileCheck from '../../User/ValidatedProfileCheck'
 
 import './AuthorDetails.css'
 import AuthorDetailsStat from './AuthorDetailsStat'
-import ProjectCard from './ProjectCard'
+import ProjectCardList from './ProjectCardList'
 import Section from './Section'
 
 interface Props {
@@ -168,16 +168,14 @@ export default function AuthorDetails({ address }: Props) {
           <div className="AuthorDetails__SidebarList">
             {projectPerformanceTotals &&
               Object.keys(projectPerformanceTotals).map((item) => {
-                const items = projectPerformanceTotals[item].items
+                const items = projectPerformanceTotals[item].items as ProposalAttributes[]
 
                 return (
                   <div key={item}>
                     <Heading size="2xs" weight="semi-bold">
                       {t('page.proposal_detail.author_details.sidebar.subtitle', { total: items.length, status: item })}
                     </Heading>
-                    {items.map((item: ProposalAttributes) => (
-                      <ProjectCard key={item.id} proposal={item} />
-                    ))}
+                    <ProjectCardList projects={items} />
                   </div>
                 )
               })}

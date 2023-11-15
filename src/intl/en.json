@@ -1135,7 +1135,8 @@
           "subtitle": "{total} {status} Grants",
           "view_profile": "View profile",
           "project_began": "Project began {date}",
-          "project_ended": "Project ended {date}"
+          "project_ended": "Project ended {date}",
+          "view_more_grants": "View more grants"
         }
       },
       "grant": {

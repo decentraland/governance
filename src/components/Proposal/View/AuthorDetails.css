@@ -7,6 +7,7 @@
 }
 
 .AuthorDetails__UserContainer {
+  gap: 8px;
   margin-bottom: 21px;
 }
 
