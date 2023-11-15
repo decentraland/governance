@@ -2,6 +2,10 @@
   margin: 0 !important;
 }
 
+.ProposalItem--slim.ui.card {
+  margin-bottom: 14px !important;
+}
+
 .ProposalItem,
 .ui.card.Link.ProposalItem {
   width: 100% !important;
@@ -108,6 +112,7 @@
 
 .ProposalItem__CustomText {
   font-weight: var(--weight-semi-bold);
+  color: var(--black-800);
   font-size: 10px;
   line-height: 16px;
   text-transform: uppercase;
