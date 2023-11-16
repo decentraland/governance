@@ -51,11 +51,8 @@ async function getUserFeed(req: Request) {
 
 async function getUserLastNotification(req: WithAuth) {
   const config = await UserNotificationConfigModel.findOne<UserNotificationConfigAttributes>({ address: req.auth })
-  if (!config) {
-    throw new RequestError('User notification not found', RequestError.NotFound)
-  }
 
-  return config.last_notification_id
+  return config?.last_notification_id
 }
 
 async function updateUserLastNotification(req: WithAuth) {
