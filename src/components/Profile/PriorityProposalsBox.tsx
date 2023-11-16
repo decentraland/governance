@@ -130,7 +130,7 @@ function PriorityProposalsBox({ address, collapsible = false }: Props) {
   }
 
   return isLoading || (!isLoading && priorityProposals && priorityProposals.length === 0) ? null : (
-    <>
+    <div className="ProposalsPage__Priority">
       {collapsible ? (
         <ActionBox
           title={
@@ -166,7 +166,7 @@ function PriorityProposalsBox({ address, collapsible = false }: Props) {
           </FullWidthButton>
         </>
       )}
-    </>
+    </div>
   )
 }
 
