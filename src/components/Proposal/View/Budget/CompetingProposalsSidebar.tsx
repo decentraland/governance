@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 
-import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import snakeCase from 'lodash/snakeCase'
 
 import { BudgetWithContestants, CategoryBudgetWithContestants } from '../../../../entities/Budget/types'
@@ -39,6 +38,9 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
 
   return (
     <GovernanceSidebar
+      title={t('page.proposal_detail.grant.competing_proposals.sidebar.title', {
+        category: toNewGrantCategory(grantCategory),
+      })}
       onClose={onClose}
       onShow={() => {
         setShowPopups(true)
@@ -49,14 +51,6 @@ export default function CompetingProposalsSidebar({ proposal, budget, isSidebarV
       visible={isSidebarVisible}
     >
       <div className="CompetingProposalsSidebar__Content">
-        <div className="CompetingProposalsSidebar__TitleContainer">
-          <span className="CompetingProposalsSidebar__Title">
-            {t('page.proposal_detail.grant.competing_proposals.sidebar.title', {
-              category: toNewGrantCategory(grantCategory),
-            })}
-          </span>
-          <Close onClick={onClose} />
-        </div>
         <ContestedBudgetCard
           proposal={proposal}
           categoryBudget={categoryBudget}

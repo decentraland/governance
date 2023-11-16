@@ -1,26 +1,35 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useIntl } from 'react-intl'
 
+import classNames from 'classnames'
+import isEmpty from 'lodash/isEmpty'
 import snakeCase from 'lodash/snakeCase'
 
 import { ProjectStatus } from '../../../entities/Grant/types'
-import { ProposalType } from '../../../entities/Proposal/types'
+import { Project, ProposalType } from '../../../entities/Proposal/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../../helpers'
 import useAddressVotes from '../../../hooks/useAddressVotes'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useGovernanceProfile from '../../../hooks/useGovernanceProfile'
+import useProfile from '../../../hooks/useProfile'
 import useProposals from '../../../hooks/useProposals'
 import useVestings from '../../../hooks/useVestings'
 import useVotingStats from '../../../hooks/useVotingStats'
 import Time from '../../../utils/date/Time'
 import locations from '../../../utils/locations'
+import { createProject } from '../../../utils/projects'
+import FullWidthButton from '../../Common/FullWidthButton'
 import InvertedButton from '../../Common/InvertedButton'
+import Heading from '../../Common/Typography/Heading'
 import Link from '../../Common/Typography/Link'
 import Username from '../../Common/Username'
+import ChevronRight from '../../Icon/ChevronRight'
+import GovernanceSidebar from '../../Sidebar/GovernanceSidebar'
 import ValidatedProfileCheck from '../../User/ValidatedProfileCheck'
 
 import './AuthorDetails.css'
 import AuthorDetailsStat from './AuthorDetailsStat'
+import ProjectCardList from './ProjectCardList'
 import Section from './Section'
 
 interface Props {
@@ -36,52 +45,53 @@ export default function AuthorDetails({ address }: Props) {
   const { proposals: grants } = useProposals({ user: address, type: ProposalType.Grant })
   const intl = useIntl()
   const hasPreviouslySubmittedGrants = !!grants && grants?.total > 1
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false)
+  const { displayableAddress } = useProfile(address)
 
   const { data: vestings } = useVestings(hasPreviouslySubmittedGrants)
-  const grantsWithVesting = useMemo(
+  const projects = useMemo(
     () =>
-      grants?.data.map((grant) => {
-        const vesting = vestings?.find((item) => grant.id === item.proposal_id)
-        const releaseable = vesting?.vesting_releasable || 0
-        const released = vesting?.vesting_released || 0
-
-        return {
-          ...grant,
-          vested: releaseable + released,
-          vesting_status: vesting?.vesting_status,
-        }
-      }),
+      grants?.data.map((grant) =>
+        createProject(
+          grant,
+          vestings?.find((item) => grant.id === item.proposal_id)
+        )
+      ) || [],
     [vestings, grants?.data]
   )
   const fundsVested = useMemo(
-    () => grantsWithVesting?.reduce((total, grant) => total + grant.vested, 0),
-    [grantsWithVesting]
+    () => projects?.reduce((total, grant) => total + (grant?.contract?.vestedAmount || 0), 0),
+    [projects]
   )
 
-  const projectPerformanceTotals = useMemo(
+  const projectsByStatus = useMemo(
     () =>
       SHOWN_PERFORMANCE_STATUSES.reduce((acc, cur) => {
-        const total = grantsWithVesting?.filter((item) => item.vesting_status === cur).length || 0
-        return total > 0 ? { ...acc, [cur]: total } : acc
-      }, {} as Record<string, number>),
-    [grantsWithVesting]
+        const items = projects?.filter((item) => item.status === cur)
+        const total = items?.length || 0
+        return total > 0 ? { ...acc, [cur]: { items, total } } : acc
+      }, {} as Record<string, { items: Project[]; total: number }>),
+    [projects]
   )
 
   const projectPerformanceText = useMemo(
     () =>
-      Object.keys(projectPerformanceTotals)
+      Object.keys(projectsByStatus)
         .map((item) =>
           t(`page.proposal_detail.author_details.project_performance_${snakeCase(item)}`, {
-            total: projectPerformanceTotals[item],
+            total: projectsByStatus[item].total,
           })
         )
         .join(', '),
-    [projectPerformanceTotals, t]
+    [projectsByStatus, t]
   )
 
   const { votes } = useAddressVotes(address)
   const hasVoted = votes && votes.length > 0
   const activeSinceFormattedDate = hasVoted ? Time.unix(votes[0].created).format('MMMM, YYYY') : ''
+
+  const hasProjects = !isEmpty(projectsByStatus)
+  const handleClose = () => setIsSidebarVisible(false)
 
   return (
     <Section title={t('page.proposal_detail.author_details.title')} isNew>
@@ -106,7 +116,13 @@ export default function AuthorDetails({ address }: Props) {
           <InvertedButton>{t('page.proposal_detail.author_details.view_profile')}</InvertedButton>
         </Link>
       </div>
-      <div className="AuthorDetails__StatsContainer">
+      <div
+        className={classNames(
+          'AuthorDetails__StatsContainer',
+          hasProjects && 'AuthorDetails__StatsContainer--clickable'
+        )}
+        onClick={() => hasProjects && setIsSidebarVisible(true)}
+      >
         {!hasPreviouslySubmittedGrants && (
           <AuthorDetailsStat
             label={t('page.proposal_detail.author_details.grant_stats_label')}
@@ -139,7 +155,41 @@ export default function AuthorDetails({ address }: Props) {
             total: participationTotal,
           })}
         />
+        {hasProjects && (
+          <div className="AuthorDetails__Chevron">
+            <ChevronRight color="var(--black-400)" />
+          </div>
+        )}
       </div>
+      <GovernanceSidebar
+        title={t('page.proposal_detail.author_details.sidebar.title', { username: displayableAddress })}
+        visible={isSidebarVisible}
+        onClose={handleClose}
+      >
+        <div>
+          <div className="AuthorDetails__SidebarList">
+            {projectsByStatus &&
+              Object.keys(projectsByStatus).map((item) => {
+                const projects = projectsByStatus[item].items
+
+                return (
+                  <div key={item}>
+                    <Heading size="2xs" weight="semi-bold">
+                      {t('page.proposal_detail.author_details.sidebar.subtitle', {
+                        total: projects.length,
+                        status: item,
+                      })}
+                    </Heading>
+                    <ProjectCardList projects={projects} />
+                  </div>
+                )
+              })}
+          </div>
+          <FullWidthButton href={locations.profile({ address })}>
+            {t('page.proposal_detail.author_details.sidebar.view_profile')}
+          </FullWidthButton>
+        </div>
+      </GovernanceSidebar>
     </Section>
   )
 }

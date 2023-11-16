@@ -33,6 +33,11 @@
 }
 
 .Heading--2xs {
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.Heading--3xs {
   font-size: 13px;
   line-height: 18px;
 }

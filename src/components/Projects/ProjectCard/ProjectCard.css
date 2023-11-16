@@ -9,7 +9,7 @@
   justify-content: space-between;
   cursor: pointer;
   background: var(--white-900);
-  transition: box-shadow 0.1s ease, transform 0.1s ease;
+  transition: var(--card-transition);
   min-width: 0;
 }
 

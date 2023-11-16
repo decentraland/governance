@@ -1,7 +1,5 @@
 import { useMemo, useState } from 'react'
 
-import { Close } from 'decentraland-ui/dist/components/Close/Close'
-
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import { useTenderProposals } from '../../../hooks/useTenderProposals'
@@ -37,13 +35,11 @@ export default function CompetingTenders({ proposal }: Props) {
           {t('page.proposal_detail.competing_tenders.show_sidebar_label', { amount: filteredTenderProposals?.length })}
         </CompetingButton>
       </ContentSection>
-      <GovernanceSidebar visible={isSiderbarOpen} onClose={handleSidebarClose}>
-        <div className="CompetingProposalsSidebar__TitleContainer">
-          <span className="CompetingProposalsSidebar__Title">
-            {t('page.proposal_detail.competing_tenders.sidebar_title')}
-          </span>
-          <Close onClick={handleSidebarClose} />
-        </div>
+      <GovernanceSidebar
+        title={t('page.proposal_detail.competing_tenders.sidebar_title')}
+        visible={isSiderbarOpen}
+        onClose={handleSidebarClose}
+      >
         <div>
           {filteredTenderProposals?.map((item) => (
             <ProposalCard key={item.id} proposal={item} />
