@@ -59,15 +59,15 @@ export default function DebugPage() {
             <BudgetsUpdate className="DebugPage__Section" />
             <BadgesAdmin className="DebugPage__Section" />
             <TriggerFunction className="DebugPage__Section" />
-            <ErrorReporting className="DebugPage__Section" />
             <Notifications className="DebugPage__Section" />
           </>
         )}
         {isDebugActive && (
           <>
+            <ErrorReporting className="DebugPage__Section" />
             <HttpStatus className="DebugPage__Section" />
-            <Snapshot className="DebugPage__Section" />
             <EnvStatus className="DebugPage__Section" />
+            <Snapshot className="DebugPage__Section" />
           </>
         )}
       </WiderContainer>
