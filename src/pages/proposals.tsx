@@ -140,9 +140,7 @@ export default function ProposalsPage() {
                     <SearchTitle />
                   </Mobile>
                 )}
-                <div className="ProposalsPage__Priority">
-                  <PriorityProposalsBox address={userAddress} collapsible />
-                </div>
+                <PriorityProposalsBox address={userAddress} collapsible />
                 <ActionableLayout
                   leftAction={
                     <Text color="secondary" weight="semi-bold" className="ProposalsPage__ProposalCount">
