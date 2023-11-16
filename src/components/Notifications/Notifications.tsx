@@ -101,7 +101,7 @@ export default function Notifications() {
   })
 
   const hasNewNotifications =
-    Number(userNotifications?.length) > 0 && latestNotification && latestNotification !== Number(lastNotificationId)
+    Number(userNotifications?.length) > 0 && latestNotification && latestNotification !== lastNotificationId
 
   const handleFeedClose = () => {
     setOpen(false)
