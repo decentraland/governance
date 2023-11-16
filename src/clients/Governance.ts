@@ -564,7 +564,7 @@ export class Governance extends API {
   }
 
   async getAddressesVotes(addresses: string[]) {
-    const result = await this.fetch<ApiResponse<VotedProposal[]>>(
+    const result = await this.fetch<ApiResponse<SnapshotVote[]>>(
       `/snapshot/votes/`,
       this.options().method('POST').json({ addresses })
     )

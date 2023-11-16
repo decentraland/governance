@@ -1,0 +1,61 @@
+.AuthorDetails__UserContainer,
+.AuthorDetails__UserInfo {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.AuthorDetails__UserContainer {
+  margin-bottom: 21px;
+}
+
+.AuthorDetails__Avatar {
+  margin-right: 14px;
+}
+
+.AuthorDetails__Username {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.AuthorDetails__Address {
+  color: var(--black-800);
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 26px;
+  letter-spacing: -0.2px;
+}
+
+.AuthorDetails__ValidatedIcon {
+  display: flex;
+  width: 12px;
+  height: 16px;
+}
+
+.AuthorDetails__ActiveSince {
+  color: var(--black-600);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.AuthorDetails__StatsContainer {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 10px;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--alpha-black-300);
+  background: var(--white-900);
+}
+
+@media (min-width: 768px) {
+  .AuthorDetails__StatsContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

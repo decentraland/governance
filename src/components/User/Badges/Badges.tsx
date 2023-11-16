@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { Badge } from '../../../entities/Badges/types'
 import useBadges from '../../../hooks/useBadges'
+import useFormatMessage from '../../../hooks/useFormatMessage'
 import MobileSlider from '../../Common/MobileSlider'
 
 import BadgeStack from './BadgeStack'
@@ -16,6 +17,7 @@ interface Props {
 export const MAX_DISPLAYED_BADGES = 3
 
 export default function Badges({ address }: Props) {
+  const t = useFormatMessage()
   const { badges, isLoadingBadges } = useBadges(address)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [badgeInDetail, setBadgeInDetail] = useState<Badge | null>(null)
@@ -26,33 +28,19 @@ export default function Badges({ address }: Props) {
     [badges]
   )
 
+  const handleSidebarOpen = () => {
+    setBadgeInDetail(null)
+    setSidebarOpen(true)
+  }
+
   const handleSidebarClose = useCallback(() => {
     setSidebarOpen(false)
   }, [])
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      const sidebar = document.querySelector('.GovernanceSidebar')
-      const target = event.target as Node
-      const isBadgeWithTitle = (target as Element).closest('.BadgeWithTitle')
-
-      if (sidebar && !sidebar.contains(target) && !isBadgeWithTitle) {
-        handleSidebarClose()
-      }
-    }
-
-    if (sidebarOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [sidebarOpen, handleSidebarClose])
-
   if (isLoadingBadges || badges?.total === 0) return null
+
+  const hasDisplayedBadges = displayedBadges.length > 0
+  const hasStackedBadges = !!stackedBadges && stackedBadges.length > 0
 
   return (
     <>
@@ -69,22 +57,20 @@ export default function Badges({ address }: Props) {
             />
           )
         })}
-        {!!stackedBadges && stackedBadges.length > 0 && (
-          <BadgeStack
-            badges={stackedBadges}
-            total={stackedBadges.length}
-            onClick={() => {
-              setBadgeInDetail(null)
-              setSidebarOpen(true)
-            }}
-          />
+        {hasDisplayedBadges && hasStackedBadges && (
+          <BadgeStack badges={stackedBadges} total={stackedBadges.length} onClick={handleSidebarOpen} />
+        )}
+        {!hasDisplayedBadges && hasStackedBadges && (
+          <button className="Badges__ViewPastBadges" onClick={handleSidebarOpen}>
+            {t('page.profile.view_past_badges')}
+          </button>
         )}
       </MobileSlider>
       <BadgesSidebar
         badges={badges}
         isSidebarVisible={sidebarOpen}
         badgeInDetail={badgeInDetail}
-        setBadgeInDetail={setBadgeInDetail}
+        onBadgeClick={(badge) => setBadgeInDetail(badge)}
         onClose={handleSidebarClose}
       />
     </>

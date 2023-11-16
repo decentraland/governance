@@ -14,10 +14,10 @@ interface Props {
   onClose: () => void
   badges: UserBadges
   badgeInDetail: Badge | null
-  setBadgeInDetail: React.Dispatch<React.SetStateAction<Badge | null>>
+  onBadgeClick: (badge: Badge | null) => void
 }
 
-export default function BadgesSidebar({ isSidebarVisible, onClose, badges, badgeInDetail, setBadgeInDetail }: Props) {
+export default function BadgesSidebar({ isSidebarVisible, onClose, badges, badgeInDetail, onBadgeClick }: Props) {
   const t = useFormatMessage()
   const { currentBadges, expiredBadges } = badges
 
@@ -35,7 +35,7 @@ export default function BadgesSidebar({ isSidebarVisible, onClose, badges, badge
           </div>
           <div className="BadgesSidebar__BadgesContainer">
             {currentBadges.map((badge, index) => {
-              return <BadgeCard badge={badge} key={`${badge.name}-${index}`} onClick={() => setBadgeInDetail(badge)} />
+              return <BadgeCard badge={badge} key={`${badge.name}-${index}`} onClick={onBadgeClick} />
             })}
           </div>
           {expiredBadges.length > 0 && (
@@ -45,9 +45,7 @@ export default function BadgesSidebar({ isSidebarVisible, onClose, badges, badge
               </div>
               <div className="BadgesSidebar__BadgesContainer">
                 {expiredBadges.map((badge, index) => {
-                  return (
-                    <BadgeCard badge={badge} key={`${badge.name}-${index}`} onClick={() => setBadgeInDetail(badge)} />
-                  )
+                  return <BadgeCard badge={badge} key={`${badge.name}-${index}`} onClick={onBadgeClick} />
                 })}
               </div>
             </>
@@ -57,7 +55,7 @@ export default function BadgesSidebar({ isSidebarVisible, onClose, badges, badge
       {badgeInDetail && (
         <div className="BadgesSidebar__Content">
           <div className="BadgesSidebar__TitleContainer">
-            <button className="BadgesSidebar__Back" onClick={() => setBadgeInDetail(null)}>
+            <button className="BadgesSidebar__Back" onClick={() => onBadgeClick(null)}>
               <ChevronLeft />
               <span className="BadgesSidebar__Title">{t('page.profile.badges_sidebar.detail_title')}</span>
             </button>
