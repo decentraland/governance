@@ -7,3 +7,15 @@
 .Badges__Slider {
   margin-bottom: 25px;
 }
+
+.Badges__ViewPastBadges {
+  background-color: var(--white-900);
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  font-weight: var(--weight-semi-bold);
+  font-size: 13px;
+  line-height: 18px;
+  text-transform: uppercase;
+  color: var(--dcl-primary);
+}
