@@ -505,7 +505,7 @@ export class Governance extends API {
 
   async isDiscordActive() {
     const result = await this.fetch<ApiResponse<boolean>>(
-      `/user/discord-status`,
+      `/user/discord-active`,
       this.options().method('GET').authorization({ sign: true })
     )
 
@@ -514,7 +514,7 @@ export class Governance extends API {
 
   async updateDiscordStatus(is_discord_notifications_active: boolean) {
     const result = await this.fetch<ApiResponse<void>>(
-      `/user/discord-status`,
+      `/user/discord-active`,
       this.options().method('POST').authorization({ sign: true }).json({ is_discord_notifications_active })
     )
 
