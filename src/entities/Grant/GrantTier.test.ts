@@ -1,161 +1,164 @@
-import { def, get } from 'bdd-lazy-var/getter'
-
 import { GrantTier, TransparencyOneTimePaymentTier } from './GrantTier'
 import { GrantTierType } from './types'
 
 describe('entities/GrantTier', () => {
   describe('getTierFromBudget', () => {
-    def('tierType', () => GrantTier.getTypeFromBudget(get.budget))
+    const typeFromBudget = (budget: number) => GrantTier.getTypeFromBudget(budget)
+
     describe('Invalid budget when budget is less than 0', () => {
-      def('budget', () => -1)
+      const budget = -1
       it('throw error', () => {
-        expect(() => get.tierType).toThrowError('Grant budget is not valid')
+        expect(() => typeFromBudget(budget)).toThrow('Grant budget is not valid')
       })
     })
     describe('Invalid budget when budget is more than 240000', () => {
-      def('budget', () => 240001)
+      const budget = 240001
       it('throw error', () => {
-        expect(() => get.tierType).toThrowError('Grant budget is not valid')
+        expect(() => typeFromBudget(budget)).toThrow('Grant budget is not valid')
       })
     })
     describe('Lower tier budget within budget size', () => {
-      def('budget', () => 15000)
+      const budget = 15000
       it('should return a GrantTier with lower tier type', () => {
-        expect(get.tierType).toBe(GrantTierType.LowerTier)
+        expect(typeFromBudget(budget)).toBe(GrantTierType.LowerTier)
       })
     })
     describe('Lower tier budget on budget size upper limit', () => {
-      def('budget', () => 20000)
+      const budget = 20000
       it('should return a GrantTier with lower tier type', () => {
-        expect(get.tierType).toBe(GrantTierType.LowerTier)
+        expect(typeFromBudget(budget)).toBe(GrantTierType.LowerTier)
       })
     })
     describe('Higher tier budget on budget size lower limit', () => {
-      def('budget', () => 20001)
+      const budget = 20001
       it('should return a GrantTier with higher tier type', () => {
-        expect(get.tierType).toBe(GrantTierType.HigherTier)
+        expect(typeFromBudget(budget)).toBe(GrantTierType.HigherTier)
       })
     })
     describe('Higher tier budget within budget size', () => {
-      def('budget', () => 200000)
+      const budget = 200000
       it('should return a GrantTier with higher tier type', () => {
-        expect(get.tierType).toBe(GrantTierType.HigherTier)
+        expect(typeFromBudget(budget)).toBe(GrantTierType.HigherTier)
       })
     })
   })
 
   describe('getVPThreshold', () => {
-    def('vpThreshold', () => GrantTier.getVPThreshold(get.budget))
+    const vpThreshold = (budget: number) => GrantTier.getVPThreshold(budget)
+
     describe('15000 budget', () => {
-      def('budget', () => 15000)
+      const budget = 15000
       it('should return 2000000', () => {
-        expect(get.vpThreshold).toBe(2000000)
+        expect(vpThreshold(budget)).toBe(2000000)
       })
     })
     describe('60000 budget', () => {
-      def('budget', () => 60000)
+      const budget = 60000
       it('should return 3600000', () => {
-        expect(get.vpThreshold).toBe(3600000)
+        expect(vpThreshold(budget)).toBe(3600000)
       })
     })
     describe('120000 budget', () => {
-      def('budget', () => 120000)
+      const budget = 120000
       it('should return 6000000', () => {
-        expect(get.vpThreshold).toBe(6000000)
+        expect(vpThreshold(budget)).toBe(6000000)
       })
     })
     describe('240000 budget', () => {
-      def('budget', () => 240000)
+      const budget = 240000
       it('should return 10800000', () => {
-        expect(get.vpThreshold).toBe(10800000)
+        expect(vpThreshold(budget)).toBe(10800000)
       })
     })
   })
 
   describe('isOneTimePaymentTier', () => {
-    def('isOneTimePaymentTier', () => GrantTier.isOneTimePaymentTier(get.tierType))
+    const isOneTimePaymentTier = (tierType: GrantTierType | TransparencyOneTimePaymentTier) =>
+      GrantTier.isOneTimePaymentTier(tierType)
+
     describe('Tier 1 type', () => {
-      def('tierType', () => GrantTierType.Tier1)
+      const tierType = GrantTierType.Tier1
       it('should return true', () => {
-        expect(get.isOneTimePaymentTier).toBe(true)
+        expect(isOneTimePaymentTier(tierType)).toBe(true)
       })
     })
     describe('Tier 1 transparency type', () => {
-      def('tierType', () => TransparencyOneTimePaymentTier.Tier1)
+      const tierType = TransparencyOneTimePaymentTier.Tier1
       it('should return true', () => {
-        expect(get.isOneTimePaymentTier).toBe(true)
+        expect(isOneTimePaymentTier(tierType)).toBe(true)
       })
     })
     describe('Tier 2 type', () => {
-      def('tierType', () => GrantTierType.Tier2)
+      const tierType = GrantTierType.Tier2
       it('should return true', () => {
-        expect(get.isOneTimePaymentTier).toBe(true)
+        expect(isOneTimePaymentTier(tierType)).toBe(true)
       })
     })
     describe('Tier 2 transparency type', () => {
-      def('tierType', () => TransparencyOneTimePaymentTier.Tier2)
+      const tierType = TransparencyOneTimePaymentTier.Tier2
       it('should return true', () => {
-        expect(get.isOneTimePaymentTier).toBe(true)
+        expect(isOneTimePaymentTier(tierType)).toBe(true)
       })
     })
     describe('Tier 3 type', () => {
-      def('tierType', () => GrantTierType.Tier3)
+      const tierType = GrantTierType.Tier3
       it('should return true', () => {
-        expect(get.isOneTimePaymentTier).toBe(false)
+        expect(isOneTimePaymentTier(tierType)).toBe(false)
       })
     })
     describe('Tier 3 type', () => {
-      def('tierType', () => GrantTierType.Tier3)
+      const tierType = GrantTierType.Tier3
       it('should return true', () => {
-        expect(get.isOneTimePaymentTier).toBe(false)
+        expect(isOneTimePaymentTier(tierType)).toBe(false)
       })
     })
     describe('Tier 4 type', () => {
-      def('tierType', () => GrantTierType.Tier4)
+      const tierType = GrantTierType.Tier4
       it('should return true', () => {
-        expect(get.isOneTimePaymentTier).toBe(false)
+        expect(isOneTimePaymentTier(tierType)).toBe(false)
       })
     })
     describe('Tier 5 type', () => {
-      def('tierType', () => GrantTierType.Tier5)
+      const tierType = GrantTierType.Tier5
       it('should return true', () => {
-        expect(get.isOneTimePaymentTier).toBe(false)
+        expect(isOneTimePaymentTier(tierType)).toBe(false)
       })
     })
     describe('Tier 6 type', () => {
-      def('tierType', () => GrantTierType.Tier6)
+      const tierType = GrantTierType.Tier6
       it('should return true', () => {
-        expect(get.isOneTimePaymentTier).toBe(false)
+        expect(isOneTimePaymentTier(tierType)).toBe(false)
       })
     })
     describe('Lower tier type', () => {
-      def('tierType', () => GrantTierType.LowerTier)
+      const tierType = GrantTierType.LowerTier
       it('should return true', () => {
-        expect(get.isOneTimePaymentTier).toBe(false)
+        expect(isOneTimePaymentTier(tierType)).toBe(false)
       })
     })
     describe('Higher tier type', () => {
-      def('tierType', () => GrantTierType.HigherTier)
+      const tierType = GrantTierType.HigherTier
       it('should return true', () => {
-        expect(get.isOneTimePaymentTier).toBe(false)
+        expect(isOneTimePaymentTier(tierType)).toBe(false)
       })
     })
   })
 
   describe('Project duration limits', () => {
-    def('projectDurationLimits', () => GrantTier.getProjectDurationsLimits(get.budget))
+    const projectDurationLimits = (budget: number) => GrantTier.getProjectDurationsLimits(budget)
+
     describe('for a lower tier type', () => {
-      def('budget', () => 15000)
+      const budget = 15000
       it('should return 1 and 6 months', () => {
-        expect(get.projectDurationLimits.min).toBe(1)
-        expect(get.projectDurationLimits.max).toBe(6)
+        expect(projectDurationLimits(budget).min).toBe(1)
+        expect(projectDurationLimits(budget).max).toBe(6)
       })
     })
     describe('for a higher tier type', () => {
-      def('budget', () => 50000)
+      const budget = 50000
       it('should return 3 and 12 months', () => {
-        expect(get.projectDurationLimits.min).toBe(3)
-        expect(get.projectDurationLimits.max).toBe(12)
+        expect(projectDurationLimits(budget).min).toBe(3)
+        expect(projectDurationLimits(budget).max).toBe(12)
       })
     })
   })

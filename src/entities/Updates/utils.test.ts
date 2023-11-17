@@ -36,7 +36,7 @@ const generateUpdate = (update: GenerateUpdate): UpdateAttributes => ({
 })
 
 const now = new Date('2022-03-18')
-jest.useFakeTimers('modern').setSystemTime(now)
+jest.useFakeTimers().setSystemTime(now)
 
 const DONE_UPDATE = generateUpdate({
   health: ProjectHealth.OnTrack,
