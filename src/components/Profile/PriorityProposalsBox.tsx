@@ -15,6 +15,7 @@ import Counter from '../Common/Counter'
 import FullWidthButton from '../Common/FullWidthButton'
 import ProposalPreviewCard from '../Common/ProposalPreviewCard/ProposalPreviewCard'
 import ProposalItem from '../Proposal/ProposalItem'
+import { BIDDING_AND_TENDERING_ANCHOR } from '../Proposal/View/BiddingAndTendering'
 
 import './PriorityProposalsBox.css'
 
@@ -25,28 +26,45 @@ interface Props {
 
 const PROPOSALS_PER_PAGE = 5
 
-function getPriorityText(proposal: PriorityProposal, t: (...args: any[]) => any) {
+function getCardConfig(proposal: PriorityProposal, t: (...args: any[]) => any) {
   switch (proposal.priority_type) {
     case PriorityProposalType.ActiveGovernance:
-      return t('component.priority_proposals.active_governance', { time: Time(proposal.finish_at).fromNow() })
+      return {
+        customText: t('component.priority_proposals.active_governance', {
+          time: Time(proposal.finish_at).fromNow(),
+        }),
+      }
     case PriorityProposalType.OpenPitch:
-      return t('component.priority_proposals.open_pitch')
+      return {
+        customText: t('component.priority_proposals.open_pitch'),
+      }
     case PriorityProposalType.PitchWithSubmissions:
-      return t('component.priority_proposals.pitch_with_submissions', {
-        time: Time(proposal.linked_proposals_data![0].start_at).fromNow(),
-      })
+      return {
+        customText: t('component.priority_proposals.pitch_with_submissions', {
+          time: Time(proposal.linked_proposals_data![0].start_at).fromNow(),
+        }),
+        anchor: BIDDING_AND_TENDERING_ANCHOR,
+      }
     case PriorityProposalType.PitchOnTenderVotingPhase:
-      return t('component.priority_proposals.pitch_on_tender_voting_phase', {
-        time: Time(proposal.linked_proposals_data![0].finish_at).fromNow(),
-      })
+      return {
+        customText: t('component.priority_proposals.pitch_on_tender_voting_phase', {
+          time: Time(proposal.linked_proposals_data![0].finish_at).fromNow(),
+        }),
+        anchor: BIDDING_AND_TENDERING_ANCHOR,
+      }
     case PriorityProposalType.OpenTender:
       return t('component.priority_proposals.open_tender')
     case PriorityProposalType.TenderWithSubmissions:
-      return t('component.priority_proposals.tender_with_submissions', {
-        time: Time(proposal.unpublished_bids_data![0].publish_at).fromNow(),
-      })
+      return {
+        customText: t('component.priority_proposals.tender_with_submissions', {
+          time: Time(proposal.unpublished_bids_data![0].publish_at).fromNow(),
+        }),
+        anchor: BIDDING_AND_TENDERING_ANCHOR,
+      }
     case PriorityProposalType.ActiveBid:
-      return t('component.priority_proposals.active_bid', { time: Time(proposal.finish_at).fromNow() })
+      return {
+        customText: t('component.priority_proposals.active_bid', { time: Time(proposal.finish_at).fromNow() }),
+      }
   }
 }
 
@@ -60,11 +78,17 @@ function renderPriorityProposals(
     <>
       {priorityProposals &&
         priorityProposals.slice(0, displayedProposals).map((proposal) => {
-          const customText = getPriorityText(proposal as PriorityProposal, t)
+          const { customText, anchor } = getCardConfig(proposal, t)
           return isTabletAndBelow ? (
-            <ProposalItem key={proposal.id} proposal={proposal} slim customText={customText} />
+            <ProposalItem key={proposal.id} proposal={proposal} slim customText={customText} anchor={anchor} />
           ) : (
-            <ProposalPreviewCard key={proposal.id} proposal={proposal} variant="slim" customText={customText} />
+            <ProposalPreviewCard
+              key={proposal.id}
+              proposal={proposal}
+              variant="slim"
+              customText={customText}
+              anchor={anchor}
+            />
           )
         })}
     </>

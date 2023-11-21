@@ -30,9 +30,10 @@ interface Props {
   votes?: VoteByAddress
   slim?: boolean
   customText?: string
+  anchor?: string
 }
 
-export default function ProposalItem({ proposal, hasCoauthorRequest, votes, slim = false, customText }: Props) {
+export default function ProposalItem({ proposal, hasCoauthorRequest, votes, slim = false, customText, anchor }: Props) {
   const t = useFormatMessage()
   const { id, title, status, type, user, start_at, finish_at } = proposal
   const timeout = useCountdown(finish_at)
@@ -48,7 +49,7 @@ export default function ProposalItem({ proposal, hasCoauthorRequest, votes, slim
   return (
     <Card
       as={Link}
-      href={locations.proposal(id)}
+      href={locations.proposal(id, { anchor })}
       className={classNames(
         'ProposalItem',
         hasCoauthorRequest && 'ProposalItem--coauthor',
