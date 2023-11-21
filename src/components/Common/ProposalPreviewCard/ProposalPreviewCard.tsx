@@ -33,9 +33,10 @@ interface Props {
   votes?: VoteByAddress
   variant: `${Variant}`
   customText?: string
+  anchor?: string
 }
 
-const ProposalPreviewCard = ({ proposal, votes, variant, customText }: Props) => {
+const ProposalPreviewCard = ({ proposal, votes, variant, customText, anchor }: Props) => {
   const t = useFormatMessage()
   const { title, user, start_at, finish_at } = proposal
   const { comments } = useProposalComments(proposal.id, variant !== Variant.Slim)
@@ -52,7 +53,7 @@ const ProposalPreviewCard = ({ proposal, votes, variant, customText }: Props) =>
   return (
     <Link
       className={classNames('ProposalPreviewCard', `ProposalPreviewCard--${variant}`)}
-      href={locations.proposal(proposal.id)}
+      href={locations.proposal(proposal.id, { anchor })}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
