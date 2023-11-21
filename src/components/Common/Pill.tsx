@@ -16,11 +16,20 @@ export enum PillColor {
   Transparent = 'transparent',
 }
 
+export enum PillStyle {
+  Shiny = 'shiny',
+  Medium = 'medium',
+  Light = 'light',
+  Outline = 'outline',
+}
+
+export type PillStyleType = PillStyle | `${PillStyle}`
+
 export type Props = {
   children: React.ReactText
   color?: PillColor | `${PillColor}`
   size?: 'sm' | 'md'
-  style?: 'shiny' | 'medium' | 'light' | 'outline'
+  style?: PillStyleType
   className?: string
   icon?: React.ReactNode
 }

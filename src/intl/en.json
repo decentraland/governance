@@ -1127,9 +1127,17 @@
         "grant_stats_description": "{total} Grant {total, plural, one {Request} other {Requests}}",
         "project_performance_label": "Projects performance",
         "project_performance_finished": "{total} Finished",
-        "project_performance_in_progress": "{total} Ongoing",
+        "project_performance_in_progress": "{total} In Progress",
         "project_performance_revoked": "{total} Revoked",
-        "project_performance_paused": "{total} Paused"
+        "project_performance_paused": "{total} Paused",
+        "sidebar": {
+          "title": "Author details for {username}",
+          "subtitle": "{total} {status} Grants",
+          "view_profile": "View profile",
+          "project_began": "Project began {date}",
+          "project_ended": "Project ended {date}",
+          "view_more_grants": "View more grants"
+        }
       },
       "grant": {
         "requested_budget": {
@@ -1338,6 +1346,7 @@
       "empty_title": "Decentraland DAO",
       "description": "Your profile within the DAO",
       "show_badges": "{amount} More",
+      "view_past_badges": "View past badges",
       "badges_sidebar": {
         "title": "Your Badges",
         "current": "{amount} Current {amount, plural, one {Badge} other {Badges}}",

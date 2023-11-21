@@ -7,6 +7,7 @@
 }
 
 .AuthorDetails__UserContainer {
+  gap: 8px;
   margin-bottom: 21px;
 }
 
@@ -52,10 +53,43 @@
   border-radius: 8px;
   border: 1px solid var(--alpha-black-300);
   background: var(--white-900);
+  position: relative;
+}
+
+.AuthorDetails__Chevron {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  right: 14px;
 }
 
 @media (min-width: 768px) {
   .AuthorDetails__StatsContainer {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+.AuthorDetails__StatsContainer--clickable {
+  cursor: pointer;
+  transition: var(--card-transition);
+}
+
+.AuthorDetails__StatsContainer--clickable:hover {
+  cursor: pointer;
+  box-shadow: var(--shadow-2);
+  transform: translateY(-4px);
+}
+
+.AuthorDetails__SidebarList {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  margin-bottom: 8px;
+}
+
+.AuthorDetails__SidebarSubtitle {
+  color: var(--black-800);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 24px;
 }

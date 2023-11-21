@@ -7,14 +7,15 @@ import './BadgeCard.css'
 
 interface Props {
   badge: GovernanceBadge
-  onClick: () => void
+  onClick: (badge: GovernanceBadge) => void
 }
 
 export default function BadgeCard({ badge, onClick }: Props) {
   const t = useFormatMessage()
+  const handleClick = () => onClick(badge)
 
   return (
-    <div className="BadgeCard" key={`${badge.name}-id`} onClick={onClick}>
+    <div className="BadgeCard" key={`${badge.name}-id`} onClick={handleClick}>
       <Badge badge={badge} iconClassName="BadgeCard__Icon" />
       <div className="BadgeCard__Info">
         <div className="BadgeCard__Title">{badge.name}</div>

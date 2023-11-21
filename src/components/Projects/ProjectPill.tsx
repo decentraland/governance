@@ -1,9 +1,10 @@
 import { NewGrantCategory, OldGrantCategory, ProposalGrantCategory } from '../../entities/Grant/types'
 import { ProposalType } from '../../entities/Proposal/types'
-import Pill, { PillColor } from '../Common/Pill'
+import Pill, { PillColor, PillStyle, PillStyleType } from '../Common/Pill'
 
 interface Props {
   type: ProposalGrantCategory
+  style?: PillStyleType
 }
 
 const PROJECT_CATEGORY_COLORS: Record<ProposalGrantCategory | ProposalType.Tender, PillColor> = {
@@ -33,11 +34,11 @@ function getProjectCategory(
   return category
 }
 
-export default function ProjectPill({ type }: Props) {
+export default function ProjectPill({ type, style = PillStyle.Shiny }: Props) {
   const categoryType = getProjectCategory(type)
 
   return (
-    <Pill size="sm" color={PROJECT_CATEGORY_COLORS[categoryType]}>
+    <Pill size="sm" color={PROJECT_CATEGORY_COLORS[categoryType]} style={style}>
       {categoryType.split(' ')[0]}
     </Pill>
   )

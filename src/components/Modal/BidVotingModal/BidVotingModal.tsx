@@ -56,9 +56,9 @@ function BidVotingModal({ onCastVote, castingVote, linkedTenderId, proposalPageS
                 proposal={proposal}
                 showBudget
                 isDisabled={proposal.snapshot_id === currentProposal}
-                hideUser
+                showUser={false}
                 showLeadingVP
-                hideEndDate
+                showEndDate={false}
               />
             ))}
           </Modal.Content>

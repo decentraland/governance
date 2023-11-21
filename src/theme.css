@@ -86,6 +86,9 @@
   --weight-medium: 500;
   --weight-semi-bold: 600;
   --weight-bold: 700;
+
+  /* Transitions */
+  --card-transition: box-shadow 0.1s ease, transform 0.1s ease;
 }
 
 body {

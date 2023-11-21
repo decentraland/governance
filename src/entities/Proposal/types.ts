@@ -803,7 +803,7 @@ export type ProposalCommentsInDiscourse = {
   comments: ProposalComment[]
 }
 
-type VestingContractData = {
+export type VestingContractData = {
   vestedAmount: number
   releasable: number
   released: number
@@ -835,12 +835,6 @@ export type Project = {
 export type ProjectWithUpdate = Project & {
   update?: IndexedUpdate | null
   update_timestamp?: number
-}
-
-export type CategorizedGrants = {
-  current: ProjectWithUpdate[]
-  past: ProjectWithUpdate[]
-  total: number
 }
 
 export type PendingProposalsQuery = { start: Date; end: Date; fields: (keyof SnapshotProposal)[]; limit: number }

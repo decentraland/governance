@@ -154,7 +154,9 @@ export default function NotificationsFeed({
                   <NotificationItem
                     key={notification.payload_id}
                     notification={notification}
-                    isNew={!!lastNotificationIdIndex && index < lastNotificationIdIndex}
+                    isNew={
+                      (!!lastNotificationIdIndex && index < lastNotificationIdIndex) || lastNotificationIdIndex === -1
+                    }
                   />
                 ))}
               </div>

@@ -34,3 +34,18 @@
   transform: translateX(0px);
   visibility: visible;
 }
+
+.GovernanceSidebar__TitleContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.GovernanceSidebar__Title {
+  margin: 0;
+}
+
+.GovernanceSidebar__TitleContainer > .dcl.close {
+  width: 20px;
+  height: 20px;
+}

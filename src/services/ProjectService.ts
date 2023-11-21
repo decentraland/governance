@@ -1,14 +1,13 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 
-import { DclData, TransparencyVesting } from '../clients/DclData'
+import { DclData } from '../clients/DclData'
 import UnpublishedBidModel from '../entities/Bid/model'
 import { GrantTier } from '../entities/Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../entities/Grant/constants'
-import { GrantRequest, ProjectStatus } from '../entities/Grant/types'
+import { GrantRequest } from '../entities/Grant/types'
 import ProposalModel from '../entities/Proposal/model'
 import {
   GrantProposalConfiguration,
-  Project,
   ProjectWithUpdate,
   ProposalAttributes,
   ProposalType,
@@ -20,6 +19,7 @@ import { getPublicUpdates } from '../entities/Updates/utils'
 import { formatError } from '../helpers'
 import Time from '../utils/date/Time'
 import { isProdEnv } from '../utils/governanceEnvs'
+import { createProject } from '../utils/projects'
 
 import { BudgetService } from './BudgetService'
 import { ProposalInCreation } from './ProposalService'
@@ -41,21 +41,7 @@ export class ProjectService {
               return dateB - dateA
             })
           const latestVesting = proposalVestings[0]
-
-          const project: Project = {
-            id: proposal.id,
-            title: proposal.title,
-            user: proposal.user,
-            type: proposal.type,
-            size: proposal.configuration.size || proposal.configuration.funding,
-            created_at: proposal.created_at.getTime(),
-            configuration: {
-              category: proposal.configuration.category || proposal.type,
-              tier: proposal.configuration.tier,
-            },
-
-            ...this.getProjectVestingData(proposal, latestVesting),
-          }
+          const project = createProject(proposal, latestVesting)
 
           try {
             const update = await this.getProjectLatestUpdate(project.id)
@@ -78,46 +64,6 @@ export class ProjectService {
 
     return {
       data: projects,
-    }
-  }
-
-  private static getProjectVestingData(proposal: ProposalAttributes, vesting: TransparencyVesting) {
-    if (proposal.enacting_tx) {
-      return {
-        status: ProjectStatus.Finished,
-        enacting_tx: proposal.enacting_tx,
-        enacted_at: Time(proposal.updated_at).unix(),
-      }
-    }
-
-    if (!vesting) {
-      return {
-        status: ProjectStatus.Pending,
-      }
-    }
-
-    const {
-      token,
-      vesting_start_at,
-      vesting_finish_at,
-      vesting_total_amount,
-      vesting_releasable,
-      vesting_released,
-      vesting_status,
-    } = vesting
-
-    return {
-      status: vesting_status,
-      token,
-      enacted_at: Time(vesting_start_at).unix(),
-      contract: {
-        vesting_total_amount: Math.round(vesting_total_amount),
-        vestedAmount: Math.round(vesting_released + vesting_releasable),
-        releasable: Math.round(vesting_releasable),
-        released: Math.round(vesting_released),
-        start_at: Time(vesting_start_at).unix(),
-        finish_at: Time(vesting_finish_at).unix(),
-      },
     }
   }
 
