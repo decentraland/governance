@@ -35,8 +35,12 @@ export function isCurrentProject(status?: ProjectStatus) {
 }
 
 export function isCurrentQuarterProject(startAt?: number) {
+  if (!startAt) {
+    return false
+  }
+
   const currentQuarterStartDate = Time().startOf('quarter')
-  return Time(startAt).isAfter(currentQuarterStartDate)
+  return Time.unix(startAt || 0).isAfter(currentQuarterStartDate)
 }
 
 function getProjectVestingData(proposal: ProposalAttributes, vesting: TransparencyVesting) {
