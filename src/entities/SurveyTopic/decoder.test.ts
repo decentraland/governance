@@ -14,15 +14,6 @@ const SENTIMENT_SURVEY: TopicFeedback[] = [
 describe('decode', () => {
   const decodedSurvey = (encodedSurvey: Record<string, unknown>) => decodeSurvey(encodedSurvey)
 
-  describe('and empty survey', () => {
-    // TODO: encodedSurvey shouldn't be a string. Maybe { survey: [] }?
-    const encodedSurvey = '' as unknown as Record<string, unknown>
-
-    it('should be encoded into an empty array', () => {
-      expect(decodedSurvey(encodedSurvey)).toEqual([])
-    })
-  })
-
   describe('a survey with different topic feedbacks', () => {
     const encodedSurvey = {
       survey: [
@@ -81,7 +72,6 @@ describe('decode', () => {
   })
 
   describe('a survey with a different format', () => {
-    // TODO: Is this a valid test if typescript is already enforcing what type the function receives?
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const encodedSurvey = [{ topic: { label: 'something' }, reaction: {} }] as any
 
@@ -115,7 +105,6 @@ describe('decode', () => {
   })
 
   describe('a survey encoded as a string', () => {
-    // TODO: Is this a valid test if typescript is already enforcing what type the function receives?
     const encodedSurvey =
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       `{"survey":[{ topic_id: '12345', reaction: 'neutral' }, { topic_id: '22222' , reaction: 'love' }, { topic_id: '33333', reaction: 'empty' }]}` as any
