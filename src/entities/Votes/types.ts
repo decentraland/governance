@@ -16,6 +16,8 @@ export type Vote = {
   vp: number
 } & Pick<SnapshotVote, 'metadata'>
 
+export type VoteByAddress = Record<string, Vote>
+
 export type VotedProposal = SnapshotVote & {
   id: string
   proposal: {
@@ -40,3 +42,8 @@ export type VoteCount = {
 export type Voter = {
   address: string
 } & VoteCount
+
+export type VoteSegmentation<T> = {
+  highQualityVotes: Record<string, T>
+  lowQualityVotes: Record<string, T>
+}

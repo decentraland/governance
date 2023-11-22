@@ -1,9 +1,9 @@
 import { VotedChoice } from '../../../components/Proposal/View/ProposalVoting/VotedChoiceButton'
-import { Vote } from '../../../entities/Votes/types'
+import { Vote, VoteByAddress } from '../../../entities/Votes/types'
 
 export class VotedChoiceBuilder {
   private readonly choices: string[] = []
-  private readonly votes: Record<string, Vote> | null | undefined
+  private readonly votes: VoteByAddress | null | undefined
   private readonly account: string
   private readonly delegators: string[] | null
   private readonly vote: Vote | null
@@ -14,7 +14,7 @@ export class VotedChoiceBuilder {
     vote: Vote | null,
     delegateVote: Vote | null,
     choices: string[],
-    votes: Record<string, Vote> | null | undefined,
+    votes: VoteByAddress | null | undefined,
     account: string,
     delegate: string | null,
     delegators: string[] | null
@@ -100,12 +100,7 @@ export class VotedChoiceBuilder {
     return this.choices[vote.choice - 1]
   }
 
-  votedChoiceVoteCount(
-    choices: string[],
-    votes: Record<string, Vote> | null,
-    account: string,
-    delegators: string[]
-  ): number {
+  votedChoiceVoteCount(choices: string[], votes: VoteByAddress | null, account: string, delegators: string[]): number {
     if (!votes) return 0
 
     let delegatorsWhoVotedTheSame = 0

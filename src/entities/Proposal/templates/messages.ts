@@ -1,10 +1,10 @@
 import { getEnumDisplayName } from '../../../helpers'
 import { formatChoice } from '../../../utils/votes/utils'
-import { Vote } from '../../Votes/types'
+import { VoteByAddress } from '../../Votes/types'
 import { calculateResult } from '../../Votes/utils'
 import { ProposalAttributes, ProposalStatus } from '../types'
 
-export function getUpdateMessage(proposal: ProposalAttributes, votes: Record<string, Vote>) {
+export function getUpdateMessage(proposal: ProposalAttributes, votes: VoteByAddress) {
   let updatingUser: string | null
 
   const statusDisplayName = getEnumDisplayName(proposal.status)
@@ -45,11 +45,7 @@ export function getUpdateMessage(proposal: ProposalAttributes, votes: Record<str
   }
 }
 
-function getJobTriggeredUpdateMessage(
-  statusDisplayName: string,
-  proposal: ProposalAttributes,
-  votes: Record<string, Vote>
-) {
+function getJobTriggeredUpdateMessage(statusDisplayName: string, proposal: ProposalAttributes, votes: VoteByAddress) {
   const resultsByChoices = calculateResult(getProposalChoices(proposal), votes)
   const votingResults = getVotingResultsMessage(resultsByChoices)
   return `${proposal.title}\n\n` + `This proposal is now in status: ${statusDisplayName}.\n\n` + votingResults

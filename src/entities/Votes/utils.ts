@@ -1,10 +1,12 @@
 import isUUID from 'validator/lib/isUUID'
 
 import { SnapshotVote } from '../../clients/SnapshotTypes'
+import { VOTES_VP_THRESHOLD } from '../../constants'
 
-import { ChoiceColor, Vote } from './types'
+import { ChoiceColor, Vote, VoteByAddress, VoteSegmentation } from './types'
 
 export type Scores = Record<string, number>
+type VotesByAddress = Record<string, Vote[]>
 
 export function toProposalIds(ids?: undefined | null | string | string[]) {
   if (!ids) {
@@ -16,20 +18,38 @@ export function toProposalIds(ids?: undefined | null | string | string[]) {
   return list.filter((id) => isUUID(String(id)))
 }
 
-export function createVotes(votes: SnapshotVote[]) {
+function createVotes<T>(votes: SnapshotVote[], returnValue: (vote: Vote, prevValue?: T) => T): Record<string, T> {
   return votes.reduce((result, vote) => {
     const address = vote.voter.toLowerCase()
-    result[address] = {
-      choice: vote.choice,
-      vp: getFloorOrZero(vote.vp),
-      timestamp: Number(vote.created),
-      metadata: vote.metadata,
-    }
+    const prevValue = result[address]
+    result[address] = returnValue(
+      {
+        choice: vote.choice,
+        vp: getFloorOrZero(vote.vp),
+        timestamp: Number(vote.created),
+        metadata: vote.metadata,
+      },
+      prevValue
+    )
     return result
-  }, {} as Record<string, Vote>)
+  }, {} as Record<string, T>)
 }
 
-export function calculateResult(choices: string[], votes: Record<string, Vote>, requiredVotingPower = 0) {
+export function getVoteByAddress(votes: SnapshotVote[]): VoteByAddress {
+  return createVotes(votes, (vote) => vote)
+}
+
+export function getVotesArrayByAddress(votes: SnapshotVote[]): VotesByAddress {
+  return createVotes(votes, (vote, prevValue) => {
+    if (prevValue) {
+      return [...prevValue, vote]
+    }
+
+    return [vote]
+  })
+}
+
+export function calculateResult(choices: string[], votes: VoteByAddress, requiredVotingPower = 0) {
   let totalPower = 0
   const balance: Scores = {}
   const choiceCount: Scores = {}
@@ -133,7 +153,7 @@ export function calculateChoiceColor(value: string, index: number): ChoiceColor 
   }
 }
 
-export function calculateResultWinner(choices: string[], votes: Record<string, Vote>, requiredVotingPower = 0) {
+export function calculateResultWinner(choices: string[], votes: VoteByAddress, requiredVotingPower = 0) {
   const result = calculateResult(choices, votes, requiredVotingPower)
 
   return result.reduce((winner, current) => {
@@ -162,4 +182,48 @@ export function abbreviateNumber(vp: number) {
 
 function getFloorOrZero(number?: number) {
   return Math.floor(number || 0)
+}
+
+export function getVoteSegmentation(votes: VoteByAddress | null | undefined): VoteSegmentation<Vote> {
+  const highQualityVotes: VoteByAddress = {}
+  const lowQualityVotes: VoteByAddress = {}
+
+  if (votes) {
+    Object.entries(votes).forEach(([address, vote]) => {
+      if (vote.vp > VOTES_VP_THRESHOLD) {
+        highQualityVotes[address] = vote
+      } else {
+        lowQualityVotes[address] = vote
+      }
+    })
+  }
+
+  return {
+    highQualityVotes,
+    lowQualityVotes,
+  }
+}
+
+export function getMultipleVotesSegmentation(votes: VotesByAddress | null | undefined): VoteSegmentation<Vote[]> {
+  const highQualityVotes: VotesByAddress = {}
+  const lowQualityVotes: VotesByAddress = {}
+
+  if (votes) {
+    Object.entries(votes).forEach(([address, votes]) => {
+      for (const vote of votes) {
+        if (vote.vp >= VOTES_VP_THRESHOLD) {
+          const userHighQualityVotes = highQualityVotes[address] || []
+          highQualityVotes[address] = [...userHighQualityVotes, vote]
+        } else {
+          const userLowQualityVotes = lowQualityVotes[address] || []
+          lowQualityVotes[address] = [...userLowQualityVotes, vote]
+        }
+      }
+    })
+  }
+
+  return {
+    highQualityVotes,
+    lowQualityVotes,
+  }
 }

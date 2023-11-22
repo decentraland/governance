@@ -3,7 +3,7 @@ import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Desktop } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
-import { Vote } from '../../entities/Votes/types'
+import { VoteByAddress } from '../../entities/Votes/types'
 import useCountdown, { Countdown } from '../../hooks/useCountdown'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Time from '../../utils/date/Time'
@@ -27,7 +27,7 @@ function getTimeLabel(timeout: Countdown, date: Date, format?: 'short') {
 interface Props {
   proposal: ProposalAttributes
   hasCoauthorRequest?: boolean
-  votes?: Record<string, Vote>
+  votes?: VoteByAddress
 }
 
 export default function ProposalItem({ proposal, hasCoauthorRequest, votes }: Props) {

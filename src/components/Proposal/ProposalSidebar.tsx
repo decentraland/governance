@@ -9,7 +9,7 @@ import { SubscriptionAttributes } from '../../entities/Subscription/types'
 import { Survey } from '../../entities/SurveyTopic/types'
 import { UpdateAttributes } from '../../entities/Updates/types'
 import { isProposalStatusWithUpdates } from '../../entities/Updates/utils'
-import { SelectedVoteChoice, Vote } from '../../entities/Votes/types'
+import { SelectedVoteChoice, VoteByAddress } from '../../entities/Votes/types'
 import { calculateResult } from '../../entities/Votes/utils'
 import { ProposalPageState } from '../../pages/proposal'
 import { NotDesktop1200 } from '../Layout/Desktop1200'
@@ -46,9 +46,9 @@ type Props = {
   subscribe: (subscribe: boolean) => void
   subscriptions: SubscriptionAttributes[] | null
   subscriptionsLoading: boolean
-  votes: Record<string, Vote> | null
+  votes?: VoteByAddress | null
   votesLoading: boolean
-  highQualityVotes: Record<string, Vote> | null
+  highQualityVotes?: VoteByAddress | null
   isOwner: boolean
   isCoauthor: boolean
 }

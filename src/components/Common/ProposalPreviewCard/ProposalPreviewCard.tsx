@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import { Desktop, TabletAndBelow } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
-import { Vote } from '../../../entities/Votes/types'
+import { VoteByAddress } from '../../../entities/Votes/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useProposalComments from '../../../hooks/useProposalComments'
 import useWinningChoice from '../../../hooks/useWinningChoice'
@@ -28,7 +28,7 @@ enum Variant {
 
 interface Props {
   proposal: ProposalAttributes
-  votes?: Record<string, Vote>
+  votes?: VoteByAddress
   variant: `${Variant}`
 }
 

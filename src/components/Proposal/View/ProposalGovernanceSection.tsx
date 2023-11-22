@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
-import { SelectedVoteChoice, Vote } from '../../../entities/Votes/types'
+import { SelectedVoteChoice, VoteByAddress } from '../../../entities/Votes/types'
 import { useBidProposals } from '../../../hooks/useBidProposals'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import { useTenderProposals } from '../../../hooks/useTenderProposals'
@@ -23,7 +23,7 @@ const PROMOTABLE_PROPOSALS = [ProposalType.Poll, ProposalType.Draft, ProposalTyp
 
 interface Props {
   proposal?: ProposalAttributes | null
-  votes?: Record<string, Vote> | null
+  votes?: VoteByAddress | null
   partialResults: ChoiceProgressProps[]
   choices: string[]
   loading: boolean

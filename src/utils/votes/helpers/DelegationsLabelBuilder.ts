@@ -1,11 +1,11 @@
 import intersection from 'lodash/intersection'
 
 import { DelegationsLabelProps } from '../../../components/Proposal/View/ProposalVoting/DelegationsLabel'
-import { Vote } from '../../../entities/Votes/types'
+import { Vote, VoteByAddress } from '../../../entities/Votes/types'
 import Time from '../../date/Time'
 
 export class DelegationsLabelBuilder {
-  private readonly votes: Record<string, Vote> | null | undefined
+  private readonly votes: VoteByAddress | null | undefined
   private readonly ownVotingPower: number
   private readonly delegatedVotingPower: number
   private readonly delegators: string[] | null
@@ -22,7 +22,7 @@ export class DelegationsLabelBuilder {
     delegateVote: Vote | null,
     voteDifference: number | null,
     delegators: string[] | null,
-    votes: Record<string, Vote> | null | undefined
+    votes: VoteByAddress | null | undefined
   ) {
     this.ownVotingPower = ownVotingPower
     this.delegatedVotingPower = delegatedVotingPower

@@ -57,7 +57,7 @@ export default function ProposalsPage() {
     itemsPerPage: ITEMS_PER_PAGE,
   })
   const proposalIds = (proposals?.data || []).map((proposal) => proposal.id)
-  const { votes, isLoadingVotes } = useProposalsVotes(proposalIds)
+  const { segmentedVotes, isLoadingVotes } = useProposalsVotes(proposalIds)
   const isTabletAndBelow = useTabletAndBelowMediaQuery()
 
   const handlePageFilter = useCallback(
@@ -192,13 +192,13 @@ export default function ProposalsPage() {
                                 key={proposal.id}
                                 proposal={proposal}
                                 hasCoauthorRequest={!!requestsStatus.find((req) => req.proposal_id === proposal.id)}
-                                votes={votes ? votes[proposal.id] : undefined}
+                                votes={segmentedVotes ? segmentedVotes[proposal.id]?.highQualityVotes : undefined}
                               />
                             ) : (
                               <ProposalPreviewCard
                                 key={proposal.id}
                                 proposal={proposal}
-                                votes={votes ? votes[proposal.id] : undefined}
+                                votes={segmentedVotes ? segmentedVotes[proposal.id]?.highQualityVotes : undefined}
                                 variant="category"
                               />
                             )

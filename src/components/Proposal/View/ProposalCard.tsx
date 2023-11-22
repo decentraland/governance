@@ -35,7 +35,7 @@ export default function ProposalCard({
 }: Props) {
   const t = useFormatMessage()
   const { id, title, user, start_at, finish_at } = proposal
-  const { votes } = useProposalVotes(id)
+  const { segmentedVotes } = useProposalVotes(id)
   const dateText = useProposalDateText(start_at, finish_at)
   const { formatNumber } = useIntl()
   const budget = getBudget(proposal)
@@ -70,7 +70,9 @@ export default function ProposalCard({
                 total: formatNumber(winningChoice.power),
                 choice: winningChoice.choice,
               })
-            : t('page.home.open_proposals.votes', { total: Object.keys(votes || {}).length })}
+            : t('page.home.open_proposals.votes', {
+                total: Object.keys(segmentedVotes?.highQualityVotes || {}).length,
+              })}
         </span>
         {showEndDate && (
           <>
