@@ -40,7 +40,7 @@ export default function WalletSelectorModal({ chainId, onConnect, onClose, error
     [onConnect]
   )
 
-  const handleDownloadMetamaskClick = useAnchor('https://metamask.io/download.html')
+  const handleDownloadMetamaskClick = useAnchor('dapp://governance.decentraland.org/')
   const handleConnectInjected = useCallback(() => {
     if (availableProviders.has(ProviderType.INJECTED)) {
       handleConnect(ProviderType.INJECTED, chainId)

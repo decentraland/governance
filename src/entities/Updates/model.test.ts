@@ -1,4 +1,3 @@
-import { def } from 'bdd-lazy-var/getter'
 import crypto from 'crypto'
 
 import Time from '../../utils/date/Time'
@@ -16,39 +15,39 @@ describe('UpdateModel', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     jest.spyOn(UpdateModel, 'createMany').mockImplementation((list: any) => list)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     jest.spyOn(UpdateModel, 'delete').mockResolvedValue([] as any)
     jest.spyOn(crypto, 'randomUUID').mockReturnValue(UUID)
-    jest.useFakeTimers('modern')
+    jest.useFakeTimers()
     jest.setSystemTime(FAKE_NOW)
   })
 
   describe('createPendingUpdates', () => {
     describe('for a vesting with a duration of almost 3 months', () => {
-      def('vestingDates', () => {
-        return {
-          vestingStartAt: '2020-01-01 00:00:00z',
-          vestingFinishAt: '2020-03-31 00:00:00z',
-        }
-      })
+      const vestingDates = {
+        vestingStartAt: '2020-01-01 00:00:00z',
+        vestingFinishAt: '2020-03-31 00:00:00z',
+      }
 
       describe('when preferred payment date is on the 1st of the month', () => {
-        def('preferredPaymentDate', () => VestingStartDate.First)
+        const preferredPaymentDate = VestingStartDate.First
 
         it('calculates the correct amount of pending updates', () => {
           expect(
-            getMonthsBetweenDates(new Date(get.vestingDates.vestingStartAt), new Date(get.vestingDates.vestingFinishAt))
+            getMonthsBetweenDates(new Date(vestingDates.vestingStartAt), new Date(vestingDates.vestingFinishAt))
           ).toEqual({ months: 2, extraDays: 30 })
-          expect(UpdateModel.getAmountOfUpdates(get.vestingDates)).toEqual(3)
+          expect(UpdateModel.getAmountOfUpdates(vestingDates)).toEqual(3)
         })
 
         it('deletes any pending updates for the proposal', async () => {
-          await UpdateModel.createPendingUpdates(PROPOSAL_ID, get.vestingDates, get.preferredPaymentDate)
+          await UpdateModel.createPendingUpdates(PROPOSAL_ID, vestingDates, preferredPaymentDate)
           expect(UpdateModel.delete).toHaveBeenCalledWith({ proposal_id: PROPOSAL_ID, status: UpdateStatus.Pending })
         })
 
         it('creates expected pending updates with the correct attributes', async () => {
-          await UpdateModel.createPendingUpdates(PROPOSAL_ID, get.vestingDates, get.preferredPaymentDate)
+          await UpdateModel.createPendingUpdates(PROPOSAL_ID, vestingDates, preferredPaymentDate)
           expect(UpdateModel.createMany).toHaveBeenCalledWith([
             {
               id: UUID,
@@ -80,24 +79,23 @@ describe('UpdateModel', () => {
     })
 
     describe('for a vesting with a duration of 6 months and some extra days, with a starting date different than the preferred', () => {
-      def('vestingDates', () => {
-        return {
-          vestingStartAt: '2020-11-17 00:00:00z',
-          vestingFinishAt: '2020-04-31 00:00:00z',
-        }
-      })
+      const vestingDates = {
+        vestingStartAt: '2020-11-17 00:00:00z',
+        vestingFinishAt: '2020-04-31 00:00:00z',
+      }
+
       describe('when preferred payment date is on the 15th of the month', () => {
-        def('preferredPaymentDate', () => VestingStartDate.Fifteenth)
+        const preferredPaymentDate = VestingStartDate.Fifteenth
 
         it('calculates the correct amount of pending updates', () => {
           expect(
-            getMonthsBetweenDates(new Date(get.vestingDates.vestingStartAt), new Date(get.vestingDates.vestingFinishAt))
+            getMonthsBetweenDates(new Date(vestingDates.vestingStartAt), new Date(vestingDates.vestingFinishAt))
           ).toEqual({ months: 6, extraDays: 16 })
-          expect(UpdateModel.getAmountOfUpdates(get.vestingDates)).toEqual(7)
+          expect(UpdateModel.getAmountOfUpdates(vestingDates)).toEqual(7)
         })
 
         it('creates expected pending updates with the correct attributes', async () => {
-          await UpdateModel.createPendingUpdates(PROPOSAL_ID, get.vestingDates, get.preferredPaymentDate)
+          await UpdateModel.createPendingUpdates(PROPOSAL_ID, vestingDates, preferredPaymentDate)
           expect(UpdateModel.createMany).toHaveBeenCalledWith([
             {
               id: UUID,
@@ -161,24 +159,23 @@ describe('UpdateModel', () => {
     })
 
     describe('for a vesting with a duration of exactly 6 months', () => {
-      def('vestingDates', () => {
-        return {
-          vestingStartAt: '2020-07-01 00:00:00z',
-          vestingFinishAt: '2021-01-01 00:00:00z',
-        }
-      })
+      const vestingDates = {
+        vestingStartAt: '2020-07-01 00:00:00z',
+        vestingFinishAt: '2021-01-01 00:00:00z',
+      }
+
       describe('when preferred payment date is on the 15th of the month', () => {
-        def('preferredPaymentDate', () => VestingStartDate.Fifteenth)
+        const preferredPaymentDate = VestingStartDate.Fifteenth
 
         it('calculates the correct amount of pending updates', () => {
           expect(
-            getMonthsBetweenDates(new Date(get.vestingDates.vestingStartAt), new Date(get.vestingDates.vestingFinishAt))
+            getMonthsBetweenDates(new Date(vestingDates.vestingStartAt), new Date(vestingDates.vestingFinishAt))
           ).toEqual({ months: 6, extraDays: 0 })
-          expect(UpdateModel.getAmountOfUpdates(get.vestingDates)).toEqual(6)
+          expect(UpdateModel.getAmountOfUpdates(vestingDates)).toEqual(6)
         })
 
         it('creates expected pending updates with the correct attributes', async () => {
-          await UpdateModel.createPendingUpdates(PROPOSAL_ID, get.vestingDates, get.preferredPaymentDate)
+          await UpdateModel.createPendingUpdates(PROPOSAL_ID, vestingDates, preferredPaymentDate)
           expect(UpdateModel.createMany).toHaveBeenCalledWith([
             {
               id: UUID,
@@ -236,104 +233,105 @@ describe('UpdateModel', () => {
 
   describe('getFirstUpdateStartingDate', () => {
     const FAKE_TODAY = new Date('2020-01-07 00:01:00z')
-    def('subject', () => UpdateModel.getFirstUpdateStartingDate(get.vestingStartDate, get.preferredPaymentDate))
+    const getSubject = (vestingStartDate: string, preferredPaymentDate: VestingStartDate) =>
+      UpdateModel.getFirstUpdateStartingDate(vestingStartDate, preferredPaymentDate)
 
     beforeEach(() => {
       jest.clearAllMocks()
-      jest.useFakeTimers('modern')
+      jest.useFakeTimers()
       jest.setSystemTime(FAKE_TODAY)
     })
 
     describe('when preferred payment date is on the 1st of the month', () => {
-      def('preferredPaymentDate', () => VestingStartDate.First)
+      const preferredPaymentDate = VestingStartDate.First
 
       describe('when vesting started on the 1st of the current month', () => {
-        def('vestingStartDate', () => '2020-01-01 00:00:00z')
+        const vestingStartDate = '2020-01-01 00:00:00z'
 
         it('should return the 1st of this month', () => {
-          expect(get.subject).toEqual(Time.utc('2020-01-01 00:00:00.000Z'))
+          expect(getSubject(vestingStartDate, preferredPaymentDate)).toEqual(Time.utc('2020-01-01 00:00:00.000Z'))
         })
       })
       describe('when vesting started on the 15th of the current month', () => {
-        def('vestingStartDate', () => '2020-01-15 00:00:00z')
+        const vestingStartDate = '2020-01-15 00:00:00z'
 
         it('should return the 1st of this month', () => {
-          expect(get.subject).toEqual(Time.utc('2020-01-01 00:00:00.000Z'))
+          expect(getSubject(vestingStartDate, preferredPaymentDate)).toEqual(Time.utc('2020-01-01 00:00:00.000Z'))
         })
       })
       describe('when vesting started on a random day of the current month', () => {
-        def('vestingStartDate', () => '2020-01-27 00:00:00z')
+        const vestingStartDate = '2020-01-27 00:00:00z'
 
         it('should return the 1st of this month', () => {
-          expect(get.subject).toEqual(Time.utc('2020-01-01 00:00:00.000Z'))
+          expect(getSubject(vestingStartDate, preferredPaymentDate)).toEqual(Time.utc('2020-01-01 00:00:00.000Z'))
         })
       })
       describe('when vesting starts on the 1st next month', () => {
-        def('vestingStartDate', () => '2020-02-01 00:00:00z')
+        const vestingStartDate = '2020-02-01 00:00:00z'
 
         it('should return the 1st of next month', () => {
-          expect(get.subject).toEqual(Time.utc('2020-02-01 00:00:00.000Z'))
+          expect(getSubject(vestingStartDate, preferredPaymentDate)).toEqual(Time.utc('2020-02-01 00:00:00.000Z'))
         })
       })
       describe('when vesting starts on the 15th next month', () => {
-        def('vestingStartDate', () => '2020-02-15 00:00:00z')
+        const vestingStartDate = '2020-02-15 00:00:00z'
 
         it('should return the 1st of next month', () => {
-          expect(get.subject).toEqual(Time.utc('2020-02-01 00:00:00.000Z'))
+          expect(getSubject(vestingStartDate, preferredPaymentDate)).toEqual(Time.utc('2020-02-01 00:00:00.000Z'))
         })
       })
       describe('when vesting starts on any given day of next month', () => {
-        def('vestingStartDate', () => '2020-02-14 00:00:00z')
+        const vestingStartDate = '2020-02-14 00:00:00z'
 
         it('should return the 1st of next month', () => {
-          expect(get.subject).toEqual(Time.utc('2020-02-01 00:00:00.000Z'))
+          expect(getSubject(vestingStartDate, preferredPaymentDate)).toEqual(Time.utc('2020-02-01 00:00:00.000Z'))
         })
       })
     })
 
     describe('when preferred payment date is on the 15th of the month', () => {
-      def('preferredPaymentDate', () => VestingStartDate.Fifteenth)
+      const preferredPaymentDate = VestingStartDate.Fifteenth
 
       describe('when vesting started on the 1st of the current month', () => {
-        def('vestingStartDate', () => '2020-01-01 00:00:00z')
+        const vestingStartDate = '2020-01-01 00:00:00z'
 
         it('should return the 15th of the current month', () => {
-          expect(get.subject).toEqual(Time.utc('2020-01-15 00:00:00.000Z'))
+          expect(getSubject(vestingStartDate, preferredPaymentDate)).toEqual(Time.utc('2020-01-15 00:00:00.000Z'))
         })
       })
       describe('when vesting started on the 15th of the current month', () => {
-        def('vestingStartDate', () => '2020-01-15 00:00:00z')
+        const vestingStartDate = '2020-01-15 00:00:00z'
 
         it('should return the 15th of the current month', () => {
-          expect(get.subject).toEqual(Time.utc('2020-01-15 00:00:00.000Z'))
+          expect(getSubject(vestingStartDate, preferredPaymentDate)).toEqual(Time.utc('2020-01-15 00:00:00.000Z'))
         })
       })
       describe('when vesting started on a random day of the current month', () => {
-        def('vestingStartDate', () => '2020-01-27 00:00:00z')
+        const vestingStartDate = '2020-01-27 00:00:00z'
 
         it('should return the 15th of the current month', () => {
-          expect(get.subject).toEqual(Time.utc('2020-01-15 00:00:00.000Z'))
+          expect(getSubject(vestingStartDate, preferredPaymentDate)).toEqual(Time.utc('2020-01-15 00:00:00.000Z'))
         })
       })
       describe('when vesting starts on the 1st next month', () => {
-        def('vestingStartDate', () => '2020-02-01 00:00:00z')
+        const vestingStartDate = '2020-02-01 00:00:00z'
 
         it('should return the 15th of next month', () => {
-          expect(get.subject).toEqual(Time.utc('2020-02-15 00:00:00.000Z'))
+          expect(getSubject(vestingStartDate, preferredPaymentDate)).toEqual(Time.utc('2020-02-15 00:00:00.000Z'))
         })
       })
       describe('when vesting starts on the 15th next month', () => {
-        def('vestingStartDate', () => '2020-02-15 00:00:00z')
+        const vestingStartDate = '2020-02-15 00:00:00z'
 
         it('should return the 15th of next month', () => {
-          expect(get.subject).toEqual(Time.utc('2020-02-15 00:00:00.000Z'))
+          expect(getSubject(vestingStartDate, preferredPaymentDate)).toEqual(Time.utc('2020-02-15 00:00:00.000Z'))
         })
       })
       describe('when vesting starts on any given day of the next month', () => {
-        def('vestingStartDate', () => '2020-02-14 00:00:00z')
+        const vestingStartDate = '2020-02-14 00:00:00z'
 
         it('should return the 15th of next month', () => {
-          expect(get.subject).toEqual(Time.utc('2020-02-15 00:00:00.000Z'))
+          expect(getSubject(vestingStartDate, preferredPaymentDate)).toEqual(Time.utc('2020-02-15 00:00:00.000Z'))
         })
       })
     })
