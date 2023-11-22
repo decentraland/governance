@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import classNames from 'classnames'
 
@@ -10,6 +10,7 @@ import ButtonWithArrow from './ButtonWithArrow'
 import Divider from './Divider'
 
 interface Props {
+  id?: string
   title: React.ReactNode
   collapsedTitle?: React.ReactNode
   info?: string
@@ -19,10 +20,28 @@ interface Props {
   collapsible?: boolean
 }
 
-export function ActionBox({ children, title, collapsedTitle, info, action, className, collapsible }: Props) {
-  const t = useFormatMessage()
-  const [expanded, setExpanded] = useState(true)
+const ACTION_BOX_EXPANDED_STATE_KEY = 'org.decentraland.governance.action_box.expanded'
+
+function getDefaultExpanded(collapsible: boolean | undefined, localStorageKey: string) {
+  return collapsible && !!localStorage.getItem(localStorageKey)
+    ? localStorage.getItem(localStorageKey) === 'true'
+    : true
+}
+
+export function ActionBox({ id, title, collapsedTitle, info, action, children, className, collapsible }: Props) {
+  const localStorageKey = `${ACTION_BOX_EXPANDED_STATE_KEY}-${id}`
+  const defaultExpanded = getDefaultExpanded(collapsible, localStorageKey)
   const displayedTitle = typeof title === 'string' ? <span>{title}</span> : title
+
+  const t = useFormatMessage()
+  const [expanded, setExpanded] = useState(defaultExpanded)
+
+  useEffect(() => {
+    if (collapsible && id) {
+      localStorage.setItem(localStorageKey, expanded.toString())
+    }
+  }, [id, expanded, localStorageKey, collapsible])
+
   return (
     <>
       <div className={classNames('ActionBox__Container', className)}>
