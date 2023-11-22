@@ -165,6 +165,7 @@ function PriorityProposalsBox({ address, collapsible = false }: Props) {
     <div className="ProposalsPage__Priority">
       {collapsible ? (
         <ActionBox
+          id={'priority-proposals-box'}
           title={
             <span className="PriorityProposalsBox__Title">
               {isLoadingVotes && <Loader size="mini" active inline />}
