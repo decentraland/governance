@@ -1,7 +1,7 @@
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 
 import UnpublishedBidModel from '../entities/Bid/model'
-import { BidStatus, UnpublishedBidAttributes } from '../entities/Bid/types'
+import { UnpublishedBidAttributes, UnpublishedBidStatus } from '../entities/Bid/types'
 import { GATSBY_GRANT_VP_THRESHOLD } from '../entities/Grant/constants'
 import ProposalModel from '../entities/Proposal/model'
 import { ProposalType } from '../entities/Proposal/types'
@@ -46,7 +46,7 @@ export default class BidService {
       bid_proposal_data,
       author_address,
       publish_at,
-      status: BidStatus.Pending,
+      status: UnpublishedBidStatus.Pending,
     })
   }
 
@@ -142,8 +142,8 @@ export default class BidService {
   }
 
   static async getBidsInfoByTender(tenderId: string) {
-    const pendingBidsPromise = UnpublishedBidModel.getBidsInfoByTender(tenderId, BidStatus.Pending)
-    const rejectedBidsPromise = UnpublishedBidModel.getBidsInfoByTender(tenderId, BidStatus.Rejected)
+    const pendingBidsPromise = UnpublishedBidModel.getBidsInfoByTender(tenderId, UnpublishedBidStatus.Pending)
+    const rejectedBidsPromise = UnpublishedBidModel.getBidsInfoByTender(tenderId, UnpublishedBidStatus.Rejected)
     const proposalsAmountPromise = ProposalModel.getProposalTotal({
       linkedProposalId: tenderId,
       type: ProposalType.Bid,

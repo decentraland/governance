@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { useTabletAndBelowMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import { PriorityProposal, PriorityProposalType } from '../../entities/Proposal/types'
@@ -117,12 +118,8 @@ function getDisplayedProposals(
     : priorityProposals
 }
 
-function PriorityProposalsBox({ address, collapsible = false }: Props) {
-  const t = useFormatMessage()
-  const isTabletAndBelow = useTabletAndBelowMediaQuery()
-  const lowerAddress = address?.toLowerCase()
-  const { priorityProposals, isLoading } = usePriorityProposals(lowerAddress)
-  const proposalIds =
+function getProposalsAndLinkedProposalsIds(priorityProposals?: PriorityProposal[]) {
+  return (
     priorityProposals?.reduce((acc: string[], priorityProposal) => {
       acc.push(priorityProposal.id)
       if (priorityProposal.linked_proposals_data && priorityProposal.linked_proposals_data.length > 0) {
@@ -130,20 +127,31 @@ function PriorityProposalsBox({ address, collapsible = false }: Props) {
       }
       return acc
     }, []) || []
+  )
+}
 
-  const { votes, isLoadingVotes } = useProposalsCachedVotes(proposalIds || [])
+function PriorityProposalsBox({ address, collapsible = false }: Props) {
+  const t = useFormatMessage()
+  const isTabletAndBelow = useTabletAndBelowMediaQuery()
+  const lowerAddress = address?.toLowerCase()
+  const { priorityProposals, isLoading } = usePriorityProposals(lowerAddress)
+  const proposalIds = getProposalsAndLinkedProposalsIds(priorityProposals)
+  const { votes, isLoadingVotes } = useProposalsCachedVotes(proposalIds)
   const [displayedProposals, setDisplayedProposals] = useState(
     getDisplayedProposals(votes, priorityProposals, lowerAddress)
   )
-
-  useEffect(() => {
-    setDisplayedProposals(getDisplayedProposals(votes, priorityProposals, lowerAddress))
-  }, [isLoadingVotes, lowerAddress, priorityProposals, votes])
-
   const [displayedProposalsAmount, setDisplayedProposalsAmount] = useState(PROPOSALS_PER_PAGE)
   const hasMoreProposals = displayedProposals && displayedProposals.length > PROPOSALS_PER_PAGE
   const showViewMoreButton = hasMoreProposals && displayedProposalsAmount < displayedProposals.length
   const showViewLessButton = hasMoreProposals && displayedProposalsAmount >= displayedProposals.length
+  const hidePriorityProposalsBox =
+    isLoading ||
+    (!isLoading && priorityProposals && priorityProposals.length === 0) ||
+    (!isLoading && displayedProposals && displayedProposals.length === 0)
+
+  useEffect(() => {
+    setDisplayedProposals(getDisplayedProposals(votes, priorityProposals, lowerAddress))
+  }, [isLoadingVotes, lowerAddress, priorityProposals, votes])
 
   const handleViewMore = () => {
     if (displayedProposals) setDisplayedProposalsAmount(displayedProposals.length)
@@ -153,13 +161,14 @@ function PriorityProposalsBox({ address, collapsible = false }: Props) {
     if (displayedProposals) setDisplayedProposalsAmount(PROPOSALS_PER_PAGE)
   }
 
-  return isLoading || (!isLoading && priorityProposals && priorityProposals.length === 0) ? null : (
+  return hidePriorityProposalsBox ? null : (
     <div className="ProposalsPage__Priority">
       {collapsible ? (
         <ActionBox
           title={
             <span className="PriorityProposalsBox__Title">
-              <Counter gray count={displayedProposals?.length} />
+              {isLoadingVotes && <Loader size="mini" active inline />}
+              {!isLoadingVotes && <Counter gray count={displayedProposals?.length} />}
               {t('component.priority_proposals.title')}
             </span>
           }
