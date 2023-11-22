@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import { Governance } from '../clients/Governance'
 import { ProposalAttributes } from '../entities/Proposal/types'
+import { getVoteSegmentation } from '../entities/Votes/utils'
 
 import { FIVE_MINUTES_MS } from './constants'
 
@@ -22,7 +23,9 @@ const useProposalVotes = (proposalId?: ProposalAttributes['id']) => {
     enabled: !!proposalId,
   })
 
-  return { votes: votes ?? null, isLoadingVotes, reloadVotes }
+  const segmentedVotes = votes ? getVoteSegmentation(votes) : undefined
+
+  return { votes, segmentedVotes, isLoadingVotes, reloadVotes }
 }
 
 export default useProposalVotes

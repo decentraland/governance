@@ -2,14 +2,14 @@ import { Ref, forwardRef, useMemo } from 'react'
 
 import { decodeSurvey } from '../../../entities/SurveyTopic/decoder'
 import { Reaction, Topic, TopicFeedback } from '../../../entities/SurveyTopic/types'
-import { Vote } from '../../../entities/Votes/types'
+import { VoteByAddress } from '../../../entities/Votes/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Section from '../View/Section'
 
 import SurveyTopicResult from './SurveyTopicResult'
 
 interface Props {
-  votes: Record<string, Vote> | null
+  votes: VoteByAddress | null
   surveyTopics: Topic[] | null
   isLoadingSurveyTopics: boolean
 }
@@ -36,7 +36,7 @@ function isTopicAvailable(availableTopics: Topic[], topicFeedback: TopicFeedback
   return availableTopics.find((topic) => topic.topic_id === topicFeedback.topic_id)
 }
 
-function getResults(availableTopics: Topic[] | null, votes: Record<string, Vote> | null) {
+function getResults(availableTopics: Topic[] | null, votes: VoteByAddress | null) {
   if (!availableTopics || !votes) return {}
   const topicsResults = initializeTopicResults(availableTopics)
   Object.keys(votes).map((key) => {

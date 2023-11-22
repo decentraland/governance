@@ -1,4 +1,4 @@
-import { Vote } from '../../entities/Votes/types'
+import { Vote, VoteByAddress } from '../../entities/Votes/types'
 
 import { DelegationsLabelBuilder } from './helpers/DelegationsLabelBuilder'
 
@@ -20,7 +20,7 @@ import {
 } from './utils.testData'
 
 describe('getVotingSectionConfig', () => {
-  let votes: Record<string, Vote> = {}
+  let votes: VoteByAddress = {}
   const account = USER_ACCOUNT
   let delegate: string | null = null
   let delegateVote: Vote | null = null

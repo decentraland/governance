@@ -35,7 +35,7 @@ import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { Topic } from '../entities/SurveyTopic/types'
 import { ProjectHealth, UpdateAttributes, UpdateResponse } from '../entities/Updates/types'
 import { AccountType } from '../entities/User/types'
-import { Vote, VotedProposal, Voter } from '../entities/Votes/types'
+import { VoteByAddress, VotedProposal, Voter } from '../entities/Votes/types'
 import { NewsletterSubscriptionResult } from '../shared/types/newsletter'
 import { PushNotification } from '../shared/types/notifications'
 import Time from '../utils/date/Time'
@@ -287,7 +287,7 @@ export class Governance extends API {
   }
 
   async getProposalCachedVotes(proposal_id: string) {
-    const result = await this.fetch<ApiResponse<Record<string, Vote>>>(`/proposals/${proposal_id}/votes`)
+    const result = await this.fetch<ApiResponse<VoteByAddress>>(`/proposals/${proposal_id}/votes`)
     return result.data
   }
 
@@ -301,7 +301,7 @@ export class Governance extends API {
       return result
     }, new URLSearchParams())
 
-    const result = await this.fetch<ApiResponse<Record<string, Record<string, Vote>>>>(`/votes?${params.toString()}`)
+    const result = await this.fetch<ApiResponse<Record<string, VoteByAddress>>>(`/votes?${params.toString()}`)
     return result.data
   }
 

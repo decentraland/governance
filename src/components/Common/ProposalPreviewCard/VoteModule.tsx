@@ -4,7 +4,7 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 import isEmpty from 'lodash/isEmpty'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
-import { Vote } from '../../../entities/Votes/types'
+import { VoteByAddress } from '../../../entities/Votes/types'
 import { calculateResult } from '../../../entities/Votes/utils'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import CategoryPill from '../../Category/CategoryPill'
@@ -16,7 +16,7 @@ import './VoteModule.css'
 
 interface Props {
   proposal: ProposalAttributes
-  votes?: Record<string, Vote>
+  votes?: VoteByAddress
 }
 
 function VoteModule({ proposal, votes }: Props) {

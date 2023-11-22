@@ -1,6 +1,6 @@
 import type { Chart, ScriptableTooltipContext } from 'chart.js'
 
-import { Vote } from '../../entities/Votes/types'
+import { Vote, VoteByAddress } from '../../entities/Votes/types'
 import { DEFAULT_AVATAR_IMAGE } from '../../utils/Catalyst'
 import { Avatar } from '../../utils/Catalyst/types'
 import Time from '../../utils/date/Time'
@@ -12,7 +12,7 @@ const TOOLTIP_ID = 'ProposalVPChartTooltip'
 export const HOUR_IN_MS = 60 * 60 * 1000
 const DAY_IN_MS = 24 * HOUR_IN_MS
 
-export function getSortedVotes(votesMap: Record<string, Vote>) {
+export function getSortedVotes(votesMap: VoteByAddress) {
   return Object.entries(votesMap)
     .map<VoteWithAddress>(([address, vote]) => ({ address, ...vote, timestamp: vote.timestamp * 1000 }))
     .sort((a, b) => a.timestamp - b.timestamp)

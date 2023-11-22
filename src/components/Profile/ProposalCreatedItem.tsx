@@ -26,7 +26,7 @@ export default function ProposalCreatedItem({ proposal, showCoauthoring, hasCoau
   const t = useFormatMessage()
   const { start_at, finish_at, title, status, type, id } = proposal
   const dateText = useProposalDateText(start_at, finish_at)
-  const { votes } = useProposalVotes(id)
+  const { segmentedVotes } = useProposalVotes(id)
 
   return (
     <Card as={Link} href={locations.proposal(id)} className="ProposalCreatedItem">
@@ -45,7 +45,9 @@ export default function ProposalCreatedItem({ proposal, showCoauthoring, hasCoau
             </div>
             <div className="ProposalCreatedItem__Stats">
               <span className="ProposalCreatedItem__Details">
-                {t('page.profile.created_proposals.votes', { total: Object.keys(votes || {}).length })}
+                {t('page.profile.created_proposals.votes', {
+                  total: Object.keys(segmentedVotes?.highQualityVotes || {}).length,
+                })}
               </span>
               <span className="ProposalCreatedItem__Details">
                 <Mobile>{abbreviateTimeDifference(dateText)}</Mobile>

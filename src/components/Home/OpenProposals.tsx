@@ -35,7 +35,7 @@ const OpenProposals = ({ endingSoonProposals, isLoadingProposals }: Props) => {
   const t = useFormatMessage()
   const [activeTab, setActiveTab] = useState(Tab.EndingSoon)
   const proposalIds = (endingSoonProposals || []).map((proposal) => proposal.id)
-  const { votes } = useProposalsVotes(proposalIds)
+  const { segmentedVotes } = useProposalsVotes(proposalIds)
 
   const { proposals: proposalsByParticipatingVP, isLoadingProposals: isLoadingProposalsByParticipatingVp } =
     useProposalsByParticipatingVP(twoWeeksAgo, now)
@@ -65,7 +65,7 @@ const OpenProposals = ({ endingSoonProposals, isLoadingProposals }: Props) => {
                 <ProposalPreviewCard
                   key={proposal.id}
                   proposal={proposal}
-                  votes={votes ? votes[proposal.id] : undefined}
+                  votes={segmentedVotes ? segmentedVotes[proposal.id]?.highQualityVotes : undefined}
                   variant="vote"
                 />
               ))}
@@ -82,7 +82,12 @@ const OpenProposals = ({ endingSoonProposals, isLoadingProposals }: Props) => {
             {!isLoadingProposalsByParticipatingVp &&
               proposalsByParticipatingVP &&
               proposalsByParticipatingVP.map((proposal) => (
-                <ProposalPreviewCard key={proposal.id} proposal={proposal} variant="vote" />
+                <ProposalPreviewCard
+                  key={proposal.id}
+                  proposal={proposal}
+                  votes={segmentedVotes ? segmentedVotes[proposal.id]?.highQualityVotes : undefined}
+                  variant="vote"
+                />
               ))}
             {isLoadingProposalsByParticipatingVp && (
               <HomeLoader className="OpenProposals__Loader">{t('page.home.open_proposals.loading')}</HomeLoader>

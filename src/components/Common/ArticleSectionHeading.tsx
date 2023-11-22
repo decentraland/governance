@@ -8,7 +8,7 @@ interface Props {
 
 export default function ArticleSectionHeading({ children }: Props) {
   return (
-    <Heading className="ArticleSectionHeading" size="2xs" weight="semi-bold">
+    <Heading className="ArticleSectionHeading" size="3xs" weight="semi-bold">
       {children}
     </Heading>
   )

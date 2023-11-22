@@ -47,14 +47,13 @@ import GovernanceProcess from '../components/Proposal/View/GovernanceProcess'
 import ProposalDetailSection from '../components/Proposal/View/ProposalDetailSection'
 import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPreview'
 import ProposalMarkdown from '../components/Proposal/View/ProposalMarkdown'
-import { VOTES_VP_THRESHOLD } from '../constants'
 import { OldGrantCategory } from '../entities/Grant/types'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { isBiddingAndTenderingProposal, isGovernanceProcessProposal } from '../entities/Proposal/utils'
 import { Survey } from '../entities/SurveyTopic/types'
 import { SurveyEncoder } from '../entities/SurveyTopic/utils'
 import { isProposalStatusWithUpdates } from '../entities/Updates/utils'
-import { SelectedVoteChoice, Vote } from '../entities/Votes/types'
+import { SelectedVoteChoice } from '../entities/Votes/types'
 import { DEFAULT_QUERY_STALE_TIME } from '../hooks/constants'
 import useAsyncTask from '../hooks/useAsyncTask'
 import useBudgetWithContestants from '../hooks/useBudgetWithContestants'
@@ -94,31 +93,6 @@ export type ProposalPageState = {
   showResults: boolean
   retryTimer: number
   selectedChoice: SelectedVoteChoice
-}
-
-type VoteSegmentation = {
-  highQualityVotes: Record<string, Vote>
-  lowQualityVotes: Record<string, Vote>
-}
-
-function getVoteSegmentation(votes: Record<string, Vote> | null | undefined): VoteSegmentation {
-  const highQualityVotes: Record<string, Vote> = {}
-  const lowQualityVotes: Record<string, Vote> = {}
-
-  if (votes) {
-    Object.entries(votes).forEach(([address, vote]) => {
-      if (vote.vp > VOTES_VP_THRESHOLD) {
-        highQualityVotes[address] = vote
-      } else {
-        lowQualityVotes[address] = vote
-      }
-    })
-  }
-
-  return {
-    highQualityVotes,
-    lowQualityVotes,
-  }
 }
 
 function isLegacyGrantCategory(category: string) {
@@ -172,8 +146,8 @@ export default function ProposalPage() {
   const { proposal, isLoadingProposal, isErrorOnProposal, proposalKey } = useProposal(params.get('id'))
   const { isCoauthor } = useIsProposalCoAuthor(proposal)
   const { isOwner } = useIsProposalOwner(proposal)
-  const { votes, isLoadingVotes, reloadVotes } = useProposalVotes(proposal?.id)
-  const { highQualityVotes, lowQualityVotes } = useMemo(() => getVoteSegmentation(votes), [votes])
+  const { votes, segmentedVotes, isLoadingVotes, reloadVotes } = useProposalVotes(proposal?.id)
+  const { highQualityVotes, lowQualityVotes } = segmentedVotes || {}
 
   const subscriptionsQueryKey = `proposalSubscriptions#${proposal?.id || ''}`
   const { data: subscriptions, isLoading: isSubscriptionsLoading } = useQuery({
@@ -430,7 +404,7 @@ export default function ProposalPage() {
           )}
           {showSurveyResults && (
             <SurveyResults
-              votes={votes}
+              votes={highQualityVotes ?? null}
               surveyTopics={surveyTopics}
               isLoadingSurveyTopics={isLoadingSurveyTopics}
               ref={reactionsSectionRef}

@@ -2,6 +2,8 @@ import { useQuery } from '@tanstack/react-query'
 
 import { Governance } from '../clients/Governance'
 import { ProposalAttributes } from '../entities/Proposal/types'
+import { Vote, VoteSegmentation } from '../entities/Votes/types'
+import { getVoteSegmentation } from '../entities/Votes/utils'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
@@ -12,7 +14,15 @@ function useProposalsVotes(proposalIds: ProposalAttributes['id'][]) {
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
-  return { votes, isLoadingVotes }
+  const segmentedVotes = votes
+    ? Object.entries(votes).reduce((acc, [proposalId, voteMap]) => {
+        acc[proposalId] = getVoteSegmentation(voteMap)
+
+        return acc
+      }, {} as Record<string, VoteSegmentation<Vote>>)
+    : undefined
+
+  return { segmentedVotes, isLoadingVotes }
 }
 
 export default useProposalsVotes

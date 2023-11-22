@@ -1,0 +1,58 @@
+.ProposalCardContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  width: 100%;
+  background: var(--white-900);
+  border: 1px solid var(--alpha-black-300);
+  box-shadow: 0 1px 8px var(--black-100);
+  border-radius: 8px;
+  padding: 10px 20px 10px 16px;
+  transition: border 0.15s ease-in-out, var(--card-transition);
+  cursor: pointer;
+}
+
+.ProposalCardContainer:hover {
+  box-shadow: var(--shadow-2);
+  transform: translateY(-4px);
+}
+
+.ProposalCardContainer__Container {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 94%;
+}
+
+.ProposalCardContainer__Title {
+  display: block;
+  width: 100%;
+  padding-right: 20px;
+  font-weight: var(--weight-semi-bold);
+  font-size: 17px;
+  line-height: 26px;
+  letter-spacing: -0.2px;
+  color: var(--black-800);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
+.ProposalCardContainer:visited .ProposalCardContainer__Title {
+  color: var(--black-600);
+}
+
+.ProposalCardContainer__DetailsContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  text-transform: uppercase;
+  font-size: 11px;
+  line-height: 18px;
+  letter-spacing: -0.2px;
+  color: var(--black-600);
+}

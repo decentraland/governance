@@ -4,7 +4,7 @@
   padding: 16px;
   justify-content: space-between;
   align-items: center;
-  transition: box-shadow 0.1s ease, transform 0.1s ease, -webkit-box-shadow 0.1s ease, -webkit-transform 0.1s ease;
+  transition: var(--card-transition);
 }
 
 .ProposalPreviewCard--vote {
