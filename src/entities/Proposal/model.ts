@@ -536,17 +536,20 @@ export default class ProposalModel extends Model<ProposalAttributes> {
              p.id IN (
                 SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(this)} AS p2 
                 WHERE type = ${ProposalType.Tender} AND status = ${ProposalStatus.Active})
-        
+
         UNION -- Open tenders with no submissions
         SELECT ${cols}
-                ,${PriorityProposalType.OpenTender} AS priority_type
+             ,${PriorityProposalType.OpenTender} AS priority_type
         FROM ${table(this)} p
         WHERE type = ${ProposalType.Tender} AND
-             p.status = ${ProposalStatus.Passed} AND
-             p.finish_at >= ${aMonthAgo} AND
-             id NOT IN (
-                 SELECT linked_proposal_id FROM unpublished_bids AS ub
-                 WHERE status = ${UnpublishedBidStatus.Pending})
+            p.status = ${ProposalStatus.Passed} AND
+            p.finish_at >= ${aMonthAgo} AND
+                p.id NOT IN (
+                SELECT linked_proposal_id FROM unpublished_bids AS ub
+                WHERE status = ${UnpublishedBidStatus.Pending}) AND
+                p.id NOT IN (
+                SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(this)} AS p2
+                WHERE type = ${ProposalType.Bid})
     
         UNION -- Open tenders with submissions
         SELECT ${cols}
