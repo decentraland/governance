@@ -1,7 +1,7 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import { SQL, join, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 
-import { BidStatus, UnpublishedBidAttributes, UnpublishedBidInfo } from './types'
+import { UnpublishedBidAttributes, UnpublishedBidInfo, UnpublishedBidStatus } from './types'
 
 const DB_ENCRYPTION_KEY = String(process.env.DB_ENCRYPTION_KEY || '')
 
@@ -40,7 +40,7 @@ export default class UnpublishedBidModel extends Model<UnpublishedBidAttributes>
 
   static async getBidsInfoByTender(
     linked_proposal_id: string,
-    status = BidStatus.Pending
+    status = UnpublishedBidStatus.Pending
   ): Promise<Pick<UnpublishedBidAttributes, 'author_address' | 'publish_at' | 'created_at'>[]> {
     const query = SQL`
     SELECT created_at, publish_at, author_address 
@@ -56,7 +56,7 @@ export default class UnpublishedBidModel extends Model<UnpublishedBidAttributes>
     const query = SQL`
     SELECT id, created_at, author_address, publish_at, linked_proposal_id, pgp_sym_decrypt(bid_proposal_data::bytea, ${DB_ENCRYPTION_KEY}::text) as bid_proposal_data 
     FROM ${table(this)} 
-    WHERE publish_at <= now() AND status = ${BidStatus.Pending}`
+    WHERE publish_at <= now() AND status = ${UnpublishedBidStatus.Pending}`
 
     const bids = await this.namedQuery('get_bids_ready_to_publish', query)
 
@@ -81,13 +81,13 @@ export default class UnpublishedBidModel extends Model<UnpublishedBidAttributes>
     WHERE linked_proposal_id IN (${join(
       linked_proposal_ids.map((id) => SQL`${id}`),
       SQL`, `
-    )}) AND status = ${BidStatus.Pending}
+    )}) AND status = ${UnpublishedBidStatus.Pending}
     `
     const decryptedBids = await this.namedQuery('decrypt_bids_to_reject', decryptedBidsToRejectQuery)
 
     const rejectBidsFromTendersQuery = SQL`
     UPDATE ${table(this)} as t
-    SET status = ${BidStatus.Rejected}, bid_proposal_data = c.bid_proposal_data
+    SET status = ${UnpublishedBidStatus.Rejected},bid_proposal_data = c.bid_proposal_data
     FROM (values
       ${join(
         decryptedBids.map(({ id, bid_proposal_data }) => SQL`(${id}, ${bid_proposal_data})`),
@@ -103,7 +103,7 @@ export default class UnpublishedBidModel extends Model<UnpublishedBidAttributes>
     DELETE FROM ${table(this)} 
     WHERE author_address = ${author_address.toLowerCase()} 
       AND linked_proposal_id = ${linked_proposal_id} 
-      AND status = ${BidStatus.Pending}`
+      AND status = ${UnpublishedBidStatus.Pending}`
 
     return await this.namedQuery('remove_pending_bid', query)
   }
@@ -111,7 +111,7 @@ export default class UnpublishedBidModel extends Model<UnpublishedBidAttributes>
   static async getOpenTendersTotal() {
     const query = SQL`
     SELECT COUNT(DISTINCT linked_proposal_id) AS total
-    FROM ${table(this)} WHERE status = ${BidStatus.Pending};`
+    FROM ${table(this)} WHERE status = ${UnpublishedBidStatus.Pending};`
 
     return (await this.namedQuery('get_open_tenders_count', query))[0]
   }
@@ -124,7 +124,7 @@ export default class UnpublishedBidModel extends Model<UnpublishedBidAttributes>
     WHERE linked_proposal_id IN (${join(
       tenderIds.map((id) => SQL`${id}`),
       SQL`, `
-    )}) AND status = ${BidStatus.Pending};`
+    )}) AND status = ${UnpublishedBidStatus.Pending};`
 
     return await this.namedQuery('get_bids_info_by_tenders', query)
   }
