@@ -18,7 +18,7 @@ import { VoteService } from './vote'
 
 import PushAPI = require('@pushprotocol/restapi')
 
-const chainId = isProdEnv() ? ChainId.ETHEREUM_MAINNET : ChainId.ETHEREUM_GOERLI
+const chainId = isProdEnv() ? ChainId.ETHEREUM_MAINNET : ChainId.ETHEREUM_SEPOLIA
 const PUSH_CHANNEL_OWNER_PK = process.env.PUSH_CHANNEL_OWNER_PK
 const PUSH_API_URL = process.env.PUSH_API_URL
 const pkAddress = `0x${PUSH_CHANNEL_OWNER_PK}`

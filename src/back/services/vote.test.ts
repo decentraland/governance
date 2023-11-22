@@ -1,5 +1,3 @@
-import { def, get } from 'bdd-lazy-var/getter'
-
 import { SnapshotService } from '../../services/SnapshotService'
 import Time from '../../utils/date/Time'
 import { getPreviousMonthStartAndEnd } from '../../utils/date/getPreviousMonthStartAndEnd'
@@ -20,10 +18,10 @@ describe('getTopVoters', () => {
     })
 
     describe('when fetching the top 3 voters', () => {
-      def('topVoters', async () => await VoteService.getTopVoters(start, end, 3))
+      const topVoters = async () => await VoteService.getTopVoters(start, end, 3)
 
       it('should return the top 3 voters sorted by votes in descending order', async () => {
-        expect(await get.topVoters).toEqual([
+        expect(await topVoters()).toEqual([
           {
             address: '0x4534c46ea854c9a302d3dc95b2d3253ae6a28abc',
             lastVoted: 1693517313,
@@ -44,10 +42,10 @@ describe('getTopVoters', () => {
     })
 
     describe('when called with the default params', () => {
-      def('topVoters', async () => await VoteService.getTopVoters(start, end))
+      const getTopVoters = async () => await VoteService.getTopVoters(start, end)
 
       it('should return the top 5 voters sorted by votes in descending order', async () => {
-        expect(await get.topVoters).toEqual([
+        expect(await getTopVoters()).toEqual([
           {
             address: '0x4534c46ea854c9a302d3dc95b2d3253ae6a28abc',
             lastVoted: 1693517313,
@@ -82,7 +80,7 @@ describe('getTopVoters', () => {
         })
 
         it('should return an empty array', async () => {
-          expect(await get.topVoters).toEqual([])
+          expect(await getTopVoters()).toEqual([])
         })
       })
     })
@@ -97,10 +95,10 @@ describe('getTopVoters', () => {
     })
 
     describe('when fetching the top 10 voters', () => {
-      def('topVoters', async () => await VoteService.getTopVoters(aMonthBefore, septemberSeventh.toDate(), 10))
+      const getTopVoters = async () => await VoteService.getTopVoters(aMonthBefore, septemberSeventh.toDate(), 10)
 
       it('should return the top 10 voters sorted by votes in descending order', async () => {
-        const topVoters = await get.topVoters
+        const topVoters = await getTopVoters()
         expect(topVoters).toEqual([
           {
             address: '0x338571a641d8c43f9e5a306300c5d89e0cb2cfaf',

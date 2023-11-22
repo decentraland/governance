@@ -40,7 +40,7 @@ describe(`utils/date/Time`, () => {
 
 describe('abbreviateTimeDifference', () => {
   const now = new Date('2022-03-18')
-  jest.useFakeTimers('modern').setSystemTime(now)
+  jest.useFakeTimers().setSystemTime(now)
 
   it('simplifies seconds', () => {
     expect(abbreviateTimeDifference(Time(now).subtract(2, 'seconds').fromNow())).toStrictEqual('seconds ago')
