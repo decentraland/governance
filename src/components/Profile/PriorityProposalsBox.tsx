@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { useTabletAndBelowMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import { PriorityProposal, PriorityProposalType } from '../../entities/Proposal/types'
@@ -12,13 +11,13 @@ import useProposalsCachedVotes from '../../hooks/useProposalsCachedVotes'
 import Time from '../../utils/date/Time'
 import locations from '../../utils/locations'
 import { ActionBox } from '../Common/ActionBox'
-import Counter from '../Common/Counter'
 import FullWidthButton from '../Common/FullWidthButton'
 import ProposalPreviewCard from '../Common/ProposalPreviewCard/ProposalPreviewCard'
 import ProposalItem from '../Proposal/ProposalItem'
 import { BIDDING_AND_TENDERING_ANCHOR } from '../Proposal/View/BiddingAndTendering'
 
 import './PriorityProposalsBox.css'
+import PriorityProposalsBoxTitle from './PriorityProposalsBoxTitle'
 
 interface Props {
   address?: string | null
@@ -161,20 +160,21 @@ function PriorityProposalsBox({ address, collapsible = false }: Props) {
         <ActionBox
           id={'priority-proposals-box'}
           title={
-            <span className="PriorityProposalsBox__Title">
-              {isLoadingVotes && <Loader size="mini" active inline className="PriorityProposalsBox__Loader" />}
-              {!isLoadingVotes && <Counter color="gray" count={displayedProposals?.length} />}
-              {t('component.priority_proposals.title')}
-            </span>
+            <PriorityProposalsBoxTitle
+              isLoadingVotes={isLoadingVotes}
+              displayedProposals={displayedProposals}
+              collapsedTitle={t('component.priority_proposals.title')}
+              counterColor={'gray'}
+            />
           }
           info={t('component.priority_proposals.info')}
           collapsible
           collapsedTitle={
-            <span className="PriorityProposalsBox__Title">
-              {isLoadingVotes && <Loader size="mini" active inline className="PriorityProposalsBox__Loader" />}
-              {!isLoadingVotes && <Counter count={displayedProposals?.length} />}
-              {t('component.priority_proposals.title')}
-            </span>
+            <PriorityProposalsBoxTitle
+              isLoadingVotes={isLoadingVotes}
+              displayedProposals={displayedProposals}
+              collapsedTitle={t('component.priority_proposals.title')}
+            />
           }
         >
           {renderPriorityProposals(displayedProposals, displayedProposalsAmount, isTabletAndBelow, t)}

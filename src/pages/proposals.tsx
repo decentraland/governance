@@ -190,7 +190,6 @@ export default function ProposalsPage() {
                       {proposals && (
                         <div className="ProposalsPage__List">
                           {proposals.data.map((proposal) => {
-                            console.log('proposal from list', proposal)
                             return isTabletAndBelow ? (
                               <ProposalItem
                                 key={proposal.id}

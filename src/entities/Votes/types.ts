@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SnapshotVote } from '../../clients/SnapshotTypes'
+import { SnapshotProposal, SnapshotVote } from '../../clients/SnapshotTypes'
 import { ProposalStatus, ProposalType } from '../Proposal/types'
 
 export type VoteAttributes = {
@@ -41,4 +41,4 @@ export type Voter = {
   address: string
 } & VoteCount
 
-export type VotesForProposals = Record<string, Record<string, Vote>>
+export type VotesForProposals = Record<SnapshotProposal['id'], Record<Voter['address'], Vote>>
