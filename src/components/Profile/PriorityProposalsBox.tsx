@@ -162,7 +162,7 @@ function PriorityProposalsBox({ address, collapsible = false }: Props) {
           id={'priority-proposals-box'}
           title={
             <span className="PriorityProposalsBox__Title">
-              {isLoadingVotes && <Loader size="mini" active inline />}
+              {isLoadingVotes && <Loader size="mini" active inline className="PriorityProposalsBox__Loader" />}
               {!isLoadingVotes && <Counter color="gray" count={displayedProposals?.length} />}
               {t('component.priority_proposals.title')}
             </span>
@@ -171,7 +171,7 @@ function PriorityProposalsBox({ address, collapsible = false }: Props) {
           collapsible
           collapsedTitle={
             <span className="PriorityProposalsBox__Title">
-              {isLoadingVotes && <Loader size="mini" active inline />}
+              {isLoadingVotes && <Loader size="mini" active inline className="PriorityProposalsBox__Loader" />}
               {!isLoadingVotes && <Counter count={displayedProposals?.length} />}
               {t('component.priority_proposals.title')}
             </span>
