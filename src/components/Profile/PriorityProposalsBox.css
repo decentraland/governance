@@ -9,6 +9,10 @@
   font-size: 11px !important;
 }
 
+.PriorityProposalsBox__Loader {
+  margin-right: 6px !important;
+}
+
 @media (min-width: 384px) and (max-width: 767px) {
   .PriorityProposalsBox__Title {
     font-size: 12px !important;
