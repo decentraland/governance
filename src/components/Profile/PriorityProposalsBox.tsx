@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { useTabletAndBelowMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
@@ -137,9 +137,7 @@ function PriorityProposalsBox({ address, collapsible = false }: Props) {
   const { priorityProposals, isLoading } = usePriorityProposals(lowerAddress)
   const proposalIds = getProposalsAndLinkedProposalsIds(priorityProposals)
   const { votes, isLoadingVotes } = useProposalsCachedVotes(proposalIds)
-  const [displayedProposals, setDisplayedProposals] = useState(
-    getDisplayedProposals(votes, priorityProposals, lowerAddress)
-  )
+  const displayedProposals = getDisplayedProposals(votes, priorityProposals, lowerAddress)
   const [displayedProposalsAmount, setDisplayedProposalsAmount] = useState(PROPOSALS_PER_PAGE)
   const hasMoreProposals = displayedProposals && displayedProposals.length > PROPOSALS_PER_PAGE
   const showViewMoreButton = hasMoreProposals && displayedProposalsAmount < displayedProposals.length
@@ -148,10 +146,6 @@ function PriorityProposalsBox({ address, collapsible = false }: Props) {
     isLoading ||
     (!isLoading && priorityProposals && priorityProposals.length === 0) ||
     (!isLoading && displayedProposals && displayedProposals.length === 0)
-
-  useEffect(() => {
-    setDisplayedProposals(getDisplayedProposals(votes, priorityProposals, lowerAddress))
-  }, [isLoadingVotes, lowerAddress, priorityProposals, votes])
 
   const handleViewMore = () => {
     if (displayedProposals) setDisplayedProposalsAmount(displayedProposals.length)
