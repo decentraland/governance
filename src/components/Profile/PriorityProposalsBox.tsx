@@ -169,7 +169,7 @@ function PriorityProposalsBox({ address, collapsible = false }: Props) {
           title={
             <span className="PriorityProposalsBox__Title">
               {isLoadingVotes && <Loader size="mini" active inline />}
-              {!isLoadingVotes && <Counter gray count={displayedProposals?.length} />}
+              {!isLoadingVotes && <Counter color="gray" count={displayedProposals?.length} />}
               {t('component.priority_proposals.title')}
             </span>
           }
