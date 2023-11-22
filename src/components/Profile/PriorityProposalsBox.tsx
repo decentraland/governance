@@ -177,7 +177,8 @@ function PriorityProposalsBox({ address, collapsible = false }: Props) {
           collapsible
           collapsedTitle={
             <span className="PriorityProposalsBox__Title">
-              <Counter count={displayedProposals?.length} />
+              {isLoadingVotes && <Loader size="mini" active inline />}
+              {!isLoadingVotes && <Counter count={displayedProposals?.length} />}
               {t('component.priority_proposals.title')}
             </span>
           }
