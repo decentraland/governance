@@ -15,7 +15,7 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
 import Time from '../../utils/date/Time'
-import { BidStatus } from '../Bid/types'
+import { UnpublishedBidStatus } from '../Bid/types'
 import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'
 import { BUDGETING_START_DATE } from '../Grant/constants'
@@ -423,7 +423,6 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     defaultValue: 100,
   })} ${offsetQuery(offset)}`
 
-    console.log('PROPOSAL query', query)
     const proposals = await this.namedQuery('proposals_list', query)
 
     return proposals.map(this.parse)
@@ -547,7 +546,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
              p.finish_at >= ${aMonthAgo} AND
              id NOT IN (
                  SELECT linked_proposal_id FROM unpublished_bids AS ub
-                 WHERE status = ${BidStatus.Pending})
+                 WHERE status = ${UnpublishedBidStatus.Pending})
     
         UNION -- Open tenders with submissions
         SELECT ${cols}
@@ -557,7 +556,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
              p.status = ${ProposalStatus.Passed} AND
              p.id IN (
                 SELECT linked_proposal_id FROM unpublished_bids AS ub 
-                WHERE status = ${BidStatus.Pending})
+                WHERE status = ${UnpublishedBidStatus.Pending})
         
         UNION -- Active bids
         SELECT ${cols}
@@ -567,6 +566,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
             p.status = ${ProposalStatus.Active}
         )
 
+        -- exclude coauthored and authored proposals;
         SELECT
             app.*,
             COALESCE(
