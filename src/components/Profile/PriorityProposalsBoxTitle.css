@@ -1,0 +1,22 @@
+.PriorityProposalsBoxTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px !important;
+}
+
+.PriorityProposalsBoxTitle__Loader {
+  margin-right: 6px !important;
+}
+
+@media (min-width: 425px) and (max-width: 767px) {
+  .PriorityProposalsBoxTitle {
+    font-size: 12px !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .PriorityProposalsBoxTitle {
+    font-size: 14px !important;
+  }
+}

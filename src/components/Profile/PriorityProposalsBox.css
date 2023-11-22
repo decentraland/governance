@@ -1,26 +1,3 @@
 .PriorityProposals__ProposalCard {
   margin-bottom: 12px;
 }
-
-.PriorityProposalsBox__Title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 11px !important;
-}
-
-.PriorityProposalsBox__Loader {
-  margin-right: 6px !important;
-}
-
-@media (min-width: 384px) and (max-width: 767px) {
-  .PriorityProposalsBox__Title {
-    font-size: 12px !important;
-  }
-}
-
-@media (min-width: 768px) {
-  .PriorityProposalsBox__Title {
-    font-size: 14px !important;
-  }
-}
