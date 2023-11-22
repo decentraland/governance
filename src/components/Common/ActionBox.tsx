@@ -23,9 +23,11 @@ interface Props {
 const ACTION_BOX_EXPANDED_STATE_KEY = 'org.decentraland.governance.action_box.expanded'
 
 function getDefaultExpanded(collapsible: boolean | undefined, localStorageKey: string) {
-  return collapsible && !!localStorage.getItem(localStorageKey)
-    ? localStorage.getItem(localStorageKey) === 'true'
-    : true
+  if (typeof window !== 'undefined') {
+    const storedState = localStorage.getItem(localStorageKey)
+    return collapsible && !!storedState ? storedState === 'true' : true
+  }
+  return true
 }
 
 export function ActionBox({ id, title, collapsedTitle, info, action, children, className, collapsible }: Props) {
