@@ -2,13 +2,13 @@ import { MigrationBuilder } from 'node-pg-migrate'
 
 import Model from '../entities/Bid/model'
 import ProposalModel from '../entities/Proposal/model'
-import { BidStatus } from '../entities/Bid/types'
+import { UnpublishedBidStatus } from '../entities/Bid/types'
 
 const STATUS_TYPE = 'bid_status_type'
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
   pgm.createExtension('pgcrypto', { ifNotExists: true })
-  pgm.createType(STATUS_TYPE, Object.values(BidStatus))
+  pgm.createType(STATUS_TYPE, Object.values(UnpublishedBidStatus))
   pgm.createTable(Model.tableName, {
     id: {
       type: 'SERIAL',
