@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
-import { useIntl } from 'react-intl'
+import { IntlShape, useIntl } from 'react-intl'
 
 import classNames from 'classnames'
 
 import { CategoryBudgetWithContestants } from '../../../../entities/Budget/types'
 import { ProposalAttributes } from '../../../../entities/Proposal/types'
 import { CURRENCY_FORMAT_OPTIONS, getFormattedPercentage } from '../../../../helpers'
-import useFormatMessage from '../../../../hooks/useFormatMessage'
+import useFormatMessage, { FormatMessageFunction } from '../../../../hooks/useFormatMessage'
 import { DistributionBarItemProps } from '../../../Common/DistributionBar/DistributionBarItem'
 import { GrantRequestSectionCard } from '../../../GrantRequest/GrantRequestSectionCard'
 
@@ -15,10 +15,9 @@ import ContestedBudgetDistributionBar from './ContestedBudgetDistributionBar'
 import ContestedBudgetCardLabel from './ContestedBudgetLabel'
 import ContestedBudgetSubLabel from './ContestedBudgetSubLabel'
 
-/* eslint-disable @typescript-eslint/ban-types */
 function getContestingProposalsItems(
-  t: <V extends {}>(id?: string | null, values?: V | undefined) => string,
-  intl: any,
+  t: FormatMessageFunction,
+  intl: IntlShape,
   proposal: ProposalAttributes,
   categoryBudget: CategoryBudgetWithContestants,
   highlightedContestant: string | null,
@@ -50,8 +49,8 @@ function getContestingProposalsItems(
 }
 
 function getBarItems(
-  t: <V extends {}>(id?: string | null, values?: V | undefined) => string,
-  intl: any,
+  t: FormatMessageFunction,
+  intl: IntlShape,
   proposal: ProposalAttributes,
   categoryBudget: CategoryBudgetWithContestants,
   highlightedContestant: string | null,

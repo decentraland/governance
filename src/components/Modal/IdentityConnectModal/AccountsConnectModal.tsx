@@ -8,7 +8,7 @@ import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { SegmentEvent } from '../../../entities/Events/types'
 import { openUrl } from '../../../helpers'
-import useFormatMessage from '../../../hooks/useFormatMessage'
+import useFormatMessage, { FormatMessageFunction } from '../../../hooks/useFormatMessage'
 import useForumConnect, { THREAD_URL } from '../../../hooks/useForumConnect'
 import locations from '../../../utils/locations'
 import { ActionCardProps } from '../../ActionCard/ActionCard'
@@ -102,7 +102,7 @@ function getAccountActionSteps(
   icons: React.ReactNode[],
   actions: (() => void)[],
   currentStep: number,
-  t: ReturnType<typeof useFormatMessage>,
+  t: FormatMessageFunction,
   stepHelpers?: Record<number, string>
 ): ActionCardProps[] {
   if (stepsAmount === 0 || (icons.length !== stepsAmount && actions.length !== stepsAmount)) {
