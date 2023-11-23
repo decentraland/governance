@@ -65,7 +65,7 @@ function getCardConfig(proposal: PriorityProposal, t: FormatMessageFunction) {
       }
     case PriorityProposalType.ActiveBid:
       return {
-        customText: t('component.priority_proposals.active_bid', { time: Time(proposal.finish_at).fromNow() }),
+        customText: t('component.priority_proposals.active_bids', { time: Time(proposal.finish_at).fromNow() }),
       }
   }
 }
