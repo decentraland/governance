@@ -2,12 +2,12 @@ import { useMemo, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import classNames from 'classnames'
-import isEmpty from 'lodash/isEmpty'
 import snakeCase from 'lodash/snakeCase'
+import upperFirst from 'lodash/upperFirst'
 
 import { ProjectStatus } from '../../../entities/Grant/types'
-import { Project, ProposalType } from '../../../entities/Proposal/types'
-import { CURRENCY_FORMAT_OPTIONS } from '../../../helpers'
+import { Project, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
+import { CURRENCY_FORMAT_OPTIONS, addressShortener, getEnumDisplayName } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useGovernanceProfile from '../../../hooks/useGovernanceProfile'
 import useProfile from '../../../hooks/useProfile'
@@ -29,6 +29,7 @@ import ValidatedProfileCheck from '../../User/ValidatedProfileCheck'
 
 import './AuthorDetails.css'
 import AuthorDetailsStat from './AuthorDetailsStat'
+import GrantCardList from './GrantCardList'
 import ProjectCardList from './ProjectCardList'
 import Section from './Section'
 
@@ -37,6 +38,7 @@ interface Props {
 }
 
 const SHOWN_PERFORMANCE_STATUSES = Object.values(ProjectStatus).filter((item) => item !== ProjectStatus.Pending)
+const SHOWN_GRANT_REQUEST_STATUSES = [ProposalStatus.Passed, ProposalStatus.OutOfBudget, ProposalStatus.Rejected]
 
 export default function AuthorDetails({ address }: Props) {
   const t = useFormatMessage()
@@ -46,7 +48,7 @@ export default function AuthorDetails({ address }: Props) {
   const intl = useIntl()
   const hasPreviouslySubmittedGrants = !!grants && grants?.total > 1
   const [isSidebarVisible, setIsSidebarVisible] = useState(false)
-  const { displayableAddress } = useProfile(address)
+  const { displayableAddress, profileHasName } = useProfile(address)
 
   const { data: vestings } = useVestings(hasPreviouslySubmittedGrants)
   const projects = useMemo(
@@ -90,7 +92,7 @@ export default function AuthorDetails({ address }: Props) {
   const hasVoted = votes && votes.length > 0
   const activeSinceFormattedDate = hasVoted ? Time.unix(votes[0].created).format('MMMM, YYYY') : ''
 
-  const hasProjects = !isEmpty(projectsByStatus)
+  const hasGrants = grants && grants?.total > 0
   const handleClose = () => setIsSidebarVisible(false)
 
   return (
@@ -117,11 +119,8 @@ export default function AuthorDetails({ address }: Props) {
         </Link>
       </div>
       <div
-        className={classNames(
-          'AuthorDetails__StatsContainer',
-          hasProjects && 'AuthorDetails__StatsContainer--clickable'
-        )}
-        onClick={() => hasProjects && setIsSidebarVisible(true)}
+        className={classNames('AuthorDetails__StatsContainer', hasGrants && 'AuthorDetails__StatsContainer--clickable')}
+        onClick={() => hasGrants && setIsSidebarVisible(true)}
       >
         {!hasPreviouslySubmittedGrants && (
           <AuthorDetailsStat
@@ -155,14 +154,16 @@ export default function AuthorDetails({ address }: Props) {
             total: participationTotal,
           })}
         />
-        {hasProjects && (
+        {hasGrants && (
           <div className="AuthorDetails__Chevron">
             <ChevronRight color="var(--black-400)" />
           </div>
         )}
       </div>
       <GovernanceSidebar
-        title={t('page.proposal_detail.author_details.sidebar.title', { username: displayableAddress })}
+        title={t('page.proposal_detail.author_details.sidebar.title', {
+          username: profileHasName ? displayableAddress : addressShortener(displayableAddress || ''),
+        })}
         visible={isSidebarVisible}
         onClose={handleClose}
       >
@@ -184,6 +185,23 @@ export default function AuthorDetails({ address }: Props) {
                   </div>
                 )
               })}
+            {SHOWN_GRANT_REQUEST_STATUSES.map((status) => {
+              const proposals = grants ? grants.data.filter((item) => item.status === status) : []
+
+              if (proposals.length === 0) return null
+
+              return (
+                <div key={status}>
+                  <Heading size="2xs" weight="semi-bold">
+                    {t('page.proposal_detail.author_details.sidebar.subtitle', {
+                      total: proposals.length,
+                      status: upperFirst(getEnumDisplayName(status).toLowerCase()),
+                    })}
+                  </Heading>
+                  <GrantCardList proposals={proposals} />
+                </div>
+              )
+            })}
           </div>
           <FullWidthButton href={locations.profile({ address })}>
             {t('page.proposal_detail.author_details.sidebar.view_profile')}
