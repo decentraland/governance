@@ -331,6 +331,30 @@ export class DiscordService {
     return []
   }
 
+  static async deleteVerificationMessage(messageId: string) {
+    if (DISCORD_SERVICE_ENABLED) {
+      try {
+        const channel = this.client.channels.cache.get(PROFILE_VERIFICATION_CHANNEL_ID)
+        if (!channel) {
+          throw new Error(`Discord channel not found: ${PROFILE_VERIFICATION_CHANNEL_ID}`)
+        }
+        if (channel?.type !== Discord.ChannelType.GuildText) {
+          throw new Error(`Discord channel type is not supported: ${channel?.type}`)
+        }
+        await channel.messages.delete(messageId)
+      } catch (error) {
+        if (isProdEnv()) {
+          ErrorService.report('Error deleting profile verification message', {
+            error,
+            category: ErrorCategory.Discord,
+          })
+        } else {
+          console.error('Error deleting profile verification message', error)
+        }
+      }
+    }
+  }
+
   static notifyFinishedProposals(proposalsWithOutcome: ProposalWithOutcome[]) {
     for (const { id, title, winnerChoice, newStatus } of proposalsWithOutcome) {
       if (newStatus) {

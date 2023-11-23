@@ -72,8 +72,9 @@ async function checkForumValidationMessage(req: WithAuth) {
     const { address, timestamp } = messageProperties
 
     const comments = await DiscourseService.getPostComments(Number(GATSBY_DISCOURSE_CONNECT_THREAD))
-    const formattedComments = comments.comments.map((comment) => ({
-      id: String(comment.user_forum_id),
+    const formattedComments = comments.comments.map<ValidationComment>((comment) => ({
+      id: '',
+      userId: String(comment.user_forum_id),
       content: comment.cooked,
       timestamp: new Date(comment.created_at).getTime(),
     }))
@@ -84,7 +85,7 @@ async function checkForumValidationMessage(req: WithAuth) {
         throw new Error('Validation failed')
       }
 
-      await UserModel.createForumConnection(user, validationComment.id)
+      await UserModel.createForumConnection(user, validationComment.userId)
       clearValidationInProgress(user)
     }
 
@@ -107,7 +108,8 @@ async function checkDiscordValidationMessage(req: WithAuth) {
 
     const messages = await DiscordService.getProfileVerificationMessages()
     const formattedMessages = messages.map<ValidationComment>((message) => ({
-      id: message.author.id,
+      id: message.id,
+      userId: message.author.id,
       content: message.content,
       timestamp: message.createdTimestamp,
     }))
@@ -120,10 +122,10 @@ async function checkDiscordValidationMessage(req: WithAuth) {
       ) {
         throw new Error('Validation failed')
       }
-
-      await UserModel.createDiscordConnection(user, validationComment.id)
+      await DiscordService.deleteVerificationMessage(validationComment.id)
+      await UserModel.createDiscordConnection(user, validationComment.userId)
       clearValidationInProgress(user)
-      DiscordService.sendDirectMessage(validationComment.id, {
+      DiscordService.sendDirectMessage(validationComment.userId, {
         title: 'Profile verification completed ✅',
         action: `You have been verified as ${address}\n\nFrom now on you will receive important notifications for you through this channel.`,
         fields: [],

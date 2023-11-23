@@ -24,6 +24,7 @@ export type ValidatedDiscordAccount = Optional<ValidatedAccount, 'forum_id'> &
 
 export type ValidationComment = {
   id: string
+  userId: string
   content: string
   timestamp: number
 }
