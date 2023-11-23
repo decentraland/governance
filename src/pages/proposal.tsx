@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { ErrorCode } from '@ethersproject/logger'
 import { Web3Provider } from '@ethersproject/providers'
@@ -64,6 +64,7 @@ import useIsProposalOwner from '../hooks/useIsProposalOwner'
 import useProposal from '../hooks/useProposal'
 import useProposalUpdates from '../hooks/useProposalUpdates'
 import useProposalVotes from '../hooks/useProposalVotes'
+import { PROPOSAL_CACHED_VOTES_QUERY_KEY } from '../hooks/useProposalsCachedVotes'
 import useSurvey from '../hooks/useSurvey'
 import useURLSearchParams from '../hooks/useURLSearchParams'
 import { ErrorCategory } from '../utils/errorCategories'
@@ -234,6 +235,7 @@ export default function ProposalPage() {
             confirmSubscription: !votes![account!],
           })
           await reloadVotes()
+          await queryClient.invalidateQueries({ queryKey: [PROPOSAL_CACHED_VOTES_QUERY_KEY] })
         } catch (error) {
           ErrorClient.report('Unable to vote', {
             error,
