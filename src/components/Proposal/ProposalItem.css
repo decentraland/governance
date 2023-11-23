@@ -6,6 +6,10 @@
   margin-bottom: 14px !important;
 }
 
+.ProposalItem--slim.ui.card:last-child {
+  margin-bottom: 0 !important;
+}
+
 .ProposalItem,
 .ui.card.Link.ProposalItem {
   width: 100% !important;
