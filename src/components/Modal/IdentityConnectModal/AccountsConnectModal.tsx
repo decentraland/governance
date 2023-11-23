@@ -262,7 +262,7 @@ function AccountsConnectModal({ open, onClose, account }: Props) {
         break
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [account, open])
 
   useEffect(() => {
     if (isValidated !== undefined) {

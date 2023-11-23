@@ -73,7 +73,11 @@ export class DiscordService {
     }
 
     this.client = new Discord.Client({
-      intents: [Discord.GatewayIntentBits.Guilds, Discord.GatewayIntentBits.MessageContent],
+      intents: [
+        Discord.GatewayIntentBits.Guilds,
+        Discord.GatewayIntentBits.GuildMessages,
+        Discord.GatewayIntentBits.MessageContent,
+      ],
     })
     this.client.on('unhandledRejection', (error) => {
       if (isProdEnv()) {

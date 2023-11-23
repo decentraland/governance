@@ -4,9 +4,6 @@
   padding: 0 16px 16px 16px;
   align-items: center;
   text-align: center;
-}
-
-.NotificationsFeed__UnsubscribedView {
   justify-content: flex-start;
   gap: 10px;
 }

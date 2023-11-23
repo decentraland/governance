@@ -81,6 +81,12 @@
         "description": "In-app notifications are also available for you to opt-in to.",
         "button": "Enable in-app notifications"
       },
+      "discord_connect": {
+        "title": "Join the DAO Discord Server",
+        "description": "Discord notifications require you to be a member of our Discord Server",
+        "primary_button": "Join discord server",
+        "secondary_button": "Already a member"
+      },
       "empty": "No notifications at this time",
       "load_more": "Load more"
     },

@@ -23,6 +23,7 @@ import Text from '../Common/Typography/Text'
 import ChevronLeft from '../Icon/ChevronLeft'
 import AccountsConnectModal from '../Modal/IdentityConnectModal/AccountsConnectModal'
 
+import DiscordConnectView from './NotificationsFeedView/DiscordConnectView'
 import DiscordView from './NotificationsFeedView/DiscordView'
 import EmptyView from './NotificationsFeedView/EmptyView'
 import ListView from './NotificationsFeedView/ListView'
@@ -67,12 +68,14 @@ export default function NotificationsFeed({
   const { isProfileValidated: isValidatedOnDiscord } = useIsProfileValidated(user, [AccountType.Discord])
   const [isDiscordChanging, setIsDiscordChanging] = useState(false)
   const [isSettingsOpened, setIsSettingsOpened] = useState(false)
+  const [showDiscordConnect, setShowDiscordConnect] = useState(false)
   const { isDiscordActive, refetch: refetchIsDiscordActive } = useIsDiscordActive()
 
   const handleOnClose = () => {
     onClose()
     setTimeout(() => {
       setIsSettingsOpened(false)
+      setShowDiscordConnect(false)
     }, 500)
   }
 
@@ -125,7 +128,7 @@ export default function NotificationsFeed({
 
   const handleDiscordConnect = () => {
     setIsDiscordConnect(true)
-    onClose()
+    handleOnClose()
   }
 
   const handlePushSettingsChange = async (isEnabled: boolean) => {
@@ -139,7 +142,8 @@ export default function NotificationsFeed({
 
   const handleDiscordSettingsChange = async (isEnabled: boolean) => {
     if (!isValidatedOnDiscord) {
-      handleDiscordConnect()
+      setShowDiscordConnect(true)
+      setIsSettingsOpened(false)
       return
     }
     setIsDiscordChanging(true)
@@ -170,8 +174,10 @@ export default function NotificationsFeed({
     isRefetchingSubscriptions ||
     isRefetchingNotifications ||
     (isSubscribed && isLoadingNotifications)
-  const showEmptyView = isSubscribed && !isLoadingNotifications && !hasNotifications && !isSettingsOpened
-  const showSettingsButton = (isSubscribed || isValidatedOnDiscord) && !isSettingsOpened
+  const showUnsubscribedView = !isSubscribed && !isValidatedOnDiscord && !showDiscordConnect
+  const showEmptyView =
+    isSubscribed && !isLoadingNotifications && !hasNotifications && !isSettingsOpened && !showDiscordConnect
+  const showSettingsButton = (isSubscribed || isValidatedOnDiscord) && !isSettingsOpened && !showDiscordConnect
   const showDiscordView = isValidatedOnDiscord && !isSubscribed && !isSettingsOpened
 
   return (
@@ -199,13 +205,16 @@ export default function NotificationsFeed({
       </div>
       {!isLoading && (
         <div className="NotificationsFeed__Content">
-          {!isSubscribed && !isValidatedOnDiscord && (
+          {showUnsubscribedView && (
             <UnsubscribedView
               unsubscribedKey={unsubscribedKey}
               isSubscribing={isSubscribing}
               handleSubscribeUserToChannel={handleSubscribeUserToChannel}
-              handleDiscordConnect={handleDiscordConnect}
+              handleDiscordConnect={() => setShowDiscordConnect(true)}
             />
+          )}
+          {showDiscordConnect && (
+            <DiscordConnectView onJoinDiscord={handleDiscordConnect} onAlreadyJoined={handleDiscordConnect} />
           )}
           {showDiscordView && (
             <DiscordView isSubscribing={isSubscribing} onSubscribeUserToChannel={handleSubscribeUserToChannel} />
