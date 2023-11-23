@@ -5,7 +5,7 @@ import { useTabletAndBelowMediaQuery } from 'decentraland-ui/dist/components/Med
 import { PriorityProposal, PriorityProposalType } from '../../entities/Proposal/types'
 import { isSameAddress } from '../../entities/Snapshot/utils'
 import { VotesForProposals } from '../../entities/Votes/types'
-import useFormatMessage from '../../hooks/useFormatMessage'
+import useFormatMessage, { FormatMessageFunction } from '../../hooks/useFormatMessage'
 import usePriorityProposals from '../../hooks/usePriorityProposals'
 import useProposalsCachedVotes from '../../hooks/useProposalsCachedVotes'
 import Time from '../../utils/date/Time'
@@ -26,7 +26,7 @@ interface Props {
 
 const PROPOSALS_PER_PAGE = 5
 
-function getCardConfig(proposal: PriorityProposal, t: (...args: any[]) => any) {
+function getCardConfig(proposal: PriorityProposal, t: FormatMessageFunction) {
   switch (proposal.priority_type) {
     case PriorityProposalType.ActiveGovernance:
       return {
@@ -72,7 +72,7 @@ function renderPriorityProposals(
   priorityProposals: PriorityProposal[] | undefined,
   displayedProposals: number,
   isTabletAndBelow: boolean,
-  t: (...args: any[]) => any
+  t: FormatMessageFunction
 ) {
   return (
     <>
