@@ -53,7 +53,9 @@ function getCardConfig(proposal: PriorityProposal, t: FormatMessageFunction) {
         anchor: BIDDING_AND_TENDERING_ANCHOR,
       }
     case PriorityProposalType.OpenTender:
-      return t('component.priority_proposals.open_tender')
+      return {
+        customText: t('component.priority_proposals.open_tender'),
+      }
     case PriorityProposalType.TenderWithSubmissions:
       return {
         customText: t('component.priority_proposals.tender_with_submissions', {
