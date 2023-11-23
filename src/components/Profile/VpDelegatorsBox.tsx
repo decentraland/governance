@@ -2,10 +2,10 @@ import { DelegationResult, DetailedScores } from '../../clients/SnapshotTypes'
 import { isSameAddress } from '../../entities/Snapshot/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useVotingPowerInformation from '../../hooks/useVotingPowerInformation'
+import { ActionBox } from '../Common/ActionBox'
 import DelegationCards from '../Delegation/DelegationCards'
 import VotingPowerDelegationHandler from '../Modal/VotingPowerDelegationDetail/VotingPowerDelegationHandler'
 
-import { ProfileBox } from './ProfileBox'
 import './VpDelegatorsBox.css'
 
 interface Props {
@@ -36,7 +36,7 @@ export default function VpDelegatorsBox({
     !isLoggedUserProfile && !isLoadingUserVpDistribution && profileAddress && accountHasDelegations
 
   return (
-    <ProfileBox
+    <ActionBox
       className="VpDelegatorsBox"
       title={t('page.profile.delegators.title')}
       info={t('page.profile.delegators.helper')}
@@ -61,6 +61,6 @@ export default function VpDelegatorsBox({
           profileAddress={profileAddress}
         />
       )}
-    </ProfileBox>
+    </ActionBox>
   )
 }

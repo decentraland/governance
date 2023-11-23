@@ -2,7 +2,7 @@ import { BudgetBreakdownConcept, GrantRequestDueDiligenceSchema, GrantRequestTea
 
 import { BID_MIN_PROJECT_DURATION } from './constants'
 
-export enum BidStatus {
+export enum UnpublishedBidStatus {
   Pending = 'PENDING',
   Rejected = 'REJECTED',
 }
@@ -16,8 +16,13 @@ export type UnpublishedBidAttributes = {
   author_address: string
   bid_proposal_data: BidProposalData
   publish_at: string
-  status: BidStatus
+  status: UnpublishedBidStatus
 }
+
+export type UnpublishedBidInfo = Pick<
+  UnpublishedBidAttributes,
+  'id' | 'publish_at' | 'author_address' | 'linked_proposal_id'
+>
 
 export type BidRequestFunding = {
   funding: string | number

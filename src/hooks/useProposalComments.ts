@@ -5,7 +5,7 @@ import { ProposalAttributes } from '../entities/Proposal/types'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
-const useProposalComments = (proposalId?: ProposalAttributes['id']) => {
+const useProposalComments = (proposalId?: ProposalAttributes['id'], shouldFetch = true) => {
   const { data: comments, isLoading: isLoadingComments } = useQuery({
     queryKey: [`proposalComments#${proposalId}`],
     queryFn: async () => {
@@ -15,6 +15,7 @@ const useProposalComments = (proposalId?: ProposalAttributes['id']) => {
       return Governance.get().getProposalComments(proposalId)
     },
     staleTime: DEFAULT_QUERY_STALE_TIME,
+    enabled: shouldFetch,
   })
 
   return { comments, isLoadingComments }

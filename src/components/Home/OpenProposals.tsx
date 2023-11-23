@@ -5,7 +5,7 @@ import isEmpty from 'lodash/isEmpty'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useProposalsByParticipatingVP from '../../hooks/useProposalsByParticipatingVP'
-import useProposalsVotes from '../../hooks/useProposalsVotes'
+import useProposalsCachedVotes from '../../hooks/useProposalsCachedVotes'
 import Time from '../../utils/date/Time'
 import locations from '../../utils/locations'
 import BoxTabs from '../Common/BoxTabs'
@@ -35,7 +35,7 @@ const OpenProposals = ({ endingSoonProposals, isLoadingProposals }: Props) => {
   const t = useFormatMessage()
   const [activeTab, setActiveTab] = useState(Tab.EndingSoon)
   const proposalIds = (endingSoonProposals || []).map((proposal) => proposal.id)
-  const { segmentedVotes } = useProposalsVotes(proposalIds)
+  const { segmentedVotes } = useProposalsCachedVotes(proposalIds)
 
   const { proposals: proposalsByParticipatingVP, isLoadingProposals: isLoadingProposalsByParticipatingVp } =
     useProposalsByParticipatingVP(twoWeeksAgo, now)

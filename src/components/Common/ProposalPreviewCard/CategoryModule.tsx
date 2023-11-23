@@ -10,20 +10,19 @@ import './CategoryModule.css'
 import ProposalPreviewCardSection from './ProposalPreviewCardSection'
 
 interface Props {
-  proposal: ProposalAttributes
+  proposal: Pick<ProposalAttributes, 'type' | 'status' | 'configuration'>
   isHovered?: boolean
+  slim?: boolean
 }
 
-function CategoryModule({ proposal, isHovered }: Props) {
+function CategoryModule({ proposal, isHovered, slim = false }: Props) {
   const t = useFormatMessage()
   const isGrant = proposal.type === ProposalType.Grant
   const isBid = proposal.type === ProposalType.Bid
   return (
     <ProposalPreviewCardSection className="CategoryModule">
-      <div className="CategoryModule__Container">
-        <div className="CategoryModule__StatusPill">
-          <StatusPill status={proposal.status} />
-        </div>
+      <div className={classNames('CategoryModule__Container', slim && 'CategoryModule__Container--slim')}>
+        <div className="CategoryModule__StatusPill">{!slim && <StatusPill status={proposal.status} />}</div>
         <CategoryPill proposalType={proposal.type} />
         {(isGrant || isBid) && (
           <span className="CategoryModule__GrantSize">{`$${t('general.number', {

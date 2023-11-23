@@ -11,7 +11,7 @@ import { SegmentEvent } from '../../../entities/Events/types'
 import { GATSBY_DISCORD_PROFILE_VERIFICATION_URL } from '../../../entities/User/constants'
 import { AccountType } from '../../../entities/User/types'
 import useDiscordConnect from '../../../hooks/useDiscordConnect'
-import useFormatMessage from '../../../hooks/useFormatMessage'
+import useFormatMessage, { FormatMessageFunction } from '../../../hooks/useFormatMessage'
 import useForumConnect, { THREAD_URL } from '../../../hooks/useForumConnect'
 import useIsProfileValidated from '../../../hooks/useIsProfileValidated'
 import locations, { navigate } from '../../../utils/locations'
@@ -125,7 +125,7 @@ function getAccountActionSteps(
   icons: React.ReactNode[],
   actions: (() => void)[],
   currentStep: number,
-  t: ReturnType<typeof useFormatMessage>,
+  t: FormatMessageFunction,
   stepHelpers?: Record<number, string>
 ): ActionCardProps[] {
   if (stepsAmount === 0 || (icons.length !== stepsAmount && actions.length !== stepsAmount)) {

@@ -1,12 +1,12 @@
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useVotedProposals from '../../hooks/useVotedProposals'
+import { ActionBox } from '../Common/ActionBox'
 import Empty from '../Common/Empty'
 import FullWidthButton from '../Common/FullWidthButton'
 import SkeletonBars from '../Common/SkeletonBars'
 import Watermelon from '../Icon/Watermelon'
 import ProfileProposalItem from '../Proposal/ProfileProposalItem'
 
-import { ProfileBox } from './ProfileBox'
 import './VotedProposalsBox.css'
 
 interface Props {
@@ -21,8 +21,8 @@ function VotedProposalsBox({ address }: Props) {
   const { votes, isLoading, handleViewMore, hasMoreProposals } = useVotedProposals(address, PROPOSALS_PER_PAGE)
 
   return (
-    <ProfileBox title={t('page.profile.voted_proposals.title')}>
-      {isLoading && <SkeletonBars amount={votes.length || 3} height={89} />}
+    <ActionBox title={t('page.profile.voted_proposals.title')}>
+      {isLoading && <SkeletonBars amount={votes.length || 3} height={83.5} />}
       {!isLoading &&
         (votes.length > 0 ? (
           votes.map((vote) => {
@@ -38,7 +38,7 @@ function VotedProposalsBox({ address }: Props) {
       {hasMoreProposals && (
         <FullWidthButton onClick={handleViewMore}>{t('page.profile.voted_proposals.button')}</FullWidthButton>
       )}
-    </ProfileBox>
+    </ActionBox>
   )
 }
 

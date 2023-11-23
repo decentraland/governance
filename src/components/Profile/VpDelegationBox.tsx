@@ -8,14 +8,13 @@ import { DelegationResult } from '../../clients/SnapshotTypes'
 import { isSameAddress } from '../../entities/Snapshot/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
+import { ActionBox } from '../Common/ActionBox'
 import Empty, { ActionType } from '../Common/Empty'
 import SkeletonBars from '../Common/SkeletonBars'
 import DelegatorCardProfile from '../Delegation/DelegatorCardProfile'
 import Scale from '../Icon/Scale'
 import { Candidate } from '../Modal/VotingPowerDelegationModal/VotingPowerDelegationCandidatesList'
 import VotingPowerDelegationModal from '../Modal/VotingPowerDelegationModal/VotingPowerDelegationModal'
-
-import { ProfileBox } from './ProfileBox'
 
 interface Props {
   address: string | null
@@ -38,7 +37,7 @@ function VpDelegationBox({ address, delegation, isLoadingDelegation, ownVp, isLo
 
   return (
     <div>
-      <ProfileBox
+      <ActionBox
         title={t('page.profile.delegation.title')}
         info={t('page.profile.delegation.helper')}
         action={
@@ -81,7 +80,7 @@ function VpDelegationBox({ address, delegation, isLoadingDelegation, ownVp, isLo
             )}
           </>
         )}
-      </ProfileBox>
+      </ActionBox>
       {!isLoadingVpDistribution && vpDistribution && (
         <VotingPowerDelegationModal
           vpDistribution={vpDistribution}

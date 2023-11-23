@@ -10,10 +10,12 @@ import {
   table,
 } from 'decentraland-gatsby/dist/entities/Database/utils'
 import { QueryPart } from 'decentraland-server/dist/db/types'
+import { toLower } from 'lodash'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
 import Time from '../../utils/date/Time'
+import { UnpublishedBidStatus } from '../Bid/types'
 import CoauthorModel from '../Coauthor/model'
 import { CoauthorStatus } from '../Coauthor/types'
 import { BUDGETING_START_DATE } from '../Grant/constants'
@@ -22,12 +24,12 @@ import SubscriptionModel from '../Subscription/model'
 
 import tsquery from './tsquery'
 import {
+  PriorityProposal,
+  PriorityProposalType,
   ProposalAttributes,
-  ProposalListFilter,
-  ProposalStatus,
+ ProposalListFilter, ProposalStatus,
   ProposalType,
-  SortingOrder,
-  isProposalType,
+ SortingOrder, isProposalType,
 } from './types'
 import { SITEMAP_ITEMS_PER_PAGE, isProposalStatus } from './utils'
 
@@ -378,49 +380,48 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     const sqlSnapshotIds = snapshotIds?.split(',').map((id) => SQL`${id}`)
     const sqlSnapshotIdsJoin = sqlSnapshotIds ? join(sqlSnapshotIds) : null
 
-    const proposals = await this.namedQuery(
-      'proposals_list',
-      SQL`
-    SELECT p.*${conditional(!!coauthor && !user, SQL`, c."coauthors"`)}
-    FROM ${table(ProposalModel)} p
-        ${conditional(!!subscribed, SQL`INNER JOIN ${table(SubscriptionModel)} s ON s."proposal_id" = p."id"`)}
-        ${conditional(!!coauthor && !!user, SQL`INNER JOIN ${table(CoauthorModel)} c ON c."proposal_id" = p."id"`)} 
-        ${conditional(
-          !!coauthor && !user,
-          SQL`LEFT OUTER JOIN (
-            select proposal_id, array_agg(address) coauthors
-            from ${table(CoauthorModel)}
-            where status = ${CoauthorStatus.APPROVED}
-            group by proposal_id) c
-        on p.id = c.proposal_id`
-        )} 
-        ${conditional(!!search, SQL`, ts_rank_cd(textsearch, to_tsquery(${tsquery(search || '')})) AS "rank"`)}
-    WHERE "deleted" = FALSE 
-    ${conditional(!!sqlSnapshotIds, SQL`AND p."snapshot_id" IN (${sqlSnapshotIdsJoin})`)} 
-    ${conditional(!!user && !coauthor, SQL`AND p."user" = ${user}`)} 
-    ${conditional(
-      !!coauthor && !!user,
-      SQL`AND lower(c."address") = lower(${user}) AND (CASE WHEN p."finish_at" < NOW() THEN c."status" IN (${CoauthorStatus.APPROVED}, ${CoauthorStatus.REJECTED}) ELSE TRUE END)`
-    )} 
-    ${conditional(!!type, SQL`AND "type" = ${type}`)} 
-    ${conditional(!!status, SQL`AND "status" = ${status}`)} 
-    ${conditional(!!subscribed, SQL`AND s."user" = ${subscribed}`)} 
-    ${conditional(!!timeFrame && timeFrameKey === 'created_at', SQL`AND p."created_at" > ${timeFrame}`)} 
-    ${conditional(
-      !!timeFrame && timeFrameKey === 'finish_at',
-      SQL`AND p."finish_at" > NOW() AND p."finish_at" < ${timeFrame}`
-    )}
-    ${conditional(!!subtype, SQL`AND (${this.getSubtypeQuery(subtype || '')})`)}
-    ${conditional(!!linkedProposalId, SQL`AND (${this.getLinkedProposalQuery(linkedProposalId || '')})`)}
-    ${conditional(!!search, SQL`AND "rank" > 0`)}
-    ORDER BY ${conditional(!!coauthor && !!user, SQL`CASE c.status WHEN 'PENDING' THEN 1 END,`)} 
-    ${SQL.raw(orderBy)} ${SQL.raw(orderDirection)} 
-    ${limitQuery(limit, {
-      min: 0,
-      max: 100,
-      defaultValue: 100,
-    })} ${offsetQuery(offset)}`
-    )
+    const query = SQL`
+  SELECT p.*${conditional(!!coauthor && !user, SQL`, c."coauthors"`)}
+  FROM ${table(ProposalModel)} p
+      ${conditional(!!subscribed, SQL`INNER JOIN ${table(SubscriptionModel)} s ON s."proposal_id" = p."id"`)}
+      ${conditional(!!coauthor && !!user, SQL`INNER JOIN ${table(CoauthorModel)} c ON c."proposal_id" = p."id"`)} 
+      ${conditional(
+        !!coauthor && !user,
+        SQL`LEFT OUTER JOIN (
+          select proposal_id, array_agg(address) coauthors
+          from ${table(CoauthorModel)}
+          where status = ${CoauthorStatus.APPROVED}
+          group by proposal_id) c
+      on p.id = c.proposal_id`
+      )} 
+      ${conditional(!!search, SQL`, ts_rank_cd(textsearch, to_tsquery(${tsquery(search || '')})) AS "rank"`)}
+  WHERE "deleted" = FALSE 
+  ${conditional(!!sqlSnapshotIds, SQL`AND p."snapshot_id" IN (${sqlSnapshotIdsJoin})`)} 
+  ${conditional(!!user && !coauthor, SQL`AND p."user" = ${user}`)} 
+  ${conditional(
+    !!coauthor && !!user,
+    SQL`AND lower(c."address") = lower(${user}) AND (CASE WHEN p."finish_at" < NOW() THEN c."status" IN (${CoauthorStatus.APPROVED}, ${CoauthorStatus.REJECTED}) ELSE TRUE END)`
+  )} 
+  ${conditional(!!type, SQL`AND "type" = ${type}`)} 
+  ${conditional(!!status, SQL`AND "status" = ${status}`)} 
+  ${conditional(!!subscribed, SQL`AND s."user" = ${subscribed}`)} 
+  ${conditional(!!timeFrame && timeFrameKey === 'created_at', SQL`AND p."created_at" > ${timeFrame}`)} 
+  ${conditional(
+    !!timeFrame && timeFrameKey === 'finish_at',
+    SQL`AND p."finish_at" > NOW() AND p."finish_at" < ${timeFrame}`
+  )}
+  ${conditional(!!subtype, SQL`AND (${this.getSubtypeQuery(subtype || '')})`)}
+  ${conditional(!!linkedProposalId, SQL`AND (${this.getLinkedProposalQuery(linkedProposalId || '')})`)}
+  ${conditional(!!search, SQL`AND "rank" > 0`)}
+  ORDER BY ${conditional(!!coauthor && !!user, SQL`CASE c.status WHEN 'PENDING' THEN 1 END,`)} 
+  ${SQL.raw(orderBy)} ${SQL.raw(orderDirection)} 
+  ${limitQuery(limit, {
+    min: 0,
+    max: 100,
+    defaultValue: 100,
+  })} ${offsetQuery(offset)}`
+
+    const proposals = await this.namedQuery('proposals_list', query)
 
     return proposals.map(this.parse)
   }
@@ -474,11 +475,140 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     )})`
   }
 
+  /**
+   * Returns the amount of pitches in open submission period, that have submitted tenders waiting for voting to start
+   */
   static async getOpenPitchesTotal() {
     const query = SQL`
     SELECT COUNT(DISTINCT (configuration->>'linked_proposal_id')) AS total
     FROM ${table(this)} WHERE type = ${ProposalType.Tender} AND status = ${ProposalStatus.Pending};`
 
     return (await this.namedQuery('get_open_pitches_total', query))[0]
+  }
+
+  static async getPriorityProposals(address?: string): Promise<PriorityProposal[]> {
+    const aMonthAgo = Time.utc().subtract(1, 'month').toDate()
+    const lowerAddress = !!address && address.length > 0 ? toLower(address) : null
+    const cols = SQL`id, title, p.user, type, p.status, start_at, finish_at, snapshot_proposal, configuration`
+
+    const query = SQL`
+        WITH all_priority_proposals AS (
+        -- Open Governance Proposals
+        SELECT 
+             ${cols}
+            ,${PriorityProposalType.ActiveGovernance} AS priority_type
+        FROM ${table(this)} p 
+        WHERE
+            type = ${ProposalType.Governance} AND 
+            p.status = ${ProposalStatus.Active}
+        
+        UNION -- Open pitches with no submissions
+        SELECT ${cols}
+               ,${PriorityProposalType.OpenPitch} AS priority_type
+        FROM ${table(this)} p
+        WHERE
+            type = ${ProposalType.Pitch} AND
+            p.status = ${ProposalStatus.Passed} AND 
+            p.finish_at >= ${aMonthAgo} AND
+            p.id NOT IN (
+                SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(this)} AS p2 
+                WHERE type = ${ProposalType.Tender})
+        
+        UNION -- Open pitches with submissions
+        SELECT ${cols}
+               ,${PriorityProposalType.PitchWithSubmissions} AS priority_type
+        FROM ${table(this)} p
+        WHERE type = ${ProposalType.Pitch} AND
+             p.status = ${ProposalStatus.Passed} AND
+             p.id IN (
+                SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(this)} AS p2 
+                WHERE type = ${ProposalType.Tender} AND status = ${ProposalStatus.Pending}
+             )
+        
+        UNION -- Closed pitches with submissions in voting phase
+        SELECT ${cols}
+                ,${PriorityProposalType.PitchOnTenderVotingPhase} AS priority_type
+        FROM ${table(this)} p
+        WHERE type = ${ProposalType.Pitch} AND
+             p.status = ${ProposalStatus.Passed} AND
+             p.id IN (
+                SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(this)} AS p2 
+                WHERE type = ${ProposalType.Tender} AND status = ${ProposalStatus.Active})
+
+        UNION -- Open tenders with no submissions
+        SELECT ${cols}
+             ,${PriorityProposalType.OpenTender} AS priority_type
+        FROM ${table(this)} p
+        WHERE type = ${ProposalType.Tender} AND
+            p.status = ${ProposalStatus.Passed} AND
+            p.finish_at >= ${aMonthAgo} AND
+                p.id NOT IN (
+                SELECT linked_proposal_id FROM unpublished_bids AS ub
+                WHERE status = ${UnpublishedBidStatus.Pending}) AND
+                p.id NOT IN (
+                SELECT (p2.configuration->>'linked_proposal_id') FROM ${table(this)} AS p2
+                WHERE type = ${ProposalType.Bid})
+    
+        UNION -- Open tenders with submissions
+        SELECT ${cols}
+               ,${PriorityProposalType.TenderWithSubmissions} AS priority_type
+        FROM ${table(this)} p
+        WHERE type = ${ProposalType.Tender} AND
+             p.status = ${ProposalStatus.Passed} AND
+             p.id IN (
+                SELECT linked_proposal_id FROM unpublished_bids AS ub 
+                WHERE status = ${UnpublishedBidStatus.Pending})
+        
+        UNION -- Active bids
+        SELECT ${cols}
+               ,${PriorityProposalType.ActiveBid} AS priority_type
+        FROM ${table(this)} p 
+        WHERE type = ${ProposalType.Bid} AND
+            p.status = ${ProposalStatus.Active}
+        )
+
+        -- exclude coauthored and authored proposals;
+        SELECT
+            app.*,
+            COALESCE(
+                            JSON_AGG(
+                            JSON_BUILD_OBJECT(
+                                    'id', lp.id,
+                                    'start_at', lp.start_at,
+                                    'finish_at', lp.finish_at,
+                                    'created_at', lp.created_at
+                            ) ORDER BY lp.created_at
+                                    ) FILTER (WHERE lp.id IS NOT NULL),
+                            '[]'::JSON
+            ) AS linked_proposals_data
+        FROM
+            all_priority_proposals app
+                LEFT JOIN (
+                SELECT
+                    id,
+                    start_at,
+                    finish_at,
+                    created_at,
+                    (configuration->>'linked_proposal_id') AS linked_proposal_id
+                FROM
+                    ${table(this)}
+                WHERE
+                    (configuration->>'linked_proposal_id') IS NOT NULL
+            ) lp ON app.id = lp.linked_proposal_id
+
+            ${conditional(
+              !!lowerAddress,
+              SQL`
+                    LEFT JOIN ${table(CoauthorModel)} c ON
+                                app.id = c.proposal_id AND
+                                c.status = 'APPROVED' AND
+                                c.address = ${lowerAddress}
+                    WHERE c.address IS NULL 
+                    AND app.user <> ${lowerAddress}`
+            )} -- exclude coauthored and authored proposals;
+        GROUP BY app.id, app.title, app.user, app.type, app.status, app.start_at, app.finish_at, app.snapshot_proposal, app.configuration, app.priority_type
+    ;`
+
+    return await this.namedQuery('get_priority_proposals', query)
   }
 }

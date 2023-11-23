@@ -1,0 +1,43 @@
+.ButtonWithArrow {
+  display: flex !important;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 11px !important;
+  line-height: 18px !important;
+}
+
+.ui.button.basic.ButtonWithArrow {
+  color: var(--black-600) !important;
+  font-weight: var(--weight-semi-bold) !important;
+}
+
+.ButtonWithArrow__Label {
+  display: none;
+}
+
+.ButtonWithArrow {
+  padding-top: 4px !important;
+}
+
+@media (min-width: 375px) {
+  .ButtonWithArrow__Label {
+    display: unset;
+  }
+
+  .ButtonWithArrow {
+    padding-top: 0 !important;
+  }
+}
+
+@media (min-width: 425px) and (max-width: 767px) {
+  .ButtonWithArrow__Label {
+    font-size: 12px !important;
+    line-height: 18px !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .ButtonWithArrow {
+    font-size: 14px !important;
+  }
+}

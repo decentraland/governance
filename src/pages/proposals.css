@@ -20,6 +20,10 @@
   width: 100%;
 }
 
+.ProposalsPage__Priority {
+  margin-bottom: 37px;
+}
+
 .ProposalsPage__List {
   display: flex;
   flex-direction: column;
@@ -62,7 +66,7 @@
 .ProposalsPage__ProposalCount {
   font-size: 12px !important;
   text-transform: uppercase;
-  color: var(--black-600);
+  color: var(--black-600) !important;
 }
 
 @media (min-width: 768px) {

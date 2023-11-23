@@ -23,6 +23,7 @@ import {
   NewProposalPoll,
   NewProposalTender,
   PendingProposalsQuery,
+  PriorityProposal,
   Project,
   ProjectWithUpdate,
   ProposalAttributes,
@@ -35,7 +36,7 @@ import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { Topic } from '../entities/SurveyTopic/types'
 import { ProjectHealth, UpdateAttributes, UpdateResponse } from '../entities/Updates/types'
 import { AccountType } from '../entities/User/types'
-import { VoteByAddress, VotedProposal, Voter } from '../entities/Votes/types'
+import { VoteByAddress, VotedProposal, Voter, VotesForProposals } from '../entities/Votes/types'
 import { NewsletterSubscriptionResult } from '../shared/types/newsletter'
 import { PushNotification } from '../shared/types/notifications'
 import Time from '../utils/date/Time'
@@ -107,6 +108,14 @@ export class Governance extends API {
     }
   }
 
+  static parsePriorityProposal(proposal: PriorityProposal): PriorityProposal {
+    return {
+      ...proposal,
+      start_at: Time.date(proposal.start_at),
+      finish_at: Time.date(proposal.finish_at),
+    }
+  }
+
   async getProposal(proposalId: string) {
     const result = await this.fetch<ApiResponse<ProposalAttributes>>(`/proposals/${proposalId}`)
     return result.data ? Governance.parseProposal(result.data) : null
@@ -147,6 +156,15 @@ export class Governance extends API {
 
   async getOpenTendersTotal() {
     return await this.fetch<{ total: number }>(`/projects/tenders-total`, this.options().method('GET'))
+  }
+
+  async getPriorityProposals(address?: string) {
+    const url = `/proposals/priority/`
+    const proposals = await this.fetch<PriorityProposal[]>(
+      address && address.length > 0 ? url.concat(address) : url,
+      this.options().method('GET')
+    )
+    return proposals.map((proposal) => Governance.parsePriorityProposal(proposal))
   }
 
   async getGrantsByUser(user: string) {
@@ -286,12 +304,12 @@ export class Governance extends API {
     return result.data
   }
 
-  async getProposalCachedVotes(proposal_id: string) {
+  async getVotesByProposal(proposal_id: string) {
     const result = await this.fetch<ApiResponse<VoteByAddress>>(`/proposals/${proposal_id}/votes`)
     return result.data
   }
 
-  async getVotes(proposal_ids: string[]) {
+  async getCachedVotesByProposals(proposal_ids: string[]) {
     if (proposal_ids.length === 0) {
       return {}
     }
@@ -301,11 +319,11 @@ export class Governance extends API {
       return result
     }, new URLSearchParams())
 
-    const result = await this.fetch<ApiResponse<Record<string, VoteByAddress>>>(`/votes?${params.toString()}`)
+    const result = await this.fetch<ApiResponse<VotesForProposals>>(`/votes?${params.toString()}`)
     return result.data
   }
 
-  async getAddressVotesWithProposals(address: string, first?: number, skip?: number) {
+  async getVotesAndProposalsByAddress(address: string, first?: number, skip?: number) {
     const result = await this.fetch<ApiResponse<VotedProposal[]>>(`/votes/${address}?first=${first}&skip=${skip}`)
     return result.data
   }
@@ -563,7 +581,7 @@ export class Governance extends API {
     return response.data
   }
 
-  async getAddressesVotes(addresses: string[]) {
+  async getVotesByAddresses(addresses: string[]) {
     const result = await this.fetch<ApiResponse<SnapshotVote[]>>(
       `/snapshot/votes/`,
       this.options().method('POST').json({ addresses })
@@ -571,7 +589,7 @@ export class Governance extends API {
     return result.data
   }
 
-  async getProposalVotes(proposalId: string) {
+  async getVotesByProposalFromSnapshot(proposalId: string) {
     const response = await this.fetch<ApiResponse<SnapshotVote[]>>(
       `/snapshot/votes/${proposalId}`,
       this.options().method('GET')
@@ -579,7 +597,7 @@ export class Governance extends API {
     return response.data
   }
 
-  async getAllVotesBetweenDates(start: Date, end: Date) {
+  async getVotesByDates(start: Date, end: Date) {
     const response = await this.fetch<ApiResponse<SnapshotVote[]>>(
       `/snapshot/votes/all`,
       this.options().method('POST').json({ start, end })

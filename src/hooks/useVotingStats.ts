@@ -65,7 +65,7 @@ export default function useVotingStats(address: string, userAddress?: string | n
     queryFn: async () => {
       const addresses = [address]
       if (userAddress) addresses.push(userAddress)
-      return await Governance.get().getAddressesVotes(addresses)
+      return await Governance.get().getVotesByAddresses(addresses)
     },
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })

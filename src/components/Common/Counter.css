@@ -1,0 +1,28 @@
+.Counter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: bold;
+  width: 16px;
+  height: 16px;
+  font-size: 9px;
+}
+
+.Counter--primary {
+  background: var(--primary);
+  color: var(--white-900);
+}
+
+.Counter--gray {
+  background: var(--black-400);
+  color: var(--white-900);
+}
+
+@media (min-width: 425px) {
+  .Counter {
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+  }
+}

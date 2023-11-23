@@ -2,6 +2,14 @@
   margin: 0 !important;
 }
 
+.ProposalItem--slim.ui.card {
+  margin-bottom: 14px !important;
+}
+
+.ProposalItem--slim.ui.card:last-child {
+  margin-bottom: 0 !important;
+}
+
 .ProposalItem,
 .ui.card.Link.ProposalItem {
   width: 100% !important;
@@ -104,4 +112,27 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+}
+
+.ProposalItem__CustomText {
+  font-weight: var(--weight-semi-bold);
+  color: var(--black-800);
+  font-size: 10px;
+  line-height: 16px;
+  text-transform: uppercase;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 170px;
+}
+
+@media (min-width: 340px) and (max-width: 374px) {
+  .ProposalItem__CustomText {
+    max-width: 190px;
+  }
+}
+@media (min-width: 375px) {
+  .ProposalItem__CustomText {
+    max-width: unset;
+  }
 }

@@ -21,6 +21,7 @@ import ActionableLayout from '../components/Layout/ActionableLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
+import PriorityProposalsBox from '../components/Profile/PriorityProposalsBox'
 import ProposalItem from '../components/Proposal/ProposalItem'
 import CategoryFilter from '../components/Search/CategoryFilter'
 import FilterMenu from '../components/Search/FilterMenu'
@@ -33,8 +34,8 @@ import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import useFormatMessage from '../hooks/useFormatMessage'
 import useProposals from '../hooks/useProposals'
 import useProposalsByCoAuthor from '../hooks/useProposalsByCoAuthor'
+import useProposalsCachedVotes from '../hooks/useProposalsCachedVotes'
 import { useProposalsSearchParams } from '../hooks/useProposalsSearchParams'
-import useProposalsVotes from '../hooks/useProposalsVotes'
 import locations, { navigate } from '../utils/locations'
 import { isUnderMaintenance } from '../utils/maintenance'
 
@@ -45,6 +46,7 @@ const ITEMS_PER_PAGE = 25
 export default function ProposalsPage() {
   const t = useFormatMessage()
   const location = useLocation()
+  const [userAddress, authState] = useAuthContext()
   const { type, subtype, status, search, searching, timeFrame, order, page } = useProposalsSearchParams()
   const { proposals, isLoadingProposals } = useProposals({
     type,
@@ -57,7 +59,7 @@ export default function ProposalsPage() {
     itemsPerPage: ITEMS_PER_PAGE,
   })
   const proposalIds = (proposals?.data || []).map((proposal) => proposal.id)
-  const { segmentedVotes, isLoadingVotes } = useProposalsVotes(proposalIds)
+  const { segmentedVotes, isLoadingVotes } = useProposalsCachedVotes(proposalIds)
   const isTabletAndBelow = useTabletAndBelowMediaQuery()
 
   const handlePageFilter = useCallback(
@@ -101,7 +103,7 @@ export default function ProposalsPage() {
     return <MaintenanceLayout title={title} description={description} activeTab={NavigationTab.Proposals} />
   }
 
-  const isLoading = !proposals || isLoadingProposals || isLoadingVotes
+  const isLoading = !proposals || isLoadingProposals || isLoadingVotes || authState.loading
 
   return (
     <>
@@ -138,6 +140,7 @@ export default function ProposalsPage() {
                     <SearchTitle />
                   </Mobile>
                 )}
+                <PriorityProposalsBox address={userAddress} collapsible />
                 <ActionableLayout
                   leftAction={
                     <Text color="secondary" weight="semi-bold" className="ProposalsPage__ProposalCount">

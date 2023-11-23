@@ -795,6 +795,23 @@
       "view_reactions_label": "View Reactions",
       "total_comments_label": "{count} {count, plural, one {Comment} other {Comments}}",
       "forum_label": "Join Discussion"
+    },
+    "action_box": {
+      "show": "Show",
+      "hide": "Hide"
+    },
+    "priority_proposals": {
+      "title": "Priority Proposals Spotlight",
+      "info": "This section highlights binding Governance and project-related proposals that need your attention.",
+      "show_all": "Show all {count} proposals",
+      "show_less": "Show less",
+      "active_governance": "Voting ends {time}",
+      "open_pitch": "Open for Tenders",
+      "pitch_with_submissions": "Tender submissions end {time}",
+      "pitch_on_tender_voting_phase": "Tender proposal voting ends {time}",
+      "open_tender": "Open for Bids",
+      "tender_with_submissions": "Bids submission ends {time}",
+      "active_bids": "Bid proposals voting ends {time}"
     }
   },
   "page": {
@@ -853,6 +870,10 @@
         "view_all_proposals": "View all proposals",
         "you_voted": "You voted",
         "vote": "Vote"
+      },
+      "priority_spotlight": {
+        "title": "Priority Proposals Spotlight",
+        "description": "Your vote matters. This section highlights binding Governance and project-related proposals that need your attention now."
       },
       "active_community_grants": {
         "title": "Active Community Grants",

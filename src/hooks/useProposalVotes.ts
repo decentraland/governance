@@ -6,7 +6,7 @@ import { getVoteSegmentation } from '../entities/Votes/utils'
 
 import { FIVE_MINUTES_MS } from './constants'
 
-const useProposalVotes = (proposalId?: ProposalAttributes['id']) => {
+const useProposalVotes = (proposalId?: ProposalAttributes['id'], shouldFetch = true) => {
   const {
     data: votes,
     isLoading: isLoadingVotes,
@@ -17,10 +17,10 @@ const useProposalVotes = (proposalId?: ProposalAttributes['id']) => {
       if (!proposalId) {
         return null
       }
-      return Governance.get().getProposalCachedVotes(proposalId)
+      return Governance.get().getVotesByProposal(proposalId)
     },
     staleTime: FIVE_MINUTES_MS,
-    enabled: !!proposalId,
+    enabled: !!proposalId && shouldFetch,
   })
 
   const segmentedVotes = votes ? getVoteSegmentation(votes) : undefined

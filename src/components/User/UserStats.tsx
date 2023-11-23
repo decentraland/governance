@@ -9,9 +9,9 @@ import { isSameAddress } from '../../entities/Snapshot/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useGovernanceProfile from '../../hooks/useGovernanceProfile'
 import useIsProfileValidated from '../../hooks/useIsProfileValidated'
+import { ActionBox } from '../Common/ActionBox'
 import Username from '../Common/Username'
 import VotingPowerDistribution from '../Modal/VotingPowerDelegationDetail/VotingPowerDistribution'
-import { ProfileBox } from '../Profile/ProfileBox'
 import ProfileSettings from '../Profile/ProfileSettings'
 
 import Badges from './Badges/Badges'
@@ -50,13 +50,13 @@ export default function UserStats({ address, vpDistribution, isLoadingVpDistribu
         <Badges address={address} />
         <UserVpStats vpDistribution={vpDistribution} isLoadingVpDistribution={isLoadingVpDistribution} />
         {total > 0 && (
-          <ProfileBox title={t('page.profile.user_vp_stats.vp_distribution')} className="UserStats__VpDistributionBox">
+          <ActionBox title={t('page.profile.user_vp_stats.vp_distribution')} className="UserStats__VpDistributionBox">
             <VotingPowerDistribution
               vpDistribution={vpDistribution}
               isLoading={isLoadingVpDistribution}
               className="UserStats__VpDistribution"
             />
-          </ProfileBox>
+          </ActionBox>
         )}
         <UserVotingStats address={address} />
       </div>

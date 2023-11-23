@@ -30,7 +30,7 @@ export default function useVotingPowerOnProposal(
     queryKey: [`votingPowerOnProposal#${address}#${proposal?.snapshot_id}`],
     queryFn: async () => {
       if (proposal?.snapshot_id) {
-        const votes: SnapshotVote[] = await Governance.get().getProposalVotes(proposal.snapshot_id)
+        const votes: SnapshotVote[] = await Governance.get().getVotesByProposalFromSnapshot(proposal.snapshot_id)
         const delegatedVp = getDelegatedVotingPowerOnProposal(vpDistribution, delegators, votes)
         const addressVp = vpDistribution.own || 0
         return { addressVp, delegatedVp }

@@ -5,6 +5,7 @@ import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
 import { CommitteeName } from '../../clients/DclData'
 import { SnapshotProposal } from '../../clients/SnapshotTypes'
+import { UnpublishedBidInfo } from '../Bid/types'
 import {
   CategoryAssessmentQuestions,
   GrantRequestDueDiligence,
@@ -838,3 +839,24 @@ export type ProjectWithUpdate = Project & {
 }
 
 export type PendingProposalsQuery = { start: Date; end: Date; fields: (keyof SnapshotProposal)[]; limit: number }
+
+export enum PriorityProposalType {
+  ActiveGovernance = 'active_governance',
+  OpenPitch = 'open_pitch',
+  PitchWithSubmissions = 'pitch_with_submissions',
+  PitchOnTenderVotingPhase = 'pitch_on_tender_voting_phase',
+  OpenTender = 'open_tender',
+  TenderWithSubmissions = 'tender_with_submissions',
+  ActiveBid = 'active_bid',
+}
+
+export type PriorityProposal = Pick<
+  ProposalAttributes,
+  'id' | 'title' | 'finish_at' | 'start_at' | 'type' | 'status' | 'configuration' | 'user' | 'snapshot_proposal'
+> & {
+  priority_type: PriorityProposalType
+  linked_proposals_data?: LinkedProposal[]
+  unpublished_bids_data?: UnpublishedBidInfo[]
+}
+
+export type LinkedProposal = Pick<ProposalAttributes, 'id' | 'finish_at' | 'start_at' | 'created_at'>

@@ -51,8 +51,20 @@ export default {
         >
       | URLSearchParams = {}
   ) => url('/proposals/', options),
-  proposal: (proposal: string, options: { new?: 'true'; newUpdate?: 'true'; pending?: 'true'; bid?: 'true' } = {}) =>
-    url('/proposal/', { id: proposal, ...options }),
+  proposal: (
+    proposalId: string,
+    options: {
+      new?: 'true'
+      newUpdate?: 'true'
+      pending?: 'true'
+      bid?: 'true'
+      anchor?: string
+    } = {}
+  ) => {
+    const { anchor, ...otherOptions } = options
+    const anchorFragment = anchor ? `#${anchor}` : ''
+    return url(`/proposal/`, { id: proposalId, ...otherOptions }) + anchorFragment
+  },
   submit: (
     type?: ProposalType,
     options: {
