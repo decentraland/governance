@@ -7,9 +7,11 @@ import { getVoteSegmentation } from '../entities/Votes/utils'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
+export const PROPOSAL_CACHED_VOTES_QUERY_KEY = 'proposalsVotes'
+
 function useProposalsCachedVotes(proposalIds: ProposalAttributes['id'][]) {
   const { data: votes, isLoading: isLoadingVotes } = useQuery({
-    queryKey: [`proposalsVotes#${proposalIds.join('-')}`],
+    queryKey: [PROPOSAL_CACHED_VOTES_QUERY_KEY, proposalIds.join('-')],
     queryFn: () => Governance.get().getCachedVotesByProposals(proposalIds),
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })
