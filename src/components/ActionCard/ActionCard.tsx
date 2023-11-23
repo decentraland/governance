@@ -14,6 +14,7 @@ export interface ActionCardProps {
   onCardClick?: () => void
   isDisabled?: boolean
   isVerified?: boolean
+  isNew?: boolean
   helper?: string
 }
 
@@ -25,6 +26,7 @@ function ActionCard({
   onCardClick,
   isVerified,
   isDisabled = false,
+  isNew,
   helper,
 }: ActionCardProps) {
   const t = useFormatMessage()
@@ -42,8 +44,17 @@ function ActionCard({
             <div>
               <h3>
                 {title}
-                {!isImplemented && <span className="ActionCard__SoonLabel">{t('modal.identity_setup.soon')}</span>}
-                {isVerified && <span className="ActionCard__VerifiedLabel">{t('modal.identity_setup.verified')}</span>}
+                {!isImplemented && (
+                  <span className="ActionCard__Label ActionCard__SoonLabel">{t('modal.identity_setup.soon')}</span>
+                )}
+                {isVerified && (
+                  <span className="ActionCard__Label ActionCard__VerifiedLabel">
+                    {t('modal.identity_setup.verified')}
+                  </span>
+                )}
+                {isNew && !isVerified && (
+                  <span className="ActionCard__Label ActionCard__IsNewLabel">{t('category.new')}</span>
+                )}
               </h3>
               <p>{description}</p>
               {!!helper && <p className="ActionCard__Helper">{helper}</p>}

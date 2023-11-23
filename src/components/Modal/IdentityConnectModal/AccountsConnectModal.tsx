@@ -350,6 +350,7 @@ function AccountsConnectModal({ open, onClose, account }: Props) {
             icon: <CircledDiscord />,
             onCardClick: initializeDiscord,
             isVerified: isValidatedOnDiscord,
+            isNew: true,
           },
           {
             title: t('modal.identity_setup.twitter.card_title'),
