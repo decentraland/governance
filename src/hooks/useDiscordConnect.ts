@@ -2,43 +2,38 @@ import { useCallback } from 'react'
 
 import { Governance } from '../clients/Governance'
 import { SegmentEvent } from '../entities/Events/types'
-import { GATSBY_DISCOURSE_CONNECT_THREAD } from '../entities/User/constants'
+import { GATSBY_DISCORD_PROFILE_VERIFICATION_URL } from '../entities/User/constants'
 import { AccountType } from '../entities/User/types'
-import { DISCOURSE_API } from '../entities/User/utils'
 import { openUrl } from '../helpers'
 
 import useValidationSetup, { VALIDATION_CHECK_INTERVAL } from './useValidationSetup'
 
-export const THREAD_URL = `${DISCOURSE_API}${
-  DISCOURSE_API.endsWith('/') ? '' : '/'
-}t/${GATSBY_DISCOURSE_CONNECT_THREAD}/10000`
-
-export default function useForumConnect() {
+function useDiscordConnect() {
   const {
     user,
     track,
+    resetTimer,
     getSignedMessage,
     copyMessageToClipboard,
-    resetTimer,
     time,
     validatingProfile,
     setValidatingProfile,
     isValidated,
     setIsValidated,
     resetValidation,
-  } = useValidationSetup(AccountType.Forum)
+  } = useValidationSetup(AccountType.Discord)
 
-  const openThread = useCallback(() => {
-    openUrl(THREAD_URL)
+  const openChannel = useCallback(() => {
+    openUrl(GATSBY_DISCORD_PROFILE_VERIFICATION_URL)
     if (validatingProfile === undefined) {
       const validationChecker = setInterval(async () => {
         try {
-          const { valid } = await Governance.get().validateForumProfile()
+          const { valid } = await Governance.get().validateDiscordProfile()
           if (valid) {
             clearInterval(validationChecker)
             resetTimer()
             setIsValidated(true)
-            track(SegmentEvent.IdentityCompleted, { address: user, account: AccountType.Forum })
+            track(SegmentEvent.IdentityCompleted, { address: user, account: AccountType.Discord })
           }
         } catch (error) {
           clearInterval(validationChecker)
@@ -52,9 +47,11 @@ export default function useForumConnect() {
   return {
     getSignedMessage,
     copyMessageToClipboard,
-    openThread,
+    openChannel,
     time,
     isValidated,
     reset: resetValidation,
   }
 }
+
+export default useDiscordConnect

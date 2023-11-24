@@ -37,9 +37,9 @@ import update from './back/routes/update'
 import users from './back/routes/user'
 import vestings from './back/routes/vestings'
 import score from './back/routes/votes'
+import { DiscordService } from './back/services/discord'
 import { updateGovernanceBudgets } from './entities/Budget/jobs'
 import { activateProposals, finishProposal, publishBids } from './entities/Proposal/jobs'
-import { DiscordService } from './services/DiscordService'
 import filesystem from './utils/filesystem'
 
 const jobs = manager()

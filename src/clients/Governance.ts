@@ -23,8 +23,8 @@ import {
   NewProposalPoll,
   NewProposalTender,
   PendingProposalsQuery,
-  Project,
   PriorityProposal,
+  Project,
   ProjectWithUpdate,
   ProposalAttributes,
   ProposalCommentsInDiscourse,
@@ -35,9 +35,10 @@ import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { Topic } from '../entities/SurveyTopic/types'
 import { ProjectHealth, UpdateAttributes, UpdateResponse } from '../entities/Updates/types'
+import { AccountType } from '../entities/User/types'
 import { VoteByAddress, VotedProposal, Voter, VotesForProposals } from '../entities/Votes/types'
 import { NewsletterSubscriptionResult } from '../shared/types/newsletter'
-import { Notification } from '../shared/types/notifications'
+import { PushNotification } from '../shared/types/notifications'
 import Time from '../utils/date/Time'
 
 import { TransparencyBudget } from './DclData'
@@ -476,26 +477,64 @@ export class Governance extends API {
     return result.data
   }
 
-  async getValidationMessage() {
+  async getValidationMessage(account?: AccountType) {
+    const params = new URLSearchParams()
+    if (account) {
+      params.append('account', account)
+    }
     const result = await this.fetch<ApiResponse<string>>(
-      '/user/validate',
+      `/user/validate?${params.toString()}`,
       this.options().method('GET').authorization({ sign: true })
     )
 
     return result.data
   }
 
-  async validateProfile() {
+  async validateForumProfile() {
     const result = await this.fetch<ApiResponse<{ valid: boolean }>>(
-      '/user/validate',
+      '/user/validate/forum',
       this.options().method('POST').authorization({ sign: true })
     )
 
     return result.data
   }
 
-  async isProfileValidated(address: string) {
-    const result = await this.fetch<ApiResponse<boolean>>(`/user/${address}/is-validated`, this.options().method('GET'))
+  async validateDiscordProfile() {
+    const result = await this.fetch<ApiResponse<{ valid: boolean }>>(
+      '/user/validate/discord',
+      this.options().method('POST').authorization({ sign: true })
+    )
+
+    return result.data
+  }
+
+  async isProfileValidated(address: string, accounts: AccountType[]) {
+    const params = new URLSearchParams()
+    for (const account of accounts) {
+      params.append('account', account)
+    }
+    const result = await this.fetch<ApiResponse<boolean>>(
+      `/user/${address}/is-validated/?${params.toString()}`,
+      this.options().method('GET')
+    )
+
+    return result.data
+  }
+
+  async isDiscordActive() {
+    const result = await this.fetch<ApiResponse<boolean>>(
+      `/user/discord-active`,
+      this.options().method('GET').authorization({ sign: true })
+    )
+
+    return result.data
+  }
+
+  async updateDiscordStatus(is_discord_notifications_active: boolean) {
+    const result = await this.fetch<ApiResponse<void>>(
+      `/user/discord-active`,
+      this.options().method('POST').authorization({ sign: true }).json({ is_discord_notifications_active })
+    )
 
     return result.data
   }
@@ -668,7 +707,7 @@ export class Governance extends API {
   }
 
   async getUserNotifications(address: string) {
-    const response = await this.fetch<ApiResponse<Notification[]>>(
+    const response = await this.fetch<ApiResponse<PushNotification[]>>(
       `/notifications/user/${address}`,
       this.options().method('GET')
     )

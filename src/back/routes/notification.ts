@@ -3,10 +3,13 @@ import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
+import isArray from 'lodash/isArray'
 
+import UserModel from '../../entities/User/model'
 import { NotificationCustomType } from '../../shared/types/notifications'
 import { NotificationType } from '../../utils/notifications'
 import UserNotificationConfigModel, { UserNotificationConfigAttributes } from '../models/UserNotificationConfig'
+import { DiscordService } from '../services/discord'
 import { NotificationService } from '../services/notification'
 import { validateDebugAddress } from '../utils/validations'
 
@@ -28,6 +31,19 @@ async function sendNotification(req: WithAuth) {
 
   if (!title || !body) {
     throw new RequestError('Invalid data', RequestError.BadRequest)
+  }
+
+  if (type === NotificationType.TARGET) {
+    const users = await UserModel.getDiscordIdsByAddresses(isArray(recipient) ? recipient : [recipient])
+
+    for (const user of users) {
+      DiscordService.sendDirectMessage(user.discord_id, {
+        title,
+        url,
+        fields: [],
+        action: body,
+      })
+    }
   }
 
   return await NotificationService.sendNotification({

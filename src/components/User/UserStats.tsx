@@ -8,6 +8,7 @@ import { VpDistribution } from '../../clients/SnapshotTypes'
 import { isSameAddress } from '../../entities/Snapshot/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useGovernanceProfile from '../../hooks/useGovernanceProfile'
+import useIsProfileValidated from '../../hooks/useIsProfileValidated'
 import { ActionBox } from '../Common/ActionBox'
 import Username from '../Common/Username'
 import VotingPowerDistribution from '../Modal/VotingPowerDelegationDetail/VotingPowerDistribution'
@@ -31,8 +32,10 @@ const UserAvatar = lazy(() => import('./UserAvatar'))
 export default function UserStats({ address, vpDistribution, isLoadingVpDistribution }: Props) {
   const t = useFormatMessage()
   const isMobile = useMobileMediaQuery()
-  const { profile, isLoadingGovernanceProfile, isProfileValidated } = useGovernanceProfile(address)
+  const { profile, isLoadingGovernanceProfile } = useGovernanceProfile(address)
+  const { isProfileValidated } = useIsProfileValidated(address)
   const [user] = useAuthContext()
+
   const showSettings = isSameAddress(user, address) && !isLoadingGovernanceProfile && !isProfileValidated
   const { total } = vpDistribution || { total: 0 }
 

@@ -5,15 +5,23 @@ import { ethers } from 'ethers'
 import { NOTIFICATIONS_SERVICE_ENABLED, PUSH_CHANNEL_ID } from '../../constants'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { proposalUrl } from '../../entities/Proposal/utils'
+import UserModel from '../../entities/User/model'
 import { inBackground } from '../../helpers'
 import { ErrorService } from '../../services/ErrorService'
-import { NotificationCustomType } from '../../shared/types/notifications'
+import { Notification, NotificationCustomType, Recipient } from '../../shared/types/notifications'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
-import { NotificationType, getCaipAddress, getPushNotificationsEnv } from '../../utils/notifications'
+import {
+  NotificationBody,
+  NotificationTitle,
+  NotificationType,
+  getCaipAddress,
+  getPushNotificationsEnv,
+} from '../../utils/notifications'
 import { areValidAddresses } from '../utils/validations'
 
 import { CoauthorService } from './coauthor'
+import { DiscordService } from './discord'
 import { VoteService } from './vote'
 
 import PushAPI = require('@pushprotocol/restapi')
@@ -29,24 +37,8 @@ const NotificationIdentityType = {
 const ADDITIONAL_META_CUSTOM_TYPE = 0
 const ADDITIONAL_META_CUSTOM_TYPE_VERSION = 1
 
-type Recipient = string | string[] | undefined
-
 export class NotificationService {
-  static async sendNotification({
-    type,
-    title,
-    body,
-    recipient,
-    url,
-    customType,
-  }: {
-    type?: number
-    title: string
-    body: string
-    recipient: Recipient
-    url: string
-    customType: NotificationCustomType
-  }) {
+  static async sendNotification({ type, title, body, recipient, url, customType }: Notification) {
     if (!NOTIFICATIONS_SERVICE_ENABLED) {
       return
     }
@@ -134,9 +126,22 @@ export class NotificationService {
           throw new Error('Invalid addresses')
         }
 
+        const title = NotificationTitle.GrantEnacted
+        const body = NotificationBody.GrantEnacted
+
+        const validatedUsers = await UserModel.getDiscordIdsByAddresses(addresses)
+        for (const user of validatedUsers) {
+          DiscordService.sendDirectMessage(user.discord_id, {
+            title,
+            action: body,
+            url: proposalUrl(proposal.id),
+            fields: [],
+          })
+        }
+
         return await this.sendNotification({
-          title: 'Grant Proposal Enacted',
-          body: 'Congratulations! Your Grant Proposal has been successfully enacted and a Vesting Contract was added',
+          title,
+          body,
           recipient: addresses,
           url: proposalUrl(proposal.id),
           customType: NotificationCustomType.Grant,
@@ -157,9 +162,22 @@ export class NotificationService {
         throw new Error('Invalid addresses')
       }
 
+      const title = NotificationTitle.CoAuthorRequestReceived
+      const body = NotificationBody.CoAuthorRequestReceived
+
+      const validatedUsers = await UserModel.getDiscordIdsByAddresses(coAuthors)
+      for (const user of validatedUsers) {
+        DiscordService.sendDirectMessage(user.discord_id, {
+          title,
+          action: body,
+          url: proposalUrl(proposal.id),
+          fields: [],
+        })
+      }
+
       return await this.sendNotification({
-        title: 'Co-author Request Received',
-        body: "You've been invited to collaborate as a co-author on a published proposal. Accept it or reject it here",
+        title,
+        body,
         recipient: coAuthors,
         url: proposalUrl(proposal.id),
         customType: NotificationCustomType.Proposal,
@@ -183,9 +201,22 @@ export class NotificationService {
         throw new Error('Invalid addresses')
       }
 
+      const title = `${NotificationTitle.ProposalVotedFinished} ${proposal.title}`
+      const body = NotificationBody.ProposalVotedFinished
+
+      const validatedUsers = await UserModel.getDiscordIdsByAddresses(addresses)
+      for (const user of validatedUsers) {
+        DiscordService.sendDirectMessage(user.discord_id, {
+          title,
+          action: body,
+          url: proposalUrl(proposal.id),
+          fields: [],
+        })
+      }
+
       return await this.sendNotification({
-        title: `Voting Ended on Your Proposal ${proposal.title}`,
-        body: 'The votes are in! Find out the outcome of the voting on your proposal now',
+        title,
+        body,
         recipient: addresses,
         url: proposalUrl(proposal.id),
         customType: NotificationCustomType.Proposal,
@@ -205,9 +236,22 @@ export class NotificationService {
         throw new Error('Invalid addresses')
       }
 
+      const title = NotificationTitle.ProposalVotedFinished
+      const body = NotificationBody.ProposalVotedFinished
+
+      const validatedUsers = await UserModel.getDiscordIdsByAddresses(addresses)
+      for (const user of validatedUsers) {
+        DiscordService.sendDirectMessage(user.discord_id, {
+          title,
+          action: body,
+          url: proposalUrl(proposal.id),
+          fields: [],
+        })
+      }
+
       return await this.sendNotification({
-        title: 'Voting Ended on a Proposal You Voted On',
-        body: 'Discover the results of the proposal you participated in as a voter. Your input matters!',
+        title,
+        body,
         recipient: addresses,
         url: proposalUrl(proposal.id),
         customType: NotificationCustomType.Proposal,

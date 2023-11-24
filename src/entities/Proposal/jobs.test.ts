@@ -2,9 +2,9 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { cloneDeep } from 'lodash'
 
+import { DiscordService } from '../../back/services/discord'
 import { NotificationService } from '../../back/services/notification'
 import { BudgetService } from '../../services/BudgetService'
-import { DiscordService } from '../../services/DiscordService'
 import { DiscourseService } from '../../services/DiscourseService'
 import Time from '../../utils/date/Time'
 import CoauthorModel from '../Coauthor/model'
@@ -53,6 +53,7 @@ jest.mock('../../constants', () => ({
   NOTIFICATIONS_SERVICE_ENABLED: false,
 }))
 
+jest.mock('discord.js', () => jest.fn())
 jest.mock('@pushprotocol/restapi/src/index.js', () => jest.fn())
 
 describe('finishProposals', () => {

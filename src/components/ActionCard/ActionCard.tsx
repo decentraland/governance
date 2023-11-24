@@ -13,16 +13,29 @@ export interface ActionCardProps {
   action?: React.ReactNode
   onCardClick?: () => void
   isDisabled?: boolean
+  isVerified?: boolean
+  isNew?: boolean
   helper?: string
 }
 
-function ActionCard({ icon, title, description, action, onCardClick, isDisabled = false, helper }: ActionCardProps) {
+function ActionCard({
+  icon,
+  title,
+  description,
+  action,
+  onCardClick,
+  isVerified,
+  isDisabled = false,
+  isNew,
+  helper,
+}: ActionCardProps) {
   const t = useFormatMessage()
   const isImplemented = !!action || !!onCardClick
+  const isActionable = isImplemented && !isDisabled && !isVerified
   return (
     <Card
-      className={classNames('ActionCard', (!isImplemented || isDisabled) && 'ActionCard--disabled')}
-      onClick={onCardClick}
+      className={classNames('ActionCard', !isActionable && 'ActionCard--disabled')}
+      onClick={isActionable ? onCardClick : undefined}
     >
       <Grid>
         <Grid.Row>
@@ -31,7 +44,17 @@ function ActionCard({ icon, title, description, action, onCardClick, isDisabled 
             <div>
               <h3>
                 {title}
-                {!isImplemented && <span className="ActionCard__SoonLabel">{t('modal.identity_setup.soon')}</span>}
+                {!isImplemented && (
+                  <span className="ActionCard__Label ActionCard__SoonLabel">{t('modal.identity_setup.soon')}</span>
+                )}
+                {isVerified && (
+                  <span className="ActionCard__Label ActionCard__VerifiedLabel">
+                    {t('modal.identity_setup.verified')}
+                  </span>
+                )}
+                {isNew && !isVerified && (
+                  <span className="ActionCard__Label ActionCard__IsNewLabel">{t('category.new')}</span>
+                )}
               </h3>
               <p>{description}</p>
               {!!helper && <p className="ActionCard__Helper">{helper}</p>}

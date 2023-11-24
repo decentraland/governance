@@ -20,9 +20,7 @@ import AuthProvider from 'decentraland-gatsby/dist/context/Auth/AuthProvider'
 import FeatureFlagProvider from 'decentraland-gatsby/dist/context/FeatureFlag/FeatureFlagProvider'
 import segment from 'decentraland-gatsby/dist/utils/segment/segment'
 import Layout from './src/components/Layout/Layout'
-import IdentityModalContextProvider from './src/components/Context/IdentityModalContext'
 import ExternalLinkWarningModal from './src/components/Modal/ExternalLinkWarningModal/ExternalLinkWarningModal'
-import IdentityConnectModal from './src/components/Modal/IdentityConnectModal/IdentityConnectModal'
 import Segment from "decentraland-gatsby/dist/components/Development/Segment"
 import { SEGMENT_KEY, SSO_URL } from "./src/constants"
 import { flattenMessages } from "./src/utils/intl"
@@ -45,14 +43,11 @@ export const wrapPageElement = ({ element, props }) => {
   return (
     <QueryClientProvider client={queryClient}>
       <IntlProvider defaultLocale='en' locale='en' messages={flattenMessages(en)}>
-        <IdentityModalContextProvider>
-            <SnapshotStatus />
-            <Layout {...props} rightMenu={<UserInformation />}>
-              {element}
-            </Layout>
-          <ExternalLinkWarningModal />
-          <IdentityConnectModal />
-        </IdentityModalContextProvider>
+        <SnapshotStatus />
+        <Layout {...props} rightMenu={<UserInformation />}>
+          {element}
+        </Layout>
+        <ExternalLinkWarningModal />
       </IntlProvider>
     </QueryClientProvider>
   )

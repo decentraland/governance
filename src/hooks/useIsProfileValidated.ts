@@ -3,15 +3,18 @@ import isBoolean from 'lodash/isBoolean'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { Governance } from '../clients/Governance'
+import { AccountType } from '../entities/User/types'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
-function useIsProfileValidated(address: string | null) {
-  const { data: isProfileValidated } = useQuery({
-    queryKey: [`isProfileValidated#${address}`],
+const ALL_ACCOUNTS = [AccountType.Forum, AccountType.Discord]
+
+function useIsProfileValidated(address: string | null, accounts = ALL_ACCOUNTS) {
+  const { data: isProfileValidated, refetch } = useQuery({
+    queryKey: [`isProfileValidated`, address, accounts.join(`,`)],
     queryFn: async () => {
       if (address && isEthereumAddress(address)) {
-        return await Governance.get().isProfileValidated(address)
+        return await Governance.get().isProfileValidated(address, accounts)
       }
       return null
     },
@@ -20,7 +23,7 @@ function useIsProfileValidated(address: string | null) {
 
   const validationChecked = isBoolean(isProfileValidated)
 
-  return { isProfileValidated: !!isProfileValidated, validationChecked }
+  return { isProfileValidated: !!isProfileValidated, validationChecked, refetch }
 }
 
 export default useIsProfileValidated

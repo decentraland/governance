@@ -1,25 +1,25 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
-import type { EmbedBuilder } from 'discord.js'
+import type { Client, EmbedBuilder, Snowflake } from 'discord.js'
 
-import { DISCORD_SERVICE_ENABLED } from '../constants'
-import { getProfileUrl } from '../entities/Profile/utils'
-import { ProposalWithOutcome } from '../entities/Proposal/outcome'
-import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
-import { isGovernanceProcessProposal, proposalUrl } from '../entities/Proposal/utils'
-import UpdateModel from '../entities/Updates/model'
-import { UpdateAttributes } from '../entities/Updates/types'
-import { getPublicUpdates, getUpdateNumber, getUpdateUrl } from '../entities/Updates/utils'
-import { capitalizeFirstLetter, getEnumDisplayName, inBackground } from '../helpers'
-import { getProfile } from '../utils/Catalyst'
-import { ErrorCategory } from '../utils/errorCategories'
-import { isProdEnv } from '../utils/governanceEnvs'
-
-import { ErrorService } from './ErrorService'
+import { DISCORD_SERVICE_ENABLED } from '../../constants'
+import { getProfileUrl } from '../../entities/Profile/utils'
+import { ProposalWithOutcome } from '../../entities/Proposal/outcome'
+import { ProposalStatus, ProposalType } from '../../entities/Proposal/types'
+import { isGovernanceProcessProposal, proposalUrl } from '../../entities/Proposal/utils'
+import UpdateModel from '../../entities/Updates/model'
+import { UpdateAttributes } from '../../entities/Updates/types'
+import { getPublicUpdates, getUpdateNumber, getUpdateUrl } from '../../entities/Updates/utils'
+import { capitalizeFirstLetter, getEnumDisplayName, inBackground } from '../../helpers'
+import { ErrorService } from '../../services/ErrorService'
+import { getProfile } from '../../utils/Catalyst'
+import { ErrorCategory } from '../../utils/errorCategories'
+import { isProdEnv } from '../../utils/governanceEnvs'
 
 const CHANNEL_ID = process.env.DISCORD_CHANNEL_ID
+const PROFILE_VERIFICATION_CHANNEL_ID = process.env.DISCORD_PROFILE_VERIFICATION_CHANNEL_ID || ''
 const TOKEN = process.env.DISCORD_TOKEN
 
-const Discord = DISCORD_SERVICE_ENABLED ? require('discord.js') : null
+import Discord = require('discord.js')
 
 const DCL_LOGO = 'https://decentraland.org/images/decentraland.png'
 const DEFAULT_AVATAR = 'https://decentraland.org/images/male.png'
@@ -35,6 +35,7 @@ enum MessageColors {
   NEW_PROPOSAL = 0x0099ff,
   FINISH_PROPOSAL = 0x8142f5,
   NEW_UPDATE = 0x00ff80,
+  NOTIFICATION = 0xf5c63b,
 }
 
 type EmbedMessageProps = {
@@ -43,9 +44,9 @@ type EmbedMessageProps = {
   description?: string
   fields: Field[]
   user?: string
-  action: string
+  action?: string
   color: MessageColors
-  url: string
+  url?: string
 }
 
 function getChoices(choices: string[]): Field[] {
@@ -60,7 +61,7 @@ function getPreviewText(text: string) {
 }
 
 export class DiscordService {
-  private static client: any
+  private static client: Client
   static init() {
     if (!DISCORD_SERVICE_ENABLED) {
       logger.log('Discord service disabled')
@@ -71,7 +72,23 @@ export class DiscordService {
       throw new Error('Discord token missing')
     }
 
-    this.client = new Discord.Client({ intents: [Discord.GatewayIntentBits.Guilds] })
+    this.client = new Discord.Client({
+      intents: [
+        Discord.GatewayIntentBits.Guilds,
+        Discord.GatewayIntentBits.GuildMessages,
+        Discord.GatewayIntentBits.MessageContent,
+      ],
+    })
+    this.client.on('unhandledRejection', (error) => {
+      if (isProdEnv()) {
+        ErrorService.report('Unhandled rejection in Discord client', {
+          error,
+          category: ErrorCategory.Discord,
+        })
+      } else {
+        console.error('Unhandled rejection in Discord client', error)
+      }
+    })
     this.client.login(TOKEN)
   }
 
@@ -123,8 +140,8 @@ export class DiscordService {
     const embed = new Discord.EmbedBuilder()
       .setColor(color)
       .setTitle(title)
-      .setURL(url)
-      .setDescription(action)
+      .setURL(!!url && url.length > 0 ? url : null)
+      .setDescription(!!action && action.length > 0 ? action : null)
       .setThumbnail(DCL_LOGO)
       .addFields(...fields)
       .setTimestamp()
@@ -133,7 +150,7 @@ export class DiscordService {
     if (user) {
       try {
         const profile = await getProfile(user)
-        const profileHasName = !!profile && !!profile.name && profile.name.length > 0
+        const profileHasName = !!profile && profile.hasClaimedName && !!profile.name && profile.name.length > 0
         const displayableUser = profileHasName ? profile.name : user
 
         const hasAvatar = !!profile && !!profile.avatar
@@ -262,6 +279,79 @@ export class DiscordService {
           }
         }
       })
+    }
+  }
+
+  static sendDirectMessage(userId: Snowflake, message: Omit<EmbedMessageProps, 'color'>) {
+    if (DISCORD_SERVICE_ENABLED) {
+      inBackground(async () => {
+        try {
+          const user = await this.client.users.fetch(userId)
+          const dmChannel = await user.createDM()
+          const embedMessage = await this.formatMessage({ ...message, color: MessageColors.NOTIFICATION })
+          return await dmChannel.send({ embeds: [embedMessage] })
+        } catch (error) {
+          if (isProdEnv()) {
+            ErrorService.report(`Error sending direct message to user`, {
+              userId,
+              error,
+              category: ErrorCategory.Discord,
+            })
+          } else {
+            console.error(`Error sending direct message to user with ID ${userId}`, error)
+          }
+        }
+      })
+    }
+  }
+
+  static async getProfileVerificationMessages() {
+    if (DISCORD_SERVICE_ENABLED) {
+      try {
+        const channel = this.client.channels.cache.get(PROFILE_VERIFICATION_CHANNEL_ID)
+        if (!channel) {
+          throw new Error(`Discord channel not found: ${PROFILE_VERIFICATION_CHANNEL_ID}`)
+        }
+        if (channel?.type !== Discord.ChannelType.GuildText) {
+          throw new Error(`Discord channel type is not supported: ${channel?.type}`)
+        }
+        const messages = (await channel.messages.fetch({ limit: 10 })).filter((message) => !message.author.bot)
+        return messages.map((message) => message)
+      } catch (error) {
+        if (isProdEnv()) {
+          ErrorService.report('Error getting profile verification messages', {
+            error,
+            category: ErrorCategory.Discord,
+          })
+        } else {
+          console.error('Error getting profile verification message', error)
+        }
+      }
+    }
+    return []
+  }
+
+  static async deleteVerificationMessage(messageId: string) {
+    if (DISCORD_SERVICE_ENABLED) {
+      try {
+        const channel = this.client.channels.cache.get(PROFILE_VERIFICATION_CHANNEL_ID)
+        if (!channel) {
+          throw new Error(`Discord channel not found: ${PROFILE_VERIFICATION_CHANNEL_ID}`)
+        }
+        if (channel?.type !== Discord.ChannelType.GuildText) {
+          throw new Error(`Discord channel type is not supported: ${channel?.type}`)
+        }
+        await channel.messages.delete(messageId)
+      } catch (error) {
+        if (isProdEnv()) {
+          ErrorService.report('Error deleting profile verification message', {
+            error,
+            category: ErrorCategory.Discord,
+          })
+        } else {
+          console.error('Error deleting profile verification message', error)
+        }
+      }
     }
   }
 

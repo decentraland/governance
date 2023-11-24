@@ -31,6 +31,7 @@ const VALID_QUARTER_BUDGET_2 = {
   updated_at: NOW,
 }
 
+jest.mock('discord.js', () => jest.fn())
 jest.mock('@pushprotocol/restapi/src/index.js', () => jest.fn())
 
 describe('QuarterBudgetModel', () => {

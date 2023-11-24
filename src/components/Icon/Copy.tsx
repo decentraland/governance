@@ -1,6 +1,13 @@
-function Copy() {
+function Copy({ className }: { className?: string }) {
   return (
-    <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      className={className}
+      width="64"
+      height="64"
+      viewBox="0 0 64 64"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <circle cx="32" cy="32" r="32" fill="#FCE9EC" />
       <g clipPath="url(#clip0_10793_1886)">
         <path

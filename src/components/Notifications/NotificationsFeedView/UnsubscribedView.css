@@ -1,0 +1,14 @@
+.NotificationsFeed__UnsubscribedView {
+  display: flex;
+  flex-direction: column;
+  padding: 0 16px 16px 16px;
+  align-items: center;
+  text-align: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.NotificationsFeed__UnsubscribedViewHeading,
+.NotificationsFeed__UnsubscribedViewText {
+  margin: 0;
+}

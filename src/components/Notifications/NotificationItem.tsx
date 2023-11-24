@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 
-import { Notification, NotificationCustomType } from '../../shared/types/notifications'
+import { NotificationCustomType, PushNotification } from '../../shared/types/notifications'
 import Time from '../../utils/date/Time'
 import Link from '../Common/Typography/Link'
 import Markdown from '../Common/Typography/Markdown'
@@ -12,7 +12,7 @@ import Proposal from '../Icon/Notifications/Proposal'
 import './NotificationItem.css'
 
 interface Props {
-  notification: Notification
+  notification: PushNotification
   isNew: boolean
 }
 

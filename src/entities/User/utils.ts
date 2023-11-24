@@ -1,4 +1,5 @@
 import { hashMessage, recoverAddress } from 'ethers/lib/utils'
+import capitalize from 'lodash/capitalize'
 
 import { DiscoursePostInTopic } from '../../clients/Discourse'
 import { FORUM_URL } from '../../constants'
@@ -7,7 +8,7 @@ import { ProposalComment, ProposalCommentsInDiscourse } from '../Proposal/types'
 import { isSameAddress } from '../Snapshot/utils'
 
 import { MESSAGE_TIMEOUT_TIME } from './constants'
-import { ValidatedAccount } from './types'
+import { AccountType, ValidatedForumAccount, ValidationComment } from './types'
 
 export const DISCOURSE_USER = process.env.GATSBY_DISCOURSE_USER || clientEnv('GATSBY_DISCOURSE_USER') || ''
 export const DISCOURSE_API = process.env.GATSBY_DISCOURSE_API || clientEnv('GATSBY_DISCOURSE_API') || ''
@@ -24,7 +25,7 @@ function getAvatarUrl(post: DiscoursePostInTopic) {
 
 export function filterComments(
   posts: DiscoursePostInTopic[],
-  validatedAccounts?: ValidatedAccount[]
+  validatedAccounts?: ValidatedForumAccount[]
 ): ProposalCommentsInDiscourse {
   const userPosts = posts.filter(
     (post) => ![DISCOURSE_USER.toLowerCase(), 'system'].includes(post.username.toLowerCase())
@@ -58,27 +59,47 @@ export function filterComments(
   }
 }
 
-export function formatValidationMessage(address: string, timestamp: string) {
-  return `By signing and posting this message I'm linking my Decentraland DAO account ${address} with this Discourse forum account\n\nDate: ${timestamp}`
+export function formatValidationMessage(address: string, timestamp: string, account?: AccountType) {
+  return `By signing and posting this message I'm linking my Decentraland DAO account ${address} with this ${
+    account ? `${capitalize(account)} ` : ''
+  }account\n\nDate: ${timestamp}`
 }
 
-export function getValidationComment(comments: ProposalComment[], address: string, timestamp: string) {
+export function getValidationComment(comments: ValidationComment[], address: string, timestamp: string) {
   const timeWindow = new Date(new Date().getTime() - MESSAGE_TIMEOUT_TIME)
 
-  const filteredComments = comments.filter((comment) => new Date(comment.created_at) > timeWindow)
+  const filteredComments = comments.filter((comment) => {
+    return new Date(comment.timestamp) > timeWindow
+  })
 
   return filteredComments.find((comment) => {
     const addressRegex = new RegExp(address, 'i')
     const dateRegex = new RegExp(timestamp, 'i')
 
-    return addressRegex.test(comment.cooked) && dateRegex.test(comment.cooked)
+    return addressRegex.test(comment.content) && dateRegex.test(comment.content)
   })
 }
 
-export function validateComment(validationComment: ProposalComment, address: string, timestamp: string) {
+export function validateComment(
+  validationComment: ValidationComment,
+  address: string,
+  timestamp: string,
+  account?: AccountType
+) {
   const signatureRegex = /0x([a-fA-F\d]{130})/
-  const signature = '0x' + validationComment.cooked.match(signatureRegex)?.[1]
-  const recoveredAddress = recoverAddress(hashMessage(formatValidationMessage(address, timestamp)), signature)
+  const signature = '0x' + validationComment.content.match(signatureRegex)?.[1]
+  const recoveredAddress = recoverAddress(hashMessage(formatValidationMessage(address, timestamp, account)), signature)
 
   return isSameAddress(recoveredAddress, address)
+}
+
+export function toAccountType(account: string | undefined | null): AccountType | undefined {
+  return Object.values(AccountType).find((a) => a.toLowerCase() === account?.toLowerCase())
+}
+
+export function parseAccountTypes(accounts?: string | string[]): AccountType[] {
+  if (!accounts) return []
+
+  const accountsArray = Array.isArray(accounts) ? accounts : [accounts]
+  return accountsArray.map((account) => toAccountType(account)).filter((account) => !!account) as AccountType[]
 }

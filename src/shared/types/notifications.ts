@@ -1,4 +1,4 @@
-export type Notification = {
+export type PushNotification = {
   payload_id: number
   epoch: string
   payload: {
@@ -23,3 +23,14 @@ export enum NotificationCustomType {
   Proposal = 'proposal',
   Grant = 'grant',
 }
+
+export type Notification = {
+  type?: number
+  title: string
+  body: string
+  recipient: Recipient
+  url: string
+  customType: NotificationCustomType
+}
+
+export type Recipient = string | string[] | undefined

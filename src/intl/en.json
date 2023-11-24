@@ -57,16 +57,35 @@
     "notifications": {
       "button_label": "Notifications menu",
       "title": "Notifications",
-      "opt_out": "Opt out",
+      "settings": {
+        "title": "Notification Settings",
+        "button": "Settings",
+        "push_title": "In-app Notifications",
+        "push_description": "Powered by Push.org",
+        "discord_title": "Discord Notifications",
+        "discord_description": "Get direct messages from Marvin when something relavant to you happens"
+      },
       "unsubscribed": {
         "title": "Don't miss a beat",
         "description": "We rely on a 3rd party service that you’ll have to opt-in to in order to proceed.",
-        "button": "Activate notifications"
+        "button": "In-app notifications",
+        "discord": "Discord notifications"
       },
       "subscribing": {
         "title": "Setting up notifications",
         "description": "Before we begin populating your inbox, we need you to sign a transaction...",
         "button": "Signature pending"
+      },
+      "discord": {
+        "title": "Notifications enabled in Discord",
+        "description": "In-app notifications are also available for you to opt-in to.",
+        "button": "Enable in-app notifications"
+      },
+      "discord_connect": {
+        "title": "Join the DAO Discord Server",
+        "description": "Discord notifications require you to be a member of our Discord Server",
+        "primary_button": "Join discord server",
+        "secondary_button": "Already a member"
       },
       "empty": "No notifications at this time",
       "load_more": "Load more"
@@ -651,11 +670,6 @@
       "title": "We'd appreciate some extra feedback",
       "selected_choice": "You're about to vote "
     },
-    "identity_connect": {
-      "description": "**New Feature: Linked Profiles**\n\nEnhance your Profile by linking different third-party accounts used in the Decentraland DAO ecosystem.\n\nUsers with linked accounts will get an eye-catching indicator next to their username.",
-      "connect_button": "Link Accounts",
-      "cancel_button": "Maybe later"
-    },
     "identity_setup": {
       "title": "Choose accounts to link",
       "timer": "Time sensitive task. {time} left to complete",
@@ -696,13 +710,44 @@
       },
       "discord": {
         "card_title": "Discord",
-        "card_description": "Elevate your credibility by letting others know which account is behind your chat interactions."
+        "card_description": "Receive personalized notifications so you don't miss important events.",
+        "title": "Discord Account",
+        "subtitle": "Follow these steps to link your account to your wallet and start getting notifications in Discord.",
+        "action": "Confirm link",
+        "title_step_1": "1. Sign message",
+        "description_step_1": "Use your web3 wallet to securely sign a message to start the linking process.",
+        "action_step_1": "Sign",
+        "helper_step_1": "First, sign the message.",
+        "title_step_2": "2. Copy to clipboard",
+        "description_step_2": "You'll be using the same content as the signature for the next step.",
+        "action_step_2": "Copy",
+        "helper_step_2": "Then, copy the signed message.",
+        "title_step_3": "3. Post on Discord channel",
+        "description_step_3": "Paste the content onto the designated channel to complete the linking.",
+        "action_step_3": "Open",
+        "helper_step_3": "Finally, send the signed message on the designated channel.",
+        "card_helper": {
+          "step_1_start": "Your web3 wallet will trigger a signing request",
+          "step_1_active": "Awaiting signature…",
+          "step_1_success": "Signed correctly",
+          "step_1_error": "Something went wrong, try again",
+          "step_2_start": "Signature required",
+          "step_2_active": "Click to copy to clipboard",
+          "step_2_success": "Content copied. Click to copy again"
+        },
+        "success_text": "**Discord and Governance accounts linked successfully 🎉**\n\nYou'll start getting notified via Discord DM when there's new activity in proposals relevant to you.",
+        "success_subtext": " ",
+        "success_button": "Take me to my Profile",
+        "error_text": "**Discord Account linking failed**\n\nSomething happened. It must have been aliens or a malevolent AI but we can't be sure.",
+        "error_subtext": "Maybe have a go at it one more time?",
+        "error_button": "Retry"
       },
       "twitter": {
         "card_title": "Twitter",
         "card_description": "Let the world know that you are behind those witty tweets about the Metaverse."
       },
-      "soon": "Soon"
+      "soon": "Soon",
+      "verified": "Verified"
     },
     "wallet_selector": {
       "title": "Sign In",
