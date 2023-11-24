@@ -92,7 +92,7 @@ export default function AuthorDetails({ address }: Props) {
   const hasVoted = votes && votes.length > 0
   const activeSinceFormattedDate = hasVoted ? Time.unix(votes[0].created).format('MMMM, YYYY') : ''
 
-  const hasGrants = grants && grants?.total > 0
+  const hasGrants = grants && grants?.total > 1
   const handleClose = () => setIsSidebarVisible(false)
 
   return (
