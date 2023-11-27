@@ -24,6 +24,10 @@ class CacheService {
   public get<T>(key: string): T | undefined {
     return this.cache.get<T>(key)
   }
+
+  public flush() {
+    this.cache.flushAll()
+  }
 }
 
 export default CacheService.getInstance()
