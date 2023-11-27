@@ -231,6 +231,22 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/200'
+  /votes/top-voters:
+    get:
+      tags:
+        - Votes
+      summary: Get the top voters for the last 30 days
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          description: Limit amount of results
+          allowEmptyValue: true
+          schema:
+            $ref: '#/components/schemas/limitOffset'
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
   /proposals/{proposal}/votes:
     get:
       tags:

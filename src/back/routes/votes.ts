@@ -15,13 +15,13 @@ import { ProposalService } from '../../services/ProposalService'
 import { SnapshotService } from '../../services/SnapshotService'
 import Time from '../../utils/date/Time'
 import { VoteService } from '../services/vote'
-import { validateAddress, validateDates, validateProposalId } from '../utils/validations'
+import { validateAddress, validateProposalId } from '../utils/validations'
 
 export default routes((route) => {
   route.get('/proposals/:proposal/votes', handleAPI(getVotesByProposal))
   route.get('/votes', handleAPI(getCachedVotesByProposals))
   route.get('/votes/:address', handleAPI(getVotesAndProposalsByAddress))
-  route.post('/votes/top-voters', handleAPI(getTopVoters))
+  route.post('/votes/top-voters', handleAPI(getTopVotersForLast30Days))
 })
 
 export async function getVotesByProposal(req: Request<{ proposal: string }>) {
@@ -120,10 +120,9 @@ async function getVotesAndProposalsByAddress(req: Request) {
   return votesWithProposalData.sort((a, b) => b.created - a.created)
 }
 
-async function getTopVoters(req: Request) {
-  const { start, end, limit } = req.body
-  const { validatedStart, validatedEnd } = validateDates(start, end)
-  const validLimit = isNumber(limit) ? limit : undefined
+async function getTopVotersForLast30Days(req: Request) {
+  const { limit } = req.body
+  const validLimit = isNumber(limit) && limit > 0 ? limit : undefined
 
-  return await VoteService.getTopVoters(validatedStart, validatedEnd, validLimit)
+  return await VoteService.getTopVotersForLast30Days(validLimit)
 }

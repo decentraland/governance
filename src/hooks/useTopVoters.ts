@@ -2,16 +2,16 @@ import { useQuery } from '@tanstack/react-query'
 
 import { Governance } from '../clients/Governance'
 
-import { FIVE_MINUTES_MS } from './constants'
+import { ONE_DAY_MS } from './constants'
 import { useSortingByKey } from './useSortingByKey'
 
-export default function useTopVoters(start: Date, end: Date, limit?: number) {
+export default function useTopVoters(limit?: number) {
   const { data: votes, isLoading } = useQuery({
-    queryKey: [`topVoters#${start}#${end}`],
+    queryKey: [`topVoters`],
     queryFn: async () => {
-      return await Governance.get().getTopVoters(start, end, limit)
+      return await Governance.get().getTopVotersForLast30Days(limit)
     },
-    staleTime: FIVE_MINUTES_MS,
+    staleTime: ONE_DAY_MS,
   })
 
   const { sorted, isDescendingSort, changeSort } = useSortingByKey(votes ?? [], 'votes')

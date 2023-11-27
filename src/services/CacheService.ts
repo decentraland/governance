@@ -1,5 +1,7 @@
 import NodeCache from 'node-cache'
 
+export const TTL_24_HS = 60 * 60 * 24
+
 class CacheService {
   private static instance: CacheService
   private cache: NodeCache
@@ -15,7 +17,7 @@ class CacheService {
     return CacheService.instance
   }
 
-  set(key: string, data: any, ttlSeconds?: number) {
+  set<T>(key: string, data: T, ttlSeconds?: number) {
     ttlSeconds ? this.cache.set(key, data, ttlSeconds) : this.cache.set(key, data)
   }
 
