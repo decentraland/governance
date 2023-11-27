@@ -191,7 +191,7 @@ async function isValidated(req: Request) {
     return await UserModel.isValidated(address, new Set(accounts))
   } catch (error) {
     const message = 'Error while fetching validation data'
-    ErrorService.report(message, { error })
+    ErrorService.report(message, { error: `${error}` })
     throw new Error(`${message}. ${error}`)
   }
 }

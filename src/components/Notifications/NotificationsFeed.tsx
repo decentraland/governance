@@ -166,7 +166,8 @@ export default function NotificationsFeed({
 
   const filteredNotifications = userNotifications?.slice(0, notificationsPerPage)
   const hasNotifications = filteredNotifications && filteredNotifications.length > 0
-  const showNotifications = isSubscribed && !isLoadingNotifications && hasNotifications && !isSettingsOpened
+  const showNotifications =
+    isSubscribed && !isLoadingNotifications && hasNotifications && !isSettingsOpened && !showDiscordConnect
   const showLoadMoreButton = filteredNotifications?.length !== userNotifications?.length
   const unsubscribedKey = isSubscribing ? 'subscribing' : 'unsubscribed'
   const isLoading =
