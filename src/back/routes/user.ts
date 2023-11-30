@@ -9,8 +9,8 @@ import { ValidationComment } from '../../entities/User/types'
 import { validateAccountTypes } from '../../entities/User/utils'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
-import { UserService } from '../../services/UserService'
 import { DiscordService } from '../services/discord'
+import { UserService } from '../services/user'
 import { validateAddress } from '../utils/validations'
 
 export default routes((route) => {

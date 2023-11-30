@@ -1,8 +1,13 @@
-import { isSameAddress } from '../entities/Snapshot/utils'
-import { MESSAGE_TIMEOUT_TIME } from '../entities/User/constants'
-import UserModel from '../entities/User/model'
-import { AccountType, UserAttributes, ValidationComment, ValidationMessage } from '../entities/User/types'
-import { formatValidationMessage, getValidationComment, toAccountType, validateComment } from '../entities/User/utils'
+import { isSameAddress } from '../../entities/Snapshot/utils'
+import { MESSAGE_TIMEOUT_TIME } from '../../entities/User/constants'
+import UserModel from '../../entities/User/model'
+import { AccountType, UserAttributes, ValidationComment, ValidationMessage } from '../../entities/User/types'
+import {
+  formatValidationMessage,
+  getValidationComment,
+  toAccountType,
+  validateComment,
+} from '../../entities/User/utils'
 
 export class UserService {
   private static VALIDATIONS_IN_PROGRESS: Record<string, ValidationMessage> = {}
