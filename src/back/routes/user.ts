@@ -4,20 +4,13 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
-import { isSameAddress } from '../../entities/Snapshot/utils'
-import { GATSBY_DISCOURSE_CONNECT_THREAD, MESSAGE_TIMEOUT_TIME } from '../../entities/User/constants'
-import UserModel from '../../entities/User/model'
-import { AccountType, UserAttributes, ValidationComment, ValidationMessage } from '../../entities/User/types'
-import {
-  formatValidationMessage,
-  getValidationComment,
-  parseAccountTypes,
-  toAccountType,
-  validateComment,
-} from '../../entities/User/utils'
+import { GATSBY_DISCOURSE_CONNECT_THREAD } from '../../entities/User/constants'
+import { ValidationComment } from '../../entities/User/types'
+import { validateAccountTypes } from '../../entities/User/utils'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
 import { DiscordService } from '../services/discord'
+import { UserService } from '../services/user'
 import { validateAddress } from '../utils/validations'
 
 export default routes((route) => {
@@ -31,46 +24,16 @@ export default routes((route) => {
   route.get('/user/:address', handleAPI(getProfile))
 })
 
-const VALIDATIONS_IN_PROGRESS: Record<string, ValidationMessage> = {}
-
-function clearValidationInProgress(user: string) {
-  const validation = VALIDATIONS_IN_PROGRESS[user]
-  if (validation) {
-    clearTimeout(validation.message_timeout)
-    delete VALIDATIONS_IN_PROGRESS[user]
-  }
-}
-
 async function getValidationMessage(req: WithAuth) {
   const address = req.auth!
   const account = typeof req.query.account === 'string' ? req.query.account : undefined
-  const message = {
-    address,
-    timestamp: new Date().toISOString(),
-  }
 
-  const message_timeout = setTimeout(() => {
-    delete VALIDATIONS_IN_PROGRESS[address]
-  }, MESSAGE_TIMEOUT_TIME)
-
-  VALIDATIONS_IN_PROGRESS[address] = {
-    ...message,
-    message_timeout,
-  }
-
-  return formatValidationMessage(address, message.timestamp, toAccountType(account))
+  return UserService.getValidationMessage(address, account)
 }
 
 async function checkForumValidationMessage(req: WithAuth) {
   const user = req.auth!
   try {
-    const messageProperties = VALIDATIONS_IN_PROGRESS[user]
-    if (!messageProperties) {
-      throw new Error('Validation timed out')
-    }
-
-    const { address, timestamp } = messageProperties
-
     const comments = await DiscourseService.getPostComments(Number(GATSBY_DISCOURSE_CONNECT_THREAD))
     const formattedComments = comments.comments.map<ValidationComment>((comment) => ({
       id: '',
@@ -78,17 +41,8 @@ async function checkForumValidationMessage(req: WithAuth) {
       content: comment.cooked,
       timestamp: new Date(comment.created_at).getTime(),
     }))
-    const validationComment = getValidationComment(formattedComments, address, timestamp)
 
-    if (validationComment) {
-      if (!isSameAddress(address, user) || !validateComment(validationComment, address, timestamp, AccountType.Forum)) {
-        throw new Error('Validation failed')
-      }
-
-      await UserModel.createForumConnection(user, validationComment.userId)
-      clearValidationInProgress(user)
-    }
-
+    const validationComment = await UserService.checkForumValidationMessage(user, formattedComments)
     return {
       valid: !!validationComment,
     }
@@ -100,12 +54,6 @@ async function checkForumValidationMessage(req: WithAuth) {
 async function checkDiscordValidationMessage(req: WithAuth) {
   const user = req.auth!
   try {
-    const messageProperties = VALIDATIONS_IN_PROGRESS[user]
-    if (!messageProperties) {
-      throw new Error('Validation timed out')
-    }
-    const { address, timestamp } = messageProperties
-
     const messages = await DiscordService.getProfileVerificationMessages()
     const formattedMessages = messages.map<ValidationComment>((message) => ({
       id: message.id,
@@ -113,21 +61,13 @@ async function checkDiscordValidationMessage(req: WithAuth) {
       content: message.content,
       timestamp: message.createdTimestamp,
     }))
-    const validationComment = getValidationComment(formattedMessages, address, timestamp)
 
+    const validationComment = await UserService.checkDiscordValidationMessage(user, formattedMessages)
     if (validationComment) {
-      if (
-        !isSameAddress(address, user) ||
-        !validateComment(validationComment, address, timestamp, AccountType.Discord)
-      ) {
-        throw new Error('Validation failed')
-      }
       await DiscordService.deleteVerificationMessage(validationComment.id)
-      await UserModel.createDiscordConnection(user, validationComment.userId)
-      clearValidationInProgress(user)
       DiscordService.sendDirectMessage(validationComment.userId, {
         title: 'Profile verification completed ✅',
-        action: `You have been verified as ${address}\n\nFrom now on you will receive important notifications for you through this channel.`,
+        action: `You have been verified as ${user}\n\nFrom now on you will receive important notifications for you through this channel.`,
         fields: [],
       })
     }
@@ -152,17 +92,16 @@ async function updateDiscordStatus(req: WithAuth) {
     if (typeof is_discord_notifications_active !== 'boolean') {
       throw new Error('Invalid discord status')
     }
-    await UserModel.updateDiscordActiveStatus(address, is_discord_notifications_active)
-    const account = await UserModel.getDiscordIdsByAddresses([address], false)
-    if (account.length > 0) {
-      if (is_discord_notifications_active) {
-        DiscordService.sendDirectMessage(account[0].discord_id, {
+    const account = await UserService.updateDiscordActiveStatus(address, is_discord_notifications_active)
+    if (account) {
+      if (account.is_discord_notifications_active) {
+        DiscordService.sendDirectMessage(account.discord_id, {
           title: 'Notifications enabled ✅',
           action: enabledMessage,
           fields: [],
         })
       } else {
-        DiscordService.sendDirectMessage(account[0].discord_id, {
+        DiscordService.sendDirectMessage(account.discord_id, {
           title: 'Notifications disabled ❌',
           action: disabledMessage,
           fields: [],
@@ -177,8 +116,7 @@ async function updateDiscordStatus(req: WithAuth) {
 async function getIsDiscordActive(req: WithAuth) {
   const address = req.auth!
   try {
-    const users = await UserModel.getDiscordIdsByAddresses([address], false)
-    return users.length > 0 && !!users[0].is_discord_notifications_active
+    return await UserService.getIsDiscordActive(address)
   } catch (error) {
     throw new Error(`Error while fetching discord status. ${error}`)
   }
@@ -186,9 +124,9 @@ async function getIsDiscordActive(req: WithAuth) {
 
 async function isValidated(req: Request) {
   const address = validateAddress(req.params.address)
-  const accounts = parseAccountTypes(req.query.account as string | string[] | undefined)
+  const accounts = validateAccountTypes(req.query.account as string | string[] | undefined)
   try {
-    return await UserModel.isValidated(address, new Set(accounts))
+    return await UserService.isValidated(address, new Set(accounts))
   } catch (error) {
     const message = 'Error while fetching validation data'
     ErrorService.report(message, { error: `${error}` })
@@ -198,7 +136,7 @@ async function isValidated(req: Request) {
 
 async function getProfile(req: Request) {
   const address = validateAddress(req.params.address)
-  const user = await UserModel.findOne<UserAttributes>({ address: address.toLowerCase() })
+  const user = await UserService.getProfile(address)
 
   if (!user) {
     throw new RequestError('User not found', RequestError.NotFound)

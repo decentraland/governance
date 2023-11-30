@@ -103,3 +103,11 @@ export function parseAccountTypes(accounts?: string | string[]): AccountType[] {
   const accountsArray = Array.isArray(accounts) ? accounts : [accounts]
   return accountsArray.map((account) => toAccountType(account)).filter((account) => !!account) as AccountType[]
 }
+
+export function validateAccountTypes(accounts?: string | string[]): AccountType[] {
+  const parsedAccounts = parseAccountTypes(accounts)
+  if (parsedAccounts.length === 0) {
+    throw new Error(`Invalid account types. Received: ${accounts}`)
+  }
+  return parsedAccounts
+}
