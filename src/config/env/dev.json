@@ -1,7 +1,7 @@
 {
-  "GATSBY_BUY_LAND_URL": "https://market.decentraland.org/browse?section=land",
-  "GATSBY_BUY_MANA_URL": "https://account.decentraland.io/",
-  "GATSBY_BUY_NAME_URL": "https://builder.decentraland.org/names",
+  "GATSBY_BUY_LAND_URL": "https://decentraland.org/marketplace/browse?section=land",
+  "GATSBY_BUY_MANA_URL": "https://decentraland.zone/account",
+  "GATSBY_BUY_NAME_URL": "https://decentraland.org/builder/names",
   "GATSBY_VESTING_DASHBOARD_URL": "https://vesting.decentraland.org/%23/",
   "GATSBY_DCL_DATA_API": "https://data.decentraland.vote/",
   "GATSBY_DEFAULT_CHAIN_ID": "11155111",

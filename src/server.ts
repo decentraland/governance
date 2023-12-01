@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { databaseInitializer } from 'decentraland-gatsby/dist/entities/Database/utils'
 import manager from 'decentraland-gatsby/dist/entities/Job/index'
 import { jobInitializer } from 'decentraland-gatsby/dist/entities/Job/utils'
@@ -40,21 +41,37 @@ import score from './back/routes/votes'
 import { updateGovernanceBudgets } from './entities/Budget/jobs'
 import { activateProposals, finishProposal, publishBids } from './entities/Proposal/jobs'
 import { DiscordService } from './services/DiscordService'
-import filesystem from './utils/filesystem'
+import filesystem, {
+  cpsScriptSrc,
+  cspChildSrc,
+  cspConnectSrc,
+  cspDefaultSrc,
+  cspFontSrc,
+  cspFormAction,
+  cspImageSrc,
+  cspManifestSrc,
+  cspMediaSrc,
+  cspStyleSrc,
+} from './utils/filesystem'
 
-const jobs = manager()
-jobs.cron('@eachMinute', finishProposal)
-jobs.cron('@eachMinute', activateProposals)
-jobs.cron('@eachMinute', publishBids)
-jobs.cron('@each10Second', pingSnapshot)
-jobs.cron('@daily', updateGovernanceBudgets)
-jobs.cron('@daily', runAirdropJobs)
-jobs.cron('@monthly', giveTopVoterBadges)
+console.log('Log it?', process.env.NEW_ROLLOUT)
+
+// const jobs = manager()
+// jobs.cron('@eachMinute', finishProposal)
+// jobs.cron('@eachMinute', activateProposals)
+// jobs.cron('@eachMinute', publishBids)
+// jobs.cron('@each10Second', pingSnapshot)
+// jobs.cron('@daily', updateGovernanceBudgets)
+// jobs.cron('@daily', runAirdropJobs)
+// jobs.cron('@monthly', giveTopVoterBadges)
 
 const file = readFileSync('static/api.yaml', 'utf8')
 const swaggerDocument = YAML.parse(file)
 
 swaggerDocument['servers'] = [{ url: process.env.GATSBY_GOVERNANCE_API }]
+
+const isUsingNewRollout = process.env.NEW_ROLLOUT !== undefined
+console.log('Host and port', process.env.PORT || 4000, process.env.HOST)
 
 const app = express()
 app.set('x-powered-by', false)
@@ -64,24 +81,24 @@ app.use('/api', [
   withDDosProtection(),
   withCors(),
   withBody(),
-  committee,
-  debug,
-  users,
-  proposal,
-  proposalSurveyTopics,
-  score,
-  subscription,
-  update,
-  coauthor,
-  budget,
-  badges,
-  common,
-  bid,
-  snapshot,
-  vestings,
-  project,
-  newsletter,
-  notification,
+  // committee,
+  // debug,
+  // users,
+  // proposal,
+  // proposalSurveyTopics,
+  // score,
+  // subscription,
+  // update,
+  // coauthor,
+  // budget,
+  // badges,
+  // common,
+  // bid,
+  // snapshot,
+  // vestings,
+  // project,
+  // newsletter,
+  // notification,
   handle(async () => {
     throw new RequestError('NotFound', RequestError.NotFound)
   }),
@@ -89,12 +106,12 @@ app.use('/api', [
 
 app.use(metrics([gatsbyRegister, register]))
 
-app.use(sitemap)
-app.use('/', social)
+app.use(isUsingNewRollout ? '/governance' : '/', sitemap)
+app.use(isUsingNewRollout ? '/governance' : '/', social)
 
 // Balance to profile redirect to preserve previous URL
 app.get(
-  '/balance',
+  isUsingNewRollout ? '/governance/balance' : '/balance',
   handleRaw(async (req, res) => {
     const address = req.query.address
     const websiteUrl = process.env.GATSBY_GOVERNANCE_API?.replace('/api', '')
@@ -105,7 +122,7 @@ app.get(
 
 // Grants to project redirect to preserve previous URL
 app.get(
-  '/grants',
+  isUsingNewRollout ? '/governance/grants' : '/grants',
   handleRaw(async (req, res) => {
     const websiteUrl = process.env.GATSBY_GOVERNANCE_API?.replace('/api', '')
     return res.redirect(`${websiteUrl}/projects`)
@@ -114,10 +131,15 @@ app.get(
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
-app.use(
-  filesystem('public', '404.html', {
+app.use(isUsingNewRollout ? '/governance' : '/', [
+  withCors({
+    cors: '*',
+    corsOrigin: '*',
+    allowedHeaders: '*',
+  }),
+  filesystem(isUsingNewRollout ? 'public-prefix' : 'public', '404.html', {
     defaultHeaders: {
-      'Content-Security-Policy': `base-uri 'self'; child-src https:; connect-src https: wss:; default-src 'none'; font-src https: data:; form-action 'self'; frame-ancestors 'none'; frame-src https:; img-src https: data:; manifest-src 'self'; media-src 'self'; object-src 'none'; prefetch-src https: data:; style-src 'unsafe-inline' https: data:; worker-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://decentraland.org https://*.decentraland.org https://cdn.segment.com https://cdn.rollbar.com https://ajax.cloudflare.com https://googleads.g.doubleclick.net https://ssl.google-analytics.com https://tagmanager.google.com https://www.google-analytics.com https://www.google-analytics.com https://www.google.com https://www.googleadservices.com https://www.googletagmanager.com https://verify.walletconnect.com`,
+      'Content-Security-Policy': `base-uri 'self'; child-src ${cspChildSrc}; connect-src ${cspConnectSrc}; default-src 'none'; font-src ${cspFontSrc}; form-action ${cspFormAction}; frame-ancestors 'none'; frame-src https:; img-src ${cspImageSrc}; manifest-src ${cspManifestSrc}; media-src ${cspMediaSrc}; object-src 'none'; prefetch-src https: data:; style-src ${cspStyleSrc}; worker-src 'self'; script-src ${cpsScriptSrc}`,
       'X-Content-Type-Options': 'nosniff',
       'X-Frame-Options': 'DENY',
       'strict-transport-security': 'max-age=15552000; includeSubDomains; preload',
@@ -125,12 +147,13 @@ app.use(
       'x-xss-protection': '1; mode=block',
       ...(process.env.HEROKU === 'true' && { 'X-Robots-Tag': 'noindex' }),
     },
-  })
-)
+  }),
+])
 
-void initializeServices([
+console.log('Doing something?')
+initializeServices([
   process.env.DATABASE !== 'false' && databaseInitializer(),
-  process.env.JOBS !== 'false' && jobInitializer(jobs),
+  // process.env.JOBS !== 'false' && jobInitializer(jobs),
   process.env.HTTP !== 'false' && serverInitializer(app, process.env.PORT || 4000, process.env.HOST),
 ])
 
