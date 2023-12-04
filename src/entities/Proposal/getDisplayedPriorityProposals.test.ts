@@ -1,6 +1,5 @@
-import { PriorityProposal, PriorityProposalType, ProposalStatus, ProposalType } from '../../entities/Proposal/types'
-
-import { getDisplayedPriorityProposals } from './getDisplayedPriorityProposals'
+import { PriorityProposal, PriorityProposalType, ProposalStatus, ProposalType } from './types'
+import { getDisplayedPriorityProposals } from './utils'
 
 const ADDRESS = '0x549a9021661a85b6bc51c07b3a451135848d0048'
 

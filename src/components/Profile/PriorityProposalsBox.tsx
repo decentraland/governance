@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useTabletAndBelowMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import { PriorityProposal, PriorityProposalType } from '../../entities/Proposal/types'
+import { getDisplayedPriorityProposals } from '../../entities/Proposal/utils'
 import useFormatMessage, { FormatMessageFunction } from '../../hooks/useFormatMessage'
 import usePriorityProposals from '../../hooks/usePriorityProposals'
 import useProposalsCachedVotes from '../../hooks/useProposalsCachedVotes'
@@ -16,7 +17,6 @@ import { BIDDING_AND_TENDERING_ANCHOR } from '../Proposal/View/BiddingAndTenderi
 
 import './PriorityProposalsBox.css'
 import PriorityProposalsBoxTitle from './PriorityProposalsBoxTitle'
-import { getDisplayedPriorityProposals } from './getDisplayedPriorityProposals'
 
 interface Props {
   address?: string | null

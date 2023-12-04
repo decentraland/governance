@@ -10,13 +10,17 @@ import { getTile } from '../../utils/Land'
 import { clientEnv } from '../../utils/clientEnv'
 import Time from '../../utils/date/Time'
 import { SNAPSHOT_SPACE, SNAPSHOT_URL } from '../Snapshot/constants'
+import { isSameAddress } from '../Snapshot/utils'
 import { UpdateAttributes } from '../Updates/types'
 import { DISCOURSE_API } from '../User/utils'
+import { VotesForProposals } from '../Votes/types'
 
 import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
 import {
   CatalystType,
   PoiType,
+  PriorityProposal,
+  PriorityProposalType,
   ProposalAttributes,
   ProposalStatus,
   ProposalType,
@@ -244,6 +248,7 @@ export function isGrantProposalSubmitEnabled(now: number) {
   return !Time(now).isBefore(ENABLE_START_DATE)
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getProposalCategory(proposalType: ProposalType, proposalConfiguration: any): string | null {
   return proposalType === ProposalType.Grant ? proposalConfiguration.category : null
 }
@@ -271,4 +276,35 @@ export function getBudget(proposal: ProposalAttributes) {
     default:
       return null
   }
+}
+
+export function getDisplayedPriorityProposals(
+  votes?: VotesForProposals,
+  priorityProposals?: PriorityProposal[],
+  lowerAddress?: string | null
+) {
+  return votes && priorityProposals && lowerAddress
+    ? priorityProposals?.filter((proposal) => {
+        const hasVotedOnMain = votes && lowerAddress && votes[proposal.id] && !!votes[proposal.id][lowerAddress]
+        const hasVotedOnLinked =
+          proposal.linked_proposals_data &&
+          proposal.linked_proposals_data.some(
+            (linkedProposal) => votes[linkedProposal.id] && !!votes[linkedProposal.id][lowerAddress]
+          )
+        const hasAuthoredBid =
+          proposal.unpublished_bids_data &&
+          proposal.unpublished_bids_data.some((linkedBid) => isSameAddress(linkedBid.author_address, lowerAddress))
+
+        const shouldDisregardAllVotes = proposal.priority_type === PriorityProposalType.PitchWithSubmissions
+
+        const shouldDisregardVotesOnMain =
+          proposal.priority_type === PriorityProposalType.PitchOnTenderVotingPhase ||
+          proposal.priority_type === PriorityProposalType.TenderWithSubmissions
+
+        const showTheProposal =
+          shouldDisregardAllVotes ||
+          !((hasVotedOnMain && !shouldDisregardVotesOnMain) || hasVotedOnLinked || hasAuthoredBid)
+        return showTheProposal
+      })
+    : priorityProposals
 }
