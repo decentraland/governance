@@ -22,6 +22,7 @@ export default routes((route) => {
   route.get('/votes', handleAPI(getCachedVotesByProposals))
   route.get('/votes/:address', handleAPI(getVotesAndProposalsByAddress))
   route.post('/votes/top-voters', handleAPI(getTopVotersForLast30Days))
+  route.get('/votes/participation', handleAPI(getParticipation)) //TODO: add to api docs
 })
 
 export async function getVotesByProposal(req: Request<{ proposal: string }>) {
@@ -125,4 +126,8 @@ async function getTopVotersForLast30Days(req: Request) {
   const validLimit = isNumber(limit) && limit > 0 ? limit : undefined
 
   return await VoteService.getTopVotersForLast30Days(validLimit)
+}
+
+async function getParticipation() {
+  return await VoteService.getParticipation()
 }

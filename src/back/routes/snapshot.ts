@@ -18,7 +18,7 @@ export default routes((router) => {
   router.get('/snapshot/config/:spaceName', handleAPI(getConfig))
   router.post('/snapshot/votes', handleAPI(getVotesByAddresses))
   router.get('/snapshot/votes/:proposalSnapshotId', handleAPI(getVotesByProposal))
-  router.post('/snapshot/votes/all', handleAPI(getVotesByDates))
+  router.post('/snapshot/votes/all', handleAPI(getVotesByDates)) //TODO: deprecate
   router.post('/snapshot/proposals', handleAPI(getProposals))
   router.post('/snapshot/proposals/pending', handleAPI(getPendingProposals))
   router.get('/snapshot/vp-distribution/:address/:proposalSnapshotId?', handleAPI(getVpDistribution))
