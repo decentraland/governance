@@ -1,24 +1,27 @@
+import CacheService from '../../services/CacheService'
 import { SnapshotService } from '../../services/SnapshotService'
-import Time from '../../utils/date/Time'
-import { getPreviousMonthStartAndEnd } from '../../utils/date/getPreviousMonthStartAndEnd'
 import { SNAPSHOT_VOTES_30_DAYS } from '../../utils/votes/Votes-30days'
 import { SNAPSHOT_VOTES_AUGUST_2023 } from '../../utils/votes/Votes-August-2023'
 
 import { VoteService } from './vote'
 
-import clearAllMocks = jest.clearAllMocks
+const FIRST_OF_AUGUST_2023 = new Date(2023, 8, 1)
+const SECOND_OF_AUGUST_2023 = new Date(2023, 8, 2)
 
 describe('getTopVoters', () => {
+  beforeAll(() => {
+    jest.useFakeTimers()
+    jest.setSystemTime(FIRST_OF_AUGUST_2023)
+  })
+
   describe('when fetching top voters for August 2023', () => {
-    const firstOfAugust = Time.utc('2023-08-01T00:00:00.000Z').toDate()
-    const { start, end } = getPreviousMonthStartAndEnd(firstOfAugust)
     beforeEach(() => {
       jest.clearAllMocks()
       jest.spyOn(SnapshotService, 'getVotesByDates').mockResolvedValue(SNAPSHOT_VOTES_AUGUST_2023)
     })
 
     describe('when fetching the top 3 voters', () => {
-      const topVoters = async () => await VoteService.getTopVoters(start, end, 3)
+      const topVoters = async () => await VoteService.getTopVotersForLast30Days(3)
 
       it('should return the top 3 voters sorted by votes in descending order', async () => {
         expect(await topVoters()).toEqual([
@@ -39,10 +42,58 @@ describe('getTopVoters', () => {
           },
         ])
       })
+
+      describe('if the same request has been made before', () => {
+        beforeEach(() => {
+          jest.clearAllMocks()
+          jest.spyOn(SnapshotService, 'getVotesByDates').mockResolvedValue([])
+        })
+
+        it('should return the cached votes', async () => {
+          expect(SnapshotService.getVotesByDates).not.toHaveBeenCalled()
+          expect(await topVoters()).toEqual([
+            {
+              address: '0x4534c46ea854c9a302d3dc95b2d3253ae6a28abc',
+              lastVoted: 1693517313,
+              votes: 9,
+            },
+            {
+              address: '0x2ae9070b029d05d8e6516aec0475002c53595a9d',
+              lastVoted: 1693523735,
+              votes: 6,
+            },
+            {
+              address: '0x703b6e7d10f9ab127bcfcb2dd9985b6b24ba1152',
+              lastVoted: 1693518089,
+              votes: 3,
+            },
+          ])
+        })
+
+        describe('if the dates change', () => {
+          beforeEach(() => {
+            jest.setSystemTime(SECOND_OF_AUGUST_2023)
+          })
+
+          it('re-fetches data for the first call', async () => {
+            await VoteService.getTopVotersForLast30Days(3)
+            expect(SnapshotService.getVotesByDates).toHaveBeenCalledTimes(1)
+          })
+
+          it('returns cached votes for subsequent calls', async () => {
+            await VoteService.getTopVotersForLast30Days(3)
+            expect(SnapshotService.getVotesByDates).toHaveBeenCalledTimes(0)
+          })
+        })
+      })
     })
 
     describe('when called with the default params', () => {
-      const getTopVoters = async () => await VoteService.getTopVoters(start, end)
+      beforeEach(() => {
+        jest.setSystemTime(FIRST_OF_AUGUST_2023)
+      })
+
+      const getTopVoters = async () => await VoteService.getTopVotersForLast30Days()
 
       it('should return the top 5 voters sorted by votes in descending order', async () => {
         expect(await getTopVoters()).toEqual([
@@ -73,10 +124,12 @@ describe('getTopVoters', () => {
           },
         ])
       })
+
       describe('when there are no votes on the selected time period', () => {
         beforeEach(() => {
-          clearAllMocks()
+          jest.clearAllMocks()
           jest.spyOn(SnapshotService, 'getVotesByDates').mockResolvedValue([])
+          CacheService.flush()
         })
 
         it('should return an empty array', async () => {
@@ -87,15 +140,14 @@ describe('getTopVoters', () => {
   })
 
   describe('when fetching the top 10 voters for a random month span', () => {
-    const septemberSeventh = Time.utc('2023-09-07T00:00:00.000Z')
-    const aMonthBefore = septemberSeventh.subtract(1, 'month').startOf('day').toDate()
     beforeAll(() => {
       jest.clearAllMocks()
       jest.spyOn(SnapshotService, 'getVotesByDates').mockResolvedValue(SNAPSHOT_VOTES_30_DAYS)
+      CacheService.flush()
     })
 
     describe('when fetching the top 10 voters', () => {
-      const getTopVoters = async () => await VoteService.getTopVoters(aMonthBefore, septemberSeventh.toDate(), 10)
+      const getTopVoters = async () => await VoteService.getTopVotersForLast30Days(10)
 
       it('should return the top 10 voters sorted by votes in descending order', async () => {
         const topVoters = await getTopVoters()

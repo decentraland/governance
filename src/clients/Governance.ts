@@ -328,11 +328,8 @@ export class Governance extends API {
     return result.data
   }
 
-  async getTopVoters(start: Date, end: Date, limit?: number) {
-    const result = await this.fetch<ApiResponse<Voter[]>>(
-      `/votes/top-voters`,
-      this.options().method('POST').json({ start, end, limit })
-    )
+  async getTopVotersForLast30Days() {
+    const result = await this.fetch<ApiResponse<Voter[]>>(`/votes/top-voters`, this.options().method('POST'))
     return result.data
   }
 
