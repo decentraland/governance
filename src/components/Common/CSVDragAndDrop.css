@@ -1,0 +1,78 @@
+.CSVDragAndDrop__Zone {
+  align-items: center;
+  border: 2px dashed var(--alpha-black-400);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 140px;
+  justify-content: center;
+  padding: 20px;
+  cursor: pointer;
+}
+
+.CSVDragAndDrop__File {
+  background: linear-gradient(to bottom, #eee, #ddd);
+  border-radius: 20px;
+  display: flex;
+  height: 120px;
+  width: 100%;
+  position: relative;
+  z-index: 10;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.CSVDragAndDrop__Info {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.CSVDragAndDrop__Size {
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 3px;
+  margin-bottom: 0.5em;
+  justify-content: center;
+  display: flex;
+}
+
+.CSVDragAndDrop__Name {
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 3px;
+  font-size: 12px;
+  margin-bottom: 0.5em;
+}
+
+.CSVDragAndDrop__ProgressBar {
+  bottom: 14px;
+  position: absolute;
+  width: 100%;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.CSVDragAndDrop__Remove {
+  height: 23px;
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  width: 23px;
+}
+
+.CSVDragAndDrop__TextContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+}
+
+.CSVDragAndDrop__TextContainer .Text {
+  color: var(--black-600);
+}
+
+.CSVDragAndDrop__TextFile {
+  color: var(--dcl-primary);
+  font-weight: var(--weight-medium);
+}

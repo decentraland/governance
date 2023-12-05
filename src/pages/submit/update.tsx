@@ -13,6 +13,8 @@ import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
 import snakeCase from 'lodash/snakeCase'
 
 import { Governance } from '../../clients/Governance'
+import CSVDragAndDrop from '../../components/Common/CSVDragAndDrop'
+import NumberedTextArea from '../../components/Common/NumberedTextArea'
 import Label from '../../components/Common/Typography/Label'
 import Text from '../../components/Common/Typography/Text'
 import MarkdownField from '../../components/Form/MarkdownFieldSection'
@@ -346,6 +348,8 @@ export default function Update({ isEdit }: Props) {
               disabled={formDisabled}
               {...getFieldProps('additionalNotes', false)}
             />
+            <NumberedTextArea {...getFieldProps('nextSteps')} />
+            <CSVDragAndDrop />
           </>
         )}
         {isPreviewMode && <UpdateMarkdownView update={previewUpdate} />}
