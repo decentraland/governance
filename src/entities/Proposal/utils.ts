@@ -283,28 +283,30 @@ export function getDisplayedPriorityProposals(
   priorityProposals?: PriorityProposal[],
   lowerAddress?: string | null
 ) {
-  return votes && priorityProposals && lowerAddress
-    ? priorityProposals?.filter((proposal) => {
-        const hasVotedOnMain = votes && lowerAddress && votes[proposal.id] && !!votes[proposal.id][lowerAddress]
-        const hasVotedOnLinked =
-          proposal.linked_proposals_data &&
-          proposal.linked_proposals_data.some(
-            (linkedProposal) => votes[linkedProposal.id] && !!votes[linkedProposal.id][lowerAddress]
-          )
-        const hasAuthoredBid =
-          proposal.unpublished_bids_data &&
-          proposal.unpublished_bids_data.some((linkedBid) => isSameAddress(linkedBid.author_address, lowerAddress))
+  if (!votes || !priorityProposals || !lowerAddress) {
+    return priorityProposals
+  }
 
-        const shouldDisregardAllVotes = proposal.priority_type === PriorityProposalType.PitchWithSubmissions
+  return priorityProposals?.filter((proposal) => {
+    const hasVotedOnMain = votes && lowerAddress && votes[proposal.id] && !!votes[proposal.id][lowerAddress]
+    const hasVotedOnLinked =
+      proposal.linked_proposals_data &&
+      proposal.linked_proposals_data.some(
+        (linkedProposal) => votes[linkedProposal.id] && !!votes[linkedProposal.id][lowerAddress]
+      )
+    const hasAuthoredBid =
+      proposal.unpublished_bids_data &&
+      proposal.unpublished_bids_data.some((linkedBid) => isSameAddress(linkedBid.author_address, lowerAddress))
 
-        const shouldDisregardVotesOnMain =
-          proposal.priority_type === PriorityProposalType.PitchOnTenderVotingPhase ||
-          proposal.priority_type === PriorityProposalType.TenderWithSubmissions
+    const shouldDisregardAllVotes = proposal.priority_type === PriorityProposalType.PitchWithSubmissions
 
-        const showTheProposal =
-          shouldDisregardAllVotes ||
-          !((hasVotedOnMain && !shouldDisregardVotesOnMain) || hasVotedOnLinked || hasAuthoredBid)
-        return showTheProposal
-      })
-    : priorityProposals
+    const shouldDisregardVotesOnMain =
+      proposal.priority_type === PriorityProposalType.PitchOnTenderVotingPhase ||
+      proposal.priority_type === PriorityProposalType.TenderWithSubmissions
+
+    const showTheProposal =
+      shouldDisregardAllVotes ||
+      !((hasVotedOnMain && !shouldDisregardVotesOnMain) || hasVotedOnLinked || hasAuthoredBid)
+    return showTheProposal
+  })
 }
