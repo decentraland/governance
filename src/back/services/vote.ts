@@ -32,7 +32,7 @@ export class VoteService {
     return rankedVoters.slice(0, limit)
   }
 
-  static async getRankedVotersWithCache(start: Date, end: Date) {
+  private static async getRankedVotersWithCache(start: Date, end: Date) {
     const startKey = start.toISOString().split('T')[0]
     const endKey = end.toISOString().split('T')[0]
     const cacheKey = `top-voters-${startKey}-${endKey}`

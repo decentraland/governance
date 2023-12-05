@@ -5,7 +5,15 @@ import { SNAPSHOT_VOTES_AUGUST_2023 } from '../../utils/votes/Votes-August-2023'
 
 import { VoteService } from './vote'
 
+const FIRST_OF_AUGUST_2023 = new Date(2023, 8, 1)
+const SECOND_OF_AUGUST_2023 = new Date(2023, 8, 2)
+
 describe('getTopVoters', () => {
+  beforeAll(() => {
+    jest.useFakeTimers()
+    jest.setSystemTime(FIRST_OF_AUGUST_2023)
+  })
+
   describe('when fetching top voters for August 2023', () => {
     beforeEach(() => {
       jest.clearAllMocks()
@@ -62,14 +70,29 @@ describe('getTopVoters', () => {
           ])
         })
 
-        it('if the requested dates change, it re-fetches data', async () => {
-          expect(await VoteService.getRankedVotersWithCache(new Date(2023, 9, 1), new Date(2023, 9, 31))).toEqual([])
-          expect(SnapshotService.getVotesByDates).toHaveBeenCalledTimes(1)
+        describe('if the dates change', () => {
+          beforeEach(() => {
+            jest.setSystemTime(SECOND_OF_AUGUST_2023)
+          })
+
+          it('re-fetches data for the first call', async () => {
+            await VoteService.getTopVotersForLast30Days(3)
+            expect(SnapshotService.getVotesByDates).toHaveBeenCalledTimes(1)
+          })
+
+          it('returns cached votes for subsequent calls', async () => {
+            await VoteService.getTopVotersForLast30Days(3)
+            expect(SnapshotService.getVotesByDates).toHaveBeenCalledTimes(0)
+          })
         })
       })
     })
 
     describe('when called with the default params', () => {
+      beforeEach(() => {
+        jest.setSystemTime(FIRST_OF_AUGUST_2023)
+      })
+
       const getTopVoters = async () => await VoteService.getTopVotersForLast30Days()
 
       it('should return the top 5 voters sorted by votes in descending order', async () => {
