@@ -1,11 +1,12 @@
+import { getQueryTimestamp } from '../../clients/SnapshotGraphql'
 import { SnapshotVote } from '../../clients/SnapshotTypes'
 import { VOTES_VP_THRESHOLD } from '../../constants'
 import VoteModel from '../../entities/Votes/model'
-import { VoteCount, Voter } from '../../entities/Votes/types'
-import CacheService, { TTL_24_HS } from '../../services/CacheService'
+import { Participation, VoteCount, Voter } from '../../entities/Votes/types'
+import CacheService, { TTL_1_HS, TTL_24_HS } from '../../services/CacheService'
 import { SnapshotService } from '../../services/SnapshotService'
 import Time from '../../utils/date/Time'
-import { getAMonthAgo } from '../../utils/date/aMonthAgo'
+import { getAMonthAgo, getAWeekAgo } from '../../utils/date/aMonthAgo'
 import { getPreviousMonthStartAndEnd } from '../../utils/date/getPreviousMonthStartAndEnd'
 
 const DEFAULT_TOP_VOTERS_LIMIT = 5
@@ -30,6 +31,38 @@ export class VoteService {
 
     const rankedVoters = await this.getRankedVotersForDates(start, end)
     return rankedVoters.slice(0, limit)
+  }
+
+  static async getParticipation(): Promise<Participation> {
+    const now = Time().utc().toDate()
+    const aMonthAgo = getAMonthAgo(now)
+    const aWeekAgo = getAWeekAgo(now)
+
+    const startKey = aMonthAgo.toISOString().split('T')[0]
+    const endKey = now.toISOString().split('T')[0]
+    const cacheKey = `participation-${startKey}-${endKey}`
+
+    const cachedData = CacheService.get<Participation>(cacheKey)
+    if (cachedData) {
+      return cachedData
+    }
+
+    const votes = await SnapshotService.getVotesByDates(aMonthAgo, now)
+
+    const aMonthAgoTimestamp = getQueryTimestamp(aMonthAgo.getTime())
+    const aWeekAgoTimestamp = getQueryTimestamp(aWeekAgo.getTime())
+
+    const last30DaysVotes = votes.filter(
+      (vote) => vote.created >= aMonthAgoTimestamp && vote.vp && vote.vp > VOTES_VP_THRESHOLD
+    ).length
+    const lastWeekVotes = votes.filter(
+      (vote) => vote.created >= aWeekAgoTimestamp && vote.vp && vote.vp > VOTES_VP_THRESHOLD
+    ).length
+
+    const participation = { last30Days: last30DaysVotes, lastWeek: lastWeekVotes }
+    CacheService.set(cacheKey, participation, TTL_1_HS)
+
+    return participation
   }
 
   private static async getRankedVotersWithCache(start: Date, end: Date) {

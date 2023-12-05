@@ -49,3 +49,5 @@ export type VoteSegmentation<T> = {
   highQualityVotes: Record<string, T>
   lowQualityVotes: Record<Voter['address'], T>
 }
+
+export type Participation = { last30Days: number; lastWeek: number }

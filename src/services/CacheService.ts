@@ -1,6 +1,7 @@
 import NodeCache from 'node-cache'
 
 export const TTL_24_HS = 60 * 60 * 24
+export const TTL_1_HS = 60 * 60
 
 class CacheService {
   private static instance: CacheService
