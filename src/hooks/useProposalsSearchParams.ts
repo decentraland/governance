@@ -13,6 +13,7 @@ export type SearchParams = {
   status: ProposalStatus | undefined
   search: string
   searching: boolean
+  filtering: boolean
   timeFrame: string
   order?: SortingOrder
   page: number
@@ -30,7 +31,8 @@ export function useProposalsSearchParams(): SearchParams {
     const order = toSortingOrder(params.get('order'), () => undefined)
     const searching = !!search && search.length > 0
     const page = toProposalListPage(params.get('page')) ?? undefined
+    const filtering = !!type || !!subtype || !!status || searching || !!(timeFrame && timeFrame.length > 0)
 
-    return { type, subtype, status, search, searching, timeFrame, order, page }
+    return { type, subtype, status, search, searching, timeFrame, order, page, filtering }
   }, [params])
 }
