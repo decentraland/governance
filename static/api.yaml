@@ -220,6 +220,14 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/200'
+  /votes/participation:
+    get:
+      tags:
+        - Votes
+      summary: Get the votes count for the last 30 days and the last week
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
   /votes/{address}:
     get:
       tags:
