@@ -62,7 +62,7 @@ export class VoteService {
   }
 
   private static countHighQualityVotes(votes: SnapshotVote[], timestamp: number) {
-    return votes.filter((vote) => vote.created >= timestamp && vote.vp && vote.vp > VOTES_VP_THRESHOLD).length
+    return votes.filter((vote) => vote.created >= timestamp && vote.vp && vote.vp >= VOTES_VP_THRESHOLD).length
   }
 
   private static async getRankedVotersWithCache(start: Date, end: Date) {
