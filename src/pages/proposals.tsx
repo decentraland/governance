@@ -47,7 +47,7 @@ export default function ProposalsPage() {
   const t = useFormatMessage()
   const location = useLocation()
   const [userAddress, authState] = useAuthContext()
-  const { type, subtype, status, search, searching, timeFrame, order, page } = useProposalsSearchParams()
+  const { type, subtype, status, search, searching, timeFrame, order, page, filtering } = useProposalsSearchParams()
   const { proposals, isLoadingProposals } = useProposals({
     type,
     subtype,
@@ -135,12 +135,12 @@ export default function ProposalsPage() {
                 </NotMobile>
               </div>
               <div className="ProposalsPage__Content">
-                {search && (
+                {searching && (
                   <Mobile>
                     <SearchTitle />
                   </Mobile>
                 )}
-                <PriorityProposalsBox address={userAddress} collapsible />
+                {!filtering && <PriorityProposalsBox address={userAddress} collapsible />}
                 <ActionableLayout
                   leftAction={
                     <Text color="secondary" weight="semi-bold" className="ProposalsPage__ProposalCount">
