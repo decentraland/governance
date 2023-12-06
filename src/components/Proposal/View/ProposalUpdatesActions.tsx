@@ -1,15 +1,17 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { UpdateAttributes, UpdateStatus } from '../../../entities/Updates/types'
+import { isBetweenLateThresholdDate } from '../../../entities/Updates/utils'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Time from '../../../utils/date/Time'
 import locations, { navigate } from '../../../utils/locations'
 import DateTooltip from '../../Common/DateTooltip'
 import Markdown from '../../Common/Typography/Markdown'
 import Helper from '../../Helper/Helper'
+import ConfirmationModal from '../../Modal/ConfirmationModal'
 
 import './ProposalUpdatesActions.css'
 
@@ -20,19 +22,56 @@ type ProposalUpdatesActionsProps = {
   proposal: ProposalAttributes
 }
 
-export default function ProposalUpdatesActions({ nextUpdate, currentUpdate, proposal }: ProposalUpdatesActionsProps) {
+export default function ProposalUpdatesActions({
+  nextUpdate,
+  currentUpdate,
+  proposal,
+  pendingUpdates,
+}: ProposalUpdatesActionsProps) {
   const t = useFormatMessage()
   const hasSubmittedUpdate = !!currentUpdate?.completion_date
+  const [isLateUpdateModalOpen, setIsLateUpdateModalOpen] = useState(false)
+  const latePendingUpdate = useMemo(
+    () =>
+      pendingUpdates?.find(
+        (update) =>
+          update.id !== nextUpdate?.id && Time().isAfter(update.due_date) && isBetweenLateThresholdDate(update.due_date)
+      ),
+    [nextUpdate?.id, pendingUpdates]
+  )
 
-  const onPostUpdateClick = useCallback(() => {
-    const hasPendingUpdates = currentUpdate?.id && currentUpdate?.status === UpdateStatus.Pending
+  const navigateToNextUpdateSubmit = useCallback(() => {
+    const hasUpcomingPendingUpdate = currentUpdate?.id && currentUpdate?.status === UpdateStatus.Pending
     navigate(
       locations.submitUpdate({
-        ...(hasPendingUpdates && { id: currentUpdate?.id }),
+        ...(hasUpcomingPendingUpdate && { id: currentUpdate?.id }),
         proposalId: proposal.id,
       })
     )
-  }, [currentUpdate?.id, currentUpdate?.status, proposal])
+  }, [currentUpdate?.id, currentUpdate?.status, proposal.id])
+
+  const onPostUpdateClick = useCallback(() => {
+    if (latePendingUpdate) {
+      setIsLateUpdateModalOpen(true)
+
+      return
+    }
+
+    navigateToNextUpdateSubmit()
+  }, [latePendingUpdate, navigateToNextUpdateSubmit])
+
+  const handlePendingModalPrimaryClick = () => {
+    navigate(
+      locations.submitUpdate({
+        id: latePendingUpdate?.id,
+        proposalId: proposal.id,
+      })
+    )
+  }
+
+  const handlePendingModalSecondaryClick = () => {
+    navigateToNextUpdateSubmit()
+  }
 
   return (
     <div className="DetailsSection">
@@ -80,6 +119,16 @@ export default function ProposalUpdatesActions({ nextUpdate, currentUpdate, prop
           </span>
         )}
       </div>
+      <ConfirmationModal
+        isOpen={isLateUpdateModalOpen}
+        onPrimaryClick={handlePendingModalPrimaryClick}
+        onSecondaryClick={handlePendingModalSecondaryClick}
+        onClose={() => setIsLateUpdateModalOpen(false)}
+        title={t('page.proposal_detail.grant.pending_update_modal.title')}
+        description={t('page.proposal_detail.grant.pending_update_modal.description')}
+        primaryButtonText={t('page.proposal_detail.grant.pending_update_modal.primary_button')}
+        secondaryButtonText={t('page.proposal_detail.grant.pending_update_modal.secondary_button')}
+      />
     </div>
   )
 }

@@ -52,16 +52,8 @@ const CollapsedProposalUpdate = ({
   const formattedCompletionDate = completion_date ? formatDate(completion_date) : ''
   const showPostUpdateButton = !completion_date && isAllowedToPostUpdate && isBetweenLateThresholdDate(due_date)
 
-  const handlePostUpdateClick = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.preventDefault()
-      navigate(locations.submitUpdate({ id: update.id, proposalId: proposal.id }))
-    },
-    [update.id, proposal.id]
-  )
-
   const handleUpdateClick = useCallback(
-    (e: React.MouseEvent<any>) => {
+    (e: React.MouseEvent<HTMLAnchorElement | HTMLDivElement>) => {
       if (update.completion_date) {
         e.stopPropagation()
         e.preventDefault()
@@ -107,7 +99,7 @@ const CollapsedProposalUpdate = ({
         </div>
       )}
       {showPostUpdateButton && (
-        <Button basic onClick={handlePostUpdateClick}>
+        <Button as={Link} basic href={locations.submitUpdate({ id: update.id, proposalId: proposal.id })}>
           {t('page.proposal_detail.grant.update_button')}
         </Button>
       )}

@@ -110,7 +110,10 @@ export default function ProposalSidebar({
   }
 
   const showProposalUpdatesActions =
-    isProposalStatusWithUpdates(proposal?.status) && proposal?.type === ProposalType.Grant && (isOwner || isCoauthor)
+    proposal &&
+    isProposalStatusWithUpdates(proposal?.status) &&
+    proposal?.type === ProposalType.Grant &&
+    (isOwner || isCoauthor)
   const showProposalThresholdsSummary = !!(
     proposal &&
     proposal?.required_to_pass !== null &&
@@ -127,7 +130,7 @@ export default function ProposalSidebar({
       {showVestingContract && <VestingContract vestingAddresses={proposal.vesting_addresses} />}
       {proposal && <ProposalCoAuthorStatus proposalId={proposal.id} proposalFinishDate={proposal.finish_at} />}
       <div className="ProposalSidebar">
-        {showProposalUpdatesActions && proposal && (
+        {showProposalUpdatesActions && (
           <ProposalUpdatesActions
             nextUpdate={nextUpdate}
             currentUpdate={currentUpdate}
@@ -164,17 +167,17 @@ export default function ProposalSidebar({
           onClick={() => setIsCalendarModalOpenWithTracking(true)}
         />
         {proposal && (
-          <NotDesktop1200>
-            <ProposalDetailSection proposal={proposal} />
-          </NotDesktop1200>
-        )}
-        {proposal && <ProposalActions proposal={proposal} deleting={deleting} updatePageState={updatePageState} />}
-        {proposal && (
-          <CalendarAlertModal
-            proposal={proposal}
-            open={isCalendarModalOpen}
-            onClose={() => setIsCalendarModalOpenWithTracking(false)}
-          />
+          <>
+            <NotDesktop1200>
+              <ProposalDetailSection proposal={proposal} />
+            </NotDesktop1200>
+            <ProposalActions proposal={proposal} deleting={deleting} updatePageState={updatePageState} />
+            <CalendarAlertModal
+              proposal={proposal}
+              open={isCalendarModalOpen}
+              onClose={() => setIsCalendarModalOpenWithTracking(false)}
+            />
+          </>
         )}
       </div>
     </>
