@@ -3,7 +3,6 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
-import { SnapshotVote } from '../../clients/SnapshotTypes'
 import { SnapshotService } from '../../services/SnapshotService'
 import { SnapshotStatusService } from '../../services/SnapshotStatusService'
 import {
@@ -18,7 +17,6 @@ export default routes((router) => {
   router.get('/snapshot/config/:spaceName', handleAPI(getConfig))
   router.post('/snapshot/votes', handleAPI(getVotesByAddresses))
   router.get('/snapshot/votes/:proposalSnapshotId', handleAPI(getVotesByProposal))
-  router.post('/snapshot/votes/all', handleAPI(getVotesByDates)) //TODO: deprecate
   router.post('/snapshot/proposals', handleAPI(getProposals))
   router.post('/snapshot/proposals/pending', handleAPI(getPendingProposals))
   router.get('/snapshot/vp-distribution/:address/:proposalSnapshotId?', handleAPI(getVpDistribution))
@@ -43,13 +41,6 @@ async function getVotesByAddresses(req: Request) {
 async function getVotesByProposal(req: Request<{ proposalSnapshotId?: string }>) {
   const proposalSnapshotId = validateProposalSnapshotId(req.params.proposalSnapshotId)
   return await SnapshotService.getVotesByProposal(proposalSnapshotId)
-}
-
-async function getVotesByDates(req: Request): Promise<SnapshotVote[]> {
-  const { start, end } = req.body
-  const { validatedStart, validatedEnd } = validateDates(start, end)
-
-  return await SnapshotService.getVotesByDates(validatedStart, validatedEnd)
 }
 
 async function getProposals(req: Request) {

@@ -20,9 +20,9 @@ import { validateAddress, validateProposalId } from '../utils/validations'
 export default routes((route) => {
   route.get('/proposals/:proposal/votes', handleAPI(getVotesByProposal))
   route.get('/votes', handleAPI(getCachedVotesByProposals))
+  route.get('/votes/participation', handleAPI(getParticipation))
   route.get('/votes/:address', handleAPI(getVotesAndProposalsByAddress))
   route.post('/votes/top-voters', handleAPI(getTopVotersForLast30Days))
-  route.get('/votes/participation', handleAPI(getParticipation)) //TODO: add to api docs
 })
 
 export async function getVotesByProposal(req: Request<{ proposal: string }>) {

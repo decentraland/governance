@@ -599,15 +599,6 @@ export class Governance extends API {
     return response.data
   }
 
-  //TODO: deprecate
-  async getVotesByDates(start: Date, end: Date) {
-    const response = await this.fetch<ApiResponse<SnapshotVote[]>>(
-      `/snapshot/votes/all`,
-      this.options().method('POST').json({ start, end })
-    )
-    return response.data
-  }
-
   async getSnapshotProposals(start: Date, end: Date, fields: (keyof SnapshotProposal)[]) {
     const response = await this.fetch<ApiResponse<Partial<SnapshotProposal>[]>>(
       `/snapshot/proposals`,
