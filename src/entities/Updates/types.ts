@@ -1,13 +1,16 @@
-export type UpdateAttributes = {
+export type UpdateGeneral = {
+  health: ProjectHealth
+  introduction: string
+  highlights: string
+  blockers: string
+  next_steps: string
+  additional_notes: string
+}
+
+export type UpdateAttributes = Partial<UpdateGeneral> & {
   id: string
   proposal_id: string
   author?: string
-  health?: ProjectHealth
-  introduction?: string
-  highlights?: string
-  blockers?: string
-  next_steps?: string
-  additional_notes?: string
   status: UpdateStatus
   due_date?: Date
   completion_date?: Date
@@ -38,4 +41,44 @@ export type UpdateResponse = {
   pendingUpdates: UpdateAttributes[]
   nextUpdate: UpdateAttributes
   currentUpdate: UpdateAttributes | null
+}
+
+export const UpdateGeneralSchema: Record<keyof UpdateGeneral, Record<string, unknown>> = {
+  health: {
+    type: 'string',
+  },
+  introduction: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 500,
+  },
+  highlights: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 3500,
+  },
+  blockers: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 3500,
+  },
+  next_steps: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 3500,
+  },
+  additional_notes: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 3500,
+  },
+}
+
+export const UpdateSchema = {
+  type: 'object',
+  additionalProperties: false,
+  required: [...Object.keys(UpdateGeneralSchema)],
+  properties: {
+    ...UpdateGeneralSchema,
+  },
 }

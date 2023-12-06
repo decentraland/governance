@@ -2054,6 +2054,7 @@
     "proposal_update": {
       "title": "Publish New Grant Update",
       "description": "Share your grant updates with the Decentraland Community. Use this space to talk about the progress but also to raise issues or blockers you might have with your project. Feel free to add any relevant information or links to demo what you’ve been up to.",
+      "general_section_title": "General",
       "health_label": "Project Health",
       "on_track_label": "On Track",
       "at_risk_label": "At Risk",
