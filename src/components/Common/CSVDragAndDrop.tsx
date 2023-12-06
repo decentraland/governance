@@ -1,23 +1,40 @@
 import { useState } from 'react'
-import { formatFileSize, lightenDarkenColor, useCSVReader } from 'react-papaparse'
+import { formatFileSize, useCSVReader } from 'react-papaparse'
 
+import useFormatMessage from '../../hooks/useFormatMessage'
 import CSV from '../Icon/CSV'
 
 import Text from './Typography/Text'
 
 import './CSVDragAndDrop.css'
 
-const DEFAULT_REMOVE_HOVER_COLOR = '#A01919'
-const REMOVE_HOVER_COLOR_LIGHT = lightenDarkenColor(DEFAULT_REMOVE_HOVER_COLOR, 40)
+type CSVError = {
+  type: string
+  code: string
+  message: string
+}
+
+type CSVFile = {
+  data: string[][]
+  errors: CSVError[][]
+  meta: unknown[]
+}
 
 export default function CSVDragAndDrop() {
   const { CSVReader } = useCSVReader()
-  const [removeHoverColor, setRemoveHoverColor] = useState(DEFAULT_REMOVE_HOVER_COLOR)
+  const t = useFormatMessage()
+  const [errorMsg, setErrorMsg] = useState<string | undefined>()
 
-  const fileHandler = (data: string[][]) => {
-    console.log('---------------------------')
-    console.log(data)
-    console.log('---------------------------')
+  const fileHandler = (data: CSVFile) => {
+    // console.log('---------------------------')
+    // console.log(data)
+    // console.log('---------------------------')
+    console.log(data.errors.length)
+    if (data.errors.length > 0) {
+      setErrorMsg(data.errors[0][0].message)
+    } else {
+      setErrorMsg(undefined)
+    }
   }
 
   return (
@@ -35,7 +52,7 @@ export default function CSVDragAndDrop() {
         ({ getRootProps, acceptedFile, ProgressBar, getRemoveFileProps, Remove }: any) => (
           <>
             <div {...getRootProps()} className="CSVDragAndDrop__Zone">
-              {acceptedFile ? (
+              {acceptedFile && !errorMsg ? (
                 <>
                   <div className="CSVDragAndDrop__File">
                     <div className="CSVDragAndDrop__Info">
@@ -45,28 +62,24 @@ export default function CSVDragAndDrop() {
                     <div className="CSVDragAndDrop__ProgressBar">
                       <ProgressBar />
                     </div>
-                    <div
-                      {...getRemoveFileProps()}
-                      className="CSVDragAndDrop__Remove"
-                      onMouseOver={(event: Event) => {
-                        event.preventDefault()
-                        setRemoveHoverColor(REMOVE_HOVER_COLOR_LIGHT)
-                      }}
-                      onMouseOut={(event: Event) => {
-                        event.preventDefault()
-                        setRemoveHoverColor(DEFAULT_REMOVE_HOVER_COLOR)
-                      }}
-                    >
-                      <Remove color={removeHoverColor} />
+                    <div {...getRemoveFileProps()} className="CSVDragAndDrop__Remove">
+                      <Remove />
                     </div>
                   </div>
                 </>
               ) : (
                 <div className="CSVDragAndDrop__TextContainer">
-                  <CSV />
-                  <Text>
-                    Drag and drop a CSV file or <span className="CSVDragAndDrop__TextFile">choose a file</span>.
-                  </Text>
+                  {errorMsg ? (
+                    <span className="CSVDragAndDrop__TextFile">{errorMsg}</span>
+                  ) : (
+                    <>
+                      <CSV />
+                      <Text>
+                        {t('csv_file.drag_and_drop')}{' '}
+                        <span className="CSVDragAndDrop__TextFile">{t('csv_file.choose_file')}</span>.
+                      </Text>
+                    </>
+                  )}
                 </div>
               )}
             </div>

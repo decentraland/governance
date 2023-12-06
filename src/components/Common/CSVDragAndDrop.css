@@ -61,6 +61,14 @@
   width: 23px;
 }
 
+.CSVDragAndDrop__Remove > svg > path:first-child {
+  fill: rgb(160, 25, 25);
+}
+
+.CSVDragAndDrop__Remove > svg > path:first-child:hover {
+  fill: rgb(200, 65, 65);
+}
+
 .CSVDragAndDrop__TextContainer {
   display: flex;
   flex-direction: row;

@@ -2080,6 +2080,10 @@
       "delegated_voting_power_list_description": "The following individuals have decided to delegate their Voting Power. Remember they may overrule your vote without any notice."
     }
   },
+  "csv_file": {
+    "drag_and_drop": "Drag and drop a CSV file or",
+    "choose_file": "choose a file"
+  },
   "delegation": {
     "delegated_to_user_empty_title": "No delegations",
     "delegated_to_address_empty_title": "VP not delegated",
