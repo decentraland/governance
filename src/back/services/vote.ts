@@ -52,17 +52,17 @@ export class VoteService {
     const aMonthAgoTimestamp = getQueryTimestamp(aMonthAgo.getTime())
     const aWeekAgoTimestamp = getQueryTimestamp(aWeekAgo.getTime())
 
-    const last30DaysVotes = votes.filter(
-      (vote) => vote.created >= aMonthAgoTimestamp && vote.vp && vote.vp > VOTES_VP_THRESHOLD
-    ).length
-    const lastWeekVotes = votes.filter(
-      (vote) => vote.created >= aWeekAgoTimestamp && vote.vp && vote.vp > VOTES_VP_THRESHOLD
-    ).length
+    const last30DaysVotes = this.countHighQualityVotes(votes, aMonthAgoTimestamp)
+    const lastWeekVotes = this.countHighQualityVotes(votes, aWeekAgoTimestamp)
 
     const participation = { last30Days: last30DaysVotes, lastWeek: lastWeekVotes }
     CacheService.set(cacheKey, participation, TTL_1_HS)
 
     return participation
+  }
+
+  private static countHighQualityVotes(votes: SnapshotVote[], timestamp: number) {
+    return votes.filter((vote) => vote.created >= timestamp && vote.vp && vote.vp > VOTES_VP_THRESHOLD).length
   }
 
   private static async getRankedVotersWithCache(start: Date, end: Date) {
