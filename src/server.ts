@@ -40,7 +40,19 @@ import score from './back/routes/votes'
 import { DiscordService } from './back/services/discord'
 import { updateGovernanceBudgets } from './entities/Budget/jobs'
 import { activateProposals, finishProposal, publishBids } from './entities/Proposal/jobs'
-import filesystem from './utils/filesystem'
+import filesystem, {
+  cpsScriptSrc,
+  cspChildSrc,
+  cspConnectSrc,
+  cspFontSrc,
+  cspFormAction,
+  cspImageSrc,
+  cspManifestSrc,
+  cspMediaSrc,
+  cspStyleSrc,
+} from './utils/filesystem'
+
+import { GOVERNANCE_URL, IS_NEW_ROLLOUT } from './constants'
 
 const jobs = manager()
 jobs.cron('@eachMinute', finishProposal)
@@ -90,34 +102,39 @@ app.use('/api', [
 app.use(metrics([gatsbyRegister, register]))
 
 app.use(sitemap)
-app.use('/', social)
+app.use(IS_NEW_ROLLOUT ? '/governance/' : '/', social)
 
 // Balance to profile redirect to preserve previous URL
 app.get(
-  '/balance',
+  IS_NEW_ROLLOUT ? '/governance/balance' : '/balance',
   handleRaw(async (req, res) => {
     const address = req.query.address
-    const websiteUrl = process.env.GATSBY_GOVERNANCE_API?.replace('/api', '')
     const addressParam = address ? `?address=${address}` : ''
-    return res.redirect(`${websiteUrl}/profile/${addressParam}`)
+    return res.redirect(`${GOVERNANCE_URL}/profile/${addressParam}`)
   })
 )
 
 // Grants to project redirect to preserve previous URL
 app.get(
-  '/grants',
+  IS_NEW_ROLLOUT ? '/governance/grants' : '/grants',
   handleRaw(async (req, res) => {
-    const websiteUrl = process.env.GATSBY_GOVERNANCE_API?.replace('/api', '')
-    return res.redirect(`${websiteUrl}/projects`)
+    return res.redirect(`${GOVERNANCE_URL}/projects`)
   })
 )
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
+console.log('FILESYSTE', filesystem(IS_NEW_ROLLOUT ? 'public-prefix' : 'public', '404.html'))
 app.use(
-  filesystem('public', '404.html', {
+  IS_NEW_ROLLOUT ? '/governance/' : '/',
+  withCors({
+    cors: '*',
+    corsOrigin: '*',
+    allowedHeaders: '*',
+  }),
+  filesystem(IS_NEW_ROLLOUT ? 'public-prefix' : 'public', '404.html', {
     defaultHeaders: {
-      'Content-Security-Policy': `base-uri 'self'; child-src https:; connect-src https: wss:; default-src 'none'; font-src https: data:; form-action 'self'; frame-ancestors 'none'; frame-src https:; img-src https: data:; manifest-src 'self'; media-src 'self'; object-src 'none'; prefetch-src https: data:; style-src 'unsafe-inline' https: data:; worker-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://decentraland.org https://*.decentraland.org https://cdn.segment.com https://cdn.rollbar.com https://ajax.cloudflare.com https://googleads.g.doubleclick.net https://ssl.google-analytics.com https://tagmanager.google.com https://www.google-analytics.com https://www.google-analytics.com https://www.google.com https://www.googleadservices.com https://www.googletagmanager.com https://verify.walletconnect.com`,
+      'Content-Security-Policy': `base-uri 'self'; child-src ${cspChildSrc}; connect-src ${cspConnectSrc}; default-src 'none'; font-src ${cspFontSrc}; form-action ${cspFormAction}; frame-ancestors 'none'; frame-src https:; img-src ${cspImageSrc}; manifest-src ${cspManifestSrc}; media-src ${cspMediaSrc}; object-src 'none'; style-src ${cspStyleSrc}; worker-src 'self'; script-src ${cpsScriptSrc}`,
       'X-Content-Type-Options': 'nosniff',
       'X-Frame-Options': 'DENY',
       'strict-transport-security': 'max-age=15552000; includeSubDomains; preload',

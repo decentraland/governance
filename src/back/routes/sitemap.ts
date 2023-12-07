@@ -2,13 +2,20 @@ import { handleRaw } from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
+import { IS_NEW_ROLLOUT } from '../../constants'
 import ProposalModel from '../../entities/Proposal/model'
 import { SITEMAP_ITEMS_PER_PAGE, governanceUrl, proposalUrl } from '../../entities/Proposal/utils'
 
 export default routes((router) => {
-  router.get('/sitemap.xml', handleRaw(getIndexSitemap, 'application/xml'))
-  router.get('/sitemap.static.xml', handleRaw(getStaticSitemap, 'application/xml'))
-  router.get('/sitemap.proposals.xml', handleRaw(getProposalsSitemap, 'application/xml'))
+  router.get(`${IS_NEW_ROLLOUT ? '/governance' : ''}/sitemap.xml`, handleRaw(getIndexSitemap, 'application/xml'))
+  router.get(
+    `${IS_NEW_ROLLOUT ? '/governance' : ''}/sitemap.static.xml`,
+    handleRaw(getStaticSitemap, 'application/xml')
+  )
+  router.get(
+    `${IS_NEW_ROLLOUT ? '/governance' : ''}/sitemap.proposals.xml`,
+    handleRaw(getProposalsSitemap, 'application/xml')
+  )
 })
 
 export async function getIndexSitemap() {

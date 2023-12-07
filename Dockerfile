@@ -45,6 +45,8 @@ COPY ./.babelrc.json                          /app/.babelrc.json
 RUN sed -i.temp '/Pulumi\.ts/d' package.json
 
 RUN NODE_OPTIONS="--max-old-space-size=4096" npm run build:server
+RUN NODE_OPTIONS="--max-old-space-size=4096" VERSION_NUMBER=$version_number npm run build:front -- --prefix-paths
+RUN mv public public-prefix && npm run clean
 RUN NODE_OPTIONS="--max-old-space-size=4096"  VERSION_NUMBER=$version_number npm run build:front
 RUN npm prune --production --ignore-scripts
 

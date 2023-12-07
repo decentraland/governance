@@ -4,7 +4,7 @@ import 'isomorphic-fetch'
 import numeral from 'numeral'
 
 import { Governance } from '../../clients/Governance'
-import { GOVERNANCE_API } from '../../constants'
+import { GOVERNANCE_API, GOVERNANCE_URL, IS_NEW_ROLLOUT } from '../../constants'
 import { getEnumDisplayName } from '../../helpers'
 import { getTile } from '../../utils/Land'
 import { clientEnv } from '../../utils/clientEnv'
@@ -59,7 +59,9 @@ export async function isValidImage(imageUrl: string) {
 }
 
 export function isAlreadyBannedName(name: string) {
-  return !!getNameDenylistFromCache('mainnet').find((bannedName) => bannedName.toLowerCase() === name.toLowerCase())
+  return !!getNameDenylistFromCache('mainnet').find(
+    (bannedName: string) => bannedName.toLowerCase() === name.toLowerCase()
+  )
 }
 
 export async function isAlreadyPointOfInterest(x: number, y: number) {
@@ -140,8 +142,14 @@ export function forumUserUrl(username: string) {
 }
 
 export function governanceUrl(pathname = '') {
-  const target = new URL(GOVERNANCE_API)
-  target.pathname = pathname
+  let target: URL
+  if (IS_NEW_ROLLOUT) {
+    target = new URL(GOVERNANCE_URL)
+    target.pathname = `/governance${pathname}`
+  } else {
+    target = new URL(GOVERNANCE_API)
+    target.pathname = pathname
+  }
   target.search = ''
   target.hash = ''
   return target.toString()
