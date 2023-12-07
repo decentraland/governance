@@ -6,7 +6,7 @@ import { Participation, VoteCount, Voter } from '../../entities/Votes/types'
 import CacheService, { TTL_1_HS, TTL_24_HS } from '../../services/CacheService'
 import { SnapshotService } from '../../services/SnapshotService'
 import Time from '../../utils/date/Time'
-import { getAMonthAgo, getAWeekAgo } from '../../utils/date/aMonthAgo'
+import { getAMonthAgo, getAWeekAgo } from '../../utils/date/date'
 import { getPreviousMonthStartAndEnd } from '../../utils/date/getPreviousMonthStartAndEnd'
 
 const DEFAULT_TOP_VOTERS_LIMIT = 5
