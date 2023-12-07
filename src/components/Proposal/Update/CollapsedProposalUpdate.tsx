@@ -92,7 +92,7 @@ const CollapsedProposalUpdate = ({
           )}
           {isAllowedToPostUpdate && (
             <div className="ProposalUpdate__Menu">
-              <UpdateMenu onEditClick={onEditClick} onDeleteClick={onDeleteUpdateClick} />
+              <UpdateMenu author={update.author} onEditClick={onEditClick} onDeleteClick={onDeleteUpdateClick} />
             </div>
           )}
           <ChevronRight color="var(--black-300)" />
