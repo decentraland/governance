@@ -1,6 +1,5 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 
-import { DclData } from '../clients/DclData'
 import UnpublishedBidModel from '../entities/Bid/model'
 import { GrantTier } from '../entities/Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../entities/Grant/constants'
@@ -23,11 +22,12 @@ import { createProject } from '../utils/projects'
 
 import { BudgetService } from './BudgetService'
 import { ProposalInCreation } from './ProposalService'
+import { VestingService } from './VestingService'
 
 export class ProjectService {
   public static async getProjects() {
     const data = await ProposalModel.getProjectList()
-    const vestings = await DclData.get().getVestings()
+    const vestings = await VestingService.getAllVestings()
     const projects: ProjectWithUpdate[] = []
 
     await Promise.all(
