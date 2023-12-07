@@ -68,6 +68,7 @@ COPY --from=compiler /app/package-lock.json    /app/package-lock.json
 COPY --from=compiler /app/node_modules         /app/node_modules
 COPY --from=compiler /app/lib                  /app/lib
 COPY --from=compiler /app/public               /app/public
+COPY --from=compiler /app/public-prefix        /app/public-prefix
 COPY --from=compiler /app/static               /app/static
 COPY --from=compiler /app/entrypoint.sh        /app/entrypoint.sh
 
