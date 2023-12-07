@@ -224,7 +224,7 @@ paths:
     get:
       tags:
         - Votes
-      summary: Get the votes count for the last 30 days and the last week
+      summary: Get the high quality votes count for the last 30 days and the last week
       responses:
         '200':
           $ref: '#/components/responses/200'
