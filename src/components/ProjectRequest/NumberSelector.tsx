@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react'
 
+import classNames from 'classnames'
 import { UnitTypeLongPlural } from 'dayjs'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 
@@ -21,9 +22,21 @@ interface Props {
   subtitle?: string
   onUnitChange?: (unit: UnitTypeLongPlural) => void
   disabled?: boolean
+  className?: string
 }
 
-const NumberSelector = ({ value, onChange, min, max, label, unit, onUnitChange, subtitle, disabled }: Props) => {
+const NumberSelector = ({
+  value,
+  onChange,
+  min,
+  max,
+  label,
+  unit,
+  onUnitChange,
+  subtitle,
+  disabled,
+  className,
+}: Props) => {
   const t = useFormatMessage()
   const handleAddClick = useCallback(() => {
     if (value === max) {
@@ -62,7 +75,7 @@ const NumberSelector = ({ value, onChange, min, max, label, unit, onUnitChange, 
     units.map((unit) => ({ key: unit, value: unit, text: getUnitLabel(unit) }))
 
   return (
-    <div className="NumberSelector">
+    <div className={classNames('NumberSelector', className)}>
       <Label>{label}</Label>
       <div className="NumberSelector__Container">
         <div className="NumberSelector__InputContainer">

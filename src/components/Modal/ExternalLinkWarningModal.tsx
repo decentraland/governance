@@ -5,6 +5,7 @@ import useFormatMessage from '../../hooks/useFormatMessage'
 import Markdown from '../Common/Typography/Markdown'
 
 import ConfirmationModal from './ConfirmationModal'
+import './ExternalLinkWarningModal.css'
 
 type WarningModalState = {
   isWarningModalOpen: boolean
@@ -61,7 +62,6 @@ function ExternalLinkWarningModal() {
       description={
         <Markdown
           componentsClassNames={{
-            p: 'ExternalLinkWarningModal__Description',
             a: 'ExternalLinkWarningModal__Link',
           }}
         >

@@ -5,3 +5,7 @@
 .ProposalModal__GrantTransaction input {
   font-size: 18px !important;
 }
+
+.ProposalModal__ErrorMessage {
+  margin-bottom: 8px;
+}

@@ -2,11 +2,6 @@
   margin-bottom: 32px;
 }
 
-.ProposalModal .content.ProposalModal__GrantVestingAddress {
-  margin: 24px auto;
-  width: 80%;
-}
-
 .ProposalModal .content.ProposalModal__Form {
   width: 100%;
 }
@@ -28,12 +23,4 @@
 .ProposalModal__Actions {
   margin-top: 8px;
   width: 100%;
-}
-
-.PoiProposalModal__Actions {
-  width: 90% !important;
-}
-
-.ProposalModal__ErrorMessage {
-  margin-bottom: 8px;
 }

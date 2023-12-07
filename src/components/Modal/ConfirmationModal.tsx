@@ -9,23 +9,29 @@ import './ConfirmationModal.css'
 
 interface Props {
   isOpen: boolean
+  isLoading?: boolean
+  isDisabled?: boolean
   title: string
   description: React.ReactNode | string
   onClose: () => void
   onPrimaryClick: () => void
   onSecondaryClick: () => void
+  primaryButtonHref?: string
   primaryButtonText: string
   secondaryButtonText: string
 }
 
 export default function ConfirmationModal({
   isOpen,
+  isLoading,
+  isDisabled,
   title,
   description,
   onClose,
   onPrimaryClick,
   onSecondaryClick,
   primaryButtonText,
+  primaryButtonHref,
   secondaryButtonText,
 }: Props) {
   return (
@@ -38,10 +44,20 @@ export default function ConfirmationModal({
           {typeof description === 'string' ? <Text>{description}</Text> : description}
         </div>
         <div className="ConfirmationModal__Actions">
-          <Button fluid primary className="ConfirmationModal__Button" onClick={onPrimaryClick}>
+          <Button
+            fluid
+            primary
+            className="ConfirmationModal__Button"
+            onClick={onPrimaryClick}
+            disabled={isLoading || isDisabled}
+            loading={isLoading}
+            href={primaryButtonHref}
+            as={primaryButtonHref ? 'a' : undefined}
+            target={primaryButtonHref ? '_blank' : undefined}
+          >
             {primaryButtonText}
           </Button>
-          <Button fluid basic className="ConfirmationModal__Button" onClick={onSecondaryClick}>
+          <Button fluid basic className="ConfirmationModal__Button" onClick={onSecondaryClick} disabled={isLoading}>
             {secondaryButtonText}
           </Button>
         </div>
