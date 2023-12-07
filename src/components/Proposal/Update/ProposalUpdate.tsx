@@ -70,6 +70,7 @@ const ProposalUpdate = ({
     try {
       setIsDeletingUpdate(true)
       await Governance.get().deleteProposalUpdate(update)
+      setIsDeleteUpdateModalOpen(false)
       if (onUpdateDeleted) {
         onUpdateDeleted()
       }
