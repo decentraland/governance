@@ -86,13 +86,13 @@ export default function NewProposalPage() {
             href={locations.submit(ProposalType.Grant)}
             active={isGrantProposalSubmitEnabled(NOW)}
           />
-          <CategoryBanner isNew type={ProposalType.Hiring} onClick={setHiringModalProps} />
+          <CategoryBanner type={ProposalType.Hiring} onClick={setHiringModalProps} />
         </ContentSection>
         <ContentSection>
           <Text className="SubmitPage__Header" size="sm" weight="semi-bold" color="secondary">
             {t('page.submit.bidding_tendering_process')}
           </Text>
-          <CategoryBanner isNew type={ProposalType.Pitch} href={locations.submit(ProposalType.Pitch)} />
+          <CategoryBanner type={ProposalType.Pitch} href={locations.submit(ProposalType.Pitch)} />
         </ContentSection>
         <ContentSection>
           <Text className="SubmitPage__Header" size="sm" weight="semi-bold" color="secondary">

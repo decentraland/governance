@@ -7,18 +7,32 @@ export type UpdateGeneral = {
   additional_notes: string
 }
 
-export type UpdateAttributes = Partial<UpdateGeneral> & {
-  id: string
-  proposal_id: string
-  author?: string
-  status: UpdateStatus
-  due_date?: Date
-  completion_date?: Date
-  created_at: Date
-  updated_at: Date
-  discourse_topic_id?: number
-  discourse_topic_slug?: string
+export type UpdateFinancialRecord = {
+  token_type: string
+  concept: string
+  description: string
+  amount: number
+  receiver: string
+  link: string
 }
+
+export type UpdateFinancial = {
+  records: UpdateFinancialRecord[]
+}
+
+export type UpdateAttributes = Partial<UpdateGeneral> &
+  Partial<UpdateFinancial> & {
+    id: string
+    proposal_id: string
+    author?: string
+    status: UpdateStatus
+    due_date?: Date
+    completion_date?: Date
+    created_at: Date
+    updated_at: Date
+    discourse_topic_id?: number
+    discourse_topic_slug?: string
+  }
 
 export type IndexedUpdate = UpdateAttributes & {
   index: number

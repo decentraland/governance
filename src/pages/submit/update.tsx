@@ -17,6 +17,7 @@ import Text from '../../components/Common/Typography/Text'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
 import { EditUpdateModal } from '../../components/Modal/EditUpdateModal/EditUpdateModal'
+import FinancialSection from '../../components/Updates/FinancialSection'
 import GeneralSection from '../../components/Updates/GeneralSection'
 import UpdateMarkdownView from '../../components/Updates/UpdateMarkdownView'
 import { UpdateAttributes, UpdateGeneral, UpdateGeneralSchema, UpdateStatus } from '../../entities/Updates/types'
@@ -194,12 +195,15 @@ export default function Update({ isEdit }: Props) {
       </ContentSection>
       <div>
         {!isPreviewMode && (
-          <GeneralSection
-            isFormDisabled={formDisabled}
-            intialValues={newUpdate || getInitialUpdateValues(update)}
-            sectionNumber={1}
-            onValidation={handleGeneralSectionValidation}
-          />
+          <>
+            <GeneralSection
+              isFormDisabled={formDisabled}
+              intialValues={newUpdate || getInitialUpdateValues(update)}
+              sectionNumber={1}
+              onValidation={handleGeneralSectionValidation}
+            />
+            <FinancialSection isFormDisabled={formDisabled} sectionNumber={2} onValidation={() => {}} />
+          </>
         )}
         {isPreviewMode && <UpdateMarkdownView update={previewUpdate} />}
         <ContentSection className="UpdateSubmit__Actions">
