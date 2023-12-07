@@ -79,14 +79,11 @@ export default function filesystem(
 ) {
   const router = Router()
   const fileSystemOptions = filesystemOptions(notFoundPage)
-  // const indexFile = (IS_NEW_ROLLOUT ? '/governance/' : '/') + fileSystemOptions.indexFile
   const indexFile = '/' + fileSystemOptions.indexFile
   const cwd = resolve(process.cwd(), path)
   const files = Array.from(new Set(glob.sync('**/*', { cwd, nodir: true })).values()).sort()
 
   for (const filePath of files) {
-    // const webPath = (IS_NEW_ROLLOUT ? '/governance/' : '/') + filePath // => /en/index.html
-
     const webPath = '/' + filePath // => /en/index.html
 
     if (webPath.endsWith(indexFile)) {

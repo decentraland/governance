@@ -124,7 +124,6 @@ app.get(
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
-console.log('FILESYSTE', filesystem(IS_NEW_ROLLOUT ? 'public-prefix' : 'public', '404.html'))
 app.use(
   IS_NEW_ROLLOUT ? '/governance/' : '/',
   withCors({

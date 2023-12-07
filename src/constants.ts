@@ -13,7 +13,7 @@ function getBooleanStringVar(variableName: string, defaultValue: boolean) {
   return defaultValue
 }
 
-export const IS_NEW_ROLLOUT = process.env.NEW_ROLLOUT || true
+export const IS_NEW_ROLLOUT = process.env.NEW_ROLLOUT
 export const GOVERNANCE_URL = process.env.GATSBY_GOVERNANCE_URL || 'https://decentraland.zone/governance'
 export const DOCS_URL = 'https://docs.decentraland.org/decentraland/what-is-the-dao/'
 export const FORUM_URL = process.env.GATSBY_DISCOURSE_API || clientEnv('GATSBY_DISCOURSE_API') || ''
