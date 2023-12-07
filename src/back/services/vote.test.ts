@@ -5,8 +5,9 @@ import { SNAPSHOT_VOTES_AUGUST_2023 } from '../../utils/votes/Votes-August-2023'
 
 import { VoteService } from './vote'
 
-const FIRST_OF_AUGUST_2023 = new Date(2023, 8, 1)
-const SECOND_OF_AUGUST_2023 = new Date(2023, 8, 2)
+const FIRST_OF_AUGUST_2023 = new Date(2023, 7, 1)
+const SECOND_OF_AUGUST_2023 = new Date(2023, 7, 2)
+const FIRST_OF_SEPTEMBER_2023 = new Date(2023, 8, 1)
 
 describe('getTopVoters', () => {
   beforeAll(() => {
@@ -16,7 +17,6 @@ describe('getTopVoters', () => {
 
   describe('when fetching top voters for August 2023', () => {
     beforeEach(() => {
-      jest.clearAllMocks()
       jest.spyOn(SnapshotService, 'getVotesByDates').mockResolvedValue(SNAPSHOT_VOTES_AUGUST_2023)
     })
 
@@ -27,7 +27,7 @@ describe('getTopVoters', () => {
         expect(await topVoters()).toEqual([
           {
             address: '0x4534c46ea854c9a302d3dc95b2d3253ae6a28abc',
-            lastVoted: 1693517313,
+            lastVoted: 1693517160,
             votes: 9,
           },
           {
@@ -54,7 +54,7 @@ describe('getTopVoters', () => {
           expect(await topVoters()).toEqual([
             {
               address: '0x4534c46ea854c9a302d3dc95b2d3253ae6a28abc',
-              lastVoted: 1693517313,
+              lastVoted: 1693517160,
               votes: 9,
             },
             {
@@ -71,7 +71,7 @@ describe('getTopVoters', () => {
         })
 
         describe('if the dates change', () => {
-          beforeEach(() => {
+          beforeAll(() => {
             jest.setSystemTime(SECOND_OF_AUGUST_2023)
           })
 
@@ -89,7 +89,7 @@ describe('getTopVoters', () => {
     })
 
     describe('when called with the default params', () => {
-      beforeEach(() => {
+      beforeAll(() => {
         jest.setSystemTime(FIRST_OF_AUGUST_2023)
       })
 
@@ -99,7 +99,7 @@ describe('getTopVoters', () => {
         expect(await getTopVoters()).toEqual([
           {
             address: '0x4534c46ea854c9a302d3dc95b2d3253ae6a28abc',
-            lastVoted: 1693517313,
+            lastVoted: 1693517160,
             votes: 9,
           },
           {
@@ -114,12 +114,12 @@ describe('getTopVoters', () => {
           },
           {
             address: '0x15f51853d17e89d97980883eef4c6aba6ba82ed5',
-            lastVoted: 1692998273,
+            lastVoted: 1692744184,
             votes: 1,
           },
           {
             address: '0xc95ed3844cfc92e68ab7b0cd72e832a3f6eb0259',
-            lastVoted: 1693516292,
+            lastVoted: 1692744186,
             votes: 1,
           },
         ])
@@ -215,7 +215,7 @@ describe('getSortedCountPerUser', () => {
     expect(sortedVotes).toEqual([
       {
         address: '0x4534c46ea854c9a302d3dc95b2d3253ae6a28abc',
-        lastVoted: 1693517313,
+        lastVoted: 1693517160,
         votes: 9,
       },
       {
@@ -230,17 +230,17 @@ describe('getSortedCountPerUser', () => {
       },
       {
         address: '0x15f51853d17e89d97980883eef4c6aba6ba82ed5',
-        lastVoted: 1692998273,
+        lastVoted: 1692744184,
         votes: 1,
       },
       {
         address: '0xc95ed3844cfc92e68ab7b0cd72e832a3f6eb0259',
-        lastVoted: 1693516292,
+        lastVoted: 1692744186,
         votes: 1,
       },
       {
         address: '0x003a3eb1a1d2ad3bea19ae06324727beeeec2e34',
-        lastVoted: 1693521196,
+        lastVoted: 1693001196,
         votes: 1,
       },
     ])
@@ -249,5 +249,25 @@ describe('getSortedCountPerUser', () => {
     expect(sortedVotes[3].lastVoted).toBeLessThan(sortedVotes[4].lastVoted)
     expect(sortedVotes[4].votes).toEqual(sortedVotes[5].votes)
     expect(sortedVotes[4].lastVoted).toBeLessThan(sortedVotes[5].lastVoted)
+  })
+})
+
+describe('getParticipation', () => {
+  beforeAll(() => {
+    jest.useFakeTimers()
+    jest.setSystemTime(FIRST_OF_SEPTEMBER_2023)
+  })
+
+  describe('when fetching participation on August 2023', () => {
+    beforeEach(() => {
+      jest.spyOn(SnapshotService, 'getVotesByDates').mockResolvedValue(SNAPSHOT_VOTES_AUGUST_2023)
+    })
+
+    it('should return the vote count for last 30 days and last week', async () => {
+      expect(await VoteService.getParticipation()).toEqual({
+        last30Days: 21,
+        lastWeek: 14,
+      })
+    })
   })
 })

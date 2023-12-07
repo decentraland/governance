@@ -20,6 +20,7 @@ import { validateAddress, validateProposalId } from '../utils/validations'
 export default routes((route) => {
   route.get('/proposals/:proposal/votes', handleAPI(getVotesByProposal))
   route.get('/votes', handleAPI(getCachedVotesByProposals))
+  route.get('/votes/participation', handleAPI(getParticipation))
   route.get('/votes/:address', handleAPI(getVotesAndProposalsByAddress))
   route.post('/votes/top-voters', handleAPI(getTopVotersForLast30Days))
 })
@@ -125,4 +126,8 @@ async function getTopVotersForLast30Days(req: Request) {
   const validLimit = isNumber(limit) && limit > 0 ? limit : undefined
 
   return await VoteService.getTopVotersForLast30Days(validLimit)
+}
+
+async function getParticipation() {
+  return await VoteService.getParticipation()
 }

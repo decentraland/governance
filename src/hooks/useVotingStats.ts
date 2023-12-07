@@ -8,7 +8,7 @@ import { SnapshotProposal, SnapshotVote } from '../clients/SnapshotTypes'
 import { calculateMatch, isSameAddress, outcomeMatch } from '../entities/Snapshot/utils'
 import { getFormattedPercentage } from '../helpers'
 import Time from '../utils/date/Time'
-import { getAMonthAgo } from '../utils/date/aMonthAgo'
+import { getAMonthAgo } from '../utils/date/date'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 

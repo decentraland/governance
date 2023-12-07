@@ -203,27 +203,3 @@ export function getVoteSegmentation(votes: VoteByAddress | null | undefined): Vo
     lowQualityVotes,
   }
 }
-
-export function getMultipleVotesSegmentation(votes: VotesByAddress | null | undefined): VoteSegmentation<Vote[]> {
-  const highQualityVotes: VotesByAddress = {}
-  const lowQualityVotes: VotesByAddress = {}
-
-  if (votes) {
-    Object.entries(votes).forEach(([address, votes]) => {
-      for (const vote of votes) {
-        if (vote.vp >= VOTES_VP_THRESHOLD) {
-          const userHighQualityVotes = highQualityVotes[address] || []
-          highQualityVotes[address] = [...userHighQualityVotes, vote]
-        } else {
-          const userLowQualityVotes = lowQualityVotes[address] || []
-          lowQualityVotes[address] = [...userLowQualityVotes, vote]
-        }
-      }
-    })
-  }
-
-  return {
-    highQualityVotes,
-    lowQualityVotes,
-  }
-}

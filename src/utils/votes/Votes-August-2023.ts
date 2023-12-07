@@ -13,7 +13,7 @@ export const SNAPSHOT_VOTES_AUGUST_2023 = [
   {
     id: '0x3638d5083f95f01acd7b8f95533d7c8b8f3c55d608b69f614a7448af56b354a6',
     voter: '0x003A3Eb1a1D2ad3BeA19ae06324727bEEeeC2E34',
-    created: 1690848066,
+    created: 1690858801,
     vp: 0.012441950494819132,
     choice: 3,
     proposal: {
@@ -35,7 +35,7 @@ export const SNAPSHOT_VOTES_AUGUST_2023 = [
   {
     id: '0x26c11fe2eafe486eed92b2fffaa2f0759cad91beb1dfd4cb22fd3ffaba24a3ca',
     voter: '0x15f51853d17E89D97980883Eef4C6ABA6BA82ed5',
-    created: 1692998273,
+    created: 1692744184,
     vp: 100,
     choice: 2,
     proposal: {
@@ -46,7 +46,7 @@ export const SNAPSHOT_VOTES_AUGUST_2023 = [
   {
     id: '0x2b44bb4c762e4c21184724fd838156c7b63591641b8cbc8e56aeb63489e40b7a',
     voter: '0x703B6e7D10f9Ab127bcFCb2dD9985b6b24BA1152',
-    created: 1692998340,
+    created: 1691275386,
     vp: 1.1413083482514166,
     choice: 1,
     proposal: {
@@ -57,7 +57,7 @@ export const SNAPSHOT_VOTES_AUGUST_2023 = [
   {
     id: '0x226737b921c34f3356f7b481d3cd8660f690711abf5deb02ee57da1c21b50696',
     voter: '0x4534C46EA854c9A302d3dc95b2d3253aE6A28aBC',
-    created: 1693515367,
+    created: 1692744186,
     vp: 3231.1023738029253,
     choice: 1,
     proposal: {
@@ -68,7 +68,7 @@ export const SNAPSHOT_VOTES_AUGUST_2023 = [
   {
     id: '0xfc069bbf894ec6a10611c97f838e4a6f9b9b6e2fc1017c09509c44ff69021bd8',
     voter: '0x4534C46EA854c9A302d3dc95b2d3253aE6A28aBC',
-    created: 1693515524,
+    created: 1692744186,
     vp: 3231.1023738029253,
     choice: 2,
     proposal: {
@@ -90,7 +90,7 @@ export const SNAPSHOT_VOTES_AUGUST_2023 = [
   {
     id: '0xe52ae104b03d7679fd400664069d3a18439ba28553cf906d5aabf9821d3a718d',
     voter: '0x4534C46EA854c9A302d3dc95b2d3253aE6A28aBC',
-    created: 1693515961,
+    created: 1691006292,
     vp: 3231.1023738029253,
     choice: 1,
     proposal: {
@@ -101,7 +101,7 @@ export const SNAPSHOT_VOTES_AUGUST_2023 = [
   {
     id: '0x67508eec1b0824d813d40b0dceeb1c5168fe4efa1c6c00ffb328cecd48083d0c',
     voter: '0xc95ed3844cFc92e68aB7b0cD72e832a3f6eb0259',
-    created: 1693516292,
+    created: 1692744186,
     vp: 1500,
     choice: 1,
     proposal: {
@@ -112,7 +112,7 @@ export const SNAPSHOT_VOTES_AUGUST_2023 = [
   {
     id: '0x69fb714101d1dcabb803f7d0615462b8926852c017241e1ee55e5b2bccc4db1c',
     voter: '0x4534C46EA854c9A302d3dc95b2d3253aE6A28aBC',
-    created: 1693516549,
+    created: 1691707386,
     vp: 3231.1023738029253,
     choice: 2,
     proposal: {
@@ -123,7 +123,7 @@ export const SNAPSHOT_VOTES_AUGUST_2023 = [
   {
     id: '0xa7a50fe358715793c52f6c55b00c17e337e5b445553a86854c55a30997bf2e0f',
     voter: '0x4534C46EA854c9A302d3dc95b2d3253aE6A28aBC',
-    created: 1693516653,
+    created: 1692139386,
     vp: 3231.1023738029253,
     choice: 2,
     proposal: {
@@ -156,7 +156,7 @@ export const SNAPSHOT_VOTES_AUGUST_2023 = [
   {
     id: '0x1ed54dd3b7fd9df16d85dd8a3243483cc6a0273c2d6b4b83e23b4fb3f6055136',
     voter: '0x4534C46EA854c9A302d3dc95b2d3253aE6A28aBC',
-    created: 1693517313,
+    created: 1693017313,
     vp: 3216.1023738029253,
     choice: 1,
     proposal: {
@@ -200,7 +200,7 @@ export const SNAPSHOT_VOTES_AUGUST_2023 = [
   {
     id: '0xcc910657f7c8c9153b4054bb04fdf7c9063c4b15023891ea142c4e4cf9723ea1',
     voter: '0x003A3Eb1a1D2ad3BeA19ae06324727bEEeeC2E34',
-    created: 1693521196,
+    created: 1693001196,
     vp: 32,
     choice: 1,
     proposal: {

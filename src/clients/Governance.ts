@@ -36,7 +36,7 @@ import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { Topic } from '../entities/SurveyTopic/types'
 import { ProjectHealth, UpdateAttributes, UpdateResponse } from '../entities/Updates/types'
 import { AccountType } from '../entities/User/types'
-import { VoteByAddress, VotedProposal, Voter, VotesForProposals } from '../entities/Votes/types'
+import { Participation, VoteByAddress, VotedProposal, Voter, VotesForProposals } from '../entities/Votes/types'
 import { NewsletterSubscriptionResult } from '../shared/types/newsletter'
 import { PushNotification } from '../shared/types/notifications'
 import Time from '../utils/date/Time'
@@ -333,6 +333,11 @@ export class Governance extends API {
     return result.data
   }
 
+  async getParticipation() {
+    const response = await this.fetch<ApiResponse<Participation>>(`/votes/participation`, this.options().method('GET'))
+    return response.data
+  }
+
   async getUserSubscriptions() {
     const result = await this.fetch<ApiResponse<SubscriptionAttributes[]>>(
       `/subscriptions`,
@@ -590,14 +595,6 @@ export class Governance extends API {
     const response = await this.fetch<ApiResponse<SnapshotVote[]>>(
       `/snapshot/votes/${proposalId}`,
       this.options().method('GET')
-    )
-    return response.data
-  }
-
-  async getVotesByDates(start: Date, end: Date) {
-    const response = await this.fetch<ApiResponse<SnapshotVote[]>>(
-      `/snapshot/votes/all`,
-      this.options().method('POST').json({ start, end })
     )
     return response.data
   }
