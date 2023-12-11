@@ -66,6 +66,8 @@ jobs.cron('@monthly', giveTopVoterBadges)
 const file = readFileSync('static/api.yaml', 'utf8')
 const swaggerDocument = YAML.parse(file)
 
+const routePrefix = IS_NEW_ROLLOUT ? '/governance' : ''
+
 swaggerDocument['servers'] = [{ url: process.env.GATSBY_GOVERNANCE_API }]
 
 const app = express()
@@ -102,11 +104,11 @@ app.use('/api', [
 app.use(metrics([gatsbyRegister, register]))
 
 app.use(sitemap)
-app.use(IS_NEW_ROLLOUT ? '/governance/' : '/', social)
+app.use(`${routePrefix}/`, social)
 
 // Balance to profile redirect to preserve previous URL
 app.get(
-  IS_NEW_ROLLOUT ? '/governance/balance' : '/balance',
+  `${routePrefix}/balance`,
   handleRaw(async (req, res) => {
     const address = req.query.address
     const addressParam = address ? `?address=${address}` : ''
@@ -116,7 +118,7 @@ app.get(
 
 // Grants to project redirect to preserve previous URL
 app.get(
-  IS_NEW_ROLLOUT ? '/governance/grants' : '/grants',
+  `${routePrefix}/grants`,
   handleRaw(async (req, res) => {
     return res.redirect(`${GOVERNANCE_URL}/projects`)
   })
@@ -125,7 +127,7 @@ app.get(
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 app.use(
-  IS_NEW_ROLLOUT ? '/governance/' : '/',
+  `${routePrefix}/`,
   withCors({
     cors: '*',
     corsOrigin: '*',
