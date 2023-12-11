@@ -48,7 +48,7 @@ export default class EventModel extends Model<Event> {
   static withTimestamps = false
   static primaryKey = 'id'
 
-  static async getLatest() {
+  static async getLatest(): Promise<Event[]> {
     const query = SQL`
       SELECT *
       FROM ${table(EventModel)}

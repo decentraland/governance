@@ -24,6 +24,7 @@ import coauthor from './back/routes/coauthor'
 import committee from './back/routes/committee'
 import common from './back/routes/common'
 import debug from './back/routes/debug'
+import events from './back/routes/events'
 import newsletter from './back/routes/newsletter'
 import notification from './back/routes/notification'
 import project from './back/routes/project'
@@ -66,6 +67,7 @@ app.use('/api', [
   withBody(),
   committee,
   debug,
+  events,
   users,
   proposal,
   proposalSurveyTopics,
