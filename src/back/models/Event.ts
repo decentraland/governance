@@ -17,22 +17,22 @@ export enum EventType {
 
 export type Event = VoteEvent | ProposalCreatedEvent | UpdateCreatedEvent | CommentedEvent
 
-type VoteEvent = {
+export type VoteEvent = {
   event_type: EventType.Voted
   event_data: VoteEventData
 } & CommonEventAttributes
 
-type ProposalCreatedEvent = {
+export type ProposalCreatedEvent = {
   event_type: EventType.ProposalCreated
   event_data: ProposalEventData
 } & CommonEventAttributes
 
-type UpdateCreatedEvent = {
+export type UpdateCreatedEvent = {
   event_type: EventType.UpdateCreated
   event_data: UpdateCreatedEventData
 } & CommonEventAttributes
 
-type CommentedEvent = {
+export type CommentedEvent = {
   event_type: EventType.Commented
   event_data: ProposalEventData
 } & CommonEventAttributes
