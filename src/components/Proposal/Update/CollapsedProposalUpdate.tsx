@@ -42,7 +42,7 @@ const CollapsedProposalUpdate = ({
 
   const { introduction, status, health, completion_date, due_date } = update
   const updateLocation = locations.update(update.id)
-  const Component = isLinkable ? Link : 'div'
+  const Component = isLinkable && completion_date ? Link : 'div'
   const UpdateIcon = getStatusIcon(health, completion_date)
 
   const isAllowedToPostUpdate = account && (proposal.user === account || isCoauthor)
