@@ -5,7 +5,7 @@
   "GATSBY_BUY_LAND_URL": "https://market.decentraland.org/browse?section=land",
   "GATSBY_BUY_NAME_URL": "https://builder.decentraland.org/names",
   "GATSBY_VESTING_DASHBOARD_URL": "https://vesting.decentraland.org/%23/",
-  "GATSBY_SNAPSHOT_API": "https://testnet.snapshot.org/",
+  "GATSBY_SNAPSHOT_API": "https://testnet.hub.snapshot.org/",
   "GATSBY_SNAPSHOT_URL": "https://demo.snapshot.org/",
   "GATSBY_SNAPSHOT_QUERY_ENDPOINT": "https://api.thegraph.com/subgraphs/name/snapshot-labs/snapshot",
   "GATSBY_SNAPSHOT_SPACE": "daotest.dcl.eth",

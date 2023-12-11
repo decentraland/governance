@@ -20,7 +20,7 @@ import AuthProvider from 'decentraland-gatsby/dist/context/Auth/AuthProvider'
 import FeatureFlagProvider from 'decentraland-gatsby/dist/context/FeatureFlag/FeatureFlagProvider'
 import segment from 'decentraland-gatsby/dist/utils/segment/segment'
 import Layout from './src/components/Layout/Layout'
-import ExternalLinkWarningModal from './src/components/Modal/ExternalLinkWarningModal/ExternalLinkWarningModal'
+import ExternalLinkWarningModal from './src/components/Modal/ExternalLinkWarningModal'
 import Segment from "decentraland-gatsby/dist/components/Development/Segment"
 import { SEGMENT_KEY, SSO_URL } from "./src/constants"
 import { flattenMessages } from "./src/utils/intl"

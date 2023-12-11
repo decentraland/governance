@@ -374,6 +374,7 @@ export default function Update({ isEdit }: Props) {
       </form>
       {isEdit && (
         <EditUpdateModal
+          loading={isSubmitting}
           open={isEditModalOpen}
           onClose={handleEditModalClose}
           onClickAccept={() => submitUpdate(values as UpdateFormState)}

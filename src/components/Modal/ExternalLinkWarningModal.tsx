@@ -1,14 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Close } from 'decentraland-ui/dist/components/Close/Close'
-import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
+import { openUrl } from '../../helpers'
+import useFormatMessage from '../../hooks/useFormatMessage'
+import Markdown from '../Common/Typography/Markdown'
 
-import { openUrl } from '../../../helpers'
-import useFormatMessage from '../../../hooks/useFormatMessage'
-import Heading from '../../Common/Typography/Heading'
-import Markdown from '../../Common/Typography/Markdown'
-
+import ConfirmationModal from './ConfirmationModal'
 import './ExternalLinkWarningModal.css'
 
 type WarningModalState = {
@@ -61,31 +57,24 @@ function ExternalLinkWarningModal() {
   }, [])
 
   return (
-    <Modal open={isWarningModalOpen} size="tiny" closeIcon={<Close />} onClose={handleDismiss}>
-      <Modal.Content>
-        <div className={'ExternalLinkWarningModal__Title'}>
-          <Heading size="xs" weight="semi-bold">
-            {t('modal.external_link_warning.title')}
-          </Heading>
-          <Markdown
-            componentsClassNames={{
-              p: 'ExternalLinkWarningModal__Description',
-              a: 'ExternalLinkWarningModal__Link',
-            }}
-          >
-            {t('modal.external_link_warning.description', { url: warningModalState.href })}
-          </Markdown>
-        </div>
-        <div className={'ExternalLinkWarningModal__Actions'}>
-          <Button fluid primary className={'ExternalLinkWarningModal__Button'} onClick={handleContinue}>
-            {t('modal.external_link_warning.accept')}
-          </Button>
-          <Button fluid basic className={'ExternalLinkWarningModal__Button'} onClick={handleDismiss}>
-            {t('modal.external_link_warning.reject')}
-          </Button>
-        </div>
-      </Modal.Content>
-    </Modal>
+    <ConfirmationModal
+      title={t('modal.external_link_warning.title')}
+      description={
+        <Markdown
+          componentsClassNames={{
+            a: 'ExternalLinkWarningModal__Link',
+          }}
+        >
+          {t('modal.external_link_warning.description', { url: warningModalState.href })}
+        </Markdown>
+      }
+      isOpen={isWarningModalOpen}
+      onClose={handleDismiss}
+      onPrimaryClick={handleContinue}
+      onSecondaryClick={handleDismiss}
+      primaryButtonText={t('modal.external_link_warning.accept')}
+      secondaryButtonText={t('modal.external_link_warning.reject')}
+    />
   )
 }
 

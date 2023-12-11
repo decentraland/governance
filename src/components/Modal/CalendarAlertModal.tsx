@@ -2,10 +2,6 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { UnitTypeLongPlural } from 'dayjs'
 import useTrackContext from 'decentraland-gatsby/dist/context/Track/useTrackContext'
-import { Button } from 'decentraland-ui/dist/components/Button/Button'
-import { Close } from 'decentraland-ui/dist/components/Close/Close'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
-import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { SegmentEvent } from '../../entities/Events/types'
 import { ProposalAttributes } from '../../entities/Proposal/types'
@@ -16,9 +12,12 @@ import { getGoogleCalendarUrl } from '../../utils/projects'
 import NumberSelector from '../ProjectRequest/NumberSelector'
 
 import './CalendarAlertModal.css'
+import ConfirmationModal from './ConfirmationModal'
 
-type CalendarAlertModalProps = Omit<ModalProps, 'children'> & {
+interface Props {
   proposal: Pick<ProposalAttributes, 'id' | 'title' | 'finish_at'>
+  onClose: () => void
+  open: boolean
 }
 
 const UNITS: UnitTypeLongPlural[] = ['minutes', 'hours', 'days']
@@ -34,7 +33,7 @@ function getAlertDate(finishAt: ProposalAttributes['finish_at'], value: number, 
   return alertDate.toDate()
 }
 
-function CalendarAlertModal({ proposal, onClose, ...props }: CalendarAlertModalProps) {
+function CalendarAlertModal({ proposal, onClose, open }: Props) {
   const t = useFormatMessage()
   const { finish_at, title, id } = proposal
   const [timeValue, setTimeValue] = useState(0)
@@ -69,13 +68,12 @@ function CalendarAlertModal({ proposal, onClose, ...props }: CalendarAlertModalP
   })
 
   return (
-    <Modal {...props} onClose={handleClose} size="tiny" closeIcon={<Close />}>
-      <Modal.Content>
-        <div className="ProposalModal__Title">
-          <Header>{t('modal.calendar_alert.title')}</Header>
-        </div>
+    <ConfirmationModal
+      title={t('modal.calendar_alert.title')}
+      description={
         <div className="CalendarAlertModal__SelectorContainer">
           <NumberSelector
+            className="CalendarAlertModal__NumberSelector"
             value={timeValue}
             min={0}
             max={MAX_TIME_VALUE}
@@ -85,24 +83,16 @@ function CalendarAlertModal({ proposal, onClose, ...props }: CalendarAlertModalP
             onUnitChange={setUnit}
           />
         </div>
-        <div className="ProposalModal__Actions">
-          <Button
-            fluid
-            primary
-            disabled={isDisabled}
-            as="a"
-            href={alertUrl}
-            target="_blank"
-            onClick={trackAddToCalendar}
-          >
-            {t('modal.calendar_alert.add_to_calendar')}
-          </Button>
-          <Button className="CalendarAlertModal__CancelButton" fluid basic onClick={handleClose}>
-            {t('modal.calendar_alert.cancel')}
-          </Button>
-        </div>
-      </Modal.Content>
-    </Modal>
+      }
+      isOpen={open}
+      isDisabled={isDisabled}
+      onPrimaryClick={trackAddToCalendar}
+      primaryButtonHref={alertUrl}
+      onClose={handleClose}
+      onSecondaryClick={handleClose}
+      primaryButtonText={t('modal.calendar_alert.add_to_calendar')}
+      secondaryButtonText={t('modal.calendar_alert.cancel')}
+    />
   )
 }
 
