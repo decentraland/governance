@@ -125,9 +125,17 @@ export default function ProposalUpdatesActions({
         onSecondaryClick={handlePendingModalSecondaryClick}
         onClose={() => setIsLateUpdateModalOpen(false)}
         title={t('page.proposal_detail.grant.pending_update_modal.title')}
-        description={t('page.proposal_detail.grant.pending_update_modal.description')}
+        description={
+          nextUpdate
+            ? t('page.proposal_detail.grant.pending_update_modal.description')
+            : t('page.proposal_detail.grant.pending_update_modal.description_last')
+        }
         primaryButtonText={t('page.proposal_detail.grant.pending_update_modal.primary_button')}
-        secondaryButtonText={t('page.proposal_detail.grant.pending_update_modal.secondary_button')}
+        secondaryButtonText={
+          nextUpdate
+            ? t('page.proposal_detail.grant.pending_update_modal.secondary_button')
+            : t('page.proposal_detail.grant.pending_update_modal.secondary_button_additional')
+        }
       />
     </div>
   )

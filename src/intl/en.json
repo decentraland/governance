@@ -1258,8 +1258,10 @@
         "pending_update_modal": {
           "title": "Previous Update Pending",
           "description": "Your last month's project update for the Grant is still pending. To maintain a consistent record, we recommend publishing the previous update before proceeding with this month's update. Please note, that if the pending update is not published, it will be labeled as 'Missed' and cannot be submitted later.",
+          "description_last": "Your last month's project update for the Grant is still pending. This is the last required update for your Grant. We recommend publishing the previous mandatory update before creating additional updates. Please note, that if the pending update is not published, it will be labeled as 'Missed' and cannot be submitted later.",
           "primary_button": "Publish Previous Update",
-          "secondary_button": "Proceed with Current Update"
+          "secondary_button": "Proceed with Current Update",
+          "secondary_button_additional": "Proceed with this additional update"
         },
         "vesting_label": "Grant beneficiary",
         "vesting_description": "**Funded by the Decentraland DAO**, enabled by its Community.",
