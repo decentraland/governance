@@ -7,15 +7,10 @@ import ProposalModel from '../../entities/Proposal/model'
 import { SITEMAP_ITEMS_PER_PAGE, governanceUrl, proposalUrl } from '../../entities/Proposal/utils'
 
 export default routes((router) => {
-  router.get(`${IS_NEW_ROLLOUT ? '/governance' : ''}/sitemap.xml`, handleRaw(getIndexSitemap, 'application/xml'))
-  router.get(
-    `${IS_NEW_ROLLOUT ? '/governance' : ''}/sitemap.static.xml`,
-    handleRaw(getStaticSitemap, 'application/xml')
-  )
-  router.get(
-    `${IS_NEW_ROLLOUT ? '/governance' : ''}/sitemap.proposals.xml`,
-    handleRaw(getProposalsSitemap, 'application/xml')
-  )
+  const routePrefix = IS_NEW_ROLLOUT ? '/governance' : ''
+  router.get(`${routePrefix}/sitemap.xml`, handleRaw(getIndexSitemap, 'application/xml'))
+  router.get(`${routePrefix}/sitemap.static.xml`, handleRaw(getStaticSitemap, 'application/xml'))
+  router.get(`${routePrefix}/sitemap.proposals.xml`, handleRaw(getProposalsSitemap, 'application/xml'))
 })
 
 export async function getIndexSitemap() {

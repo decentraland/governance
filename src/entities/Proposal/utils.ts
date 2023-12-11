@@ -142,14 +142,8 @@ export function forumUserUrl(username: string) {
 }
 
 export function governanceUrl(pathname = '') {
-  let target: URL
-  if (IS_NEW_ROLLOUT) {
-    target = new URL(GOVERNANCE_URL)
-    target.pathname = `/governance${pathname}`
-  } else {
-    target = new URL(GOVERNANCE_API)
-    target.pathname = pathname
-  }
+  const target = IS_NEW_ROLLOUT ? new URL(GOVERNANCE_URL) : new URL(GOVERNANCE_API)
+  target.pathname = IS_NEW_ROLLOUT ? `/governance${pathname}` : pathname
   target.search = ''
   target.hash = ''
   return target.toString()

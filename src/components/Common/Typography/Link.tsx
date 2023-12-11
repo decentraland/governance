@@ -31,7 +31,7 @@ export default function Link({ target, rel, href, onClick, className, ...props }
     const isBlank = e.currentTarget.target === TARGET_BLANK
     if (isLocal && href && !isBlank && !isMetaClick(e)) {
       let internalPath = href
-      if (IS_NEW_ROLLOUT && internalPath.startsWith('/governance')) {
+      if (IS_NEW_ROLLOUT) {
         internalPath = internalPath.replace('/governance', '')
       }
       e.preventDefault()
