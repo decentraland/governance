@@ -8,6 +8,16 @@ import { Avatar, ProfileResponse } from './types'
 const CATALYST_URL = 'https://peer.decentraland.org'
 export const DEFAULT_AVATAR_IMAGE = 'https://decentraland.org/images/male.png'
 
+export async function getNameAndAvatar(user: string) {
+  const profile = await getProfile(user)
+  const profileHasName = !!profile && profile.hasClaimedName && !!profile.name && profile.name.length > 0
+  const displayableUser = profileHasName ? profile.name : user
+
+  const hasAvatar = !!profile && !!profile.avatar
+  const avatar = hasAvatar ? profile.avatar.snapshots.face256 : null
+  return { displayableUser, avatar }
+}
+
 export async function getProfile(address: string): Promise<Avatar | null> {
   if (!isEthereumAddress(address)) {
     throw new Error(`Invalid address provided. Value: ${address}`)

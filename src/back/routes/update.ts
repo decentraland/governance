@@ -103,43 +103,20 @@ async function getProposalUpdateComments(req: Request<{ update_id: string }>) {
 async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
   const { author, health, introduction, highlights, blockers, next_steps, additional_notes } = req.body
 
+  //TODO: validate update data :)
   const user = req.auth!
   const proposalId = req.params.proposal
-  const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: proposalId })
-  const isAuthorOrCoauthor =
-    user && (proposal?.user === user || (await CoauthorService.isCoauthor(proposalId, user))) && author === user
-
-  if (!proposal || !isAuthorOrCoauthor) {
-    throw new RequestError(`Unauthorized`, RequestError.Forbidden)
-  }
-
-  const updates = await UpdateModel.find<UpdateAttributes>({
-    proposal_id: proposalId,
-    status: UpdateStatus.Pending,
-  })
-
-  const currentUpdate = getCurrentUpdate(updates)
-  const nextPendingUpdate = getNextPendingUpdate(updates)
-
-  if (updates.length > 0 && (currentUpdate || nextPendingUpdate)) {
-    throw new RequestError(`Updates pending for this proposal`, RequestError.BadRequest)
-  }
-
-  const data = {
-    proposal_id: proposal.id,
+  return await UpdateService.create(
+    proposalId,
+    user,
     author,
     health,
     introduction,
     highlights,
     blockers,
     next_steps,
-    additional_notes,
-  }
-  const update = await UpdateModel.createUpdate(data)
-  await DiscourseService.createUpdate(update, proposal.title)
-  DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
-
-  return update
+    additional_notes
+  )
 }
 
 async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
