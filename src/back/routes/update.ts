@@ -21,7 +21,6 @@ import Time from '../../utils/date/Time'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
 import { CoauthorService } from '../services/coauthor'
-import { DiscordService } from '../services/discord'
 import { UpdateService } from '../services/update'
 
 export default routes((route) => {
@@ -131,8 +130,8 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
   const { completion_date } = update
 
   const user = req.auth
-  const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: req.params.proposal })
 
+  const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: req.params.proposal })
   const isAuthorOrCoauthor =
     user && (proposal?.user === user || (await CoauthorService.isCoauthor(proposalId, user))) && author === user
 
@@ -147,35 +146,22 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     throw new RequestError(`Update is not on time: "${update.id}"`, RequestError.BadRequest)
   }
 
-  const status = !update.due_date || isOnTime ? UpdateStatus.Done : UpdateStatus.Late
-
-  await UpdateModel.update<UpdateAttributes>(
-    {
-      author,
-      health,
-      introduction,
-      highlights,
-      blockers,
-      next_steps,
-      additional_notes,
-      status,
-      completion_date: completion_date || now,
-      updated_at: now,
-    },
-    { id }
+  return await UpdateService.updateProposalUpdate(
+    update,
+    author,
+    health,
+    introduction,
+    highlights,
+    blockers,
+    next_steps,
+    additional_notes,
+    completion_date,
+    id,
+    proposal,
+    user!,
+    now,
+    isOnTime
   )
-
-  const updatedUpdate = await UpdateService.getById(id)
-  if (updatedUpdate) {
-    if (!completion_date) {
-      await DiscourseService.createUpdate(updatedUpdate, proposal.title)
-      DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
-    } else {
-      UpdateService.commentUpdateEditInDiscourse(updatedUpdate)
-    }
-  }
-
-  return true
 }
 
 async function deleteProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {

@@ -8,6 +8,7 @@ export class EventsService {
     return await EventModel.getLatest()
   }
 
+  //TODO: error handling
   static async proposalCreated(proposal_id: string, proposal_title: string, address: string) {
     const { displayableUser } = await getNameAndAvatar(address)
 
@@ -22,17 +23,22 @@ export class EventsService {
     await EventModel.create(proposalCreatedEvent)
   }
 
+  //TODO: error handling
   static async updateCreated(update_id: string, proposal_id: string, proposal_title: string, address: string) {
-    const { displayableUser } = await getNameAndAvatar(address)
+    try {
+      const { displayableUser } = await getNameAndAvatar(address)
 
-    const updateCreatedEvent: UpdateCreatedEvent = {
-      id: crypto.randomUUID(),
-      username: displayableUser !== address ? displayableUser : undefined,
-      address,
-      event_type: EventType.UpdateCreated,
-      event_data: { update_id, proposal_id, proposal_title },
-      created_at: new Date(),
+      const updateCreatedEvent: UpdateCreatedEvent = {
+        id: crypto.randomUUID(),
+        username: displayableUser !== address ? displayableUser : undefined,
+        address,
+        event_type: EventType.UpdateCreated,
+        event_data: { update_id, proposal_id, proposal_title },
+        created_at: new Date(),
+      }
+      await EventModel.create(updateCreatedEvent)
+    } catch (error) {
+      console.log('error creating event', error)
     }
-    await EventModel.create(updateCreatedEvent)
   }
 }
