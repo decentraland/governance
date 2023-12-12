@@ -140,6 +140,7 @@ export function UpdateProposalStatusModal({
           )
           onClose()
           return updateProposal
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
           setIsSubmitting(false)
           setError(err.body?.error || err.message)
@@ -150,6 +151,7 @@ export function UpdateProposalStatusModal({
       setIsSubmitting(false)
       if (proposal) {
         queryClient.setQueryData([proposalKey], proposal)
+        queryClient.invalidateQueries([`proposalUpdates#${proposal.id}`])
       }
     },
     mutationKey: [`updatingProposal#${proposal?.id}`],
