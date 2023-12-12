@@ -14,6 +14,7 @@ import { ContentSection } from '../Layout/ContentLayout'
 import ProjectRequestSection from '../ProjectRequest/ProjectRequestSection'
 
 import './FinancialSection.css'
+import SummaryItems from './SummaryItems'
 
 interface Props {
   onValidation: (data: UpdateFinancial, sectionValid: boolean) => void
@@ -57,6 +58,8 @@ function FinancialSection({ onValidation, isFormDisabled, sectionNumber, intialV
 
   const [csvInput, setCsvInput] = useState<string | undefined>(CSV_TEXTAREA_PLACEHOLDER)
   const [errors, setErrors] = useState<{ row: number; text: string }[]>([])
+  const records = watch('records')
+  const clearRecords = useCallback(() => setValue('records', []), [setValue])
 
   const csvFileHandler = (data: string[][]) => {
     let value = ''
@@ -80,21 +83,24 @@ function FinancialSection({ onValidation, isFormDisabled, sectionNumber, intialV
     (data: string[][]) => {
       if (data.length === 0) {
         setErrors([{ row: 0, text: t('page.proposal_update.csv_empty') }])
+        clearRecords()
         return
       }
       const header = data[0]
       if (header.length !== CSV_HEADER.length) {
         setErrors([{ row: 0, text: t('page.proposal_update.csv_invalid_header') }])
+        clearRecords()
         return
       }
       for (let i = 0; i < CSV_HEADER.length; i++) {
         if (header[i] !== CSV_HEADER[i]) {
           setErrors([{ row: 0, text: t('page.proposal_update.csv_invalid_header') }])
+          clearRecords()
           return
         }
       }
 
-      const records: Record<string, string | number>[] = []
+      const csvRecords: Record<string, string | number>[] = []
 
       for (let idx = 1; idx < data.length; idx++) {
         const record = data[idx]
@@ -103,6 +109,7 @@ function FinancialSection({ onValidation, isFormDisabled, sectionNumber, intialV
           // TODO: Revisar
           if (record.length !== CSV_HEADER.length) {
             setErrors([{ row: idx + 1, text: t('page.proposal_update.csv_invalid_row') }])
+            clearRecords()
             return
           }
           const row: Record<string, string | number> = {}
@@ -112,11 +119,11 @@ function FinancialSection({ onValidation, isFormDisabled, sectionNumber, intialV
             const isNumber = field === 'amount'
             row[field] = isNumber ? toNumber(value) : value
           }
-          records.push(row)
+          csvRecords.push(row)
         }
       }
-      if (records.length > 0) {
-        const parsedResult = schema.safeParse({ records })
+      if (csvRecords.length > 0) {
+        const parsedResult = schema.safeParse({ records: csvRecords })
         if (parsedResult.success) {
           setErrors([])
           setValue('records', parsedResult.data.records)
@@ -125,13 +132,15 @@ function FinancialSection({ onValidation, isFormDisabled, sectionNumber, intialV
             row: Number(issue.path[1]) + 1,
             text: t('page.proposal_update.csv_row_error', { field: issue.path[2], error: issue.message }),
           }))
+          clearRecords()
           setErrors(fieldErrors)
         }
       } else {
+        clearRecords()
         setErrors([])
       }
     },
-    [setValue, t]
+    [clearRecords, setValue, t]
   )
 
   useEffect(() => {
@@ -150,6 +159,7 @@ function FinancialSection({ onValidation, isFormDisabled, sectionNumber, intialV
       isFormEdited={isDirty}
       sectionTitle={t('page.proposal_update.financial_section_title')}
       sectionNumber={sectionNumber}
+      isNew
     >
       <ContentSection>
         <Label>{t('page.proposal_update.reporting_label')}</Label>
@@ -164,6 +174,13 @@ function FinancialSection({ onValidation, isFormDisabled, sectionNumber, intialV
           <CSVDragAndDrop onUploadAccepted={csvFileHandler} onRemoveFile={removeFileHandler} />
         </div>
       </ContentSection>
+      {records.length > 0 && (
+        <ContentSection>
+          <Label>{t('page.proposal_update.summary_label')}</Label>
+          <SubLabel>{t('page.proposal_update.summary_description')}</SubLabel>
+          <SummaryItems records={records} />
+        </ContentSection>
+      )}
     </ProjectRequestSection>
   )
 }

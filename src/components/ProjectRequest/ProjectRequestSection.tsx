@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
 import SectionIcon from '../GrantRequest/SectionIcon'
+import NewBadge from '../Proposal/NewBadge/NewBadge'
 
 import './ProjectRequestSection.css'
 
@@ -14,6 +15,7 @@ export type Props = {
   onBlur?: () => void
   children: React.ReactNode
   shouldFocus?: boolean
+  isNew?: boolean
 }
 
 export default function ProjectRequestSection({
@@ -24,6 +26,7 @@ export default function ProjectRequestSection({
   onBlur,
   children,
   shouldFocus = true,
+  isNew = false,
 }: Props) {
   const [focused, setFocused] = useState(false)
 
@@ -44,7 +47,10 @@ export default function ProjectRequestSection({
             sectionNumber={sectionNumber}
             validated={validated}
           />
-          <div className="ProjectRequestSection__HeaderTitle">{sectionTitle}</div>
+          <div className="ProjectRequestSection__HeaderTitle">
+            {sectionTitle}
+            {isNew && <NewBadge />}
+          </div>
           <div className="ProjectRequestSection__HorizontalLine" />
         </div>
         <div className="ProjectRequestSection__Content">{children}</div>

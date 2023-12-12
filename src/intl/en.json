@@ -2077,6 +2077,7 @@
       "csv_row_error": "Field \"{field}\": {error}",
       "summary_label": "Summary",
       "summary_description": "According to what you've disclosed above, this is what your spend since your last update looks like.",
+      "summary_items": "{count} {count, plural, one {item} other {items}}",
       "publish_update": "Publish update",
       "preview_update": "Preview update",
       "edit_update": "Edit update"
