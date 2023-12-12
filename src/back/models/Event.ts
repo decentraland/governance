@@ -4,7 +4,6 @@ import { SQL, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 export type CommonEventAttributes = {
   id: string
   address: string
-  username?: string
   created_at: Date
 }
 
@@ -15,9 +14,9 @@ export enum EventType {
   Commented = 'commented',
 }
 
-export type Event = VoteEvent | ProposalCreatedEvent | UpdateCreatedEvent | CommentedEvent
+export type Event = VotedEvent | ProposalCreatedEvent | UpdateCreatedEvent | CommentedEvent
 
-export type VoteEvent = {
+export type VotedEvent = {
   event_type: EventType.Voted
   event_data: VoteEventData
 } & CommonEventAttributes

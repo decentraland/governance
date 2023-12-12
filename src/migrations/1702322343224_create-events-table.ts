@@ -18,10 +18,6 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       type: 'TEXT',
       notNull: true,
     },
-    username: {
-      type: 'TEXT',
-      notNull: false,
-    },
     event_type: {
       type: EVENT_TYPE,
       notNull: true,
