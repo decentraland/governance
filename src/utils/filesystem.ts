@@ -98,3 +98,90 @@ export default function filesystem(
   router.use(file(resolve(cwd, fileSystemOptions.notFoundFile), 404, options))
   return router
 }
+
+// CSP configurations
+export const cspChildSrc = ['https:'].join(' ')
+export const cspConnectSrc = [
+  'https:',
+  'wss:',
+  'https://*.decentraland.org',
+  'https://*.decentraland.today',
+  'https://*.decentraland.zone',
+  // Used to test the proxied service
+  'http://127.0.0.1:*',
+].join(' ')
+export const cspFontSrc = [
+  'https:',
+  'data:',
+  'https://*.decentraland.org',
+  'https://*.decentraland.today',
+  'https://*.decentraland.zone',
+  // Used to test the proxied service
+  'http://127.0.0.1:*',
+].join(' ')
+export const cspImageSrc = [
+  'https:',
+  'data:',
+  'https://*.decentraland.org',
+  'https://*.decentraland.today',
+  'https://*.decentraland.zone',
+  // Used to test the proxied service
+  'http://127.0.0.1:*',
+].join(' ')
+export const cspManifestSrc = [
+  "'self'",
+  'https://*.decentraland.org',
+  'https://*.decentraland.today',
+  'https://*.decentraland.zone',
+  // Used to test the proxied service
+  'http://127.0.0.1:*',
+].join(' ')
+export const cspFormAction = [
+  "'self'",
+  'https://*.decentraland.org',
+  'https://*.decentraland.today',
+  'https://*.decentraland.zone',
+  // Used to test the proxied service
+  'http://127.0.0.1:*',
+].join(' ')
+export const cspMediaSrc = [
+  "'self'",
+  'https://*.decentraland.org',
+  'https://*.decentraland.today',
+  'https://*.decentraland.zone',
+  // Used to test the proxied service
+  'http://127.0.0.1:*',
+].join(' ')
+export const cspDefaultSrc = [
+  "'self'",
+  'https://*.decentraland.org',
+  'https://*.decentraland.today',
+  'https://*.decentraland.zone',
+  // Used to test the proxied service
+  'http://127.0.0.1:*',
+].join(' ')
+export const cspStyleSrc = ["'unsafe-inline'", 'https:', 'data:', 'http://127.0.0.1:*'].join(' ')
+export const cpsScriptSrc = [
+  "'self'",
+  "'unsafe-inline'",
+  "'unsafe-eval'",
+  'https://decentraland.org',
+  'https://*.decentraland.org',
+  'https://cdn.segment.com',
+  'https://cdn.rollbar.com',
+  'https://ajax.cloudflare.com',
+  'https://googleads.g.doubleclick.net',
+  'https://ssl.google-analytics.com',
+  'https://tagmanager.google.com',
+  'https://www.google-analytics.com',
+  'https://www.google-analytics.com',
+  'https://www.google.com',
+  'https://www.googleadservices.com',
+  'https://www.googletagmanager.com',
+  'https://verify.walletconnect.com',
+  'https://*.decentraland.org',
+  'https://*.decentraland.today',
+  'https://*.decentraland.zone',
+  // Used to test the proxied service
+  'http://127.0.0.1:*',
+].join(' ')

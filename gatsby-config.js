@@ -15,6 +15,7 @@ module.exports = {
     description: `Decentraland`,
     author: `@decentraland`,
   },
+  pathPrefix: '/governance',
   developMiddleware: developMiddleware({
     prefix: `/api`,
     url: `http://127.0.0.1:4000`,

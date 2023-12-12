@@ -1,5 +1,6 @@
 import classNames from 'classnames'
 
+import { IS_NEW_ROLLOUT } from '../../../constants'
 import { navigate } from '../../../utils/locations'
 
 import './Link.css'
@@ -29,8 +30,12 @@ export default function Link({ target, rel, href, onClick, className, ...props }
 
     const isBlank = e.currentTarget.target === TARGET_BLANK
     if (isLocal && href && !isBlank && !isMetaClick(e)) {
+      let internalPath = href
+      if (IS_NEW_ROLLOUT) {
+        internalPath = internalPath.replace('/governance', '')
+      }
       e.preventDefault()
-      navigate(href)
+      navigate(internalPath)
     }
   }
 
