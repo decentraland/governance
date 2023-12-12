@@ -739,4 +739,16 @@ export class Governance extends API {
     )
     return response.data
   }
+
+  async createVoteEvent(proposalId: string, proposalTitle: string, choice: string) {
+    const response = await this.fetch<ApiResponse<string>>(
+      `/events/voted`,
+      this.options().method('POST').authorization({ sign: true }).json({
+        proposalId,
+        proposalTitle,
+        choice,
+      })
+    )
+    return response.data
+  }
 }
