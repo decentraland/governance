@@ -14,6 +14,7 @@ function getBooleanStringVar(variableName: string, defaultValue: boolean) {
 }
 
 export const IS_NEW_ROLLOUT = getBooleanStringVar('NEW_ROLLOUT', false)
+
 export const GOVERNANCE_URL = process.env.GATSBY_GOVERNANCE_URL || 'https://decentraland.zone/governance'
 export const DOCS_URL = 'https://docs.decentraland.org/decentraland/what-is-the-dao/'
 export const FORUM_URL = process.env.GATSBY_DISCOURSE_API || clientEnv('GATSBY_DISCOURSE_API') || ''
