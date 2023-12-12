@@ -11,9 +11,10 @@ interface Props {
   disabled?: boolean
   onInput?: (value?: string) => void
   value?: string
+  errors?: { row: number; text: string }[]
 }
 
-function NumberedTextArea({ className, disabled, onInput, value }: Props) {
+function NumberedTextArea({ className, disabled, onInput, value, errors }: Props) {
   return (
     <AceEditor
       className={classNames('NumberedTextArea', className)}
@@ -29,6 +30,7 @@ function NumberedTextArea({ className, disabled, onInput, value }: Props) {
       readOnly={disabled}
       onBlur={(_, editor) => onInput?.(editor?.getValue())}
       value={value}
+      annotations={errors?.map((error) => ({ ...error, type: 'error', column: 0 }))}
     />
   )
 }

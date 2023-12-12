@@ -1,3 +1,5 @@
+import { z } from 'zod'
+
 export type UpdateGeneral = {
   health: ProjectHealth
   introduction: string
@@ -7,18 +9,9 @@ export type UpdateGeneral = {
   additional_notes: string
 }
 
-export type UpdateFinancialRecord = {
-  token_type: string
-  concept: string
-  description: string
-  amount: number
-  receiver: string
-  link: string
-}
+export type UpdateFinancialRecord = z.infer<typeof UpdateFinancialRecordSchema>
 
-export type UpdateFinancial = {
-  records: UpdateFinancialRecord[]
-}
+export type UpdateFinancial = z.infer<typeof UpdateFinancialSchema>
 
 export type UpdateAttributes = Partial<UpdateGeneral> &
   Partial<UpdateFinancial> & {
@@ -96,3 +89,16 @@ export const UpdateSchema = {
     ...UpdateGeneralSchema,
   },
 }
+
+const UpdateFinancialRecordSchema = z.object({
+  concept: z.string().min(1),
+  description: z.string().min(1),
+  amount: z.number().min(1),
+  token_type: z.string().min(3),
+  receiver: z.string().min(1),
+  link: z.string().url(),
+})
+
+export const UpdateFinancialSchema = z.object({
+  records: z.array(UpdateFinancialRecordSchema).min(1),
+})

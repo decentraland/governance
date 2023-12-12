@@ -22,7 +22,7 @@ type CSVFile = {
 }
 
 interface Props {
-  onUploadAccepted: (data: string[][]) => { ok: boolean; message?: string }
+  onUploadAccepted: (data: string[][]) => void
   onRemoveFile?: () => void
 }
 
@@ -35,12 +35,7 @@ export default function CSVDragAndDrop({ onUploadAccepted, onRemoveFile }: Props
     if (data.errors.length > 0) {
       setErrorMsg(data.errors[0][0].message)
     } else {
-      const result = onUploadAccepted(data.data)
-      if (!result.ok) {
-        setErrorMsg(result.message)
-      } else {
-        setErrorMsg(undefined)
-      }
+      onUploadAccepted(data.data)
     }
   }
 
