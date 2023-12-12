@@ -2,11 +2,11 @@ import type { Chart, ScriptableTooltipContext } from 'chart.js'
 
 import { Vote, VoteByAddress } from '../../entities/Votes/types'
 import { DEFAULT_AVATAR_IMAGE } from '../../utils/Catalyst'
-import { Avatar } from '../../utils/Catalyst/types'
+import { CatalystProfile } from '../../utils/Catalyst/types'
 import Time from '../../utils/date/Time'
 
 type VoteWithAddress = Vote & { address: string }
-type VoteWithProfile = VoteWithAddress & { profile?: Avatar }
+type VoteWithProfile = VoteWithAddress & { profile?: CatalystProfile }
 
 const TOOLTIP_ID = 'ProposalVPChartTooltip'
 export const HOUR_IN_MS = 60 * 60 * 1000
@@ -18,7 +18,7 @@ export function getSortedVotes(votesMap: VoteByAddress) {
     .sort((a, b) => a.timestamp - b.timestamp)
 }
 
-export function getSegregatedVotes(votes: VoteWithAddress[], profileMap: Map<string, Avatar>) {
+export function getSegregatedVotes(votes: VoteWithAddress[], profileMap: Map<string, CatalystProfile>) {
   const yes: VoteWithProfile[] = []
   const no: VoteWithProfile[] = []
   const abstain: VoteWithProfile[] = []

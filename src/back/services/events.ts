@@ -1,12 +1,46 @@
 import crypto from 'crypto'
 
 import { ErrorService } from '../../services/ErrorService'
+import { getDisplayableUsername } from '../../utils/Catalyst'
+import { DisplayableNameAndAvatar } from '../../utils/Catalyst/types'
 import { ErrorCategory } from '../../utils/errorCategories'
-import EventModel, { EventType, ProposalCreatedEvent, UpdateCreatedEvent, VotedEvent } from '../models/Event'
+import EventModel, { Event, EventType, ProposalCreatedEvent, UpdateCreatedEvent, VotedEvent } from '../models/Event'
+
+import { UserService } from './user'
+
+type EventWithAuthor = {
+  author: string
+  avatar: string
+} & Event
 
 export class EventsService {
-  static async getLatest() {
-    return await EventModel.getLatest()
+  static async getLatest(): Promise<EventWithAuthor[]> {
+    const latestEvents = await EventModel.getLatest()
+    const addresses = latestEvents.map((event) => event.address)
+
+    // TODO: this could be cached per address
+    const catalystProfileStatuses = await UserService.getCatalystProfileStatus(addresses)
+    const addressToNameAndAvatar: Record<string, DisplayableNameAndAvatar> = catalystProfileStatuses.reduce(
+      (acc, profileStatus) => {
+        const { profile } = profileStatus
+        const address = profile.ethAddress
+        acc[address] = {
+          displayableUser: getDisplayableUsername(profile, address),
+          avatar: profile.avatar.snapshots.face256,
+        }
+        return acc
+      },
+      {} as Record<string, DisplayableNameAndAvatar>
+    )
+
+    const latestEventsWithAuthor: EventWithAuthor[] = []
+    for (const event of latestEvents) {
+      const { address } = event
+      const { displayableUser, avatar } = addressToNameAndAvatar[address]
+      latestEventsWithAuthor.push({ author: displayableUser, avatar: avatar!, ...event })
+    }
+
+    return latestEventsWithAuthor
   }
 
   static async proposalCreated(proposal_id: string, proposal_title: string, address: string) {

@@ -3,22 +3,26 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { isSameAddress } from '../../entities/Snapshot/utils'
 
-import { Avatar, ProfileResponse } from './types'
+import { CatalystProfile, DisplayableNameAndAvatar, ProfileResponse } from './types'
 
 const CATALYST_URL = 'https://peer.decentraland.org'
 export const DEFAULT_AVATAR_IMAGE = 'https://decentraland.org/images/male.png'
 
-export async function getNameAndAvatar(user: string) {
-  const profile = await getProfile(user)
+export function getDisplayableUsername(profile: CatalystProfile | null, user: string) {
   const profileHasName = !!profile && profile.hasClaimedName && !!profile.name && profile.name.length > 0
   const displayableUser = profileHasName ? profile.name : user
+  return displayableUser
+}
+
+export function getDisplayNameAndAvatar(profile: CatalystProfile | null, user: string): DisplayableNameAndAvatar {
+  const displayableUser = getDisplayableUsername(profile, user)
 
   const hasAvatar = !!profile && !!profile.avatar
   const avatar = hasAvatar ? profile.avatar.snapshots.face256 : null
   return { displayableUser, avatar }
 }
 
-export async function getProfile(address: string): Promise<Avatar | null> {
+export async function getProfile(address: string): Promise<CatalystProfile | null> {
   if (!isEthereumAddress(address)) {
     throw new Error(`Invalid address provided. Value: ${address}`)
   }
@@ -28,7 +32,7 @@ export async function getProfile(address: string): Promise<Avatar | null> {
   return response.avatars.length > 0 ? response.avatars[0] : null
 }
 
-export async function getProfiles(addresses: string[]): Promise<(Avatar | null)[]> {
+export async function getProfiles(addresses: string[]): Promise<(CatalystProfile | null)[]> {
   for (const address of addresses) {
     if (!isEthereumAddress(address)) {
       throw new Error(`Invalid address provided. Value: ${address}`)
@@ -45,7 +49,7 @@ export async function getProfiles(addresses: string[]): Promise<(Avatar | null)[
     })
   ).json()
 
-  const result: (Avatar | null)[] = []
+  const result: (CatalystProfile | null)[] = []
 
   for (const address of addresses) {
     const profile = response.find((profile) => isSameAddress(profile.avatars[0]?.ethAddress, address))
@@ -55,7 +59,7 @@ export async function getProfiles(addresses: string[]): Promise<(Avatar | null)[
   return result
 }
 
-export function createDefaultAvatar(address: string): Avatar {
+export function createDefaultAvatar(address: string): CatalystProfile {
   return {
     userId: address,
     ethAddress: address,

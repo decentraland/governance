@@ -16,7 +16,7 @@ import { getPublicUpdates, getUpdateUrl } from '../entities/Updates/utils'
 import UserModel from '../entities/User/model'
 import { filterComments } from '../entities/User/utils'
 import { inBackground } from '../helpers'
-import { Avatar } from '../utils/Catalyst/types'
+import { CatalystProfile } from '../utils/Catalyst/types'
 
 import { ProposalInCreation } from './ProposalService'
 import { SnapshotService } from './SnapshotService'
@@ -25,7 +25,7 @@ export class DiscourseService {
   static async createProposal(
     data: ProposalInCreation,
     proposalId: string,
-    profile: Avatar | null,
+    profile: CatalystProfile | null,
     snapshotUrl: string,
     snapshotId: string
   ) {
@@ -34,6 +34,7 @@ export class DiscourseService {
       const discourseProposal = await Discourse.get().createPost(discoursePost)
       this.logPostCreation(discourseProposal)
       return discourseProposal
+      /* eslint-disable @typescript-eslint/no-explicit-any */
     } catch (error: any) {
       SnapshotService.dropSnapshotProposal(snapshotId)
       throw new Error(`Forum error: ${error.body?.errors.join(', ')}`, error)
@@ -57,7 +58,7 @@ export class DiscourseService {
 
   private static async getPost(
     data: ProposalInCreation,
-    profile: Avatar | null,
+    profile: CatalystProfile | null,
     proposalId: string,
     snapshotUrl: string,
     snapshotId: string

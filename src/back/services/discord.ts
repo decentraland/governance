@@ -11,7 +11,7 @@ import { UpdateAttributes } from '../../entities/Updates/types'
 import { getPublicUpdates, getUpdateNumber, getUpdateUrl } from '../../entities/Updates/utils'
 import { capitalizeFirstLetter, getEnumDisplayName, inBackground } from '../../helpers'
 import { ErrorService } from '../../services/ErrorService'
-import { getNameAndAvatar } from '../../utils/Catalyst'
+import { getDisplayNameAndAvatar, getProfile } from '../../utils/Catalyst'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
 
@@ -149,7 +149,8 @@ export class DiscordService {
 
     if (user) {
       try {
-        const { displayableUser, avatar } = await getNameAndAvatar(user)
+        const profile = await getProfile(user)
+        const { displayableUser, avatar } = getDisplayNameAndAvatar(profile, user)
 
         embed.setAuthor({
           name: displayableUser,

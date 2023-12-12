@@ -1,4 +1,4 @@
-import { Avatar } from '../../../utils/Catalyst/types'
+import { CatalystProfile } from '../../../utils/Catalyst/types'
 import {
   GrantProposalConfiguration,
   NewProposalBanName,
@@ -26,6 +26,8 @@ import * as poi from './poi'
 import * as poll from './poll'
 import * as tender from './tender'
 import { template } from './utils'
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 type NewConfiguration =
   | NewProposalLinkedWearables
@@ -101,7 +103,7 @@ export type SnapshotTemplateProps = {
   type: ProposalType
   configuration: NewConfiguration
   user: string
-  profile: Avatar | null
+  profile: CatalystProfile | null
   proposal_url: string
 }
 
@@ -131,7 +133,7 @@ export type ForumTemplate = {
   type: ProposalType
   configuration: NewConfiguration
   user: string
-  profile: Avatar | null
+  profile: CatalystProfile | null
   proposal_url: string
   snapshot_url: string
   snapshot_id: string

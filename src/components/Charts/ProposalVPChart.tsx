@@ -10,7 +10,7 @@ import { VoteByAddress } from '../../entities/Votes/types'
 import useAbbreviatedFormatter from '../../hooks/useAbbreviatedFormatter'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useProfiles from '../../hooks/useProfiles'
-import { Avatar } from '../../utils/Catalyst/types'
+import { CatalystProfile } from '../../utils/Catalyst/types'
 import Section from '../Proposal/View/Section'
 
 import './ProposalVPChart.css'
@@ -53,7 +53,7 @@ function ProposalVPChart({ requiredToPass, voteMap, isLoadingVotes, startTimesta
       profiles.reduce((acc, { profile }) => {
         acc.set(profile.ethAddress.toLowerCase(), profile)
         return acc
-      }, new Map<string, Avatar>()),
+      }, new Map<string, CatalystProfile>()),
     [profiles]
   )
   const votes = useMemo(() => getSegregatedVotes(sortedVotes, profileByAddress), [profileByAddress, sortedVotes])
