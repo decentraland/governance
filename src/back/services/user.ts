@@ -8,7 +8,7 @@ import {
   toAccountType,
   validateComment,
 } from '../../entities/User/utils'
-import { createDefaultAvatar, getProfiles } from '../../utils/Catalyst'
+import { createDefaultCatalystProfile, getProfiles } from '../../utils/Catalyst'
 import { CatalystProfileStatus } from '../../utils/Catalyst/types'
 
 export class UserService {
@@ -108,13 +108,13 @@ export class UserService {
     try {
       const profiles = await getProfiles(addresses)
       addressesProfiles = profiles.map<CatalystProfileStatus>((profile, idx) => ({
-        profile: profile || createDefaultAvatar(addresses[idx]),
+        profile: profile || createDefaultCatalystProfile(addresses[idx]),
         isDefaultProfile: !profile,
       }))
     } catch (error) {
       console.error(error) //TODO: is it necessary to report to error service?
       addressesProfiles = addresses.map<CatalystProfileStatus>((address) => ({
-        profile: createDefaultAvatar(address),
+        profile: createDefaultCatalystProfile(address),
         isDefaultProfile: true,
       }))
     }

@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-import { createDefaultAvatar, getProfiles } from '../utils/Catalyst'
+import { createDefaultCatalystProfile, getProfiles } from '../utils/Catalyst'
 import { CatalystProfileStatus } from '../utils/Catalyst/types'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
@@ -17,13 +17,13 @@ export default function useProfiles(addresses: (string | null | undefined)[]): {
     try {
       const profiles = await getProfiles(validAddresses)
       validAddressesProfiles = profiles.map<CatalystProfileStatus>((profile, idx) => ({
-        profile: profile || createDefaultAvatar(validAddresses[idx]),
+        profile: profile || createDefaultCatalystProfile(validAddresses[idx]),
         isDefaultProfile: !profile,
       }))
     } catch (error) {
       console.error(error)
       validAddressesProfiles = validAddresses.map<CatalystProfileStatus>((address) => ({
-        profile: createDefaultAvatar(address),
+        profile: createDefaultCatalystProfile(address),
         isDefaultProfile: true,
       }))
     }

@@ -3,7 +3,7 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { isSameAddress } from '../../entities/Snapshot/utils'
 
-import { CatalystProfile, DisplayableNameAndAvatar, ProfileResponse } from './types'
+import { CatalystProfile, DclProfile, ProfileResponse } from './types'
 
 const CATALYST_URL = 'https://peer.decentraland.org'
 export const DEFAULT_AVATAR_IMAGE = 'https://decentraland.org/images/male.png'
@@ -14,22 +14,24 @@ export function getDisplayableUsername(profile: CatalystProfile | null, user: st
   return displayableUser
 }
 
-export function getDisplayNameAndAvatar(profile: CatalystProfile | null, user: string): DisplayableNameAndAvatar {
-  const displayableUser = getDisplayableUsername(profile, user)
-
+export function getUsernameAndAvatar(profile: CatalystProfile | null): DclProfile {
+  const profileHasName = !!profile && profile.hasClaimedName && !!profile.name && profile.name.length > 0
+  const username = profileHasName ? profile.name : null
   const hasAvatar = !!profile && !!profile.avatar
-  const avatar = hasAvatar ? profile.avatar.snapshots.face256 : null
-  return { displayableUser, avatar }
+  const avatar = hasAvatar ? profile.avatar.snapshots.face256 : DEFAULT_AVATAR_IMAGE
+  return { username, avatar, hasCustomAvatar: hasAvatar }
 }
 
-export async function getProfile(address: string): Promise<CatalystProfile | null> {
+export async function getProfile(address: string): Promise<DclProfile | null> {
   if (!isEthereumAddress(address)) {
     throw new Error(`Invalid address provided. Value: ${address}`)
   }
 
   const response: ProfileResponse = await (await fetch(`${CATALYST_URL}/lambdas/profile/${address}`)).json()
 
-  return response.avatars.length > 0 ? response.avatars[0] : null
+  const catalystProfile = response.avatars.length > 0 ? response.avatars[0] : createDefaultCatalystProfile(address)
+
+  return getUsernameAndAvatar(catalystProfile)
 }
 
 export async function getProfiles(addresses: string[]): Promise<(CatalystProfile | null)[]> {
@@ -59,7 +61,7 @@ export async function getProfiles(addresses: string[]): Promise<(CatalystProfile
   return result
 }
 
-export function createDefaultAvatar(address: string): CatalystProfile {
+export function createDefaultCatalystProfile(address: string): CatalystProfile {
   return {
     userId: address,
     ethAddress: address,

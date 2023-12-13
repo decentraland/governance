@@ -25,8 +25,8 @@ function VotedProposalsBox({ address }: Props) {
       {isLoading && <SkeletonBars amount={votes.length || 3} height={83.5} />}
       {!isLoading &&
         (votes.length > 0 ? (
-          votes.map((vote) => {
-            return <ProfileProposalItem key={vote.id} votedProposal={vote} />
+          votes.map((vote, idx) => {
+            return <ProfileProposalItem key={vote.id + idx} votedProposal={vote} />
           })
         ) : (
           <Empty

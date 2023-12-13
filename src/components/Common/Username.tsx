@@ -3,7 +3,7 @@ import { Address } from 'decentraland-ui/dist/components/Address/Address'
 import { Blockie } from 'decentraland-ui/dist/components/Blockie/Blockie'
 
 import { getChecksumAddress } from '../../entities/Snapshot/utils'
-import useProfile from '../../hooks/useProfile'
+import useDclProfile from '../../hooks/useDclProfile'
 import locations from '../../utils/locations'
 import Avatar, { AvatarSize } from '../Common/Avatar'
 import Link from '../Common/Typography/Link'
@@ -52,7 +52,7 @@ function getBlockieScale(size?: string) {
 }
 
 const Username = ({ address, size, linked, variant = UsernameVariant.Full, strong = false, className }: Props) => {
-  const { hasDclProfile, displayableAddress, profileHasName } = useProfile(address)
+  const { username, avatar, hasCustomAvatar, isLoadingDclProfile } = useDclProfile(address)
   const blockieScale = getBlockieScale(size)
   const isAddressVariant = variant === UsernameVariant.Address
   const isFullVariant = variant === UsernameVariant.Full
@@ -64,23 +64,20 @@ const Username = ({ address, size, linked, variant = UsernameVariant.Full, stron
   return (
     <Component className={customClassNames} href={linked ? locations.profile({ address: checksumAddress }) : undefined}>
       {isAddressVariant && (
-        <>
-          {profileHasName && displayableAddress}
-          {!profileHasName && <Address value={checksumAddress} className={className} strong={strong} />}
-        </>
+        <>{username ? username : <Address value={checksumAddress} className={className} strong={strong} />}</>
       )}
 
       {!isAddressVariant && (
         <>
-          {hasDclProfile && (
+          {hasCustomAvatar && (
             <>
-              <Avatar size={size} address={address} />
-              {profileHasName && isFullVariant && <span className="Username__Name">{displayableAddress}</span>}
-              {!profileHasName && isFullVariant && <Address value={checksumAddress} strong={strong} />}
+              <Avatar size={size} address={address} avatar={avatar} isLoadingDclProfile={isLoadingDclProfile} />
+              {username && isFullVariant && <span className="Username__Name">{username}</span>}
+              {!username && isFullVariant && <Address value={checksumAddress} strong={strong} />}
             </>
           )}
 
-          {!hasDclProfile && (
+          {!hasCustomAvatar && (
             <>
               <Blockie scale={blockieScale} seed={checksumAddress} />
               {isFullVariant && <Address value={checksumAddress} strong={strong} />}

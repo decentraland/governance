@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { PreviewCamera, PreviewEmote } from '@dcl/schemas'
 import { WearablePreview } from 'decentraland-ui/dist/components/WearablePreview/WearablePreview'
 
-import useProfile from '../../hooks/useProfile'
+import useDclProfile from '../../hooks/useDclProfile'
 
 import './UserAvatar.css'
 
@@ -11,10 +11,11 @@ interface Props {
   address?: string
 }
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export default function UserAvatar({ address }: Props) {
   const [wearablePreviewController, setWearablePreviewController] = useState<any>()
 
-  const { hasDclProfile } = useProfile(address)
+  const { hasCustomAvatar } = useDclProfile(address)
   const handleLoad = useCallback(() => {
     setWearablePreviewController(WearablePreview.createController('wearable-preview'))
   }, [])
@@ -38,7 +39,7 @@ export default function UserAvatar({ address }: Props) {
     return () => clearInterval(interval)
   }, [wearablePreviewController])
 
-  if (!address || !hasDclProfile) {
+  if (!address || !hasCustomAvatar) {
     return null
   }
 
