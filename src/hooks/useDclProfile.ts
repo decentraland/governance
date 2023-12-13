@@ -5,7 +5,7 @@ import { getProfile } from '../utils/Catalyst'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
-export default function useDclProfile(address?: string | null, shouldFetchProfile?: boolean) {
+export default function useDclProfile(address?: string | null) {
   const fetchProfile = async () => {
     if (!address || !isEthereumAddress(address)) return null
 
@@ -19,7 +19,6 @@ export default function useDclProfile(address?: string | null, shouldFetchProfil
     queryKey: [`userProfile#${address?.toLowerCase()}`],
     queryFn: () => fetchProfile(),
     staleTime: DEFAULT_QUERY_STALE_TIME,
-    enabled: !!shouldFetchProfile,
   })
 
   const { username, avatar, hasCustomAvatar } = data || {}
