@@ -52,7 +52,7 @@ import filesystem, {
   cspStyleSrc,
 } from './utils/filesystem'
 
-import { GOVERNANCE_URL, IS_NEW_ROLLOUT } from './constants'
+import { GOVERNANCE_URL } from './constants'
 
 const jobs = manager()
 jobs.cron('@eachMinute', finishProposal)
@@ -66,7 +66,7 @@ jobs.cron('@monthly', giveTopVoterBadges)
 const file = readFileSync('static/api.yaml', 'utf8')
 const swaggerDocument = YAML.parse(file)
 
-const routePrefix = IS_NEW_ROLLOUT ? '/governance' : ''
+const routePrefix = '/governance'
 
 swaggerDocument['servers'] = [{ url: process.env.GATSBY_GOVERNANCE_API }]
 
@@ -133,7 +133,7 @@ app.use(
     corsOrigin: '*',
     allowedHeaders: '*',
   }),
-  filesystem(IS_NEW_ROLLOUT ? 'public-prefix' : 'public', '404.html', {
+  filesystem('public', '404.html', {
     defaultHeaders: {
       'Content-Security-Policy': `base-uri 'self'; child-src ${cspChildSrc}; connect-src ${cspConnectSrc}; default-src 'none'; font-src ${cspFontSrc}; form-action ${cspFormAction}; frame-ancestors 'none'; frame-src https:; img-src ${cspImageSrc}; manifest-src ${cspManifestSrc}; media-src ${cspMediaSrc}; object-src 'none'; style-src ${cspStyleSrc}; worker-src 'self'; script-src ${cpsScriptSrc}`,
       'X-Content-Type-Options': 'nosniff',
