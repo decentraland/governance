@@ -24,6 +24,7 @@ type Props = {
   isLoadingDclProfile?: boolean
 }
 
+// TODO: avatar should be mandatory when no src is provided
 export default function Avatar({ address, avatar, isLoadingDclProfile, size, src, className }: Props) {
   const avatarClassNames = classNames(
     'Avatar',
