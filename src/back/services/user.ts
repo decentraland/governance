@@ -8,8 +8,6 @@ import {
   toAccountType,
   validateComment,
 } from '../../entities/User/utils'
-import { createDefaultCatalystProfile, getProfiles } from '../../utils/Catalyst'
-import { CatalystProfileStatus } from '../../utils/Catalyst/types'
 
 export class UserService {
   private static VALIDATIONS_IN_PROGRESS: Record<string, ValidationMessage> = {}
@@ -99,26 +97,5 @@ export class UserService {
 
   static async getProfile(address: string) {
     return await UserModel.findOne<UserAttributes>({ address: address.toLowerCase() })
-  }
-
-  //TODO: move somewhere it can be reused by getProfiles hook
-  //TODO: make this return the avatar and the default username
-  static async getCatalystProfileStatus(addresses: string[]) {
-    let addressesProfiles: CatalystProfileStatus[] = []
-    try {
-      const profiles = await getProfiles(addresses)
-      addressesProfiles = profiles.map<CatalystProfileStatus>((profile, idx) => ({
-        profile: profile || createDefaultCatalystProfile(addresses[idx]),
-        isDefaultProfile: !profile,
-      }))
-    } catch (error) {
-      console.error(error) //TODO: is it necessary to report to error service?
-      addressesProfiles = addresses.map<CatalystProfileStatus>((address) => ({
-        profile: createDefaultCatalystProfile(address),
-        isDefaultProfile: true,
-      }))
-    }
-
-    return addressesProfiles
   }
 }

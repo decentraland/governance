@@ -1,12 +1,10 @@
 import crypto from 'crypto'
 
 import { ErrorService } from '../../services/ErrorService'
-import { getDisplayableUsername } from '../../utils/Catalyst'
-import { DisplayableNameAndAvatar } from '../../utils/Catalyst/types'
+import { getProfiles } from '../../utils/Catalyst'
+import { DclProfile } from '../../utils/Catalyst/types'
 import { ErrorCategory } from '../../utils/errorCategories'
 import EventModel, { Event, EventType, ProposalCreatedEvent, UpdateCreatedEvent, VotedEvent } from '../models/Event'
-
-import { UserService } from './user'
 
 type EventWithAuthor = {
   author: string
@@ -18,26 +16,20 @@ export class EventsService {
     const latestEvents = await EventModel.getLatest()
     const addresses = latestEvents.map((event) => event.address)
 
-    // TODO: this could be cached per address
-    const catalystProfileStatuses = await UserService.getCatalystProfileStatus(addresses)
-    const addressToNameAndAvatar: Record<string, DisplayableNameAndAvatar> = catalystProfileStatuses.reduce(
-      (acc, profileStatus) => {
-        const { profile } = profileStatus
-        const address = profile.ethAddress
-        acc[address] = {
-          displayableUser: getDisplayableUsername(profile, address),
-          avatar: profile.avatar.snapshots.face256,
-        }
-        return acc
-      },
-      {} as Record<string, DisplayableNameAndAvatar>
-    )
+    const profiles = await getProfiles(addresses)
+    const addressToNameAndAvatar: Record<string, DclProfile> = profiles.reduce((acc, profile) => {
+      acc[profile.address] = profile
+      return acc
+    }, {} as Record<string, DclProfile>)
 
     const latestEventsWithAuthor: EventWithAuthor[] = []
     for (const event of latestEvents) {
       const { address } = event
-      const { displayableUser, avatar } = addressToNameAndAvatar[address]
-      latestEventsWithAuthor.push({ author: displayableUser, avatar: avatar!, ...event })
+      latestEventsWithAuthor.push({
+        author: addressToNameAndAvatar[address].username || address,
+        avatar: addressToNameAndAvatar[address].avatar,
+        ...event,
+      })
     }
 
     return latestEventsWithAuthor
