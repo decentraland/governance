@@ -3,8 +3,7 @@ import { useState } from 'react'
 import { useTabletAndBelowMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import { PriorityProposal, PriorityProposalType } from '../../entities/Proposal/types'
-import { isSameAddress } from '../../entities/Snapshot/utils'
-import { VotesForProposals } from '../../entities/Votes/types'
+import { getDisplayedPriorityProposals } from '../../entities/Proposal/utils'
 import useFormatMessage, { FormatMessageFunction } from '../../hooks/useFormatMessage'
 import usePriorityProposals from '../../hooks/usePriorityProposals'
 import useProposalsCachedVotes from '../../hooks/useProposalsCachedVotes'
@@ -97,28 +96,6 @@ function renderPriorityProposals(
   )
 }
 
-function getDisplayedProposals(
-  votes?: VotesForProposals,
-  priorityProposals?: PriorityProposal[],
-  lowerAddress?: string | null
-) {
-  return votes && priorityProposals && lowerAddress
-    ? priorityProposals?.filter((proposal) => {
-        const hasVotedOnMain = votes && lowerAddress && votes[proposal.id] && !!votes[proposal.id][lowerAddress]
-        const hasVotedOnLinked =
-          proposal.linked_proposals_data &&
-          proposal.linked_proposals_data.some(
-            (linkedProposal) => votes[linkedProposal.id] && !!votes[linkedProposal.id][lowerAddress]
-          )
-        const hasAuthoredBid =
-          proposal.unpublished_bids_data &&
-          proposal.unpublished_bids_data.some((linkedBid) => isSameAddress(linkedBid.author_address, lowerAddress))
-
-        return !hasVotedOnMain && !hasVotedOnLinked && !hasAuthoredBid
-      })
-    : priorityProposals
-}
-
 function getProposalsAndLinkedProposalsIds(priorityProposals?: PriorityProposal[]) {
   return (
     priorityProposals?.reduce((acc: string[], priorityProposal) => {
@@ -138,7 +115,7 @@ function PriorityProposalsBox({ address, collapsible = false }: Props) {
   const { priorityProposals, isLoading } = usePriorityProposals(lowerAddress)
   const proposalIds = getProposalsAndLinkedProposalsIds(priorityProposals)
   const { votes, isLoadingVotes } = useProposalsCachedVotes(proposalIds)
-  const displayedProposals = getDisplayedProposals(votes, priorityProposals, lowerAddress)
+  const displayedProposals = getDisplayedPriorityProposals(votes, priorityProposals, lowerAddress)
   const [displayedProposalsAmount, setDisplayedProposalsAmount] = useState(PROPOSALS_PER_PAGE)
   const hasMoreProposals = displayedProposals && displayedProposals.length > PROPOSALS_PER_PAGE
   const showViewMoreButton = hasMoreProposals && displayedProposalsAmount < displayedProposals.length

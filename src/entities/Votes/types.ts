@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SnapshotProposal, SnapshotVote } from '../../clients/SnapshotTypes'
-import { ProposalStatus, ProposalType } from '../Proposal/types'
+import { SnapshotVote } from '../../clients/SnapshotTypes'
+import { ProposalAttributes, ProposalStatus, ProposalType } from '../Proposal/types'
 
 export type VoteAttributes = {
   proposal_id: string
@@ -43,9 +43,11 @@ export type Voter = {
   address: string
 } & VoteCount
 
-export type VotesForProposals = Record<SnapshotProposal['id'], VoteByAddress>
+export type VotesForProposals = Record<ProposalAttributes['id'], VoteByAddress>
 
 export type VoteSegmentation<T> = {
   highQualityVotes: Record<string, T>
   lowQualityVotes: Record<Voter['address'], T>
 }
+
+export type Participation = { last30Days: number; lastWeek: number }

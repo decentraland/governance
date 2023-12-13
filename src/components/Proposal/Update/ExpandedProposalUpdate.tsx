@@ -39,6 +39,7 @@ const ExpandedProposalUpdate = ({ update, index, onEditClick, onDeleteUpdateClic
   const UpdateIcon = getStatusIcon(health, completion_date)
 
   const handleUpdateClick = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (e: React.MouseEvent<any>) => {
       if (update.completion_date) {
         e.stopPropagation()
@@ -74,7 +75,7 @@ const ExpandedProposalUpdate = ({ update, index, onEditClick, onDeleteUpdateClic
           </span>
           {showMenu && (
             <div className="ProposalUpdate__Menu">
-              <UpdateMenu onEditClick={onEditClick} onDeleteClick={onDeleteUpdateClick} />
+              <UpdateMenu author={update.author} onEditClick={onEditClick} onDeleteClick={onDeleteUpdateClick} />
             </div>
           )}
           {status === UpdateStatus.Late && (

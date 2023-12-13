@@ -7,7 +7,7 @@ import './ProposalPromotionCountdown.css'
 
 export default function ProposalPromotionCountdown({ startAt }: { startAt: string | Date }) {
   const t = useFormatMessage()
-  const { hours, minutes, seconds, time } = useCountdown(Time(startAt))
+  const { days, hours, minutes, seconds, time } = useCountdown(Time(startAt))
 
   if (time <= 0) {
     return null
@@ -15,7 +15,7 @@ export default function ProposalPromotionCountdown({ startAt }: { startAt: strin
 
   return (
     <Text className="ProposalPromotionCountdown" size="xs">
-      {t('page.proposal_detail.promotion.submit_countdown', { value: `${hours}:${minutes}:${seconds}` })}
+      {t('page.proposal_detail.promotion.submit_countdown', { value: `${days}:${hours}:${minutes}:${seconds}` })}
     </Text>
   )
 }

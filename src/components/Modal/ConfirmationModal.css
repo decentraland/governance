@@ -1,0 +1,30 @@
+@media (min-width: 768px) {
+  .ConfirmationModal__Container {
+    margin: 48px 64px 32px 64px !important;
+  }
+}
+
+.ConfirmationModal__Text {
+  margin-bottom: 26px;
+}
+
+.ConfirmationModal__Title {
+  margin-bottom: 12px !important;
+}
+
+.ConfirmationModal__Text,
+.ConfirmationModal__Text * {
+  text-align: center;
+  white-space: pre-line;
+}
+
+.ConfirmationModal__Link {
+  color: var(--black-800);
+  pointer-events: none;
+  cursor: default;
+  overflow-wrap: break-word;
+}
+
+.ConfirmationModal__Actions button:not(:last-child) {
+  margin-bottom: 15px;
+}

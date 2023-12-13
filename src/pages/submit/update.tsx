@@ -236,6 +236,7 @@ export default function Update({ isEdit }: Props) {
       </div>
       {isEdit && (
         <EditUpdateModal
+          loading={isSubmitting}
           open={isEditModalOpen}
           onClose={handleEditModalClose}
           onClickAccept={() => submitUpdate(newUpdate as UpdateGeneral)}

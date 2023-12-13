@@ -73,7 +73,7 @@ export default {
       category?: NewGrantCategory
     } = {}
   ) => url(type ? `/submit/${String(type).replace('_', '-')}/` : '/submit/', options),
-  submitUpdate: (options: { id?: string; proposalId: string }) => url('/submit/update', options),
+  submitUpdate: (options: { id?: string; proposalId: string }) => url('/submit/update/', options),
   profile: (options: Partial<{ address: string }> = {}) => url('/profile/', options),
   transparency: () => url('/transparency/'),
   debug: () => url('/debug/'),
@@ -85,6 +85,8 @@ export default {
   },
 }
 
+// TODO: Type this
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function navigate(to: string, options?: NavigateOptions<any>) {
   if (typeof window === 'undefined') {
     return

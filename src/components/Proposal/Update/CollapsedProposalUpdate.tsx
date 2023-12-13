@@ -42,7 +42,7 @@ const CollapsedProposalUpdate = ({
 
   const { introduction, status, health, completion_date, due_date } = update
   const updateLocation = locations.update(update.id)
-  const Component = isLinkable ? Link : 'div'
+  const Component = isLinkable && completion_date ? Link : 'div'
   const UpdateIcon = getStatusIcon(health, completion_date)
 
   const isAllowedToPostUpdate = account && (proposal.user === account || isCoauthor)
@@ -52,16 +52,8 @@ const CollapsedProposalUpdate = ({
   const formattedCompletionDate = completion_date ? formatDate(completion_date) : ''
   const showPostUpdateButton = !completion_date && isAllowedToPostUpdate && isBetweenLateThresholdDate(due_date)
 
-  const handlePostUpdateClick = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.preventDefault()
-      navigate(locations.submitUpdate({ id: update.id, proposalId: proposal.id }))
-    },
-    [update.id, proposal.id]
-  )
-
   const handleUpdateClick = useCallback(
-    (e: React.MouseEvent<any>) => {
+    (e: React.MouseEvent<HTMLAnchorElement | HTMLDivElement>) => {
       if (update.completion_date) {
         e.stopPropagation()
         e.preventDefault()
@@ -100,14 +92,14 @@ const CollapsedProposalUpdate = ({
           )}
           {isAllowedToPostUpdate && (
             <div className="ProposalUpdate__Menu">
-              <UpdateMenu onEditClick={onEditClick} onDeleteClick={onDeleteUpdateClick} />
+              <UpdateMenu author={update.author} onEditClick={onEditClick} onDeleteClick={onDeleteUpdateClick} />
             </div>
           )}
           <ChevronRight color="var(--black-300)" />
         </div>
       )}
       {showPostUpdateButton && (
-        <Button basic onClick={handlePostUpdateClick}>
+        <Button as={Link} basic href={locations.submitUpdate({ id: update.id, proposalId: proposal.id })}>
           {t('page.proposal_detail.grant.update_button')}
         </Button>
       )}

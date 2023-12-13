@@ -38,8 +38,6 @@ import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { getChecksumAddress } from '../entities/Snapshot/utils'
 import { inBackground, splitArray } from '../helpers'
-import Time from '../utils/date/Time'
-import { getPreviousMonthStartAndEnd } from '../utils/date/getPreviousMonthStartAndEnd'
 import { ErrorCategory } from '../utils/errorCategories'
 
 import { ErrorService } from './ErrorService'
@@ -262,9 +260,7 @@ export class BadgesService {
   }
 
   static async queueTopVopVoterAirdrops(badgeCid: string) {
-    const today = Time.utc().toDate()
-    const { start, end } = getPreviousMonthStartAndEnd(today)
-    const recipients = await VoteService.getTopVoters(start, end, TOP_VOTERS_PER_MONTH)
+    const recipients = await VoteService.getTopVotersForPreviousMonth(TOP_VOTERS_PER_MONTH)
     await this.queueAirdropJob(
       badgeCid,
       recipients.map((recipient) => recipient.address)

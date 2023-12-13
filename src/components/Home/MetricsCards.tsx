@@ -1,22 +1,16 @@
 import { useMemo } from 'react'
 
-import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Mobile, NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalStatus } from '../../entities/Proposal/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
+import useParticipation from '../../hooks/useParticipation'
 import useProposals from '../../hooks/useProposals'
 import useTransparency from '../../hooks/useTransparency'
-import useVotesCountByDate from '../../hooks/useVotesCountByDate'
-import Time from '../../utils/date/Time'
 import locations from '../../utils/locations'
 
 import MetricsCard from './MetricsCard'
 import './MetricsCards.css'
-
-const now = Time().toDate()
-const oneWeekAgo = Time(now).subtract(1, 'week').toDate()
-const oneMonthAgo = Time(now).subtract(1, 'month').toDate()
 
 const MetricsCards = () => {
   const t = useFormatMessage()
@@ -41,14 +35,7 @@ const MetricsCards = () => {
     status: ProposalStatus.Active,
   })
 
-  const { votesCount: votesCountThisWeek, isLoadingVotesCount: isLoadingOneWeekVotesCount } = useVotesCountByDate(
-    oneWeekAgo,
-    now
-  )
-  const { votesCount: votesCountLastMonth, isLoadingVotesCount: isLoadingOneMonthVotesCount } = useVotesCountByDate(
-    oneMonthAgo,
-    now
-  )
+  const { participation, isLoadingParticipation } = useParticipation()
 
   const content = [
     <MetricsCard
@@ -63,11 +50,11 @@ const MetricsCards = () => {
     <MetricsCard
       href="/#engagement"
       key="page.home.metrics.votes_this_week"
-      isLoading={isLoadingOneMonthVotesCount || isLoadingOneWeekVotesCount}
+      isLoading={isLoadingParticipation}
       loadingLabel={t('page.home.metrics.fetching_participation_data')}
       category={t('page.home.metrics.participation')}
-      title={t('page.home.metrics.votes_this_week', { value: votesCountThisWeek })}
-      description={t('page.home.metrics.votes_last_month', { value: votesCountLastMonth })}
+      title={t('page.home.metrics.votes_this_week', { value: participation?.lastWeek })}
+      description={t('page.home.metrics.votes_last_month', { value: participation?.last30Days })}
     />,
     <MetricsCard
       href={locations.transparency()}
