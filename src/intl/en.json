@@ -917,6 +917,12 @@
         "total_vp": "Total VP",
         "view_all_delegates": "View all Delegates",
         "fetching": "Fetching DAO delegates..."
+      },
+      "activity_ticker": {
+        "title": "Latest activity",
+        "voted": "**{author}** voted on **{title}**",
+        "proposal_created": "**{author}** created proposal **{title}**",
+        "update_created": "**{author}** update created **{title}**"
       }
     },
     "welcome": {

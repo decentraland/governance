@@ -25,7 +25,7 @@ type Props = {
 }
 
 export default function Avatar({ address, size, src, className }: Props) {
-  const { profile, isLoadingProfile } = useProfile(address)
+  const { profile, isLoadingProfile } = useProfile(address, !!src)
   const avatarClassNames = classNames(
     'Avatar',
     `Avatar--${size || AvatarSize.Mini}`,
