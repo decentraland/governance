@@ -1,14 +1,14 @@
 import { isHttpsURL } from '../../helpers'
 import LinkWithTitle from '../Common/Typography/LinkWithTitle'
 
-export interface BreakdownContentProps {
+interface Props {
   description: string
   url?: string
 }
 
 const formatUrl = (url: string) => (isHttpsURL(url) ? url : `//${url}`)
 
-function BreakdownContent({ description, url }: BreakdownContentProps) {
+function BreakdownContent({ description, url }: Props) {
   return (
     <>
       <p>{description}</p>

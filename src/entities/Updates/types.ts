@@ -94,7 +94,7 @@ const UpdateFinancialRecordSchema = z.object({
   concept: z.string().min(1),
   description: z.string().min(1),
   amount: z.number().min(1),
-  token_type: z.string().min(3),
+  token_type: z.string().min(3).max(4),
   receiver: z.string().min(1),
   link: z.string().url(),
 })

@@ -11,19 +11,18 @@ import './BreakdownAccordion.css'
 
 const UNSELECTED_ITEM = -1
 
-export interface BreakdownItem<T> {
+export interface BreakdownItem {
   title: string
   subtitle: string
   value?: string
-  contentProps: T
-  content: (props: T) => React.ReactNode
+  content: React.ReactNode
 }
 
-interface Props<T> {
-  items: BreakdownItem<T>[]
+interface Props {
+  items: BreakdownItem[]
 }
 
-function BreakdownAccordion<T>({ items }: Props<T>) {
+function BreakdownAccordion({ items }: Props) {
   const [activeAccordionItem, setActiveAccordionItem] = useState(UNSELECTED_ITEM)
 
   const handleClick = (titleProps: AccordionTitleProps) => {
@@ -35,7 +34,7 @@ function BreakdownAccordion<T>({ items }: Props<T>) {
 
   return (
     <Accordion fluid styled className="BreakdownAccordion">
-      {items.map(({ title, subtitle, value, content, contentProps }, accordionNumber) => (
+      {items.map(({ title, subtitle, value, content }, accordionNumber) => (
         <Fragment key={`BreakdownAccordionItem--${accordionNumber}`}>
           <Accordion.Title
             className="BreakdownAccordion__TitleContainer"
@@ -59,9 +58,7 @@ function BreakdownAccordion<T>({ items }: Props<T>) {
               </span>
             </div>
           </Accordion.Title>
-          <Accordion.Content active={activeAccordionItem === accordionNumber}>
-            {content(contentProps)}
-          </Accordion.Content>
+          <Accordion.Content active={activeAccordionItem === accordionNumber}>{content}</Accordion.Content>
         </Fragment>
       ))}
     </Accordion>
