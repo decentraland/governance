@@ -64,7 +64,7 @@ export default function Comment({ forumUsername, avatarUrl, createdAt, cooked, a
         <div className="Comment__Author">
           <Link href={discourseUserUrl} target={linkTarget} rel={linkRel}>
             <Text weight="bold">
-              {username ? username : forumUsername}
+              {username || forumUsername}
               {address && <ValidatedProfile />}
             </Text>
           </Link>

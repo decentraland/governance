@@ -63,9 +63,7 @@ const Username = ({ address, size, linked, variant = UsernameVariant.Full, stron
 
   return (
     <Component className={customClassNames} href={linked ? locations.profile({ address: checksumAddress }) : undefined}>
-      {isAddressVariant && (
-        <>{username ? username : <Address value={checksumAddress} className={className} strong={strong} />}</>
-      )}
+      {isAddressVariant && <>{username || <Address value={checksumAddress} className={className} strong={strong} />}</>}
 
       {!isAddressVariant && (
         <>
