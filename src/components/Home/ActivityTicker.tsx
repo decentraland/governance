@@ -40,7 +40,7 @@ export default function ActivityTicker() {
             <div className="ActivityTicker__List">
               {events.map((item) => (
                 <div key={item.id} className="ActivityTicker__ListItem">
-                  <Avatar size="xs" src={item.avatar} />
+                  <Avatar size="xs" avatar={item.avatar} />
                   <div>
                     <Markdown
                       className="ActivityTicker__ListItemMarkdown"

@@ -26,7 +26,7 @@ type Props = {
   isLoadingDclProfile?: boolean
 }
 
-export default function Avatar({ address, avatar, isLoadingDclProfile, size = AvatarSize.m, src, className }: Props) {
+export default function Avatar({ address, avatar, isLoadingDclProfile, size = AvatarSize.m, className }: Props) {
   const avatarClassNames = classNames(
     'Avatar',
     `Avatar--${size}`,
@@ -35,5 +35,5 @@ export default function Avatar({ address, avatar, isLoadingDclProfile, size = Av
     className
   )
 
-  return <img src={src || avatar || DEFAULT_AVATAR_IMAGE} alt="" className={avatarClassNames} />
+  return <img src={avatar || DEFAULT_AVATAR_IMAGE} alt="" className={avatarClassNames} />
 }
