@@ -26,7 +26,7 @@ type Props = {
 
 const Username = ({
   address,
-  size = AvatarSize.Tiny,
+  size = AvatarSize.xs,
   linked,
   variant = UsernameVariant.Full,
   strong = false,

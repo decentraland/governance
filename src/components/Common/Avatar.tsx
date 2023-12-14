@@ -7,14 +7,13 @@ import { DEFAULT_AVATAR_IMAGE } from '../../utils/Catalyst'
 import './Avatar.css'
 
 export enum AvatarSize {
-  Mini = 'mini',
-  Tiny = 'tiny',
-  Small = 'small',
-  Medium = 'medium',
-  Large = 'large',
-  Big = 'big',
-  Huge = 'huge',
-  Massive = 'massive',
+  xxs = 'xxs',
+  xs = 'xs',
+  s = 's',
+  m = 'm',
+  l = 'l',
+  xl = 'xl',
+  xxl = 'xxl',
   Full = 'full',
 }
 
@@ -27,14 +26,7 @@ type Props = {
   isLoadingDclProfile?: boolean
 }
 
-export default function Avatar({
-  address,
-  avatar,
-  isLoadingDclProfile,
-  size = AvatarSize.Medium,
-  src,
-  className,
-}: Props) {
+export default function Avatar({ address, avatar, isLoadingDclProfile, size = AvatarSize.m, src, className }: Props) {
   const avatarClassNames = classNames(
     'Avatar',
     `Avatar--${size}`,

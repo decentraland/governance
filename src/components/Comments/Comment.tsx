@@ -56,7 +56,7 @@ export default function Comment({ forumUsername, avatarUrl, createdAt, cooked, a
           <Avatar
             address={address}
             avatar={hasCustomAvatar ? avatar : avatarUrl}
-            size="medium"
+            size="m"
             isLoadingDclProfile={isLoadingDclProfile}
           />
         </Link>

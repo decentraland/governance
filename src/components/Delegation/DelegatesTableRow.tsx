@@ -36,11 +36,7 @@ function DelegateRow({ delegate, onDelegateSelected }: Props) {
       onClick={() => onDelegateSelected(delegate)}
     >
       <Table.Cell className={classNames('DelegatesTableRow__CandidateName', 'DelegatesTable__Sticky')}>
-        <Username
-          className="DelegatesTableRow__Username"
-          address={delegateAddress}
-          size={isMobile ? 'mini' : 'small'}
-        />
+        <Username className="DelegatesTableRow__Username" address={delegateAddress} size={isMobile ? 'xxs' : 's'} />
         <Arrow filled={isFilled} className="DelegatesTableRow__UsernameArrow" />
       </Table.Cell>
       <Table.Cell className="DelegatesTable__ShadowBox" />
