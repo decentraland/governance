@@ -16,7 +16,7 @@ import { getPublicUpdates, getUpdateUrl } from '../entities/Updates/utils'
 import UserModel from '../entities/User/model'
 import { filterComments } from '../entities/User/utils'
 import { inBackground } from '../helpers'
-import { CatalystProfile } from '../utils/Catalyst/types'
+import { DclProfile } from '../utils/Catalyst/types'
 
 import { ProposalInCreation } from './ProposalService'
 import { SnapshotService } from './SnapshotService'
@@ -25,7 +25,7 @@ export class DiscourseService {
   static async createProposal(
     data: ProposalInCreation,
     proposalId: string,
-    profile: CatalystProfile | null,
+    profile: DclProfile | null,
     snapshotUrl: string,
     snapshotId: string
   ) {
@@ -58,7 +58,7 @@ export class DiscourseService {
 
   private static async getPost(
     data: ProposalInCreation,
-    profile: CatalystProfile | null,
+    profile: DclProfile | null,
     proposalId: string,
     snapshotUrl: string,
     snapshotId: string

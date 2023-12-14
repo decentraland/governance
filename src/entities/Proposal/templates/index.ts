@@ -1,4 +1,4 @@
-import { CatalystProfile } from '../../../utils/Catalyst/types'
+import { DclProfile } from '../../../utils/Catalyst/types'
 import {
   GrantProposalConfiguration,
   NewProposalBanName,
@@ -103,7 +103,7 @@ export type SnapshotTemplateProps = {
   type: ProposalType
   configuration: NewConfiguration
   user: string
-  profile: CatalystProfile | null
+  profile: DclProfile | null
   proposal_url: string
 }
 
@@ -117,7 +117,7 @@ export const snapshotDescription = async ({
   proposal_url,
 }: SnapshotTemplateProps) => template`
 
-> by ${user + (profile?.name ? ` (${profile.name})` : '')}
+> by ${user + (profile?.username ? ` (${profile.username})` : '')}
 
 ${
   (type === ProposalType.POI ? await poi.pre_description(configuration as any) : '') +
@@ -133,7 +133,7 @@ export type ForumTemplate = {
   type: ProposalType
   configuration: NewConfiguration
   user: string
-  profile: CatalystProfile | null
+  profile: DclProfile | null
   proposal_url: string
   snapshot_url: string
   snapshot_id: string
@@ -151,7 +151,7 @@ export const forumDescription = async ({
   snapshot_url,
 }: ForumTemplate) => template`
 
-> by ${user + (profile?.name ? ` (${profile.name})` : '')}
+> by ${user + (profile?.username ? ` (${profile.username})` : '')}
 
 ${
   (type === ProposalType.POI ? await poi.pre_description(configuration as any) : '') +

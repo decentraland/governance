@@ -8,9 +8,9 @@ import upperFirst from 'lodash/upperFirst'
 import { ProjectStatus } from '../../../entities/Grant/types'
 import { Project, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
 import { CURRENCY_FORMAT_OPTIONS, addressShortener, getEnumDisplayName } from '../../../helpers'
+import useDclProfile from '../../../hooks/useDclProfile'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useGovernanceProfile from '../../../hooks/useGovernanceProfile'
-import useProfile from '../../../hooks/useProfile'
 import useProposals from '../../../hooks/useProposals'
 import useVestings from '../../../hooks/useVestings'
 import useVotesByAddress from '../../../hooks/useVotesByAddress'
@@ -48,7 +48,7 @@ export default function AuthorDetails({ address }: Props) {
   const intl = useIntl()
   const hasPreviouslySubmittedGrants = !!grants && grants?.total > 1
   const [isSidebarVisible, setIsSidebarVisible] = useState(false)
-  const { displayableAddress, profileHasName } = useProfile(address)
+  const { username } = useDclProfile(address)
 
   const { data: vestings } = useVestings(hasPreviouslySubmittedGrants)
   const projects = useMemo(
@@ -162,7 +162,7 @@ export default function AuthorDetails({ address }: Props) {
       </div>
       <GovernanceSidebar
         title={t('page.proposal_detail.author_details.sidebar.title', {
-          username: profileHasName ? displayableAddress : addressShortener(displayableAddress || ''),
+          username: username || addressShortener(address || ''),
         })}
         visible={isSidebarVisible}
         onClose={handleClose}

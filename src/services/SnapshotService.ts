@@ -9,7 +9,7 @@ import { proposalUrl, snapshotProposalUrl } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { isSameAddress } from '../entities/Snapshot/utils'
 import { inBackground } from '../helpers'
-import { CatalystProfile } from '../utils/Catalyst/types'
+import { DclProfile } from '../utils/Catalyst/types'
 
 import { ProposalInCreation, ProposalLifespan } from './ProposalService'
 import RpcService from './RpcService'
@@ -20,7 +20,7 @@ export class SnapshotService {
   static async createProposal(
     proposalInCreation: ProposalInCreation,
     proposalId: string,
-    profile: CatalystProfile | null,
+    profile: DclProfile | null,
     proposalLifespan: ProposalLifespan
   ) {
     const blockNumber: number = await RpcService.getBlockNumber()
@@ -51,7 +51,7 @@ export class SnapshotService {
 
   private static async getProposalTitleAndBody(
     proposalInCreation: ProposalInCreation,
-    profile: CatalystProfile | null,
+    profile: DclProfile | null,
     proposalId: string
   ) {
     const snapshotTemplateProps: templates.SnapshotTemplateProps = {

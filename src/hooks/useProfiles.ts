@@ -1,34 +1,23 @@
 import { useQuery } from '@tanstack/react-query'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-import { createDefaultAvatar, getProfiles } from '../utils/Catalyst'
-import { CatalystProfileStatus } from '../utils/Catalyst/types'
+import { getProfiles } from '../utils/Catalyst'
+import { DclProfile } from '../utils/Catalyst/types'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
 export default function useProfiles(addresses: (string | null | undefined)[]): {
-  profiles: CatalystProfileStatus[]
+  profiles: DclProfile[]
   isLoadingProfiles: boolean
 } {
   const fetchProfiles = async () => {
     const validAddresses = addresses.filter((address) => isEthereumAddress(address || '')) as string[]
-    let validAddressesProfiles: CatalystProfileStatus[] = []
-
     try {
-      const profiles = await getProfiles(validAddresses)
-      validAddressesProfiles = profiles.map<CatalystProfileStatus>((profile, idx) => ({
-        profile: profile || createDefaultAvatar(validAddresses[idx]),
-        isDefaultProfile: !profile,
-      }))
+      return await getProfiles(validAddresses)
     } catch (error) {
       console.error(error)
-      validAddressesProfiles = validAddresses.map<CatalystProfileStatus>((address) => ({
-        profile: createDefaultAvatar(address),
-        isDefaultProfile: true,
-      }))
+      return []
     }
-
-    return { profiles: validAddressesProfiles }
   }
 
   const { data, isLoading: isLoadingProfiles } = useQuery({
@@ -37,7 +26,5 @@ export default function useProfiles(addresses: (string | null | undefined)[]): {
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
-  const { profiles } = data || {}
-
-  return { profiles: profiles || [], isLoadingProfiles }
+  return { profiles: data || [], isLoadingProfiles }
 }

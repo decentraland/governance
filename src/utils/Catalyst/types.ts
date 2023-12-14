@@ -41,12 +41,9 @@ export type ProfileResponse = {
   avatars: CatalystProfile[]
 }
 
-export type CatalystProfileStatus = {
-  profile: CatalystProfile
-  isDefaultProfile: boolean
-}
-
-export type DisplayableNameAndAvatar = {
-  displayableUser: string
-  avatar: string | null
+export type DclProfile = {
+  username: string | null
+  avatar: string
+  hasCustomAvatar: boolean
+  address: string
 }
