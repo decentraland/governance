@@ -1,4 +1,5 @@
 import classNames from 'classnames'
+import { withPrefix } from 'gatsby'
 
 import { navigate } from '../../../utils/locations'
 
@@ -41,7 +42,7 @@ export default function Link({ target, rel, href, onClick, className, ...props }
       className={classNames('Link', (onClick || href) && 'Link--pointer', className)}
       target={linkTarget}
       rel={linkRel}
-      href={href}
+      href={withPrefix(href || '')}
       onClick={handleClick}
     />
   )
