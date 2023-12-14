@@ -9,9 +9,9 @@ import './Avatar.css'
 export enum AvatarSize {
   xxs = 'xxs',
   xs = 'xs',
-  s = 's',
-  m = 'm',
-  l = 'l',
+  s = 'sm',
+  m = 'md',
+  l = 'lg',
   xl = 'xl',
   xxl = 'xxl',
   Full = 'full',

@@ -72,7 +72,7 @@ export default function ProposalItem({ proposal, hasCoauthorRequest, votes, slim
               <span className="ProposalItem__CustomText">{customText}</span>
             ) : (
               <>
-                <Username address={user} variant="avatar" size={isMobile ? 'xxs' : 's'} />
+                <Username address={user} variant="avatar" size={isMobile ? 'xxs' : 'sm'} />
                 <div className="ProposalItem__Stats">
                   {votes && (
                     <Desktop>

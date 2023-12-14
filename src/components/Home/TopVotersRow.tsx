@@ -15,7 +15,7 @@ function TopVotersRow({ address, votes, rank }: Props) {
       <Table.Cell>
         <span className="TopVotersRow__User">
           <Header sub>{rank}</Header>
-          <Username address={address} size="s" linked />
+          <Username address={address} size="sm" linked />
         </span>
       </Table.Cell>
       <Table.Cell textAlign="center">{votes}</Table.Cell>

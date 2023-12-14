@@ -29,7 +29,7 @@ export function VoteListItem({ address, vote, choices, isLowQuality, active }: V
       )}
     >
       <Grid.Column width={6}>
-        <Username address={address} size="s" />
+        <Username address={address} size="sm" />
       </Grid.Column>
       <Grid.Column width={6}>
         <p>{formatChoice(choices[vote.choice - 1])}</p>

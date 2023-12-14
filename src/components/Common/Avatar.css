@@ -142,15 +142,15 @@
   --avatar-size: 24px;
 }
 
-.Avatar.Avatar--s {
+.Avatar.Avatar--sm {
   --avatar-size: 32px;
 }
 
-.Avatar.Avatar--m {
+.Avatar.Avatar--md {
   --avatar-size: 44px;
 }
 
-.Avatar.Avatar--l {
+.Avatar.Avatar--lg {
   --avatar-size: 52px;
 }
 
