@@ -1,7 +1,7 @@
 **Screenshots**
 
 **Related Issue**
-E.g: *Closes/Fixes #1234*
+E.g: *Closes/Fixes #0000*
 
 - [ ]  **Functionality validation**
     - [ ]  Feature working as described in the related issue
