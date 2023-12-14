@@ -117,7 +117,6 @@ export default function Update({ isEdit }: Props) {
       blockers: data.blockers,
       next_steps: data.next_steps,
       additional_notes: data.additional_notes,
-      status: UpdateStatus.Pending,
     }
 
     try {

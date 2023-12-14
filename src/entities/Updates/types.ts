@@ -53,6 +53,7 @@ export type UpdateResponse = {
 export const UpdateGeneralSchema: Record<keyof UpdateGeneral, Record<string, unknown>> = {
   health: {
     type: 'string',
+    enum: Object.values(ProjectHealth),
   },
   introduction: {
     type: 'string',

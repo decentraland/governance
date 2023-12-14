@@ -3,12 +3,15 @@ import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
+import validate from 'decentraland-gatsby/dist/entities/Route/validate'
+import schema from 'decentraland-gatsby/dist/entities/Schema'
 import { Request } from 'express'
 
 import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
+import { isSameAddress } from '../../entities/Snapshot/utils'
 import UpdateModel from '../../entities/Updates/model'
-import { UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
+import { UpdateAttributes, UpdateGeneral, UpdateSchema, UpdateStatus } from '../../entities/Updates/types'
 import {
   getCurrentUpdate,
   getNextPendingUpdate,
@@ -99,15 +102,21 @@ async function getProposalUpdateComments(req: Request<{ update_id: string }>) {
     }
   }
 }
-
+const generalSectionValidator = schema.compile(UpdateSchema)
 async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
-  const { author, health, introduction, highlights, blockers, next_steps, additional_notes } = req.body
+  const { author, ...body } = req.body
+  const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<UpdateGeneral>(
+    generalSectionValidator,
+    body
+  )
 
   const user = req.auth!
   const proposalId = req.params.proposal
   const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: proposalId })
   const isAuthorOrCoauthor =
-    user && (proposal?.user === user || (await CoauthorService.isCoauthor(proposalId, user))) && author === user
+    user &&
+    (proposal?.user === user || (await CoauthorService.isCoauthor(proposalId, user))) &&
+    isSameAddress(author, user)
 
   if (!proposal || !isAuthorOrCoauthor) {
     throw new RequestError(`Unauthorized`, RequestError.Forbidden)
@@ -143,7 +152,11 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
 }
 
 async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
-  const { id, author, health, introduction, highlights, blockers, next_steps, additional_notes } = req.body
+  const { id, author, ...body } = req.body
+  const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<UpdateGeneral>(
+    generalSectionValidator,
+    body
+  )
   const update = await UpdateModel.findOne<UpdateAttributes>(id)
   const proposalId = req.params.proposal
 

@@ -289,9 +289,10 @@ export class Governance extends API {
     next_steps: string
     additional_notes: string
   }) {
+    const { proposal_id, ...updateData } = update
     const result = await this.fetch<ApiResponse<UpdateAttributes>>(
-      `/proposals/${update.proposal_id}/update`,
-      this.options().method('PATCH').authorization({ sign: true }).json(update)
+      `/proposals/${proposal_id}/update`,
+      this.options().method('PATCH').authorization({ sign: true }).json(updateData)
     )
     return result.data
   }
