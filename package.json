@@ -10,7 +10,7 @@
     "test": "jest --no-cache --runInBand",
     "build": "npm run build:server && npm run build:front",
     "build:server": "tsc -p .",
-    "build:front": "GATSBY_VERSION_NUMBER=$VERSION_NUMBER GATSBY_HEROKU_APP_NAME=$HEROKU_APP_NAME gatsby build",
+    "build:front": "GATSBY_VERSION_NUMBER=$VERSION_NUMBER GATSBY_HEROKU_APP_NAME=$HEROKU_APP_NAME gatsby build --prefix-paths",
     "develop": "gatsby develop --https -H 0.0.0.0",
     "format": "prettier --write \"**/*.{js,jsx,json,md,ts,tsx}\"",
     "start": "concurrently -c blue,green -n SERVER,FRONT 'npm run serve' 'npm run develop'",
