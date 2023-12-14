@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
-import { Desktop } from 'decentraland-ui/dist/components/Media/Media'
+import { Desktop, useTabletAndBelowMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { VoteByAddress } from '../../entities/Votes/types'
@@ -35,6 +35,7 @@ interface Props {
 
 export default function ProposalItem({ proposal, hasCoauthorRequest, votes, slim = false, customText, anchor }: Props) {
   const t = useFormatMessage()
+  const isMobile = useTabletAndBelowMediaQuery()
   const { id, title, status, type, user, start_at, finish_at } = proposal
   const timeout = useCountdown(finish_at)
   const isCountdownRunning = timeout.time > 0
@@ -71,7 +72,7 @@ export default function ProposalItem({ proposal, hasCoauthorRequest, votes, slim
               <span className="ProposalItem__CustomText">{customText}</span>
             ) : (
               <>
-                <Username address={user} variant="avatar" />
+                <Username address={user} variant="avatar" size={isMobile ? 'mini' : 'small'} />
                 <div className="ProposalItem__Stats">
                   {votes && (
                     <Desktop>

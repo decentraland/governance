@@ -1,9 +1,10 @@
+import * as React from 'react'
+
 import classNames from 'classnames'
 
 import { DEFAULT_AVATAR_IMAGE } from '../../utils/Catalyst'
 
 import './Avatar.css'
-import { AvatarFace } from './AvatarFace'
 
 export enum AvatarSize {
   Mini = 'mini',
@@ -26,18 +27,21 @@ type Props = {
   isLoadingDclProfile?: boolean
 }
 
-export default function Avatar({ address, avatar, isLoadingDclProfile, size, src, className }: Props) {
+export default function Avatar({
+  address,
+  avatar,
+  isLoadingDclProfile,
+  size = AvatarSize.Medium,
+  src,
+  className,
+}: Props) {
   const avatarClassNames = classNames(
     'Avatar',
-    `Avatar--${size || AvatarSize.Mini}`,
-    `Avatar--${((address || '')[2] || '').toLowerCase()}`,
+    `Avatar--${size}`,
+    address && `Avatar--${((address || '')[2] || '').toLowerCase()}`,
     isLoadingDclProfile && `Avatar--loading`,
     className
   )
 
-  return src ? (
-    <img src={src} className={avatarClassNames} />
-  ) : (
-    <AvatarFace avatar={avatar || DEFAULT_AVATAR_IMAGE} className={avatarClassNames} />
-  )
+  return <img src={src || avatar || DEFAULT_AVATAR_IMAGE} alt="" className={avatarClassNames} />
 }

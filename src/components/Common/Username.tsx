@@ -24,7 +24,14 @@ type Props = {
   strong?: boolean
 }
 
-const Username = ({ address, size, linked, variant = UsernameVariant.Full, strong = false, className }: Props) => {
+const Username = ({
+  address,
+  size = AvatarSize.Tiny,
+  linked,
+  variant = UsernameVariant.Full,
+  strong = false,
+  className,
+}: Props) => {
   const { username, avatar, isLoadingDclProfile } = useDclProfile(address)
   const isAddressVariant = variant === UsernameVariant.Address
   const isFullVariant = variant === UsernameVariant.Full

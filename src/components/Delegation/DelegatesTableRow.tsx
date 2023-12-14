@@ -39,7 +39,7 @@ function DelegateRow({ delegate, onDelegateSelected }: Props) {
         <Username
           className="DelegatesTableRow__Username"
           address={delegateAddress}
-          size={isMobile ? 'tiny' : 'small'}
+          size={isMobile ? 'mini' : 'small'}
         />
         <Arrow filled={isFilled} className="DelegatesTableRow__UsernameArrow" />
       </Table.Cell>
