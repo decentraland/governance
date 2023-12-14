@@ -1,27 +1,20 @@
 import * as React from 'react'
 
+import classNames from 'classnames'
+
 import './AvatarFace.css'
 
-export type AvatarFaceProps = {
-  avatar?: string
+type AvatarFaceProps = {
+  avatar: string
   size?: 'tiny' | 'small' | 'medium' | 'large' | 'responsive'
   inline?: boolean
   className?: string
 }
 
-export class AvatarFace extends React.PureComponent<AvatarFaceProps> {
-  static defaultProps: Partial<AvatarFaceProps> = {
-    size: 'medium',
-  }
-
-  render(): JSX.Element {
-    const { avatar, size, inline, className } = this.props
-    const classes = ['dcl', 'avatar-face', size, className]
-    const face = <img src={avatar} alt="" />
-    if (inline) {
-      classes.push('inline')
-    }
-
-    return <div className={classes.join(' ')}>{face}</div>
-  }
+export function AvatarFace({ avatar, size = 'medium', inline, className }: AvatarFaceProps) {
+  return (
+    <div className={classNames('dcl', 'avatar-face', size, className, inline && 'inline')}>
+      <img src={avatar} alt="" />
+    </div>
+  )
 }

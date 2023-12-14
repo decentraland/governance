@@ -15,7 +15,6 @@ export default function useProfiles(addresses: (string | null | undefined)[]): {
     try {
       return await getProfiles(validAddresses)
     } catch (error) {
-      //TODO: should we report this?
       console.error(error)
       return []
     }

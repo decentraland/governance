@@ -8,7 +8,7 @@ import { CatalystProfile, DclProfile, ProfileResponse } from './types'
 const CATALYST_URL = 'https://peer.decentraland.org'
 export const DEFAULT_AVATAR_IMAGE = 'https://decentraland.org/images/male.png'
 
-export function getUsernameAndAvatar(profile: CatalystProfile | null, address: string): DclProfile {
+function getDclProfile(profile: CatalystProfile | null, address: string): DclProfile {
   const profileHasName = !!profile && profile.hasClaimedName && !!profile.name && profile.name.length > 0
   const username = profileHasName ? profile.name : null
   const hasAvatar = !!profile && !!profile.avatar
@@ -23,7 +23,7 @@ export async function getProfile(address: string): Promise<DclProfile> {
 
   const response: ProfileResponse = await (await fetch(`${CATALYST_URL}/lambdas/profile/${address}`)).json()
   const profile = response.avatars.length > 0 ? response.avatars[0] : null
-  return getUsernameAndAvatar(profile, address)
+  return getDclProfile(profile, address)
 }
 
 // TODO: this could be cached per address
@@ -49,7 +49,7 @@ export async function getProfiles(addresses: string[]): Promise<DclProfile[]> {
 
   for (const address of addresses) {
     const profile = response.find((profile) => isSameAddress(profile.avatars[0]?.ethAddress, address))
-    profiles.push(getUsernameAndAvatar(profile?.avatars[0] || null, address))
+    profiles.push(getDclProfile(profile?.avatars[0] || null, address))
   }
 
   return profiles

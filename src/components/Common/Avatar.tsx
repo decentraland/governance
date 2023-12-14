@@ -1,5 +1,7 @@
 import classNames from 'classnames'
 
+import { DEFAULT_AVATAR_IMAGE } from '../../utils/Catalyst'
+
 import './Avatar.css'
 import { AvatarFace } from './AvatarFace'
 
@@ -24,7 +26,6 @@ type Props = {
   isLoadingDclProfile?: boolean
 }
 
-// TODO: avatar should be mandatory when no src is provided
 export default function Avatar({ address, avatar, isLoadingDclProfile, size, src, className }: Props) {
   const avatarClassNames = classNames(
     'Avatar',
@@ -37,6 +38,6 @@ export default function Avatar({ address, avatar, isLoadingDclProfile, size, src
   return src ? (
     <img src={src} className={avatarClassNames} />
   ) : (
-    <AvatarFace avatar={avatar} className={avatarClassNames} />
+    <AvatarFace avatar={avatar || DEFAULT_AVATAR_IMAGE} className={avatarClassNames} />
   )
 }
