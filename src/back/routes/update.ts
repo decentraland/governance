@@ -103,18 +103,18 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
   const { author, health, introduction, highlights, blockers, next_steps, additional_notes } = req.body
 
   //TODO: validate update data :)
-  const user = req.auth!
-  const proposalId = req.params.proposal
   return await UpdateService.create(
-    proposalId,
-    user,
-    author,
-    health,
-    introduction,
-    highlights,
-    blockers,
-    next_steps,
-    additional_notes
+    {
+      proposal_id: req.params.proposal,
+      author,
+      health,
+      introduction,
+      highlights,
+      blockers,
+      next_steps,
+      additional_notes,
+    },
+    req.auth!
   )
 }
 

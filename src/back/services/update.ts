@@ -63,29 +63,18 @@ export class UpdateService {
     })
   }
 
-  /* eslint-disable @typescript-eslint/no-explicit-any */
-  // TODO: refactor this to use the UpdateAttributes type
-  static async create(
-    proposalId: string,
-    user: string,
-    author: string,
-    health: any,
-    introduction: any,
-    highlights: any,
-    blockers: any,
-    next_steps: any,
-    additional_notes: any
-  ) {
-    const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: proposalId })
+  static async create(newUpdate: Omit<UpdateAttributes, 'id' | 'created_at' | 'updated_at' | 'status'>, user: string) {
+    const { proposal_id, author, health, introduction, highlights, blockers, next_steps, additional_notes } = newUpdate
+    const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: proposal_id })
     const isAuthorOrCoauthor =
-      user && (proposal?.user === user || (await CoauthorService.isCoauthor(proposalId, user))) && author === user
+      user && (proposal?.user === user || (await CoauthorService.isCoauthor(proposal_id, user))) && author === user
 
     if (!proposal || !isAuthorOrCoauthor) {
       throw new RequestError(`Unauthorized`, RequestError.Forbidden)
     }
 
     const updates = await UpdateModel.find<UpdateAttributes>({
-      proposal_id: proposalId,
+      proposal_id,
       status: UpdateStatus.Pending,
     })
 
