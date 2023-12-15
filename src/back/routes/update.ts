@@ -127,8 +127,6 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     throw new RequestError(`Update not found: "${id}"`, RequestError.NotFound)
   }
 
-  const { completion_date } = update
-
   const user = req.auth
 
   const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: req.params.proposal })
@@ -148,14 +146,15 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
 
   return await UpdateService.updateProposalUpdate(
     update,
-    author,
-    health,
-    introduction,
-    highlights,
-    blockers,
-    next_steps,
-    additional_notes,
-    completion_date,
+    {
+      author,
+      health,
+      introduction,
+      highlights,
+      blockers,
+      next_steps,
+      additional_notes,
+    },
     id,
     proposal,
     user!,

@@ -104,25 +104,20 @@ export class UpdateService {
     return update
   }
 
-  /* eslint-disable @typescript-eslint/no-explicit-any */
-  // TODO: refactor this to use the UpdateAttributes type
   static async updateProposalUpdate(
     update: UpdateAttributes,
-    author: any,
-    health: any,
-    introduction: any,
-    highlights: any,
-    blockers: any,
-    next_steps: any,
-    additional_notes: any,
-    completion_date: Date | undefined,
+    newUpdate: Omit<
+      UpdateAttributes,
+      'id' | 'proposal_id' | 'status' | 'completion_date' | 'updated_at' | 'created_at'
+    >,
     id: string,
-    proposal: ProposalAttributes<any>,
+    proposal: ProposalAttributes,
     user: string,
     now: Date,
     isOnTime: boolean
   ) {
     const status = !update.due_date || isOnTime ? UpdateStatus.Done : UpdateStatus.Late
+    const { author, health, introduction, highlights, blockers, next_steps, additional_notes } = newUpdate
 
     await UpdateModel.update<UpdateAttributes>(
       {
@@ -134,7 +129,7 @@ export class UpdateService {
         next_steps,
         additional_notes,
         status,
-        completion_date: completion_date || now,
+        completion_date: update.completion_date || now,
         updated_at: now,
       },
       { id }
@@ -142,7 +137,7 @@ export class UpdateService {
 
     const updatedUpdate = await UpdateService.getById(id)
     if (updatedUpdate) {
-      if (!completion_date) {
+      if (!update.completion_date) {
         await DiscourseService.createUpdate(updatedUpdate, proposal.title)
         await EventsService.updateCreated(update.id, proposal.id, proposal.title, user)
         DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
