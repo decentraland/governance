@@ -2,10 +2,11 @@ import crypto from 'crypto'
 
 import { ErrorService } from '../../services/ErrorService'
 import { EventWithAuthor } from '../../shared/types/events'
+import { EventType, ProposalCreatedEvent, UpdateCreatedEvent, VotedEvent } from '../../shared/types/events'
 import { getProfiles } from '../../utils/Catalyst'
 import { DclProfile } from '../../utils/Catalyst/types'
 import { ErrorCategory } from '../../utils/errorCategories'
-import EventModel, { EventType, ProposalCreatedEvent, UpdateCreatedEvent, VotedEvent } from '../models/Event'
+import EventModel from '../models/Event'
 
 export class EventsService {
   static async getLatest(): Promise<EventWithAuthor[]> {
