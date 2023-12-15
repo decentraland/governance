@@ -13,4 +13,6 @@ export enum ErrorCategory {
   Discord = 'Discord',
   Newsletter = 'Newsletter',
   Notifications = 'Notifications',
+  Financial = 'Financial',
+  Update = 'Update',
 }

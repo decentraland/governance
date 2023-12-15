@@ -34,7 +34,7 @@ import {
 import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { Topic } from '../entities/SurveyTopic/types'
-import { ProjectHealth, UpdateAttributes, UpdateResponse } from '../entities/Updates/types'
+import { UpdateAttributes, UpdateFinancial, UpdateGeneral, UpdateResponse } from '../entities/Updates/types'
 import { AccountType } from '../entities/User/types'
 import { Participation, VoteByAddress, VotedProposal, Voter, VotesForProposals } from '../entities/Votes/types'
 import { NewsletterSubscriptionResult } from '../shared/types/newsletter'
@@ -261,16 +261,12 @@ export class Governance extends API {
     return result.data
   }
 
-  async createProposalUpdate(update: {
-    proposal_id: string
-    author: string
-    health: ProjectHealth
-    introduction: string
-    highlights: string
-    blockers: string
-    next_steps: string
-    additional_notes: string
-  }) {
+  async createProposalUpdate(
+    update: {
+      proposal_id: string
+    } & UpdateGeneral &
+      UpdateFinancial
+  ) {
     const result = await this.fetch<ApiResponse<UpdateAttributes>>(
       `/proposals/${update.proposal_id}/update`,
       this.options().method('POST').authorization({ sign: true }).json(update)
@@ -278,17 +274,13 @@ export class Governance extends API {
     return result.data
   }
 
-  async updateProposalUpdate(update: {
-    id: string
-    proposal_id: string
-    author: string
-    health: ProjectHealth
-    introduction: string
-    highlights: string
-    blockers: string
-    next_steps: string
-    additional_notes: string
-  }) {
+  async updateProposalUpdate(
+    update: {
+      id: string
+      proposal_id: string
+    } & UpdateGeneral &
+      UpdateFinancial
+  ) {
     const { proposal_id, ...updateData } = update
     const result = await this.fetch<ApiResponse<UpdateAttributes>>(
       `/proposals/${proposal_id}/update`,

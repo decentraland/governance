@@ -10,6 +10,7 @@ import Username from '../Common/Username'
 import { ContentSection } from '../Layout/ContentLayout'
 
 import ProjectHealthStatus from './ProjectHealthStatus'
+import SummaryItems from './SummaryItems'
 import './UpdateMarkdownView.css'
 
 interface Props {
@@ -40,6 +41,12 @@ const UpdateMarkdownView = ({ update, author }: Props) => {
         <>
           <ArticleSectionHeading>{t('page.update_detail.additional_notes')}</ArticleSectionHeading>
           <Markdown componentsClassNames={UPDATE_DETAIL_MARKDOWN_STYLES}>{update?.additional_notes}</Markdown>
+        </>
+      )}
+      {update?.records && update?.records.length > 0 && (
+        <>
+          <ArticleSectionHeading>{t('page.update_detail.financial_details')}</ArticleSectionHeading>
+          <SummaryItems records={update?.records} />
         </>
       )}
       {author && update.completion_date && (

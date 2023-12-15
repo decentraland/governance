@@ -13,17 +13,17 @@ export default class FinancialModel extends Model<FinancialAttributes> {
   static withTimestamps = false
   static primaryKey = 'id'
 
-  static async getRecords(update_id: string): Promise<FinancialAttributes[]> {
+  static async getRecords(update_id: string): Promise<UpdateFinancialRecord[]> {
     const query = SQL`
-        SELECT *
+        SELECT concept, description, amount, token_type, receiver, link
         FROM ${table(this)}
         WHERE 
           "update_id" = ${update_id}
     `
 
-    const result = await this.namedQuery<FinancialAttributes>('get_financial_records', query)
+    const result = await this.namedQuery<UpdateFinancialRecord>('get_financial_records', query)
 
-    return result
+    return result.map((record) => ({ ...record, amount: parseFloat(record.amount.toString()) }))
   }
 
   static async insertRecords(update_id: string, records: UpdateFinancialRecord[]): Promise<FinancialAttributes[]> {
@@ -41,5 +41,15 @@ export default class FinancialModel extends Model<FinancialAttributes> {
     const result = await this.namedQuery<FinancialAttributes>('insert_financial_records', query)
 
     return result
+  }
+
+  static async deleteRecords(update_id: string): Promise<void> {
+    const query = SQL`
+        DELETE FROM ${table(this)}
+        WHERE 
+          "update_id" = ${update_id}
+    `
+
+    await this.namedQuery('delete_financial_records', query)
   }
 }

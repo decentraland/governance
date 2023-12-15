@@ -20,7 +20,7 @@ interface Props {
   onValidation: (data: UpdateFinancial, sectionValid: boolean) => void
   isFormDisabled: boolean
   sectionNumber: number
-  intialValues?: UpdateFinancial
+  intialValues?: Partial<UpdateFinancial>
 }
 
 const UPDATE_FINANCIAL_INITIAL_STATE: UpdateFinancial = {
@@ -44,19 +44,23 @@ const CSV_TEXTAREA_PLACEHOLDER = CSV_HEADER.join(SEPARATOR)
 
 function FinancialSection({ onValidation, isFormDisabled, sectionNumber, intialValues }: Props) {
   const t = useFormatMessage()
-  const { readString } = usePapaParse()
+  const { readString, jsonToCSV } = usePapaParse()
+  const defaultValues = intialValues || UPDATE_FINANCIAL_INITIAL_STATE
+  const handleInputDefaultValue = () => {
+    const defaultRecords = defaultValues.records || []
+    return defaultRecords.length > 0 ? jsonToCSV(defaultRecords) : CSV_TEXTAREA_PLACEHOLDER
+  }
 
   const {
     formState: { isValid, isDirty },
-    control,
     setValue,
     watch,
   } = useForm<UpdateFinancial>({
-    defaultValues: intialValues || UPDATE_FINANCIAL_INITIAL_STATE,
+    defaultValues,
     mode: 'onTouched',
   })
 
-  const [csvInput, setCsvInput] = useState<string | undefined>(CSV_TEXTAREA_PLACEHOLDER)
+  const [csvInput, setCsvInput] = useState<string | undefined>(handleInputDefaultValue())
   const [errors, setErrors] = useState<{ row: number; text: string }[]>([])
   const records = watch('records')
   const clearRecords = useCallback(() => setValue('records', []), [setValue])
@@ -78,6 +82,14 @@ function FinancialSection({ onValidation, isFormDisabled, sectionNumber, intialV
   const removeFileHandler = () => {
     setCsvInput(CSV_TEXTAREA_PLACEHOLDER)
   }
+
+  useEffect(() => {
+    if (records.length > 0) {
+      onValidation({ records }, true)
+    } else {
+      onValidation({ records }, false)
+    }
+  }, [onValidation, records])
 
   const csvInputHandler = useCallback(
     (data: string[][]) => {

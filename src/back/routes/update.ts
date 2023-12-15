@@ -10,8 +10,7 @@ import { Request } from 'express'
 import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { isSameAddress } from '../../entities/Snapshot/utils'
-import UpdateModel from '../../entities/Updates/model'
-import { UpdateAttributes, UpdateGeneral, UpdateSchema, UpdateStatus } from '../../entities/Updates/types'
+import { UpdateFinancialSchema, UpdateGeneral, UpdateSchema, UpdateStatus } from '../../entities/Updates/types'
 import {
   getCurrentUpdate,
   getNextPendingUpdate,
@@ -20,6 +19,8 @@ import {
   isBetweenLateThresholdDate,
 } from '../../entities/Updates/utils'
 import { DiscourseService } from '../../services/DiscourseService'
+import { ErrorService } from '../../services/ErrorService'
+import { FinancialService } from '../../services/FinancialService'
 import Time from '../../utils/date/Time'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
@@ -44,7 +45,7 @@ async function getProposalUpdate(req: Request<{ update: string }>) {
     throw new RequestError(`Missing id`, RequestError.NotFound)
   }
 
-  const update = await UpdateModel.findOne<UpdateAttributes>({ id })
+  const update = await UpdateService.getById(id)
 
   if (!update) {
     throw new RequestError(`Update not found: "${id}"`, RequestError.NotFound)
@@ -104,11 +105,24 @@ async function getProposalUpdateComments(req: Request<{ update_id: string }>) {
 }
 const generalSectionValidator = schema.compile(UpdateSchema)
 async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
-  const { author, ...body } = req.body
+  const { author, records, ...body } = req.body
   const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<UpdateGeneral>(
     generalSectionValidator,
     body
   )
+  const parsedResult = UpdateFinancialSchema.safeParse({ records })
+  if (!parsedResult.success) {
+    if (isProdEnv()) {
+      ErrorService.report('Submission of invalid financial records', {
+        error: parsedResult.error,
+        category: ErrorCategory.Financial,
+      })
+    } else {
+      console.error(parsedResult.error)
+    }
+    throw new RequestError(`Invalid financial records`, RequestError.BadRequest)
+  }
+  const parsedRecords = parsedResult.data.records
 
   const user = req.auth!
   const proposalId = req.params.proposal
@@ -122,10 +136,7 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     throw new RequestError(`Unauthorized`, RequestError.Forbidden)
   }
 
-  const updates = await UpdateModel.find<UpdateAttributes>({
-    proposal_id: proposalId,
-    status: UpdateStatus.Pending,
-  })
+  const updates = await UpdateService.getAllByProposalId(proposalId, UpdateStatus.Pending)
 
   const currentUpdate = getCurrentUpdate(updates)
   const nextPendingUpdate = getNextPendingUpdate(updates)
@@ -144,7 +155,11 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     next_steps,
     additional_notes,
   }
-  const update = await UpdateModel.createUpdate(data)
+  const update = await UpdateService.create(data)
+  if (!update) {
+    throw new RequestError(`Error creating update`, RequestError.BadRequest)
+  }
+  await FinancialService.insertRecords(update.id, parsedRecords)
   await DiscourseService.createUpdate(update, proposal.title)
   DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
 
@@ -152,12 +167,25 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
 }
 
 async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
-  const { id, author, ...body } = req.body
+  const { id, author, records, ...body } = req.body
   const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<UpdateGeneral>(
     generalSectionValidator,
     body
   )
-  const update = await UpdateModel.findOne<UpdateAttributes>(id)
+  const parsedResult = UpdateFinancialSchema.safeParse({ records })
+  if (!parsedResult.success) {
+    if (isProdEnv()) {
+      ErrorService.report('Submission of invalid financial records', {
+        error: parsedResult.error,
+        category: ErrorCategory.Financial,
+      })
+    } else {
+      console.error(parsedResult.error)
+    }
+    throw new RequestError(`Invalid financial records`, RequestError.BadRequest)
+  }
+  const parsedRecords = parsedResult.data.records
+  const update = await UpdateService.getById(id)
   const proposalId = req.params.proposal
 
   if (!update) {
@@ -185,21 +213,20 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
 
   const status = !update.due_date || isOnTime ? UpdateStatus.Done : UpdateStatus.Late
 
-  await UpdateModel.update<UpdateAttributes>(
-    {
-      author,
-      health,
-      introduction,
-      highlights,
-      blockers,
-      next_steps,
-      additional_notes,
-      status,
-      completion_date: completion_date || now,
-      updated_at: now,
-    },
-    { id }
-  )
+  await UpdateService.update(id, {
+    author,
+    health,
+    introduction,
+    highlights,
+    blockers,
+    next_steps,
+    additional_notes,
+    status,
+    completion_date: completion_date || now,
+    updated_at: now,
+  })
+
+  await FinancialService.insertRecords(update.id, parsedRecords)
 
   const updatedUpdate = await UpdateService.getById(id)
   if (updatedUpdate) {
@@ -216,7 +243,7 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
 
 async function deleteProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
   const { id } = req.body
-  const update = await UpdateModel.findOne(id)
+  const update = await UpdateService.getById(id)
   const proposalId = req.params.proposal
 
   if (!update) {
@@ -237,24 +264,23 @@ async function deleteProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
   }
 
   if (!update.due_date) {
-    await UpdateModel.delete<UpdateAttributes>({ id })
+    await UpdateService.delete(id)
   } else {
-    await UpdateModel.update<UpdateAttributes>(
-      {
-        status: UpdateStatus.Pending,
-        author: undefined,
-        health: undefined,
-        introduction: undefined,
-        highlights: undefined,
-        blockers: undefined,
-        next_steps: undefined,
-        additional_notes: undefined,
-        completion_date: undefined,
-      },
-      { id: update.id }
-    )
+    await UpdateService.update(update.id, {
+      status: UpdateStatus.Pending,
+      author: undefined,
+      health: undefined,
+      introduction: undefined,
+      highlights: undefined,
+      blockers: undefined,
+      next_steps: undefined,
+      additional_notes: undefined,
+      completion_date: undefined,
+      updated_at: new Date(),
+    })
   }
 
+  FinancialService.deleteRecords(update.id)
   UpdateService.commentUpdateDeleteInDiscourse(update)
 
   return true

@@ -3,24 +3,109 @@ import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { Discourse, DiscoursePost } from '../../clients/Discourse'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import UpdateModel from '../../entities/Updates/model'
-import { UpdateAttributes } from '../../entities/Updates/types'
+import { UpdateAttributes, UpdateGeneral, UpdateStatus } from '../../entities/Updates/types'
 import { getUpdateUrl } from '../../entities/Updates/utils'
 import { inBackground } from '../../helpers'
+import { ErrorService } from '../../services/ErrorService'
+import { FinancialService } from '../../services/FinancialService'
+import { ErrorCategory } from '../../utils/errorCategories'
+import { isProdEnv } from '../../utils/governanceEnvs'
 
 export class UpdateService {
   static async getById(id: UpdateAttributes['id']) {
-    return await UpdateModel.findOne<UpdateAttributes>({ id })
+    try {
+      const update = await UpdateModel.findOne<UpdateAttributes>({ id })
+      if (update) {
+        const records = await FinancialService.getRecords(update.id)
+        if (records) {
+          return { ...update, records }
+        }
+      }
+      return update
+    } catch (error) {
+      if (isProdEnv()) {
+        ErrorService.report('Error fetching update', { id, error, category: ErrorCategory.Update })
+      } else {
+        console.error(error)
+      }
+      return null
+    }
   }
 
-  static async getAllByProposalId(proposal_id: ProposalAttributes['id']) {
-    return await UpdateModel.find<UpdateAttributes>({ proposal_id })
+  static async getAllByProposalId(proposal_id: ProposalAttributes['id'], status?: UpdateStatus) {
+    try {
+      const parameters = { proposal_id }
+      return await UpdateModel.find<UpdateAttributes>(status ? { ...parameters, status } : parameters)
+    } catch (error) {
+      if (isProdEnv()) {
+        ErrorService.report('Error fetching updates', { proposal_id, error, category: ErrorCategory.Update })
+      } else {
+        console.error(error)
+      }
+      return []
+    }
   }
 
   static async updateWithDiscoursePost(id: UpdateAttributes['id'], discoursePost: DiscoursePost) {
-    return await UpdateModel.update(
-      { discourse_topic_id: discoursePost.topic_id, discourse_topic_slug: discoursePost.topic_slug },
-      { id }
-    )
+    try {
+      return await UpdateModel.update(
+        { discourse_topic_id: discoursePost.topic_id, discourse_topic_slug: discoursePost.topic_slug },
+        { id }
+      )
+    } catch (error) {
+      if (isProdEnv()) {
+        ErrorService.report('Error updating update', { id, error, category: ErrorCategory.Update })
+      } else {
+        console.error(error)
+      }
+      return null
+    }
+  }
+
+  static async create(
+    update: {
+      proposal_id: string
+      author: string
+    } & UpdateGeneral
+  ) {
+    try {
+      return await UpdateModel.createUpdate(update)
+    } catch (error) {
+      if (isProdEnv()) {
+        ErrorService.report('Error creating update', { update, error, category: ErrorCategory.Update })
+      } else {
+        console.error(error)
+      }
+      return null
+    }
+  }
+
+  static async update(
+    id: UpdateAttributes['id'],
+    newUpdate: Omit<UpdateAttributes, 'id' | 'due_date' | 'created_at' | 'proposal_id'>
+  ) {
+    try {
+      return await UpdateModel.update<UpdateAttributes>(newUpdate, { id })
+    } catch (error) {
+      if (isProdEnv()) {
+        ErrorService.report('Error updating update', { id, error, category: ErrorCategory.Update })
+      } else {
+        console.error(error)
+      }
+      return null
+    }
+  }
+
+  static async delete(id: UpdateAttributes['id']) {
+    try {
+      return await UpdateModel.delete<UpdateAttributes>({ id })
+    } catch (error) {
+      if (isProdEnv()) {
+        ErrorService.report('Error deleting update', { id, error, category: ErrorCategory.Update })
+      } else {
+        console.error(error)
+      }
+    }
   }
 
   static commentUpdateEditInDiscourse(update: UpdateAttributes) {

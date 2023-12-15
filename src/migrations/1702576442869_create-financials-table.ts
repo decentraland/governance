@@ -1,5 +1,5 @@
 import { ColumnDefinitions, MigrationBuilder } from "node-pg-migrate"
-import Model from "../back/models/financial"
+import Model from "../back/models/Financial"
 import UpdateModel from "../entities/Updates/model"
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
