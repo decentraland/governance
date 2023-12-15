@@ -17,7 +17,7 @@ export default function MemberCard({ member }: Props) {
 
   return (
     <Link className="MemberCard" href={locations.profile({ address })}>
-      <Avatar src={avatar} size="medium" address={'0x' + color} />
+      <Avatar avatar={avatar} address={'0x' + color} />
       <div className="MemberCard__Description">{name}</div>
     </Link>
   )

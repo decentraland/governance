@@ -53,11 +53,12 @@ export default function Comment({ forumUsername, avatarUrl, createdAt, cooked, a
     <div className="Comment">
       <div className="Comment__ProfileImage">
         <Link href={discourseUserUrl} target={linkTarget} rel={linkRel}>
-          {hasCustomAvatar ? (
-            <Avatar address={address} avatar={avatar} size="medium" isLoadingDclProfile={isLoadingDclProfile} />
-          ) : (
-            <Avatar size="medium" src={avatarUrl} />
-          )}
+          <Avatar
+            address={address}
+            avatar={hasCustomAvatar ? avatar : avatarUrl}
+            size="md"
+            isLoadingDclProfile={isLoadingDclProfile}
+          />
         </Link>
       </div>
       <div className="Comment__Content">

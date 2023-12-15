@@ -99,10 +99,10 @@ export default function AuthorDetails({ address }: Props) {
     <Section title={t('page.proposal_detail.author_details.title')} isNew>
       <div className="AuthorDetails__UserContainer">
         <div className="AuthorDetails__UserInfo">
-          <Username className="AuthorDetails__Avatar" variant="avatar" address={address} size="big" />
+          <Username className="AuthorDetails__Avatar" variant="avatar" address={address} size="xl" />
           <div>
             <div className="AuthorDetails__Username">
-              <Username className="AuthorDetails__Address" variant="address" address={address} size="big" />
+              <Username className="AuthorDetails__Address" variant="address" address={address} size="xl" />
               <div className="AuthorDetails__ValidatedIcon">
                 <ValidatedProfileCheck forumUsername={profile?.forum_username} isLoading={isLoadingGovernanceProfile} />
               </div>
