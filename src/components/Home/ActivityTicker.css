@@ -4,6 +4,15 @@
   padding: 16px 0;
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  overflow: hidden;
+}
+
+.ActivityTicker__TitleContainer {
+  position: relative;
+  background-color: transparent;
 }
 
 .ActivityTicker__Title {
@@ -11,6 +20,15 @@
   color: var(--black-600);
   text-transform: uppercase;
   margin-bottom: 17px;
+  position: relative;
+}
+
+.ActivityTicker__Gradient {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 27px;
+  background: linear-gradient(180deg, #fff 82.84%, rgba(255, 255, 255, 0) 100%);
 }
 
 .ActivityTicker__LoadingContainer {
@@ -22,6 +40,14 @@
   display: flex;
   flex-direction: column;
   gap: 17px;
+  overflow: scroll;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  padding-top: 8px;
+}
+
+.ActivityTicker__List::-webkit-scrollbar {
+  display: none;
 }
 
 .ActivityTicker__ListItem {

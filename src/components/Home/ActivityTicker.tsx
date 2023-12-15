@@ -21,9 +21,12 @@ export default function ActivityTicker() {
 
   return (
     <div className="ActivityTicker">
-      <Heading className="ActivityTicker__Title" size="3xs" weight="normal">
-        {t('page.home.activity_ticker.title')}
-      </Heading>
+      <div className="ActivityTicker__TitleContainer">
+        <div className="ActivityTicker__Gradient" />
+        <Heading className="ActivityTicker__Title" size="3xs" weight="normal">
+          {t('page.home.activity_ticker.title')}
+        </Heading>
+      </div>
       {isLoading && (
         <div className="ActivityTicker__LoadingContainer">
           <Loader active />
