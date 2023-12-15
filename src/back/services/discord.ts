@@ -152,8 +152,8 @@ export class DiscordService {
         const profile = await getProfile(user)
 
         embed.setAuthor({
-          name: profile?.username || user,
-          iconURL: profile?.avatar || DEFAULT_AVATAR,
+          name: profile.username || user,
+          iconURL: profile.avatar,
           url: getProfileUrl(user),
         })
       } catch (error) {

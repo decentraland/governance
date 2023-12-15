@@ -333,7 +333,7 @@ export async function createProposalHiring(req: WithAuth) {
     }
     try {
       const profile = await getProfile(configuration.address)
-      configuration.name = profile?.username || configuration.address
+      configuration.name = profile.username || configuration.address
     } catch (error) {
       ErrorService.report('Error getting profile', {
         error,
