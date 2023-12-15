@@ -1,15 +1,11 @@
 import crypto from 'crypto'
 
 import { ErrorService } from '../../services/ErrorService'
+import { EventWithAuthor } from '../../shared/types/events'
 import { getProfiles } from '../../utils/Catalyst'
 import { DclProfile } from '../../utils/Catalyst/types'
 import { ErrorCategory } from '../../utils/errorCategories'
-import EventModel, { Event, EventType, ProposalCreatedEvent, UpdateCreatedEvent, VotedEvent } from '../models/Event'
-
-type EventWithAuthor = {
-  author: string
-  avatar: string
-} & Event
+import EventModel, { EventType, ProposalCreatedEvent, UpdateCreatedEvent, VotedEvent } from '../models/Event'
 
 export class EventsService {
   static async getLatest(): Promise<EventWithAuthor[]> {
@@ -17,7 +13,7 @@ export class EventsService {
     const addresses = latestEvents.map((event) => event.address)
 
     const profiles = await getProfiles(addresses)
-    const addressToNameAndAvatar: Record<string, DclProfile> = profiles.reduce((acc, profile) => {
+    const addressesToProfile: Record<string, DclProfile> = profiles.reduce((acc, profile) => {
       acc[profile.address] = profile
       return acc
     }, {} as Record<string, DclProfile>)
@@ -26,8 +22,8 @@ export class EventsService {
     for (const event of latestEvents) {
       const { address } = event
       latestEventsWithAuthor.push({
-        author: addressToNameAndAvatar[address].username || address,
-        avatar: addressToNameAndAvatar[address].avatar,
+        author: addressesToProfile[address].username || address,
+        avatar: addressesToProfile[address].avatar,
         ...event,
       })
     }
