@@ -9,9 +9,9 @@ import './Avatar.css'
 export enum AvatarSize {
   xxs = 'xxs',
   xs = 'xs',
-  s = 'sm',
-  m = 'md',
-  l = 'lg',
+  sm = 'sm',
+  md = 'md',
+  lg = 'lg',
   xl = 'xl',
   xxl = 'xxl',
   Full = 'full',
@@ -26,7 +26,7 @@ type Props = {
   isLoadingDclProfile?: boolean
 }
 
-export default function Avatar({ address, avatar, isLoadingDclProfile, size = AvatarSize.m, className }: Props) {
+export default function Avatar({ address, avatar, isLoadingDclProfile, size = AvatarSize.md, className }: Props) {
   const avatarClassNames = classNames(
     'Avatar',
     `Avatar--${size}`,
