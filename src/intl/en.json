@@ -921,8 +921,8 @@
       "activity_ticker": {
         "title": "Latest activity",
         "voted": "**{author}** voted on **{title}**",
-        "proposal_created": "**{author}** created proposal **{title}**",
-        "update_created": "**{author}** update created **{title}**"
+        "proposal_created": "**{author}** published a new Proposal **{title}**",
+        "update_created": "**{author}** published an Update on the Project **{title}**"
       }
     },
     "welcome": {
