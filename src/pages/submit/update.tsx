@@ -113,11 +113,12 @@ export default function Update({ isEdit }: Props) {
   const previewUpdate = useMemo(
     () => ({
       ...generalSection,
+      ...financialSection,
       status: UpdateStatus.Pending,
       created_at: NOW,
       updated_at: NOW,
     }),
-    [generalSection]
+    [financialSection, generalSection]
   )
 
   const submitUpdate = async (data: UpdateGeneral & UpdateFinancial) => {

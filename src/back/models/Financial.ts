@@ -32,7 +32,7 @@ export default class FinancialModel extends Model<FinancialAttributes> {
         VALUES ${join(
           records.map(
             (record) =>
-              SQL`(${update_id}, ${record.concept}, ${record.description}, ${record.amount}, ${record.token_type}, ${record.receiver}, ${record.link})`
+              SQL`(${update_id}, LOWER(${record.concept}), ${record.description}, ${record.amount}, ${record.token_type}, ${record.receiver}, ${record.link})`
           ),
           SQL`,`
         )}
