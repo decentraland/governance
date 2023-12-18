@@ -1,35 +1,57 @@
 import crypto from 'crypto'
 
 import { ErrorService } from '../../services/ErrorService'
-import { EventWithAuthor } from '../../shared/types/events'
-import { EventType, ProposalCreatedEvent, UpdateCreatedEvent, VotedEvent } from '../../shared/types/events'
-import { getProfiles } from '../../utils/Catalyst'
+import {
+  EventType,
+  EventWithAuthor,
+  ProposalCreatedEvent,
+  UpdateCreatedEvent,
+  VotedEvent,
+} from '../../shared/types/events'
+import { DEFAULT_AVATAR_IMAGE, getProfiles } from '../../utils/Catalyst'
 import { DclProfile } from '../../utils/Catalyst/types'
 import { ErrorCategory } from '../../utils/errorCategories'
 import EventModel from '../models/Event'
 
 export class EventsService {
   static async getLatest(): Promise<EventWithAuthor[]> {
-    const latestEvents = await EventModel.getLatest()
-    const addresses = latestEvents.map((event) => event.address)
+    try {
+      const latestEvents = await EventModel.getLatest()
+      const addresses = latestEvents.map((event) => event.address)
 
-    const profiles = await getProfiles(addresses)
-    const addressesToProfile: Record<string, DclProfile> = profiles.reduce((acc, profile) => {
-      acc[profile.address] = profile
-      return acc
-    }, {} as Record<string, DclProfile>)
+      const addressesToProfile = await this.getAddressesToProfiles(addresses)
 
-    const latestEventsWithAuthor: EventWithAuthor[] = []
-    for (const event of latestEvents) {
-      const { address } = event
-      latestEventsWithAuthor.push({
-        author: addressesToProfile[address].username || address,
-        avatar: addressesToProfile[address].avatar,
-        ...event,
-      })
+      const latestEventsWithAuthor: EventWithAuthor[] = []
+      for (const event of latestEvents) {
+        const { address } = event
+        latestEventsWithAuthor.push({
+          author: addressesToProfile[address].username || address,
+          avatar: addressesToProfile[address].avatar,
+          ...event,
+        })
+      }
+
+      return latestEventsWithAuthor
+    } catch (error) {
+      ErrorService.report('Error fetching events', { error, category: ErrorCategory.Events })
+      return []
     }
+  }
 
-    return latestEventsWithAuthor
+  private static async getAddressesToProfiles(addresses: string[]) {
+    try {
+      const profiles = await getProfiles(addresses)
+      return profiles.reduce((acc, profile) => {
+        acc[profile.address] = profile
+        return acc
+      }, {} as Record<string, DclProfile>)
+    } catch (error) {
+      ErrorService.report('Error fetching profiles', { error, category: ErrorCategory.Events })
+      return addresses.reduce((acc, address) => {
+        acc[address] = { address, avatar: DEFAULT_AVATAR_IMAGE, username: null, hasCustomAvatar: false }
+        return acc
+      }, {} as Record<string, DclProfile>)
+    }
   }
 
   static async proposalCreated(proposal_id: string, proposal_title: string, address: string) {
