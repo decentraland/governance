@@ -1,5 +1,7 @@
 import crypto from 'crypto'
 
+import { addressShortener } from '../../helpers'
+import CacheService, { TTL_1_HS } from '../../services/CacheService'
 import { ErrorService } from '../../services/ErrorService'
 import {
   EventType,
@@ -25,7 +27,7 @@ export class EventsService {
       for (const event of latestEvents) {
         const { address } = event
         latestEventsWithAuthor.push({
-          author: addressesToProfile[address].username || address,
+          author: addressesToProfile[address].username || addressShortener(address),
           avatar: addressesToProfile[address].avatar,
           ...event,
         })
@@ -40,7 +42,7 @@ export class EventsService {
 
   private static async getAddressesToProfiles(addresses: string[]) {
     try {
-      const profiles = await getProfiles(addresses)
+      const profiles = await this.getProfilesWithCache(addresses)
       return profiles.reduce((acc, profile) => {
         acc[profile.address] = profile
         return acc
@@ -119,5 +121,35 @@ export class EventsService {
     } catch (error) {
       ErrorService.report('Error deleting old events', { error, category: ErrorCategory.Events })
     }
+  }
+
+  private static getProfileCacheKey(address: string) {
+    const cacheKey = `profile-${address.toLowerCase()}`
+    return cacheKey
+  }
+
+  static async getProfilesWithCache(addresses: string[]): Promise<DclProfile[]> {
+    const profiles: DclProfile[] = []
+    const addressesToFetch: string[] = []
+
+    for (const address of addresses) {
+      const cachedProfile = CacheService.get<DclProfile>(this.getProfileCacheKey(address))
+      if (cachedProfile) {
+        profiles.push(cachedProfile)
+      } else {
+        addressesToFetch.push(address)
+      }
+    }
+
+    if (addressesToFetch.length > 0) {
+      const dclProfiles: DclProfile[] = await getProfiles(addressesToFetch)
+
+      for (const dclProfile of dclProfiles) {
+        CacheService.set(this.getProfileCacheKey(dclProfile.address), dclProfile, TTL_1_HS)
+        profiles.push(dclProfile)
+      }
+    }
+
+    return profiles
   }
 }
