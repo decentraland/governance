@@ -112,4 +112,12 @@ export class EventsService {
       category: ErrorCategory.Events,
     })
   }
+
+  static async deleteOldEvents() {
+    try {
+      await EventModel.deleteOldEvents()
+    } catch (error) {
+      ErrorService.report('Error deleting old events', { error, category: ErrorCategory.Events })
+    }
+  }
 }

@@ -39,6 +39,7 @@ import users from './back/routes/user'
 import vestings from './back/routes/vestings'
 import score from './back/routes/votes'
 import { DiscordService } from './back/services/discord'
+import { EventsService } from './back/services/events'
 import { updateGovernanceBudgets } from './entities/Budget/jobs'
 import { activateProposals, finishProposal, publishBids } from './entities/Proposal/jobs'
 import filesystem from './utils/filesystem'
@@ -51,6 +52,7 @@ jobs.cron('@each10Second', pingSnapshot)
 jobs.cron('@daily', updateGovernanceBudgets)
 jobs.cron('@daily', runAirdropJobs)
 jobs.cron('@monthly', giveTopVoterBadges)
+jobs.cron('@eachMinute', EventsService.deleteOldEvents)
 
 const file = readFileSync('static/api.yaml', 'utf8')
 const swaggerDocument = YAML.parse(file)
