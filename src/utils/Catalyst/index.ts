@@ -27,7 +27,6 @@ export async function getProfile(address: string): Promise<DclProfile> {
 }
 
 // TODO: this could be cached per address
-// TODO: what if the endpoint is unresponsive? Maybe create DclProfiles with default avatar
 export async function getProfiles(addresses: string[]): Promise<DclProfile[]> {
   for (const address of addresses) {
     if (!isEthereumAddress(address)) {
