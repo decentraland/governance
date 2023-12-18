@@ -8,8 +8,8 @@ import annotationPlugin from 'chartjs-plugin-annotation'
 
 import { VoteByAddress } from '../../entities/Votes/types'
 import useAbbreviatedFormatter from '../../hooks/useAbbreviatedFormatter'
+import useDclProfiles from '../../hooks/useDclProfiles'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import useProfiles from '../../hooks/useProfiles'
 import { DclProfile } from '../../utils/Catalyst/types'
 import Section from '../Proposal/View/Section'
 
@@ -47,7 +47,7 @@ function ProposalVPChart({ requiredToPass, voteMap, isLoadingVotes, startTimesta
   const YAxisFormat = useAbbreviatedFormatter()
   const chartRef = useRef<ChartJS>(null)
   const sortedVotes = useMemo(() => getSortedVotes(voteMap), [voteMap])
-  const { profiles, isLoadingProfiles } = useProfiles(sortedVotes.map((vote) => vote.address))
+  const { profiles, isLoadingProfiles } = useDclProfiles(sortedVotes.map((vote) => vote.address))
   const profileByAddress = useMemo(
     () =>
       profiles.reduce((acc, profile) => {

@@ -6,7 +6,7 @@ import { DclProfile } from '../utils/Catalyst/types'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
-export default function useProfiles(addresses: (string | null | undefined)[]): {
+export default function useDclProfiles(addresses: (string | null | undefined)[]): {
   profiles: DclProfile[]
   isLoadingProfiles: boolean
 } {
