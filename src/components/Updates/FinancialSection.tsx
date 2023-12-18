@@ -38,8 +38,6 @@ const CSV_HEADER: (keyof UpdateFinancialRecord)[] = [
 
 const SEPARATOR = ','
 
-const schema = UpdateFinancialSchema
-
 const CSV_TEXTAREA_PLACEHOLDER = CSV_HEADER.join(SEPARATOR)
 
 function FinancialSection({ onValidation, isFormDisabled, sectionNumber, intialValues }: Props) {
@@ -61,7 +59,7 @@ function FinancialSection({ onValidation, isFormDisabled, sectionNumber, intialV
   const records = watch('records')
   const clearRecords = useCallback(() => setValue('records', []), [setValue])
 
-  const csvFileHandler = (data: string[][]) => {
+  const handleFileUpload = (data: string[][]) => {
     let value = ''
     for (let idx = 0; idx < data.length; idx++) {
       const record = data[idx]
@@ -75,7 +73,7 @@ function FinancialSection({ onValidation, isFormDisabled, sectionNumber, intialV
     setCsvInput(value.trim())
   }
 
-  const removeFileHandler = () => {
+  const handleRemoveFile = () => {
     setCsvInput(CSV_TEXTAREA_PLACEHOLDER)
   }
 
@@ -106,7 +104,6 @@ function FinancialSection({ onValidation, isFormDisabled, sectionNumber, intialV
         const record = data[idx]
         const isEmptyRow = record.every((value) => value === '')
         if (!isEmptyRow) {
-          // TODO: Revisar
           if (record.length !== CSV_HEADER.length) {
             setErrors([{ row: idx + 1, text: t('page.proposal_update.csv_invalid_row') }])
             clearRecords()
@@ -123,7 +120,7 @@ function FinancialSection({ onValidation, isFormDisabled, sectionNumber, intialV
         }
       }
       if (csvRecords.length > 0) {
-        const parsedResult = schema.safeParse({ records: csvRecords })
+        const parsedResult = UpdateFinancialSchema.safeParse({ records: csvRecords })
         if (parsedResult.success) {
           setErrors([])
           setValue('records', parsedResult.data.records)
@@ -171,7 +168,7 @@ function FinancialSection({ onValidation, isFormDisabled, sectionNumber, intialV
           errors={errors}
         />
         <div className="FinancialSection__DragAndDropContainer">
-          <CSVDragAndDrop onUploadAccepted={csvFileHandler} onRemoveFile={removeFileHandler} />
+          <CSVDragAndDrop onUploadAccepted={handleFileUpload} onRemoveFile={handleRemoveFile} />
         </div>
       </ContentSection>
       {records.length > 0 && (

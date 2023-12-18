@@ -6,7 +6,6 @@ import { useLocation } from '@reach/router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
@@ -33,14 +32,14 @@ interface Props {
   isEdit?: boolean
 }
 
-type UpdateValitationState = {
+type UpdateValidationState = {
   generalSectionValid: boolean
   financialSectionValid: boolean
 }
 
 const NOW = new Date()
 
-const intialValidationState: UpdateValitationState = {
+const intialValidationState: UpdateValidationState = {
   generalSectionValid: false,
   financialSectionValid: true,
 }
@@ -77,7 +76,7 @@ export default function Update({ isEdit }: Props) {
   const [error, setError] = useState('')
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [newUpdate, patchNewUpdate] = useState(initialState)
-  const [validationState, patchValidationState] = usePatchState<UpdateValitationState>(intialValidationState)
+  const [validationState, patchValidationState] = useState<UpdateValidationState>(intialValidationState)
   const isValidToSubmit = Object.values(validationState).every((valid) => valid)
 
   usePreventNavigation(true)
@@ -85,7 +84,7 @@ export default function Update({ isEdit }: Props) {
   const handleGeneralSectionValidation = useCallback(
     (data: UpdateGeneral, sectionValid: boolean) => {
       patchNewUpdate((prevState) => ({ ...prevState, ...data }))
-      patchValidationState({ generalSectionValid: sectionValid })
+      patchValidationState((prevState) => ({ ...prevState, generalSectionValid: sectionValid }))
     },
     [patchNewUpdate, patchValidationState]
   )
