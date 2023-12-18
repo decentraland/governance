@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { Governance } from '../../clients/Governance'
+import { ONE_MINUTE_MS } from '../../hooks/constants'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Time from '../../utils/date/Time'
 import Avatar from '../Common/Avatar'
@@ -17,6 +18,8 @@ export default function ActivityTicker() {
   const { data: events, isLoading } = useQuery({
     queryKey: ['events'],
     queryFn: () => Governance.get().getLatestEvents(),
+    refetchInterval: ONE_MINUTE_MS,
+    refetchIntervalInBackground: true,
   })
 
   return (
