@@ -1,0 +1,52 @@
+.AcceptedFile {
+  background: var(--white-900);
+  border-radius: 4px;
+  border: 1px solid var(--alpha-black-300);
+  box-shadow: 0px 1px 4px 0px var(--alpha-black-300);
+  display: flex;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  z-index: 10;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.AcceptedFile__InfoContainer {
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 10px;
+}
+
+.AcceptedFile__Info {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.Text.AcceptedFile__Name {
+  color: var(--black-600);
+  margin: 0;
+}
+
+.Text.AcceptedFile__Size {
+  color: var(--black-400);
+  margin: 0;
+}
+
+.AcceptedFile__ProgressBarContainer {
+  width: 100%;
+  padding: 0 10px;
+}
+
+.AcceptedFile__Remove {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+}
+
+.AcceptedFile__Remove > svg > circle:hover {
+  fill: var(--alpha-black-200);
+}

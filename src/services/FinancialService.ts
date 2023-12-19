@@ -1,13 +1,13 @@
 import { FinancialAttributes } from '../back/models/Financial'
 import Model from '../back/models/Financial'
-import { UpdateFinancialRecord } from '../entities/Updates/types'
+import { FinancialUpdateRecord } from '../entities/Updates/types'
 import { ErrorCategory } from '../utils/errorCategories'
 import { isProdEnv } from '../utils/governanceEnvs'
 
 import { ErrorService } from './ErrorService'
 
 export class FinancialService {
-  public static async getRecords(update_id: string): Promise<UpdateFinancialRecord[] | null> {
+  public static async getRecords(update_id: string): Promise<FinancialUpdateRecord[] | null> {
     try {
       return await Model.getRecords(update_id)
     } catch (error) {
@@ -22,7 +22,7 @@ export class FinancialService {
 
   public static async insertRecords(
     update_id: string,
-    records: UpdateFinancialRecord[]
+    records: FinancialUpdateRecord[]
   ): Promise<FinancialAttributes[] | null> {
     try {
       this.deleteRecords(update_id)
