@@ -10,6 +10,10 @@
   overflow: hidden;
 }
 
+.ActivityTicker__EmptyContainer {
+  margin-top: 16px;
+}
+
 .ActivityTicker__TitleContainer {
   position: relative;
   background-color: transparent;
