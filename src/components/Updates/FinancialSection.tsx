@@ -2,9 +2,17 @@ import { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { usePapaParse } from 'react-papaparse'
 
+import sum from 'lodash/sum'
 import toNumber from 'lodash/toNumber'
 
-import { FinancialUpdate, FinancialUpdateRecord, FinancialUpdateSchema } from '../../entities/Updates/types'
+import { TransparencyVesting } from '../../clients/DclData'
+import {
+  FinancialUpdate,
+  FinancialUpdateRecord,
+  FinancialUpdateSchema,
+  UpdateAttributes,
+} from '../../entities/Updates/types'
+import { getFundsReleasedSinceLastUpdate } from '../../entities/Updates/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import CSVDragAndDrop from '../Common/CSVDragAndDrop'
 import NumberedTextArea from '../Common/NumberedTextArea'
@@ -13,6 +21,7 @@ import Label from '../Common/Typography/Label'
 import { ContentSection } from '../Layout/ContentLayout'
 import ProjectRequestSection from '../ProjectRequest/ProjectRequestSection'
 
+import FinancialCard from './FinancialCard'
 import './FinancialSection.css'
 import SummaryItems from './SummaryItems'
 
@@ -21,6 +30,8 @@ interface Props {
   isFormDisabled: boolean
   sectionNumber: number
   intialValues?: Partial<FinancialUpdate>
+  vesting?: TransparencyVesting
+  publicUpdates?: UpdateAttributes[]
 }
 
 const UPDATE_FINANCIAL_INITIAL_STATE: FinancialUpdate = {
@@ -40,7 +51,14 @@ const SEPARATOR = ','
 
 const CSV_TEXTAREA_PLACEHOLDER = CSV_HEADER.join(SEPARATOR)
 
-function FinancialSection({ onValidation, isFormDisabled, sectionNumber, intialValues }: Props) {
+function FinancialSection({
+  onValidation,
+  isFormDisabled,
+  sectionNumber,
+  intialValues,
+  vesting,
+  publicUpdates,
+}: Props) {
   const t = useFormatMessage()
   const { readString, jsonToCSV } = usePapaParse()
   const defaultValues = intialValues || UPDATE_FINANCIAL_INITIAL_STATE
@@ -170,6 +188,20 @@ function FinancialSection({ onValidation, isFormDisabled, sectionNumber, intialV
       sectionNumber={sectionNumber}
       isNew
     >
+      <ContentSection>
+        <div className="FinancialSection__CardsContainer">
+          <FinancialCard
+            type="income"
+            title={t('page.proposal_update.funds_released_label')}
+            value={getFundsReleasedSinceLastUpdate(publicUpdates, vesting)}
+          />
+          <FinancialCard
+            type="outcome"
+            title={t('page.proposal_update.funds_disclosed_label')}
+            value={sum(records.map(({ amount }) => amount))}
+          />
+        </div>
+      </ContentSection>
       <ContentSection>
         <Label>{t('page.proposal_update.reporting_label')}</Label>
         <SubLabel>{t('page.proposal_update.reporting_description')}</SubLabel>

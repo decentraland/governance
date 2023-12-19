@@ -1,3 +1,4 @@
+import { TransparencyVesting } from '../../clients/DclData'
 import { GOVERNANCE_API } from '../../constants'
 import Time from '../../utils/date/Time'
 import { ProposalStatus } from '../Proposal/types'
@@ -86,4 +87,39 @@ export function getUpdateNumber(publicUpdates?: UpdateAttributes[] | null, updat
   if (!publicUpdates || !updateId) return NaN
   const updateIdx = Number(publicUpdates.findIndex((item) => item.id === updateId))
   return publicUpdates.length > 0 && updateIdx >= 0 ? publicUpdates.length - updateIdx : NaN
+}
+
+export function getFundsReleasedSinceLastUpdate(
+  updates: UpdateAttributes[] | undefined,
+  vesting: TransparencyVesting | undefined
+) {
+  if (!vesting) return 0
+  const now = new Date()
+  const { duration_in_months, vesting_total_amount, vesting_start_at } = vesting
+  const vestingMonths = duration_in_months % 1 < 1 / 3 ? Math.floor(duration_in_months) : Math.ceil(duration_in_months)
+  const vestedPerMonth = Math.floor(vesting_total_amount / vestingMonths)
+  const vestingStartDate = new Date(vesting_start_at)
+  const monthsSinceVestingStart = Time(now).diff(vestingStartDate, 'month')
+
+  if (Time(vestingStartDate).isAfter(now)) {
+    return 0
+  }
+
+  const lastUpdate = updates?.filter(
+    (update) => update.status === UpdateStatus.Done || update.status === UpdateStatus.Late
+  )?.[0]
+
+  if (!lastUpdate) {
+    return vestedPerMonth * monthsSinceVestingStart
+  }
+
+  const { due_date } = lastUpdate
+
+  if (!due_date) {
+    return 0
+  }
+
+  const monthsSinceLastUpdate = Math.ceil(Time(now).diff(due_date, 'month', true))
+
+  return vestedPerMonth * monthsSinceLastUpdate
 }

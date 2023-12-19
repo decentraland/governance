@@ -31,6 +31,7 @@ import useFormatMessage from '../../hooks/useFormatMessage'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
 import useProposal from '../../hooks/useProposal'
 import useProposalUpdate from '../../hooks/useProposalUpdate'
+import useProposalUpdates from '../../hooks/useProposalUpdates'
 import useVestings from '../../hooks/useVestings'
 import locations, { navigate } from '../../utils/locations'
 
@@ -87,6 +88,7 @@ export default function Update({ isEdit }: Props) {
   const { update, isLoadingUpdate, isErrorOnUpdate, refetchUpdate } = useProposalUpdate(updateId)
   const proposalId = useMemo(() => params.get('proposalId') || update?.proposal_id || '', [update, params])
   const { proposal } = useProposal(proposalId)
+  const { publicUpdates } = useProposalUpdates(proposalId)
   const vestingAddresses = proposal?.vesting_addresses || []
   const { data } = useVestings(vestingAddresses.length > 0)
   const [error, setError] = useState('')
@@ -246,6 +248,8 @@ export default function Update({ isEdit }: Props) {
                 financialSection ||
                 getInitialUpdateValues<FinancialUpdate>(update, (key) => key in ({ records: [] } as FinancialUpdate))
               }
+              vesting={vestingContract}
+              publicUpdates={publicUpdates}
             />
           </>
         )}
