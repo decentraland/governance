@@ -37,12 +37,12 @@ export default function ActivityTicker() {
       )}
       {!isLoading && (
         <>
-          {!events && (
+          {events && events.length === 0 && (
             <div className="ActivityTicker__EmptyContainer">
-              <Empty title="No activity" />
+              <Empty title={t('page.home.activity_ticker.no_activity')} />
             </div>
           )}
-          {events && (
+          {events && events.length > 0 && (
             <div className="ActivityTicker__List">
               {events.map((item) => (
                 <div key={item.id} className="ActivityTicker__ListItem">
