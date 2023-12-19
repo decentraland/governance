@@ -59,7 +59,7 @@ const ProposalPreviewCard = ({ proposal, votes, variant, customText, anchor }: P
     >
       <ProposalPreviewCardSection>
         {variant !== Variant.Slim && (
-          <Username className="ProposalPreviewCard__Avatar" address={user} variant="avatar" size="medium" />
+          <Username className="ProposalPreviewCard__Avatar" address={user} variant="avatar" size="md" />
         )}
         <div className="ProposalPreviewCard__TextContainer">
           <Heading as="h3" size="xs" weight="semi-bold" className="ProposalPreviewCard__Title">

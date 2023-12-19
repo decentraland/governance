@@ -3,6 +3,7 @@ import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 
 import { DiscordService } from '../back/services/discord'
+import { EventsService } from '../back/services/events'
 import { NotificationService } from '../back/services/notification'
 import { DiscoursePost } from '../clients/Discourse'
 import { SnapshotProposalContent } from '../clients/SnapshotTypes'
@@ -87,6 +88,8 @@ export class ProposalService {
       coAuthors
     )
 
+    await EventsService.proposalCreated(newProposal.id, newProposal.title, newProposal.user)
+
     DiscordService.newProposal(
       newProposal.id,
       title,
@@ -146,6 +149,7 @@ export class ProposalService {
     }
   }
 
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   private static async saveToDb(
     data: ProposalInCreation,
     id: string,

@@ -39,7 +39,7 @@ function GrantBeneficiaryItem({ grant }: Props) {
       <Card.Content>
         <NotMobile>
           <div className="GrantBeneficiaryItem__Section">
-            <Username className="GrantBeneficiaryItem__Avatar" address={user} variant="avatar" size="medium" />
+            <Username className="GrantBeneficiaryItem__Avatar" address={user} variant="avatar" size="md" />
             <div>
               <h3 className="GrantBeneficiaryItem__Title">{title}</h3>
               {formattedEnactedDate && (

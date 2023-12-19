@@ -150,14 +150,10 @@ export class DiscordService {
     if (user) {
       try {
         const profile = await getProfile(user)
-        const profileHasName = !!profile && profile.hasClaimedName && !!profile.name && profile.name.length > 0
-        const displayableUser = profileHasName ? profile.name : user
-
-        const hasAvatar = !!profile && !!profile.avatar
 
         embed.setAuthor({
-          name: displayableUser,
-          iconURL: hasAvatar ? profile.avatar.snapshots.face256 : DEFAULT_AVATAR,
+          name: profile.username || user,
+          iconURL: profile.avatar,
           url: getProfileUrl(user),
         })
       } catch (error) {

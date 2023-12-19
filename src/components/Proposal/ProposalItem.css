@@ -94,10 +94,6 @@
   margin: 0 !important;
 }
 
-.ProposalItem__Details > span.Username .dcl.blockie {
-  margin: 0 0 0 0;
-}
-
 .ProposalItem__FinishLabel {
   padding: 0;
   display: inline-flex;

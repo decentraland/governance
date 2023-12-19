@@ -227,6 +227,11 @@ export default function ProposalPage() {
             selectedChoice.choiceIndex!,
             SurveyEncoder.encode(survey)
           )
+          try {
+            await Governance.get().createVoteEvent(proposal.id, proposal.title, selectedChoice.choice!)
+          } catch (e) {
+            // do nothing
+          }
           updatePageState({
             changingVote: false,
             showVotingModal: false,
@@ -243,6 +248,7 @@ export default function ProposalPage() {
             proposal: proposal.id,
             category: ErrorCategory.Voting,
           })
+          /* eslint-disable @typescript-eslint/no-explicit-any */
           if ((error as any).code === ErrorCode.ACTION_REJECTED) {
             updatePageState({
               changingVote: false,

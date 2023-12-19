@@ -107,7 +107,6 @@ dist
 
 lib
 public
-public-prefix
 *.deno.ts
 .DS_Store
 snapshot.*.json

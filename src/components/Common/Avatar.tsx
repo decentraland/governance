@@ -1,19 +1,19 @@
-import classNames from 'classnames'
-import { AvatarFace } from 'decentraland-ui/dist/components/AvatarFace/AvatarFace'
+import * as React from 'react'
 
-import useProfile from '../../hooks/useProfile'
+import classNames from 'classnames'
+
+import { DEFAULT_AVATAR_IMAGE } from '../../utils/Catalyst'
 
 import './Avatar.css'
 
 export enum AvatarSize {
-  Mini = 'mini',
-  Tiny = 'tiny',
-  Small = 'small',
-  Medium = 'medium',
-  Large = 'large',
-  Big = 'big',
-  Huge = 'huge',
-  Massive = 'massive',
+  xxs = 'xxs',
+  xs = 'xs',
+  sm = 'sm',
+  md = 'md',
+  lg = 'lg',
+  xl = 'xl',
+  xxl = 'xxl',
   Full = 'full',
 }
 
@@ -22,21 +22,18 @@ type Props = {
   address?: string
   className?: string
   src?: string
+  avatar?: string
+  isLoadingDclProfile?: boolean
 }
 
-export default function Avatar({ address, size, src, className }: Props) {
-  const { profile, isLoadingProfile } = useProfile(address)
+export default function Avatar({ address, avatar, isLoadingDclProfile, size = AvatarSize.md, className }: Props) {
   const avatarClassNames = classNames(
     'Avatar',
-    `Avatar--${size || AvatarSize.Mini}`,
-    `Avatar--${((address || '')[2] || '').toLowerCase()}`,
-    isLoadingProfile && `Avatar--loading`,
+    `Avatar--${size}`,
+    address && `Avatar--${((address || '')[2] || '').toLowerCase()}`,
+    isLoadingDclProfile && `Avatar--loading`,
     className
   )
 
-  return src ? (
-    <img src={src} className={avatarClassNames} />
-  ) : (
-    <AvatarFace avatar={profile} className={avatarClassNames} />
-  )
+  return <img src={avatar || DEFAULT_AVATAR_IMAGE} alt="" className={avatarClassNames} />
 }

@@ -31,7 +31,7 @@ function PostConnection({ address, isValidated, account, onPostAction }: Props) 
   return (
     <Modal.Content>
       <div className="PostConnection__Icons">
-        <Avatar address={address} size="huge" />
+        <Avatar address={address} size="xxl" />
         {isValidated ? <LinkSucceded /> : <LinkFailed />}
         {ACCOUNT_ICON[account]}
       </div>

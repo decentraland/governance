@@ -9,15 +9,6 @@
   display: inline;
 }
 
-.Username .dcl.blockie {
-  margin: 0;
-}
-
-.Username .dcl.blockie-wrapper {
-  display: flex;
-  align-items: center;
-}
-
 a.Username span.address {
   color: inherit;
 }
@@ -26,8 +17,4 @@ a.Username span.address {
 .Username .Username__Name {
   text-overflow: ellipsis;
   overflow: hidden;
-}
-
-.Username .dcl.blockie-wrapper .dcl.blockie-children {
-  margin-left: 0.5rem;
 }
