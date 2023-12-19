@@ -1,8 +1,8 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import Rollbar from 'rollbar'
 
-import { DAO_ROLLBAR_TOKEN, GOVERNANCE_API } from '../constants'
-import { isHerokuEnv, isLocalEnv, isProdEnv, isStagingEnv } from '../utils/governanceEnvs'
+import { DAO_ROLLBAR_TOKEN } from '../constants'
+import { isProdEnv } from '../utils/governanceEnvs'
 
 const FILTERED_ERRORS = ['FETCH_ERROR', 'ACTION_REJECTED']
 
@@ -11,7 +11,7 @@ export class ErrorService {
     accessToken: DAO_ROLLBAR_TOKEN,
     captureUncaught: true,
     captureUnhandledRejections: true,
-    environment: this.getEnvironmentNameForRollbar(),
+    environment: 'production',
     itemsPerMinute: 10,
     maxItems: 50,
     captureIp: 'anonymize',
@@ -25,25 +25,14 @@ export class ErrorService {
     },
   })
 
-  private static getEnvironmentNameForRollbar() {
-    if (!GOVERNANCE_API || GOVERNANCE_API.length === 0) return 'test'
-    if (isLocalEnv()) return 'local'
-    if (isHerokuEnv()) return 'heroku'
-    if (isStagingEnv()) return 'staging'
-    return 'production'
-  }
-
   public static report(errorMsg: string, extraInfo?: Record<string, unknown>) {
-    if (DAO_ROLLBAR_TOKEN) {
-      this.client.error(errorMsg, { extraInfo })
-    } else {
-      if (isProdEnv()) logger.error('Rollbar server access token not found')
+    if (isProdEnv()) {
+      if (DAO_ROLLBAR_TOKEN) {
+        this.client.error(errorMsg, { extraInfo })
+      } else {
+        logger.error('Rollbar server access token not found')
+      }
     }
     logger.error(errorMsg, extraInfo)
-  }
-
-  public static reportAndThrow(errorMsg: string, data: Record<string, any>) {
-    this.report(errorMsg, data)
-    throw new Error(errorMsg)
   }
 }

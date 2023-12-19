@@ -35,10 +35,6 @@
     display: flex !important;
   }
 
-  span.Username.ProjectCardHeadline__Avatar > canvas.dcl.blockie {
-    margin-right: 0 !important;
-  }
-
   .ProjectCardHeadline__Avatar .Avatar,
   .Avatar.Avatar--medium {
     width: 44px;

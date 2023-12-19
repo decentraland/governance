@@ -21,7 +21,6 @@ import Time from '../../utils/date/Time'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
 import { CoauthorService } from '../services/coauthor'
-import { DiscordService } from '../services/discord'
 import { UpdateService } from '../services/update'
 
 export default routes((route) => {
@@ -103,43 +102,20 @@ async function getProposalUpdateComments(req: Request<{ update_id: string }>) {
 async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
   const { author, health, introduction, highlights, blockers, next_steps, additional_notes } = req.body
 
-  const user = req.auth!
-  const proposalId = req.params.proposal
-  const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: proposalId })
-  const isAuthorOrCoauthor =
-    user && (proposal?.user === user || (await CoauthorService.isCoauthor(proposalId, user))) && author === user
-
-  if (!proposal || !isAuthorOrCoauthor) {
-    throw new RequestError(`Unauthorized`, RequestError.Forbidden)
-  }
-
-  const updates = await UpdateModel.find<UpdateAttributes>({
-    proposal_id: proposalId,
-    status: UpdateStatus.Pending,
-  })
-
-  const currentUpdate = getCurrentUpdate(updates)
-  const nextPendingUpdate = getNextPendingUpdate(updates)
-
-  if (updates.length > 0 && (currentUpdate || nextPendingUpdate)) {
-    throw new RequestError(`Updates pending for this proposal`, RequestError.BadRequest)
-  }
-
-  const data = {
-    proposal_id: proposal.id,
-    author,
-    health,
-    introduction,
-    highlights,
-    blockers,
-    next_steps,
-    additional_notes,
-  }
-  const update = await UpdateModel.createUpdate(data)
-  await DiscourseService.createUpdate(update, proposal.title)
-  DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
-
-  return update
+  //TODO: validate update data :)
+  return await UpdateService.create(
+    {
+      proposal_id: req.params.proposal,
+      author,
+      health,
+      introduction,
+      highlights,
+      blockers,
+      next_steps,
+      additional_notes,
+    },
+    req.auth!
+  )
 }
 
 async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
@@ -151,11 +127,9 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     throw new RequestError(`Update not found: "${id}"`, RequestError.NotFound)
   }
 
-  const { completion_date } = update
-
   const user = req.auth
-  const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: req.params.proposal })
 
+  const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: req.params.proposal })
   const isAuthorOrCoauthor =
     user && (proposal?.user === user || (await CoauthorService.isCoauthor(proposalId, user))) && author === user
 
@@ -170,9 +144,8 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     throw new RequestError(`Update is not on time: "${update.id}"`, RequestError.BadRequest)
   }
 
-  const status = !update.due_date || isOnTime ? UpdateStatus.Done : UpdateStatus.Late
-
-  await UpdateModel.update<UpdateAttributes>(
+  return await UpdateService.updateProposalUpdate(
+    update,
     {
       author,
       health,
@@ -181,24 +154,13 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
       blockers,
       next_steps,
       additional_notes,
-      status,
-      completion_date: completion_date || now,
-      updated_at: now,
     },
-    { id }
+    id,
+    proposal,
+    user!,
+    now,
+    isOnTime
   )
-
-  const updatedUpdate = await UpdateService.getById(id)
-  if (updatedUpdate) {
-    if (!completion_date) {
-      await DiscourseService.createUpdate(updatedUpdate, proposal.title)
-      DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
-    } else {
-      UpdateService.commentUpdateEditInDiscourse(updatedUpdate)
-    }
-  }
-
-  return true
 }
 
 async function deleteProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {

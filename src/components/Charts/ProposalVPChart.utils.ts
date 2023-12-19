@@ -2,11 +2,11 @@ import type { Chart, ScriptableTooltipContext } from 'chart.js'
 
 import { Vote, VoteByAddress } from '../../entities/Votes/types'
 import { DEFAULT_AVATAR_IMAGE } from '../../utils/Catalyst'
-import { Avatar } from '../../utils/Catalyst/types'
+import { DclProfile } from '../../utils/Catalyst/types'
 import Time from '../../utils/date/Time'
 
 type VoteWithAddress = Vote & { address: string }
-type VoteWithProfile = VoteWithAddress & { profile?: Avatar }
+type VoteWithProfile = VoteWithAddress & { profile?: DclProfile }
 
 const TOOLTIP_ID = 'ProposalVPChartTooltip'
 export const HOUR_IN_MS = 60 * 60 * 1000
@@ -18,7 +18,7 @@ export function getSortedVotes(votesMap: VoteByAddress) {
     .sort((a, b) => a.timestamp - b.timestamp)
 }
 
-export function getSegregatedVotes(votes: VoteWithAddress[], profileMap: Map<string, Avatar>) {
+export function getSegregatedVotes(votes: VoteWithAddress[], profileMap: Map<string, DclProfile>) {
   const yes: VoteWithProfile[] = []
   const no: VoteWithProfile[] = []
   const abstain: VoteWithProfile[] = []
@@ -102,7 +102,7 @@ export function externalTooltipHandler({ context, votes, title }: TooltipHandler
 
   const vote = votes[datasetLabel.toLowerCase()]?.[dataIdx - 1]
 
-  const username = vote?.profile?.name || vote?.address.slice(0, 7)
+  const username = vote?.profile?.username || vote?.address.slice(0, 7)
   const userVP = vote?.vp || 0
   const formattedTimestamp = Time(dataPoint?.x || 0).format('DD/MM/YY, HH:mm z')
 
@@ -115,7 +115,7 @@ export function externalTooltipHandler({ context, votes, title }: TooltipHandler
   //Set Avatar
   const avatar = document.createElement('img')
   avatar.className = 'avatar'
-  avatar.src = vote?.profile?.avatar?.snapshots?.face256 || DEFAULT_AVATAR_IMAGE
+  avatar.src = vote?.profile?.avatar || DEFAULT_AVATAR_IMAGE
 
   // Set Text
   const textContainer = document.createElement('div')

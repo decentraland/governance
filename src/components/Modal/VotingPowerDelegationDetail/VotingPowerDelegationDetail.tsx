@@ -97,7 +97,7 @@ function VotingPowerDelegationDetail({
             <ChevronLeft />
           </Button>
           <div onClick={onUserProfileClick}>
-            <Username address={candidate.address} size="small" linked />
+            <Username address={candidate.address} size="sm" linked />
           </div>
         </div>
         <VotingPowerDelegationHandler

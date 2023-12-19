@@ -24,6 +24,7 @@ import coauthor from './back/routes/coauthor'
 import committee from './back/routes/committee'
 import common from './back/routes/common'
 import debug from './back/routes/debug'
+import events from './back/routes/events'
 import newsletter from './back/routes/newsletter'
 import notification from './back/routes/notification'
 import project from './back/routes/project'
@@ -38,6 +39,7 @@ import users from './back/routes/user'
 import vestings from './back/routes/vestings'
 import score from './back/routes/votes'
 import { DiscordService } from './back/services/discord'
+import { EventsService } from './back/services/events'
 import { updateGovernanceBudgets } from './entities/Budget/jobs'
 import { activateProposals, finishProposal, publishBids } from './entities/Proposal/jobs'
 import filesystem, {
@@ -62,6 +64,7 @@ jobs.cron('@each10Second', pingSnapshot)
 jobs.cron('@daily', updateGovernanceBudgets)
 jobs.cron('@daily', runAirdropJobs)
 jobs.cron('@monthly', giveTopVoterBadges)
+jobs.cron('@daily', EventsService.deleteOldEvents)
 
 const file = readFileSync('static/api.yaml', 'utf8')
 const swaggerDocument = YAML.parse(file)
@@ -80,6 +83,7 @@ app.use('/api', [
   withBody(),
   committee,
   debug,
+  events,
   users,
   proposal,
   proposalSurveyTopics,

@@ -8,9 +8,9 @@ import annotationPlugin from 'chartjs-plugin-annotation'
 
 import { VoteByAddress } from '../../entities/Votes/types'
 import useAbbreviatedFormatter from '../../hooks/useAbbreviatedFormatter'
+import useDclProfiles from '../../hooks/useDclProfiles'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import useProfiles from '../../hooks/useProfiles'
-import { Avatar } from '../../utils/Catalyst/types'
+import { DclProfile } from '../../utils/Catalyst/types'
 import Section from '../Proposal/View/Section'
 
 import './ProposalVPChart.css'
@@ -47,13 +47,13 @@ function ProposalVPChart({ requiredToPass, voteMap, isLoadingVotes, startTimesta
   const YAxisFormat = useAbbreviatedFormatter()
   const chartRef = useRef<ChartJS>(null)
   const sortedVotes = useMemo(() => getSortedVotes(voteMap), [voteMap])
-  const { profiles, isLoadingProfiles } = useProfiles(sortedVotes.map((vote) => vote.address))
+  const { profiles, isLoadingProfiles } = useDclProfiles(sortedVotes.map((vote) => vote.address))
   const profileByAddress = useMemo(
     () =>
-      profiles.reduce((acc, { profile }) => {
-        acc.set(profile.ethAddress.toLowerCase(), profile)
+      profiles.reduce((acc, profile) => {
+        acc.set(profile.address.toLowerCase(), profile)
         return acc
-      }, new Map<string, Avatar>()),
+      }, new Map<string, DclProfile>()),
     [profiles]
   )
   const votes = useMemo(() => getSegregatedVotes(sortedVotes, profileByAddress), [profileByAddress, sortedVotes])

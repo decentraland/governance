@@ -333,7 +333,7 @@ export async function createProposalHiring(req: WithAuth) {
     }
     try {
       const profile = await getProfile(configuration.address)
-      configuration.name = profile?.name
+      configuration.name = profile.username || configuration.address
     } catch (error) {
       ErrorService.report('Error getting profile', {
         error,
@@ -479,6 +479,7 @@ export async function createProposalBid(req: WithAuth) {
   await BidService.createBid(linked_proposal_id, user, bid)
 }
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export async function createProposal(proposalInCreation: ProposalInCreation) {
   try {
     return await ProposalService.createProposal(proposalInCreation)
