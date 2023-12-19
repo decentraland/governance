@@ -19,6 +19,7 @@ import { EditUpdateModal } from '../../components/Modal/EditUpdateModal/EditUpda
 import FinancialSection from '../../components/Updates/FinancialSection'
 import GeneralSection from '../../components/Updates/GeneralSection'
 import UpdateMarkdownView from '../../components/Updates/UpdateMarkdownView'
+import { ProjectStatus } from '../../entities/Grant/types'
 import {
   UpdateAttributes,
   UpdateFinancial,
@@ -28,7 +29,9 @@ import {
 } from '../../entities/Updates/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
+import useProposal from '../../hooks/useProposal'
 import useProposalUpdate from '../../hooks/useProposalUpdate'
+import useVestings from '../../hooks/useVestings'
 import locations, { navigate } from '../../utils/locations'
 
 import './submit.css'
@@ -83,6 +86,9 @@ export default function Update({ isEdit }: Props) {
   const [isPreviewMode, setPreviewMode] = useState(false)
   const { update, isLoadingUpdate, isErrorOnUpdate, refetchUpdate } = useProposalUpdate(updateId)
   const proposalId = useMemo(() => params.get('proposalId') || update?.proposal_id || '', [update, params])
+  const { proposal } = useProposal(proposalId)
+  const vestingAddresses = proposal?.vesting_addresses || []
+  const { data } = useVestings(vestingAddresses.length > 0)
   const [error, setError] = useState('')
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [generalSection, patchGeneralSection] = useState(initialGeneralState)
@@ -91,6 +97,13 @@ export default function Update({ isEdit }: Props) {
   const isValidToSubmit = Object.values(validationState).every((valid) => valid)
 
   usePreventNavigation(true)
+
+  const vestingContract = data
+    ?.filter(
+      (vesting) =>
+        vesting.vesting_status === ProjectStatus.InProgress && vestingAddresses.includes(vesting.vesting_address)
+    )
+    ?.pop()
 
   const handleGeneralSectionValidation = useCallback(
     (data: UpdateGeneral, sectionValid: boolean) => {
