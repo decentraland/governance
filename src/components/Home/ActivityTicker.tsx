@@ -39,7 +39,7 @@ export default function ActivityTicker() {
         <>
           {events && events.length === 0 && (
             <div className="ActivityTicker__EmptyContainer">
-              <Empty title={t('page.home.activity_ticker.no_activity')} />
+              <Empty description={t('page.home.activity_ticker.no_activity')} />
             </div>
           )}
           {events && events.length > 0 && (
