@@ -20,10 +20,10 @@ import FinancialSection from '../../components/Updates/FinancialSection'
 import GeneralSection from '../../components/Updates/GeneralSection'
 import UpdateMarkdownView from '../../components/Updates/UpdateMarkdownView'
 import {
+  FinancialUpdate,
+  GeneralUpdate,
+  GeneralUpdateSchema,
   UpdateAttributes,
-  UpdateFinancial,
-  UpdateGeneral,
-  UpdateGeneralSchema,
   UpdateStatus,
 } from '../../entities/Updates/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
@@ -50,8 +50,8 @@ const intialValidationState: UpdateValidationState = {
   financialSectionValid: false,
 }
 
-const initialGeneralState: Partial<UpdateGeneral> | undefined = undefined
-const initialFinancialState: UpdateFinancial | undefined = undefined
+const initialGeneralState: Partial<GeneralUpdate> | undefined = undefined
+const initialFinancialState: FinancialUpdate | undefined = undefined
 
 function getInitialUpdateValues<T>(
   update: UpdateAttributes | null | undefined,
@@ -93,7 +93,7 @@ export default function Update({ isEdit }: Props) {
   usePreventNavigation(true)
 
   const handleGeneralSectionValidation = useCallback(
-    (data: UpdateGeneral, sectionValid: boolean) => {
+    (data: GeneralUpdate, sectionValid: boolean) => {
       patchGeneralSection((prevState) => ({ ...prevState, ...data }))
       patchValidationState((prevState) => ({ ...prevState, generalSectionValid: sectionValid }))
     },
@@ -101,7 +101,7 @@ export default function Update({ isEdit }: Props) {
   )
 
   const handleFinancialSectionValidation = useCallback(
-    (data: UpdateFinancial | undefined, sectionValid: boolean) => {
+    (data: FinancialUpdate | undefined, sectionValid: boolean) => {
       if (data) {
         patchFinancialSection((prevState) => ({ ...prevState, ...data }))
       }
@@ -121,7 +121,7 @@ export default function Update({ isEdit }: Props) {
     [financialSection, generalSection]
   )
 
-  const submitUpdate = async (data: UpdateGeneral & UpdateFinancial) => {
+  const submitUpdate = async (data: GeneralUpdate & FinancialUpdate) => {
     if (!proposalId) {
       return
     }
@@ -160,7 +160,7 @@ export default function Update({ isEdit }: Props) {
     }
   }
 
-  const onSubmit: SubmitHandler<UpdateGeneral & UpdateFinancial> = (data) => {
+  const onSubmit: SubmitHandler<GeneralUpdate & FinancialUpdate> = (data) => {
     if (isEdit) {
       setIsEditModalOpen(true)
     } else {
@@ -220,7 +220,7 @@ export default function Update({ isEdit }: Props) {
             <GeneralSection
               isFormDisabled={formDisabled}
               intialValues={
-                generalSection || getInitialUpdateValues<UpdateGeneral>(update, (key) => key in UpdateGeneralSchema)
+                generalSection || getInitialUpdateValues<GeneralUpdate>(update, (key) => key in GeneralUpdateSchema)
               }
               sectionNumber={1}
               onValidation={handleGeneralSectionValidation}
@@ -231,7 +231,7 @@ export default function Update({ isEdit }: Props) {
               onValidation={handleFinancialSectionValidation}
               intialValues={
                 financialSection ||
-                getInitialUpdateValues<UpdateFinancial>(update, (key) => key in ({ records: [] } as UpdateFinancial))
+                getInitialUpdateValues<FinancialUpdate>(update, (key) => key in ({ records: [] } as FinancialUpdate))
               }
             />
           </>
@@ -242,7 +242,7 @@ export default function Update({ isEdit }: Props) {
             primary
             disabled={formDisabled || !isValidToSubmit}
             loading={formDisabled}
-            onClick={() => onSubmit({ ...generalSection, ...financialSection } as UpdateGeneral & UpdateFinancial)}
+            onClick={() => onSubmit({ ...generalSection, ...financialSection } as GeneralUpdate & FinancialUpdate)}
           >
             {t('page.proposal_update.publish_update')}
           </Button>
@@ -271,7 +271,7 @@ export default function Update({ isEdit }: Props) {
           open={isEditModalOpen}
           onClose={handleEditModalClose}
           onClickAccept={() =>
-            submitUpdate({ ...generalSection, ...financialSection } as UpdateGeneral & UpdateFinancial)
+            submitUpdate({ ...generalSection, ...financialSection } as GeneralUpdate & FinancialUpdate)
           }
         />
       )}

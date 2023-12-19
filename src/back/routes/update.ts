@@ -10,7 +10,7 @@ import { Request } from 'express'
 import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { isSameAddress } from '../../entities/Snapshot/utils'
-import { UpdateFinancialSchema, UpdateGeneral, UpdateSchema, UpdateStatus } from '../../entities/Updates/types'
+import { FinancialUpdateSchema, GeneralUpdate, UpdateSchema, UpdateStatus } from '../../entities/Updates/types'
 import {
   getCurrentUpdate,
   getNextPendingUpdate,
@@ -106,11 +106,11 @@ async function getProposalUpdateComments(req: Request<{ update_id: string }>) {
 const generalSectionValidator = schema.compile(UpdateSchema)
 async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
   const { author, records, ...body } = req.body
-  const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<UpdateGeneral>(
+  const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<GeneralUpdate>(
     generalSectionValidator,
     body
   )
-  const parsedResult = UpdateFinancialSchema.safeParse({ records })
+  const parsedResult = FinancialUpdateSchema.safeParse({ records })
   if (!parsedResult.success) {
     if (isProdEnv()) {
       ErrorService.report('Submission of invalid financial records', {
@@ -168,11 +168,11 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
 
 async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
   const { id, author, records, ...body } = req.body
-  const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<UpdateGeneral>(
+  const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<GeneralUpdate>(
     generalSectionValidator,
     body
   )
-  const parsedResult = UpdateFinancialSchema.safeParse({ records })
+  const parsedResult = FinancialUpdateSchema.safeParse({ records })
   if (!parsedResult.success) {
     if (isProdEnv()) {
       ErrorService.report('Submission of invalid financial records', {

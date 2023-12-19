@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export type UpdateGeneral = {
+export type GeneralUpdate = {
   health: ProjectHealth
   introduction: string
   highlights: string
@@ -9,12 +9,12 @@ export type UpdateGeneral = {
   additional_notes: string
 }
 
-export type UpdateFinancialRecord = z.infer<typeof UpdateFinancialRecordSchema>
+export type FinancialUpdateRecord = z.infer<typeof FinancialUpdateRecordSchema>
 
-export type UpdateFinancial = z.infer<typeof UpdateFinancialSchema>
+export type FinancialUpdate = z.infer<typeof FinancialUpdateSchema>
 
-export type UpdateAttributes = Partial<UpdateGeneral> &
-  Partial<UpdateFinancial> & {
+export type UpdateAttributes = Partial<GeneralUpdate> &
+  Partial<FinancialUpdate> & {
     id: string
     proposal_id: string
     author?: string
@@ -50,7 +50,7 @@ export type UpdateResponse = {
   currentUpdate: UpdateAttributes | null
 }
 
-export const UpdateGeneralSchema: Record<keyof UpdateGeneral, Record<string, unknown>> = {
+export const GeneralUpdateSchema: Record<keyof GeneralUpdate, Record<string, unknown>> = {
   health: {
     type: 'string',
     enum: Object.values(ProjectHealth),
@@ -85,13 +85,13 @@ export const UpdateGeneralSchema: Record<keyof UpdateGeneral, Record<string, unk
 export const UpdateSchema = {
   type: 'object',
   additionalProperties: false,
-  required: [...Object.keys(UpdateGeneralSchema)],
+  required: [...Object.keys(GeneralUpdateSchema)],
   properties: {
-    ...UpdateGeneralSchema,
+    ...GeneralUpdateSchema,
   },
 }
 
-const UpdateFinancialRecordSchema = z.object({
+const FinancialUpdateRecordSchema = z.object({
   concept: z.string().min(1),
   description: z.string().min(1),
   amount: z.number().min(1),
@@ -100,6 +100,6 @@ const UpdateFinancialRecordSchema = z.object({
   link: z.string().url(),
 })
 
-export const UpdateFinancialSchema = z.object({
-  records: z.array(UpdateFinancialRecordSchema).min(1),
+export const FinancialUpdateSchema = z.object({
+  records: z.array(FinancialUpdateRecordSchema).min(1),
 })

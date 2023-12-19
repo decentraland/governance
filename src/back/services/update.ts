@@ -3,7 +3,7 @@ import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { Discourse, DiscoursePost } from '../../clients/Discourse'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import UpdateModel from '../../entities/Updates/model'
-import { UpdateAttributes, UpdateGeneral, UpdateStatus } from '../../entities/Updates/types'
+import { GeneralUpdate, UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
 import { getUpdateUrl } from '../../entities/Updates/utils'
 import { inBackground } from '../../helpers'
 import { ErrorService } from '../../services/ErrorService'
@@ -66,7 +66,7 @@ export class UpdateService {
     update: {
       proposal_id: string
       author: string
-    } & UpdateGeneral
+    } & GeneralUpdate
   ) {
     try {
       return await UpdateModel.createUpdate(update)

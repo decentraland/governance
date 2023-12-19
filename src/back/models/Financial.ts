@@ -1,19 +1,19 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import { SQL, join, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 
-import { UpdateFinancialRecord } from '../../entities/Updates/types'
+import { FinancialUpdateRecord } from '../../entities/Updates/types'
 
 export type FinancialAttributes = {
   id: number
   update_id: string
-} & UpdateFinancialRecord
+} & FinancialUpdateRecord
 
 export default class FinancialModel extends Model<FinancialAttributes> {
   static tableName = 'financial_records'
   static withTimestamps = false
   static primaryKey = 'id'
 
-  static async getRecords(update_id: string): Promise<UpdateFinancialRecord[]> {
+  static async getRecords(update_id: string): Promise<FinancialUpdateRecord[]> {
     const query = SQL`
         SELECT concept, description, amount, token_type, receiver, link
         FROM ${table(this)}
@@ -21,12 +21,12 @@ export default class FinancialModel extends Model<FinancialAttributes> {
           "update_id" = ${update_id}
     `
 
-    const result = await this.namedQuery<UpdateFinancialRecord>('get_financial_records', query)
+    const result = await this.namedQuery<FinancialUpdateRecord>('get_financial_records', query)
 
     return result.map((record) => ({ ...record, amount: parseFloat(record.amount.toString()) }))
   }
 
-  static async insertRecords(update_id: string, records: UpdateFinancialRecord[]): Promise<FinancialAttributes[]> {
+  static async insertRecords(update_id: string, records: FinancialUpdateRecord[]): Promise<FinancialAttributes[]> {
     const query = SQL`
         INSERT INTO ${table(this)} ("update_id", "concept", "description", "amount", "token_type", "receiver", "link")
         VALUES ${join(
