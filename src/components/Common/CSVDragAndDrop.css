@@ -1,0 +1,33 @@
+.CSVDragAndDrop__Zone {
+  align-items: center;
+  border: 2px dashed var(--alpha-black-400);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  height: 80px;
+  justify-content: center;
+  padding: 6px;
+  cursor: pointer;
+}
+
+.CSVDragAndDrop__ProgressBar {
+  background-color: var(--dcl-primary) !important;
+  height: 4px !important;
+  border-radius: 4px !important;
+}
+
+.CSVDragAndDrop__TextContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+}
+
+.CSVDragAndDrop__TextContainer .Text {
+  color: var(--black-600);
+}
+
+.CSVDragAndDrop__TextFile {
+  color: var(--dcl-primary);
+  font-weight: var(--weight-medium);
+}

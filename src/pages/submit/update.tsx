@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import Helmet from 'react-helmet'
-import { SubmitHandler, useForm, useWatch } from 'react-hook-form'
+import { SubmitHandler } from 'react-hook-form'
 
 import { useLocation } from '@reach/router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
@@ -10,98 +10,61 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
-import snakeCase from 'lodash/snakeCase'
 
 import { Governance } from '../../clients/Governance'
-import Label from '../../components/Common/Typography/Label'
 import Text from '../../components/Common/Typography/Text'
-import MarkdownField from '../../components/Form/MarkdownFieldSection'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import LoadingView from '../../components/Layout/LoadingView'
 import { EditUpdateModal } from '../../components/Modal/EditUpdateModal/EditUpdateModal'
-import ProjectHealthButton from '../../components/Updates/ProjectHealthButton'
+import FinancialSection from '../../components/Updates/FinancialSection'
+import GeneralSection from '../../components/Updates/GeneralSection'
 import UpdateMarkdownView from '../../components/Updates/UpdateMarkdownView'
-import { ProjectHealth, UpdateStatus } from '../../entities/Updates/types'
+import { GeneralUpdate, UpdateAttributes, UpdateGeneralSchema, UpdateStatus } from '../../entities/Updates/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
+import usePreventNavigation from '../../hooks/usePreventNavigation'
 import useProposalUpdate from '../../hooks/useProposalUpdate'
 import locations, { navigate } from '../../utils/locations'
 
 import './submit.css'
 import './update.css'
 
-type UpdateFormState = {
-  health: ProjectHealth
-  introduction: string
-  highlights: string
-  blockers: string
-  nextSteps: string
-  additionalNotes: string
-}
-
-const initialState: UpdateFormState = {
-  health: ProjectHealth.OnTrack,
-  introduction: '',
-  highlights: '',
-  blockers: '',
-  nextSteps: '',
-  additionalNotes: '',
-}
-
-const updateSchema = {
-  type: 'object',
-  additionalProperties: false,
-  required: ['health', 'introduction', 'highlights', 'blockers', 'nextSteps'],
-  properties: {
-    health: {
-      type: 'string',
-    },
-    introduction: {
-      type: 'string',
-      minLength: 1,
-      maxLength: 500,
-    },
-    highlights: {
-      type: 'string',
-      minLength: 1,
-      maxLength: 3500,
-    },
-    blockers: {
-      type: 'string',
-      minLength: 1,
-      maxLength: 3500,
-    },
-    nextSteps: {
-      type: 'string',
-      minLength: 1,
-      maxLength: 3500,
-    },
-    additionalNotes: {
-      type: 'string',
-      minLength: 1,
-      maxLength: 3500,
-    },
-  },
-}
-
-const schema = updateSchema.properties
-
 interface Props {
   isEdit?: boolean
 }
 
+type UpdateValidationState = {
+  generalSectionValid: boolean
+  financialSectionValid: boolean
+}
+
 const NOW = new Date()
+
+const intialValidationState: UpdateValidationState = {
+  generalSectionValid: false,
+  financialSectionValid: true,
+}
+
+const initialState: Partial<GeneralUpdate> | undefined = undefined
+
+function getInitialUpdateValues(update?: UpdateAttributes | null): Partial<GeneralUpdate> | undefined {
+  if (!update) {
+    return undefined
+  }
+  const values: Partial<GeneralUpdate> = {}
+  for (const key of Object.keys(update)) {
+    if (key in UpdateGeneralSchema) {
+      const value = update[key as keyof GeneralUpdate]
+      if (value) {
+        values[key as keyof GeneralUpdate] = value as never
+      }
+    }
+  }
+  return Object.keys(values).length > 0 ? values : undefined
+}
 
 export default function Update({ isEdit }: Props) {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
-
-  const {
-    handleSubmit,
-    formState: { isDirty, errors, isSubmitting },
-    control,
-    setValue,
-    watch,
-  } = useForm<UpdateFormState>({ defaultValues: initialState, mode: 'onTouched' })
 
   const [formDisabled, setFormDisabled] = useState(false)
   const location = useLocation()
@@ -111,77 +74,32 @@ export default function Update({ isEdit }: Props) {
   const { update, isLoadingUpdate, isErrorOnUpdate, refetchUpdate } = useProposalUpdate(updateId)
   const proposalId = useMemo(() => params.get('proposalId') || update?.proposal_id || '', [update, params])
   const [error, setError] = useState('')
-  const preventNavigation = useRef(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [projectHealth, setProjectHealth] = useState(initialState.health)
+  const [newUpdate, patchNewUpdate] = useState(initialState)
+  const [validationState, patchValidationState] = useState<UpdateValidationState>(intialValidationState)
+  const isValidToSubmit = Object.values(validationState).every((valid) => valid)
 
-  useEffect(() => {
-    preventNavigation.current = isDirty
-  }, [isDirty])
+  usePreventNavigation(true)
 
-  useEffect(() => {
-    if (isEdit && !!update) {
-      const { health, introduction, highlights, blockers, next_steps, additional_notes } = update
-      if (!!health && !!introduction && !!highlights && !!blockers && !!next_steps) {
-        setValue('health', health)
-        setValue('introduction', introduction)
-        setValue('highlights', highlights)
-        setValue('blockers', blockers)
-        setValue('nextSteps', next_steps)
-        setValue('additionalNotes', additional_notes || '')
-      } else {
-        console.error('Update is missing required fields', JSON.stringify(update))
-      }
-    }
-  }, [isEdit, update, setValue])
-
-  const getFieldProps = (
-    fieldName: 'introduction' | 'highlights' | 'blockers' | 'nextSteps' | 'additionalNotes',
-    isRequired = true
-  ) => ({
-    control,
-    name: fieldName,
-    error: !!errors[fieldName],
-    rules: {
-      ...(isRequired && {
-        required: { value: true, message: t(`error.proposal_update.${snakeCase(fieldName)}_empty`) },
-      }),
-      minLength: {
-        value: schema[fieldName].minLength,
-        message: t(`error.proposal_update.${snakeCase(fieldName)}_too_short`),
-      },
-      maxLength: {
-        value: schema[fieldName].maxLength,
-        message: t(`error.proposal_update.${snakeCase(fieldName)}_too_large`),
-      },
+  const handleGeneralSectionValidation = useCallback(
+    (data: GeneralUpdate, sectionValid: boolean) => {
+      patchNewUpdate((prevState) => ({ ...prevState, ...data }))
+      patchValidationState((prevState) => ({ ...prevState, generalSectionValid: sectionValid }))
     },
-    message:
-      t(errors[fieldName]?.message || '') +
-      ' ' +
-      t('page.submit.character_counter', {
-        current: watch(fieldName).length,
-        limit: schema[fieldName].maxLength,
-      }),
-  })
-
-  const values = useWatch({ control })
+    [patchNewUpdate, patchValidationState]
+  )
 
   const previewUpdate = useMemo(
     () => ({
-      health: values.health,
-      introduction: values.introduction,
-      highlights: values.highlights,
-      blockers: values.blockers,
-      next_steps: values.nextSteps,
-      additional_notes: values.additionalNotes,
+      ...newUpdate,
       status: UpdateStatus.Pending,
       created_at: NOW,
       updated_at: NOW,
     }),
-    [values]
+    [newUpdate]
   )
 
-  const submitUpdate = async (data: UpdateFormState) => {
+  const submitUpdate = async (data: GeneralUpdate) => {
     if (!proposalId) {
       return
     }
@@ -196,8 +114,8 @@ export default function Update({ isEdit }: Props) {
       introduction: data.introduction,
       highlights: data.highlights,
       blockers: data.blockers,
-      next_steps: data.nextSteps,
-      additional_notes: data.additionalNotes,
+      next_steps: data.next_steps,
+      additional_notes: data.additional_notes,
       status: UpdateStatus.Pending,
     }
 
@@ -220,7 +138,7 @@ export default function Update({ isEdit }: Props) {
     }
   }
 
-  const onSubmit: SubmitHandler<UpdateFormState> = (data) => {
+  const onSubmit: SubmitHandler<GeneralUpdate> = (data) => {
     if (isEdit) {
       setIsEditModalOpen(true)
     } else {
@@ -264,11 +182,6 @@ export default function Update({ isEdit }: Props) {
     setFormDisabled(false)
   }
 
-  const handleHealthChange = (value: ProjectHealth) => {
-    setValue('health', value)
-    setProjectHealth(value)
-  }
-
   return (
     <ContentLayout small>
       <Head title={title} description={description} image="https://decentraland.org/images/decentraland.png" />
@@ -279,83 +192,31 @@ export default function Update({ isEdit }: Props) {
       <ContentSection>
         <Text size="lg">{description}</Text>
       </ContentSection>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <div>
         {!isPreviewMode && (
           <>
-            <ContentSection>
-              <Label>{t('page.proposal_update.health_label')}</Label>
-              <div className="UpdateSubmit__ProjectHealthContainer">
-                <ProjectHealthButton
-                  type={ProjectHealth.OnTrack}
-                  selectedValue={projectHealth}
-                  onClick={handleHealthChange}
-                  disabled={formDisabled}
-                >
-                  {t('page.proposal_update.on_track_label') || ''}
-                </ProjectHealthButton>
-                <ProjectHealthButton
-                  type={ProjectHealth.AtRisk}
-                  selectedValue={projectHealth}
-                  onClick={handleHealthChange}
-                  disabled={formDisabled}
-                >
-                  {t('page.proposal_update.at_risk_label') || ''}
-                </ProjectHealthButton>
-                <ProjectHealthButton
-                  type={ProjectHealth.OffTrack}
-                  selectedValue={projectHealth}
-                  onClick={handleHealthChange}
-                  disabled={formDisabled}
-                >
-                  {t('page.proposal_update.off_track_label') || ''}
-                </ProjectHealthButton>
-              </div>
-            </ContentSection>
-            <MarkdownField
-              showMarkdownNotice={false}
-              label={t('page.proposal_update.introduction_label')}
-              disabled={formDisabled}
-              minHeight={77}
-              {...getFieldProps('introduction')}
+            <GeneralSection
+              isFormDisabled={formDisabled}
+              intialValues={newUpdate || getInitialUpdateValues(update)}
+              sectionNumber={1}
+              onValidation={handleGeneralSectionValidation}
             />
-            <MarkdownField
-              showMarkdownNotice={false}
-              label={t('page.proposal_update.highlights_label')}
-              placeholder={t('page.proposal_update.highlights_placeholder')}
-              disabled={formDisabled}
-              {...getFieldProps('highlights')}
-            />
-            <MarkdownField
-              showMarkdownNotice={false}
-              label={t('page.proposal_update.blockers_label')}
-              placeholder={t('page.proposal_update.blockers_placeholder')}
-              disabled={formDisabled}
-              {...getFieldProps('blockers')}
-            />
-            <MarkdownField
-              showMarkdownNotice={false}
-              label={t('page.proposal_update.next_steps_label')}
-              placeholder={t('page.proposal_update.next_steps_placeholder')}
-              disabled={formDisabled}
-              {...getFieldProps('nextSteps')}
-            />
-            <MarkdownField
-              showMarkdownNotice={false}
-              label={t('page.proposal_update.additional_notes_label')}
-              placeholder={t('page.proposal_update.additional_notes_placeholder')}
-              disabled={formDisabled}
-              {...getFieldProps('additionalNotes', false)}
-            />
+            <FinancialSection isFormDisabled={formDisabled} sectionNumber={2} onValidation={() => {}} />
           </>
         )}
         {isPreviewMode && <UpdateMarkdownView update={previewUpdate} />}
         <ContentSection className="UpdateSubmit__Actions">
-          <Button type="submit" primary disabled={formDisabled} loading={isSubmitting}>
+          <Button
+            primary
+            disabled={formDisabled || !isValidToSubmit}
+            loading={formDisabled}
+            onClick={() => onSubmit(newUpdate as GeneralUpdate)}
+          >
             {t('page.proposal_update.publish_update')}
           </Button>
           <Button
             basic
-            disabled={isSubmitting}
+            disabled={formDisabled}
             onClick={(e) => {
               e.preventDefault()
               setPreviewMode((prev) => !prev)
@@ -371,13 +232,13 @@ export default function Update({ isEdit }: Props) {
             </Text>
           </ContentSection>
         )}
-      </form>
+      </div>
       {isEdit && (
         <EditUpdateModal
           loading={isSubmitting}
           open={isEditModalOpen}
           onClose={handleEditModalClose}
-          onClickAccept={() => submitUpdate(values as UpdateFormState)}
+          onClickAccept={() => submitUpdate(newUpdate as GeneralUpdate)}
         />
       )}
     </ContentLayout>

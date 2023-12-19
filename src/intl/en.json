@@ -2062,6 +2062,8 @@
     "proposal_update": {
       "title": "Publish New Grant Update",
       "description": "Share your grant updates with the Decentraland Community. Use this space to talk about the progress but also to raise issues or blockers you might have with your project. Feel free to add any relevant information or links to demo what you’ve been up to.",
+      "general_section_title": "General",
+      "financial_section_title": "Financials",
       "health_label": "Project Health",
       "on_track_label": "On Track",
       "at_risk_label": "At Risk",
@@ -2075,6 +2077,15 @@
       "next_steps_placeholder": "What are your upcoming tasks? Where is your focus going to be next?",
       "additional_notes_label": "Additional notes and links",
       "additional_notes_placeholder": "Feel free to share any additional information or resources to showcase your project.",
+      "reporting_label": "Reporting",
+      "reporting_description": "Bring some light onto how this project is utilizing funds, CSV syntax. More about our formatting [here]().",
+      "csv_empty": "CSV file is empty",
+      "csv_invalid_header": "CSV file is not valid",
+      "csv_invalid_row": "Row is not valid",
+      "csv_row_error": "Field \"{field}\": {error}",
+      "summary_label": "Summary",
+      "summary_description": "According to what you've disclosed above, this is what you spent since your last update looks like.",
+      "summary_items": "{count} {count, plural, one {item} other {items}}",
       "publish_update": "Publish update",
       "preview_update": "Preview update",
       "edit_update": "Edit update"
@@ -2087,6 +2098,10 @@
       "delegated_voting_power_list_title": "Delegated Voting Power",
       "delegated_voting_power_list_description": "The following individuals have decided to delegate their Voting Power. Remember they may overrule your vote without any notice."
     }
+  },
+  "csv_file": {
+    "drag_and_drop": "Drag and drop a CSV file or",
+    "choose_file": "choose a file"
   },
   "delegation": {
     "delegated_to_user_empty_title": "No delegations",

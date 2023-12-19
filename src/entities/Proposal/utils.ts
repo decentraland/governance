@@ -159,7 +159,10 @@ export function proposalUrl(id: ProposalAttributes['id']) {
 
 export const EDIT_DELEGATE_SNAPSHOT_URL = snapshotUrl(`#/delegate/${SNAPSHOT_SPACE}`)
 
-export function userModifiedForm(stateValue: Record<string, unknown>, initialState: Record<string, unknown>) {
+export function userModifiedForm(stateValue?: Record<string, unknown>, initialState?: Record<string, unknown>) {
+  if (!stateValue || !initialState) {
+    return false
+  }
   const isInitialState = JSON.stringify(stateValue) === JSON.stringify(initialState)
   return !isInitialState && Object.values(stateValue).some((value) => !!value)
 }

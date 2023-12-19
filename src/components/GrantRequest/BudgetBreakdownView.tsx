@@ -9,6 +9,7 @@ import useFormatMessage from '../../hooks/useFormatMessage'
 import ProposalMarkdown from '../Proposal/View/ProposalMarkdown'
 
 import BreakdownAccordion, { BreakdownItem } from './BreakdownAccordion'
+import BreakdownContent from './BreakdownContent'
 
 interface Props {
   breakdown: BudgetBreakdownConcept[]
@@ -22,9 +23,8 @@ function BudgetBreakdownView({ breakdown }: Props) {
       breakdown.map<BreakdownItem>(({ concept, duration, estimatedBudget, aboutThis, relevantLink }) => ({
         title: concept,
         subtitle: t('page.proposal_view.grant.breakdown_subtitle', { duration }),
-        description: aboutThis,
-        url: relevantLink,
         value: intl.formatNumber(toNumber(estimatedBudget), CURRENCY_FORMAT_OPTIONS),
+        content: <BreakdownContent description={aboutThis} url={relevantLink} />,
       })),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [breakdown]

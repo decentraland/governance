@@ -5,8 +5,6 @@ import toNumber from 'lodash/toNumber'
 import type { AccordionTitleProps } from 'semantic-ui-react'
 import Accordion from 'semantic-ui-react/dist/commonjs/modules/Accordion/Accordion'
 
-import { isHttpsURL } from '../../helpers'
-import LinkWithTitle from '../Common/Typography/LinkWithTitle'
 import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
 
 import './BreakdownAccordion.css'
@@ -16,16 +14,13 @@ const UNSELECTED_ITEM = -1
 export interface BreakdownItem {
   title: string
   subtitle: string
-  description: string
-  url?: string
   value?: string
+  content: React.ReactNode
 }
 
 interface Props {
   items: BreakdownItem[]
 }
-
-const formatUrl = (url: string) => (isHttpsURL(url) ? url : `//${url}`)
 
 function BreakdownAccordion({ items }: Props) {
   const [activeAccordionItem, setActiveAccordionItem] = useState(UNSELECTED_ITEM)
@@ -39,7 +34,7 @@ function BreakdownAccordion({ items }: Props) {
 
   return (
     <Accordion fluid styled className="BreakdownAccordion">
-      {items.map(({ title, subtitle, description, url, value }, accordionNumber) => (
+      {items.map(({ title, subtitle, value, content }, accordionNumber) => (
         <Fragment key={`BreakdownAccordionItem--${accordionNumber}`}>
           <Accordion.Title
             className="BreakdownAccordion__TitleContainer"
@@ -63,10 +58,7 @@ function BreakdownAccordion({ items }: Props) {
               </span>
             </div>
           </Accordion.Title>
-          <Accordion.Content active={activeAccordionItem === accordionNumber}>
-            <p>{description}</p>
-            {url && <LinkWithTitle url={formatUrl(url)} />}
-          </Accordion.Content>
+          <Accordion.Content active={activeAccordionItem === accordionNumber}>{content}</Accordion.Content>
         </Fragment>
       ))}
     </Accordion>
