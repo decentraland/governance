@@ -26,7 +26,6 @@ export async function getProfile(address: string): Promise<DclProfile> {
   return getDclProfile(profile, address)
 }
 
-// TODO: this could be cached per address
 export async function getProfiles(addresses: string[]): Promise<DclProfile[]> {
   for (const address of addresses) {
     if (!isEthereumAddress(address)) {
