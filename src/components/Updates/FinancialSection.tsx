@@ -4,7 +4,7 @@ import { usePapaParse } from 'react-papaparse'
 
 import toNumber from 'lodash/toNumber'
 
-import { UpdateFinancial, UpdateFinancialRecord, UpdateFinancialSchema } from '../../entities/Updates/types'
+import { FinancialUpdate, FinancialUpdateRecord, FinancialUpdateSchema } from '../../entities/Updates/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import CSVDragAndDrop from '../Common/CSVDragAndDrop'
 import NumberedTextArea from '../Common/NumberedTextArea'
@@ -17,17 +17,17 @@ import './FinancialSection.css'
 import SummaryItems from './SummaryItems'
 
 interface Props {
-  onValidation: (data: UpdateFinancial, sectionValid: boolean) => void
+  onValidation: (data: FinancialUpdate, sectionValid: boolean) => void
   isFormDisabled: boolean
   sectionNumber: number
-  intialValues?: UpdateFinancial
+  intialValues?: FinancialUpdate
 }
 
-const UPDATE_FINANCIAL_INITIAL_STATE: UpdateFinancial = {
+const UPDATE_FINANCIAL_INITIAL_STATE: FinancialUpdate = {
   records: [],
 }
 
-const CSV_HEADER: (keyof UpdateFinancialRecord)[] = [
+const CSV_HEADER: (keyof FinancialUpdateRecord)[] = [
   'concept',
   'description',
   'amount',
@@ -40,16 +40,15 @@ const SEPARATOR = ','
 
 const CSV_TEXTAREA_PLACEHOLDER = CSV_HEADER.join(SEPARATOR)
 
-function FinancialSection({ onValidation, isFormDisabled, sectionNumber, intialValues }: Props) {
+function FinancialSection({ isFormDisabled, sectionNumber, intialValues }: Props) {
   const t = useFormatMessage()
   const { readString } = usePapaParse()
 
   const {
     formState: { isValid, isDirty },
-    control,
     setValue,
     watch,
-  } = useForm<UpdateFinancial>({
+  } = useForm<FinancialUpdate>({
     defaultValues: intialValues || UPDATE_FINANCIAL_INITIAL_STATE,
     mode: 'onTouched',
   })
@@ -120,7 +119,7 @@ function FinancialSection({ onValidation, isFormDisabled, sectionNumber, intialV
         }
       }
       if (csvRecords.length > 0) {
-        const parsedResult = UpdateFinancialSchema.safeParse({ records: csvRecords })
+        const parsedResult = FinancialUpdateSchema.safeParse({ records: csvRecords })
         if (parsedResult.success) {
           setErrors([])
           setValue('records', parsedResult.data.records)

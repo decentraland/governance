@@ -19,7 +19,7 @@ import { EditUpdateModal } from '../../components/Modal/EditUpdateModal/EditUpda
 import FinancialSection from '../../components/Updates/FinancialSection'
 import GeneralSection from '../../components/Updates/GeneralSection'
 import UpdateMarkdownView from '../../components/Updates/UpdateMarkdownView'
-import { UpdateAttributes, UpdateGeneral, UpdateGeneralSchema, UpdateStatus } from '../../entities/Updates/types'
+import { GeneralUpdate, UpdateAttributes, UpdateGeneralSchema, UpdateStatus } from '../../entities/Updates/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
 import useProposalUpdate from '../../hooks/useProposalUpdate'
@@ -44,18 +44,18 @@ const intialValidationState: UpdateValidationState = {
   financialSectionValid: true,
 }
 
-const initialState: Partial<UpdateGeneral> | undefined = undefined
+const initialState: Partial<GeneralUpdate> | undefined = undefined
 
-function getInitialUpdateValues(update?: UpdateAttributes | null): Partial<UpdateGeneral> | undefined {
+function getInitialUpdateValues(update?: UpdateAttributes | null): Partial<GeneralUpdate> | undefined {
   if (!update) {
     return undefined
   }
-  const values: Partial<UpdateGeneral> = {}
+  const values: Partial<GeneralUpdate> = {}
   for (const key of Object.keys(update)) {
     if (key in UpdateGeneralSchema) {
-      const value = update[key as keyof UpdateGeneral]
+      const value = update[key as keyof GeneralUpdate]
       if (value) {
-        values[key as keyof UpdateGeneral] = value as never
+        values[key as keyof GeneralUpdate] = value as never
       }
     }
   }
@@ -82,7 +82,7 @@ export default function Update({ isEdit }: Props) {
   usePreventNavigation(true)
 
   const handleGeneralSectionValidation = useCallback(
-    (data: UpdateGeneral, sectionValid: boolean) => {
+    (data: GeneralUpdate, sectionValid: boolean) => {
       patchNewUpdate((prevState) => ({ ...prevState, ...data }))
       patchValidationState((prevState) => ({ ...prevState, generalSectionValid: sectionValid }))
     },
@@ -99,7 +99,7 @@ export default function Update({ isEdit }: Props) {
     [newUpdate]
   )
 
-  const submitUpdate = async (data: UpdateGeneral) => {
+  const submitUpdate = async (data: GeneralUpdate) => {
     if (!proposalId) {
       return
     }
@@ -138,7 +138,7 @@ export default function Update({ isEdit }: Props) {
     }
   }
 
-  const onSubmit: SubmitHandler<UpdateGeneral> = (data) => {
+  const onSubmit: SubmitHandler<GeneralUpdate> = (data) => {
     if (isEdit) {
       setIsEditModalOpen(true)
     } else {
@@ -210,7 +210,7 @@ export default function Update({ isEdit }: Props) {
             primary
             disabled={formDisabled || !isValidToSubmit}
             loading={formDisabled}
-            onClick={() => onSubmit(newUpdate as UpdateGeneral)}
+            onClick={() => onSubmit(newUpdate as GeneralUpdate)}
           >
             {t('page.proposal_update.publish_update')}
           </Button>
@@ -238,7 +238,7 @@ export default function Update({ isEdit }: Props) {
           loading={isSubmitting}
           open={isEditModalOpen}
           onClose={handleEditModalClose}
-          onClickAccept={() => submitUpdate(newUpdate as UpdateGeneral)}
+          onClickAccept={() => submitUpdate(newUpdate as GeneralUpdate)}
         />
       )}
     </ContentLayout>

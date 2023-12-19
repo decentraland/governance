@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import { formatFileSize, useCSVReader } from 'react-papaparse'
+import { useCSVReader } from 'react-papaparse'
 
 import useFormatMessage from '../../hooks/useFormatMessage'
 import CSV from '../Icon/CSV'
-import CsvRemove from '../Icon/CsvRemove'
 
 import Text from './Typography/Text'
 
+import AcceptedFile from './AcceptedFile'
 import './CSVDragAndDrop.css'
 
 type CSVError = {
@@ -57,35 +57,16 @@ export default function CSVDragAndDrop({ onUploadAccepted, onRemoveFile }: Props
             <>
               <div {...getRootProps()} className="CSVDragAndDrop__Zone">
                 {acceptedFile && !errorMsg ? (
-                  <>
-                    <div className="CSVDragAndDrop__File">
-                      <div className="CSVDragAndDrop__InfoContainer">
-                        <CSV size={24} />
-                        <div className="CSVDragAndDrop__Info">
-                          <Text weight="semi-bold" size="md" className="CSVDragAndDrop__Name">
-                            {acceptedFile.name}
-                          </Text>
-                          <Text size="sm" weight="normal" className="CSVDragAndDrop__Size">
-                            {formatFileSize(acceptedFile.size)}
-                          </Text>
-                        </div>
-                      </div>
-                      <div className="CSVDragAndDrop__ProgressBarContainer">
-                        <ProgressBar className="CSVDragAndDrop__ProgressBar" />
-                      </div>
-                      <div
-                        {...removeFileProps}
-                        className="CSVDragAndDrop__Remove"
-                        onClick={(e) => {
-                          e.preventDefault()
-                          onRemoveFile?.()
-                          onRemoveClick(e)
-                        }}
-                      >
-                        <CsvRemove />
-                      </div>
-                    </div>
-                  </>
+                  <AcceptedFile
+                    file={acceptedFile}
+                    onRemoveFile={(e) => {
+                      e.preventDefault()
+                      onRemoveFile?.()
+                      onRemoveClick(e)
+                    }}
+                    removeFileProps={removeFileProps}
+                    progressBar={<ProgressBar className="CSVDragAndDrop__ProgressBar" />}
+                  />
                 ) : (
                   <div className="CSVDragAndDrop__TextContainer">
                     {errorMsg ? (

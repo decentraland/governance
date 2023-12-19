@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 
-import { ProjectHealth, UpdateGeneral, UpdateGeneralSchema } from '../../entities/Updates/types'
+import { GeneralUpdate, ProjectHealth, UpdateGeneralSchema } from '../../entities/Updates/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Label from '../Common/Typography/Label'
 import MarkdownField from '../Form/MarkdownFieldSection'
@@ -11,13 +11,13 @@ import ProjectRequestSection from '../ProjectRequest/ProjectRequestSection'
 import ProjectHealthButton from './ProjectHealthButton'
 
 interface Props {
-  onValidation: (data: UpdateGeneral, sectionValid: boolean) => void
+  onValidation: (data: GeneralUpdate, sectionValid: boolean) => void
   isFormDisabled: boolean
   sectionNumber: number
-  intialValues?: Partial<UpdateGeneral>
+  intialValues?: Partial<GeneralUpdate>
 }
 
-const UPDATE_GENERAL_INITIAL_STATE: UpdateGeneral = {
+const UPDATE_GENERAL_INITIAL_STATE: GeneralUpdate = {
   health: ProjectHealth.OnTrack,
   introduction: '',
   highlights: '',
@@ -35,7 +35,7 @@ function GeneralSection({ onValidation, isFormDisabled, sectionNumber, intialVal
     control,
     setValue,
     watch,
-  } = useForm<UpdateGeneral>({
+  } = useForm<GeneralUpdate>({
     defaultValues: intialValues || UPDATE_GENERAL_INITIAL_STATE,
     mode: 'onTouched',
   })
@@ -45,7 +45,7 @@ function GeneralSection({ onValidation, isFormDisabled, sectionNumber, intialVal
   const handleHealthChange = (health: ProjectHealth) => setValue('health', health)
   const health = watch('health')
 
-  const getFieldProps = (fieldName: keyof UpdateGeneral, isRequired = true) => ({
+  const getFieldProps = (fieldName: keyof GeneralUpdate, isRequired = true) => ({
     control,
     name: fieldName,
     error: !!errors[fieldName],
@@ -72,7 +72,7 @@ function GeneralSection({ onValidation, isFormDisabled, sectionNumber, intialVal
   })
 
   useEffect(() => {
-    onValidation({ ...(values as UpdateGeneral) }, isValid)
+    onValidation({ ...(values as GeneralUpdate) }, isValid)
   }, [values, isValid, onValidation])
   return (
     <ProjectRequestSection
