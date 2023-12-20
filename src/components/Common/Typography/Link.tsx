@@ -1,6 +1,7 @@
 import classNames from 'classnames'
 import { withPrefix } from 'gatsby'
 
+import { toGovernancePathname } from '../../../helpers/browser'
 import { navigate } from '../../../utils/locations'
 
 import './Link.css'
@@ -30,7 +31,7 @@ export default function Link({ target, rel, href, onClick, className, ...props }
 
     const isBlank = e.currentTarget.target === TARGET_BLANK
     if (isLocal && href && !isBlank && !isMetaClick(e)) {
-      const internalPath = href.replace('/governance', '')
+      const internalPath = toGovernancePathname(href)
       e.preventDefault()
       navigate(internalPath)
     }

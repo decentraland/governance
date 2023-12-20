@@ -102,7 +102,10 @@ export default function GrantRequestDueDiligenceSection({
           key={`${item.concept}-${index}`}
           title={item.concept}
           subtitle={t('page.proposal_view.grant.breakdown_subtitle', { duration: item.duration })}
-          extra={Number(item.estimatedBudget).toLocaleString(undefined, CURRENCY_FORMAT_OPTIONS)}
+          extra={Number(item.estimatedBudget).toLocaleString(
+            undefined,
+            CURRENCY_FORMAT_OPTIONS as Intl.NumberFormatOptions
+          )}
           onClick={() => {
             setSelectedBudgetBreakdownConcept(item)
             setModalOpen(true)
