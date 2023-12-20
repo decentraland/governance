@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 
-import { GeneralUpdate, GeneralUpdateSchema, ProjectHealth } from '../../entities/Updates/types'
+import { GeneralUpdateSection, GeneralUpdateSectionSchema, ProjectHealth } from '../../entities/Updates/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Label from '../Common/Typography/Label'
 import MarkdownField from '../Form/MarkdownFieldSection'
@@ -11,13 +11,13 @@ import ProjectRequestSection from '../ProjectRequest/ProjectRequestSection'
 import ProjectHealthButton from './ProjectHealthButton'
 
 interface Props {
-  onValidation: (data: GeneralUpdate, sectionValid: boolean) => void
+  onValidation: (data: GeneralUpdateSection, sectionValid: boolean) => void
   isFormDisabled: boolean
   sectionNumber: number
-  intialValues?: Partial<GeneralUpdate>
+  intialValues?: Partial<GeneralUpdateSection>
 }
 
-const UPDATE_GENERAL_INITIAL_STATE: GeneralUpdate = {
+const UPDATE_GENERAL_INITIAL_STATE: GeneralUpdateSection = {
   health: ProjectHealth.OnTrack,
   introduction: '',
   highlights: '',
@@ -26,7 +26,7 @@ const UPDATE_GENERAL_INITIAL_STATE: GeneralUpdate = {
   additional_notes: '',
 }
 
-const schema = GeneralUpdateSchema
+const schema: Record<keyof GeneralUpdateSection, Record<string, unknown>> = GeneralUpdateSectionSchema.properties
 
 function GeneralSection({ onValidation, isFormDisabled, sectionNumber, intialValues }: Props) {
   const t = useFormatMessage()
@@ -35,7 +35,7 @@ function GeneralSection({ onValidation, isFormDisabled, sectionNumber, intialVal
     control,
     setValue,
     watch,
-  } = useForm<GeneralUpdate>({
+  } = useForm<GeneralUpdateSection>({
     defaultValues: intialValues || UPDATE_GENERAL_INITIAL_STATE,
     mode: 'onTouched',
   })
@@ -45,7 +45,7 @@ function GeneralSection({ onValidation, isFormDisabled, sectionNumber, intialVal
   const handleHealthChange = (health: ProjectHealth) => setValue('health', health)
   const health = watch('health')
 
-  const getFieldProps = (fieldName: keyof GeneralUpdate, isRequired = true) => ({
+  const getFieldProps = (fieldName: keyof GeneralUpdateSection, isRequired = true) => ({
     control,
     name: fieldName,
     error: !!errors[fieldName],
@@ -72,7 +72,7 @@ function GeneralSection({ onValidation, isFormDisabled, sectionNumber, intialVal
   })
 
   useEffect(() => {
-    onValidation({ ...(values as GeneralUpdate) }, isValid)
+    onValidation({ ...(values as GeneralUpdateSection) }, isValid)
   }, [values, isValid, onValidation])
   return (
     <ProjectRequestSection

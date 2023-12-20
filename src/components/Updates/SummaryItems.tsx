@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 
 import sum from 'lodash/sum'
 
-import { FinancialUpdateRecord } from '../../entities/Updates/types'
+import { FinancialRecord } from '../../entities/Updates/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import BreakdownAccordion, { BreakdownItem } from '../GrantRequest/BreakdownAccordion'
@@ -10,7 +10,7 @@ import BreakdownAccordion, { BreakdownItem } from '../GrantRequest/BreakdownAcco
 import SummaryContent, { SummaryContentProps } from './SummaryContent'
 
 interface Props {
-  records: FinancialUpdateRecord[]
+  records: FinancialRecord[]
 }
 
 function SummaryItems({ records }: Props) {

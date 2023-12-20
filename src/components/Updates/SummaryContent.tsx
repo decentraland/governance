@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { FinancialUpdateRecord } from '../../entities/Updates/types'
+import { FinancialRecord } from '../../entities/Updates/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../helpers'
 import Divider from '../Common/Divider'
 import Text from '../Common/Typography/Text'
@@ -10,7 +10,7 @@ import './SummaryContent.css'
 
 export interface SummaryContentProps {
   concept: string
-  group: Omit<FinancialUpdateRecord, 'concept'>[]
+  group: Omit<FinancialRecord, 'concept'>[]
 }
 
 function SummaryContent({ concept, group }: SummaryContentProps) {

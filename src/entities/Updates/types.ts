@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export type GeneralUpdate = {
+export type GeneralUpdateSection = {
   health: ProjectHealth
   introduction: string
   highlights: string
@@ -9,12 +9,12 @@ export type GeneralUpdate = {
   additional_notes: string
 }
 
-export type FinancialUpdateRecord = z.infer<typeof FinancialUpdateRecordSchema>
+export type FinancialRecord = z.infer<typeof FinancialRecordSchema>
 
-export type FinancialUpdate = z.infer<typeof FinancialUpdateSchema>
+export type FinancialUpdateSection = z.infer<typeof FinancialUpdateSectionSchema>
 
-export type UpdateAttributes = Partial<GeneralUpdate> &
-  Partial<FinancialUpdate> & {
+export type UpdateAttributes = Partial<GeneralUpdateSection> &
+  Partial<FinancialUpdateSection> & {
     id: string
     proposal_id: string
     author?: string
@@ -50,48 +50,44 @@ export type UpdateResponse = {
   currentUpdate: UpdateAttributes | null
 }
 
-export const GeneralUpdateSchema: Record<keyof GeneralUpdate, Record<string, unknown>> = {
-  health: {
-    type: 'string',
-    enum: Object.values(ProjectHealth),
-  },
-  introduction: {
-    type: 'string',
-    minLength: 1,
-    maxLength: 500,
-  },
-  highlights: {
-    type: 'string',
-    minLength: 1,
-    maxLength: 3500,
-  },
-  blockers: {
-    type: 'string',
-    minLength: 1,
-    maxLength: 3500,
-  },
-  next_steps: {
-    type: 'string',
-    minLength: 1,
-    maxLength: 3500,
-  },
-  additional_notes: {
-    type: 'string',
-    minLength: 1,
-    maxLength: 3500,
-  },
-}
-
-export const UpdateSchema = {
+export const GeneralUpdateSectionSchema = {
   type: 'object',
   additionalProperties: false,
-  required: [...Object.keys(GeneralUpdateSchema)],
+  required: ['health', 'introduction', 'highlights', 'blockers', 'next_steps', 'additional_notes'],
   properties: {
-    ...GeneralUpdateSchema,
+    health: {
+      type: 'string',
+      enum: Object.values(ProjectHealth),
+    },
+    introduction: {
+      type: 'string',
+      minLength: 1,
+      maxLength: 500,
+    },
+    highlights: {
+      type: 'string',
+      minLength: 1,
+      maxLength: 3500,
+    },
+    blockers: {
+      type: 'string',
+      minLength: 1,
+      maxLength: 3500,
+    },
+    next_steps: {
+      type: 'string',
+      minLength: 1,
+      maxLength: 3500,
+    },
+    additional_notes: {
+      type: 'string',
+      minLength: 1,
+      maxLength: 3500,
+    },
   },
 }
 
-const FinancialUpdateRecordSchema = z.object({
+const FinancialRecordSchema = z.object({
   concept: z.string().min(1),
   description: z.string().min(1),
   amount: z.number().min(1),
@@ -100,6 +96,6 @@ const FinancialUpdateRecordSchema = z.object({
   link: z.string().url(),
 })
 
-export const FinancialUpdateSchema = z.object({
-  records: z.array(FinancialUpdateRecordSchema).min(1),
+export const FinancialUpdateSectionSchema = z.object({
+  financial_records: z.array(FinancialRecordSchema).min(1),
 })

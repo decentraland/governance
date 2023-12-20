@@ -18,13 +18,13 @@ import { DiscordService } from './discord'
 import { EventsService } from './events'
 
 export class UpdateService {
-  static async getById(id: UpdateAttributes['id']) {
+  static async getById(id: UpdateAttributes['id']): Promise<UpdateAttributes | undefined | null> {
     try {
       const update = await UpdateModel.findOne<UpdateAttributes>({ id })
       if (update) {
-        const records = await FinancialService.getRecords(update.id)
-        if (records) {
-          return { ...update, records }
+        const financial_records = await FinancialService.getRecordsByUpdateId(update.id)
+        if (financial_records) {
+          return { ...update, financial_records }
         }
       }
       return update
@@ -117,8 +117,17 @@ export class UpdateService {
   }
 
   static async create(newUpdate: Omit<UpdateAttributes, 'id' | 'created_at' | 'updated_at' | 'status'>, user: string) {
-    const { proposal_id, author, health, introduction, highlights, blockers, next_steps, additional_notes, records } =
-      newUpdate
+    const {
+      proposal_id,
+      author,
+      health,
+      introduction,
+      highlights,
+      blockers,
+      next_steps,
+      additional_notes,
+      financial_records,
+    } = newUpdate
     const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: proposal_id })
     const isAuthorOrCoauthor =
       user && (proposal?.user === user || (await CoauthorService.isCoauthor(proposal_id, user))) && author === user
@@ -152,7 +161,7 @@ export class UpdateService {
       }
     const update = await UpdateModel.createUpdate(data)
     await Promise.all([
-      FinancialService.insertRecords(update.id, records || []),
+      FinancialService.createRecords(update.id, financial_records || []),
       EventsService.updateCreated(update.id, proposal.id, proposal.title, user),
       DiscourseService.createUpdate(update, proposal.title),
     ])
@@ -174,7 +183,8 @@ export class UpdateService {
     isOnTime: boolean
   ) {
     const status = !update.due_date || isOnTime ? UpdateStatus.Done : UpdateStatus.Late
-    const { author, health, introduction, highlights, blockers, next_steps, additional_notes, records } = newUpdate
+    const { author, health, introduction, highlights, blockers, next_steps, additional_notes, financial_records } =
+      newUpdate
 
     await UpdateModel.update<UpdateAttributes>(
       {
@@ -192,7 +202,7 @@ export class UpdateService {
       { id }
     )
 
-    await FinancialService.insertRecords(update.id, records || update.records!)
+    await FinancialService.createRecords(update.id, financial_records || update.financial_records!)
 
     const updatedUpdate = await UpdateService.getById(id)
     if (updatedUpdate) {
