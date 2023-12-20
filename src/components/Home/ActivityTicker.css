@@ -44,7 +44,6 @@
 .ActivityTicker__List {
   display: flex;
   flex-direction: column;
-  /* gap: 17px; */
   overflow: scroll;
   overflow-x: hidden;
   overscroll-behavior-y: contain;
