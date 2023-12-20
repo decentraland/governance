@@ -10,14 +10,14 @@ import BreakdownAccordion, { BreakdownItem } from '../GrantRequest/BreakdownAcco
 import SummaryContent, { SummaryContentProps } from './SummaryContent'
 
 interface Props {
-  records: FinancialRecord[]
+  financialRecords: FinancialRecord[]
 }
 
-function SummaryItems({ records }: Props) {
+function SummaryItems({ financialRecords }: Props) {
   const t = useFormatMessage()
   const { formatNumber } = useIntl()
 
-  const grouppedRecords = records.reduce((acc, record) => {
+  const grouppedRecords = financialRecords.reduce((acc, record) => {
     const { concept, ...props } = record
     const conceptKey = concept.toLowerCase()
     const group = acc.get(conceptKey) || []

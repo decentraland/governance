@@ -46,7 +46,7 @@ const UpdateMarkdownView = ({ update, author }: Props) => {
       {update?.financial_records && update?.financial_records.length > 0 && (
         <>
           <ArticleSectionHeading>{t('page.update_detail.financial_details')}</ArticleSectionHeading>
-          <SummaryItems records={update?.financial_records} />
+          <SummaryItems financialRecords={update?.financial_records} />
         </>
       )}
       {author && update.completion_date && (
