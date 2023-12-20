@@ -24,6 +24,7 @@ import coauthor from './back/routes/coauthor'
 import committee from './back/routes/committee'
 import common from './back/routes/common'
 import debug from './back/routes/debug'
+import events from './back/routes/events'
 import newsletter from './back/routes/newsletter'
 import notification from './back/routes/notification'
 import project from './back/routes/project'
@@ -38,6 +39,7 @@ import users from './back/routes/user'
 import vestings from './back/routes/vestings'
 import score from './back/routes/votes'
 import { DiscordService } from './back/services/discord'
+import { EventsService } from './back/services/events'
 import { updateGovernanceBudgets } from './entities/Budget/jobs'
 import { activateProposals, finishProposal, publishBids } from './entities/Proposal/jobs'
 import filesystem, {
@@ -52,7 +54,7 @@ import filesystem, {
   cspStyleSrc,
 } from './utils/filesystem'
 
-import { GOVERNANCE_URL, IS_NEW_ROLLOUT } from './constants'
+import { GOVERNANCE_URL } from './constants'
 
 const jobs = manager()
 jobs.cron('@eachMinute', finishProposal)
@@ -62,11 +64,12 @@ jobs.cron('@each10Second', pingSnapshot)
 jobs.cron('@daily', updateGovernanceBudgets)
 jobs.cron('@daily', runAirdropJobs)
 jobs.cron('@monthly', giveTopVoterBadges)
+jobs.cron('@daily', EventsService.deleteOldEvents)
 
 const file = readFileSync('static/api.yaml', 'utf8')
 const swaggerDocument = YAML.parse(file)
 
-const routePrefix = IS_NEW_ROLLOUT ? '/governance' : ''
+const routePrefix = '/governance'
 
 swaggerDocument['servers'] = [{ url: process.env.GATSBY_GOVERNANCE_API }]
 
@@ -80,6 +83,7 @@ app.use('/api', [
   withBody(),
   committee,
   debug,
+  events,
   users,
   proposal,
   proposalSurveyTopics,
@@ -133,7 +137,7 @@ app.use(
     corsOrigin: '*',
     allowedHeaders: '*',
   }),
-  filesystem(IS_NEW_ROLLOUT ? 'public-prefix' : 'public', '404.html', {
+  filesystem('public', '404.html', {
     defaultHeaders: {
       'Content-Security-Policy': `base-uri 'self'; child-src ${cspChildSrc}; connect-src ${cspConnectSrc}; default-src 'none'; font-src ${cspFontSrc}; form-action ${cspFormAction}; frame-ancestors 'none'; frame-src https:; img-src ${cspImageSrc}; manifest-src ${cspManifestSrc}; media-src ${cspMediaSrc}; object-src 'none'; style-src ${cspStyleSrc}; worker-src 'self'; script-src ${cpsScriptSrc}`,
       'X-Content-Type-Options': 'nosniff',

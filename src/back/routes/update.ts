@@ -1,5 +1,4 @@
 import { WithAuth, auth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
@@ -9,8 +8,7 @@ import { Request } from 'express'
 
 import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
-import { isSameAddress } from '../../entities/Snapshot/utils'
-import { FinancialUpdateSchema, GeneralUpdate, UpdateSchema, UpdateStatus } from '../../entities/Updates/types'
+import { FinancialUpdateSchema, GeneralUpdate, UpdateSchema } from '../../entities/Updates/types'
 import {
   getCurrentUpdate,
   getNextPendingUpdate,
@@ -23,9 +21,7 @@ import { ErrorService } from '../../services/ErrorService'
 import { FinancialService } from '../../services/FinancialService'
 import Time from '../../utils/date/Time'
 import { ErrorCategory } from '../../utils/errorCategories'
-import { isProdEnv } from '../../utils/governanceEnvs'
 import { CoauthorService } from '../services/coauthor'
-import { DiscordService } from '../services/discord'
 import { UpdateService } from '../services/update'
 
 export default routes((route) => {
@@ -89,14 +85,12 @@ async function getProposalUpdateComments(req: Request<{ update_id: string }>) {
   try {
     return await DiscourseService.getPostComments(discourse_topic_id)
   } catch (error) {
-    if (isProdEnv()) {
-      logger.log('Error fetching discourse topic', {
-        error,
-        discourseTopicId: discourse_topic_id,
-        updateId: id,
-        category: ErrorCategory.Discourse,
-      })
-    }
+    ErrorService.report('Error fetching discourse topic', {
+      error,
+      discourse_topic_id,
+      updateId: id,
+      category: ErrorCategory.Discourse,
+    })
     return {
       comments: [],
       totalComments: 0,
@@ -112,58 +106,28 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
   )
   const parsedResult = FinancialUpdateSchema.safeParse({ records })
   if (!parsedResult.success) {
-    if (isProdEnv()) {
-      ErrorService.report('Submission of invalid financial records', {
-        error: parsedResult.error,
-        category: ErrorCategory.Financial,
-      })
-    } else {
-      console.error(parsedResult.error)
-    }
+    ErrorService.report('Submission of invalid financial records', {
+      error: parsedResult.error,
+      category: ErrorCategory.Financial,
+    })
     throw new RequestError(`Invalid financial records`, RequestError.BadRequest)
   }
   const parsedRecords = parsedResult.data.records
 
-  const user = req.auth!
-  const proposalId = req.params.proposal
-  const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: proposalId })
-  const isAuthorOrCoauthor =
-    user &&
-    (proposal?.user === user || (await CoauthorService.isCoauthor(proposalId, user))) &&
-    isSameAddress(author, user)
-
-  if (!proposal || !isAuthorOrCoauthor) {
-    throw new RequestError(`Unauthorized`, RequestError.Forbidden)
-  }
-
-  const updates = await UpdateService.getAllByProposalId(proposalId, UpdateStatus.Pending)
-
-  const currentUpdate = getCurrentUpdate(updates)
-  const nextPendingUpdate = getNextPendingUpdate(updates)
-
-  if (updates.length > 0 && (currentUpdate || nextPendingUpdate)) {
-    throw new RequestError(`Updates pending for this proposal`, RequestError.BadRequest)
-  }
-
-  const data = {
-    proposal_id: proposal.id,
-    author,
-    health,
-    introduction,
-    highlights,
-    blockers,
-    next_steps,
-    additional_notes,
-  }
-  const update = await UpdateService.create(data)
-  if (!update) {
-    throw new RequestError(`Error creating update`, RequestError.BadRequest)
-  }
-  await FinancialService.insertRecords(update.id, parsedRecords)
-  await DiscourseService.createUpdate(update, proposal.title)
-  DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
-
-  return update
+  return await UpdateService.create(
+    {
+      proposal_id: req.params.proposal,
+      author,
+      health,
+      introduction,
+      highlights,
+      blockers,
+      next_steps,
+      additional_notes,
+      records: parsedRecords,
+    },
+    req.auth!
+  )
 }
 
 async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
@@ -174,14 +138,10 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
   )
   const parsedResult = FinancialUpdateSchema.safeParse({ records })
   if (!parsedResult.success) {
-    if (isProdEnv()) {
-      ErrorService.report('Submission of invalid financial records', {
-        error: parsedResult.error,
-        category: ErrorCategory.Financial,
-      })
-    } else {
-      console.error(parsedResult.error)
-    }
+    ErrorService.report('Submission of invalid financial records', {
+      error: parsedResult.error,
+      category: ErrorCategory.Financial,
+    })
     throw new RequestError(`Invalid financial records`, RequestError.BadRequest)
   }
   const parsedRecords = parsedResult.data.records
@@ -192,11 +152,9 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     throw new RequestError(`Update not found: "${id}"`, RequestError.NotFound)
   }
 
-  const { completion_date } = update
-
   const user = req.auth
-  const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: req.params.proposal })
 
+  const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: req.params.proposal })
   const isAuthorOrCoauthor =
     user && (proposal?.user === user || (await CoauthorService.isCoauthor(proposalId, user))) && author === user
 
@@ -211,34 +169,24 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     throw new RequestError(`Update is not on time: "${update.id}"`, RequestError.BadRequest)
   }
 
-  const status = !update.due_date || isOnTime ? UpdateStatus.Done : UpdateStatus.Late
-
-  await UpdateService.update(id, {
-    author,
-    health,
-    introduction,
-    highlights,
-    blockers,
-    next_steps,
-    additional_notes,
-    status,
-    completion_date: completion_date || now,
-    updated_at: now,
-  })
-
-  await FinancialService.insertRecords(update.id, parsedRecords)
-
-  const updatedUpdate = await UpdateService.getById(id)
-  if (updatedUpdate) {
-    if (!completion_date) {
-      await DiscourseService.createUpdate(updatedUpdate, proposal.title)
-      DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
-    } else {
-      UpdateService.commentUpdateEditInDiscourse(updatedUpdate)
-    }
-  }
-
-  return true
+  return await UpdateService.updateProposalUpdate(
+    update,
+    {
+      author,
+      health,
+      introduction,
+      highlights,
+      blockers,
+      next_steps,
+      additional_notes,
+      records: parsedRecords,
+    },
+    id,
+    proposal,
+    user!,
+    now,
+    isOnTime
+  )
 }
 
 async function deleteProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
@@ -263,24 +211,8 @@ async function deleteProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     throw new RequestError(`Unauthorized`, RequestError.Forbidden)
   }
 
-  if (!update.due_date) {
-    await UpdateService.delete(id)
-  } else {
-    await UpdateService.update(update.id, {
-      status: UpdateStatus.Pending,
-      author: undefined,
-      health: undefined,
-      introduction: undefined,
-      highlights: undefined,
-      blockers: undefined,
-      next_steps: undefined,
-      additional_notes: undefined,
-      completion_date: undefined,
-      updated_at: new Date(),
-    })
-  }
-
-  FinancialService.deleteRecords(update.id)
+  await UpdateService.delete(update)
+  await FinancialService.deleteRecords(update.id)
   UpdateService.commentUpdateDeleteInDiscourse(update)
 
   return true

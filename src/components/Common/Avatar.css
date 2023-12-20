@@ -134,36 +134,32 @@
   background-image: linear-gradient(110deg, #ff9da7 18%, #feb0b8 28%, #ff9da7 43%);
 }
 
-.Avatar.Avatar--mini {
+.Avatar.Avatar--xxs {
   --avatar-size: 20px;
 }
 
-.Avatar.Avatar--tiny {
+.Avatar.Avatar--xs {
   --avatar-size: 24px;
 }
 
-.Avatar.Avatar--small {
+.Avatar.Avatar--sm {
   --avatar-size: 32px;
 }
 
-.Avatar.Avatar--medium {
+.Avatar.Avatar--md {
   --avatar-size: 44px;
 }
 
-.Avatar.Avatar--large {
+.Avatar.Avatar--lg {
   --avatar-size: 52px;
 }
 
-.Avatar.Avatar--big {
+.Avatar.Avatar--xl {
   --avatar-size: 66px;
 }
 
-.Avatar.Avatar--huge {
+.Avatar.Avatar--xxl {
   --avatar-size: 90px;
-}
-
-.Avatar.Avatar--massive {
-  --avatar-size: 122px;
 }
 
 .Avatar.Avatar--full {

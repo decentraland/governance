@@ -16,8 +16,8 @@ import VotedProposalsBox from '../components/Profile/VotedProposalsBox'
 import VpDelegationBox from '../components/Profile/VpDelegationBox'
 import VpDelegatorsBox from '../components/Profile/VpDelegatorsBox'
 import UserStats from '../components/User/UserStats'
+import useDclProfile from '../hooks/useDclProfile'
 import useFormatMessage from '../hooks/useFormatMessage'
-import useProfile from '../hooks/useProfile'
 import useVotingPowerInformation from '../hooks/useVotingPowerInformation'
 import { navigate } from '../utils/locations'
 import { isUnderMaintenance } from '../utils/maintenance'
@@ -38,7 +38,7 @@ export default function ProfilePage() {
     navigate(`/profile/?address=${userAddress}`, { replace: true })
   }
 
-  const { displayableAddress } = useProfile(address)
+  const { username } = useDclProfile(address)
   const { delegation, isDelegationLoading, scores, isLoadingScores, vpDistribution, isLoadingVpDistribution } =
     useVotingPowerInformation(address)
 
@@ -63,7 +63,7 @@ export default function ProfilePage() {
   return (
     <>
       <Head
-        title={t('page.profile.title', { address: displayableAddress })}
+        title={t('page.profile.title', { address: username || address })}
         description={t('page.profile.description')}
         image="https://decentraland.org/images/decentraland.png"
       />

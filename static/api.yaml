@@ -15,6 +15,8 @@ tags:
     description: The DAO Committee section of the API is focused on retrieving information related to the members of the DAO Committee, individuals resnponsible for executing transactions on chain, enacting proposals and with access to the DAO Treasury.
   - name: Votes
     description: The Votes section of the API is focused on retrieving information related to the voting process associated with a specific proposal. Votes are the way community members express their support or opposition to a proposal.
+  - name: Events
+    description: The Events section of the API is focused on retrieving information related to the user actions regarding proposals creation, proposal updates, and comments.
   - name: Subscriptions (User Watchlist)
     description: The Subscriptions section of the API is focused on retrieving information related to the subscriptions associated with a specific proposal. This feature is called Watchlist on the Governance dApp. Watchlists are usually used to have a closer look on updates or changes related to a proposal.
   - name: Badges
@@ -252,6 +254,14 @@ paths:
           allowEmptyValue: true
           schema:
             $ref: '#/components/schemas/limitOffset'
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+  /events:
+    get:
+      tags:
+        - Events
+      summary: Get the latest user actions on proposals creation, proposal updates, and comments
       responses:
         '200':
           $ref: '#/components/responses/200'

@@ -4,7 +4,7 @@ import 'isomorphic-fetch'
 import numeral from 'numeral'
 
 import { Governance } from '../../clients/Governance'
-import { GOVERNANCE_API, GOVERNANCE_URL, IS_NEW_ROLLOUT } from '../../constants'
+import { GOVERNANCE_API, GOVERNANCE_URL } from '../../constants'
 import { getEnumDisplayName } from '../../helpers'
 import { getTile } from '../../utils/Land'
 import { clientEnv } from '../../utils/clientEnv'
@@ -142,8 +142,8 @@ export function forumUserUrl(username: string) {
 }
 
 export function governanceUrl(pathname = '') {
-  const target = IS_NEW_ROLLOUT ? new URL(GOVERNANCE_URL) : new URL(GOVERNANCE_API)
-  target.pathname = IS_NEW_ROLLOUT ? `/governance${pathname}` : pathname
+  const target = new URL(GOVERNANCE_URL)
+  target.pathname = `/governance${pathname}`
   target.search = ''
   target.hash = ''
   return target.toString()

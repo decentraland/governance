@@ -2,6 +2,8 @@ import classNames from 'classnames'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
+import Link from './Typography/Link'
+
 import './FullWidthButton.css'
 
 interface Props {
@@ -9,21 +11,18 @@ interface Props {
   children: React.ReactNode
   className?: string
   href?: string
-  newWindow?: boolean
   loading?: boolean
 }
 
-// TODO: FullWidthButton should render Link when href is provided
-const FullWidthButton = ({ onClick, children, className, href, newWindow = false, loading }: Props) => {
+const FullWidthButton = ({ onClick, children, className, href, loading }: Props) => {
   return (
     <Button
       primary
       fluid
+      as={href ? Link : undefined}
       disabled={loading}
       className={classNames('FullWidthButton', className)}
       onClick={onClick}
-      target={newWindow ? '_blank' : ''}
-      rel={newWindow ? 'noopener noreferrer' : ''}
       href={href}
     >
       {loading ? (
