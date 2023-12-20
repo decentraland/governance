@@ -8,6 +8,8 @@ import isURL from 'validator/lib/isURL'
 import { DEFAULT_CHAIN_ID } from '../constants'
 import { clientEnv } from '../utils/clientEnv'
 
+import { toGovernancePathname } from './browser'
+
 export const CURRENCY_FORMAT_OPTIONS = {
   style: 'currency',
   currency: 'USD',
@@ -55,7 +57,7 @@ export function getUrlFilters<T>(filterKey: string, params: URLSearchParams, val
     newParams.delete('subtype')
   }
   const stringParams = newParams.toString()
-  const pathname = location.pathname.replace('/governance', '')
+  const pathname = toGovernancePathname(location.pathname)
   return `${pathname}${stringParams === '' ? '' : '?' + stringParams}`
 }
 
