@@ -11,7 +11,7 @@
 }
 
 .ActivityTicker__EmptyContainer {
-  margin-top: 16px;
+  margin-top: 32px;
 }
 
 .ActivityTicker__TitleContainer {
@@ -21,9 +21,10 @@
 
 .ActivityTicker__Title {
   margin: 0;
+  margin-bottom: 17px;
+  padding-left: 10px;
   color: var(--black-600);
   text-transform: uppercase;
-  margin-bottom: 17px;
   position: relative;
 }
 
@@ -43,7 +44,6 @@
 .ActivityTicker__List {
   display: flex;
   flex-direction: column;
-  gap: 17px;
   overflow: scroll;
   overflow-x: hidden;
   overscroll-behavior-y: contain;
@@ -58,6 +58,12 @@
   display: flex;
   flex-direction: row;
   gap: 8px;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.ActivityTicker__ListItem:hover {
+  background-color: var(--black-200);
 }
 
 .ActivityTicker__ListItemMarkdown {
