@@ -33,7 +33,7 @@ const components = {
 }
 
 const createUserAddress = (address: string): UserAddress => ({
-  label: <Username address={address} size="tiny" />,
+  label: <Username address={address} size="xs" />,
   value: address.toLowerCase(),
 })
 

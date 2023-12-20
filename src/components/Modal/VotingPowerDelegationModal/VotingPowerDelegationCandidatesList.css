@@ -67,10 +67,6 @@
   margin-right: 11px;
 }
 
-.VotingPowerDelegationCandidatesList .dcl.blockie {
-  margin-right: 11px;
-}
-
 /* Animation */
 .VotingPowerDelegationCandidatesList .TotalVP > span svg,
 .VotingPowerDelegationCandidatesList .ui.table tbody tr:hover {

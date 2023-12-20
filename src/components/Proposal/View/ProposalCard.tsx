@@ -52,7 +52,7 @@ export default function ProposalCard({
       <span className="ProposalCard__Details">
         {showUser && (
           <>
-            <Username className="ProposalCard__Avatar" address={user} variant="avatar" size="mini" />
+            <Username className="ProposalCard__Avatar" address={user} variant="avatar" size="xxs" />
             <span className="ProposalCard__ByUser">{t('page.home.open_proposals.by_user')}</span>
             <Username className="ProposalCard__Username" address={user} variant="address" />
             <span>{' · '}</span>
@@ -60,7 +60,7 @@ export default function ProposalCard({
         )}
         {showBudget && budget && (
           <>
-            <span>{formatNumber(budget, CURRENCY_FORMAT_OPTIONS as any)}</span>
+            <span>{formatNumber(budget, CURRENCY_FORMAT_OPTIONS)}</span>
             <span>{' · '}</span>
           </>
         )}

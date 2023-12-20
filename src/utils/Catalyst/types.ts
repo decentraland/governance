@@ -1,4 +1,4 @@
-export type Avatar = {
+export type CatalystProfile = {
   userId: string
   name: string
   description: string
@@ -38,5 +38,12 @@ type Color = {
 }
 
 export type ProfileResponse = {
-  avatars: Avatar[]
+  avatars: CatalystProfile[]
+}
+
+export type DclProfile = {
+  username: string | null
+  avatar: string
+  hasCustomAvatar: boolean
+  address: string
 }

@@ -19,7 +19,7 @@ export default function VotingPowerListItem({
   return (
     <div className={classNames('VotingPowerListItem', className)} {...props}>
       <div className="VotingPowerListModalItem__Profile">
-        <Username address={address} size={'tiny'} linked />
+        <Username address={address} size="xxs" linked />
       </div>
       <VotingPower secondary value={votingPower || 0} size="small" />
     </div>

@@ -1,15 +1,21 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
+import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 
 import { Discourse, DiscoursePost } from '../../clients/Discourse'
+import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import UpdateModel from '../../entities/Updates/model'
-import { GeneralUpdate, UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
-import { getUpdateUrl } from '../../entities/Updates/utils'
+import { UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
+import { getCurrentUpdate, getNextPendingUpdate, getUpdateUrl } from '../../entities/Updates/utils'
 import { inBackground } from '../../helpers'
+import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
 import { FinancialService } from '../../services/FinancialService'
 import { ErrorCategory } from '../../utils/errorCategories'
-import { isProdEnv } from '../../utils/governanceEnvs'
+
+import { CoauthorService } from './coauthor'
+import { DiscordService } from './discord'
+import { EventsService } from './events'
 
 export class UpdateService {
   static async getById(id: UpdateAttributes['id']) {
@@ -23,11 +29,7 @@ export class UpdateService {
       }
       return update
     } catch (error) {
-      if (isProdEnv()) {
-        ErrorService.report('Error fetching update', { id, error, category: ErrorCategory.Update })
-      } else {
-        console.error(error)
-      }
+      ErrorService.report('Error fetching update', { id, error, category: ErrorCategory.Update })
       return null
     }
   }
@@ -37,11 +39,7 @@ export class UpdateService {
       const parameters = { proposal_id }
       return await UpdateModel.find<UpdateAttributes>(status ? { ...parameters, status } : parameters)
     } catch (error) {
-      if (isProdEnv()) {
-        ErrorService.report('Error fetching updates', { proposal_id, error, category: ErrorCategory.Update })
-      } else {
-        console.error(error)
-      }
+      ErrorService.report('Error fetching updates', { proposal_id, error, category: ErrorCategory.Update })
       return []
     }
   }
@@ -53,58 +51,35 @@ export class UpdateService {
         { id }
       )
     } catch (error) {
-      if (isProdEnv()) {
-        ErrorService.report('Error updating update', { id, error, category: ErrorCategory.Update })
-      } else {
-        console.error(error)
-      }
+      ErrorService.report('Error updating update', { id, error, category: ErrorCategory.Update })
       return null
     }
   }
 
-  static async create(
-    update: {
-      proposal_id: string
-      author: string
-    } & GeneralUpdate
-  ) {
+  static async delete(update: UpdateAttributes) {
+    const { id, due_date } = update
     try {
-      return await UpdateModel.createUpdate(update)
-    } catch (error) {
-      if (isProdEnv()) {
-        ErrorService.report('Error creating update', { update, error, category: ErrorCategory.Update })
+      if (!due_date) {
+        return await UpdateModel.delete<UpdateAttributes>({ id })
       } else {
-        console.error(error)
+        return await UpdateModel.update<UpdateAttributes>(
+          {
+            status: UpdateStatus.Pending,
+            author: undefined,
+            health: undefined,
+            introduction: undefined,
+            highlights: undefined,
+            blockers: undefined,
+            next_steps: undefined,
+            additional_notes: undefined,
+            completion_date: undefined,
+            updated_at: new Date(),
+          },
+          { id }
+        )
       }
-      return null
-    }
-  }
-
-  static async update(
-    id: UpdateAttributes['id'],
-    newUpdate: Omit<UpdateAttributes, 'id' | 'due_date' | 'created_at' | 'proposal_id'>
-  ) {
-    try {
-      return await UpdateModel.update<UpdateAttributes>(newUpdate, { id })
     } catch (error) {
-      if (isProdEnv()) {
-        ErrorService.report('Error updating update', { id, error, category: ErrorCategory.Update })
-      } else {
-        console.error(error)
-      }
-      return null
-    }
-  }
-
-  static async delete(id: UpdateAttributes['id']) {
-    try {
-      return await UpdateModel.delete<UpdateAttributes>({ id })
-    } catch (error) {
-      if (isProdEnv()) {
-        ErrorService.report('Error deleting update', { id, error, category: ErrorCategory.Update })
-      } else {
-        console.error(error)
-      }
+      ErrorService.report('Error deleting update', { id, error, category: ErrorCategory.Update })
     }
   }
 
@@ -139,5 +114,99 @@ export class UpdateService {
         created_at: new Date().toJSON(),
       })
     })
+  }
+
+  static async create(newUpdate: Omit<UpdateAttributes, 'id' | 'created_at' | 'updated_at' | 'status'>, user: string) {
+    const { proposal_id, author, health, introduction, highlights, blockers, next_steps, additional_notes, records } =
+      newUpdate
+    const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: proposal_id })
+    const isAuthorOrCoauthor =
+      user && (proposal?.user === user || (await CoauthorService.isCoauthor(proposal_id, user))) && author === user
+
+    if (!proposal || !isAuthorOrCoauthor) {
+      throw new RequestError(`Unauthorized`, RequestError.Forbidden)
+    }
+
+    const updates = await UpdateModel.find<UpdateAttributes>({
+      proposal_id,
+      status: UpdateStatus.Pending,
+    })
+
+    const currentUpdate = getCurrentUpdate(updates)
+    const nextPendingUpdate = getNextPendingUpdate(updates)
+
+    if (updates.length > 0 && (currentUpdate || nextPendingUpdate)) {
+      throw new RequestError(`Updates pending for this proposal`, RequestError.BadRequest)
+    }
+
+    const data: Omit<UpdateAttributes, 'id' | 'status' | 'due_date' | 'completion_date' | 'created_at' | 'updated_at'> =
+      {
+        proposal_id: proposal.id,
+        author,
+        health,
+        introduction,
+        highlights,
+        blockers,
+        next_steps,
+        additional_notes,
+      }
+    const update = await UpdateModel.createUpdate(data)
+    await Promise.all([
+      FinancialService.insertRecords(update.id, records || []),
+      EventsService.updateCreated(update.id, proposal.id, proposal.title, user),
+      DiscourseService.createUpdate(update, proposal.title),
+    ])
+    DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
+
+    return update
+  }
+
+  static async updateProposalUpdate(
+    update: UpdateAttributes,
+    newUpdate: Omit<
+      UpdateAttributes,
+      'id' | 'proposal_id' | 'status' | 'completion_date' | 'updated_at' | 'created_at'
+    >,
+    id: string,
+    proposal: ProposalAttributes,
+    user: string,
+    now: Date,
+    isOnTime: boolean
+  ) {
+    const status = !update.due_date || isOnTime ? UpdateStatus.Done : UpdateStatus.Late
+    const { author, health, introduction, highlights, blockers, next_steps, additional_notes, records } = newUpdate
+
+    await UpdateModel.update<UpdateAttributes>(
+      {
+        author,
+        health,
+        introduction,
+        highlights,
+        blockers,
+        next_steps,
+        additional_notes,
+        status,
+        completion_date: update.completion_date || now,
+        updated_at: now,
+      },
+      { id }
+    )
+
+    await FinancialService.insertRecords(update.id, records || update.records!)
+
+    const updatedUpdate = await UpdateService.getById(id)
+    if (updatedUpdate) {
+      if (!update.completion_date) {
+        await Promise.all([
+          DiscourseService.createUpdate(updatedUpdate, proposal.title),
+          EventsService.updateCreated(update.id, proposal.id, proposal.title, user),
+        ])
+        DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
+      } else {
+        UpdateService.commentUpdateEditInDiscourse(updatedUpdate)
+      }
+    }
+
+    return true
   }
 }

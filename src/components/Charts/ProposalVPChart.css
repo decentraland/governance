@@ -23,7 +23,7 @@
   min-height: var(--size) !important;
   max-height: var(--size) !important;
   border-radius: 100%;
-  background-color: var(--black-600);
+  background-color: var(--black-400);
   vertical-align: middle;
   margin: 0;
 }

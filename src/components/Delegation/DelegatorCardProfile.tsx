@@ -20,7 +20,7 @@ function DelegatorCardProfile({ address, vp }: Props) {
   return (
     <Link className="DelegatorCardProfile" href={locations.profile({ address })}>
       <div className="DelegatorCardProfile__Section">
-        <Username className="DelegatorCardProfile__Avatar" address={address} variant="avatar" size="small" />
+        <Username className="DelegatorCardProfile__Avatar" address={address} variant="avatar" size="sm" />
         <div className="DelegatorCardProfile__Details">
           <Username className="DelegatorCardProfile__Title" variant="address" address={address} />
           <span className="DelegatorCardProfile__DelegatedVp">
