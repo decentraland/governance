@@ -234,7 +234,6 @@ export default function Update({ isEdit }: Props) {
                 getInitialUpdateValues<FinancialUpdate>(update, (key) => key in ({ records: [] } as FinancialUpdate))
               }
             />
-            <FinancialSection isFormDisabled={formDisabled} sectionNumber={2} onValidation={() => {}} />
           </>
         )}
         {isPreviewMode && <UpdateMarkdownView update={previewUpdate} />}
