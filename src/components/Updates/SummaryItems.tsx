@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 
 import sum from 'lodash/sum'
 
-import { FinancialUpdateRecord } from '../../entities/Updates/types'
+import { FinancialRecord } from '../../entities/Updates/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import BreakdownAccordion, { BreakdownItem } from '../GrantRequest/BreakdownAccordion'
@@ -10,14 +10,14 @@ import BreakdownAccordion, { BreakdownItem } from '../GrantRequest/BreakdownAcco
 import SummaryContent, { SummaryContentProps } from './SummaryContent'
 
 interface Props {
-  records: FinancialUpdateRecord[]
+  financialRecords: FinancialRecord[]
 }
 
-function SummaryItems({ records }: Props) {
+function SummaryItems({ financialRecords }: Props) {
   const t = useFormatMessage()
   const { formatNumber } = useIntl()
 
-  const grouppedRecords = records.reduce((acc, record) => {
+  const grouppedRecords = financialRecords.reduce((acc, record) => {
     const { concept, ...props } = record
     const conceptKey = concept.toLowerCase()
     const group = acc.get(conceptKey) || []

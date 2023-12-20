@@ -1,14 +1,18 @@
 import { WithAuth, auth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
+import validate from 'decentraland-gatsby/dist/entities/Route/validate'
+import schema from 'decentraland-gatsby/dist/entities/Schema'
 import { Request } from 'express'
 
 import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
-import UpdateModel from '../../entities/Updates/model'
-import { UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
+import {
+  FinancialUpdateSectionSchema,
+  GeneralUpdateSection,
+  GeneralUpdateSectionSchema,
+} from '../../entities/Updates/types'
 import {
   getCurrentUpdate,
   getNextPendingUpdate,
@@ -17,9 +21,10 @@ import {
   isBetweenLateThresholdDate,
 } from '../../entities/Updates/utils'
 import { DiscourseService } from '../../services/DiscourseService'
+import { ErrorService } from '../../services/ErrorService'
+import { FinancialService } from '../../services/FinancialService'
 import Time from '../../utils/date/Time'
 import { ErrorCategory } from '../../utils/errorCategories'
-import { isProdEnv } from '../../utils/governanceEnvs'
 import { CoauthorService } from '../services/coauthor'
 import { UpdateService } from '../services/update'
 
@@ -40,7 +45,7 @@ async function getProposalUpdate(req: Request<{ update: string }>) {
     throw new RequestError(`Missing id`, RequestError.NotFound)
   }
 
-  const update = await UpdateModel.findOne<UpdateAttributes>({ id })
+  const update = await UpdateService.getById(id)
 
   if (!update) {
     throw new RequestError(`Update not found: "${id}"`, RequestError.NotFound)
@@ -84,25 +89,35 @@ async function getProposalUpdateComments(req: Request<{ update_id: string }>) {
   try {
     return await DiscourseService.getPostComments(discourse_topic_id)
   } catch (error) {
-    if (isProdEnv()) {
-      logger.log('Error fetching discourse topic', {
-        error,
-        discourseTopicId: discourse_topic_id,
-        updateId: id,
-        category: ErrorCategory.Discourse,
-      })
-    }
+    ErrorService.report('Error fetching discourse topic', {
+      error,
+      discourse_topic_id,
+      updateId: id,
+      category: ErrorCategory.Discourse,
+    })
     return {
       comments: [],
       totalComments: 0,
     }
   }
 }
-
+const generalSectionValidator = schema.compile(GeneralUpdateSectionSchema)
 async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
-  const { author, health, introduction, highlights, blockers, next_steps, additional_notes } = req.body
+  const { author, financial_records, ...body } = req.body
+  const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<GeneralUpdateSection>(
+    generalSectionValidator,
+    body
+  )
+  const parsedResult = FinancialUpdateSectionSchema.safeParse({ financial_records })
+  if (!parsedResult.success) {
+    ErrorService.report('Submission of invalid financial records', {
+      error: parsedResult.error,
+      category: ErrorCategory.Financial,
+    })
+    throw new RequestError(`Invalid financial records`, RequestError.BadRequest)
+  }
+  const parsedRecords = parsedResult.data.financial_records
 
-  //TODO: validate update data :)
   return await UpdateService.create(
     {
       proposal_id: req.params.proposal,
@@ -113,14 +128,24 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
       blockers,
       next_steps,
       additional_notes,
+      financial_records: parsedRecords,
     },
     req.auth!
   )
 }
 
 async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
-  const { id, author, health, introduction, highlights, blockers, next_steps, additional_notes } = req.body
-  const update = await UpdateModel.findOne<UpdateAttributes>(id)
+  const { id, author, financial_records, ...body } = req.body
+  const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<GeneralUpdateSection>(
+    generalSectionValidator,
+    body
+  )
+  const parsedResult = FinancialUpdateSectionSchema.safeParse({ financial_records })
+  if (!parsedResult.success) {
+    throw new RequestError(`Invalid financial records`, RequestError.BadRequest, parsedResult.error)
+  }
+  const parsedRecords = parsedResult.data.financial_records
+  const update = await UpdateService.getById(id)
   const proposalId = req.params.proposal
 
   if (!update) {
@@ -154,6 +179,7 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
       blockers,
       next_steps,
       additional_notes,
+      financial_records: parsedRecords,
     },
     id,
     proposal,
@@ -165,7 +191,7 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
 
 async function deleteProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
   const { id } = req.body
-  const update = await UpdateModel.findOne(id)
+  const update = await UpdateService.getById(id)
   const proposalId = req.params.proposal
 
   if (!update) {
@@ -185,25 +211,8 @@ async function deleteProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     throw new RequestError(`Unauthorized`, RequestError.Forbidden)
   }
 
-  if (!update.due_date) {
-    await UpdateModel.delete<UpdateAttributes>({ id })
-  } else {
-    await UpdateModel.update<UpdateAttributes>(
-      {
-        status: UpdateStatus.Pending,
-        author: undefined,
-        health: undefined,
-        introduction: undefined,
-        highlights: undefined,
-        blockers: undefined,
-        next_steps: undefined,
-        additional_notes: undefined,
-        completion_date: undefined,
-      },
-      { id: update.id }
-    )
-  }
-
+  await FinancialService.deleteRecordsByUpdateId(update.id)
+  await UpdateService.delete(update)
   UpdateService.commentUpdateDeleteInDiscourse(update)
 
   return true

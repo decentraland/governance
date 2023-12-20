@@ -4,7 +4,13 @@ import { usePapaParse } from 'react-papaparse'
 
 import toNumber from 'lodash/toNumber'
 
-import { FinancialUpdate, FinancialUpdateRecord, FinancialUpdateSchema } from '../../entities/Updates/types'
+import { TransparencyVesting } from '../../clients/DclData'
+import {
+  FinancialRecord,
+  FinancialUpdateSection,
+  FinancialUpdateSectionSchema,
+  UpdateAttributes,
+} from '../../entities/Updates/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import CSVDragAndDrop from '../Common/CSVDragAndDrop'
 import NumberedTextArea from '../Common/NumberedTextArea'
@@ -17,46 +23,46 @@ import './FinancialSection.css'
 import SummaryItems from './SummaryItems'
 
 interface Props {
-  onValidation: (data: FinancialUpdate, sectionValid: boolean) => void
+  onValidation: (data: FinancialUpdateSection, sectionValid: boolean) => void
   isFormDisabled: boolean
   sectionNumber: number
-  intialValues?: FinancialUpdate
+  intialValues?: Partial<FinancialUpdateSection>
+  vesting?: TransparencyVesting
+  publicUpdates?: UpdateAttributes[]
 }
 
-const UPDATE_FINANCIAL_INITIAL_STATE: FinancialUpdate = {
-  records: [],
+const UPDATE_FINANCIAL_INITIAL_STATE: FinancialUpdateSection = {
+  financial_records: [],
 }
 
-const CSV_HEADER: (keyof FinancialUpdateRecord)[] = [
-  'concept',
-  'description',
-  'amount',
-  'token_type',
-  'receiver',
-  'link',
-]
+const CSV_HEADER: (keyof FinancialRecord)[] = ['concept', 'description', 'amount', 'token_type', 'receiver', 'link']
 
 const SEPARATOR = ','
 
 const CSV_TEXTAREA_PLACEHOLDER = CSV_HEADER.join(SEPARATOR)
 
-function FinancialSection({ isFormDisabled, sectionNumber, intialValues }: Props) {
+function FinancialSection({ onValidation, isFormDisabled, sectionNumber, intialValues }: Props) {
   const t = useFormatMessage()
-  const { readString } = usePapaParse()
+  const { readString, jsonToCSV } = usePapaParse()
+  const defaultValues = intialValues || UPDATE_FINANCIAL_INITIAL_STATE
+  const getInputDefaultValue = () => {
+    const defaultRecords = defaultValues.financial_records || []
+    return defaultRecords.length > 0 ? jsonToCSV(defaultRecords) : CSV_TEXTAREA_PLACEHOLDER
+  }
 
   const {
     formState: { isValid, isDirty },
     setValue,
     watch,
-  } = useForm<FinancialUpdate>({
+  } = useForm<FinancialUpdateSection>({
     defaultValues: intialValues || UPDATE_FINANCIAL_INITIAL_STATE,
     mode: 'onTouched',
   })
 
-  const [csvInput, setCsvInput] = useState<string | undefined>(CSV_TEXTAREA_PLACEHOLDER)
+  const [csvInput, setCsvInput] = useState<string | undefined>(getInputDefaultValue())
   const [errors, setErrors] = useState<{ row: number; text: string }[]>([])
-  const records = watch('records')
-  const clearRecords = useCallback(() => setValue('records', []), [setValue])
+  const financial_records = watch('financial_records')
+  const clearRecords = useCallback(() => setValue('financial_records', []), [setValue])
 
   const handleFileUpload = (data: string[][]) => {
     let value = ''
@@ -75,6 +81,14 @@ function FinancialSection({ isFormDisabled, sectionNumber, intialValues }: Props
   const handleRemoveFile = () => {
     setCsvInput(CSV_TEXTAREA_PLACEHOLDER)
   }
+
+  useEffect(() => {
+    if (financial_records.length > 0) {
+      onValidation({ financial_records: financial_records }, true)
+    } else {
+      onValidation({ financial_records: financial_records }, false)
+    }
+  }, [onValidation, financial_records])
 
   const csvInputHandler = useCallback(
     (data: string[][]) => {
@@ -119,10 +133,10 @@ function FinancialSection({ isFormDisabled, sectionNumber, intialValues }: Props
         }
       }
       if (csvRecords.length > 0) {
-        const parsedResult = FinancialUpdateSchema.safeParse({ records: csvRecords })
+        const parsedResult = FinancialUpdateSectionSchema.safeParse({ records: csvRecords })
         if (parsedResult.success) {
           setErrors([])
-          setValue('records', parsedResult.data.records)
+          setValue('financial_records', parsedResult.data.financial_records)
         } else {
           const fieldErrors = parsedResult.error.issues.map((issue) => ({
             row: Number(issue.path[1]) + 1,
@@ -170,11 +184,11 @@ function FinancialSection({ isFormDisabled, sectionNumber, intialValues }: Props
           <CSVDragAndDrop onUploadAccepted={handleFileUpload} onRemoveFile={handleRemoveFile} />
         </div>
       </ContentSection>
-      {records.length > 0 && (
+      {financial_records.length > 0 && (
         <ContentSection>
           <Label>{t('page.proposal_update.summary_label')}</Label>
           <SubLabel>{t('page.proposal_update.summary_description')}</SubLabel>
-          <SummaryItems records={records} />
+          <SummaryItems financialRecords={financial_records} />
         </ContentSection>
       )}
     </ProjectRequestSection>
