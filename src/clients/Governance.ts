@@ -34,7 +34,12 @@ import {
 import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { Topic } from '../entities/SurveyTopic/types'
-import { FinancialUpdate, GeneralUpdate, UpdateAttributes, UpdateResponse } from '../entities/Updates/types'
+import {
+  FinancialUpdateSection,
+  GeneralUpdateSection,
+  UpdateAttributes,
+  UpdateResponse,
+} from '../entities/Updates/types'
 import { AccountType } from '../entities/User/types'
 import { Participation, VoteByAddress, VotedProposal, Voter, VotesForProposals } from '../entities/Votes/types'
 import { EventWithAuthor } from '../shared/types/events'
@@ -265,8 +270,8 @@ export class Governance extends API {
   async createProposalUpdate(
     update: {
       proposal_id: string
-    } & GeneralUpdate &
-      FinancialUpdate
+    } & GeneralUpdateSection &
+      FinancialUpdateSection
   ) {
     const result = await this.fetch<ApiResponse<UpdateAttributes>>(
       `/proposals/${update.proposal_id}/update`,
@@ -279,8 +284,8 @@ export class Governance extends API {
     update: {
       id: string
       proposal_id: string
-    } & GeneralUpdate &
-      FinancialUpdate
+    } & GeneralUpdateSection &
+      FinancialUpdateSection
   ) {
     const { proposal_id, ...updateData } = update
     const result = await this.fetch<ApiResponse<UpdateAttributes>>(

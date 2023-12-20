@@ -8,7 +8,11 @@ import { Request } from 'express'
 
 import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
-import { FinancialUpdateSchema, GeneralUpdate, UpdateSchema } from '../../entities/Updates/types'
+import {
+  FinancialUpdateSectionSchema,
+  GeneralUpdateSection,
+  GeneralUpdateSectionSchema,
+} from '../../entities/Updates/types'
 import {
   getCurrentUpdate,
   getNextPendingUpdate,
@@ -97,14 +101,14 @@ async function getProposalUpdateComments(req: Request<{ update_id: string }>) {
     }
   }
 }
-const generalSectionValidator = schema.compile(UpdateSchema)
+const generalSectionValidator = schema.compile(GeneralUpdateSectionSchema)
 async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
-  const { author, records, ...body } = req.body
-  const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<GeneralUpdate>(
+  const { author, financial_records, ...body } = req.body
+  const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<GeneralUpdateSection>(
     generalSectionValidator,
     body
   )
-  const parsedResult = FinancialUpdateSchema.safeParse({ records })
+  const parsedResult = FinancialUpdateSectionSchema.safeParse({ financial_records })
   if (!parsedResult.success) {
     ErrorService.report('Submission of invalid financial records', {
       error: parsedResult.error,
@@ -112,7 +116,7 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     })
     throw new RequestError(`Invalid financial records`, RequestError.BadRequest)
   }
-  const parsedRecords = parsedResult.data.records
+  const parsedRecords = parsedResult.data.financial_records
 
   return await UpdateService.create(
     {
@@ -124,27 +128,23 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
       blockers,
       next_steps,
       additional_notes,
-      records: parsedRecords,
+      financial_records: parsedRecords,
     },
     req.auth!
   )
 }
 
 async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
-  const { id, author, records, ...body } = req.body
-  const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<GeneralUpdate>(
+  const { id, author, financial_records, ...body } = req.body
+  const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<GeneralUpdateSection>(
     generalSectionValidator,
     body
   )
-  const parsedResult = FinancialUpdateSchema.safeParse({ records })
+  const parsedResult = FinancialUpdateSectionSchema.safeParse({ financial_records })
   if (!parsedResult.success) {
-    ErrorService.report('Submission of invalid financial records', {
-      error: parsedResult.error,
-      category: ErrorCategory.Financial,
-    })
-    throw new RequestError(`Invalid financial records`, RequestError.BadRequest)
+    throw new RequestError(`Invalid financial records`, RequestError.BadRequest, parsedResult.error)
   }
-  const parsedRecords = parsedResult.data.records
+  const parsedRecords = parsedResult.data.financial_records
   const update = await UpdateService.getById(id)
   const proposalId = req.params.proposal
 
@@ -179,7 +179,7 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
       blockers,
       next_steps,
       additional_notes,
-      records: parsedRecords,
+      financial_records: parsedRecords,
     },
     id,
     proposal,
@@ -211,8 +211,8 @@ async function deleteProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     throw new RequestError(`Unauthorized`, RequestError.Forbidden)
   }
 
+  await FinancialService.deleteRecordsByUpdateId(update.id)
   await UpdateService.delete(update)
-  await FinancialService.deleteRecords(update.id)
   UpdateService.commentUpdateDeleteInDiscourse(update)
 
   return true
