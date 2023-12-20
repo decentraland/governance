@@ -188,7 +188,7 @@ function FinancialSection({ onValidation, isFormDisabled, sectionNumber, intialV
         <ContentSection>
           <Label>{t('page.proposal_update.summary_label')}</Label>
           <SubLabel>{t('page.proposal_update.summary_description')}</SubLabel>
-          <SummaryItems records={financial_records} />
+          <SummaryItems financialRecords={financial_records} />
         </ContentSection>
       )}
     </ProjectRequestSection>
