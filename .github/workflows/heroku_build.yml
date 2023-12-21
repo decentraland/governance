@@ -29,7 +29,7 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           image: governance
-          tags: ${{ github.sha }} latest
+          tags: ${{ github.sha }}
           dockerfiles: |
             ./Dockerfile
           build-args: |
@@ -43,7 +43,7 @@ jobs:
       - name: Tag and Push to Heroku
         id: push-to-heroku
         run: |
-              docker tag ${{ steps.build-image.outputs.image }} registry.heroku.com/dcl-governance/web
+              docker tag governance:${{ github.sha }} registry.heroku.com/dcl-governance/web
               docker push registry.heroku.com/dcl-governance/web
 
       - name: Release the Image
