@@ -2085,6 +2085,8 @@
       "next_steps_placeholder": "What are your upcoming tasks? Where is your focus going to be next?",
       "additional_notes_label": "Additional notes and links",
       "additional_notes_placeholder": "Feel free to share any additional information or resources to showcase your project.",
+      "funds_released_label": "Funds released since last update",
+      "funds_disclosed_label": "Funds disclosed this update",
       "reporting_label": "Reporting",
       "reporting_description": "Bring some light onto how this project is utilizing funds, CSV syntax. More about our formatting [here]().",
       "csv_empty": "CSV file is empty",

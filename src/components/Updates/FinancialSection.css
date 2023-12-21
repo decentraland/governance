@@ -2,3 +2,10 @@
   margin-top: 24px;
   max-width: 385px;
 }
+
+.FinancialSection__CardsContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 28px;
+}

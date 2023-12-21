@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Time from 'dayjs'
+import preciseDiff from 'dayjs-precise-range'
 import duration from 'dayjs/plugin/duration'
 import 'dayjs/plugin/duration'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
@@ -17,8 +19,6 @@ import utc from 'dayjs/plugin/utc'
 import 'dayjs/plugin/utc'
 
 import './plugin'
-
-const preciseDiff = require('dayjs-precise-range')
 
 Time.extend(preciseDiff)
 Time.extend(utc)

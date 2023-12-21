@@ -47,7 +47,7 @@ import { NewsletterSubscriptionResult } from '../shared/types/newsletter'
 import { PushNotification } from '../shared/types/notifications'
 import Time from '../utils/date/Time'
 
-import { TransparencyBudget } from './DclData'
+import { TransparencyBudget, TransparencyVesting } from './DclData'
 import {
   DetailedScores,
   SnapshotConfig,
@@ -634,6 +634,11 @@ export class Governance extends API {
       '/snapshot/scores',
       this.options().method('POST').json({ addresses })
     )
+    return response.data
+  }
+
+  async getAllVestings() {
+    const response = await this.fetch<ApiResponse<TransparencyVesting[]>>(`/all-vestings`, this.options().method('GET'))
     return response.data
   }
 
