@@ -26,14 +26,8 @@ jobs:
 
       - name: build image
         id: build-image
-        uses: redhat-actions/buildah-build@v2
-        with:
-          image: governance
-          tags: ${{ github.sha }}
-          dockerfiles: |
-            ./Dockerfile
-          build-args: |
-            version_number=${{ github.sha }}
+        run: |
+          docker build -t governance:${{ github.sha }} --build-arg version_number=${{ github.sha }} ./Dockerfile
 
       - name: Log in to Heroku Container Registry
         env:
