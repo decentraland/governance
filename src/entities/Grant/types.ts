@@ -89,9 +89,9 @@ export const GrantRequestGeneralInfoSchema = {
   abstract: {
     type: 'string',
     minLength: 1,
-    maxLength: 750,
+    maxLength: 500,
   },
-  description: { type: 'string', minLength: 20, maxLength: 3500 },
+  description: { type: 'string', minLength: 20, maxLength: 3250 },
   beneficiary: {
     type: 'string',
     format: 'address',
@@ -103,7 +103,7 @@ export const GrantRequestGeneralInfoSchema = {
   roadmap: {
     type: 'string',
     minLength: 20,
-    maxLength: 1500,
+    maxLength: 2000,
   },
   coAuthors: {
     type: 'array',
@@ -493,6 +493,7 @@ function getCategoryAssessmentSchema(category: NewGrantCategory) {
 }
 
 export function getGrantRequestSchema(category: string | null) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const schema: any = cloneDeep(GrantRequestSchema)
   const parsedCategory: NewGrantCategory = toNewGrantCategory(category)
   const categoryName = camelCase(parsedCategory)
