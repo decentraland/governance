@@ -1,6 +1,7 @@
 import { TransparencyVesting } from '../../clients/DclData'
 import { GOVERNANCE_API } from '../../constants'
 import Time from '../../utils/date/Time'
+import { getMonthsBetweenDates } from '../../utils/date/getMonthsBetweenDates'
 import { ProposalStatus } from '../Proposal/types'
 
 import { UpdateAttributes, UpdateStatus } from './types'
@@ -95,8 +96,9 @@ export function getFundsReleasedSinceLastUpdate(
 ) {
   if (!vesting) return 0
   const now = new Date()
-  const { duration_in_months, vesting_total_amount, vesting_start_at } = vesting
-  const vestingMonths = duration_in_months % 1 < 1 / 3 ? Math.floor(duration_in_months) : Math.ceil(duration_in_months)
+  const { vesting_total_amount, vesting_start_at, vesting_finish_at } = vesting
+  const timeDiff = getMonthsBetweenDates(new Date(vesting_start_at), new Date(vesting_finish_at))
+  const vestingMonths = timeDiff.months + (timeDiff.extraDays > 10 ? 1 : 0)
   const vestedPerMonth = Math.floor(vesting_total_amount / vestingMonths)
   const vestingStartDate = new Date(vesting_start_at)
   const monthsSinceVestingStart = Time(now).diff(vestingStartDate, 'month')

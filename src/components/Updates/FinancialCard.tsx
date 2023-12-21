@@ -25,13 +25,17 @@ function FinancialCard({ type, title, value, subtitle }: Props) {
   const { formatNumber } = useIntl()
   return (
     <Card className="FinancialCard">
-      <Text size="sm">{title}</Text>
+      <Text className="FinancialCard__Text" size="sm">
+        {title}
+      </Text>
       <div className="FinancialCard__Value">
         {type === FinancialCardType.Income ? <IncomeArrow /> : <OutcomeArrow />}
-        <Text size="xl">{formatNumber(value, CURRENCY_FORMAT_OPTIONS)}</Text>
+        <Text className="FinancialCard__Text" size="xl">
+          {formatNumber(value, CURRENCY_FORMAT_OPTIONS)}
+        </Text>
       </div>
       {subtitle && (
-        <Text size="sm" weight="semi-bold">
+        <Text className="FinancialCard__Text" size="sm" weight="semi-bold">
           {subtitle}
         </Text>
       )}
