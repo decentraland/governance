@@ -27,7 +27,7 @@ jobs:
       - name: build image
         id: build-image
         run: |
-          docker build -t governance:${{ github.sha }} --build-arg version_number=${{ github.sha }} ./Dockerfile
+          docker build -t governance:${{ github.sha }} --build-arg version_number=${{ github.sha }} .
 
       - name: Log in to Heroku Container Registry
         env:
