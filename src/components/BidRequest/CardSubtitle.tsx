@@ -1,3 +1,5 @@
+import { useIntl } from 'react-intl'
+
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import useFormatMessage from '../../hooks/useFormatMessage'
@@ -17,6 +19,7 @@ export default function CardSubtitle({
   isLoading: boolean
 }) {
   const t = useFormatMessage()
+  const { formatNumber } = useIntl()
 
   return (
     <span className="CardSubtitle">
@@ -24,7 +27,10 @@ export default function CardSubtitle({
         <>
           <CheckCircleOutline size="14" />
           <Markdown size="sm" componentsClassNames={{ p: 'CardSubtitle__Text', strong: 'CardSubtitle__Text' }}>
-            {t('page.submit_bid.parent_vp', { votingPower, date: Time(finishAt).fromNow() })}
+            {t('page.submit_bid.parent_vp', {
+              votingPower: formatNumber(votingPower || 0),
+              date: Time(finishAt).fromNow(),
+            })}
           </Markdown>
         </>
       )}
