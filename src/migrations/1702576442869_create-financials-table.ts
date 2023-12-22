@@ -1,6 +1,9 @@
 import { ColumnDefinitions, MigrationBuilder } from "node-pg-migrate"
 import Model from "../back/models/Financial"
 import UpdateModel from "../entities/Updates/model"
+import { FinancialRecordCateogry } from "../entities/Updates/types"
+
+const CATEGORY_TYPE = 'financial_category_type'
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
   const columns: ColumnDefinitions = {
@@ -13,8 +16,8 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       type: 'TEXT',
       notNull: true,
     },
-    concept: {
-      type: 'TEXT',
+    category: {
+      type: CATEGORY_TYPE,
       notNull: true,
     },
     description: {
@@ -25,7 +28,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       type: 'DECIMAL',
       notNull: true,
     },
-    token_type: {
+    token: {
       type: 'TEXT',
       notNull: true,
     },
@@ -39,6 +42,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
     },
   }
 
+  pgm.createType(CATEGORY_TYPE, Object.values(FinancialRecordCateogry))
   pgm.createTable(Model.tableName, columns)
   pgm.addConstraint(
     Model.tableName,
@@ -49,4 +53,5 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
 
 export async function down(pgm: MigrationBuilder): Promise<void> {
   pgm.dropTable(Model.tableName)
+  pgm.dropType(CATEGORY_TYPE, { cascade: true })
 }

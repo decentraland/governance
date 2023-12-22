@@ -9,3 +9,8 @@
   justify-content: space-between;
   gap: 28px;
 }
+
+.FinancialSection__ReportingSublabel {
+  margin-bottom: 15px;
+  color: var(--black-600) !important;
+}

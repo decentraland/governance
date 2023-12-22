@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 
 import sum from 'lodash/sum'
 
-import { FinancialRecord } from '../../entities/Updates/types'
+import { FinancialRecord, FinancialRecordCateogry } from '../../entities/Updates/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import BreakdownAccordion, { BreakdownItem } from '../GrantRequest/BreakdownAccordion'
@@ -18,18 +18,17 @@ function SummaryItems({ financialRecords }: Props) {
   const { formatNumber } = useIntl()
 
   const grouppedRecords = financialRecords.reduce((acc, record) => {
-    const { concept, ...props } = record
-    const conceptKey = concept.toLowerCase()
-    const group = acc.get(conceptKey) || []
+    const { category, ...props } = record
+    const group = acc.get(category) || []
     group.push(props)
-    acc.set(conceptKey, group)
+    acc.set(category, group)
     return acc
-  }, new Map<string, SummaryContentProps['group']>())
-  const accordionItems = Array.from(grouppedRecords.entries()).map<BreakdownItem>(([concept, group]) => ({
-    title: concept,
+  }, new Map<FinancialRecordCateogry, SummaryContentProps['group']>())
+  const accordionItems = Array.from(grouppedRecords.entries()).map<BreakdownItem>(([category, group]) => ({
+    title: category,
     subtitle: t('page.proposal_update.summary_items', { count: group.length }),
     value: formatNumber(sum(group.map(({ amount }) => amount)), CURRENCY_FORMAT_OPTIONS),
-    content: <SummaryContent concept={concept} group={group} />,
+    content: <SummaryContent category={category} group={group} />,
   }))
 
   return <BreakdownAccordion items={accordionItems} />

@@ -15,7 +15,7 @@ export default class FinancialModel extends Model<FinancialAttributes> {
 
   static async getRecords(update_id: string): Promise<FinancialRecord[]> {
     const query = SQL`
-        SELECT concept, description, amount, token_type, receiver, link
+        SELECT category, description, token, amount, receiver, link
         FROM ${table(this)}
         WHERE 
           "update_id" = ${update_id}
@@ -28,11 +28,11 @@ export default class FinancialModel extends Model<FinancialAttributes> {
 
   static async createRecords(update_id: string, records: FinancialRecord[]): Promise<FinancialAttributes[]> {
     const query = SQL`
-        INSERT INTO ${table(this)} ("update_id", "concept", "description", "amount", "token_type", "receiver", "link")
+        INSERT INTO ${table(this)} ("update_id", "category", "description", "amount", "token", "receiver", "link")
         VALUES ${join(
           records.map(
             (record) =>
-              SQL`(${update_id}, LOWER(${record.concept}), ${record.description}, ${record.amount}, ${record.token_type}, ${record.receiver}, ${record.link})`
+              SQL`(${update_id}, ${record.category}, ${record.description}, ${record.amount}, UPPER(${record.token}), ${record.receiver}, ${record.link})`
           ),
           SQL`,`
         )}

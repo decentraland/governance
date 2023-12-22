@@ -16,8 +16,8 @@ import { getFundsReleasedSinceLastUpdate } from '../../entities/Updates/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import CSVDragAndDrop from '../Common/CSVDragAndDrop'
 import NumberedTextArea from '../Common/NumberedTextArea'
-import SubLabel from '../Common/SubLabel'
 import Label from '../Common/Typography/Label'
+import Markdown from '../Common/Typography/Markdown'
 import { ContentSection } from '../Layout/ContentLayout'
 import ProjectRequestSection from '../ProjectRequest/ProjectRequestSection'
 
@@ -38,7 +38,7 @@ const UPDATE_FINANCIAL_INITIAL_STATE: FinancialUpdateSection = {
   financial_records: [],
 }
 
-const CSV_HEADER: (keyof FinancialRecord)[] = ['concept', 'description', 'amount', 'token_type', 'receiver', 'link']
+const CSV_HEADER: (keyof FinancialRecord)[] = ['category', 'description', 'token', 'amount', 'receiver', 'link']
 
 const SEPARATOR = ','
 
@@ -143,7 +143,7 @@ function FinancialSection({
         }
       }
       if (csvRecords.length > 0) {
-        const parsedResult = FinancialUpdateSectionSchema.safeParse({ records: csvRecords })
+        const parsedResult = FinancialUpdateSectionSchema.safeParse({ financial_records: csvRecords })
         if (parsedResult.success) {
           setErrors([])
           setValue('financial_records', parsedResult.data.financial_records)
@@ -197,7 +197,9 @@ function FinancialSection({
       </ContentSection>
       <ContentSection>
         <Label>{t('page.proposal_update.reporting_label')}</Label>
-        <SubLabel>{t('page.proposal_update.reporting_description')}</SubLabel>
+        <Markdown componentsClassNames={{ p: 'FinancialSection__ReportingSublabel' }}>
+          {t('page.proposal_update.reporting_description')}
+        </Markdown>
         <NumberedTextArea
           disabled={isFormDisabled}
           onInput={(value) => setCsvInput(value)}
@@ -211,7 +213,6 @@ function FinancialSection({
       {financial_records.length > 0 && (
         <ContentSection>
           <Label>{t('page.proposal_update.summary_label')}</Label>
-          <SubLabel>{t('page.proposal_update.summary_description')}</SubLabel>
           <SummaryItems financialRecords={financial_records} />
         </ContentSection>
       )}

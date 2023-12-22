@@ -1,3 +1,4 @@
+import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import { z } from 'zod'
 
 export type GeneralUpdateSection = {
@@ -87,14 +88,31 @@ export const GeneralUpdateSectionSchema = {
   },
 }
 
-const FinancialRecordSchema = z.object({
-  concept: z.string().min(1),
-  description: z.string().min(1),
-  amount: z.number().min(1),
-  token_type: z.string().min(3).max(4),
-  receiver: z.string().min(1),
-  link: z.string().url(),
-})
+export enum FinancialRecordCateogry {
+  TeamCompensation = 'Team Compensation',
+  ToolsAndServices = 'Tools & Services',
+  Contractors = 'Contractors',
+  Marketing = 'Marketing',
+  Other = 'Other',
+}
+
+const FinancialRecordSchema = z
+  .object({
+    category: z.nativeEnum(FinancialRecordCateogry),
+    description: z.string().min(1),
+    token: z
+      .string()
+      .min(3)
+      .max(5)
+      .transform((s) => s.replace(/\s/g, '')),
+    amount: z.number().min(1),
+    receiver: z.string().min(42).max(42),
+    link: z.string().url(),
+  })
+  .refine(({ receiver }) => isEthereumAddress(receiver), {
+    message: 'Invalid ethereum address',
+    path: ['receiver'],
+  })
 
 export const FinancialUpdateSectionSchema = z.object({
   financial_records: z.array(FinancialRecordSchema).min(1),
