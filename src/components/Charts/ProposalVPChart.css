@@ -23,14 +23,52 @@
   min-height: var(--size) !important;
   max-height: var(--size) !important;
   border-radius: 100%;
-  background-color: var(--black-400);
   vertical-align: middle;
   margin: 0;
 }
 
+.avatar.color--0,
+.avatar.color--1 {
+  background-color: var(--avatar-color-01);
+}
+
+.avatar.color--2,
+.avatar.color--3 {
+  background-color: var(--avatar-color-23);
+}
+
+.avatar.color--4,
+.avatar.color--5 {
+  background-color: var(--avatar-color-45);
+}
+
+.avatar.color--6,
+.avatar.color--7 {
+  background-color: var(--avatar-color-67);
+}
+
+.avatar.color--8,
+.avatar.color--9 {
+  background-color: var(--avatar-color-89);
+}
+
+.avatar.color--a,
+.avatar.color--b {
+  background-color: var(--avatar-color-ab);
+}
+
+.avatar.color--c,
+.avatar.color--d {
+  background-color: var(--avatar-color-cd);
+}
+
+.avatar.color--e,
+.avatar.color--f {
+  background-color: var(--avatar-color-ef);
+}
+
 #ProposalVPChartTooltip .container {
-  margin: 0;
-  margin-left: var(--padding-size);
+  margin: 0 0 0 var(--padding-size);
 }
 
 #ProposalVPChartTooltip .title {

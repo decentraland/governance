@@ -26,112 +26,112 @@
 .Avatar.Avatar--1,
 .dcl.Avatar.Avatar--0,
 .dcl.Avatar.Avatar--1 {
-  background-color: #4e79a7;
+  background-color: var(--avatar-color-01);
 }
 
 .Avatar.Avatar--0.Avatar--loading,
 .Avatar.Avatar--1.Avatar--loading,
 .dcl.Avatar.Avatar--0.Avatar--loading,
 .dcl.Avatar.Avatar--1.Avatar--loading {
-  background-image: linear-gradient(110deg, #4e79a7 18%, #6e93bb 28%, #4e79a7 43%);
+  background-image: linear-gradient(110deg, var(--avatar-color-01) 18%, #6e93bb 28%, var(--avatar-color-01) 43%);
 }
 
 .Avatar.Avatar--2,
 .Avatar.Avatar--3,
 .dcl.Avatar.Avatar--2,
 .dcl.Avatar.Avatar--3 {
-  background-color: #f28e2c;
+  background-color: var(--avatar-color-23);
 }
 
 .Avatar.Avatar--2.Avatar--loading,
 .Avatar.Avatar--3.Avatar--loading,
 .dcl.Avatar.Avatar--2.Avatar--loading,
 .dcl.Avatar.Avatar--3.Avatar--loading {
-  background-image: linear-gradient(110deg, #f28e2c 18%, #f4a456 28%, #f28e2c 43%);
+  background-image: linear-gradient(110deg, var(--avatar-color-23) 18%, #f4a456 28%, var(--avatar-color-23) 43%);
 }
 
 .Avatar.Avatar--4,
 .Avatar.Avatar--5,
 .dcl.Avatar.Avatar--4,
 .dcl.Avatar.Avatar--5 {
-  background-color: #e15759;
+  background-color: var(--avatar-color-45);
 }
 
 .Avatar.Avatar--4.Avatar--loading,
 .Avatar.Avatar--5.Avatar--loading,
 .dcl.Avatar.Avatar--4.Avatar--loading,
 .dcl.Avatar.Avatar--5.Avatar--loading {
-  background-image: linear-gradient(110deg, #e15759 18%, #e6787a 28%, #e15759 43%);
+  background-image: linear-gradient(110deg, var(--avatar-color-45) 18%, #e6787a 28%, var(--avatar-color-45) 43%);
 }
 
 .Avatar.Avatar--6,
 .Avatar.Avatar--7,
 .dcl.Avatar.Avatar--6,
 .dcl.Avatar.Avatar--7 {
-  background-color: #76b7b2;
+  background-color: var(--avatar-color-67);
 }
 
 .Avatar.Avatar--6.Avatar--loading,
 .Avatar.Avatar--7.Avatar--loading,
 .dcl.Avatar.Avatar--6.Avatar--loading,
 .dcl.Avatar.Avatar--7.Avatar--loading {
-  background-image: linear-gradient(110deg, #76b7b2 18%, #91c5c1 28%, #76b7b2 43%);
+  background-image: linear-gradient(110deg, var(--avatar-color-67) 18%, #91c5c1 28%, var(--avatar-color-67) 43%);
 }
 
 .Avatar.Avatar--8,
 .Avatar.Avatar--9,
 .dcl.Avatar.Avatar--8,
 .dcl.Avatar.Avatar--9 {
-  background-color: #59a14f;
+  background-color: var(--avatar-color-89);
 }
 
 .Avatar.Avatar--8.Avatar--loading,
 .Avatar.Avatar--9.Avatar--loading,
 .dcl.Avatar.Avatar--8.Avatar--loading,
 .dcl.Avatar.Avatar--9.Avatar--loading {
-  background-image: linear-gradient(110deg, #59a14f 18%, #77b76e 28%, #59a14f 43%);
+  background-image: linear-gradient(110deg, var(--avatar-color-89) 18%, #77b76e 28%, var(--avatar-color-89) 43%);
 }
 
 .Avatar.Avatar--a,
 .Avatar.Avatar--b,
 .dcl.Avatar.Avatar--a,
 .dcl.Avatar.Avatar--b {
-  background-color: #edc949;
+  background-color: var(--avatar-color-ab);
 }
 
 .Avatar.Avatar--a.Avatar--loading,
 .Avatar.Avatar--b.Avatar--loading,
 .dcl.Avatar.Avatar--a.Avatar--loading,
 .dcl.Avatar.Avatar--b.Avatar--loading {
-  background-image: linear-gradient(110deg, #edc949 18%, #f0d36d 28%, #edc949 43%);
+  background-image: linear-gradient(110deg, var(--avatar-color-ab) 18%, #f0d36d 28%, var(--avatar-color-ab) 43%);
 }
 
 .Avatar.Avatar--c,
 .Avatar.Avatar--d,
 .dcl.Avatar.Avatar--c,
 .dcl.Avatar.Avatar--d {
-  background-color: #af7aa1;
+  background-color: var(--avatar-color-cd);
 }
 
 .Avatar.Avatar--c.Avatar--loading,
 .Avatar.Avatar--d.Avatar--loading,
 .dcl.Avatar.Avatar--c.Avatar--loading,
 .dcl.Avatar.Avatar--d.Avatar--loading {
-  background-image: linear-gradient(110deg, #af7aa1 18%, #bf94b3 28%, #af7aa1 43%);
+  background-image: linear-gradient(110deg, var(--avatar-color-cd) 18%, #bf94b3 28%, var(--avatar-color-cd) 43%);
 }
 
 .Avatar.Avatar--e,
 .Avatar.Avatar--f,
 .dcl.Avatar.Avatar--e,
 .dcl.Avatar.Avatar--f {
-  background-color: #ff9da7;
+  background-color: var(--avatar-color-ef);
 }
 
 .Avatar.Avatar--e.Avatar--loading,
 .Avatar.Avatar--f.Avatar--loading,
 .dcl.Avatar.Avatar--e.Avatar--loading,
 .dcl.Avatar.Avatar--f.Avatar--loading {
-  background-image: linear-gradient(110deg, #ff9da7 18%, #feb0b8 28%, #ff9da7 43%);
+  background-image: linear-gradient(110deg, var(--avatar-color-ef) 18%, #feb0b8 28%, var(--avatar-color-ef) 43%);
 }
 
 .Avatar.Avatar--xxs {

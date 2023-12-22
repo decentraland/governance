@@ -90,6 +90,16 @@
 
   /* Transitions */
   --card-transition: box-shadow 0.1s ease, transform 0.1s ease;
+
+  /* Avatar Colors */
+  --avatar-color-01: #4e79a7;
+  --avatar-color-23: #f28e2c;
+  --avatar-color-45: #e15759;
+  --avatar-color-67: #76b7b2;
+  --avatar-color-89: #59a14f;
+  --avatar-color-ab: #edc949;
+  --avatar-color-cd: #af7aa1;
+  --avatar-color-ef: #ff9da7;
 }
 
 body {
