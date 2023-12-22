@@ -25,9 +25,10 @@ jobs:
         run: npm ci
 
       - name: build image
-        id: build-image
         run: |
-          docker build -t governance:${{ github.sha }} --build-arg version_number=${{ github.sha }} heroku_app_name=dcl-governance .
+          docker build -t governance:${{ github.sha }} \
+                       --build-arg version_number=${{ github.sha }} \
+                       --build-arg heroku_app_name=dcl-governance .
 
       - name: Log in to Heroku Container Registry
         env:
