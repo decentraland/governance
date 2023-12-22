@@ -42,4 +42,6 @@ jobs:
 
       - name: Release the Image
         id: release-image
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:release web -a dcl-governance
