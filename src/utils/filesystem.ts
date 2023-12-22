@@ -107,6 +107,7 @@ export const cspConnectSrc = [
   'https://*.decentraland.org',
   'https://*.decentraland.today',
   'https://*.decentraland.zone',
+  'https://governance.decentraland.vote',
   // Used to test the proxied service
   // 'http://127.0.0.1:*',
 ].join(' ')
@@ -116,6 +117,7 @@ export const cspFontSrc = [
   'https://*.decentraland.org',
   'https://*.decentraland.today',
   'https://*.decentraland.zone',
+  'https://governance.decentraland.vote',
   // Used to test the proxied service
   // 'http://127.0.0.1:*',
 ].join(' ')
@@ -125,6 +127,7 @@ export const cspImageSrc = [
   'https://*.decentraland.org',
   'https://*.decentraland.today',
   'https://*.decentraland.zone',
+  'https://governance.decentraland.vote',
   // Used to test the proxied service
   // 'http://127.0.0.1:*',
 ].join(' ')
@@ -133,6 +136,7 @@ export const cspManifestSrc = [
   'https://*.decentraland.org',
   'https://*.decentraland.today',
   'https://*.decentraland.zone',
+  'https://governance.decentraland.vote',
   // Used to test the proxied service
   // 'http://127.0.0.1:*',
 ].join(' ')
@@ -141,6 +145,7 @@ export const cspFormAction = [
   'https://*.decentraland.org',
   'https://*.decentraland.today',
   'https://*.decentraland.zone',
+  'https://governance.decentraland.vote',
   // Used to test the proxied service
   // 'http://127.0.0.1:*',
 ].join(' ')
@@ -149,6 +154,7 @@ export const cspMediaSrc = [
   'https://*.decentraland.org',
   'https://*.decentraland.today',
   'https://*.decentraland.zone',
+  'https://governance.decentraland.vote',
   // Used to test the proxied service
   // 'http://127.0.0.1:*',
 ].join(' ')
@@ -157,6 +163,7 @@ export const cspDefaultSrc = [
   'https://*.decentraland.org',
   'https://*.decentraland.today',
   'https://*.decentraland.zone',
+  'https://governance.decentraland.vote',
   // Used to test the proxied service
   // 'http://127.0.0.1:*',
 ].join(' ')
@@ -182,6 +189,7 @@ export const cpsScriptSrc = [
   'https://*.decentraland.org',
   'https://*.decentraland.today',
   'https://*.decentraland.zone',
+  'https://governance.decentraland.vote',
   // Used to test the proxied service
   // 'http://127.0.0.1:*',
 ].join(' ')
