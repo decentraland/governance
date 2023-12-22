@@ -89,7 +89,7 @@ export const GeneralUpdateSectionSchema = {
 }
 
 export enum FinancialRecordCateogry {
-  TeamCompenstation = 'Team Compensation',
+  TeamCompensation = 'Team Compensation',
   ToolsAndServices = 'Tools & Services',
   Contractors = 'Contractors',
   Marketing = 'Marketing',

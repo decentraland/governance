@@ -57,7 +57,6 @@ function FinancialSection({
   const defaultValues = intialValues || UPDATE_FINANCIAL_INITIAL_STATE
   const getInputDefaultValue = () => {
     const defaultRecords = defaultValues.financial_records || []
-    console.log(defaultRecords)
     return defaultRecords.length > 0 ? jsonToCSV(defaultRecords) : CSV_TEXTAREA_PLACEHOLDER
   }
 
@@ -198,7 +197,7 @@ function FinancialSection({
       </ContentSection>
       <ContentSection>
         <Label>{t('page.proposal_update.reporting_label')}</Label>
-        <Markdown className="FinancialSection__ReportingSublabel">
+        <Markdown componentsClassNames={{ p: 'FinancialSection__ReportingSublabel' }}>
           {t('page.proposal_update.reporting_description')}
         </Markdown>
         <NumberedTextArea
