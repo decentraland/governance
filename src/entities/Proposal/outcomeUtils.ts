@@ -22,7 +22,7 @@ export function calculateWinnerChoice(result: Scores) {
       }
       return winner
     })
-  const winnerVotingPower = result[winnerChoice]
+  const winnerVotingPower = Math.round(result[winnerChoice])
   return { winnerChoice, winnerVotingPower }
 }
 
