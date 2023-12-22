@@ -74,7 +74,7 @@ export default function ActivityTicker() {
                       >
                         {t(`page.home.activity_ticker.${item.event_type}`, {
                           author: item.author,
-                          title: item.event_data.proposal_title,
+                          title: item.event_data.proposal_title.trim(),
                         })}
                       </Markdown>
                       <Text className="ActivityTicker__ListItemDate" size="xs">
