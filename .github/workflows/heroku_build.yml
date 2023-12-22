@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build-push:
@@ -24,11 +27,20 @@ jobs:
       - name: installing
         run: npm ci
 
-      - name: build image
+      - name: Set Heroku App Name
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            HEROKU_APP_NAME=governance-pr-${{ github.event.number }}
+          else
+            HEROKU_APP_NAME=dcl-governance
+          fi
+          echo "HEROKU_APP_NAME=$HEROKU_APP_NAME" >> $GITHUB_ENV
+
+      - name: Build image
         run: |
           docker build -t governance:${{ github.sha }} \
                        --build-arg version_number=${{ github.sha }} \
-                       --build-arg heroku_app_name=dcl-governance .
+                       --build-arg heroku_app_name=$HEROKU_APP_NAME .
 
       - name: Log in to Heroku Container Registry
         env:
@@ -36,13 +48,19 @@ jobs:
         run: heroku container:login
 
       - name: Tag and Push to Heroku
-        id: push-to-heroku
         run: |
-              docker tag governance:${{ github.sha }} registry.heroku.com/dcl-governance/web
-              docker push registry.heroku.com/dcl-governance/web
+          docker tag governance:${{ github.sha }} registry.heroku.com/$HEROKU_APP_NAME/web
+          docker push registry.heroku.com/$HEROKU_APP_NAME/web
+
+      - name: Enable Heroku Dyno Metadata
+        if: github.event_name == 'pull_request'
+        run: heroku labs:enable runtime-dyno-metadata -a $HEROKU_APP_NAME
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
       - name: Release the Image
         id: release-image
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:release web -a dcl-governance
+        run: heroku container:release web -a $HEROKU_APP_NAME
+
