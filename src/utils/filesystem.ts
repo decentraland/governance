@@ -1,12 +1,10 @@
 import { createHash } from 'crypto'
 import { DEFAULT_API_HEADERS, handleIncommingMessage } from 'decentraland-gatsby/dist/entities/Route/handle'
 import { redirect } from 'decentraland-gatsby/dist/entities/Route/routes'
-import { Router } from 'express'
-import { Response } from 'express'
+import { Response, Router } from 'express'
 import { readFile } from 'fs'
 import { default as glob } from 'glob'
-import { resolve } from 'path'
-import { extname } from 'path'
+import { extname, resolve } from 'path'
 import { promisify } from 'util'
 
 export type FilesystemHandleOptions = {
@@ -101,6 +99,10 @@ export default function filesystem(
 
 // CSP configurations
 export const cspChildSrc = ['https:'].join(' ')
+const HEROKU_DOMAIN = process.env.HEROKU_APP_NAME
+  ? `https://${process.env.HEROKU_APP_NAME}.herokuapp.com`
+  : 'https://dcl-governance.herokuapp.com'
+
 export const cspConnectSrc = [
   'https:',
   'wss:',
@@ -108,6 +110,7 @@ export const cspConnectSrc = [
   'https://*.decentraland.today',
   'https://*.decentraland.zone',
   'https://governance.decentraland.vote',
+  HEROKU_DOMAIN,
   // Used to test the proxied service
   // 'http://127.0.0.1:*',
 ].join(' ')
@@ -118,6 +121,7 @@ export const cspFontSrc = [
   'https://*.decentraland.today',
   'https://*.decentraland.zone',
   'https://governance.decentraland.vote',
+  HEROKU_DOMAIN,
   // Used to test the proxied service
   // 'http://127.0.0.1:*',
 ].join(' ')
@@ -128,6 +132,7 @@ export const cspImageSrc = [
   'https://*.decentraland.today',
   'https://*.decentraland.zone',
   'https://governance.decentraland.vote',
+  HEROKU_DOMAIN,
   // Used to test the proxied service
   // 'http://127.0.0.1:*',
 ].join(' ')
@@ -137,6 +142,7 @@ export const cspManifestSrc = [
   'https://*.decentraland.today',
   'https://*.decentraland.zone',
   'https://governance.decentraland.vote',
+  HEROKU_DOMAIN,
   // Used to test the proxied service
   // 'http://127.0.0.1:*',
 ].join(' ')
@@ -146,6 +152,7 @@ export const cspFormAction = [
   'https://*.decentraland.today',
   'https://*.decentraland.zone',
   'https://governance.decentraland.vote',
+  HEROKU_DOMAIN,
   // Used to test the proxied service
   // 'http://127.0.0.1:*',
 ].join(' ')
@@ -155,6 +162,7 @@ export const cspMediaSrc = [
   'https://*.decentraland.today',
   'https://*.decentraland.zone',
   'https://governance.decentraland.vote',
+  HEROKU_DOMAIN,
   // Used to test the proxied service
   // 'http://127.0.0.1:*',
 ].join(' ')
@@ -164,6 +172,7 @@ export const cspDefaultSrc = [
   'https://*.decentraland.today',
   'https://*.decentraland.zone',
   'https://governance.decentraland.vote',
+  HEROKU_DOMAIN,
   // Used to test the proxied service
   // 'http://127.0.0.1:*',
 ].join(' ')
@@ -190,6 +199,7 @@ export const cpsScriptSrc = [
   'https://*.decentraland.today',
   'https://*.decentraland.zone',
   'https://governance.decentraland.vote',
+  HEROKU_DOMAIN,
   // Used to test the proxied service
   // 'http://127.0.0.1:*',
 ].join(' ')
