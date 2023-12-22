@@ -1,5 +1,6 @@
 FROM node:18.8-alpine as compiler
 ARG version_number
+ARG heroku_app_name
 
 RUN apk add --no-cache openssh-client \
  && mkdir ~/.ssh && ssh-keyscan github.com > ~/.ssh/known_hosts
@@ -42,10 +43,8 @@ COPY ./gatsby-ssr.js                          /app/gatsby-ssr.js
 COPY ./tsconfig.json                          /app/tsconfig.json
 COPY ./.babelrc.json                          /app/.babelrc.json
 
-RUN sed -i.temp '/Pulumi\.ts/d' package.json
-
 RUN NODE_OPTIONS="--max-old-space-size=4096" npm run build:server
-RUN NODE_OPTIONS="--max-old-space-size=4096" VERSION_NUMBER=$version_number npm run build:front
+RUN NODE_OPTIONS="--max-old-space-size=4096" VERSION_NUMBER=$version_number HEROKU_APP_NAME=$heroku_app_name npm run build:front
 RUN npm prune --production --ignore-scripts
 
 FROM node:18.8-alpine
