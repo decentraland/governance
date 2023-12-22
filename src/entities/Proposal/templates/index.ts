@@ -1,4 +1,4 @@
-import { Avatar } from '../../../utils/Catalyst/types'
+import { DclProfile } from '../../../utils/Catalyst/types'
 import {
   GrantProposalConfiguration,
   NewProposalBanName,
@@ -26,6 +26,8 @@ import * as poi from './poi'
 import * as poll from './poll'
 import * as tender from './tender'
 import { template } from './utils'
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 type NewConfiguration =
   | NewProposalLinkedWearables
@@ -101,7 +103,7 @@ export type SnapshotTemplateProps = {
   type: ProposalType
   configuration: NewConfiguration
   user: string
-  profile: Avatar | null
+  profile: DclProfile | null
   proposal_url: string
 }
 
@@ -115,7 +117,7 @@ export const snapshotDescription = async ({
   proposal_url,
 }: SnapshotTemplateProps) => template`
 
-> by ${user + (profile?.name ? ` (${profile.name})` : '')}
+> by ${user + (profile?.username ? ` (${profile.username})` : '')}
 
 ${
   (type === ProposalType.POI ? await poi.pre_description(configuration as any) : '') +
@@ -131,7 +133,7 @@ export type ForumTemplate = {
   type: ProposalType
   configuration: NewConfiguration
   user: string
-  profile: Avatar | null
+  profile: DclProfile | null
   proposal_url: string
   snapshot_url: string
   snapshot_id: string
@@ -149,7 +151,7 @@ export const forumDescription = async ({
   snapshot_url,
 }: ForumTemplate) => template`
 
-> by ${user + (profile?.name ? ` (${profile.name})` : '')}
+> by ${user + (profile?.username ? ` (${profile.username})` : '')}
 
 ${
   (type === ProposalType.POI ? await poi.pre_description(configuration as any) : '') +

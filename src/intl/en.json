@@ -566,7 +566,7 @@
       "title": "Voting Power Delegation",
       "description": "Choose who you’d like to receive the 100% of your **{vp} Voting Power**. You may delegate your VP to any user, but we’d like you to consider picking one of the following individuals who have applied to become Delegates. ",
       "description_generic": "Sign in to choose who you'd like to receive your VP. You may delegate it to any user, but we'd like you to consider picking one of the following individuals who have applied to become Delegates. ",
-      "read_more": "[Read more](#)",
+      "read_more": "[Read more](https://forum.decentraland.org/t/open-call-for-delegates-apply-now/5840)",
       "candidate_name": "Candidate name",
       "picked_by": "Picked by",
       "total_vp": "Total vp",
@@ -917,6 +917,13 @@
         "total_vp": "Total VP",
         "view_all_delegates": "View all Delegates",
         "fetching": "Fetching DAO delegates..."
+      },
+      "activity_ticker": {
+        "title": "Latest activity",
+        "voted": "**{author}** voted on **{title}**",
+        "no_activity": "No activity",
+        "proposal_created": "**{author}** published a new Proposal **{title}**",
+        "update_created": "**{author}** published an Update on the Project **{title}**"
       }
     },
     "welcome": {

@@ -74,7 +74,7 @@ export default function Comments({ comments, topicId, topicSlug, isLoading, topi
               <Comment
                 key={'comment_' + index}
                 avatarUrl={comment.avatar_url}
-                user={comment.username}
+                forumUsername={comment.username}
                 createdAt={comment.created_at}
                 cooked={comment.cooked}
                 address={comment.address}

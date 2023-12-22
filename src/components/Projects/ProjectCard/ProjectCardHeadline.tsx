@@ -25,7 +25,7 @@ const ProjectCardHeadline = ({ project, hoverable = false, expanded = false }: P
       >
         {title}
       </Header>
-      <Username className="ProjectCardHeadline__Avatar" address={user} variant="avatar" size="medium" />
+      <Username className="ProjectCardHeadline__Avatar" address={user} variant="avatar" size="md" />
     </div>
   )
 }

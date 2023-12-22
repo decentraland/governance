@@ -1,0 +1,47 @@
+name: Heroku build
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-push:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: node.js 18
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18.8.0
+          registry-url: https://registry.npmjs.org/
+          cache: 'npm'
+
+      - name: set up git
+        run: git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+
+      - name: installing
+        run: npm ci
+
+      - name: build image
+        id: build-image
+        run: |
+          docker build -t governance:${{ github.sha }} --build-arg version_number=${{ github.sha }} .
+
+      - name: Log in to Heroku Container Registry
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:login
+
+      - name: Tag and Push to Heroku
+        id: push-to-heroku
+        run: |
+              docker tag governance:${{ github.sha }} registry.heroku.com/dcl-governance/web
+              docker push registry.heroku.com/dcl-governance/web
+
+      - name: Release the Image
+        id: release-image
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:release web -a dcl-governance

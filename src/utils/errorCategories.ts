@@ -3,6 +3,7 @@ export enum ErrorCategory {
   Bid = 'Bid',
   Budget = 'Budget',
   Discourse = 'Discourse',
+  Events = 'Events',
   Job = 'Job',
   Profile = 'Profile',
   Proposal = 'Proposal',

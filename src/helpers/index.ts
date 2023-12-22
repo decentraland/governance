@@ -1,3 +1,5 @@
+import { FormatNumberOptions } from 'react-intl'
+
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
@@ -6,13 +8,15 @@ import isURL from 'validator/lib/isURL'
 import { DEFAULT_CHAIN_ID } from '../constants'
 import { clientEnv } from '../utils/clientEnv'
 
+import { toGovernancePathname } from './browser'
+
 export const CURRENCY_FORMAT_OPTIONS = {
   style: 'currency',
   currency: 'USD',
   maximumFractionDigits: 0,
-} as any
+} as FormatNumberOptions
 
-export function inBackground(fun: () => Promise<any>) {
+export function inBackground(fun: () => Promise<unknown>) {
   Promise.resolve()
     .then(fun)
     .then((result) => logger.log('Completed background task', { result: JSON.stringify(result) }))
@@ -53,7 +57,8 @@ export function getUrlFilters<T>(filterKey: string, params: URLSearchParams, val
     newParams.delete('subtype')
   }
   const stringParams = newParams.toString()
-  return `${location.pathname}${stringParams === '' ? '' : '?' + stringParams}`
+  const pathname = toGovernancePathname(location.pathname)
+  return `${pathname}${stringParams === '' ? '' : '?' + stringParams}`
 }
 
 export const fetchWithTimeout = async (url: string, timeout = 10000, options?: RequestInit) => {
@@ -75,6 +80,7 @@ export const fetchWithTimeout = async (url: string, timeout = 10000, options?: R
 
 export const isHttpsURL = (url: string) => isURL(url, { protocols: ['https'], require_protocol: true })
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function disableOnWheelInput(event: any) {
   // Prevent the input value change
   event.target.blur()
