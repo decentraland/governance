@@ -103,76 +103,57 @@ const HEROKU_DOMAIN = process.env.HEROKU_APP_NAME
   ? `https://${process.env.HEROKU_APP_NAME}.herokuapp.com`
   : 'https://dcl-governance.herokuapp.com'
 
-export const cspConnectSrc = [
-  'https:',
-  'wss:',
+const DECENTRALAND_DOMAINS = [
+  'https://decentraland.org',
   'https://*.decentraland.org',
   'https://*.decentraland.today',
   'https://*.decentraland.zone',
   'https://governance.decentraland.vote',
   HEROKU_DOMAIN,
+]
+
+export const cspConnectSrc = [
+  'https:',
+  'wss:',
+  ...DECENTRALAND_DOMAINS,
   // Used to test the proxied service
   // 'http://127.0.0.1:*',
 ].join(' ')
 export const cspFontSrc = [
   'https:',
   'data:',
-  'https://*.decentraland.org',
-  'https://*.decentraland.today',
-  'https://*.decentraland.zone',
-  'https://governance.decentraland.vote',
-  HEROKU_DOMAIN,
+  ...DECENTRALAND_DOMAINS,
   // Used to test the proxied service
   // 'http://127.0.0.1:*',
 ].join(' ')
 export const cspImageSrc = [
   'https:',
   'data:',
-  'https://*.decentraland.org',
-  'https://*.decentraland.today',
-  'https://*.decentraland.zone',
-  'https://governance.decentraland.vote',
-  HEROKU_DOMAIN,
+  ...DECENTRALAND_DOMAINS,
   // Used to test the proxied service
   // 'http://127.0.0.1:*',
 ].join(' ')
 export const cspManifestSrc = [
   "'self'",
-  'https://*.decentraland.org',
-  'https://*.decentraland.today',
-  'https://*.decentraland.zone',
-  'https://governance.decentraland.vote',
-  HEROKU_DOMAIN,
+  ...DECENTRALAND_DOMAINS,
   // Used to test the proxied service
   // 'http://127.0.0.1:*',
 ].join(' ')
 export const cspFormAction = [
   "'self'",
-  'https://*.decentraland.org',
-  'https://*.decentraland.today',
-  'https://*.decentraland.zone',
-  'https://governance.decentraland.vote',
-  HEROKU_DOMAIN,
+  ...DECENTRALAND_DOMAINS,
   // Used to test the proxied service
   // 'http://127.0.0.1:*',
 ].join(' ')
 export const cspMediaSrc = [
   "'self'",
-  'https://*.decentraland.org',
-  'https://*.decentraland.today',
-  'https://*.decentraland.zone',
-  'https://governance.decentraland.vote',
-  HEROKU_DOMAIN,
+  ...DECENTRALAND_DOMAINS,
   // Used to test the proxied service
   // 'http://127.0.0.1:*',
 ].join(' ')
 export const cspDefaultSrc = [
   "'self'",
-  'https://*.decentraland.org',
-  'https://*.decentraland.today',
-  'https://*.decentraland.zone',
-  'https://governance.decentraland.vote',
-  HEROKU_DOMAIN,
+  ...DECENTRALAND_DOMAINS,
   // Used to test the proxied service
   // 'http://127.0.0.1:*',
 ].join(' ')
@@ -181,9 +162,6 @@ export const cpsScriptSrc = [
   "'self'",
   "'unsafe-inline'",
   "'unsafe-eval'",
-  'blob:',
-  'https://decentraland.org',
-  'https://*.decentraland.org',
   'https://cdn.segment.com',
   'https://cdn.rollbar.com',
   'https://ajax.cloudflare.com',
@@ -196,11 +174,9 @@ export const cpsScriptSrc = [
   'https://www.googleadservices.com',
   'https://www.googletagmanager.com',
   'https://verify.walletconnect.com',
-  'https://*.decentraland.org',
-  'https://*.decentraland.today',
-  'https://*.decentraland.zone',
-  'https://governance.decentraland.vote',
-  HEROKU_DOMAIN,
+  ...DECENTRALAND_DOMAINS,
   // Used to test the proxied service
   // 'http://127.0.0.1:*',
 ].join(' ')
+
+export const cpsWorkerSrc = ["'self'", 'blob:', ...DECENTRALAND_DOMAINS].join(' ')

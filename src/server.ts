@@ -44,6 +44,7 @@ import { updateGovernanceBudgets } from './entities/Budget/jobs'
 import { activateProposals, finishProposal, publishBids } from './entities/Proposal/jobs'
 import filesystem, {
   cpsScriptSrc,
+  cpsWorkerSrc,
   cspChildSrc,
   cspConnectSrc,
   cspFontSrc,
@@ -139,7 +140,7 @@ app.use(
   }),
   filesystem('public', '404.html', {
     defaultHeaders: {
-      'Content-Security-Policy': `base-uri 'self'; child-src ${cspChildSrc}; connect-src ${cspConnectSrc}; default-src 'none'; font-src ${cspFontSrc}; form-action ${cspFormAction}; frame-ancestors 'none'; frame-src https:; img-src ${cspImageSrc}; manifest-src ${cspManifestSrc}; media-src ${cspMediaSrc}; object-src 'none'; style-src ${cspStyleSrc}; worker-src 'self'; script-src ${cpsScriptSrc}`,
+      'Content-Security-Policy': `base-uri 'self'; child-src ${cspChildSrc}; connect-src ${cspConnectSrc}; default-src 'none'; font-src ${cspFontSrc}; form-action ${cspFormAction}; frame-ancestors 'none'; frame-src https:; img-src ${cspImageSrc}; manifest-src ${cspManifestSrc}; media-src ${cspMediaSrc}; object-src 'none'; style-src ${cspStyleSrc}; worker-src ${cpsWorkerSrc}; script-src ${cpsScriptSrc}`,
       'X-Content-Type-Options': 'nosniff',
       'X-Frame-Options': 'DENY',
       'strict-transport-security': 'max-age=15552000; includeSubDomains; preload',
