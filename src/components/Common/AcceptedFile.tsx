@@ -8,8 +8,7 @@ import Text from './Typography/Text'
 import './AcceptedFile.css'
 
 interface Props {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  file: any
+  file: File
   onRemoveFile: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
   removeFileProps: object
   progressBar: React.ReactNode
