@@ -35,10 +35,8 @@ jobs:
 
       - name: Set Heroku App Name
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
+          if [[ "${{ github.event_name }}" == "pull_request" || "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             HEROKU_APP_NAME=governance-pr-${{ github.event.number }}
-          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            HEROKU_APP_NAME=governance-manual-${{ github.event.inputs.branch_name }}
           else
             HEROKU_APP_NAME=dcl-governance
           fi
@@ -71,4 +69,3 @@ jobs:
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:release web -a $HEROKU_APP_NAME
-
