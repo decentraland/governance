@@ -181,6 +181,7 @@ export const cpsScriptSrc = [
   "'self'",
   "'unsafe-inline'",
   "'unsafe-eval'",
+  'blob:',
   'https://decentraland.org',
   'https://*.decentraland.org',
   'https://cdn.segment.com',
