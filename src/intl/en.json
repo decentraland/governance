@@ -2091,7 +2091,7 @@
       "reporting_description": "Bring some light onto how this project is utilizing funds, CSV syntax. More about our formatting [here](https://dcl-dao.notion.site/Instructions-for-uploading-your-Grant-s-Financial-Report-13c022162e204a5a9a37f18888ff3a69).",
       "csv_empty": "CSV file is empty",
       "csv_invalid_header": "CSV file is not valid",
-      "csv_invalid_row": "Row is not valid",
+      "csv_invalid_row": "Missing fields. Parsed {parsed} out of {expected} fields",
       "csv_row_error": "Field \"{field}\": {error}",
       "summary_label": "Summary",
       "summary_description": "According to what you've disclosed above, this is what you spent since your last update looks like.",

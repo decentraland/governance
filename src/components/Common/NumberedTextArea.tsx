@@ -28,7 +28,7 @@ function NumberedTextArea({ className, disabled, onInput, value, errors }: Props
       }}
       showPrintMargin={false}
       readOnly={disabled}
-      onBlur={(_, editor) => onInput?.(editor?.getValue())}
+      onChange={(value) => onInput?.(value)}
       value={value}
       annotations={errors?.map((error) => ({ ...error, type: 'error', column: 0 }))}
     />

@@ -128,7 +128,12 @@ function FinancialSection({
         const isEmptyRow = record.every((value) => value === '')
         if (!isEmptyRow) {
           if (record.length !== CSV_HEADER.length) {
-            setErrors([{ row: idx + 1, text: t('page.proposal_update.csv_invalid_row') }])
+            setErrors([
+              {
+                row: idx,
+                text: t('page.proposal_update.csv_invalid_row', { parsed: record.length, expected: CSV_HEADER.length }),
+              },
+            ])
             clearRecords()
             return
           }
