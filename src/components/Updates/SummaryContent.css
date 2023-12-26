@@ -1,0 +1,66 @@
+.SummaryContentItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.SummaryContentItem_DescriptionContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  max-width: 335px;
+}
+.SummaryContentItem_DescriptionText {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: inherit;
+}
+
+.SummaryContentItem_DetailsContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-right: 7px;
+  width: 170px;
+}
+
+.SummaryContentItem_Token {
+  color: var(--black-400);
+  text-transform: uppercase;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 28px;
+  letter-spacing: 0.4px;
+  min-width: 42px;
+  text-align: start;
+}
+
+.SummaryContentItem_Amount {
+  color: var(--black-600);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 28px;
+  letter-spacing: 0.4px;
+  min-width: 62px;
+  text-align: end;
+}
+
+.SummaryContentItem_DescriptionContainer > .Text,
+.SummaryContentItem_DetailsContainer > .Text {
+  margin-bottom: 0;
+}
+
+.SummaryContentItem__Divider {
+  margin: 10px 0;
+}
+
+.SummaryContentItem__Divider:first-child {
+  margin-top: 0;
+}
+
+.SummaryContentItem__Divider:last-child {
+  display: none;
+}

@@ -81,7 +81,7 @@ describe('UpdateModel', () => {
     describe('for a vesting with a duration of 6 months and some extra days, with a starting date different than the preferred', () => {
       const vestingDates = {
         vestingStartAt: '2020-11-17 00:00:00z',
-        vestingFinishAt: '2020-04-31 00:00:00z',
+        vestingFinishAt: '2021-05-31 00:00:00z',
       }
 
       describe('when preferred payment date is on the 15th of the month', () => {
@@ -90,7 +90,7 @@ describe('UpdateModel', () => {
         it('calculates the correct amount of pending updates', () => {
           expect(
             getMonthsBetweenDates(new Date(vestingDates.vestingStartAt), new Date(vestingDates.vestingFinishAt))
-          ).toEqual({ months: 6, extraDays: 16 })
+          ).toEqual({ months: 6, extraDays: 14 })
           expect(UpdateModel.getAmountOfUpdates(vestingDates)).toEqual(7)
         })
 
@@ -155,6 +155,19 @@ describe('UpdateModel', () => {
             },
           ])
         })
+      })
+    })
+
+    describe('for a start date after the end date', () => {
+      const vestingDates = {
+        vestingStartAt: '2020-11-17 00:00:00z',
+        vestingFinishAt: '2020-04-31 00:00:00z',
+      }
+
+      it('throws an error', () => {
+        expect(() =>
+          getMonthsBetweenDates(new Date(vestingDates.vestingStartAt), new Date(vestingDates.vestingFinishAt))
+        ).toThrow()
       })
     })
 

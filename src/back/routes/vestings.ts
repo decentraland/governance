@@ -7,8 +7,13 @@ import { VestingService } from '../../services/VestingService'
 import { validateAddress } from '../utils/validations'
 
 export default routes((router) => {
+  router.get('/all-vestings', handleAPI(getAllVestings))
   router.post('/vesting', handleAPI(getVestingInfo))
 })
+
+async function getAllVestings() {
+  return await VestingService.getAllVestings()
+}
 
 async function getVestingInfo(req: Request<any, any, { addresses: string[] }>): Promise<VestingInfo[]> {
   const addresses = req.body.addresses

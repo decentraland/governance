@@ -23,6 +23,9 @@
   line-height: 42px;
   letter-spacing: 0.4px;
   text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .ProjectRequestSection__HorizontalLine {

@@ -9,25 +9,78 @@ import { UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
 import { getCurrentUpdate, getNextPendingUpdate, getUpdateUrl } from '../../entities/Updates/utils'
 import { inBackground } from '../../helpers'
 import { DiscourseService } from '../../services/DiscourseService'
+import { ErrorService } from '../../services/ErrorService'
+import { FinancialService } from '../../services/FinancialService'
+import { ErrorCategory } from '../../utils/errorCategories'
 
 import { CoauthorService } from './coauthor'
 import { DiscordService } from './discord'
 import { EventsService } from './events'
 
 export class UpdateService {
-  static async getById(id: UpdateAttributes['id']) {
-    return await UpdateModel.findOne<UpdateAttributes>({ id })
+  static async getById(id: UpdateAttributes['id']): Promise<UpdateAttributes | undefined | null> {
+    try {
+      const update = await UpdateModel.findOne<UpdateAttributes>({ id })
+      if (update) {
+        const financial_records = await FinancialService.getRecordsByUpdateId(update.id)
+        if (financial_records) {
+          return { ...update, financial_records }
+        }
+      }
+      return update
+    } catch (error) {
+      ErrorService.report('Error fetching update', { id, error, category: ErrorCategory.Update })
+      return null
+    }
   }
 
-  static async getAllByProposalId(proposal_id: ProposalAttributes['id']) {
-    return await UpdateModel.find<UpdateAttributes>({ proposal_id })
+  static async getAllByProposalId(proposal_id: ProposalAttributes['id'], status?: UpdateStatus) {
+    try {
+      const parameters = { proposal_id }
+      return await UpdateModel.find<UpdateAttributes>(status ? { ...parameters, status } : parameters)
+    } catch (error) {
+      ErrorService.report('Error fetching updates', { proposal_id, error, category: ErrorCategory.Update })
+      return []
+    }
   }
 
   static async updateWithDiscoursePost(id: UpdateAttributes['id'], discoursePost: DiscoursePost) {
-    return await UpdateModel.update(
-      { discourse_topic_id: discoursePost.topic_id, discourse_topic_slug: discoursePost.topic_slug },
-      { id }
-    )
+    try {
+      return await UpdateModel.update(
+        { discourse_topic_id: discoursePost.topic_id, discourse_topic_slug: discoursePost.topic_slug },
+        { id }
+      )
+    } catch (error) {
+      ErrorService.report('Error updating update', { id, error, category: ErrorCategory.Update })
+      return null
+    }
+  }
+
+  static async delete(update: UpdateAttributes) {
+    const { id, due_date } = update
+    try {
+      if (!due_date) {
+        return await UpdateModel.delete<UpdateAttributes>({ id })
+      } else {
+        return await UpdateModel.update<UpdateAttributes>(
+          {
+            status: UpdateStatus.Pending,
+            author: undefined,
+            health: undefined,
+            introduction: undefined,
+            highlights: undefined,
+            blockers: undefined,
+            next_steps: undefined,
+            additional_notes: undefined,
+            completion_date: undefined,
+            updated_at: new Date(),
+          },
+          { id }
+        )
+      }
+    } catch (error) {
+      ErrorService.report('Error deleting update', { id, error, category: ErrorCategory.Update })
+    }
   }
 
   static commentUpdateEditInDiscourse(update: UpdateAttributes) {
@@ -64,7 +117,17 @@ export class UpdateService {
   }
 
   static async create(newUpdate: Omit<UpdateAttributes, 'id' | 'created_at' | 'updated_at' | 'status'>, user: string) {
-    const { proposal_id, author, health, introduction, highlights, blockers, next_steps, additional_notes } = newUpdate
+    const {
+      proposal_id,
+      author,
+      health,
+      introduction,
+      highlights,
+      blockers,
+      next_steps,
+      additional_notes,
+      financial_records,
+    } = newUpdate
     const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: proposal_id })
     const isAuthorOrCoauthor =
       user && (proposal?.user === user || (await CoauthorService.isCoauthor(proposal_id, user))) && author === user
@@ -97,8 +160,11 @@ export class UpdateService {
         additional_notes,
       }
     const update = await UpdateModel.createUpdate(data)
-    await EventsService.updateCreated(update.id, proposal.id, proposal.title, user)
-    await DiscourseService.createUpdate(update, proposal.title)
+    await Promise.all([
+      FinancialService.createRecords(update.id, financial_records || []),
+      EventsService.updateCreated(update.id, proposal.id, proposal.title, user),
+      DiscourseService.createUpdate(update, proposal.title),
+    ])
     DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
 
     return update
@@ -117,7 +183,8 @@ export class UpdateService {
     isOnTime: boolean
   ) {
     const status = !update.due_date || isOnTime ? UpdateStatus.Done : UpdateStatus.Late
-    const { author, health, introduction, highlights, blockers, next_steps, additional_notes } = newUpdate
+    const { author, health, introduction, highlights, blockers, next_steps, additional_notes, financial_records } =
+      newUpdate
 
     await UpdateModel.update<UpdateAttributes>(
       {
@@ -135,11 +202,15 @@ export class UpdateService {
       { id }
     )
 
+    await FinancialService.createRecords(update.id, financial_records || update.financial_records!)
+
     const updatedUpdate = await UpdateService.getById(id)
     if (updatedUpdate) {
       if (!update.completion_date) {
-        await DiscourseService.createUpdate(updatedUpdate, proposal.title)
-        await EventsService.updateCreated(update.id, proposal.id, proposal.title, user)
+        await Promise.all([
+          DiscourseService.createUpdate(updatedUpdate, proposal.title),
+          EventsService.updateCreated(update.id, proposal.id, proposal.title, user),
+        ])
         DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
       } else {
         UpdateService.commentUpdateEditInDiscourse(updatedUpdate)

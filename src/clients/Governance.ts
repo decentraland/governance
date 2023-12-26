@@ -34,7 +34,12 @@ import {
 import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { Topic } from '../entities/SurveyTopic/types'
-import { ProjectHealth, UpdateAttributes, UpdateResponse } from '../entities/Updates/types'
+import {
+  FinancialUpdateSection,
+  GeneralUpdateSection,
+  UpdateAttributes,
+  UpdateResponse,
+} from '../entities/Updates/types'
 import { AccountType } from '../entities/User/types'
 import { Participation, VoteByAddress, VotedProposal, Voter, VotesForProposals } from '../entities/Votes/types'
 import { EventWithAuthor } from '../shared/types/events'
@@ -42,7 +47,7 @@ import { NewsletterSubscriptionResult } from '../shared/types/newsletter'
 import { PushNotification } from '../shared/types/notifications'
 import Time from '../utils/date/Time'
 
-import { TransparencyBudget } from './DclData'
+import { TransparencyBudget, TransparencyVesting } from './DclData'
 import {
   DetailedScores,
   SnapshotConfig,
@@ -262,16 +267,12 @@ export class Governance extends API {
     return result.data
   }
 
-  async createProposalUpdate(update: {
-    proposal_id: string
-    author: string
-    health: ProjectHealth
-    introduction: string
-    highlights: string
-    blockers: string
-    next_steps: string
-    additional_notes: string
-  }) {
+  async createProposalUpdate(
+    update: {
+      proposal_id: string
+    } & GeneralUpdateSection &
+      FinancialUpdateSection
+  ) {
     const result = await this.fetch<ApiResponse<UpdateAttributes>>(
       `/proposals/${update.proposal_id}/update`,
       this.options().method('POST').authorization({ sign: true }).json(update)
@@ -279,20 +280,17 @@ export class Governance extends API {
     return result.data
   }
 
-  async updateProposalUpdate(update: {
-    id: string
-    proposal_id: string
-    author: string
-    health: ProjectHealth
-    introduction: string
-    highlights: string
-    blockers: string
-    next_steps: string
-    additional_notes: string
-  }) {
+  async updateProposalUpdate(
+    update: {
+      id: string
+      proposal_id: string
+    } & GeneralUpdateSection &
+      FinancialUpdateSection
+  ) {
+    const { proposal_id, ...updateData } = update
     const result = await this.fetch<ApiResponse<UpdateAttributes>>(
-      `/proposals/${update.proposal_id}/update`,
-      this.options().method('PATCH').authorization({ sign: true }).json(update)
+      `/proposals/${proposal_id}/update`,
+      this.options().method('PATCH').authorization({ sign: true }).json(updateData)
     )
     return result.data
   }
@@ -636,6 +634,11 @@ export class Governance extends API {
       '/snapshot/scores',
       this.options().method('POST').json({ addresses })
     )
+    return response.data
+  }
+
+  async getAllVestings() {
+    const response = await this.fetch<ApiResponse<TransparencyVesting[]>>(`/all-vestings`, this.options().method('GET'))
     return response.data
   }
 
