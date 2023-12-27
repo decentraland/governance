@@ -95,6 +95,7 @@ export default function Update({ isEdit }: Props) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [generalSection, patchGeneralSection] = useState(initialGeneralState)
   const [financialSection, patchFinancialSection] = useState(initialFinancialState)
+  const [csvInputField, patchCsvInputField] = useState<string | undefined>()
   const [validationState, patchValidationState] = useState<UpdateValidationState>(intialValidationState)
   const isValidToSubmit = Object.values(validationState).every((valid) => valid)
 
@@ -257,7 +258,8 @@ export default function Update({ isEdit }: Props) {
               }
               vesting={vestingContract}
               publicUpdates={publicUpdates}
-              updateId={update?.id}
+              csvInputField={csvInputField}
+              setCSVInputField={patchCsvInputField}
             />
           </>
         )}

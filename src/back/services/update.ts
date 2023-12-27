@@ -161,11 +161,9 @@ export class UpdateService {
       }
     const update = await UpdateModel.createUpdate(data)
     try {
-      await Promise.all([
-        FinancialService.createRecords(update.id, financial_records || []),
-        EventsService.updateCreated(update.id, proposal.id, proposal.title, user),
-        DiscourseService.createUpdate(update, proposal.title),
-      ])
+      await FinancialService.createRecords(update.id, financial_records || [])
+      await DiscourseService.createUpdate(update, proposal.title)
+      await EventsService.updateCreated(update.id, proposal.id, proposal.title, user)
       DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
     } catch (error) {
       await this.delete(update)

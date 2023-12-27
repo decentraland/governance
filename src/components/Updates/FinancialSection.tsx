@@ -32,7 +32,8 @@ interface Props {
   intialValues?: Partial<FinancialUpdateSection>
   vesting?: TransparencyVesting
   publicUpdates?: UpdateAttributes[]
-  updateId?: string
+  csvInputField: string | undefined
+  setCSVInputField: (value?: string) => void
 }
 
 type Error = {
@@ -57,20 +58,24 @@ function FinancialSection({
   intialValues,
   vesting,
   publicUpdates,
-  updateId,
+  csvInputField,
+  setCSVInputField,
 }: Props) {
-  const localStorageKey = updateId ? `update-${updateId}-financial` : undefined
   const t = useFormatMessage()
   const { readString, jsonToCSV } = usePapaParse()
   const defaultValues = intialValues || UPDATE_FINANCIAL_INITIAL_STATE
-  const getInputDefaultValue = () => {
+  const getInputDefaultValue = useCallback(() => {
     const defaultRecords = defaultValues.financial_records || []
     if (defaultRecords.length > 0) {
       return jsonToCSV(defaultRecords)
     }
-    const localStorageValue = localStorage.getItem(localStorageKey || '')
-    return localStorageValue ? localStorageValue : CSV_TEXTAREA_PLACEHOLDER
-  }
+    return csvInputField ? csvInputField : CSV_TEXTAREA_PLACEHOLDER
+  }, [defaultValues, jsonToCSV, csvInputField])
+
+  useEffect(() => {
+    setCSVInputField(getInputDefaultValue())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const {
     formState: { isValid, isDirty },
@@ -81,7 +86,6 @@ function FinancialSection({
     mode: 'onTouched',
   })
 
-  const [csvInput, setCsvInput] = useState<string | undefined>(getInputDefaultValue())
   const [errors, setErrors] = useState<Error[]>([])
   const financial_records = watch('financial_records')
   const clearRecords = useCallback(() => setValue('financial_records', []), [setValue])
@@ -94,10 +98,7 @@ function FinancialSection({
     }
 
     typingTimeout = setTimeout(() => {
-      setCsvInput(value)
-      if (localStorageKey) {
-        localStorage.setItem(localStorageKey, value || '')
-      }
+      setCSVInputField(value)
     }, 1000)
   }
 
@@ -122,11 +123,11 @@ function FinancialSection({
         )
       }
     }
-    setCsvInput(value.trim())
+    setCSVInputField(value.trim())
   }
 
   const handleRemoveFile = () => {
-    setCsvInput(CSV_TEXTAREA_PLACEHOLDER)
+    setCSVInputField(CSV_TEXTAREA_PLACEHOLDER)
   }
 
   useEffect(() => {
@@ -155,6 +156,7 @@ function FinancialSection({
           return
         }
       }
+      handleErrors([])
 
       const csvRecords: Record<string, string | number | undefined>[] = []
 
@@ -198,14 +200,14 @@ function FinancialSection({
   )
 
   useEffect(() => {
-    readString<string[]>(csvInput || '', {
+    readString<string[]>(csvInputField || '', {
       worker: true,
       complete: (results) => {
         const { data } = results
         csvInputHandler(data)
       },
     })
-  }, [csvInput, csvInputHandler, readString])
+  }, [csvInputField, csvInputHandler, readString])
 
   return (
     <ProjectRequestSection
@@ -237,7 +239,7 @@ function FinancialSection({
         <NumberedTextArea
           disabled={isFormDisabled}
           onInput={(value) => handleManualInput(value)}
-          value={csvInput}
+          value={csvInputField}
           errors={errors}
         />
         <div className="FinancialSection__DragAndDropContainer">

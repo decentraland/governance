@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import { useIntl } from 'react-intl'
 
 import classNames from 'classnames'
@@ -21,8 +22,8 @@ function SummaryContent({ category, group }: SummaryContentProps) {
     <>
       <Divider className="SummaryContentItem__Divider" />
       {group.map(({ amount, description, token, receiver, link }, index) => (
-        <>
-          <div key={`${category}-${index}`} className="SummaryContentItem">
+        <Fragment key={`${category}-${index}`}>
+          <div className="SummaryContentItem">
             <div className="SummaryContentItem_DescriptionContainer">
               <Text className="SummaryContentItem_DescriptionText" size="md">
                 {description}
@@ -45,7 +46,7 @@ function SummaryContent({ category, group }: SummaryContentProps) {
             </div>
           </div>
           <Divider className="SummaryContentItem__Divider" />
-        </>
+        </Fragment>
       ))}
     </>
   )
