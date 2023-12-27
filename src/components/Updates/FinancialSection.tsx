@@ -32,6 +32,13 @@ interface Props {
   intialValues?: Partial<FinancialUpdateSection>
   vesting?: TransparencyVesting
   publicUpdates?: UpdateAttributes[]
+  csvInputField: string | undefined
+  setCSVInputField: (value?: string) => void
+}
+
+type Error = {
+  row: number
+  text: string
 }
 
 const UPDATE_FINANCIAL_INITIAL_STATE: FinancialUpdateSection = {
@@ -51,14 +58,24 @@ function FinancialSection({
   intialValues,
   vesting,
   publicUpdates,
+  csvInputField,
+  setCSVInputField,
 }: Props) {
   const t = useFormatMessage()
   const { readString, jsonToCSV } = usePapaParse()
   const defaultValues = intialValues || UPDATE_FINANCIAL_INITIAL_STATE
-  const getInputDefaultValue = () => {
+  const getInputDefaultValue = useCallback(() => {
     const defaultRecords = defaultValues.financial_records || []
-    return defaultRecords.length > 0 ? jsonToCSV(defaultRecords) : CSV_TEXTAREA_PLACEHOLDER
-  }
+    if (defaultRecords.length > 0) {
+      return jsonToCSV(defaultRecords)
+    }
+    return csvInputField ? csvInputField : CSV_TEXTAREA_PLACEHOLDER
+  }, [defaultValues, jsonToCSV, csvInputField])
+
+  useEffect(() => {
+    setCSVInputField(getInputDefaultValue())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const {
     formState: { isValid, isDirty },
@@ -69,10 +86,31 @@ function FinancialSection({
     mode: 'onTouched',
   })
 
-  const [csvInput, setCsvInput] = useState<string | undefined>(getInputDefaultValue())
-  const [errors, setErrors] = useState<{ row: number; text: string }[]>([])
+  const [errors, setErrors] = useState<Error[]>([])
   const financial_records = watch('financial_records')
   const clearRecords = useCallback(() => setValue('financial_records', []), [setValue])
+
+  let typingTimeout: NodeJS.Timeout | null = null
+
+  const handleManualInput = (value?: string) => {
+    if (typingTimeout) {
+      clearTimeout(typingTimeout)
+    }
+
+    typingTimeout = setTimeout(() => {
+      setCSVInputField(value)
+    }, 1000)
+  }
+
+  const handleErrors = useCallback(
+    (errors: Error[], shouldClearRecords: boolean = true) => {
+      setErrors(errors)
+      if (shouldClearRecords) {
+        clearRecords()
+      }
+    },
+    [clearRecords]
+  )
 
   const handleFileUpload = (data: string[][]) => {
     let value = ''
@@ -85,11 +123,11 @@ function FinancialSection({
         )
       }
     }
-    setCsvInput(value.trim())
+    setCSVInputField(value.trim())
   }
 
   const handleRemoveFile = () => {
-    setCsvInput(CSV_TEXTAREA_PLACEHOLDER)
+    setCSVInputField(CSV_TEXTAREA_PLACEHOLDER)
   }
 
   useEffect(() => {
@@ -102,45 +140,38 @@ function FinancialSection({
 
   const csvInputHandler = useCallback(
     (data: string[][]) => {
+      const inputErrors: Error[] = []
       if (data.length === 0) {
-        setErrors([{ row: 0, text: t('page.proposal_update.csv_empty') }])
-        clearRecords()
+        handleErrors([{ row: 0, text: t('page.proposal_update.csv_empty') }])
         return
       }
       const header = data[0]
       if (header.length !== CSV_HEADER.length) {
-        setErrors([{ row: 0, text: t('page.proposal_update.csv_invalid_header') }])
-        clearRecords()
+        handleErrors([{ row: 0, text: t('page.proposal_update.csv_invalid_header') }])
         return
       }
       for (let i = 0; i < CSV_HEADER.length; i++) {
         if (header[i] !== CSV_HEADER[i]) {
-          setErrors([{ row: 0, text: t('page.proposal_update.csv_invalid_header') }])
-          clearRecords()
+          handleErrors([{ row: 0, text: t('page.proposal_update.csv_invalid_header') }])
           return
         }
       }
+      handleErrors([])
 
-      const csvRecords: Record<string, string | number>[] = []
+      const csvRecords: Record<string, string | number | undefined>[] = []
 
       for (let idx = 1; idx < data.length; idx++) {
         const record = data[idx]
-        const isEmptyRow = record.every((value) => value === '')
-        if (!isEmptyRow) {
-          if (record.length !== CSV_HEADER.length) {
-            setErrors([
-              {
-                row: idx,
-                text: t('page.proposal_update.csv_invalid_row', { parsed: record.length, expected: CSV_HEADER.length }),
-              },
-            ])
-            clearRecords()
-            return
-          }
-          const row: Record<string, string | number> = {}
+        if (record.length !== CSV_HEADER.length) {
+          inputErrors.push({
+            row: idx,
+            text: t('page.proposal_update.csv_invalid_row', { parsed: record.length, expected: CSV_HEADER.length }),
+          })
+        } else {
+          const row: Record<string, string | number | undefined> = {}
           for (let i = 0; i < CSV_HEADER.length; i++) {
             const field = CSV_HEADER[i]
-            const value = record[i]
+            const value = record[i] !== '' ? record[i] : undefined
             const isNumber = field === 'amount'
             row[field] = isNumber ? toNumber(value) : value
           }
@@ -150,33 +181,33 @@ function FinancialSection({
       if (csvRecords.length > 0) {
         const parsedResult = FinancialUpdateSectionSchema.safeParse({ financial_records: csvRecords })
         if (parsedResult.success) {
-          setErrors([])
+          handleErrors([], false)
           setValue('financial_records', parsedResult.data.financial_records)
         } else {
           const fieldErrors = parsedResult.error.issues.map((issue) => ({
             row: Number(issue.path[1]) + 1,
             text: t('page.proposal_update.csv_row_error', { field: issue.path[2], error: issue.message }),
           }))
-          clearRecords()
-          setErrors(fieldErrors)
+          inputErrors.push(...fieldErrors)
         }
-      } else {
-        clearRecords()
-        setErrors([])
+      }
+
+      if (inputErrors.length > 0) {
+        handleErrors(inputErrors)
       }
     },
-    [clearRecords, setValue, t]
+    [handleErrors, setValue, t]
   )
 
   useEffect(() => {
-    readString<string[]>(csvInput || '', {
+    readString<string[]>(csvInputField || '', {
       worker: true,
       complete: (results) => {
         const { data } = results
         csvInputHandler(data)
       },
     })
-  }, [csvInput, csvInputHandler, readString])
+  }, [csvInputField, csvInputHandler, readString])
 
   return (
     <ProjectRequestSection
@@ -207,8 +238,8 @@ function FinancialSection({
         </Markdown>
         <NumberedTextArea
           disabled={isFormDisabled}
-          onInput={(value) => setCsvInput(value)}
-          value={csvInput}
+          onInput={(value) => handleManualInput(value)}
+          value={csvInputField}
           errors={errors}
         />
         <div className="FinancialSection__DragAndDropContainer">

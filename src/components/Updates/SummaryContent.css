@@ -64,3 +64,7 @@
 .SummaryContentItem__Divider:last-child {
   display: none;
 }
+
+.SummaryContentItem_Link--hidden {
+  visibility: hidden;
+}

@@ -30,12 +30,17 @@ export default function CSVDragAndDrop({ onUploadAccepted, onRemoveFile }: Props
   const { CSVReader } = useCSVReader()
   const t = useFormatMessage()
   const [errorMsg, setErrorMsg] = useState<string | undefined>()
+  const [showFile, setShowFile] = useState(false)
 
   const fileHandler = (data: CSVFile) => {
     if (data.errors.length > 0) {
       setErrorMsg(data.errors[0][0].message)
     } else {
+      setShowFile(true)
       onUploadAccepted(data.data)
+      setTimeout(() => {
+        setShowFile(false)
+      }, 2000)
     }
   }
 
@@ -56,7 +61,7 @@ export default function CSVDragAndDrop({ onUploadAccepted, onRemoveFile }: Props
           return (
             <>
               <div {...getRootProps()} className="CSVDragAndDrop__Zone">
-                {acceptedFile && !errorMsg ? (
+                {showFile && acceptedFile && !errorMsg ? (
                   <AcceptedFile
                     file={acceptedFile}
                     onRemoveFile={(e) => {

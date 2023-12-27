@@ -1,4 +1,7 @@
+import { Fragment } from 'react'
 import { useIntl } from 'react-intl'
+
+import classNames from 'classnames'
 
 import { FinancialRecord, FinancialRecordCateogry } from '../../entities/Updates/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../helpers'
@@ -19,8 +22,8 @@ function SummaryContent({ category, group }: SummaryContentProps) {
     <>
       <Divider className="SummaryContentItem__Divider" />
       {group.map(({ amount, description, token, receiver, link }, index) => (
-        <>
-          <div key={`${category}-${index}`} className="SummaryContentItem">
+        <Fragment key={`${category}-${index}`}>
+          <div className="SummaryContentItem">
             <div className="SummaryContentItem_DescriptionContainer">
               <Text className="SummaryContentItem_DescriptionText" size="md">
                 {description}
@@ -32,13 +35,18 @@ function SummaryContent({ category, group }: SummaryContentProps) {
             <div className="SummaryContentItem_DetailsContainer">
               <span className="SummaryContentItem_Token">{token}</span>
               <span className="SummaryContentItem_Amount">{formatNumber(amount, CURRENCY_FORMAT_OPTIONS)}</span>
-              <a href={link} target="_blank" rel="noreferrer">
+              <a
+                href={link}
+                target="_blank"
+                rel="noreferrer"
+                className={classNames(!link && 'SummaryContentItem_Link--hidden')}
+              >
                 <LinkIcon color="var(--black-600)" />
               </a>
             </div>
           </div>
           <Divider className="SummaryContentItem__Divider" />
-        </>
+        </Fragment>
       ))}
     </>
   )

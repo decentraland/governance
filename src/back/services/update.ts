@@ -160,12 +160,15 @@ export class UpdateService {
         additional_notes,
       }
     const update = await UpdateModel.createUpdate(data)
-    await Promise.all([
-      FinancialService.createRecords(update.id, financial_records || []),
-      EventsService.updateCreated(update.id, proposal.id, proposal.title, user),
-      DiscourseService.createUpdate(update, proposal.title),
-    ])
-    DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
+    try {
+      await FinancialService.createRecords(update.id, financial_records || [])
+      await DiscourseService.createUpdate(update, proposal.title)
+      await EventsService.updateCreated(update.id, proposal.id, proposal.title, user)
+      DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
+    } catch (error) {
+      await this.delete(update)
+      throw new RequestError(`Error creating update`, RequestError.InternalServerError)
+    }
 
     return update
   }
@@ -186,6 +189,8 @@ export class UpdateService {
     const { author, health, introduction, highlights, blockers, next_steps, additional_notes, financial_records } =
       newUpdate
 
+    await FinancialService.createRecords(update.id, financial_records || update.financial_records!)
+
     await UpdateModel.update<UpdateAttributes>(
       {
         author,
@@ -201,8 +206,6 @@ export class UpdateService {
       },
       { id }
     )
-
-    await FinancialService.createRecords(update.id, financial_records || update.financial_records!)
 
     const updatedUpdate = await UpdateService.getById(id)
     if (updatedUpdate) {
