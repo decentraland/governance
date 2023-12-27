@@ -53,6 +53,7 @@
   },
   "homepage": "https://github.com/decentraland/governance#readme",
   "dependencies": {
+    "@dcl/schemas": "^9.11.1",
     "@dcl/ui-env": "1.2.1",
     "@jparnaudo/react-crypto-icons": "^1.0.5",
     "@otterspace-xyz/contracts": "^2.7.3",
