@@ -51,7 +51,11 @@ jobs:
 
       - name: Tag and Push to Heroku
         run: |
-          IMAGE_TAG=${{ github.event_name == 'workflow_dispatch' && ('pr-' + github.event.inputs.pr_number) || 'latest' }}
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            IMAGE_TAG="pr-${{ github.event.inputs.pr_number }}"
+          else
+            IMAGE_TAG="latest"
+          fi
           docker tag governance:${{ github.sha }} registry.heroku.com/dcl-governance/web:$IMAGE_TAG
           docker push registry.heroku.com/dcl-governance/web:$IMAGE_TAG
 
