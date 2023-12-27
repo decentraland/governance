@@ -129,6 +129,7 @@ function FinancialSection({
 
   const csvInputHandler = useCallback(
     (data: string[][]) => {
+      const inputErrors: Error[] = []
       if (data.length === 0) {
         handleErrors([{ row: 0, text: t('page.proposal_update.csv_empty') }])
         return
@@ -149,17 +150,12 @@ function FinancialSection({
 
       for (let idx = 1; idx < data.length; idx++) {
         const record = data[idx]
-        const isEmptyRow = record.every((value) => value === '')
-        if (!isEmptyRow) {
-          if (record.length !== CSV_HEADER.length) {
-            handleErrors([
-              {
-                row: idx,
-                text: t('page.proposal_update.csv_invalid_row', { parsed: record.length, expected: CSV_HEADER.length }),
-              },
-            ])
-            return
-          }
+        if (record.length !== CSV_HEADER.length) {
+          inputErrors.push({
+            row: idx,
+            text: t('page.proposal_update.csv_invalid_row', { parsed: record.length, expected: CSV_HEADER.length }),
+          })
+        } else {
           const row: Record<string, string | number> = {}
           for (let i = 0; i < CSV_HEADER.length; i++) {
             const field = CSV_HEADER[i]
@@ -180,10 +176,12 @@ function FinancialSection({
             row: Number(issue.path[1]) + 1,
             text: t('page.proposal_update.csv_row_error', { field: issue.path[2], error: issue.message }),
           }))
-          handleErrors(fieldErrors)
+          inputErrors.push(...fieldErrors)
         }
-      } else {
-        handleErrors([])
+      }
+
+      if (inputErrors.length > 0) {
+        handleErrors(inputErrors)
       }
     },
     [handleErrors, setValue, t]
