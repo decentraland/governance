@@ -257,6 +257,7 @@ export default function Update({ isEdit }: Props) {
               }
               vesting={vestingContract}
               publicUpdates={publicUpdates}
+              updateId={update?.id}
             />
           </>
         )}

@@ -32,6 +32,7 @@ interface Props {
   intialValues?: Partial<FinancialUpdateSection>
   vesting?: TransparencyVesting
   publicUpdates?: UpdateAttributes[]
+  updateId?: string
 }
 
 type Error = {
@@ -56,13 +57,19 @@ function FinancialSection({
   intialValues,
   vesting,
   publicUpdates,
+  updateId,
 }: Props) {
+  const localStorageKey = updateId ? `update-${updateId}-financial` : undefined
   const t = useFormatMessage()
   const { readString, jsonToCSV } = usePapaParse()
   const defaultValues = intialValues || UPDATE_FINANCIAL_INITIAL_STATE
   const getInputDefaultValue = () => {
     const defaultRecords = defaultValues.financial_records || []
-    return defaultRecords.length > 0 ? jsonToCSV(defaultRecords) : CSV_TEXTAREA_PLACEHOLDER
+    if (defaultRecords.length > 0) {
+      return jsonToCSV(defaultRecords)
+    }
+    const localStorageValue = localStorage.getItem(localStorageKey || '')
+    return localStorageValue ? localStorageValue : CSV_TEXTAREA_PLACEHOLDER
   }
 
   const {
@@ -88,6 +95,9 @@ function FinancialSection({
 
     typingTimeout = setTimeout(() => {
       setCsvInput(value)
+      if (localStorageKey) {
+        localStorage.setItem(localStorageKey, value || '')
+      }
     }, 1000)
   }
 
