@@ -16,10 +16,18 @@ module.exports = {
     author: `@decentraland`,
   },
   pathPrefix: '/governance',
-  developMiddleware: developMiddleware({
-    prefix: `/api`,
-    url: `http://127.0.0.1:4000`,
-  }),
+  developMiddleware: developMiddleware([
+    {
+      prefix: `/api`,
+      url: `http://127.0.0.1:4000`,
+    },
+    {
+      prefix: `/auth`,
+      url: `https://decentraland.zone/auth`,
+      followRedirects: true,
+      changeOrigin: true,
+    },
+  ]),
   plugins: [
     `gatsby-plugin-react-helmet`,
     `gatsby-plugin-postcss`,

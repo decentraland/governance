@@ -1,5 +1,7 @@
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import { DappsFeatureFlags } from 'decentraland-gatsby/dist/context/FeatureFlag/types'
+import useFeatureFlagContext from 'decentraland-gatsby/dist/context/FeatureFlag/useFeatureFlagContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
@@ -17,7 +19,7 @@ type LogInProps = {
 }
 
 function handleBack() {
-  if ((window as any).routeUpdate) {
+  if ((window as { routeUpdate?: unknown }).routeUpdate) {
     window.history.back()
   } else {
     navigate(locations.proposals())
@@ -29,7 +31,9 @@ const IMAGE_URL = 'https://decentraland.org/images/decentraland.png'
 function LogIn({ title, description }: LogInProps) {
   const [, accountState] = useAuthContext()
   const t = useFormatMessage()
+  const [ff] = useFeatureFlagContext()
   const isMobile = useMobileMediaQuery()
+  const isAuthDappEnabled = ff.enabled(DappsFeatureFlags.AuthDappEnabled)
 
   if (isMobile) {
     return (
@@ -52,7 +56,10 @@ function LogIn({ title, description }: LogInProps) {
   return (
     <Container>
       <Head title={title} description={description} image={IMAGE_URL} />
-      <SignIn isConnecting={accountState.selecting || accountState.loading} onConnect={() => accountState.select()} />
+      <SignIn
+        isConnecting={accountState.selecting || accountState.loading}
+        onConnect={isAuthDappEnabled ? accountState.authorize : accountState.select}
+      />
     </Container>
   )
 }
