@@ -9,8 +9,6 @@ import ChevronRightCircleOutline from '../Icon/ChevronRightCircleOutline'
 
 import './BreakdownAccordion.css'
 
-const UNSELECTED_ITEM = -1
-
 export interface BreakdownItem {
   title: string
   subtitle: string
@@ -20,16 +18,22 @@ export interface BreakdownItem {
 
 interface Props {
   items: BreakdownItem[]
+  itemsInitiallyExpanded?: boolean
 }
 
-function BreakdownAccordion({ items }: Props) {
-  const [activeAccordionItem, setActiveAccordionItem] = useState(UNSELECTED_ITEM)
+function BreakdownAccordion({ items, itemsInitiallyExpanded = false }: Props) {
+  const [itemStatus, setItemStatus] = useState(new Array<boolean>(items.length).fill(itemsInitiallyExpanded))
 
   const handleClick = (titleProps: AccordionTitleProps) => {
     const { index } = titleProps
     const selectedAccordion = toNumber(index)
 
-    setActiveAccordionItem(selectedAccordion === activeAccordionItem ? UNSELECTED_ITEM : selectedAccordion)
+    setItemStatus((status) => {
+      const prevItemStatus = status[selectedAccordion]
+      const newStatus = [...status]
+      newStatus[selectedAccordion] = !prevItemStatus
+      return newStatus
+    })
   }
 
   return (
@@ -38,7 +42,7 @@ function BreakdownAccordion({ items }: Props) {
         <Fragment key={`BreakdownAccordionItem--${accordionNumber}`}>
           <Accordion.Title
             className="BreakdownAccordion__TitleContainer"
-            active={activeAccordionItem === accordionNumber}
+            active={itemStatus[accordionNumber]}
             index={accordionNumber}
             onClick={(_, titleProps) => handleClick(titleProps)}
           >
@@ -52,13 +56,13 @@ function BreakdownAccordion({ items }: Props) {
                 <ChevronRightCircleOutline
                   className={classNames(
                     'BreakdownAccordion__Arrow',
-                    activeAccordionItem === accordionNumber && 'BreakdownAccordion__Arrow--selected'
+                    itemStatus[accordionNumber] && 'BreakdownAccordion__Arrow--selected'
                   )}
                 />
               </span>
             </div>
           </Accordion.Title>
-          <Accordion.Content active={activeAccordionItem === accordionNumber}>{content}</Accordion.Content>
+          <Accordion.Content active={itemStatus[accordionNumber]}>{content}</Accordion.Content>
         </Fragment>
       ))}
     </Accordion>

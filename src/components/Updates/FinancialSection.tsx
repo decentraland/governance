@@ -88,7 +88,6 @@ function FinancialSection({
 
   const [errors, setErrors] = useState<Error[]>([])
   const financial_records = watch('financial_records')
-  const clearRecords = useCallback(() => setValue('financial_records', []), [setValue])
 
   let typingTimeout: NodeJS.Timeout | null = null
 
@@ -101,16 +100,6 @@ function FinancialSection({
       setCSVInputField(value)
     }, 1000)
   }
-
-  const handleErrors = useCallback(
-    (errors: Error[], shouldClearRecords: boolean = true) => {
-      setErrors(errors)
-      if (shouldClearRecords) {
-        clearRecords()
-      }
-    },
-    [clearRecords]
-  )
 
   const handleFileUpload = (data: string[][]) => {
     let value = ''
@@ -131,38 +120,41 @@ function FinancialSection({
   }
 
   useEffect(() => {
-    if (financial_records.length > 0) {
+    if (financial_records.length > 0 && errors.length === 0) {
       onValidation({ financial_records: financial_records }, true)
     } else {
       onValidation({ financial_records: financial_records }, false)
     }
-  }, [onValidation, financial_records])
+  }, [onValidation, financial_records, errors.length])
 
   const csvInputHandler = useCallback(
     (data: string[][]) => {
       const inputErrors: Error[] = []
       if (data.length === 0) {
-        handleErrors([{ row: 0, text: t('page.proposal_update.csv_empty') }])
+        setErrors([{ row: 0, text: t('page.proposal_update.csv_empty') }])
         return
       }
       const header = data[0]
       if (header.length !== CSV_HEADER.length) {
-        handleErrors([{ row: 0, text: t('page.proposal_update.csv_invalid_header') }])
+        setErrors([{ row: 0, text: t('page.proposal_update.csv_invalid_header') }])
         return
       }
       for (let i = 0; i < CSV_HEADER.length; i++) {
         if (header[i] !== CSV_HEADER[i]) {
-          handleErrors([{ row: 0, text: t('page.proposal_update.csv_invalid_header') }])
+          setErrors([{ row: 0, text: t('page.proposal_update.csv_invalid_header') }])
           return
         }
       }
-      handleErrors([])
+      setErrors([])
 
       const csvRecords: Record<string, string | number | undefined>[] = []
 
       for (let idx = 1; idx < data.length; idx++) {
         const record = data[idx]
         if (record.length !== CSV_HEADER.length) {
+          if (record.length === 1 && record[0].trim() === '') {
+            continue
+          }
           inputErrors.push({
             row: idx,
             text: t('page.proposal_update.csv_invalid_row', { parsed: record.length, expected: CSV_HEADER.length }),
@@ -171,7 +163,7 @@ function FinancialSection({
           const row: Record<string, string | number | undefined> = {}
           for (let i = 0; i < CSV_HEADER.length; i++) {
             const field = CSV_HEADER[i]
-            const value = record[i] !== '' ? record[i] : undefined
+            const value = record[i] !== '' ? record[i].trim() : undefined
             const isNumber = field === 'amount'
             row[field] = isNumber ? toNumber(value) : value
           }
@@ -181,7 +173,7 @@ function FinancialSection({
       if (csvRecords.length > 0) {
         const parsedResult = FinancialUpdateSectionSchema.safeParse({ financial_records: csvRecords })
         if (parsedResult.success) {
-          handleErrors([], false)
+          setErrors([])
           setValue('financial_records', parsedResult.data.financial_records)
         } else {
           const fieldErrors = parsedResult.error.issues.map((issue) => ({
@@ -189,14 +181,21 @@ function FinancialSection({
             text: t('page.proposal_update.csv_row_error', { field: issue.path[2], error: issue.message }),
           }))
           inputErrors.push(...fieldErrors)
+          const fieldsWithoutErrors = csvRecords.filter((_, idx) => !fieldErrors.some((error) => error.row === idx + 1))
+          const parsedResultWithoutErrors = FinancialUpdateSectionSchema.safeParse({
+            financial_records: fieldsWithoutErrors,
+          })
+          if (parsedResultWithoutErrors.success) {
+            setValue('financial_records', parsedResultWithoutErrors.data.financial_records)
+          }
         }
       }
 
       if (inputErrors.length > 0) {
-        handleErrors(inputErrors)
+        setErrors(inputErrors)
       }
     },
-    [handleErrors, setValue, t]
+    [setErrors, setValue, t]
   )
 
   useEffect(() => {
@@ -249,7 +248,7 @@ function FinancialSection({
       {financial_records.length > 0 && (
         <ContentSection>
           <Label>{t('page.proposal_update.summary_label')}</Label>
-          <SummaryItems financialRecords={financial_records} />
+          <SummaryItems financialRecords={financial_records} itemsInitiallyExpanded />
         </ContentSection>
       )}
     </ProjectRequestSection>
