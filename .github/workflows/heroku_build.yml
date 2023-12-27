@@ -4,15 +4,11 @@ on:
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
   workflow_dispatch:
     inputs:
-      branch_name:
-        description: 'Branch name to build and deploy'
+      pr_number:
+        description: 'Pull Request Number'
         required: true
-        default: 'master'
 
 jobs:
   build-push:
@@ -35,10 +31,8 @@ jobs:
 
       - name: Set Heroku App Name
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            HEROKU_APP_NAME=governance-pr-${{ github.event.number }}
-          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            HEROKU_APP_NAME=governance-manual-${{ github.event.inputs.branch_name }}
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            HEROKU_APP_NAME=governance-pr-${{ github.event.inputs.pr_number }}
           else
             HEROKU_APP_NAME=dcl-governance
           fi
@@ -57,18 +51,16 @@ jobs:
 
       - name: Tag and Push to Heroku
         run: |
-          docker tag governance:${{ github.sha }} registry.heroku.com/$HEROKU_APP_NAME/web
-          docker push registry.heroku.com/$HEROKU_APP_NAME/web
+          IMAGE_TAG=${{ github.event_name == 'workflow_dispatch' && ('pr-' + github.event.inputs.pr_number) || 'latest' }}
+          docker tag governance:${{ github.sha }} registry.heroku.com/dcl-governance/web:$IMAGE_TAG
+          docker push registry.heroku.com/dcl-governance/web:$IMAGE_TAG
 
       - name: Enable Heroku Dyno Metadata
-        if: github.event_name == 'pull_request'
         run: heroku labs:enable runtime-dyno-metadata -a $HEROKU_APP_NAME
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
       - name: Release the Image
-        id: release-image
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:release web -a $HEROKU_APP_NAME
-
