@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
   workflow_dispatch:
     inputs:
       branch_name:
@@ -55,8 +52,13 @@ jobs:
 
       - name: Tag and Push to Heroku
         run: |
-          docker tag governance:${{ github.sha }} registry.heroku.com/$HEROKU_APP_NAME/web
-          docker push registry.heroku.com/$HEROKU_APP_NAME/web
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            IMAGE_TAG=pr-${{ github.event.number }}
+          else
+            IMAGE_TAG=latest
+          fi
+          docker tag governance:${{ github.sha }} registry.heroku.com/dcl-governance/web:$IMAGE_TAG
+          docker push registry.heroku.com/dcl-governance/web:$IMAGE_TAG
 
       - name: Enable Heroku Dyno Metadata
         if: github.event_name == 'pull_request'
