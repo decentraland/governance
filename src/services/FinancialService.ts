@@ -1,3 +1,5 @@
+import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
+
 import { FinancialAttributes } from '../back/models/Financial'
 import Model from '../back/models/Financial'
 import { FinancialRecord } from '../entities/Updates/types'
@@ -15,20 +17,18 @@ export class FinancialService {
     }
   }
 
-  public static async createRecords(
-    update_id: string,
-    records: FinancialRecord[]
-  ): Promise<FinancialAttributes[] | null> {
+  public static async createRecords(update_id: string, records: FinancialRecord[]): Promise<FinancialAttributes[]> {
     try {
       this.deleteRecordsByUpdateId(update_id)
       return await Model.createRecords(update_id, records)
     } catch (error) {
-      ErrorService.report('Error inserting financial records', {
+      const msg = 'Error inserting financial records'
+      ErrorService.report(msg, {
         update_id,
         error,
         category: ErrorCategory.Financial,
       })
-      return null
+      throw new RequestError(msg, RequestError.InternalServerError)
     }
   }
 

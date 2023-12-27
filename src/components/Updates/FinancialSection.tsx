@@ -156,7 +156,7 @@ function FinancialSection({
         }
       }
 
-      const csvRecords: Record<string, string | number>[] = []
+      const csvRecords: Record<string, string | number | undefined>[] = []
 
       for (let idx = 1; idx < data.length; idx++) {
         const record = data[idx]
@@ -166,10 +166,10 @@ function FinancialSection({
             text: t('page.proposal_update.csv_invalid_row', { parsed: record.length, expected: CSV_HEADER.length }),
           })
         } else {
-          const row: Record<string, string | number> = {}
+          const row: Record<string, string | number | undefined> = {}
           for (let i = 0; i < CSV_HEADER.length; i++) {
             const field = CSV_HEADER[i]
-            const value = record[i]
+            const value = record[i] !== '' ? record[i] : undefined
             const isNumber = field === 'amount'
             row[field] = isNumber ? toNumber(value) : value
           }

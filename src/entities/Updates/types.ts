@@ -54,7 +54,7 @@ export type UpdateResponse = {
 export const GeneralUpdateSectionSchema = {
   type: 'object',
   additionalProperties: false,
-  required: ['health', 'introduction', 'highlights', 'blockers', 'next_steps', 'additional_notes'],
+  required: ['health', 'introduction', 'highlights', 'blockers', 'next_steps'],
   properties: {
     health: {
       type: 'string',
@@ -82,7 +82,6 @@ export const GeneralUpdateSectionSchema = {
     },
     additional_notes: {
       type: 'string',
-      minLength: 1,
       maxLength: 3500,
     },
   },
@@ -107,7 +106,7 @@ const FinancialRecordSchema = z
       .transform((s) => s.replace(/\s/g, '')),
     amount: z.number().min(1),
     receiver: z.string().min(42).max(42),
-    link: z.string().url(),
+    link: z.string().url().optional(),
   })
   .refine(({ receiver }) => isEthereumAddress(receiver), {
     message: 'Invalid ethereum address',

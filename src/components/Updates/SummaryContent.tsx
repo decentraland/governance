@@ -1,5 +1,7 @@
 import { useIntl } from 'react-intl'
 
+import classNames from 'classnames'
+
 import { FinancialRecord, FinancialRecordCateogry } from '../../entities/Updates/types'
 import { CURRENCY_FORMAT_OPTIONS } from '../../helpers'
 import Divider from '../Common/Divider'
@@ -32,7 +34,12 @@ function SummaryContent({ category, group }: SummaryContentProps) {
             <div className="SummaryContentItem_DetailsContainer">
               <span className="SummaryContentItem_Token">{token}</span>
               <span className="SummaryContentItem_Amount">{formatNumber(amount, CURRENCY_FORMAT_OPTIONS)}</span>
-              <a href={link} target="_blank" rel="noreferrer">
+              <a
+                href={link}
+                target="_blank"
+                rel="noreferrer"
+                className={classNames(!link && 'SummaryContentItem_Link--hidden')}
+              >
                 <LinkIcon color="var(--black-600)" />
               </a>
             </div>
