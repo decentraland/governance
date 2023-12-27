@@ -34,6 +34,11 @@ interface Props {
   publicUpdates?: UpdateAttributes[]
 }
 
+type Error = {
+  row: number
+  text: string
+}
+
 const UPDATE_FINANCIAL_INITIAL_STATE: FinancialUpdateSection = {
   financial_records: [],
 }
@@ -70,9 +75,31 @@ function FinancialSection({
   })
 
   const [csvInput, setCsvInput] = useState<string | undefined>(getInputDefaultValue())
-  const [errors, setErrors] = useState<{ row: number; text: string }[]>([])
+  const [errors, setErrors] = useState<Error[]>([])
   const financial_records = watch('financial_records')
   const clearRecords = useCallback(() => setValue('financial_records', []), [setValue])
+
+  let typingTimeout: NodeJS.Timeout | null = null
+
+  const handleManualInput = (value?: string) => {
+    if (typingTimeout) {
+      clearTimeout(typingTimeout)
+    }
+
+    typingTimeout = setTimeout(() => {
+      setCsvInput(value)
+    }, 1000)
+  }
+
+  const handleErrors = useCallback(
+    (errors: Error[], shouldClearRecords: boolean = true) => {
+      setErrors(errors)
+      if (shouldClearRecords) {
+        clearRecords()
+      }
+    },
+    [clearRecords]
+  )
 
   const handleFileUpload = (data: string[][]) => {
     let value = ''
@@ -103,20 +130,17 @@ function FinancialSection({
   const csvInputHandler = useCallback(
     (data: string[][]) => {
       if (data.length === 0) {
-        setErrors([{ row: 0, text: t('page.proposal_update.csv_empty') }])
-        clearRecords()
+        handleErrors([{ row: 0, text: t('page.proposal_update.csv_empty') }])
         return
       }
       const header = data[0]
       if (header.length !== CSV_HEADER.length) {
-        setErrors([{ row: 0, text: t('page.proposal_update.csv_invalid_header') }])
-        clearRecords()
+        handleErrors([{ row: 0, text: t('page.proposal_update.csv_invalid_header') }])
         return
       }
       for (let i = 0; i < CSV_HEADER.length; i++) {
         if (header[i] !== CSV_HEADER[i]) {
-          setErrors([{ row: 0, text: t('page.proposal_update.csv_invalid_header') }])
-          clearRecords()
+          handleErrors([{ row: 0, text: t('page.proposal_update.csv_invalid_header') }])
           return
         }
       }
@@ -128,13 +152,12 @@ function FinancialSection({
         const isEmptyRow = record.every((value) => value === '')
         if (!isEmptyRow) {
           if (record.length !== CSV_HEADER.length) {
-            setErrors([
+            handleErrors([
               {
                 row: idx,
                 text: t('page.proposal_update.csv_invalid_row', { parsed: record.length, expected: CSV_HEADER.length }),
               },
             ])
-            clearRecords()
             return
           }
           const row: Record<string, string | number> = {}
@@ -150,22 +173,20 @@ function FinancialSection({
       if (csvRecords.length > 0) {
         const parsedResult = FinancialUpdateSectionSchema.safeParse({ financial_records: csvRecords })
         if (parsedResult.success) {
-          setErrors([])
+          handleErrors([], false)
           setValue('financial_records', parsedResult.data.financial_records)
         } else {
           const fieldErrors = parsedResult.error.issues.map((issue) => ({
             row: Number(issue.path[1]) + 1,
             text: t('page.proposal_update.csv_row_error', { field: issue.path[2], error: issue.message }),
           }))
-          clearRecords()
-          setErrors(fieldErrors)
+          handleErrors(fieldErrors)
         }
       } else {
-        clearRecords()
-        setErrors([])
+        handleErrors([])
       }
     },
-    [clearRecords, setValue, t]
+    [handleErrors, setValue, t]
   )
 
   useEffect(() => {
@@ -207,7 +228,7 @@ function FinancialSection({
         </Markdown>
         <NumberedTextArea
           disabled={isFormDisabled}
-          onInput={(value) => setCsvInput(value)}
+          onInput={(value) => handleManualInput(value)}
           value={csvInput}
           errors={errors}
         />
