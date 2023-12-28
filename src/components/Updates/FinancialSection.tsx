@@ -189,6 +189,8 @@ function FinancialSection({
             setValue('financial_records', parsedResultWithoutErrors.data.financial_records)
           }
         }
+      } else {
+        setValue('financial_records', [])
       }
 
       if (inputErrors.length > 0) {
