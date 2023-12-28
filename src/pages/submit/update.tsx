@@ -6,6 +6,8 @@ import { useLocation } from '@reach/router'
 import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
+import { DappsFeatureFlags } from 'decentraland-gatsby/dist/context/FeatureFlag/types'
+import useFeatureFlagContext from 'decentraland-gatsby/dist/context/FeatureFlag/useFeatureFlagContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
@@ -82,6 +84,7 @@ export default function Update({ isEdit }: Props) {
 
   const [formDisabled, setFormDisabled] = useState(false)
   const location = useLocation()
+  const [ff] = useFeatureFlagContext()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const updateId = params.get('id') || ''
   const [isPreviewMode, setPreviewMode] = useState(false)
@@ -98,6 +101,7 @@ export default function Update({ isEdit }: Props) {
   const [csvInputField, patchCsvInputField] = useState<string | undefined>()
   const [validationState, patchValidationState] = useState<UpdateValidationState>(intialValidationState)
   const isValidToSubmit = Object.values(validationState).every((valid) => valid)
+  const isAuthDappEnabled = ff.enabled(DappsFeatureFlags.AuthDappEnabled)
 
   usePreventNavigation(true)
 
@@ -210,7 +214,10 @@ export default function Update({ isEdit }: Props) {
     return (
       <Container>
         <Head title={title} description={description} image="https://decentraland.org/images/decentraland.png" />
-        <SignIn isConnecting={accountState.selecting || accountState.loading} onConnect={() => accountState.select()} />
+        <SignIn
+          isConnecting={accountState.selecting || accountState.loading}
+          onConnect={isAuthDappEnabled ? accountState.authorize : accountState.select}
+        />
       </Container>
     )
   }
