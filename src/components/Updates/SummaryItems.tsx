@@ -11,9 +11,10 @@ import SummaryContent, { SummaryContentProps } from './SummaryContent'
 
 interface Props {
   financialRecords: FinancialRecord[]
+  itemsInitiallyExpanded?: boolean
 }
 
-function SummaryItems({ financialRecords }: Props) {
+function SummaryItems({ financialRecords, itemsInitiallyExpanded }: Props) {
   const t = useFormatMessage()
   const { formatNumber } = useIntl()
 
@@ -31,7 +32,7 @@ function SummaryItems({ financialRecords }: Props) {
     content: <SummaryContent category={category} group={group} />,
   }))
 
-  return <BreakdownAccordion items={accordionItems} />
+  return <BreakdownAccordion items={accordionItems} itemsInitiallyExpanded={itemsInitiallyExpanded} />
 }
 
 export default SummaryItems
