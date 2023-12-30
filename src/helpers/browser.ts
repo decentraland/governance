@@ -12,5 +12,9 @@ export function scrollToAnchor(anchor: string, pixelsOverAnchor = 0) {
 }
 
 export function toGovernancePathname(pathname: string) {
-  return pathname.replace('/governance', '')
+  if (pathname.indexOf('/governance') === 0) {
+    return pathname.replace('/governance', '')
+  }
+
+  return pathname
 }
