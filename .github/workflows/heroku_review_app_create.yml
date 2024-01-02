@@ -1,3 +1,5 @@
+name: Heroku Review App Create
+
 # SEE: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
 on:
   pull_request:
@@ -69,15 +71,12 @@ jobs:
         if: env.GITHUB_LABEL_EXISTS == 'true' && env.HEROKU_APP_EXISTS == 'false'
         run: heroku apps:create -t gov-squad ${{ env.HEROKU_APP_NAME }} ${{ env.HEROKU_REVIEW_APP_ADDONS }}
 
-      # Setup Heroku env vars (copy GitHub secrets etc...)
-#      - name: Set Heroku Review App environment
-#        id: heroku_review_app_env
-#        if: env.GITHUB_LABEL_EXISTS == 'true'
-#        run: >-
-#          heroku config:set
-#          --app=${{ env.HEROKU_APP_NAME }}
-#          RAILS_MASTER_KEY='${{ secrets.RAILS_MASTER_KEY }}'
-#          EXAMPLE='${{ secrets.example }}'
+#       Setup Heroku env vars (copy GitHub secrets etc...)
+      - name: Copy environment variables from default to new review app
+        run: |
+          heroku config:set $(heroku config -s -a dcl-governance | grep -v '^HEROKU_') -a ${{ env.HEROKU_APP_NAME }}
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
       - name: Add Heroku Review App to pipeline
         if: steps.heroku_review_app_create.outcome == 'success'
@@ -125,7 +124,7 @@ jobs:
         run: |
           docker tag governance:${{ github.sha }} registry.heroku.com/dcl-governance/web
           docker push registry.heroku.com/dcl-governance/web
-          heroku container:push web --app $HEROKU_APP_NAME
+          heroku container:push web --app $HEROKU_APP_NAME                                              
 
       - name: Enable Heroku Dyno Metadata
         if: steps.heroku_review_app_create.outcome == 'success'
