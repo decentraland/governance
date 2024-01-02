@@ -24,12 +24,15 @@ const STATUS_KEYS: Record<string, string> = {
   [TOPICS_V2.PAUSED]: 'page.proposal_detail.grant.vesting_status.paused',
 }
 
+const RELEASE_TOPICS = new Set([TOPICS_V1.RELEASE, TOPICS_V2.RELEASE])
+
 const formatDate = (date: string) => Time.from(date).format('DD/MM/YY')
 
 function VestingContractItem({ address, itemNumber, logs, vestingStartAt }: Props) {
   const t = useFormatMessage()
-  const lastLog = logs[0]
-  const isVestingActive = logs.length === 0 || lastLog.topic === TOPICS_V2.UNPAUSED
+  const filteredLogs = logs.filter((log) => !RELEASE_TOPICS.has(log.topic))
+  const lastLog = filteredLogs[0]
+  const isVestingActive = filteredLogs.length === 0 || lastLog.topic === TOPICS_V2.UNPAUSED
   return (
     <Link className="VestingContractItem" target="_blank" href={getVestingContractUrl(address)}>
       <div>
