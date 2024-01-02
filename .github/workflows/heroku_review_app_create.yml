@@ -84,7 +84,7 @@ jobs:
         run: heroku pipelines:add ${{ env.HEROKU_PIPELINE_NAME }} --app=${{ env.HEROKU_APP_NAME }} --stage=review
 
       - name: Set up Node.js
-        if: steps.heroku_review_app_create.outcome == 'success'
+        if: steps.heroku_review_app_create.outcome == 'success' || env.HEROKU_APP_EXISTS == 'true'
         uses: actions/setup-node@v2
         with:
           node-version: 18.8.0
@@ -92,12 +92,12 @@ jobs:
           cache: 'npm'
 
       - name: Set up Git
-        if: steps.heroku_review_app_create.outcome == 'success'
+        if: steps.heroku_review_app_create.outcome == 'success' || env.HEROKU_APP_EXISTS == 'true'
         run: git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
 
       - name: Install dependencies
         id: install-dependencies
-        if: steps.heroku_review_app_create.outcome == 'success'
+        if: steps.heroku_review_app_create.outcome == 'success' || env.HEROKU_APP_EXISTS == 'true'
         run: npm ci
 
       - name: Build image
