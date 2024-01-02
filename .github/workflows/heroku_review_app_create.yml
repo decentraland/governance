@@ -67,7 +67,7 @@ jobs:
       - name: Create Heroku Review App
         id: heroku_review_app_create
         if: env.GITHUB_LABEL_EXISTS == 'true' && env.HEROKU_APP_EXISTS == 'false'
-        run: heroku apps:create ${{ env.HEROKU_APP_NAME }} ${{ env.HEROKU_REVIEW_APP_ADDONS }}
+        run: heroku apps:create -t gov-squad ${{ env.HEROKU_APP_NAME }} ${{ env.HEROKU_REVIEW_APP_ADDONS }}
 
       # Setup Heroku env vars (copy GitHub secrets etc...)
 #      - name: Set Heroku Review App environment
