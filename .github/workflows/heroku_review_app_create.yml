@@ -83,6 +83,11 @@ jobs:
         if: steps.heroku_review_app_create.outcome == 'success'
         run: heroku pipelines:add ${{ env.HEROKU_PIPELINE_NAME }} --app=${{ env.HEROKU_APP_NAME }} --stage=review
 
+      - name: Add Heroku git remote
+        id: heroku_git_remote
+        if: env.GITHUB_LABEL_EXISTS == 'true'
+        run: heroku git:remote --app=${{ env.HEROKU_APP_NAME }}
+
       - name: Set up Node.js
         if: steps.heroku_review_app_create.outcome == 'success' || env.HEROKU_APP_EXISTS == 'true'
         uses: actions/setup-node@v2
@@ -120,6 +125,7 @@ jobs:
         run: |
           docker tag governance:${{ github.sha }} registry.heroku.com/dcl-governance/web
           docker push registry.heroku.com/dcl-governance/web
+          heroku container:push web --app $HEROKU_APP_NAME
 
       - name: Enable Heroku Dyno Metadata
         if: steps.heroku_review_app_create.outcome == 'success'
