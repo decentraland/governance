@@ -84,6 +84,7 @@ jobs:
         run: heroku pipelines:add ${{ env.HEROKU_PIPELINE_NAME }} --app=${{ env.HEROKU_APP_NAME }} --stage=development
 
       - name: Set up Node.js
+        if: steps.heroku_review_app_create.outcome == 'success'
         uses: actions/setup-node@v2
         with:
           node-version: 18.8.0
@@ -91,35 +92,45 @@ jobs:
           cache: 'npm'
 
       - name: Set up Git
+        if: steps.heroku_review_app_create.outcome == 'success'
         run: git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
 
       - name: Install dependencies
+        id: install-dependencies
+        if: steps.heroku_review_app_create.outcome == 'success'
         run: npm ci
 
       - name: Build image
+        id: docker-build-image
+        if: steps.install-dependencies.outcome == 'success'
         run: |
           docker build -t governance:${{ github.sha }} \
                        --build-arg version_number=${{ github.sha }} \
                        --build-arg heroku_app_name=$HEROKU_APP_NAME .
 
       - name: Log in to Heroku Container Registry
+        if: steps.docker-build-image.outcome == 'success'
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:login
 
       - name: Tag and Push to Heroku
+        id: docker-push-to-registry
+        if: steps.docker-build-image.outcome == 'success'
         run: |
           IMAGE_TAG=${{ github.event.number }}
           docker tag governance:${{ github.sha }} registry.heroku.com/dcl-governance/web:$IMAGE_TAG
           docker push registry.heroku.com/dcl-governance/web:$IMAGE_TAG
 
       - name: Enable Heroku Dyno Metadata
+        if: steps.heroku_review_app_create.outcome == 'success'
         run: heroku labs:enable runtime-dyno-metadata -a $HEROKU_APP_NAME
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
       - name: Release the Image
         id: heroku_release_image
+        if: steps.docker-push-to-registry.outcome == 'success'
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:release web -a $HEROKU_APP_NAME
