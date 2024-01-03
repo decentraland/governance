@@ -28,13 +28,13 @@ import {
   UpdateAttributes,
   UpdateStatus,
 } from '../../entities/Updates/types'
+import { getReleases } from '../../entities/Updates/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
 import useProposal from '../../hooks/useProposal'
 import useProposalUpdate from '../../hooks/useProposalUpdate'
 import useProposalUpdates from '../../hooks/useProposalUpdates'
 import useVestingContractData from '../../hooks/useVestingContractData'
-import { ContractVersion, TopicsByVersion } from '../../utils/contracts/vesting'
 import locations, { navigate } from '../../utils/locations'
 
 import './submit.css'
@@ -58,11 +58,6 @@ const intialValidationState: UpdateValidationState = {
 
 const initialGeneralState: Partial<GeneralUpdateSection> | undefined = undefined
 const initialFinancialState: FinancialUpdateSection | undefined = undefined
-
-const TOPICS_V1 = TopicsByVersion[ContractVersion.V1]
-const TOPICS_V2 = TopicsByVersion[ContractVersion.V2]
-
-const RELEASE_TOPICS = new Set([TOPICS_V1.RELEASE, TOPICS_V2.RELEASE])
 
 function getInitialUpdateValues<T>(
   update: UpdateAttributes | null | undefined,
@@ -110,14 +105,7 @@ export default function Update({ isEdit }: Props) {
 
   usePreventNavigation(true)
 
-  const releases = useMemo(
-    () =>
-      vestingData
-        ?.flatMap(({ logs }) => logs)
-        ?.filter(({ topic }) => RELEASE_TOPICS.has(topic))
-        ?.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()),
-    [vestingData]
-  )
+  const releases = useMemo(() => (vestingData ? getReleases(vestingData) : undefined), [vestingData])
 
   const handleGeneralSectionValidation = useCallback(
     (data: GeneralUpdateSection, sectionValid: boolean) => {
@@ -277,7 +265,8 @@ export default function Update({ isEdit }: Props) {
             />
           </>
         )}
-        {isPreviewMode && <UpdateMarkdownView update={previewUpdate} />}
+        {/* TODO: fix cards in preview mode */}
+        {isPreviewMode && <UpdateMarkdownView update={previewUpdate} proposal={proposal} />}
         <ContentSection className="UpdateSubmit__Actions">
           <Button
             primary

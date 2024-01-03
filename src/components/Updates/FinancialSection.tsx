@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useIntl } from 'react-intl'
 import { usePapaParse } from 'react-papaparse'
 
 import sum from 'lodash/sum'
@@ -12,11 +11,9 @@ import {
   FinancialUpdateSection,
   FinancialUpdateSectionSchema,
   UpdateAttributes,
+  UpdateStatus,
 } from '../../entities/Updates/types'
-import { getFundsReleasedSinceLastUpdate } from '../../entities/Updates/utils'
-import { CURRENCY_FORMAT_OPTIONS } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import { formatDate } from '../../utils/date/Time'
 import CSVDragAndDrop from '../Common/CSVDragAndDrop'
 import NumberedTextArea from '../Common/NumberedTextArea'
 import Label from '../Common/Typography/Label'
@@ -24,7 +21,7 @@ import Markdown from '../Common/Typography/Markdown'
 import { ContentSection } from '../Layout/ContentLayout'
 import ProjectRequestSection from '../ProjectRequest/ProjectRequestSection'
 
-import FinancialCard from './FinancialCard'
+import FinancialCardsSection from './FinancialCardsSection'
 import './FinancialSection.css'
 import SummaryItems from './SummaryItems'
 
@@ -213,11 +210,9 @@ function FinancialSection({
     })
   }, [csvInputField, csvInputHandler, readString])
 
-  const { value: releasedFundsValue, txAmount } = getFundsReleasedSinceLastUpdate(publicUpdates, releases)
-  const lastRelease = releases?.[0]
-  const fundsDisclosed = sum(financial_records.map(({ amount }) => amount))
-  const fundsUndisclosed = fundsDisclosed <= releasedFundsValue ? releasedFundsValue - fundsDisclosed : 0
-  const { formatNumber } = useIntl()
+  const lastUpdate = publicUpdates?.filter(
+    (update) => update.status === UpdateStatus.Done || update.status === UpdateStatus.Late
+  )?.[0]
 
   return (
     <ProjectRequestSection
@@ -228,29 +223,11 @@ function FinancialSection({
       isNew
     >
       <ContentSection>
-        <div className="FinancialSection__CardsContainer">
-          <FinancialCard
-            type="income"
-            title={t('page.proposal_update.funds_released_label')}
-            value={releasedFundsValue}
-            subtitle={
-              lastRelease
-                ? t('page.proposal_update.funds_released_sublabel', {
-                    amount: txAmount,
-                    time: formatDate(new Date(lastRelease.timestamp)),
-                  })
-                : undefined
-            }
-          />
-          <FinancialCard
-            type="outcome"
-            title={t('page.proposal_update.funds_disclosed_label')}
-            value={fundsDisclosed}
-            subtitle={t('page.proposal_update.funds_disclosed_sublabel', {
-              funds: formatNumber(fundsUndisclosed, CURRENCY_FORMAT_OPTIONS),
-            })}
-          />
-        </div>
+        <FinancialCardsSection
+          lastUpdate={lastUpdate}
+          releases={releases}
+          disclosedFunds={sum(financial_records.map(({ amount }) => amount))}
+        />
       </ContentSection>
       <ContentSection>
         <Label>{t('page.proposal_update.reporting_label')}</Label>

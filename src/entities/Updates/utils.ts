@@ -1,11 +1,17 @@
 import sum from 'lodash/sum'
 
-import { VestingLog } from '../../clients/VestingData'
+import { VestingInfo, VestingLog } from '../../clients/VestingData'
 import { GOVERNANCE_API } from '../../constants'
+import { ContractVersion, TopicsByVersion } from '../../utils/contracts/vesting'
 import Time from '../../utils/date/Time'
 import { ProposalStatus } from '../Proposal/types'
 
 import { UpdateAttributes, UpdateStatus } from './types'
+
+const TOPICS_V1 = TopicsByVersion[ContractVersion.V1]
+const TOPICS_V2 = TopicsByVersion[ContractVersion.V2]
+
+const RELEASE_TOPICS = new Set([TOPICS_V1.RELEASE, TOPICS_V2.RELEASE])
 
 export function isProposalStatusWithUpdates(proposalStatus?: ProposalStatus) {
   return proposalStatus === ProposalStatus.Enacted
@@ -92,14 +98,14 @@ export function getUpdateNumber(publicUpdates?: UpdateAttributes[] | null, updat
 }
 
 export function getFundsReleasedSinceLastUpdate(
-  updates: UpdateAttributes[] | undefined,
+  lastUpdate: UpdateAttributes | undefined,
   releases: VestingLog[] | undefined
 ): { value: number; txAmount: number } {
   if (!releases || releases.length === 0) return { value: 0, txAmount: 0 }
 
-  const lastUpdate = updates?.filter(
-    (update) => update.status === UpdateStatus.Done || update.status === UpdateStatus.Late
-  )?.[0]
+  // const lastUpdate = updates?.filter(
+  //   (update) => update.status === UpdateStatus.Done || update.status === UpdateStatus.Late
+  // )?.[0]
 
   if (!lastUpdate) {
     return { value: sum(releases.map(({ amount }) => amount || 0)), txAmount: releases.length }
@@ -112,4 +118,11 @@ export function getFundsReleasedSinceLastUpdate(
     value: sum(releasesSinceLastUpdate.map(({ amount }) => amount || 0)),
     txAmount: releasesSinceLastUpdate.length,
   }
+}
+
+export function getReleases(vestings: VestingInfo[]) {
+  return vestings
+    .flatMap(({ logs }) => logs)
+    .filter(({ topic }) => RELEASE_TOPICS.has(topic))
+    .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
 }

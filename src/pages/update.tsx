@@ -63,7 +63,8 @@ export default function UpdateDetail() {
         </ContentSection>
         {update && (
           <>
-            <UpdateMarkdownView update={update} author={update.author} />
+            {/* TODO: fix released value */}
+            <UpdateMarkdownView update={update} author={update.author} lastUpdate={update} proposal={proposal} />
             <UpdateComments update={update} />
           </>
         )}
