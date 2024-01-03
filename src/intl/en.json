@@ -1522,6 +1522,14 @@
       },
       "settings": {
         "linked_profiles": "Linked profiles"
+      },
+      "get_vp_dropdown": {
+        "get_more_vp": "Get More VP",
+        "get_vp": "Get VP",
+        "land": "LAND",
+        "l1_wearables": "L1 Wearables",
+        "names": "NAMEs",
+        "mana": "MANA"
       }
     },
     "transparency": {

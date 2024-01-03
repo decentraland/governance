@@ -3,3 +3,7 @@
   background: var(--black-700);
   color: var(--white-900);
 }
+
+.ui.dropdown.ProfileSettings > .menu .item:hover {
+  background: var(--black-600);
+}

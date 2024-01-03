@@ -16,6 +16,7 @@ import ProfileSettings from '../Profile/ProfileSettings'
 
 import Badges from './Badges/Badges'
 
+import GetVpDropdown from './GetVpDropdown'
 import './UserStats.css'
 import UserVotingStats from './UserVotingStats'
 import UserVpStats from './UserVpStats'
@@ -36,35 +37,47 @@ export default function UserStats({ address, vpDistribution, isLoadingVpDistribu
   const { isProfileValidated } = useIsProfileValidated(address)
   const [user] = useAuthContext()
 
-  const showSettings = isSameAddress(user, address) && !isLoadingGovernanceProfile && !isProfileValidated
+  const isLoggedInUserProfile = isSameAddress(user, address)
+  const showSettings = isLoggedInUserProfile && !isLoadingGovernanceProfile && !isProfileValidated
   const { total } = vpDistribution || { total: 0 }
 
   return (
     <div className="UserStats">
-      <div className="UserStats__UserInfo">
-        <div className="UserStats__UsernameContainer">
-          <Username address={address} size={isMobile ? 'sm' : 'md'} className="UserStats__Username" />
-          <ValidatedProfileCheck forumUsername={profile?.forum_username} isLoading={isLoadingGovernanceProfile} />
-          {showSettings && <ProfileSettings />}
+      <div>
+        <div className="UserStats__UsernameRow">
+          <div className="UserStats__UsernameContainer">
+            <Username address={address} size={isMobile ? 'sm' : 'md'} className="UserStats__Username" />
+            <ValidatedProfileCheck forumUsername={profile?.forum_username} isLoading={isLoadingGovernanceProfile} />
+            {showSettings && <ProfileSettings />}
+          </div>
+          {isLoggedInUserProfile && (
+            <div className="UserStats__GetVpDropdownContainer">
+              <GetVpDropdown />
+            </div>
+          )}
         </div>
-        <Badges address={address} />
-        <UserVpStats vpDistribution={vpDistribution} isLoadingVpDistribution={isLoadingVpDistribution} />
-        {total > 0 && (
-          <ActionBox title={t('page.profile.user_vp_stats.vp_distribution')} className="UserStats__VpDistributionBox">
-            <VotingPowerDistribution
-              vpDistribution={vpDistribution}
-              isLoading={isLoadingVpDistribution}
-              className="UserStats__VpDistribution"
-            />
-          </ActionBox>
-        )}
-        <UserVotingStats address={address} />
       </div>
-      <NotMobile>
-        <Suspense fallback={<Loader active={true} size="small" />}>
-          <UserAvatar address={address} />
-        </Suspense>
-      </NotMobile>
+      <div className="UserStats__UserInfoContainer">
+        <div className="UserStats__UserInfo">
+          <Badges address={address} />
+          <UserVpStats vpDistribution={vpDistribution} isLoadingVpDistribution={isLoadingVpDistribution} />
+          {total > 0 && (
+            <ActionBox title={t('page.profile.user_vp_stats.vp_distribution')} className="UserStats__VpDistributionBox">
+              <VotingPowerDistribution
+                vpDistribution={vpDistribution}
+                isLoading={isLoadingVpDistribution}
+                className="UserStats__VpDistribution"
+              />
+            </ActionBox>
+          )}
+          <UserVotingStats address={address} />
+        </div>
+        <NotMobile>
+          <Suspense fallback={<Loader active={true} size="small" />}>
+            <UserAvatar address={address} />
+          </Suspense>
+        </NotMobile>
+      </div>
     </div>
   )
 }

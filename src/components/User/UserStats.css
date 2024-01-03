@@ -1,6 +1,11 @@
 .UserStats {
   display: flex;
-  gap: 41px;
+  flex-direction: column;
+}
+
+.UserStats__UserInfoContainer {
+  display: flex;
+  flex-direction: row;
 }
 
 .UserStats__UserInfo {
@@ -9,10 +14,23 @@
   width: 100%;
 }
 
+.UserStats__UsernameRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+@media (min-width: 768px) {
+  .UserStats__UsernameRow {
+    margin-bottom: 24px;
+  }
+}
+
 .UserStats__UsernameContainer {
   display: flex;
   align-items: center;
-  margin-bottom: 16px;
 }
 
 .UserStats__UsernameContainer,
@@ -20,7 +38,7 @@
   gap: 8px;
 }
 
-.Username.UserStats__Username {
+.UserStats__Username {
   display: flex;
 }
 
@@ -36,7 +54,7 @@
   letter-spacing: 0.4px;
 }
 
-.Username.UserStats__Username > img {
+.UserStats__Username > img {
   margin-right: 0;
 }
 
@@ -49,10 +67,6 @@
 }
 
 @media (min-width: 768px) {
-  .UserStats__UsernameContainer {
-    margin-bottom: 24px;
-  }
-
   .UserStats__UsernameContainer,
   .UserStats__Username {
     gap: 12px;
@@ -83,4 +97,8 @@
   .UserStats__VpDistributionBox {
     margin-bottom: 44px;
   }
+}
+
+.UserStats__GetVpDropdownContainer {
+  z-index: 1;
 }
