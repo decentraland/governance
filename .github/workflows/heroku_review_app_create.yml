@@ -71,12 +71,31 @@ jobs:
         if: env.GITHUB_LABEL_EXISTS == 'true' && env.HEROKU_APP_EXISTS == 'false'
         run: heroku apps:create -t gov-squad ${{ env.HEROKU_APP_NAME }} ${{ env.HEROKU_REVIEW_APP_ADDONS }}
 
-#       Setup Heroku env vars (copy GitHub secrets etc...)
       - name: Copy environment variables from default to new review app
         run: |
-          heroku config:set $(heroku config -s -a dcl-governance | grep -v '^HEROKU_') -a ${{ env.HEROKU_APP_NAME }}
+          # Fetch env vars from source app
+          SOURCE_VARS=$(heroku config -s -a dcl-governance | grep -v '^HEROKU_')
+          # Fetch env vars from destination app
+          DEST_VARS=$(heroku config -s -a ${{ env.HEROKU_APP_NAME }})
+
+          # Prepare a string to hold new vars to set
+          NEW_VARS=""
+
+          # Iterate over source vars and add them to NEW_VARS if not already in destination vars
+          for var in $SOURCE_VARS; do
+            KEY=$(echo $var | cut -f1 -d'=')
+            if ! echo "$DEST_VARS" | grep -q "^$KEY="; then
+              NEW_VARS+="$var "
+            fi
+          done
+
+          # Set all new vars in one command, if any
+          if [ -n "$NEW_VARS" ]; then
+            heroku config:set $NEW_VARS -a ${{ env.HEROKU_APP_NAME }}
+          fi
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+
 
       - name: Add Heroku Review App to pipeline
         if: steps.heroku_review_app_create.outcome == 'success'
@@ -124,7 +143,6 @@ jobs:
         run: |
           docker tag governance:${{ github.sha }} registry.heroku.com/dcl-governance/web
           docker push registry.heroku.com/dcl-governance/web
-          heroku container:push web --app $HEROKU_APP_NAME                                              
 
       - name: Enable Heroku Dyno Metadata
         if: steps.heroku_review_app_create.outcome == 'success'
