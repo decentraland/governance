@@ -21,7 +21,6 @@ import { EditUpdateModal } from '../../components/Modal/EditUpdateModal/EditUpda
 import FinancialSection from '../../components/Updates/FinancialSection'
 import GeneralSection from '../../components/Updates/GeneralSection'
 import UpdateMarkdownView from '../../components/Updates/UpdateMarkdownView'
-import { ProjectStatus } from '../../entities/Grant/types'
 import {
   FinancialUpdateSection,
   GeneralUpdateSection,
@@ -34,7 +33,8 @@ import usePreventNavigation from '../../hooks/usePreventNavigation'
 import useProposal from '../../hooks/useProposal'
 import useProposalUpdate from '../../hooks/useProposalUpdate'
 import useProposalUpdates from '../../hooks/useProposalUpdates'
-import useVestings from '../../hooks/useVestings'
+import useVestingContractData from '../../hooks/useVestingContractData'
+import { ContractVersion, TopicsByVersion } from '../../utils/contracts/vesting'
 import locations, { navigate } from '../../utils/locations'
 
 import './submit.css'
@@ -58,6 +58,11 @@ const intialValidationState: UpdateValidationState = {
 
 const initialGeneralState: Partial<GeneralUpdateSection> | undefined = undefined
 const initialFinancialState: FinancialUpdateSection | undefined = undefined
+
+const TOPICS_V1 = TopicsByVersion[ContractVersion.V1]
+const TOPICS_V2 = TopicsByVersion[ContractVersion.V2]
+
+const RELEASE_TOPICS = new Set([TOPICS_V1.RELEASE, TOPICS_V2.RELEASE])
 
 function getInitialUpdateValues<T>(
   update: UpdateAttributes | null | undefined,
@@ -93,7 +98,7 @@ export default function Update({ isEdit }: Props) {
   const { proposal } = useProposal(proposalId)
   const { publicUpdates } = useProposalUpdates(proposalId)
   const vestingAddresses = proposal?.vesting_addresses || []
-  const { data } = useVestings(vestingAddresses.length > 0)
+  const { vestingData } = useVestingContractData(vestingAddresses)
   const [error, setError] = useState('')
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [generalSection, patchGeneralSection] = useState(initialGeneralState)
@@ -105,12 +110,14 @@ export default function Update({ isEdit }: Props) {
 
   usePreventNavigation(true)
 
-  const vestingContract = data
-    ?.filter(
-      (vesting) =>
-        vesting.vesting_status === ProjectStatus.InProgress && vestingAddresses.includes(vesting.vesting_address)
-    )
-    ?.pop()
+  const releases = useMemo(
+    () =>
+      vestingData
+        ?.flatMap(({ logs }) => logs)
+        ?.filter(({ topic }) => RELEASE_TOPICS.has(topic))
+        ?.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()),
+    [vestingData]
+  )
 
   const handleGeneralSectionValidation = useCallback(
     (data: GeneralUpdateSection, sectionValid: boolean) => {
@@ -263,7 +270,7 @@ export default function Update({ isEdit }: Props) {
                   (key) => key in ({ financial_records: [] } as FinancialUpdateSection)
                 )
               }
-              vesting={vestingContract}
+              releases={releases}
               publicUpdates={publicUpdates}
               csvInputField={csvInputField}
               setCSVInputField={patchCsvInputField}

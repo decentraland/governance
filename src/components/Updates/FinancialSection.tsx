@@ -5,7 +5,7 @@ import { usePapaParse } from 'react-papaparse'
 import sum from 'lodash/sum'
 import toNumber from 'lodash/toNumber'
 
-import { TransparencyVesting } from '../../clients/DclData'
+import { VestingLog } from '../../clients/VestingData'
 import {
   FinancialRecord,
   FinancialUpdateSection,
@@ -30,7 +30,7 @@ interface Props {
   isFormDisabled: boolean
   sectionNumber: number
   intialValues?: Partial<FinancialUpdateSection>
-  vesting?: TransparencyVesting
+  releases?: VestingLog[]
   publicUpdates?: UpdateAttributes[]
   csvInputField: string | undefined
   setCSVInputField: (value?: string) => void
@@ -56,7 +56,7 @@ function FinancialSection({
   isFormDisabled,
   sectionNumber,
   intialValues,
-  vesting,
+  releases,
   publicUpdates,
   csvInputField,
   setCSVInputField,
@@ -223,7 +223,7 @@ function FinancialSection({
           <FinancialCard
             type="income"
             title={t('page.proposal_update.funds_released_label')}
-            value={getFundsReleasedSinceLastUpdate(publicUpdates, vesting)}
+            value={getFundsReleasedSinceLastUpdate(publicUpdates, releases)}
           />
           <FinancialCard
             type="outcome"
