@@ -141,7 +141,7 @@ jobs:
         id: docker-push-to-registry
         if: steps.docker-build-image.outcome == 'success'
         run: |
-          docker tag governance:${{ github.sha }} registry.heroku.com/dcl-governance/web
+          docker tag latest registry.heroku.com/dcl-governance/web
           docker push registry.heroku.com/dcl-governance/web
 
       - name: Enable Heroku Dyno Metadata
