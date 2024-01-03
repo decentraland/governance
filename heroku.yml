@@ -4,10 +4,8 @@ setup:
       as: DATABASE
 build:
   docker:
-#    release:
-#      dockerfile: Dockerfile
-#      target: compiler
     web: Dockerfile
-#  config:
-#    version_number: 99
-#    heroku_app_name: heroku-app-name
+  config:
+    version_number: 99
+    heroku_app_name: heroku-app-name-test
+    FRONT_BUILD_NODE_OPTIONS: "--max-old-space-size=8192"
