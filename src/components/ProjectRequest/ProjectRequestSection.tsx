@@ -32,7 +32,7 @@ export default function ProjectRequestSection({
 
   return (
     <Container
-      className="ContentLayout__Container ProjectRequestSection__Container"
+      className="ProjectRequestSection__Container"
       onFocus={() => shouldFocus && setFocused(true)}
       onBlur={() => {
         onBlur && onBlur()

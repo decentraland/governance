@@ -204,3 +204,7 @@
 .dcl.login-modal .dcl.option {
   width: 100% !important;
 }
+
+.ui .dcl.back {
+  margin: 0 !important;
+}

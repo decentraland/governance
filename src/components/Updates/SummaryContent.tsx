@@ -2,9 +2,10 @@ import { Fragment } from 'react'
 import { useIntl } from 'react-intl'
 
 import classNames from 'classnames'
+import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import { FinancialRecord, FinancialRecordCateogry } from '../../entities/Updates/types'
-import { CURRENCY_FORMAT_OPTIONS } from '../../helpers'
+import { CURRENCY_FORMAT_OPTIONS, addressShortener } from '../../helpers'
 import Divider from '../Common/Divider'
 import Text from '../Common/Typography/Text'
 import LinkIcon from '../Icon/LinkIcon'
@@ -18,6 +19,8 @@ export interface SummaryContentProps {
 
 function SummaryContent({ category, group }: SummaryContentProps) {
   const { formatNumber } = useIntl()
+  const isMobile = useMobileMediaQuery()
+
   return (
     <>
       <Divider className="SummaryContentItem__Divider" />
@@ -29,7 +32,7 @@ function SummaryContent({ category, group }: SummaryContentProps) {
                 {description}
               </Text>
               <Text size="sm" color="secondary">
-                {receiver}
+                {isMobile ? addressShortener(receiver) : receiver}
               </Text>
             </div>
             <div className="SummaryContentItem_DetailsContainer">

@@ -2,7 +2,7 @@ import { FieldValues } from 'react-hook-form'
 
 import DAOMarkdownField, { MarkdownFieldProps } from '../Common/Form/MarkdownField'
 import Label from '../Common/Typography/Label'
-import { ContentSection } from '../Layout/ContentLayout'
+import ContentSection from '../Layout/ContentSection'
 
 import MarkdownNotice from './MarkdownNotice'
 

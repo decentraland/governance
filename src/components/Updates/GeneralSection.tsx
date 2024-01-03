@@ -5,7 +5,7 @@ import { GeneralUpdateSection, GeneralUpdateSectionSchema, ProjectHealth } from 
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Label from '../Common/Typography/Label'
 import MarkdownField from '../Form/MarkdownFieldSection'
-import { ContentSection } from '../Layout/ContentLayout'
+import ContentSection from '../Layout/ContentSection'
 import ProjectRequestSection from '../ProjectRequest/ProjectRequestSection'
 
 import ProjectHealthButton from './ProjectHealthButton'
