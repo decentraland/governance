@@ -94,20 +94,22 @@ export function getUpdateNumber(publicUpdates?: UpdateAttributes[] | null, updat
 export function getFundsReleasedSinceLastUpdate(
   updates: UpdateAttributes[] | undefined,
   releases: VestingLog[] | undefined
-) {
-  if (!releases || releases.length === 0) return 0
+): { value: number; txAmount: number } {
+  if (!releases || releases.length === 0) return { value: 0, txAmount: 0 }
 
   const lastUpdate = updates?.filter(
     (update) => update.status === UpdateStatus.Done || update.status === UpdateStatus.Late
   )?.[0]
 
   if (!lastUpdate) {
-    return sum(releases.map(({ amount }) => amount || 0))
+    return { value: sum(releases.map(({ amount }) => amount || 0)), txAmount: releases.length }
   }
 
   const { completion_date } = lastUpdate
 
-  return sum(
-    releases.filter(({ timestamp }) => Time(timestamp).isAfter(completion_date)).map(({ amount }) => amount || 0)
-  )
+  const releasesSinceLastUpdate = releases.filter(({ timestamp }) => Time(timestamp).isAfter(completion_date))
+  return {
+    value: sum(releasesSinceLastUpdate.map(({ amount }) => amount || 0)),
+    txAmount: releasesSinceLastUpdate.length,
+  }
 }
