@@ -1,0 +1,11 @@
+setup:
+  addons:
+    - plan: heroku-postgresql:mini
+      as: DATABASE
+build:
+  docker:
+    web: Dockerfile
+  config:
+    version_number: 99
+    heroku_app_name: heroku-app-name-test
+    FRONT_BUILD_NODE_OPTIONS: "--max-old-space-size=8192"

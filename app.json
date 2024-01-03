@@ -4,12 +4,8 @@
   "repository": "https://github.com/decentraland/governance",
   "logo": "https://camo.githubusercontent.com/848ca00749523a73f10285a2cb79407aafbac46182f19aee510eed043e7ad86d/68747470733a2f2f646563656e7472616c616e642e6f72672f696d616765732f6c6f676f2e706e67",
   "keywords": ["decentraland", "governance"],
-  "buildpacks": [
-    {
-      "url": "heroku/nodejs"
-    },
-    { "url": "https://github.com/moravcik/heroku-buildpack-post-build-clean.git" }
-  ],
+  "stack": "container",
+  "image": "heroku/nodejs",
   "addons": ["heroku-postgresql:standard-0"],
   "environments": {
     "review": {
