@@ -18,7 +18,7 @@ import CSVDragAndDrop from '../Common/CSVDragAndDrop'
 import NumberedTextArea from '../Common/NumberedTextArea'
 import Label from '../Common/Typography/Label'
 import Markdown from '../Common/Typography/Markdown'
-import { ContentSection } from '../Layout/ContentLayout'
+import ContentSection from '../Layout/ContentSection'
 import ProjectRequestSection from '../ProjectRequest/ProjectRequestSection'
 
 import FinancialCardsSection from './FinancialCardsSection'

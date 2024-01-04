@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import classNames from 'classnames'
 import sum from 'lodash/sum'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
@@ -26,11 +27,12 @@ interface Props {
   author?: string
   lastUpdate?: UpdateAttributes
   proposal: ProposalAttributes | null
+  className?: string
 }
 
 const UPDATE_DETAIL_MARKDOWN_STYLES = { p: 'UpdateDetail__ContentText', li: 'UpdateDetail__ListItem' }
 
-const UpdateMarkdownView = ({ update, author, lastUpdate, proposal }: Props) => {
+const UpdateMarkdownView = ({ update, author, lastUpdate, proposal, className }: Props) => {
   const t = useFormatMessage()
   const { vestingData } = useVestingContractData(proposal?.vesting_addresses || [])
 
@@ -41,7 +43,7 @@ const UpdateMarkdownView = ({ update, author, lastUpdate, proposal }: Props) => 
   const { financial_records } = update
 
   return (
-    <ContentSection className="UpdateDetail__Content">
+    <ContentSection className={classNames('UpdateDetail__Content', className)}>
       {update?.health && <ProjectHealthStatus health={update.health} />}
       <ArticleSectionHeading>{t('page.update_detail.introduction')}</ArticleSectionHeading>
       <Markdown componentsClassNames={UPDATE_DETAIL_MARKDOWN_STYLES}>{update?.introduction || ''}</Markdown>

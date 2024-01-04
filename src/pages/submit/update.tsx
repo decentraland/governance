@@ -15,7 +15,8 @@ import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
 
 import { Governance } from '../../clients/Governance'
 import Text from '../../components/Common/Typography/Text'
-import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
+import ContentLayout from '../../components/Layout/ContentLayout'
+import ContentSection from '../../components/Layout/ContentSection'
 import LoadingView from '../../components/Layout/LoadingView'
 import { EditUpdateModal } from '../../components/Modal/EditUpdateModal/EditUpdateModal'
 import FinancialSection from '../../components/Updates/FinancialSection'
@@ -223,50 +224,50 @@ export default function Update({ isEdit }: Props) {
   }
 
   return (
-    <ContentLayout small>
-      <Head title={title} description={description} image="https://decentraland.org/images/decentraland.png" />
-      <Helmet title="Publish Update" />
-      <ContentSection>
-        <Header size="huge">{title}</Header>
-      </ContentSection>
-      <ContentSection>
-        <Text size="lg">{description}</Text>
-      </ContentSection>
-      <div>
-        {!isPreviewMode && (
-          <>
-            <GeneralSection
-              isFormDisabled={formDisabled}
-              intialValues={
-                generalSection ||
-                getInitialUpdateValues<GeneralUpdateSection>(
-                  update,
-                  (key) => key in GeneralUpdateSectionSchema.properties
-                )
-              }
-              sectionNumber={1}
-              onValidation={handleGeneralSectionValidation}
-            />
-            <FinancialSection
-              isFormDisabled={formDisabled}
-              sectionNumber={2}
-              onValidation={handleFinancialSectionValidation}
-              intialValues={
-                financialSection ||
-                getInitialUpdateValues<FinancialUpdateSection>(
-                  update,
-                  (key) => key in ({ financial_records: [] } as FinancialUpdateSection)
-                )
-              }
-              releases={releases}
-              publicUpdates={publicUpdates}
-              csvInputField={csvInputField}
-              setCSVInputField={patchCsvInputField}
-            />
-          </>
-        )}
-        {/* TODO: fix cards in preview mode */}
-        {isPreviewMode && <UpdateMarkdownView update={previewUpdate} proposal={proposal} />}
+    <div>
+      <ContentLayout>
+        <Head title={title} description={description} image="https://decentraland.org/images/decentraland.png" />
+        <Helmet title="Publish Update" />
+        <ContentSection className="UpdateSubmit__HeaderContainer">
+          <Header size="huge">{title}</Header>
+          <Text size="lg">{description}</Text>
+        </ContentSection>
+      </ContentLayout>
+      {!isPreviewMode && (
+        <>
+          <GeneralSection
+            isFormDisabled={formDisabled}
+            intialValues={
+              generalSection ||
+              getInitialUpdateValues<GeneralUpdateSection>(
+                update,
+                (key) => key in GeneralUpdateSectionSchema.properties
+              )
+            }
+            sectionNumber={1}
+            onValidation={handleGeneralSectionValidation}
+          />
+          <FinancialSection
+            isFormDisabled={formDisabled}
+            sectionNumber={2}
+            onValidation={handleFinancialSectionValidation}
+            intialValues={
+              financialSection ||
+              getInitialUpdateValues<FinancialUpdateSection>(
+                update,
+                (key) => key in ({ financial_records: [] } as FinancialUpdateSection)
+              )
+            }
+            releases={releases}
+            publicUpdates={publicUpdates}
+            csvInputField={csvInputField}
+            setCSVInputField={patchCsvInputField}
+          />
+        </>
+      )}
+      {/* TODO: fix cards in preview mode */}
+      {isPreviewMode && <UpdateMarkdownView update={previewUpdate} proposal={proposal} />}
+      <Container className="ContentLayout__Container">
         <ContentSection className="UpdateSubmit__Actions">
           <Button
             primary
@@ -296,7 +297,7 @@ export default function Update({ isEdit }: Props) {
             </Text>
           </ContentSection>
         )}
-      </div>
+      </Container>
       {isEdit && (
         <EditUpdateModal
           loading={formDisabled}
@@ -307,6 +308,6 @@ export default function Update({ isEdit }: Props) {
           }
         />
       )}
-    </ContentLayout>
+    </div>
   )
 }

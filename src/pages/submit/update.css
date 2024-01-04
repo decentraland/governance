@@ -1,3 +1,7 @@
+.UpdateSubmit__HeaderContainer {
+  padding-bottom: 0 !important;
+}
+
 .UpdateSubmit__ProjectHealthContainer {
   display: flex;
   flex-direction: column;
@@ -15,4 +19,18 @@
 .UpdateSubmit__Actions {
   display: flex;
   justify-content: space-between;
+}
+
+.UpdateSubmit__Preview {
+  margin-bottom: 16px;
+}
+
+@media (min-width: 768px) {
+  .UpdateSubmit__Actions {
+    margin-left: 61px;
+  }
+
+  .UpdateSubmit__Preview {
+    margin-left: 61px;
+  }
 }

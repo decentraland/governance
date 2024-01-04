@@ -1,6 +1,7 @@
 FROM node:18.8-alpine as compiler
 ARG version_number
 ARG heroku_app_name
+ARG FRONT_BUILD_NODE_OPTIONS="--max-old-space-size=4096"
 
 RUN apk add --no-cache openssh-client \
  && mkdir ~/.ssh && ssh-keyscan github.com > ~/.ssh/known_hosts
@@ -44,7 +45,7 @@ COPY ./tsconfig.json                          /app/tsconfig.json
 COPY ./.babelrc.json                          /app/.babelrc.json
 
 RUN NODE_OPTIONS="--max-old-space-size=4096" npm run build:server
-RUN NODE_OPTIONS="--max-old-space-size=4096" VERSION_NUMBER=$version_number HEROKU_APP_NAME=$heroku_app_name npm run build:front
+RUN NODE_OPTIONS=$FRONT_BUILD_NODE_OPTIONS VERSION_NUMBER=$version_number HEROKU_APP_NAME=$heroku_app_name npm run build:front
 RUN npm prune --production --ignore-scripts
 
 FROM node:18.8-alpine
