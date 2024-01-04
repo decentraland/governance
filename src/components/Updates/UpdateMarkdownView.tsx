@@ -62,13 +62,14 @@ const UpdateMarkdownView = ({ update, author, lastUpdate, proposal, className }:
       {financial_records && financial_records.length > 0 && (
         <>
           <ArticleSectionHeading>{t('page.update_detail.financial_details')}</ArticleSectionHeading>
-          <FinancialCardsSection
-            lastUpdate={lastUpdate}
-            releases={releases}
-            disclosedFunds={sum(financial_records.map(({ amount }) => amount))}
-          />
-          {/* TODO: fix margin */}
-          <SummaryItems financialRecords={financial_records} />
+          <div className="UpdateDetail__FinancialContainer">
+            <FinancialCardsSection
+              lastUpdate={lastUpdate}
+              releases={releases}
+              disclosedFunds={sum(financial_records.map(({ amount }) => amount))}
+            />
+            <SummaryItems financialRecords={financial_records} />
+          </div>
         </>
       )}
       {author && update.completion_date && (
