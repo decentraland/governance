@@ -1,35 +1,28 @@
-name: Heroku Review App Create
+name: Heroku Deploy
 
-# SEE: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
 on:
   pull_request:
     types:
       - labeled
-      - opened
-      - reopened
       - synchronize
 
-# SEE: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#permissions
 permissions:
   contents: read
   deployments: write
   pull-requests: read
 
-# Update these variables for your project
 env:
   GITHUB_DEPLOYMENT_ENVIRONMENT: heroku
-  GITHUB_LABEL: heroku
   HEROKU_PIPELINE_NAME: dcl-governance
   HEROKU_APP_NAME: dcl-governance
 
 jobs:
   heroku_deploy:
-    name: Update Heroku Review App
+    name: Deploy to heroku
     runs-on: ubuntu-latest
-    if: github.event.pull_request.state != 'closed'
+    if: ${{ github.event.pull_request.state != 'closed' && contains(github.event.pull_request.labels.*.name, 'heroku') }}
     steps:
       - name: Check out PR code from GitHub
-        if: env.GITHUB_LABEL_EXISTS == 'true'
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -38,7 +31,6 @@ jobs:
       # Wire up the github deployment so links to `view deployment` are valid on the PR
       - name: Create GitHub deployment
         id: deployment
-        if: env.GITHUB_LABEL_EXISTS == 'true'
         uses: chrnorm/deployment-action@releases/v1
         with:
           initial_status: in_progress
