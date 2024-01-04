@@ -1,0 +1,107 @@
+name: Heroku Review App Create
+
+# SEE: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
+on:
+  pull_request:
+    types:
+      - labeled
+      - opened
+      - reopened
+      - synchronize
+
+# SEE: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#permissions
+permissions:
+  contents: read
+  deployments: write
+  pull-requests: read
+
+# Update these variables for your project
+env:
+  GITHUB_DEPLOYMENT_ENVIRONMENT: heroku
+  GITHUB_LABEL: heroku
+  HEROKU_PIPELINE_NAME: dcl-governance
+  HEROKU_APP_NAME: dcl-governance
+
+jobs:
+  heroku_deploy:
+    name: Update Heroku Review App
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.state != 'closed'
+    steps:
+      - name: Check out PR code from GitHub
+        if: env.GITHUB_LABEL_EXISTS == 'true'
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+
+      # Wire up the github deployment so links to `view deployment` are valid on the PR
+      - name: Create GitHub deployment
+        id: deployment
+        if: env.GITHUB_LABEL_EXISTS == 'true'
+        uses: chrnorm/deployment-action@releases/v1
+        with:
+          initial_status: in_progress
+          token: ${{ github.token }}
+          target_url: https://${{ env.HEROKU_APP_NAME}}.herokuapp.com/
+          environment: ${{ env.GITHUB_DEPLOYMENT_ENVIRONMENT }}
+          ref: ${{ github.head_ref }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18.8.0
+          registry-url: https://registry.npmjs.org/
+          cache: 'npm'
+
+      - name: Set up Git
+        run: git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+
+      - name: Install dependencies
+        id: install-dependencies
+        run: npm ci
+
+      - name: Build image
+        id: docker-build-image
+        if: steps.install-dependencies.outcome == 'success'
+        run: |
+          docker build -t governance:${{ github.sha }} \
+                       --platform linux/amd64 \
+                       --build-arg version_number=${{ github.sha }} \
+                       --build-arg heroku_app_name=$HEROKU_APP_NAME .
+
+      - name: Log in to Heroku Container Registry
+        if: steps.docker-build-image.outcome == 'success'
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:login
+
+      - name: Tag and Push to Heroku
+        id: docker-push-to-registry
+        if: steps.docker-build-image.outcome == 'success'
+        run: |
+          docker tag governance:${{ github.sha }} registry.heroku.com/dcl-governance/web
+          docker push registry.heroku.com/dcl-governance/web
+
+      - name: Enable Heroku Dyno Metadata
+        run: heroku labs:enable runtime-dyno-metadata -a $HEROKU_APP_NAME
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+
+      - name: Release the Image
+        id: heroku_release_image
+        if: steps.docker-push-to-registry.outcome == 'success'
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:release web -a $HEROKU_APP_NAME
+
+      # Updates the PR with a link to the Review App deployment
+      - name: Update deployment status on GitHub to success
+        if: steps.heroku_release_image.outcome == 'success'
+        uses: chrnorm/deployment-status@releases/v1
+        with:
+          token: ${{ github.token }}
+          target_url: https://${{ env.HEROKU_APP_NAME }}.herokuapp.com/
+          environment_url: https://${{ env.HEROKU_APP_NAME }}.herokuapp.com/
+          state: success
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
