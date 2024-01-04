@@ -35,7 +35,7 @@ jobs:
         with:
           initial_status: in_progress
           token: ${{ github.token }}
-          target_url: https://${{ env.HEROKU_APP_NAME}}.herokuapp.com/
+          target_url: https://governance.decentraland.vote/governance/
           environment: ${{ env.GITHUB_DEPLOYMENT_ENVIRONMENT }}
           ref: ${{ github.head_ref }}
 
@@ -93,7 +93,7 @@ jobs:
         uses: chrnorm/deployment-status@releases/v1
         with:
           token: ${{ github.token }}
-          target_url: https://${{ env.HEROKU_APP_NAME }}.herokuapp.com/
-          environment_url: https://${{ env.HEROKU_APP_NAME }}.herokuapp.com/
+          target_url: https://governance.decentraland.vote/governance/
+          environment_url: https://governance.decentraland.vote/governance/
           state: success
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
