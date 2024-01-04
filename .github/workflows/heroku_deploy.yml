@@ -59,9 +59,11 @@ jobs:
         id: docker-build-image
         if: steps.install-dependencies.outcome == 'success'
         run: |
+          BRANCH_NAME=$(echo ${{ github.head_ref }} | sed 's/[^a-zA-Z0-9]/-/g')
+          VERSION_NUMBER="${BRANCH_NAME}-${{ github.sha }}"
           docker build -t governance:${{ github.sha }} \
                        --platform linux/amd64 \
-                       --build-arg version_number=${{ github.sha }} \
+                       --build-arg version_number=$VERSION_NUMBER \
                        --build-arg heroku_app_name=$HEROKU_APP_NAME .
 
       - name: Log in to Heroku Container Registry
