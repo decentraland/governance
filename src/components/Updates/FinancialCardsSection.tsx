@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { VestingLog } from '../../clients/VestingData'
 import { UpdateAttributes } from '../../entities/Updates/types'
-import { getFundsReleasedSinceLastUpdate } from '../../entities/Updates/utils'
+import { getFundsReleasedSinceLastestUpdate } from '../../entities/Updates/utils'
 import { CURRENCY_FORMAT_OPTIONS } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import { formatDate } from '../../utils/date/Time'
@@ -12,13 +12,13 @@ import './FinancialCardsSection.css'
 
 interface Props {
   releases?: VestingLog[]
-  lastUpdate?: Omit<UpdateAttributes, 'id' | 'proposal_id'>
+  lastestUpdate?: Omit<UpdateAttributes, 'id' | 'proposal_id'>
   disclosedFunds: number
 }
 
-function FinancialCardsSection({ releases, lastUpdate, disclosedFunds }: Props) {
+function FinancialCardsSection({ releases, lastestUpdate, disclosedFunds }: Props) {
   const t = useFormatMessage()
-  const { value: releasedFundsValue, txAmount } = getFundsReleasedSinceLastUpdate(lastUpdate, releases)
+  const { value: releasedFundsValue, txAmount } = getFundsReleasedSinceLastestUpdate(lastestUpdate, releases)
   const lastRelease = releases?.[0]
   const undisclosedFunds = disclosedFunds <= releasedFundsValue ? releasedFundsValue - disclosedFunds : 0
   const { formatNumber } = useIntl()

@@ -29,7 +29,7 @@ import {
   UpdateAttributes,
   UpdateStatus,
 } from '../../entities/Updates/types'
-import { getReleases } from '../../entities/Updates/utils'
+import { getLatestUpdate, getReleases } from '../../entities/Updates/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
 import useProposal from '../../hooks/useProposal'
@@ -223,9 +223,7 @@ export default function Update({ isEdit }: Props) {
     setFormDisabled(false)
   }
 
-  const lastUpdate = publicUpdates?.filter(
-    (update) => update.status === UpdateStatus.Done || update.status === UpdateStatus.Late
-  )?.[0]
+  const lastestUpdate = getLatestUpdate(publicUpdates || [])
 
   return (
     <div>
@@ -263,13 +261,13 @@ export default function Update({ isEdit }: Props) {
               )
             }
             releases={releases}
-            lastUpdate={lastUpdate}
+            lastestUpdate={lastestUpdate}
             csvInputField={csvInputField}
             setCSVInputField={patchCsvInputField}
           />
         </>
       )}
-      {isPreviewMode && <UpdateMarkdownView update={previewUpdate} proposal={proposal} lastUpdate={lastUpdate} />}
+      {isPreviewMode && <UpdateMarkdownView update={previewUpdate} proposal={proposal} lastestUpdate={lastestUpdate} />}
       <Container className="ContentLayout__Container">
         <ContentSection className="UpdateSubmit__Actions">
           <Button

@@ -97,26 +97,22 @@ export function getUpdateNumber(publicUpdates?: UpdateAttributes[] | null, updat
   return publicUpdates.length > 0 && updateIdx >= 0 ? publicUpdates.length - updateIdx : NaN
 }
 
-export function getFundsReleasedSinceLastUpdate(
-  lastUpdate: Omit<UpdateAttributes, 'id' | 'proposal_id'> | undefined,
+export function getFundsReleasedSinceLastestUpdate(
+  lastestUpdate: Omit<UpdateAttributes, 'id' | 'proposal_id'> | undefined,
   releases: VestingLog[] | undefined
 ): { value: number; txAmount: number } {
   if (!releases || releases.length === 0) return { value: 0, txAmount: 0 }
 
-  // const lastUpdate = updates?.filter(
-  //   (update) => update.status === UpdateStatus.Done || update.status === UpdateStatus.Late
-  // )?.[0]
-
-  if (!lastUpdate) {
+  if (!lastestUpdate) {
     return { value: sum(releases.map(({ amount }) => amount || 0)), txAmount: releases.length }
   }
 
-  const { completion_date } = lastUpdate
+  const { completion_date } = lastestUpdate
 
-  const releasesSinceLastUpdate = releases.filter(({ timestamp }) => Time(timestamp).isAfter(completion_date))
+  const releasesSinceLastestUpdate = releases.filter(({ timestamp }) => Time(timestamp).isAfter(completion_date))
   return {
-    value: sum(releasesSinceLastUpdate.map(({ amount }) => amount || 0)),
-    txAmount: releasesSinceLastUpdate.length,
+    value: sum(releasesSinceLastestUpdate.map(({ amount }) => amount || 0)),
+    txAmount: releasesSinceLastestUpdate.length,
   }
 }
 
@@ -125,4 +121,18 @@ export function getReleases(vestings: VestingInfo[]) {
     .flatMap(({ logs }) => logs)
     .filter(({ topic }) => RELEASE_TOPICS.has(topic))
     .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+}
+
+export function getLatestUpdate(publicUpdates: UpdateAttributes[], beforeDate?: Date): UpdateAttributes | undefined {
+  if (!publicUpdates || publicUpdates.length === 0) return undefined
+  return publicUpdates
+    .filter((update) => update.status === UpdateStatus.Done || update.status === UpdateStatus.Late)
+    .reduce((prev, current) => {
+      if (!prev) return current
+      if (!prev.completion_date) return current
+      if (!current.completion_date) return prev
+      if (beforeDate && Time(prev.completion_date).isAfter(beforeDate)) return current
+      if (Time(prev.completion_date).isAfter(current.completion_date)) return prev
+      return current
+    })
 }

@@ -10,11 +10,12 @@ import ContentLayout, { ContentSection } from '../components/Layout/ContentLayou
 import LoadingView from '../components/Layout/LoadingView'
 import UpdateComments from '../components/Updates/UpdateComments'
 import UpdateMarkdownView from '../components/Updates/UpdateMarkdownView'
-import { getUpdateNumber } from '../entities/Updates/utils'
+import { getLatestUpdate, getUpdateNumber } from '../entities/Updates/utils'
 import useFormatMessage from '../hooks/useFormatMessage'
 import useProposal from '../hooks/useProposal'
 import useProposalUpdate from '../hooks/useProposalUpdate'
 import useProposalUpdates from '../hooks/useProposalUpdates'
+import Time from '../utils/date/Time'
 import locations from '../utils/locations'
 
 import './update.css'
@@ -47,6 +48,8 @@ export default function UpdateDetail() {
   const index = getUpdateNumber(publicUpdates, updateId)
   const proposalHref = locations.proposal(update.proposal_id)
 
+  const lastestUpdate = getLatestUpdate(publicUpdates || [], Time(update.due_date).toDate())
+
   return (
     <>
       <Head
@@ -63,8 +66,12 @@ export default function UpdateDetail() {
         </ContentSection>
         {update && (
           <>
-            {/* TODO: fix released value */}
-            <UpdateMarkdownView update={update} author={update.author} lastUpdate={update} proposal={proposal} />
+            <UpdateMarkdownView
+              update={update}
+              author={update.author}
+              lastestUpdate={lastestUpdate}
+              proposal={proposal}
+            />
             <UpdateComments update={update} />
           </>
         )}
