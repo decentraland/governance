@@ -10,7 +10,6 @@ import { SelectedVoteChoice } from '../../../../entities/Votes/types'
 import useFormatMessage from '../../../../hooks/useFormatMessage'
 import { ProposalPageState } from '../../../../pages/proposal'
 import { formatChoice } from '../../../../utils/votes/utils'
-import Link from '../../../Common/Typography/Link'
 import Text from '../../../Common/Typography/Text'
 import SentimentSurvey from '../../../Proposal/SentimentSurvey/SentimentSurvey'
 import '../../ProposalModal.css'
@@ -60,7 +59,6 @@ export function VotingModalSurvey({
           <Button
             basic
             fluid
-            as={Link}
             onClick={() => onCastVote(selectedChoice)}
             disabled={castingVote || reactionSelected}
             className="VotingModal__SkipAndCast"

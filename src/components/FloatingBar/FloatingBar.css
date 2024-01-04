@@ -29,14 +29,18 @@
 }
 
 .FloatingBar__Action {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  cursor: pointer;
   color: var(--black-600);
   font-size: 13px;
+  font-family: inherit;
   line-height: 24px;
   font-weight: var(--weight-semi-bold);
   text-transform: uppercase;
-  gap: 2px;
-  display: flex;
-  align-items: center;
 }
 
 .FloatingBar__ReactionsImg {
