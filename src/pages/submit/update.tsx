@@ -270,7 +270,9 @@ export default function Update({ isEdit }: Props) {
           />
         </>
       )}
-      {isPreviewMode && <UpdateMarkdownView update={previewUpdate} className="UpdateSubmit__Preview" />}
+      <Container>
+        {isPreviewMode && <UpdateMarkdownView update={previewUpdate} className="UpdateSubmit__Preview" />}
+      </Container>
       <Container className="ContentLayout__Container">
         <ContentSection className="UpdateSubmit__Actions">
           <Button
