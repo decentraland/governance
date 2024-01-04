@@ -223,6 +223,10 @@ export default function Update({ isEdit }: Props) {
     setFormDisabled(false)
   }
 
+  const lastUpdate = publicUpdates?.filter(
+    (update) => update.status === UpdateStatus.Done || update.status === UpdateStatus.Late
+  )?.[0]
+
   return (
     <div>
       <ContentLayout>
@@ -259,14 +263,13 @@ export default function Update({ isEdit }: Props) {
               )
             }
             releases={releases}
-            publicUpdates={publicUpdates}
+            lastUpdate={lastUpdate}
             csvInputField={csvInputField}
             setCSVInputField={patchCsvInputField}
           />
         </>
       )}
-      {/* TODO: fix cards in preview mode */}
-      {isPreviewMode && <UpdateMarkdownView update={previewUpdate} proposal={proposal} />}
+      {isPreviewMode && <UpdateMarkdownView update={previewUpdate} proposal={proposal} lastUpdate={lastUpdate} />}
       <Container className="ContentLayout__Container">
         <ContentSection className="UpdateSubmit__Actions">
           <Button

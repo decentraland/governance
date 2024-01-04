@@ -98,7 +98,7 @@ export function getUpdateNumber(publicUpdates?: UpdateAttributes[] | null, updat
 }
 
 export function getFundsReleasedSinceLastUpdate(
-  lastUpdate: UpdateAttributes | undefined,
+  lastUpdate: Omit<UpdateAttributes, 'id' | 'proposal_id'> | undefined,
   releases: VestingLog[] | undefined
 ): { value: number; txAmount: number } {
   if (!releases || releases.length === 0) return { value: 0, txAmount: 0 }

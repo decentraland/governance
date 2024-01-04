@@ -11,7 +11,6 @@ import {
   FinancialUpdateSection,
   FinancialUpdateSectionSchema,
   UpdateAttributes,
-  UpdateStatus,
 } from '../../entities/Updates/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import CSVDragAndDrop from '../Common/CSVDragAndDrop'
@@ -31,7 +30,7 @@ interface Props {
   sectionNumber: number
   intialValues?: Partial<FinancialUpdateSection>
   releases?: VestingLog[]
-  publicUpdates?: UpdateAttributes[]
+  lastUpdate?: Omit<UpdateAttributes, 'id' | 'proposal_id'>
   csvInputField: string | undefined
   setCSVInputField: (value?: string) => void
 }
@@ -57,7 +56,7 @@ function FinancialSection({
   sectionNumber,
   intialValues,
   releases,
-  publicUpdates,
+  lastUpdate,
   csvInputField,
   setCSVInputField,
 }: Props) {
@@ -209,10 +208,6 @@ function FinancialSection({
       },
     })
   }, [csvInputField, csvInputHandler, readString])
-
-  const lastUpdate = publicUpdates?.filter(
-    (update) => update.status === UpdateStatus.Done || update.status === UpdateStatus.Late
-  )?.[0]
 
   return (
     <ProjectRequestSection

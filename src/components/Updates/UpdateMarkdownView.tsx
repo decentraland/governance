@@ -25,7 +25,7 @@ import './UpdateMarkdownView.css'
 interface Props {
   update: Omit<UpdateAttributes, 'id' | 'proposal_id'>
   author?: string
-  lastUpdate?: UpdateAttributes
+  lastUpdate?: Omit<UpdateAttributes, 'id' | 'proposal_id'>
   proposal: ProposalAttributes | null
   className?: string
 }

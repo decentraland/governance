@@ -12,7 +12,7 @@ import './FinancialCardsSection.css'
 
 interface Props {
   releases?: VestingLog[]
-  lastUpdate?: UpdateAttributes
+  lastUpdate?: Omit<UpdateAttributes, 'id' | 'proposal_id'>
   disclosedFunds: number
 }
 
