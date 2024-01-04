@@ -19,7 +19,7 @@ interface Props {
 function FinancialCardsSection({ releases, lastestUpdate, disclosedFunds }: Props) {
   const t = useFormatMessage()
   const { value: releasedFundsValue, txAmount } = getFundsReleasedSinceLastestUpdate(lastestUpdate, releases)
-  const lastRelease = releases?.[0]
+  const latestRelease = releases?.[0]
   const undisclosedFunds = disclosedFunds <= releasedFundsValue ? releasedFundsValue - disclosedFunds : 0
   const { formatNumber } = useIntl()
   return (
@@ -29,10 +29,10 @@ function FinancialCardsSection({ releases, lastestUpdate, disclosedFunds }: Prop
         title={t('page.proposal_update.funds_released_label')}
         value={releasedFundsValue}
         subtitle={
-          lastRelease
+          latestRelease
             ? t('page.proposal_update.funds_released_sublabel', {
                 amount: txAmount,
-                time: formatDate(new Date(lastRelease.timestamp)),
+                time: formatDate(new Date(latestRelease.timestamp)),
               })
             : undefined
         }

@@ -124,15 +124,14 @@ export function getReleases(vestings: VestingInfo[]) {
 }
 
 export function getLatestUpdate(publicUpdates: UpdateAttributes[], beforeDate?: Date): UpdateAttributes | undefined {
-  if (!publicUpdates || publicUpdates.length === 0) return undefined
+  if (!publicUpdates?.length) return undefined
+
   return publicUpdates
     .filter((update) => update.status === UpdateStatus.Done || update.status === UpdateStatus.Late)
-    .reduce((prev, current) => {
-      if (!prev) return current
-      if (!prev.completion_date) return current
-      if (!current.completion_date) return prev
-      if (beforeDate && Time(prev.completion_date).isAfter(beforeDate)) return current
-      if (Time(prev.completion_date).isAfter(current.completion_date)) return prev
-      return current
-    })
+    .reduce((latest, current) => {
+      if (!latest || !latest.completion_date || (beforeDate && Time(latest.completion_date).isAfter(beforeDate))) {
+        return current
+      }
+      return Time(latest.completion_date).isAfter(current.completion_date) ? latest : current
+    }, undefined as UpdateAttributes | undefined)
 }
