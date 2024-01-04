@@ -50,3 +50,8 @@ export const SNAPSHOT_STATUS_ERROR_RATE_THRESHOLD = Number(process.env.SNAPSHOT_
 export const DEFAULT_CHAIN_ID =
   process.env.GATSBY_DEFAULT_CHAIN_ID || clientEnv('GATSBY_DEFAULT_CHAIN_ID', String(ChainId.ETHEREUM_MAINNET))
 export const PUSH_CHANNEL_ID = process.env.GATSBY_PUSH_CHANNEL_ID || clientEnv('GATSBY_PUSH_CHANNEL_ID')
+
+export const BUY_LAND_URL = process.env.GATSBY_BUY_LAND_URL || clientEnv('GATSBY_BUY_LAND_URL')
+export const BUY_WEARABLES_URL = process.env.GATSBY_BUY_WEARABLES_URL || clientEnv('GATSBY_BUY_WEARABLES_URL')
+export const BUY_NAME_URL = process.env.GATSBY_BUY_NAME_URL || clientEnv('GATSBY_BUY_NAME_URL')
+export const BUY_MANA_URL = process.env.GATSBY_BUY_MANA_URL || clientEnv('GATSBY_BUY_MANA_URL')

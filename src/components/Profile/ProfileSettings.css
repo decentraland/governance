@@ -1,3 +1,7 @@
+.ui.dropdown.ProfileSettings {
+  display: flex !important;
+}
+
 .ui.dropdown.ProfileSettings > .menu,
 .ui.dropdown.ProfileSettings > .menu .item {
   background: var(--black-700);

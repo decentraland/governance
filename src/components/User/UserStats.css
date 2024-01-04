@@ -40,6 +40,14 @@
 
 .UserStats__Username {
   display: flex;
+  max-width: 200px;
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  .UserStats__Username {
+    max-width: unset;
+  }
 }
 
 .UserStats__UsernameContainer > svg {
