@@ -81,7 +81,7 @@ export type GetProposalsFilter = ProposalListFilter & {
 
 const getGovernanceApiUrl = () => {
   if (process.env.GATSBY_HEROKU_APP_NAME) {
-    return `https://${process.env.GATSBY_HEROKU_APP_NAME}.herokuapp.com/api`
+    return `https://governance.decentraland.vote/api/`
   }
 
   return GOVERNANCE_API
