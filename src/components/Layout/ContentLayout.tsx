@@ -7,7 +7,7 @@ import locations, { navigate } from '../../utils/locations'
 
 import './ContentLayout.css'
 
-export type ContentLayoutProps = {
+type Props = {
   className?: string
   small?: boolean
   children?: React.ReactNode
@@ -15,14 +15,10 @@ export type ContentLayoutProps = {
   preventNavigation?: boolean
 }
 
-export default function ContentLayout({
-  navigateHref,
-  className,
-  small,
-  preventNavigation,
-  children,
-}: ContentLayoutProps) {
-  function handleBack() {
+export default function ContentLayout({ navigateHref, className, small, preventNavigation, children }: Props) {
+  const handleBack = () => {
+    // TODO: Type window.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if ((window as any).routeUpdate) {
       window.history.back()
     } else {
@@ -44,6 +40,7 @@ export default function ContentLayout({
   )
 }
 
+// TODO: Remove, use the other component from /components/Layout/ContentSection
 export function ContentSection(props: React.HTMLAttributes<HTMLDivElement>) {
   return <div {...props} className={classNames('ContentLayout__Section', props.className)} />
 }

@@ -1,3 +1,5 @@
+import classNames from 'classnames'
+
 import { UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Time, { formatDate } from '../../utils/date/Time'
@@ -16,18 +18,19 @@ import './UpdateMarkdownView.css'
 interface Props {
   update: Omit<UpdateAttributes, 'id' | 'proposal_id'>
   author?: string
+  className?: string
 }
 
 const UPDATE_DETAIL_MARKDOWN_STYLES = { p: 'UpdateDetail__ContentText', li: 'UpdateDetail__ListItem' }
 
-const UpdateMarkdownView = ({ update, author }: Props) => {
+const UpdateMarkdownView = ({ update, author, className }: Props) => {
   const t = useFormatMessage()
   const formattedCompletionDate = update?.completion_date ? formatDate(update.completion_date) : ''
   const formattedEditDate = update?.updated_at ? formatDate(update.updated_at) : ''
   const formattedDueDate = Time.utc(update?.completion_date).from(Time.utc(update?.due_date), true)
 
   return (
-    <ContentSection className="UpdateDetail__Content">
+    <ContentSection className={classNames('UpdateDetail__Content', className)}>
       {update?.health && <ProjectHealthStatus health={update.health} />}
       <ArticleSectionHeading>{t('page.update_detail.introduction')}</ArticleSectionHeading>
       <Markdown componentsClassNames={UPDATE_DETAIL_MARKDOWN_STYLES}>{update?.introduction || ''}</Markdown>
