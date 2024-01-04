@@ -3,8 +3,8 @@ import { formatBalance } from '../utils'
 
 import { formatDate, formatLinkedProposal, formatMarkdown, template } from './utils'
 
-export const title = (proposal: BidRequest & { id: number }) =>
-  `[BID-${String(proposal.id).padStart(4, '0')}] ${proposal.teamName}`
+export const title = (proposal: BidRequest & { bid_number: number }) =>
+  `[BID-${String(proposal.bid_number).padStart(4, '0')}] ${proposal.teamName}`
 
 const getDuration = (duration: number) => {
   const months = duration === 1 ? 'month' : 'months'

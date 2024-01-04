@@ -41,13 +41,20 @@ export default class BidService {
 
     const publish_at =
       tenderBids.length > 0 ? tenderBids[0].publish_at : Time.utc().add(bidsSubmissionWindow, 'seconds').toISOString()
-    await UnpublishedBidModel.createBid({
-      linked_proposal_id,
-      bid_proposal_data,
-      author_address,
-      publish_at,
-      status: UnpublishedBidStatus.Pending,
-    })
+
+    try {
+      await UnpublishedBidModel.createBid({
+        linked_proposal_id,
+        bid_proposal_data,
+        author_address,
+        publish_at,
+        status: UnpublishedBidStatus.Pending,
+      })
+    } catch (error) {
+      const msg = 'Error creating bid'
+      ErrorService.report(msg, { error, author_address, linked_proposal_id, category: ErrorCategory.Bid })
+      throw new Error(msg)
+    }
   }
 
   static async publishBids(context: JobContext) {
@@ -86,8 +93,12 @@ export default class BidService {
         continue
       }
 
+      const totalBids = await ProposalModel.getProposalTotal({
+        type: ProposalType.Bid,
+      })
+      let bid_number = totalBids + 1
       for (const bid of bids) {
-        const { author_address, bid_proposal_data, linked_proposal_id, publish_at, id, created_at } = bid
+        const { author_address, bid_proposal_data, linked_proposal_id, publish_at, created_at } = bid
         const finish_at = Time.utc(publish_at).add(Number(process.env.DURATION_BID), 'seconds').toDate()
         try {
           const required_to_pass =
@@ -99,7 +110,7 @@ export default class BidService {
             type: ProposalType.Bid,
             user: author_address,
             configuration: {
-              id,
+              bid_number,
               linked_proposal_id,
               created_at,
               ...bid_proposal_data,
@@ -108,6 +119,7 @@ export default class BidService {
             required_to_pass,
             finish_at,
           })
+          bid_number++
           await UnpublishedBidModel.removePendingBid(author_address, linked_proposal_id)
           context.log(`Bid from ${author_address} for tender ${linked_proposal_id} published`)
         } catch (error) {
