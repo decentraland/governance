@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import classNames from 'classnames'
 import { useMobileMediaQuery, useTabletAndBelowMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
+import { StaticImage } from 'gatsby-plugin-image'
 import { Autoplay, Navigation, Pagination } from 'swiper'
 import 'swiper/css'
 import 'swiper/css/bundle'
@@ -45,7 +46,12 @@ function ImageGallery({ className, imageUrls }: Props) {
           >
             {imageUrls.map((imageUrl, index) => (
               <SwiperSlide key={index} onClick={() => imageClickHandler(index)}>
-                <img src={imageUrl} onError={(e) => (e.currentTarget.src = NO_IMAGE)} />
+                <StaticImage
+                  placeholder="blurred"
+                  alt=""
+                  src={imageUrl}
+                  onError={(e) => (e.currentTarget.src = NO_IMAGE)}
+                />
               </SwiperSlide>
             ))}
           </Swiper>

@@ -2,6 +2,7 @@ import classNames from 'classnames'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { useTabletMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
+import { StaticImage } from 'gatsby-plugin-image'
 
 import { forumUrl } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
@@ -42,7 +43,7 @@ const FloatingBar = ({
         {showViewReactions && (
           <button onClick={scrollToReactions} className="FloatingBar__Action">
             {t('component.floating_bar.view_reactions_label')}
-            <img alt="" src={reactions} className="FloatingBar__ReactionsImg" />
+            <StaticImage placeholder="blurred" alt="" src={reactions} className="FloatingBar__ReactionsImg" />
           </button>
         )}
         <button onClick={scrollToComments} className="FloatingBar__Action">
