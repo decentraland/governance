@@ -23,7 +23,6 @@ interface Props {
   as?: 'span'
 }
 
-// eslint-disable-next-line react/display-name
 const Text = React.forwardRef<HTMLParagraphElement, Props>(
   (
     {
@@ -53,5 +52,7 @@ const Text = React.forwardRef<HTMLParagraphElement, Props>(
     )
   }
 )
+
+Text.displayName = 'Text'
 
 export default Text
