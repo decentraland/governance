@@ -91,6 +91,11 @@ export class UserService {
     return account.length > 0 ? account[0].is_discord_notifications_active : false
   }
 
+  static async isDiscordConnected(address: string) {
+    console.log('address', address)
+    return false
+  }
+
   static async isValidated(address: string, accounts: Set<AccountType>): Promise<boolean> {
     return await UserModel.isValidated(address, accounts)
   }
