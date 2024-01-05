@@ -28,7 +28,18 @@ function SummaryContent({ category, group }: SummaryContentProps) {
         <Fragment key={`${category}-${index}`}>
           <div className="SummaryContentItem">
             <div className="SummaryContentItem_DescriptionContainer">
-              <Text className="SummaryContentItem_DescriptionText" size="md">
+              <Text
+                className="SummaryContentItem_DescriptionText"
+                size="md"
+                ref={(element) => {
+                  element?.addEventListener('mouseover', () => {
+                    const { scrollWidth: elementWidth, clientWidth: containerWidth } = element
+                    if (elementWidth > containerWidth) {
+                      element.setAttribute('title', description)
+                    }
+                  })
+                }}
+              >
                 {description}
               </Text>
               <Text size="sm" color="secondary">

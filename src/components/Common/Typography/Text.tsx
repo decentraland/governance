@@ -1,3 +1,5 @@
+import React from 'react'
+
 import classNames from 'classnames'
 
 import './Text.css'
@@ -21,23 +23,35 @@ interface Props {
   as?: 'span'
 }
 
-export default function Text({
-  children,
-  size = DEFAULT_FONT_SIZE,
-  weight = DEFAULT_FONT_WEIGHT,
-  color = DEFAULT_COLOR,
-  style = DEFAULT_FONT_STYLE,
-  className,
-  as,
-}: Props) {
-  const componentClassNames = classNames(
-    'Text',
-    `Text--size-${size}`,
-    `Text--weight-${weight}`,
-    `Text--color-${color}`,
-    `Text--style-${style}`,
-    className
-  )
-  const Component = as ?? 'p'
-  return <Component className={componentClassNames}>{children}</Component>
-}
+// eslint-disable-next-line react/display-name
+const Text = React.forwardRef<HTMLParagraphElement, Props>(
+  (
+    {
+      children,
+      size = DEFAULT_FONT_SIZE,
+      weight = DEFAULT_FONT_WEIGHT,
+      color = DEFAULT_COLOR,
+      style = DEFAULT_FONT_STYLE,
+      className,
+      as,
+    },
+    ref
+  ) => {
+    const componentClassNames = classNames(
+      'Text',
+      `Text--size-${size}`,
+      `Text--weight-${weight}`,
+      `Text--color-${color}`,
+      `Text--style-${style}`,
+      className
+    )
+    const Component = as ?? 'p'
+    return (
+      <Component className={componentClassNames} ref={ref}>
+        {children}
+      </Component>
+    )
+  }
+)
+
+export default Text
