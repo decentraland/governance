@@ -9,6 +9,11 @@ sharp.cache(false)
 sharp.simd(false)
 
 exports.onCreateWebpackConfig = ({ stage, actions, getConfig }) => {
+  if (stage === 'build-javascript') {
+    actions.setWebpackConfig({
+      devtool: false,
+    })
+  }
   actions.setWebpackConfig({
     resolve: {
       fallback: {
