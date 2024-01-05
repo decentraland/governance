@@ -34,7 +34,7 @@ async function sendNotification(req: WithAuth) {
   }
 
   if (type === NotificationType.TARGET) {
-    const users = await UserModel.getDiscordIdsByAddresses(isArray(recipient) ? recipient : [recipient])
+    const users = await UserModel.getActiveDiscordIds(isArray(recipient) ? recipient : [recipient])
 
     for (const user of users) {
       DiscordService.sendDirectMessage(user.discord_id, {
