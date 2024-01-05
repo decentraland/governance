@@ -6,7 +6,6 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
-import { StaticImage } from 'gatsby-plugin-image'
 
 import useFormatMessage from '../../hooks/useFormatMessage'
 import locations, { navigate } from '../../utils/locations'
@@ -40,7 +39,7 @@ function LogIn({ title, description }: LogInProps) {
     return (
       <Container className="LoginMobile__Container">
         <Head title={title} description={description} image={IMAGE_URL} />
-        <StaticImage placeholder="blurred" alt="" src={IMAGE_URL} className="LoginMobile__Logo" />
+        <img src={IMAGE_URL} className="LoginMobile__Logo" />
         <Text weight="semi-bold" className="LoginMobile__Title">
           {t(`mobile_login.exclamation`)}
         </Text>

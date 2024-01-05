@@ -1,5 +1,6 @@
+import * as React from 'react'
+
 import classNames from 'classnames'
-import { StaticImage } from 'gatsby-plugin-image'
 
 import { DEFAULT_AVATAR_IMAGE } from '../../utils/Catalyst'
 
@@ -34,5 +35,5 @@ export default function Avatar({ address, avatar, isLoadingDclProfile, size = Av
     className
   )
 
-  return <StaticImage src={avatar || DEFAULT_AVATAR_IMAGE} alt="" className={avatarClassNames} placeholder="blurred" />
+  return <img src={avatar || DEFAULT_AVATAR_IMAGE} alt="" className={avatarClassNames} />
 }

@@ -1,6 +1,5 @@
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
-import { StaticImage } from 'gatsby-plugin-image'
 import { Keyboard, Navigation, Pagination } from 'swiper'
 import 'swiper/css'
 import 'swiper/css/bundle'
@@ -32,12 +31,7 @@ function ImageGalleryFullscreen({ open, onClose, className, imageUrls, startInde
         >
           {imageUrls.map((imageUrl, index) => (
             <SwiperSlide key={index}>
-              <StaticImage
-                placeholder="blurred"
-                alt=""
-                src={imageUrl}
-                onError={(e) => (e.currentTarget.src = NO_IMAGE)}
-              />
+              <img src={imageUrl} onError={(e) => (e.currentTarget.src = NO_IMAGE)} />
             </SwiperSlide>
           ))}
         </Swiper>
