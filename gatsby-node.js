@@ -5,11 +5,17 @@
  */
 
 const sharp = require('sharp')
+const webpack = require('webpack')
 sharp.cache(false)
 sharp.simd(false)
 
 exports.onCreateWebpackConfig = ({ stage, actions, getConfig }) => {
   actions.setWebpackConfig({
+    plugins: [
+      new webpack.NormalModuleReplacementPlugin(/node:/, (resource) => {
+        resource.request = resource.request.replace(/^node:/, '')
+      }),
+    ],
     resolve: {
       fallback: {
         assert: false,
