@@ -56,10 +56,10 @@ export default function UserStats({ address, vpDistribution, isLoadingVpDistribu
             </div>
           )}
         </div>
+        <Badges address={address} />
       </div>
       <div className="UserStats__UserInfoContainer">
         <div className="UserStats__UserInfo">
-          <Badges address={address} />
           <UserVpStats vpDistribution={vpDistribution} isLoadingVpDistribution={isLoadingVpDistribution} />
           {total > 0 && (
             <ActionBox title={t('page.profile.user_vp_stats.vp_distribution')} className="UserStats__VpDistributionBox">
