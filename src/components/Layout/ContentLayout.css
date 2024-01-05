@@ -6,7 +6,6 @@
 }
 
 .ui.container.ContentLayout .ContentLayout__Back {
-  padding-top: 8px;
   flex: 0 0 58px;
 }
 
@@ -31,7 +30,6 @@
   }
 
   .ui.container.ContentLayout .ContentLayout__Back {
-    padding-top: 16px;
     padding-bottom: 16px;
     flex: 0 0 100%;
   }
