@@ -3,6 +3,7 @@
   color: var(--white-900) !important;
   padding: 9px 14px !important;
   min-width: 93px !important;
+  transform: none !important;
 }
 
 .GetVpDropdown .text,

@@ -10,7 +10,6 @@ import { DappsFeatureFlags } from 'decentraland-gatsby/dist/context/FeatureFlag/
 import useFeatureFlagContext from 'decentraland-gatsby/dist/context/FeatureFlag/useFeatureFlagContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
-import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
 
 import { Governance } from '../../clients/Governance'
@@ -234,7 +233,7 @@ export default function Update({ isEdit }: Props) {
         <Head title={title} description={description} image="https://decentraland.org/images/decentraland.png" />
         <Helmet title="Publish Update" />
         <ContentSection className="UpdateSubmit__HeaderContainer">
-          <Header size="huge">{title}</Header>
+          <h1 className="UpdateSubmit__HeaderTitle">{title}</h1>
           <Text size="lg">{description}</Text>
         </ContentSection>
       </ContentLayout>

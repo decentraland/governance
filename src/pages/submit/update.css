@@ -2,6 +2,15 @@
   padding-bottom: 0 !important;
 }
 
+.UpdateSubmit__HeaderTitle {
+  font-style: normal;
+  font-weight: var(--weight-semi-bold);
+  font-size: 24px;
+  letter-spacing: 0.4px;
+  color: var(--black-800);
+  margin-bottom: 24px;
+}
+
 .UpdateSubmit__ProjectHealthContainer {
   display: flex;
   flex-direction: column;
