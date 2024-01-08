@@ -6,7 +6,7 @@ import './Sidebar.css'
 interface Props {
   title: string
   description: string
-  buttons: SidebarLinkButtonProps[]
+  buttons?: SidebarLinkButtonProps[]
 }
 
 function Sidebar({ title, description, buttons }: Props) {
@@ -16,7 +16,7 @@ function Sidebar({ title, description, buttons }: Props) {
         {title}
       </Heading>
       <p>{description}</p>
-      {buttons.map((buttonProps, index) => (
+      {buttons?.map((buttonProps, index) => (
         <SidebarLinkButton key={[`button-${title}`, index].join('::')} {...buttonProps} />
       ))}
     </div>

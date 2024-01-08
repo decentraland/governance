@@ -1563,6 +1563,10 @@
         "about_dao_button": "How the DAO Works",
         "wearables_curator_button": "Apply as Wearables Curator",
         "delegate_button": "Apply as DAO Delegate"
+      },
+      "core_units": {
+        "title": "Core Units",
+        "description": "Our DAO has determined that projects of importance for the Operations of Decentraland are to be considered and refered to as Core-Units"
       }
     },
     "update_detail": {

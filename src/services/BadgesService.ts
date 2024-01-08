@@ -48,6 +48,11 @@ export class BadgesService {
     return this.createBadgesList(otterspaceBadges)
   }
 
+  static async getBadgesById(badgeCid: string) {
+    const otterspaceBadges = await OtterspaceSubgraph.get().getBadges(badgeCid)
+    return otterspaceBadges
+  }
+
   private static createBadgesList(otterspaceBadges: OtterspaceBadge[]): UserBadges {
     const currentBadges: Badge[] = []
     const expiredBadges: Badge[] = []
@@ -217,6 +222,7 @@ export class BadgesService {
             address: badgeOwnership.address,
             badgeId: trimmedId,
           })
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
           actionResults.push({
             status: ActionStatus.Failed,

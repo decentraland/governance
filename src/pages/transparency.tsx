@@ -195,6 +195,13 @@ export default function TransparencyPage() {
                 </Card>
               </div>
             </div>
+
+            <div className="TransparencyGrid">
+              <Sidebar
+                title={t('page.transparency.core_units.title')}
+                description={t('page.transparency.core_units.description')}
+              />
+            </div>
           </WiderContainer>
         )}
       </div>
