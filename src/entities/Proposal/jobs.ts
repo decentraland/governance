@@ -173,8 +173,11 @@ async function prepareProposalsAndBudgetsUpdates(
 }
 
 export async function finishProposal() {
+  logger.log(`Running finish proposal job...`)
+
   try {
     const finishableProposals = await ProposalModel.getFinishableProposals()
+    logger.log(`Finishable proposals`, finishableProposals)
     if (finishableProposals.length === 0) {
       return
     }
