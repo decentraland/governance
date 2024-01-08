@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import classNames from 'classnames'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -5,47 +7,87 @@ import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
+import { AccountType } from '../../../entities/User/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
+import useIsDiscordConnected from '../../../hooks/useIsDiscordConnected'
 import Text from '../../Common/Typography/Text'
 import DiscordCircled from '../../Icon/DiscordCircled'
 import LinkAccounts from '../../Icon/LinkAccounts'
 import NotificationBellCircled from '../../Icon/NotificationBellCircled'
+import AccountsConnectModal from '../IdentityConnectModal/AccountsConnectModal'
 import '../ProposalModal.css'
 
 import './LinkDiscordModal.css'
 
+const HIDE_LINK_DISCORD_MODAL_KEY = 'org.decentraland.governance.link_discord_modal.hide'
+
+const shouldShowModal = () => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem(HIDE_LINK_DISCORD_MODAL_KEY) !== 'true'
+  }
+  return true
+}
+
 export function LinkDiscordModal() {
   const [account] = useAuthContext()
+  const { isDiscordConnected } = useIsDiscordConnected()
   const t = useFormatMessage()
 
+  const [isLinkDiscordModalOpen, setIsLinkDiscordModalOpen] = useState(false)
+  const [isAccountsConnectModalOpen, setIsAccountsConnectModalOpen] = useState(false)
+
+  useEffect(() => {
+    setIsLinkDiscordModalOpen(!!account && shouldShowModal() && !isDiscordConnected)
+  }, [account, isDiscordConnected])
+
+  const handleClose = () => {
+    localStorage.setItem(HIDE_LINK_DISCORD_MODAL_KEY, 'true')
+    setIsLinkDiscordModalOpen(false)
+  }
+
+  const handleLinkAccounts = () => {
+    handleClose()
+    setIsAccountsConnectModalOpen(true)
+  }
+
   return (
-    <Modal
-      size="tiny"
-      className={classNames('GovernanceActionModal', 'ProposalModal', 'LinkDiscordModal')}
-      closeIcon={<Close />}
-      open
-    >
-      <Modal.Content>
-        <div className="PostConnection__Icons">
-          <NotificationBellCircled />
-          <LinkAccounts />
-          <DiscordCircled />
-        </div>
-        <div className="LinkDiscordModal__Content">
-          <Header>{'Receive DAO Notifications in Discord!'}</Header>
-          <Text size="md" className="LinkDiscordModal__Description">
-            {
-              'Connect your Decentraland and Discord in one click! \n\nBy linking your accounts, you can receive real-time, governance-related notifications directly in your Discord.'
-            }
-          </Text>
-          <Text size="sm" color="secondary" className="LinkDiscordModal__Secondary">
-            {'Stay in the loop and never miss out on important updates and opportunities to participate.'}
-          </Text>
-        </div>
-        <div className="LinkDiscordModal__Action">
-          <Button primary>{'Link your discord account'}</Button>
-        </div>
-      </Modal.Content>
-    </Modal>
+    <>
+      <Modal
+        size="tiny"
+        className={classNames('GovernanceActionModal', 'ProposalModal', 'LinkDiscordModal')}
+        closeIcon={<Close />}
+        open={isLinkDiscordModalOpen}
+        onClose={handleClose}
+      >
+        <Modal.Content>
+          <div className="PostConnection__Icons">
+            <NotificationBellCircled />
+            <LinkAccounts />
+            <DiscordCircled />
+          </div>
+          <div className="LinkDiscordModal__Content">
+            <Header>{'Receive DAO Notifications in Discord!'}</Header>
+            <Text size="md" className="LinkDiscordModal__Description">
+              {
+                'Connect your Decentraland and Discord in one click! \n\nBy linking your accounts, you can receive real-time, governance-related notifications directly in your Discord.'
+              }
+            </Text>
+            <Text size="sm" color="secondary" className="LinkDiscordModal__Secondary">
+              {'Stay in the loop and never miss out on important updates and opportunities to participate.'}
+            </Text>
+          </div>
+          <div className="LinkDiscordModal__Action">
+            <Button primary onClick={handleLinkAccounts}>
+              {'Link your discord account'}
+            </Button>
+          </div>
+        </Modal.Content>
+      </Modal>
+      <AccountsConnectModal
+        open={isAccountsConnectModalOpen}
+        onClose={() => setIsAccountsConnectModalOpen(false)}
+        account={AccountType.Discord}
+      />
+    </>
   )
 }
