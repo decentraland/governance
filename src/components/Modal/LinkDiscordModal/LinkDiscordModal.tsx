@@ -66,19 +66,17 @@ export function LinkDiscordModal() {
             <DiscordCircled />
           </div>
           <div className="LinkDiscordModal__Content">
-            <Header>{'Receive DAO Notifications in Discord!'}</Header>
+            <Header>{t('modal.link_discord.title')}</Header>
             <Text size="md" className="LinkDiscordModal__Description">
-              {
-                'Connect your Decentraland and Discord in one click! \n\nBy linking your accounts, you can receive real-time, governance-related notifications directly in your Discord.'
-              }
+              {t('modal.link_discord.description')}
             </Text>
             <Text size="sm" color="secondary" className="LinkDiscordModal__Secondary">
-              {'Stay in the loop and never miss out on important updates and opportunities to participate.'}
+              {t('modal.link_discord.sub')}
             </Text>
           </div>
           <div className="LinkDiscordModal__Action">
             <Button primary onClick={handleLinkAccounts}>
-              {'Link your discord account'}
+              {t('modal.link_discord.action')}
             </Button>
           </div>
         </Modal.Content>

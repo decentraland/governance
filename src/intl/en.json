@@ -749,6 +749,12 @@
       "soon": "Soon",
       "verified": "Verified"
     },
+    "link_discord": {
+      "title": "Receive DAO Notifications in Discord!",
+      "description": "Connect your Decentraland and Discord in one click! \n\nBy linking your accounts, you can receive real-time, governance-related notifications directly in your Discord.",
+      "sub": "Stay in the loop and never miss out on important updates and opportunities to participate.",
+      "action": "Link your discord account"
+    },
     "wallet_selector": {
       "title": "Sign In",
       "subtitle": "Choose a method to connect",
