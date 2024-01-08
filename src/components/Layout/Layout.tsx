@@ -121,18 +121,24 @@ export default function Layout({ children, ...props }: LayoutProps) {
     }
   }, [user, chainId])
 
-  const handleClickBalance = useCallback((event: React.MouseEvent<HTMLButtonElement, MouseEvent>, network: Network) => {
-    event.preventDefault()
-    track(DROPDOWN_MENU_BALANCE_CLICK_EVENT, { network })
+  const handleClickBalance = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, network: Network) => {
+      event.preventDefault()
+      track(DROPDOWN_MENU_BALANCE_CLICK_EVENT, { network })
 
-    setTimeout(() => {
-      window.open(config.get('ACCOUNT_URL'), '_blank', 'noopener')
-    }, 300)
-  }, [])
+      setTimeout(() => {
+        window.open(config.get('ACCOUNT_URL'), '_blank', 'noopener')
+      }, 300)
+    },
+    [track]
+  )
 
-  const handleOpen = useCallback((e: React.MouseEvent<HTMLElement, MouseEvent>, track_uuid: string) => {
-    track(DROPDOWN_MENU_DISPLAY_EVENT, { track_uuid })
-  }, [])
+  const handleOpen = useCallback(
+    (e: React.MouseEvent<HTMLElement, MouseEvent>, track_uuid: string) => {
+      track(DROPDOWN_MENU_DISPLAY_EVENT, { track_uuid })
+    },
+    [track]
+  )
 
   const handleSignOut = useCallback(
     (e: React.MouseEvent<HTMLElement, MouseEvent>, track_uuid: string) => {
@@ -141,7 +147,7 @@ export default function Layout({ children, ...props }: LayoutProps) {
         userState.disconnect()
       }, 300)
     },
-    [userState.disconnect]
+    [track, userState]
   )
 
   const handleClickMenuOption = function (event: React.MouseEvent, section: string) {
