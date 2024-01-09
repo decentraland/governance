@@ -1,9 +1,10 @@
-import { HIDE_NEWSLETTER_SUBSCRIPTION_KEY } from '../../../front/localStorageKeys'
-import useFormatMessage from '../../../hooks/useFormatMessage'
-import useNewsletterSubscription from '../../../hooks/useNewsletterSubscription'
-import Email from '../../Icon/Email'
-import { NewsletterSubscriptionModal } from '../../Modal/NewsletterSubscriptionModal/NewsletterSubscriptionModal'
-import Banner from '../Banner'
+import { HIDE_NEWSLETTER_SUBSCRIPTION_KEY } from '../../front/localStorageKeys'
+import useFormatMessage from '../../hooks/useFormatMessage'
+import useNewsletterSubscription from '../../hooks/useNewsletterSubscription'
+import Email from '../Icon/Email'
+import { NewsletterSubscriptionModal } from '../Modal/NewsletterSubscriptionModal/NewsletterSubscriptionModal'
+
+import Banner from './Banner'
 
 function SubscriptionBanner() {
   const {

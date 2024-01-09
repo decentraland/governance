@@ -1,12 +1,14 @@
 import useNewsletterSubscription from '../../hooks/useNewsletterSubscription'
 
-import DelegationBanner, { shouldShowDelegationBanner } from './Delegation/DelegationBanner'
-import LinkDiscordBanner, { shouldShowLinkDiscordBanner } from './LinkDiscord/LinkDiscordBanner'
-import SubscriptionBanner from './Subscription/SubscriptionBanner'
+import DelegationBanner, { shouldShowDelegationBanner } from './DelegationBanner'
+import LinkDiscordBanner, { shouldShowLinkDiscordBanner } from './LinkDiscordBanner'
+import SubscriptionBanner from './SubscriptionBanner'
 
 interface Props {
   isVisible: boolean
 }
+
+const randomNumber = new Date().valueOf()
 
 function RandomBanner({ isVisible }: Props) {
   const { showSubscriptionBanner } = useNewsletterSubscription()
@@ -28,7 +30,7 @@ function RandomBanner({ isVisible }: Props) {
     return subscriptionBanner
   }
 
-  return new Date().valueOf() % 2 === 0 ? delegationBanner : subscriptionBanner
+  return randomNumber % 2 === 0 ? delegationBanner : subscriptionBanner
 }
 
 export default RandomBanner
