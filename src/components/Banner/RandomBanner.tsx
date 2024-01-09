@@ -1,5 +1,4 @@
 import useNewsletterSubscription from '../../hooks/useNewsletterSubscription'
-import { NewsletterSubscriptionModal } from '../Modal/NewsletterSubscriptionModal/NewsletterSubscriptionModal'
 
 import DelegationBanner, { shouldShowDelegationBanner } from './Delegation/DelegationBanner'
 import LinkDiscordBanner, { shouldShowLinkDiscordBanner } from './LinkDiscord/LinkDiscordBanner'
@@ -9,53 +8,27 @@ interface Props {
   isVisible: boolean
 }
 
-const now = new Date()
-
 function RandomBanner({ isVisible }: Props) {
-  const {
-    showSubscriptionBanner,
-    isSubscriptionModalOpen,
-    setIsSubscriptionModalOpen,
-    onSubscriptionSuccess,
-    subscribed,
-    onClose,
-  } = useNewsletterSubscription()
+  const { showSubscriptionBanner } = useNewsletterSubscription()
 
   if (!isVisible) {
     return null
   }
 
-  const linkDiscordBanner = <LinkDiscordBanner />
-  const delegationBanner = <DelegationBanner />
-
-  const subscriptionBanner = (
-    <>
-      <SubscriptionBanner
-        isVisible={showSubscriptionBanner && isVisible}
-        onAction={() => setIsSubscriptionModalOpen(true)}
-      />
-      <NewsletterSubscriptionModal
-        open={isSubscriptionModalOpen}
-        onSubscriptionSuccess={onSubscriptionSuccess}
-        subscribed={subscribed}
-        onClose={onClose}
-      />
-    </>
-  )
-
   if (shouldShowLinkDiscordBanner()) {
-    return linkDiscordBanner
+    return <LinkDiscordBanner />
   }
 
+  const delegationBanner = <DelegationBanner />
+  const subscriptionBanner = <SubscriptionBanner />
   if (!showSubscriptionBanner) {
     return delegationBanner
   }
-
   if (!shouldShowDelegationBanner()) {
     return subscriptionBanner
   }
 
-  return now.valueOf() % 2 === 0 ? delegationBanner : subscriptionBanner
+  return new Date().valueOf() % 2 === 0 ? delegationBanner : subscriptionBanner
 }
 
 export default RandomBanner
