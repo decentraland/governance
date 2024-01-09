@@ -6,7 +6,7 @@ import {
   ANONYMOUS_USR_SUBSCRIPTION,
   HIDE_NEWSLETTER_SUBSCRIPTION_KEY,
   NEWSLETTER_SUBSCRIPTION_KEY,
-} from '../components/Banner/Subscription/SubscriptionBanner'
+} from '../front/localStorageKeys'
 
 function useNewsletterSubscription() {
   const [isOpen, setIsOpen] = useState(false)

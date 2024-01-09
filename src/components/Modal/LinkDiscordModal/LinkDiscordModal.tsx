@@ -8,6 +8,7 @@ import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { AccountType } from '../../../entities/User/types'
+import { HIDE_LINK_DISCORD_MODAL_KEY } from '../../../front/localStorageKeys'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useIsDiscordConnected from '../../../hooks/useIsDiscordConnected'
 import Text from '../../Common/Typography/Text'
@@ -18,8 +19,6 @@ import AccountsConnectModal from '../IdentityConnectModal/AccountsConnectModal'
 import '../ProposalModal.css'
 
 import './LinkDiscordModal.css'
-
-export const HIDE_LINK_DISCORD_MODAL_KEY = 'org.decentraland.governance.link_discord_modal.hide'
 
 const shouldShowModal = () => {
   if (typeof window !== 'undefined') {

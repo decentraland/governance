@@ -1,12 +1,9 @@
+import { HIDE_NEWSLETTER_SUBSCRIPTION_KEY } from '../../../front/localStorageKeys'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useNewsletterSubscription from '../../../hooks/useNewsletterSubscription'
 import Email from '../../Icon/Email'
 import { NewsletterSubscriptionModal } from '../../Modal/NewsletterSubscriptionModal/NewsletterSubscriptionModal'
 import Banner from '../Banner'
-
-export const NEWSLETTER_SUBSCRIPTION_KEY = 'org.decentraland.governance.newsletter_subscription'
-export const ANONYMOUS_USR_SUBSCRIPTION = 'anonymous_subscription'
-export const HIDE_NEWSLETTER_SUBSCRIPTION_KEY = 'org.decentraland.governance.newsletter_subscription.hide'
 
 function SubscriptionBanner() {
   const {

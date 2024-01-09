@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import classNames from 'classnames'
 
+import { ACTION_BOX_EXPANDED_STATE_KEY } from '../../front/localStorageKeys'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Helper from '../Helper/Helper'
 
@@ -19,8 +20,6 @@ interface Props {
   className?: string
   collapsible?: boolean
 }
-
-const ACTION_BOX_EXPANDED_STATE_KEY = 'org.decentraland.governance.action_box.expanded'
 
 function getDefaultExpanded(collapsible: boolean | undefined, localStorageKey: string) {
   if (typeof window !== 'undefined') {

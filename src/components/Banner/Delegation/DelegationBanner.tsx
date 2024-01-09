@@ -1,11 +1,10 @@
 import { OPEN_CALL_FOR_DELEGATES_LINK } from '../../../constants'
+import { HIDE_DELEGATE_BANNER_KEY } from '../../../front/localStorageKeys'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Delegate from '../../Icon/Delegate'
 import Banner from '../Banner'
 
 import './DelegationBanner.css'
-
-const HIDE_DELEGATE_BANNER_KEY = 'org.decentraland.governance.delegate_banner.hide'
 
 export const shouldShowDelegationBanner = () => {
   if (typeof window !== 'undefined') {

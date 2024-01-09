@@ -1,12 +1,10 @@
 import { OPEN_CALL_FOR_DELEGATES_LINK } from '../../../constants'
+import { HIDE_LINK_DISCORD_BANNER_KEY, HIDE_LINK_DISCORD_MODAL_KEY } from '../../../front/localStorageKeys'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import DiscordCircledBanner from '../../Icon/DiscordCircledBanner'
-import { HIDE_LINK_DISCORD_MODAL_KEY } from '../../Modal/LinkDiscordModal/LinkDiscordModal'
 import Banner from '../Banner'
 
 import './LinkDiscordBanner.css'
-
-const HIDE_LINK_DISCORD_BANNER_KEY = 'org.decentraland.governance.link_discord_banner.hide'
 
 export const shouldShowLinkDiscordBanner = () => {
   if (typeof window !== 'undefined') {
