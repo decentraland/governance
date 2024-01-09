@@ -27,6 +27,7 @@ export type Badge = {
   isPastBadge: boolean
   createdAt: number
   transactionHash: string
+  owner?: string
 }
 
 export enum ErrorReason {
@@ -87,6 +88,7 @@ export function toGovernanceBadge(otterspaceBadge: OtterspaceBadge) {
     name,
     description,
     createdAt: otterspaceBadge.createdAt,
+    owner: otterspaceBadge.owner?.id,
     image: getIpfsHttpsLink(image),
     status: toBadgeStatus(otterspaceBadge.status),
     statusReason: toBadgeStatusReason(otterspaceBadge.statusReason),

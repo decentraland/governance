@@ -25,7 +25,7 @@ export async function inBatches<T, K>(
     }
     return allResults
   } catch (error) {
-    ErrorClient.report(`Error while executing ${fetchFunction.name} in batches: `, { error })
+    ErrorClient.report(`Error while executing ${fetchFunction.name} in batches: `, { error: `${error}` })
     return []
   }
 }
