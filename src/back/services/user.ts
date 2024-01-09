@@ -92,8 +92,7 @@ export class UserService {
   }
 
   static async isDiscordConnected(address: string) {
-    console.log('address', address)
-    return false
+    return await UserModel.isValidated(address, new Set([AccountType.Discord]))
   }
 
   static async isValidated(address: string, accounts: Set<AccountType>): Promise<boolean> {
