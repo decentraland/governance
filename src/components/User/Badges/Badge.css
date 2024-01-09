@@ -4,45 +4,51 @@
 
 .Badge__Icon {
   border-radius: 50%;
-  background-size: 192px 192px;
+  background-size: calc(var(--size) / (2 / 3) * 4);
   background-repeat: no-repeat;
+  min-width: var(--size);
 }
 
 .Badge__Icon--primary {
-  width: 192px;
-  height: 192px;
+  --size: 192px;
+  width: var(--size);
+  height: var(--size);
   background-size: contain;
   background-position: 0 0;
 }
 
 .Badge__Icon--filled-mono {
-  width: 32px;
-  height: 32px;
+  --size: 32px;
+  width: var(--size);
+  height: var(--size);
   background-position: left bottom;
 }
 
 .Badge__Icon--filled-mono-small {
-  width: 24px;
-  height: 24px;
-  background-size: 144px;
+  --size: 24px;
+  width: var(--size);
+  height: var(--size);
   background-position: bottom left;
 }
 
 .Badge__Icon--filled-duo {
-  width: 32px;
-  height: 32px;
+  --size: 32px;
+  width: var(--size);
+  height: var(--size);
   background-position: right top;
 }
 
 .Badge__Icon--outline-1px {
-  width: 32px;
-  height: 32px;
+  --size: 32px;
+  width: var(--size);
+  height: var(--size);
   background-position: left top;
 }
 
 .Badge__Icon--outline-2px {
-  width: 32px;
-  height: 32px;
+  --size: 32px;
+  width: var(--size);
+  height: var(--size);
   background-position: right bottom;
 }
 

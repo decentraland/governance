@@ -16,6 +16,7 @@ import Person from '../components/Icon/Person'
 import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import TokenBalanceCard from '../components/Token/TokenBalanceCard'
+import CoreUnitsSection from '../components/Transparency/CoreUnitsSection'
 import GrantList from '../components/Transparency/GrantList'
 import MembersSection from '../components/Transparency/MembersSection'
 import MonthlyTotal from '../components/Transparency/MonthlyTotal'
@@ -201,6 +202,11 @@ export default function TransparencyPage() {
                 title={t('page.transparency.core_units.title')}
                 description={t('page.transparency.core_units.description')}
               />
+              <div className="Transparency__Section">
+                <Card className="Transparency__Card">
+                  <CoreUnitsSection />
+                </Card>
+              </div>
             </div>
           </WiderContainer>
         )}

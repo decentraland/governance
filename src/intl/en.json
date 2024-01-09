@@ -1566,7 +1566,8 @@
       },
       "core_units": {
         "title": "Core Units",
-        "description": "Our DAO has determined that projects of importance for the Operations of Decentraland are to be considered and refered to as Core-Units"
+        "description": "Our DAO has determined that projects of importance for the Operations of Decentraland are to be considered and refered to as Core-Units",
+        "members": "{amount} {amount, plural, one {member} other {members}}"
       }
     },
     "update_detail": {
