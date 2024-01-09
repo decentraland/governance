@@ -19,7 +19,7 @@ import '../ProposalModal.css'
 
 import './LinkDiscordModal.css'
 
-const HIDE_LINK_DISCORD_MODAL_KEY = 'org.decentraland.governance.link_discord_modal.hide'
+export const HIDE_LINK_DISCORD_MODAL_KEY = 'org.decentraland.governance.link_discord_modal.hide'
 
 const shouldShowModal = () => {
   if (typeof window !== 'undefined') {

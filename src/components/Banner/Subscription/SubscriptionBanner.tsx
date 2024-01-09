@@ -17,11 +17,11 @@ function SubscriptionBanner({ isVisible, onAction }: SubscriptionBannerProps) {
   return (
     <Banner
       isVisible={isVisible}
-      title={t(`page.subscription_banner.title`)}
-      description={t(`page.subscription_banner.description`)}
+      title={t(`banner.subscription.title`)}
+      description={t(`banner.subscription.description`)}
       bannerHideKey={HIDE_NEWSLETTER_SUBSCRIPTION_KEY}
       icon={<Email />}
-      buttonLabel={t(`page.subscription_banner.subscribe_button_label`)}
+      buttonLabel={t(`banner.subscription.subscribe_button_label`)}
       onButtonClick={onAction}
     />
   )

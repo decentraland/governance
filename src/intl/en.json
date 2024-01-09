@@ -773,6 +773,23 @@
       "action": "Vote \"{vote}\" anyway"
     }
   },
+  "banner": {
+    "subscription": {
+      "title": "Stay in the loop",
+      "description": "The DAO Weekly Newsletter includes updates regarding proposals",
+      "subscribe_button_label": "Subscribe"
+    },
+    "delegate": {
+      "title": "Call for Delegates Open",
+      "description": "The Decentraland DAO is looking to get committed individuals on the spotlight to help them get more VP",
+      "button_label": "Read more"
+    },
+    "link_discord": {
+      "title": "Receive DAO Notifications in Discord!",
+      "description": "Receive real-time, governance-related notifications directly in your Discord.",
+      "button_label": "Link Discord Account"
+    }
+  },
   "component": {
     "grant_card": {
       "by_user": "By",
@@ -2070,16 +2087,6 @@
         "email_error_message": "Please enter a valid email",
         "email_note": "Note: The address will be published in the proposal and publicly visible. If you want to keep your anonymity consider using an email address without personally identifiable information."
       }
-    },
-    "subscription_banner": {
-      "title": "Stay in the loop",
-      "description": "The DAO Weekly Newsletter includes updates regarding proposals",
-      "subscribe_button_label": "Subscribe"
-    },
-    "delegate_banner": {
-      "title": "Call for Delegates Open",
-      "description": "The Decentraland DAO is looking to get committed individuals on the spotlight to help them get more VP",
-      "button_label": "Read more"
     },
     "proposal_update": {
       "title": "Publish New Grant Update",

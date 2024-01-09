@@ -1,6 +1,7 @@
 import { OPEN_CALL_FOR_DELEGATES_LINK } from '../../../constants'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Delegate from '../../Icon/Delegate'
+import { HIDE_LINK_DISCORD_MODAL_KEY } from '../../Modal/LinkDiscordModal/LinkDiscordModal'
 import Banner from '../Banner'
 
 import './LinkDiscordBanner.css'
@@ -9,7 +10,10 @@ const HIDE_LINK_DISCORD_BANNER_KEY = 'org.decentraland.governance.link_discord_b
 
 export const shouldShowLinkDiscordBanner = () => {
   if (typeof window !== 'undefined') {
-    return localStorage.getItem(HIDE_LINK_DISCORD_BANNER_KEY) !== 'true'
+    return (
+      localStorage.getItem(HIDE_LINK_DISCORD_MODAL_KEY) === 'true' &&
+      localStorage.getItem(HIDE_LINK_DISCORD_BANNER_KEY) !== 'true'
+    )
   }
 
   return false
@@ -23,11 +27,11 @@ function LinkDiscordBanner() {
       <Banner
         className="LinkDiscordBanner"
         isVisible={shouldShowLinkDiscordBanner()}
-        title={t(`page.delegate_banner.title`)}
-        description={t(`page.delegate_banner.description`)}
+        title={t(`banner.link_discord.title`)}
+        description={t(`banner.link_discord.description`)}
         bannerHideKey={HIDE_LINK_DISCORD_BANNER_KEY}
         icon={<Delegate />}
-        buttonLabel={t(`page.delegate_banner.button_label`)}
+        buttonLabel={t(`banner.link_discord.button_label`)}
         buttonHref={OPEN_CALL_FOR_DELEGATES_LINK}
       />
     </div>

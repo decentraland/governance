@@ -22,11 +22,11 @@ function DelegationBanner() {
     <div className="DelegationBanner__Container">
       <Banner
         isVisible={shouldShowDelegationBanner()}
-        title={t(`page.delegate_banner.title`)}
-        description={t(`page.delegate_banner.description`)}
+        title={t(`banner.delegate.title`)}
+        description={t(`banner.delegate.description`)}
         bannerHideKey={HIDE_DELEGATE_BANNER_KEY}
         icon={<Delegate />}
-        buttonLabel={t(`page.delegate_banner.button_label`)}
+        buttonLabel={t(`banner.delegate.button_label`)}
         buttonHref={OPEN_CALL_FOR_DELEGATES_LINK}
       />
     </div>
