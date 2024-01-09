@@ -117,9 +117,6 @@ export default function ProposalsPage() {
         {isLoading && <LoadingView />}
         {!isLoading && (
           <>
-            <div className="OnlyDesktop">
-              <RandomBanner isVisible={!searching} />
-            </div>
             {search && (
               <NotMobile>
                 <SearchTitle />
@@ -141,6 +138,9 @@ export default function ProposalsPage() {
                     <SearchTitle />
                   </Mobile>
                 )}
+                <div className="OnlyDesktop">
+                  <RandomBanner isVisible={!searching} />
+                </div>
                 {!filtering && <PriorityProposalsBox address={userAddress} collapsible />}
                 <ActionableLayout
                   leftAction={
