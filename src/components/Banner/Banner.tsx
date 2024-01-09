@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
+import classNames from 'classnames'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 
@@ -16,6 +17,7 @@ export type BannerProps = {
   buttonLabel: string
   onButtonClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
   buttonHref?: string
+  className?: string
 }
 
 function Banner({
@@ -27,6 +29,7 @@ function Banner({
   buttonLabel,
   onButtonClick,
   buttonHref,
+  className,
 }: BannerProps) {
   const [show, setShow] = useState(isVisible)
 
@@ -47,7 +50,7 @@ function Banner({
   return (
     <>
       {show && (
-        <div className="Banner">
+        <div className={classNames('Banner', className)}>
           <div className="Banner__Icon">{icon}</div>
           <div className="Banner__Content">
             <div className="Banner__Description">

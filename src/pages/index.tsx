@@ -15,7 +15,6 @@ import { Desktop1200 } from '../components/Layout/Desktop1200'
 import LoadingView from '../components/Layout/LoadingView'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
-import { LinkDiscordModal } from '../components/Modal/LinkDiscordModal/LinkDiscordModal'
 import { ProposalStatus, SortingOrder } from '../entities/Proposal/types'
 import useFormatMessage from '../hooks/useFormatMessage'
 import useProposals from '../hooks/useProposals'
@@ -78,7 +77,6 @@ export default function HomePage() {
               <ActivityTicker />
             </Desktop1200>
           </div>
-          <LinkDiscordModal />
         </WiderContainer>
       )}
     </>

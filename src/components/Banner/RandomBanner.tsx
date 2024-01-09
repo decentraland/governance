@@ -2,6 +2,7 @@ import useNewsletterSubscription from '../../hooks/useNewsletterSubscription'
 import { NewsletterSubscriptionModal } from '../Modal/NewsletterSubscriptionModal/NewsletterSubscriptionModal'
 
 import DelegationBanner, { shouldShowDelegationBanner } from './Delegation/DelegationBanner'
+import LinkDiscordBanner, { shouldShowLinkDiscordBanner } from './LinkDiscord/LinkDiscordBanner'
 import SubscriptionBanner from './Subscription/SubscriptionBanner'
 
 interface Props {
@@ -24,6 +25,7 @@ function RandomBanner({ isVisible }: Props) {
     return null
   }
 
+  const linkDiscordBanner = <LinkDiscordBanner />
   const delegationBanner = <DelegationBanner />
 
   const subscriptionBanner = (
@@ -40,6 +42,10 @@ function RandomBanner({ isVisible }: Props) {
       />
     </>
   )
+
+  if (shouldShowLinkDiscordBanner()) {
+    return linkDiscordBanner
+  }
 
   if (!showSubscriptionBanner) {
     return delegationBanner

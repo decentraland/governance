@@ -21,7 +21,9 @@
 }
 
 .ProposalsPage__Priority {
-  margin-bottom: 37px;
+  position: relative;
+  top: -7px;
+  margin-bottom: 8px;
 }
 
 .ProposalsPage__List {

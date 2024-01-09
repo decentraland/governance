@@ -1,0 +1,14 @@
+.LinkDiscordBanner {
+  border-radius: 8px;
+  background: var(--alpha-purple-200);
+}
+
+.DelegationBanner__Container .Banner__Description {
+  margin-right: 10px;
+}
+
+@media (min-width: 768px) {
+  .DelegationBanner__Container .Banner__Description {
+    margin-right: 0;
+  }
+}

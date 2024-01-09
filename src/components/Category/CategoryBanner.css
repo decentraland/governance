@@ -6,7 +6,7 @@
   align-content: stretch;
   position: relative;
   padding: 16px 20px;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
   border-radius: 8px;
   background-color: var(--background-disabled);
 }
