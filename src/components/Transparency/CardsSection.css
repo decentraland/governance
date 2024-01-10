@@ -1,0 +1,5 @@
+.CardsSection {
+  display: flex;
+  gap: 25px;
+  margin-bottom: 12px;
+}

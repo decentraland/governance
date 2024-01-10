@@ -14,16 +14,22 @@ export type VestingDates = {
   vestingFinishAt: string
 }
 
+export type VestingValues = {
+  released: number
+  releasable: number
+}
+
 export type VestingLog = {
   topic: string
   timestamp: string
   amount?: number
 }
 
-export type VestingInfo = VestingDates & {
-  address: string
-  logs: VestingLog[]
-}
+export type VestingInfo = VestingDates &
+  VestingValues & {
+    address: string
+    logs: VestingLog[]
+  }
 
 function toISOString(seconds: number) {
   return new Date(seconds * 1000).toISOString()
@@ -77,19 +83,22 @@ async function getVestingContractLogs(vestingAddress: string, provider: JsonRpcP
 async function getVestingContractDataV1(
   vestingAddress: string,
   provider: ethers.providers.JsonRpcProvider
-): Promise<VestingDates> {
+): Promise<VestingDates & VestingValues> {
   const vestingContract = new ethers.Contract(vestingAddress, VESTING_ABI, provider)
   const contractStart = Number(await vestingContract.start())
   const contractDuration = Number(await vestingContract.duration())
   const contractEndsTimestamp = contractStart + contractDuration
 
-  return getVestingDates(contractStart, contractEndsTimestamp)
+  const released = Math.round(Number(await vestingContract.released()) / 1e18)
+  const releasable = Math.round(Number(await vestingContract.releasableAmount()) / 1e18)
+
+  return { ...getVestingDates(contractStart, contractEndsTimestamp), released, releasable }
 }
 
 async function getVestingContractDataV2(
   vestingAddress: string,
   provider: ethers.providers.JsonRpcProvider
-): Promise<VestingDates> {
+): Promise<VestingDates & VestingValues> {
   const vestingContract = new ethers.Contract(vestingAddress, VESTING_V2_ABI, provider)
   const contractStart = Number(await vestingContract.getStart())
   const contractDuration = Number(await vestingContract.getPeriod())
@@ -102,7 +111,10 @@ async function getVestingContractDataV2(
     contractEndsTimestamp = contractStart + contractDuration * periods
   }
 
-  return getVestingDates(contractStart, contractEndsTimestamp)
+  const released = Math.round(Number(await vestingContract.getReleased()) / 1e18)
+  const releasable = Math.round(Number(await vestingContract.getReleasable()) / 1e18)
+
+  return { ...getVestingDates(contractStart, contractEndsTimestamp), released, releasable }
 }
 
 export async function getVestingContractData(
@@ -116,21 +128,21 @@ export async function getVestingContractData(
   const provider = new ethers.providers.JsonRpcProvider(RpcService.getRpcUrl())
 
   try {
-    const datesPromise = getVestingContractDataV2(vestingAddress, provider)
+    const dataPromise = getVestingContractDataV2(vestingAddress, provider)
     const logsPromise = getVestingContractLogs(vestingAddress, provider, ContractVersion.V2)
-    const [dates, logs] = await Promise.all([datesPromise, logsPromise])
+    const [data, logs] = await Promise.all([dataPromise, logsPromise])
     return {
-      ...dates,
+      ...data,
       logs: logs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()),
       address: vestingAddress,
     }
   } catch (errorV2) {
     try {
-      const datesPromise = getVestingContractDataV1(vestingAddress, provider)
+      const dataPromise = getVestingContractDataV1(vestingAddress, provider)
       const logsPromise = getVestingContractLogs(vestingAddress, provider, ContractVersion.V1)
-      const [dates, logs] = await Promise.all([datesPromise, logsPromise])
+      const [data, logs] = await Promise.all([dataPromise, logsPromise])
       return {
-        ...dates,
+        ...data,
         logs: logs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()),
         address: vestingAddress,
       }

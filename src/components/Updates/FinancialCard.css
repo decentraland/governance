@@ -9,6 +9,9 @@
 .FinancialCard .Text.FinancialCard__Text {
   color: var(--black-400);
   margin: 0;
+}
+
+.FinancialCard__Text--upper {
   text-transform: uppercase;
 }
 

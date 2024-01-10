@@ -1,8 +1,5 @@
-import { useIntl } from 'react-intl'
-
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 
-import { CURRENCY_FORMAT_OPTIONS } from '../../helpers'
 import Text from '../Common/Typography/Text'
 import IncomeArrow from '../Icon/IncomeArrow'
 import OutcomeArrow from '../Icon/OutcomeArrow'
@@ -15,23 +12,22 @@ enum FinancialCardType {
 }
 
 interface Props {
-  type: `${FinancialCardType}`
+  type?: `${FinancialCardType}`
   title: string
-  value: number
+  value: string
   subtitle?: string
 }
 
 function FinancialCard({ type, title, value, subtitle }: Props) {
-  const { formatNumber } = useIntl()
   return (
     <Card className="FinancialCard">
-      <Text className="FinancialCard__Text" size="sm">
+      <Text className="FinancialCard__Text FinancialCard__Text--upper" size="sm">
         {title}
       </Text>
       <div className="FinancialCard__Value">
-        {type === FinancialCardType.Income ? <IncomeArrow /> : <OutcomeArrow />}
+        {type && (type === FinancialCardType.Income ? <IncomeArrow /> : <OutcomeArrow />)}
         <Text className="FinancialCard__Text" size="xl">
-          {formatNumber(value, CURRENCY_FORMAT_OPTIONS)}
+          {value}
         </Text>
       </div>
       {subtitle && (

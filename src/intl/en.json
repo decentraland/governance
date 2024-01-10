@@ -1545,7 +1545,13 @@
         "audit": "Audit on {service_name}",
         "monthly_income": "Last 30 Days Income",
         "monthly_expenses": "Last 30 Days Expenses",
-        "diff_label": "vs previous 30 days"
+        "diff_label": "vs previous 30 days",
+        "budget_title": "Grants program budget",
+        "budget_value": "{value} for Q{quarter}’{year}",
+        "budget_subtitle": "{percentage}% consumed so far",
+        "vesting_title": "DAO vesting contract",
+        "vesting_value": "{value} MANA vested",
+        "vesting_subtitle": "{value} MANA not released"
       },
       "funding": {
         "title": "Ongoing DAO-funded Projects",
