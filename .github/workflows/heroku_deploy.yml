@@ -1,0 +1,103 @@
+name: Heroku Deploy
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - labeled
+      - synchronize
+
+permissions:
+  contents: read
+  deployments: write
+  pull-requests: read
+
+env:
+  GITHUB_DEPLOYMENT_ENVIRONMENT: heroku
+  HEROKU_PIPELINE_NAME: dcl-governance
+  HEROKU_APP_NAME: dcl-governance
+
+jobs:
+  heroku_deploy:
+    name: Deploy to heroku
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.state != 'closed' && contains(github.event.pull_request.labels.*.name, 'heroku') }}
+    steps:
+      - name: Check out PR code from GitHub
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+
+      # Wire up the github deployment so links to `view deployment` are valid on the PR
+      - name: Create GitHub deployment
+        id: deployment
+        uses: chrnorm/deployment-action@releases/v1
+        with:
+          initial_status: in_progress
+          token: ${{ github.token }}
+          target_url: https://governance.decentraland.vote/governance/
+          environment: ${{ env.GITHUB_DEPLOYMENT_ENVIRONMENT }}
+          ref: ${{ github.head_ref }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18.8.0
+          registry-url: https://registry.npmjs.org/
+          cache: 'npm'
+
+      - name: Set up Git
+        run: git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+
+      - name: Install dependencies
+        id: install-dependencies
+        run: npm ci
+
+      - name: Build image
+        id: docker-build-image
+        if: steps.install-dependencies.outcome == 'success'
+        run: |
+          BRANCH_NAME=$(echo ${{ github.head_ref }} | sed 's/[^a-zA-Z0-9]/-/g')
+          VERSION_NUMBER="${BRANCH_NAME}-${{ github.sha }}"
+          docker build -t governance:${{ github.sha }} \
+                       --platform linux/amd64 \
+                       --build-arg version_number=$VERSION_NUMBER \
+                       --build-arg heroku_app_name=$HEROKU_APP_NAME .
+
+      - name: Log in to Heroku Container Registry
+        if: steps.docker-build-image.outcome == 'success'
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:login
+
+      - name: Tag and Push to Heroku
+        id: docker-push-to-registry
+        if: steps.docker-build-image.outcome == 'success'
+        run: |
+          docker tag governance:${{ github.sha }} registry.heroku.com/dcl-governance/web
+          docker push registry.heroku.com/dcl-governance/web
+
+      - name: Enable Heroku Dyno Metadata
+        run: heroku labs:enable runtime-dyno-metadata -a $HEROKU_APP_NAME
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+
+      - name: Release the Image
+        id: heroku_release_image
+        if: steps.docker-push-to-registry.outcome == 'success'
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:release web -a $HEROKU_APP_NAME
+
+      # Updates the PR with a link to the Review App deployment
+      - name: Update deployment status on GitHub to success
+        if: steps.heroku_release_image.outcome == 'success'
+        uses: chrnorm/deployment-status@releases/v1
+        with:
+          token: ${{ github.token }}
+          target_url: https://governance.decentraland.vote/governance/
+          environment_url: https://governance.decentraland.vote/governance/
+          state: success
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}

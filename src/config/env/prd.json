@@ -1,7 +1,8 @@
 {
-  "GATSBY_BUY_LAND_URL": "https://decentraland.org/marketplace/browse?section=land",
+  "GATSBY_BUY_LAND_URL": "https://decentraland.org/marketplace/lands?assetType=nft&section=land&vendor=decentraland&page=1&sortBy=newest&onlyOnSale=true",
+  "GATSBY_BUY_WEARABLES_URL": "https://decentraland.org/marketplace/browse?assetType=item&section=wearables&vendor=decentraland&page=1&sortBy=newest&status=on_sale&network=ETHEREUM",
   "GATSBY_BUY_MANA_URL": "https://decentraland.org/account",
-  "GATSBY_BUY_NAME_URL": "https://decentraland.org/builder/names",
+  "GATSBY_BUY_NAME_URL": "https://decentraland.org/builder/claim-name",
   "GATSBY_VESTING_DASHBOARD_URL": "https://vesting.decentraland.org/%23/",
   "GATSBY_DCL_DATA_API": "https://data.decentraland.vote/",
   "GATSBY_DEFAULT_CHAIN_ID": "1",

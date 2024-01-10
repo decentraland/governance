@@ -6,10 +6,5 @@
   "keywords": ["decentraland", "governance"],
   "stack": "container",
   "image": "heroku/nodejs",
-  "addons": ["heroku-postgresql:standard-0"],
-  "environments": {
-    "review": {
-      "addons": ["heroku-postgresql:mini"]
-    }
-  }
+  "addons": ["heroku-postgresql:standard-0"]
 }

@@ -1,0 +1,22 @@
+.GetVpDropdown {
+  background-color: var(--dcl-primary) !important;
+  color: var(--white-900) !important;
+  padding: 9px 14px !important;
+  min-width: 93px !important;
+}
+
+.GetVpDropdown .text,
+.GetVpDropdown .icon {
+  color: var(--white-900) !important;
+  opacity: 1 !important;
+}
+
+.ui.dropdown.GetVpDropdown > .menu,
+.ui.dropdown.GetVpDropdown > .menu .item {
+  background: var(--black-700);
+  color: var(--white-900);
+}
+
+.ui.dropdown.GetVpDropdown > .menu .item:hover {
+  background: var(--black-600);
+}

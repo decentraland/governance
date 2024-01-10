@@ -1,5 +1,6 @@
 {
   "GATSBY_BUY_LAND_URL": "https://decentraland.zone/marketplace/browse?section=land",
+  "GATSBY_BUY_WEARABLES_URL": "https://decentraland.zone/marketplace/browse?assetType=item&section=wearables&vendor=decentraland&page=1&sortBy=newest&status=on_sale",
   "GATSBY_BUY_MANA_URL": "https://decentraland.zone/account",
   "GATSBY_BUY_NAME_URL": "https://decentraland.zone/builder/names",
   "GATSBY_VESTING_DASHBOARD_URL": "https://vesting.decentraland.org/%23/",
