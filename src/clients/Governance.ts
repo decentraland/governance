@@ -531,9 +531,9 @@ export class Governance extends API {
     return result.data
   }
 
-  async isDiscordConnected() {
+  async isDiscordLinked() {
     const result = await this.fetch<ApiResponse<boolean>>(
-      `/user/discord-connected`,
+      `/user/discord-linked`,
       this.options().method('GET').authorization({ sign: true })
     )
 

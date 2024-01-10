@@ -10,7 +10,7 @@ import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 import { AccountType } from '../../../entities/User/types'
 import { HIDE_LINK_DISCORD_MODAL_KEY } from '../../../front/localStorageKeys'
 import useFormatMessage from '../../../hooks/useFormatMessage'
-import useIsDiscordConnected from '../../../hooks/useIsDiscordConnected'
+import useIsDiscordLinked from '../../../hooks/useIsDiscordLinked'
 import Text from '../../Common/Typography/Text'
 import DiscordCircled from '../../Icon/DiscordCircled'
 import LinkAccounts from '../../Icon/LinkAccounts'
@@ -29,15 +29,15 @@ const shouldShowModal = () => {
 
 export function LinkDiscordModal() {
   const [account] = useAuthContext()
-  const { isDiscordConnected } = useIsDiscordConnected()
+  const { isDiscordLinked } = useIsDiscordLinked()
   const t = useFormatMessage()
 
   const [isLinkDiscordModalOpen, setIsLinkDiscordModalOpen] = useState(false)
   const [isAccountsConnectModalOpen, setIsAccountsConnectModalOpen] = useState(false)
 
   useEffect(() => {
-    setIsLinkDiscordModalOpen(!!account && shouldShowModal() && !isDiscordConnected)
-  }, [account, isDiscordConnected])
+    setIsLinkDiscordModalOpen(!!account && shouldShowModal() && !isDiscordLinked)
+  }, [account, isDiscordLinked])
 
   const handleClose = () => {
     localStorage.setItem(HIDE_LINK_DISCORD_MODAL_KEY, 'true')

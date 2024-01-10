@@ -5,19 +5,19 @@ import { Governance } from '../clients/Governance'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
-function useIsDiscordConnected() {
+function useIsDiscordLinked() {
   const [user] = useAuthContext()
   const { data, refetch } = useQuery({
-    queryKey: [`isDiscordConnected`, user],
-    queryFn: () => Governance.get().isDiscordConnected(),
+    queryKey: [`isDiscordLinked`, user],
+    queryFn: () => Governance.get().isDiscordLinked(),
     enabled: !!user,
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
   return {
-    isDiscordConnected: !!data,
+    isDiscordLinked: !!data,
     refetch,
   }
 }
 
-export default useIsDiscordConnected
+export default useIsDiscordLinked

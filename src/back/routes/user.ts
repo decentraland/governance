@@ -20,7 +20,7 @@ export default routes((route) => {
   route.post('/user/validate/discord', withAuth, handleAPI(checkDiscordValidationMessage))
   route.post('/user/discord-active', withAuth, handleAPI(updateDiscordStatus))
   route.get('/user/discord-active', withAuth, handleAPI(getIsDiscordActive))
-  route.get('/user/discord-connected', withAuth, handleAPI(isDiscordConnected))
+  route.get('/user/discord-linked', withAuth, handleAPI(isDiscordLinked))
   route.get('/user/:address/is-validated', handleAPI(isValidated))
   route.get('/user/:address', handleAPI(getProfile))
 })
@@ -123,10 +123,10 @@ async function getIsDiscordActive(req: WithAuth) {
   }
 }
 
-async function isDiscordConnected(req: WithAuth) {
+async function isDiscordLinked(req: WithAuth) {
   const address = req.auth!
   try {
-    return await UserService.isDiscordConnected(address)
+    return await UserService.isDiscordLinked(address)
   } catch (error) {
     throw new Error(`Error while fetching discord status. ${error}`)
   }
