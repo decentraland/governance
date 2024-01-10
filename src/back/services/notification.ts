@@ -1,7 +1,6 @@
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { ethers } from 'ethers'
-import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { NOTIFICATIONS_SERVICE_ENABLED, PUSH_CHANNEL_ID } from '../../constants'
 import { ProposalAttributes } from '../../entities/Proposal/types'
@@ -32,14 +31,16 @@ const PUSH_CHANNEL_OWNER_PK = process.env.PUSH_CHANNEL_OWNER_PK
 const PUSH_API_URL = process.env.PUSH_API_URL
 
 function getSigner() {
+  console.log('notificationsServiceEnabled', NOTIFICATIONS_SERVICE_ENABLED)
   if (NOTIFICATIONS_SERVICE_ENABLED) {
-    if (!PUSH_CHANNEL_OWNER_PK || !isEthereumAddress(PUSH_CHANNEL_OWNER_PK)) {
+    const hexPk = `0x${PUSH_CHANNEL_OWNER_PK}`
+    if (!PUSH_CHANNEL_OWNER_PK || !ethers.utils.isHexString(hexPk, 32)) {
       logger.error(
-        'Push channel owner PK is missing. You can either add one or set NOTIFICATIONS_SERVICE_ENABLED=false'
+        'PUSH_CHANNEL_OWNER_PK env var is invalid or missing. You can either add a valid one or set NOTIFICATIONS_SERVICE_ENABLED=false'
       )
       return undefined
     }
-    return new ethers.Wallet(`0x${PUSH_CHANNEL_OWNER_PK}`)
+    return new ethers.Wallet(hexPk)
   }
   return undefined
 }
