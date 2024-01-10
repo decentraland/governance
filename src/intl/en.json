@@ -751,7 +751,7 @@
     },
     "link_discord": {
       "title": "Receive DAO Notifications in Discord!",
-      "description": "Connect your Decentraland and Discord in one click! \n\nBy linking your accounts, you can receive real-time, governance-related notifications directly in your Discord.",
+      "description": "Connect your Decentraland and Discord in one click! \n\nBy linking your accounts, you can receive real-time, governance-related notifications directly in your Discord inbox.",
       "sub": "Stay in the loop and never miss out on important updates and opportunities to participate.",
       "action": "Link your discord account"
     },
@@ -786,7 +786,7 @@
     },
     "link_discord": {
       "title": "Receive DAO Notifications in Discord!",
-      "description": "Receive real-time, governance-related notifications directly in your Discord.",
+      "description": "Receive real-time, governance-related notifications directly in your Discord inbox.",
       "button_label": "Link Discord Account"
     }
   },
