@@ -12,7 +12,12 @@ import {
   trimOtterspaceId,
 } from '../back/utils/contractInteractions'
 import { OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgraph'
-import { LAND_OWNER_BADGE_SPEC_CID, LEGISLATOR_BADGE_SPEC_CID, TOP_VOTERS_PER_MONTH } from '../constants'
+import {
+  CORE_UNITS_BADGE_CID as CORE_UNITS_BADGE_SPEC_CID,
+  LAND_OWNER_BADGE_SPEC_CID,
+  LEGISLATOR_BADGE_SPEC_CID,
+  TOP_VOTERS_PER_MONTH,
+} from '../constants'
 import { storeBadgeSpecWithRetry } from '../entities/Badges/storeBadgeSpec'
 import {
   ActionStatus,
@@ -20,11 +25,13 @@ import {
   BadgeCreationResult,
   BadgeStatus,
   ErrorReason,
+  GovernanceBadgeSpec,
   OtterspaceRevokeReason,
   RevokeOrReinstateResult,
   UserBadges,
   shouldDisplayBadge,
   toGovernanceBadge,
+  toGovernanceBadgeSpec,
 } from '../entities/Badges/types'
 import {
   getLandOwnerAddresses,
@@ -49,8 +56,7 @@ export class BadgesService {
   }
 
   static async getBadgesByCid(badgeCid: string) {
-    const otterspaceBadges = await OtterspaceSubgraph.get().getBadges(badgeCid)
-    return otterspaceBadges
+    return await OtterspaceSubgraph.get().getBadges(badgeCid)
   }
 
   private static createBadgesList(otterspaceBadges: OtterspaceBadge[]): UserBadges {
@@ -286,5 +292,22 @@ export class BadgesService {
         })
       }
     })
+  }
+
+  static async getCoreUnitsBadgeSpecs(): Promise<GovernanceBadgeSpec[]> {
+    try {
+      const otterspaceBadgesSpecs = await Promise.all(
+        CORE_UNITS_BADGE_SPEC_CID.map((badgeSpecCid) => this.getBadgesByCid(badgeSpecCid))
+      )
+
+      return otterspaceBadgesSpecs.map(toGovernanceBadgeSpec)
+    } catch (error) {
+      const msg = 'Error while attempting to get core unit badges'
+      ErrorService.report(msg, {
+        error,
+        category: ErrorCategory.Badges,
+      })
+      throw new Error(msg)
+    }
   }
 }

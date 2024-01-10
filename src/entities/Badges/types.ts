@@ -30,6 +30,13 @@ export type Badge = {
   owner?: string
 }
 
+export type GovernanceBadgeSpec = {
+  name: string
+  description: string
+  image: string
+  badges: Badge[]
+}
+
 export enum ErrorReason {
   NoUserWithoutBadge = 'All recipients already have this badge',
   NoUserHasVoted = 'Recipients have never voted',
@@ -96,6 +103,13 @@ export function toGovernanceBadge(otterspaceBadge: OtterspaceBadge) {
     transactionHash: otterspaceBadge.transactionHash || '',
   }
   return badge
+}
+
+export function toGovernanceBadgeSpec(otterspaceBadges: OtterspaceBadge[]): GovernanceBadgeSpec {
+  if (otterspaceBadges.length === 0) throw new Error('No badges found')
+  const { name, description, image } = otterspaceBadges[0].spec.metadata
+  const badges = otterspaceBadges.map(toGovernanceBadge)
+  return { name, description, image: getIpfsHttpsLink(image), badges }
 }
 
 function getIpfsHttpsLink(ipfsLink: string) {

@@ -6,17 +6,18 @@ import BadgeImage, { BadgeVariant } from '../User/Badges/Badge'
 import './CoreUnitCard.css'
 
 interface Props {
+  name: string
   badges: Badge[]
 }
 
-function CoreUnitCard({ badges }: Props) {
+function CoreUnitCard({ name, badges }: Props) {
   const t = useFormatMessage()
   return (
     <div className="CoreUnitCard">
       <BadgeImage badge={badges[0]} size={45} variant={BadgeVariant.FilledDuo} />
       <div className="CoreUnitCard__TextContainer">
         <Text className="CoreUnitCard__Title" size="lg" weight="semi-bold">
-          {badges[0].name}
+          {name}
         </Text>
         <Text size="sm" color="secondary">
           {t('page.transparency.core_units.members', { amount: badges.length })}

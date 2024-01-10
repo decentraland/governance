@@ -3,52 +3,39 @@
 }
 
 .Badge__Icon {
+  --size: 32px;
+  width: var(--size);
+  height: var(--size);
+  min-width: var(--size);
   border-radius: 50%;
   background-size: calc(var(--size) / (2 / 3) * 4);
   background-repeat: no-repeat;
-  min-width: var(--size);
 }
 
 .Badge__Icon--primary {
   --size: 192px;
-  width: var(--size);
-  height: var(--size);
   background-size: contain;
   background-position: 0 0;
 }
 
 .Badge__Icon--filled-mono {
-  --size: 32px;
-  width: var(--size);
-  height: var(--size);
   background-position: left bottom;
 }
 
 .Badge__Icon--filled-mono-small {
   --size: 24px;
-  width: var(--size);
-  height: var(--size);
   background-position: bottom left;
 }
 
 .Badge__Icon--filled-duo {
-  --size: 32px;
-  width: var(--size);
-  height: var(--size);
   background-position: right top;
 }
 
 .Badge__Icon--outline-1px {
-  --size: 32px;
-  width: var(--size);
-  height: var(--size);
   background-position: left top;
 }
 
 .Badge__Icon--outline-2px {
-  --size: 32px;
-  width: var(--size);
-  height: var(--size);
   background-position: right bottom;
 }
 

@@ -4,15 +4,13 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
-import { CORE_UNITS_BADGE_CID } from '../../constants'
 import { storeBadgeSpec } from '../../entities/Badges/storeBadgeSpec'
 import {
   ActionStatus,
-  Badge,
   BadgeCreationResult,
+  GovernanceBadgeSpec,
   RevokeOrReinstateResult,
   UserBadges,
-  toGovernanceBadge,
   toOtterspaceRevokeReason,
 } from '../../entities/Badges/types'
 import { BadgesService } from '../../services/BadgesService'
@@ -29,7 +27,7 @@ import {
 
 export default routes((router) => {
   const withAuth = auth()
-  router.get('/badges/core-units/', handleAPI(getCoreUnitsBadges))
+  router.get('/badges/core-units/', handleAPI(getCoreUnitsBadgeSpecs))
   router.get('/badges/:address/', handleAPI(getBadges))
   router.post('/badges/airdrop/', withAuth, handleAPI(airdrop))
   router.post('/badges/revoke/', withAuth, handleAPI(revoke))
@@ -42,26 +40,17 @@ async function getBadges(req: Request<{ address: string }>): Promise<UserBadges>
   return await BadgesService.getBadges(address)
 }
 
-async function getCoreUnitsBadges() {
+async function getCoreUnitsBadgeSpecs() {
   const cacheKey = 'core-units-badges'
-  const cachedCoreUnitsBadges = CacheService.get<Record<string, Badge[]>>(cacheKey)
+  const cachedCoreUnitsBadges = CacheService.get<GovernanceBadgeSpec[]>(cacheKey)
 
   if (cachedCoreUnitsBadges) {
     return cachedCoreUnitsBadges
   }
 
-  const otterspaceBadges = await Promise.all(
-    CORE_UNITS_BADGE_CID.map((badgeCid) => BadgesService.getBadgesByCid(badgeCid))
-  )
-
-  const badgesMap = otterspaceBadges.reduce((acc, rawBadges) => {
-    const badges = rawBadges.map(toGovernanceBadge).filter((badge) => !badge.isPastBadge)
-    return acc.set(badges[0].name, badges)
-  }, new Map<string, Badge[]>())
-
-  const result = Object.fromEntries(badgesMap.entries())
-  CacheService.set(cacheKey, result, TTL_24_HS)
-  return result
+  const coreUnitsBadgesSpecs = await BadgesService.getCoreUnitsBadgeSpecs()
+  CacheService.set(cacheKey, coreUnitsBadgesSpecs, TTL_24_HS)
+  return coreUnitsBadgesSpecs
 }
 
 async function airdrop(req: WithAuth): Promise<AirdropOutcome> {

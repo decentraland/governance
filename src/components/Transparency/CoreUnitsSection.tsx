@@ -1,16 +1,18 @@
-import useCoreUnitsBadges from '../../hooks/useCoreUnitsBadges'
+import { GovernanceBadgeSpec } from '../../entities/Badges/types'
 
 import CoreUnitCard from './CoreUnitCard'
 import './CoreUnitsSection.css'
 
-function CoreUnitsSection() {
-  const { coreUnitsBadges } = useCoreUnitsBadges()
+interface Props {
+  coreUnitsBadges: GovernanceBadgeSpec[]
+}
+
+function CoreUnitsSection({ coreUnitsBadges }: Props) {
   return (
     <div className="CoreUnitsSection">
-      {coreUnitsBadges &&
-        Object.entries(coreUnitsBadges).map(([title, badges]) => {
-          return <CoreUnitCard key={title} badges={badges} />
-        })}
+      {coreUnitsBadges.map(({ name, badges }) => {
+        return <CoreUnitCard key={name} name={name} badges={badges} />
+      })}
     </div>
   )
 }
