@@ -55,8 +55,8 @@ export class BadgesService {
     return this.createBadgesList(otterspaceBadges)
   }
 
-  static async getBadgesByCid(badgeCid: string) {
-    return await OtterspaceSubgraph.get().getBadges(badgeCid)
+  static async getBadgesByCid(badgeSpecCid: string) {
+    return await OtterspaceSubgraph.get().getBadges(badgeSpecCid)
   }
 
   private static createBadgesList(otterspaceBadges: OtterspaceBadge[]): UserBadges {

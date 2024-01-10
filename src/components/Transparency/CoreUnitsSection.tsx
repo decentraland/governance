@@ -10,8 +10,8 @@ interface Props {
 function CoreUnitsSection({ coreUnitsBadges }: Props) {
   return (
     <div className="CoreUnitsSection">
-      {coreUnitsBadges.map(({ name, badges }) => {
-        return <CoreUnitCard key={name} name={name} badges={badges} />
+      {coreUnitsBadges.map((badgeSpec) => {
+        return <CoreUnitCard key={badgeSpec.name} {...badgeSpec} />
       })}
     </div>
   )

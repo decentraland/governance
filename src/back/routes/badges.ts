@@ -48,9 +48,9 @@ async function getCoreUnitsBadgeSpecs() {
     return cachedCoreUnitsBadges
   }
 
-  const coreUnitsBadgesSpecs = await BadgesService.getCoreUnitsBadgeSpecs()
-  CacheService.set(cacheKey, coreUnitsBadgesSpecs, TTL_24_HS)
-  return coreUnitsBadgesSpecs
+  const coreUnitsBadgeSpecs = await BadgesService.getCoreUnitsBadgeSpecs()
+  CacheService.set(cacheKey, coreUnitsBadgeSpecs, TTL_24_HS)
+  return coreUnitsBadgeSpecs
 }
 
 async function airdrop(req: WithAuth): Promise<AirdropOutcome> {

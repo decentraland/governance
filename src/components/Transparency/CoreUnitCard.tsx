@@ -1,16 +1,11 @@
-import { Badge } from '../../entities/Badges/types'
+import { GovernanceBadgeSpec } from '../../entities/Badges/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Text from '../Common/Typography/Text'
 import BadgeImage, { BadgeVariant } from '../User/Badges/Badge'
 
 import './CoreUnitCard.css'
 
-interface Props {
-  name: string
-  badges: Badge[]
-}
-
-function CoreUnitCard({ name, badges }: Props) {
+function CoreUnitCard({ name, badges }: GovernanceBadgeSpec) {
   const t = useFormatMessage()
   return (
     <div className="CoreUnitCard">
