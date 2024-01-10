@@ -30,7 +30,7 @@ interface Props {
   sectionNumber: number
   intialValues?: Partial<FinancialUpdateSection>
   releases?: VestingLog[]
-  lastestUpdate?: Omit<UpdateAttributes, 'id' | 'proposal_id'>
+  latestUpdate?: Omit<UpdateAttributes, 'id' | 'proposal_id'>
   csvInputField: string | undefined
   setCSVInputField: (value?: string) => void
 }
@@ -56,7 +56,7 @@ function FinancialSection({
   sectionNumber,
   intialValues,
   releases,
-  lastestUpdate,
+  latestUpdate,
   csvInputField,
   setCSVInputField,
 }: Props) {
@@ -219,7 +219,7 @@ function FinancialSection({
     >
       <ContentSection>
         <FinancialCardsSection
-          lastestUpdate={lastestUpdate}
+          latestUpdate={latestUpdate}
           releases={releases}
           disclosedFunds={sum(financial_records.map(({ amount }) => amount))}
         />

@@ -223,7 +223,7 @@ export default function Update({ isEdit }: Props) {
     setFormDisabled(false)
   }
 
-  const lastestUpdate = getLatestUpdate(publicUpdates || [])
+  const latestUpdate = getLatestUpdate(publicUpdates || [])
 
   return (
     <div>
@@ -261,16 +261,14 @@ export default function Update({ isEdit }: Props) {
               )
             }
             releases={releases}
-            lastestUpdate={lastestUpdate}
+            latestUpdate={latestUpdate}
             csvInputField={csvInputField}
             setCSVInputField={patchCsvInputField}
           />
         </>
       )}
       <Container>
-        {isPreviewMode && (
-          <UpdateMarkdownView update={previewUpdate} proposal={proposal} lastestUpdate={lastestUpdate} />
-        )}
+        {isPreviewMode && <UpdateMarkdownView update={previewUpdate} proposal={proposal} latestUpdate={latestUpdate} />}
       </Container>
       <Container className="ContentLayout__Container">
         <ContentSection className="UpdateSubmit__Actions">

@@ -48,7 +48,7 @@ export default function UpdateDetail() {
   const index = getUpdateNumber(publicUpdates, updateId)
   const proposalHref = locations.proposal(update.proposal_id)
 
-  const lastestUpdate = getLatestUpdate(publicUpdates || [], Time(update.due_date).toDate())
+  const latestUpdate = getLatestUpdate(publicUpdates || [], Time(update.due_date).toDate())
 
   return (
     <>
@@ -69,7 +69,7 @@ export default function UpdateDetail() {
             <UpdateMarkdownView
               update={update}
               author={update.author}
-              lastestUpdate={lastestUpdate}
+              latestUpdate={latestUpdate}
               proposal={proposal}
             />
             <UpdateComments update={update} />

@@ -97,22 +97,22 @@ export function getUpdateNumber(publicUpdates?: UpdateAttributes[] | null, updat
   return publicUpdates.length > 0 && updateIdx >= 0 ? publicUpdates.length - updateIdx : NaN
 }
 
-export function getFundsReleasedSinceLastestUpdate(
-  lastestUpdate: Omit<UpdateAttributes, 'id' | 'proposal_id'> | undefined,
+export function getFundsReleasedSinceLatestUpdate(
+  latestUpdate: Omit<UpdateAttributes, 'id' | 'proposal_id'> | undefined,
   releases: VestingLog[] | undefined
 ): { value: number; txAmount: number } {
   if (!releases || releases.length === 0) return { value: 0, txAmount: 0 }
 
-  if (!lastestUpdate) {
+  if (!latestUpdate) {
     return { value: sum(releases.map(({ amount }) => amount || 0)), txAmount: releases.length }
   }
 
-  const { completion_date } = lastestUpdate
+  const { completion_date } = latestUpdate
 
-  const releasesSinceLastestUpdate = releases.filter(({ timestamp }) => Time(timestamp).isAfter(completion_date))
+  const releasesSinceLatestUpdate = releases.filter(({ timestamp }) => Time(timestamp).isAfter(completion_date))
   return {
-    value: sum(releasesSinceLastestUpdate.map(({ amount }) => amount || 0)),
-    txAmount: releasesSinceLastestUpdate.length,
+    value: sum(releasesSinceLatestUpdate.map(({ amount }) => amount || 0)),
+    txAmount: releasesSinceLatestUpdate.length,
   }
 }
 
