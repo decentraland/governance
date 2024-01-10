@@ -31,7 +31,6 @@ const PUSH_CHANNEL_OWNER_PK = process.env.PUSH_CHANNEL_OWNER_PK
 const PUSH_API_URL = process.env.PUSH_API_URL
 
 function getSigner() {
-  console.log('notificationsServiceEnabled', NOTIFICATIONS_SERVICE_ENABLED)
   if (NOTIFICATIONS_SERVICE_ENABLED) {
     const hexPk = `0x${PUSH_CHANNEL_OWNER_PK}`
     if (!PUSH_CHANNEL_OWNER_PK || !ethers.utils.isHexString(hexPk, 32)) {
