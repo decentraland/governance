@@ -3,13 +3,6 @@
   max-width: 385px;
 }
 
-.FinancialSection__CardsContainer {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  gap: 28px;
-}
-
 .FinancialSection__ReportingSublabel {
   margin-bottom: 15px;
   color: var(--black-600) !important;

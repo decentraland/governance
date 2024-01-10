@@ -21,7 +21,6 @@ import { EditUpdateModal } from '../../components/Modal/EditUpdateModal/EditUpda
 import FinancialSection from '../../components/Updates/FinancialSection'
 import GeneralSection from '../../components/Updates/GeneralSection'
 import UpdateMarkdownView from '../../components/Updates/UpdateMarkdownView'
-import { ProjectStatus } from '../../entities/Grant/types'
 import {
   FinancialUpdateSection,
   GeneralUpdateSection,
@@ -29,12 +28,13 @@ import {
   UpdateAttributes,
   UpdateStatus,
 } from '../../entities/Updates/types'
+import { getLatestUpdate, getReleases } from '../../entities/Updates/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
 import useProposal from '../../hooks/useProposal'
 import useProposalUpdate from '../../hooks/useProposalUpdate'
 import useProposalUpdates from '../../hooks/useProposalUpdates'
-import useVestings from '../../hooks/useVestings'
+import useVestingContractData from '../../hooks/useVestingContractData'
 import locations, { navigate } from '../../utils/locations'
 
 import './submit.css'
@@ -93,7 +93,7 @@ export default function Update({ isEdit }: Props) {
   const { proposal } = useProposal(proposalId)
   const { publicUpdates } = useProposalUpdates(proposalId)
   const vestingAddresses = proposal?.vesting_addresses || []
-  const { data } = useVestings(vestingAddresses.length > 0)
+  const { vestingData } = useVestingContractData(vestingAddresses)
   const [error, setError] = useState('')
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [generalSection, patchGeneralSection] = useState(initialGeneralState)
@@ -105,12 +105,7 @@ export default function Update({ isEdit }: Props) {
 
   usePreventNavigation(true)
 
-  const vestingContract = data
-    ?.filter(
-      (vesting) =>
-        vesting.vesting_status === ProjectStatus.InProgress && vestingAddresses.includes(vesting.vesting_address)
-    )
-    ?.pop()
+  const releases = useMemo(() => (vestingData ? getReleases(vestingData) : undefined), [vestingData])
 
   const handleGeneralSectionValidation = useCallback(
     (data: GeneralUpdateSection, sectionValid: boolean) => {
@@ -227,6 +222,8 @@ export default function Update({ isEdit }: Props) {
     setFormDisabled(false)
   }
 
+  const latestUpdate = getLatestUpdate(publicUpdates || [])
+
   return (
     <div>
       <ContentLayout>
@@ -262,15 +259,15 @@ export default function Update({ isEdit }: Props) {
                 (key) => key in ({ financial_records: [] } as FinancialUpdateSection)
               )
             }
-            vesting={vestingContract}
-            publicUpdates={publicUpdates}
+            releases={releases}
+            latestUpdate={latestUpdate}
             csvInputField={csvInputField}
             setCSVInputField={patchCsvInputField}
           />
         </>
       )}
       <Container>
-        {isPreviewMode && <UpdateMarkdownView update={previewUpdate} className="UpdateSubmit__Preview" />}
+        {isPreviewMode && <UpdateMarkdownView update={previewUpdate} proposal={proposal} latestUpdate={latestUpdate} />}
       </Container>
       <Container className="ContentLayout__Container">
         <ContentSection className="UpdateSubmit__Actions">

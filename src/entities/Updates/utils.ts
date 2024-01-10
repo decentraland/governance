@@ -1,10 +1,17 @@
-import { TransparencyVesting } from '../../clients/DclData'
+import sum from 'lodash/sum'
+
+import { VestingInfo, VestingLog } from '../../clients/VestingData'
 import { GOVERNANCE_API } from '../../constants'
+import { ContractVersion, TopicsByVersion } from '../../utils/contracts/vesting'
 import Time from '../../utils/date/Time'
-import { getMonthsBetweenDates } from '../../utils/date/getMonthsBetweenDates'
 import { ProposalStatus } from '../Proposal/types'
 
 import { UpdateAttributes, UpdateStatus } from './types'
+
+const TOPICS_V1 = TopicsByVersion[ContractVersion.V1]
+const TOPICS_V2 = TopicsByVersion[ContractVersion.V2]
+
+const RELEASE_TOPICS = new Set([TOPICS_V1.RELEASE, TOPICS_V2.RELEASE])
 
 export function isProposalStatusWithUpdates(proposalStatus?: ProposalStatus) {
   return proposalStatus === ProposalStatus.Enacted
@@ -90,38 +97,41 @@ export function getUpdateNumber(publicUpdates?: UpdateAttributes[] | null, updat
   return publicUpdates.length > 0 && updateIdx >= 0 ? publicUpdates.length - updateIdx : NaN
 }
 
-export function getFundsReleasedSinceLastUpdate(
-  updates: UpdateAttributes[] | undefined,
-  vesting: TransparencyVesting | undefined
-) {
-  if (!vesting) return 0
-  const now = new Date()
-  const { vesting_total_amount, vesting_start_at, vesting_finish_at } = vesting
-  const timeDiff = getMonthsBetweenDates(new Date(vesting_start_at), new Date(vesting_finish_at))
-  const vestingMonths = timeDiff.months + (timeDiff.extraDays > 10 ? 1 : 0)
-  const vestedPerMonth = Math.floor(vesting_total_amount / vestingMonths)
-  const vestingStartDate = new Date(vesting_start_at)
-  const monthsSinceVestingStart = Time(now).diff(vestingStartDate, 'month')
+export function getFundsReleasedSinceLatestUpdate(
+  latestUpdate: Omit<UpdateAttributes, 'id' | 'proposal_id'> | undefined,
+  releases: VestingLog[] | undefined
+): { value: number; txAmount: number } {
+  if (!releases || releases.length === 0) return { value: 0, txAmount: 0 }
 
-  if (Time(vestingStartDate).isAfter(now)) {
-    return 0
+  if (!latestUpdate) {
+    return { value: sum(releases.map(({ amount }) => amount || 0)), txAmount: releases.length }
   }
 
-  const lastUpdate = updates?.filter(
-    (update) => update.status === UpdateStatus.Done || update.status === UpdateStatus.Late
-  )?.[0]
+  const { completion_date } = latestUpdate
 
-  if (!lastUpdate) {
-    return vestedPerMonth * monthsSinceVestingStart
+  const releasesSinceLatestUpdate = releases.filter(({ timestamp }) => Time(timestamp).isAfter(completion_date))
+  return {
+    value: sum(releasesSinceLatestUpdate.map(({ amount }) => amount || 0)),
+    txAmount: releasesSinceLatestUpdate.length,
   }
+}
 
-  const { due_date } = lastUpdate
+export function getReleases(vestings: VestingInfo[]) {
+  return vestings
+    .flatMap(({ logs }) => logs)
+    .filter(({ topic }) => RELEASE_TOPICS.has(topic))
+    .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+}
 
-  if (!due_date) {
-    return 0
-  }
+export function getLatestUpdate(publicUpdates: UpdateAttributes[], beforeDate?: Date): UpdateAttributes | undefined {
+  if (!publicUpdates?.length) return undefined
 
-  const monthsSinceLastUpdate = Math.ceil(Time(now).diff(due_date, 'month', true))
-
-  return vestedPerMonth * monthsSinceLastUpdate
+  return publicUpdates
+    .filter((update) => update.status === UpdateStatus.Done || update.status === UpdateStatus.Late)
+    .reduce((latest, current) => {
+      if (!latest || !latest.completion_date || (beforeDate && Time(latest.completion_date).isAfter(beforeDate))) {
+        return current
+      }
+      return Time(latest.completion_date).isAfter(current.completion_date) ? latest : current
+    }, undefined as UpdateAttributes | undefined)
 }

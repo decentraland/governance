@@ -5,14 +5,13 @@ import { usePapaParse } from 'react-papaparse'
 import sum from 'lodash/sum'
 import toNumber from 'lodash/toNumber'
 
-import { TransparencyVesting } from '../../clients/DclData'
+import { VestingLog } from '../../clients/VestingData'
 import {
   FinancialRecord,
   FinancialUpdateSection,
   FinancialUpdateSectionSchema,
   UpdateAttributes,
 } from '../../entities/Updates/types'
-import { getFundsReleasedSinceLastUpdate } from '../../entities/Updates/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import CSVDragAndDrop from '../Common/CSVDragAndDrop'
 import NumberedTextArea from '../Common/NumberedTextArea'
@@ -21,7 +20,7 @@ import Markdown from '../Common/Typography/Markdown'
 import ContentSection from '../Layout/ContentSection'
 import ProjectRequestSection from '../ProjectRequest/ProjectRequestSection'
 
-import FinancialCard from './FinancialCard'
+import FinancialCardsSection from './FinancialCardsSection'
 import './FinancialSection.css'
 import SummaryItems from './SummaryItems'
 
@@ -30,8 +29,8 @@ interface Props {
   isFormDisabled: boolean
   sectionNumber: number
   intialValues?: Partial<FinancialUpdateSection>
-  vesting?: TransparencyVesting
-  publicUpdates?: UpdateAttributes[]
+  releases?: VestingLog[]
+  latestUpdate?: Omit<UpdateAttributes, 'id' | 'proposal_id'>
   csvInputField: string | undefined
   setCSVInputField: (value?: string) => void
 }
@@ -56,8 +55,8 @@ function FinancialSection({
   isFormDisabled,
   sectionNumber,
   intialValues,
-  vesting,
-  publicUpdates,
+  releases,
+  latestUpdate,
   csvInputField,
   setCSVInputField,
 }: Props) {
@@ -219,18 +218,11 @@ function FinancialSection({
       isNew
     >
       <ContentSection>
-        <div className="FinancialSection__CardsContainer">
-          <FinancialCard
-            type="income"
-            title={t('page.proposal_update.funds_released_label')}
-            value={getFundsReleasedSinceLastUpdate(publicUpdates, vesting)}
-          />
-          <FinancialCard
-            type="outcome"
-            title={t('page.proposal_update.funds_disclosed_label')}
-            value={sum(financial_records.map(({ amount }) => amount))}
-          />
-        </div>
+        <FinancialCardsSection
+          latestUpdate={latestUpdate}
+          releases={releases}
+          disclosedFunds={sum(financial_records.map(({ amount }) => amount))}
+        />
       </ContentSection>
       <ContentSection>
         <Label>{t('page.proposal_update.reporting_label')}</Label>

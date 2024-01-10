@@ -42,3 +42,9 @@
   line-height: 24px !important;
   margin-bottom: 0;
 }
+
+.UpdateDetail__FinancialContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}

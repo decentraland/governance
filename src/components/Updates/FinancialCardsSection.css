@@ -1,0 +1,6 @@
+.FinancialCardsSection__CardsContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 28px;
+}

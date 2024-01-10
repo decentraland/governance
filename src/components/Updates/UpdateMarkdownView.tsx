@@ -1,7 +1,13 @@
-import classNames from 'classnames'
+import { useMemo } from 'react'
 
+import classNames from 'classnames'
+import sum from 'lodash/sum'
+
+import { ProposalAttributes } from '../../entities/Proposal/types'
 import { UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
+import { getReleases } from '../../entities/Updates/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
+import useVestingContractData from '../../hooks/useVestingContractData'
 import Time, { formatDate } from '../../utils/date/Time'
 import ArticleSectionHeading from '../Common/ArticleSectionHeading'
 import DateTooltip from '../Common/DateTooltip'
@@ -11,6 +17,7 @@ import Text from '../Common/Typography/Text'
 import Username from '../Common/Username'
 import { ContentSection } from '../Layout/ContentLayout'
 
+import FinancialCardsSection from './FinancialCardsSection'
 import ProjectHealthStatus from './ProjectHealthStatus'
 import SummaryItems from './SummaryItems'
 import './UpdateMarkdownView.css'
@@ -18,16 +25,22 @@ import './UpdateMarkdownView.css'
 interface Props {
   update: Omit<UpdateAttributes, 'id' | 'proposal_id'>
   author?: string
+  latestUpdate?: Omit<UpdateAttributes, 'id' | 'proposal_id'>
+  proposal: ProposalAttributes | null
   className?: string
 }
 
 const UPDATE_DETAIL_MARKDOWN_STYLES = { p: 'UpdateDetail__ContentText', li: 'UpdateDetail__ListItem' }
 
-const UpdateMarkdownView = ({ update, author, className }: Props) => {
+const UpdateMarkdownView = ({ update, author, latestUpdate, proposal, className }: Props) => {
   const t = useFormatMessage()
+  const { vestingData } = useVestingContractData(proposal?.vesting_addresses || [])
+
   const formattedCompletionDate = update?.completion_date ? formatDate(update.completion_date) : ''
   const formattedEditDate = update?.updated_at ? formatDate(update.updated_at) : ''
   const formattedDueDate = Time.utc(update?.completion_date).from(Time.utc(update?.due_date), true)
+  const releases = useMemo(() => (vestingData ? getReleases(vestingData) : undefined), [vestingData])
+  const { financial_records } = update
 
   return (
     <ContentSection className={classNames('UpdateDetail__Content', className)}>
@@ -46,10 +59,17 @@ const UpdateMarkdownView = ({ update, author, className }: Props) => {
           <Markdown componentsClassNames={UPDATE_DETAIL_MARKDOWN_STYLES}>{update?.additional_notes}</Markdown>
         </>
       )}
-      {update?.financial_records && update?.financial_records.length > 0 && (
+      {financial_records && financial_records.length > 0 && (
         <>
           <ArticleSectionHeading>{t('page.update_detail.financial_details')}</ArticleSectionHeading>
-          <SummaryItems financialRecords={update?.financial_records} />
+          <div className="UpdateDetail__FinancialContainer">
+            <FinancialCardsSection
+              latestUpdate={latestUpdate}
+              releases={releases}
+              disclosedFunds={sum(financial_records.map(({ amount }) => amount))}
+            />
+            <SummaryItems financialRecords={financial_records} />
+          </div>
         </>
       )}
       {author && update.completion_date && (

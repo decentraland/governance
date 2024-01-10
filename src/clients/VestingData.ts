@@ -17,6 +17,7 @@ export type VestingDates = {
 export type VestingLog = {
   topic: string
   timestamp: string
+  amount?: number
 }
 
 export type VestingInfo = VestingDates & {
@@ -38,19 +39,20 @@ function getVestingDates(contractStart: number, contractEndsTimestamp: number) {
 }
 
 async function getVestingContractLogs(vestingAddress: string, provider: JsonRpcProvider, version: ContractVersion) {
-  const logsPromise = provider.getLogs({
+  const logs = await provider.getLogs({
     address: vestingAddress,
     fromBlock: 13916992, // 01/01/2022
     toBlock: 'latest',
   })
 
-  const [logs, web3Logs] = await Promise.all([logsPromise, provider.getBlockWithTransactions('latest')])
+  const blocks = await Promise.all(logs.map((log) => provider.getBlock(log.blockNumber)))
 
   const topics = TopicsByVersion[version]
   const logsData: VestingLog[] = []
 
-  logs.forEach((log) => {
-    const eventTimestamp = web3Logs.timestamp
+  logs.forEach((log, idx) => {
+    const eventTimestamp = Number(blocks[idx].timestamp)
+    const amount = parseInt(log.data, 16) / 1e18
     switch (log.topics[0]) {
       case topics.REVOKE:
         logsData.push({ topic: topics.REVOKE, timestamp: toISOString(eventTimestamp) })
@@ -60,6 +62,9 @@ async function getVestingContractLogs(vestingAddress: string, provider: JsonRpcP
         break
       case topics.UNPAUSED:
         logsData.push({ topic: topics.UNPAUSED, timestamp: toISOString(eventTimestamp) })
+        break
+      case topics.RELEASE:
+        logsData.push({ topic: topics.RELEASE, timestamp: toISOString(eventTimestamp), amount })
         break
       default:
         break
