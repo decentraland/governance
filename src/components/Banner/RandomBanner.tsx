@@ -15,7 +15,7 @@ function RandomBanner({ isVisible }: Props) {
   const { showSubscriptionBanner } = useNewsletterSubscription()
   const { isDiscordLinked, isLoadingIsDiscordLinked } = useIsDiscordLinked()
 
-  if (!isVisible) {
+  if (!isVisible || isLoadingIsDiscordLinked) {
     return null
   }
 
