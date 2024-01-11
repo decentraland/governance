@@ -44,6 +44,10 @@ function getVestingDates(contractStart: number, contractEndsTimestamp: number) {
   }
 }
 
+function parseVestingValue(value: unknown) {
+  return Math.round(Number(value) / 1e18)
+}
+
 async function getVestingContractLogs(vestingAddress: string, provider: JsonRpcProvider, version: ContractVersion) {
   const logs = await provider.getLogs({
     address: vestingAddress,
@@ -89,8 +93,8 @@ async function getVestingContractDataV1(
   const contractDuration = Number(await vestingContract.duration())
   const contractEndsTimestamp = contractStart + contractDuration
 
-  const released = Math.round(Number(await vestingContract.released()) / 1e18)
-  const releasable = Math.round(Number(await vestingContract.releasableAmount()) / 1e18)
+  const released = parseVestingValue(await vestingContract.released())
+  const releasable = parseVestingValue(await vestingContract.releasableAmount())
 
   return { ...getVestingDates(contractStart, contractEndsTimestamp), released, releasable }
 }
@@ -111,8 +115,8 @@ async function getVestingContractDataV2(
     contractEndsTimestamp = contractStart + contractDuration * periods
   }
 
-  const released = Math.round(Number(await vestingContract.getReleased()) / 1e18)
-  const releasable = Math.round(Number(await vestingContract.getReleasable()) / 1e18)
+  const released = parseVestingValue(await vestingContract.getReleased())
+  const releasable = parseVestingValue(await vestingContract.getReleasable())
 
   return { ...getVestingDates(contractStart, contractEndsTimestamp), released, releasable }
 }
