@@ -31,17 +31,16 @@ const PUSH_CHANNEL_OWNER_PK = process.env.PUSH_CHANNEL_OWNER_PK
 const PUSH_API_URL = process.env.PUSH_API_URL
 
 function getSigner() {
-  if (NOTIFICATIONS_SERVICE_ENABLED) {
-    const hexPk = `0x${PUSH_CHANNEL_OWNER_PK}`
-    if (!PUSH_CHANNEL_OWNER_PK || !ethers.utils.isHexString(hexPk, 32)) {
-      logger.error(
-        'PUSH_CHANNEL_OWNER_PK env var is invalid or missing. You can either add a valid one or set NOTIFICATIONS_SERVICE_ENABLED=false'
-      )
-      return undefined
-    }
-    return new ethers.Wallet(hexPk)
+  if (!NOTIFICATIONS_SERVICE_ENABLED) {
+    return undefined
   }
-  return undefined
+  if (!PUSH_CHANNEL_OWNER_PK || !ethers.utils.isHexString(`0x${PUSH_CHANNEL_OWNER_PK}`, 32)) {
+    logger.error(
+      'PUSH_CHANNEL_OWNER_PK env var is invalid or missing. You can either add a valid one or set NOTIFICATIONS_SERVICE_ENABLED=false'
+    )
+    return undefined
+  }
+  return new ethers.Wallet(`0x${PUSH_CHANNEL_OWNER_PK}`)
 }
 
 const NotificationIdentityType = {
