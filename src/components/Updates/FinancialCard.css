@@ -4,6 +4,10 @@
   padding: 16px !important;
   background-color: var(--black-700) !important;
   box-shadow: 0px 1px 8px 0px var(--alpha-black-200) !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .FinancialCard .Text.FinancialCard__Text {
@@ -24,4 +28,8 @@
 
 .FinancialCard__Value > .Text.FinancialCard__Text {
   color: var(--white-900) !important;
+}
+
+.Link.FinancialCard::after {
+  content: none !important;
 }

@@ -1,6 +1,8 @@
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 
+import Link from '../Common/Typography/Link'
 import Text from '../Common/Typography/Text'
+import ChevronRight from '../Icon/ChevronRight'
 import IncomeArrow from '../Icon/IncomeArrow'
 import OutcomeArrow from '../Icon/OutcomeArrow'
 
@@ -16,25 +18,29 @@ interface Props {
   title: string
   value: string
   subtitle?: string
+  href?: string
 }
 
-function FinancialCard({ type, title, value, subtitle }: Props) {
+function FinancialCard({ type, title, value, subtitle, href }: Props) {
   return (
-    <Card className="FinancialCard">
-      <Text className="FinancialCard__Text FinancialCard__Text--upper" size="sm">
-        {title}
-      </Text>
-      <div className="FinancialCard__Value">
-        {type && (type === FinancialCardType.Income ? <IncomeArrow /> : <OutcomeArrow />)}
-        <Text className="FinancialCard__Text" size="xl">
-          {value}
+    <Card className="FinancialCard" as={href ? Link : undefined} href={href}>
+      <div>
+        <Text className="FinancialCard__Text FinancialCard__Text--upper" size="sm">
+          {title}
         </Text>
+        <div className="FinancialCard__Value">
+          {type && (type === FinancialCardType.Income ? <IncomeArrow /> : <OutcomeArrow />)}
+          <Text className="FinancialCard__Text" size="xl">
+            {value}
+          </Text>
+        </div>
+        {subtitle && (
+          <Text className="FinancialCard__Text" size="sm" weight="semi-bold">
+            {subtitle}
+          </Text>
+        )}
       </div>
-      {subtitle && (
-        <Text className="FinancialCard__Text" size="sm" weight="semi-bold">
-          {subtitle}
-        </Text>
-      )}
+      {href && <ChevronRight />}
     </Card>
   )
 }
