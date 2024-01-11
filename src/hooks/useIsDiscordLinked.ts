@@ -7,7 +7,7 @@ import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
 function useIsDiscordLinked() {
   const [user] = useAuthContext()
-  const { data, refetch } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: [`isDiscordLinked`, user],
     queryFn: () => Governance.get().isDiscordLinked(),
     enabled: !!user,
@@ -16,6 +16,7 @@ function useIsDiscordLinked() {
 
   return {
     isDiscordLinked: !!data,
+    isLoadingIsDiscordLinked: isLoading,
     refetch,
   }
 }

@@ -26,6 +26,8 @@ import { config } from 'decentraland-ui/dist/config'
 import type { PageProps } from 'gatsby'
 
 import { getSupportedChainIds } from '../../helpers'
+import ExternalLinkWarningModal from '../Modal/ExternalLinkWarningModal'
+import { LinkDiscordModal } from '../Modal/LinkDiscordModal/LinkDiscordModal'
 import WalletSelectorModal from '../Modal/WalletSelectorModal'
 import WrongNetworkModal from '../Modal/WrongNetworkModal'
 
@@ -196,6 +198,8 @@ export default function Layout({ children, ...props }: LayoutProps) {
         onConnect={handleConnect}
         onClose={handleCancelConnect}
       />
+      <LinkDiscordModal />
+      <ExternalLinkWarningModal />
       <Footer locale="en" locales={['en']} isFullWidth={false} className="WiderFooter" />
     </>
   )

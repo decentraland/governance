@@ -21,7 +21,6 @@ import ActionableLayout from '../components/Layout/ActionableLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
-import { LinkDiscordModal } from '../components/Modal/LinkDiscordModal/LinkDiscordModal'
 import PriorityProposalsBox from '../components/Profile/PriorityProposalsBox'
 import ProposalItem from '../components/Proposal/ProposalItem'
 import CategoryFilter from '../components/Search/CategoryFilter'
@@ -225,7 +224,6 @@ export default function ProposalsPage() {
             </div>
           </>
         )}
-        <LinkDiscordModal />
       </WiderContainer>
     </>
   )
