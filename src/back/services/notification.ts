@@ -29,8 +29,20 @@ import PushAPI = require('@pushprotocol/restapi')
 const chainId = isProdEnv() ? ChainId.ETHEREUM_MAINNET : ChainId.ETHEREUM_SEPOLIA
 const PUSH_CHANNEL_OWNER_PK = process.env.PUSH_CHANNEL_OWNER_PK
 const PUSH_API_URL = process.env.PUSH_API_URL
-const pkAddress = `0x${PUSH_CHANNEL_OWNER_PK}`
-const signer = NOTIFICATIONS_SERVICE_ENABLED ? new ethers.Wallet(pkAddress) : undefined
+
+function getSigner() {
+  if (!NOTIFICATIONS_SERVICE_ENABLED) {
+    return undefined
+  }
+  if (!PUSH_CHANNEL_OWNER_PK || !ethers.utils.isHexString(`0x${PUSH_CHANNEL_OWNER_PK}`, 32)) {
+    logger.error(
+      'PUSH_CHANNEL_OWNER_PK env var is invalid or missing. You can either add a valid one or set NOTIFICATIONS_SERVICE_ENABLED=false'
+    )
+    return undefined
+  }
+  return new ethers.Wallet(`0x${PUSH_CHANNEL_OWNER_PK}`)
+}
+
 const NotificationIdentityType = {
   DIRECT_PAYLOAD: 2,
 }
@@ -38,13 +50,15 @@ const ADDITIONAL_META_CUSTOM_TYPE = 0
 const ADDITIONAL_META_CUSTOM_TYPE_VERSION = 1
 
 export class NotificationService {
+  static signer = getSigner()
+
   static async sendNotification({ type, title, body, recipient, url, customType }: Notification) {
-    if (!NOTIFICATIONS_SERVICE_ENABLED) {
+    if (!NOTIFICATIONS_SERVICE_ENABLED || !this.signer) {
       return
     }
 
     const response = await PushAPI.payloads.sendNotification({
-      signer,
+      signer: this.signer,
       type: this.getType(type, recipient),
       identityType: NotificationIdentityType.DIRECT_PAYLOAD,
       notification: {

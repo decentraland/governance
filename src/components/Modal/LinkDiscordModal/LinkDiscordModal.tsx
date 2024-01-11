@@ -29,15 +29,15 @@ const shouldShowModal = () => {
 
 export function LinkDiscordModal() {
   const [account] = useAuthContext()
-  const { isDiscordLinked } = useIsDiscordLinked()
+  const { isDiscordLinked, isLoadingIsDiscordLinked } = useIsDiscordLinked()
   const t = useFormatMessage()
 
   const [isLinkDiscordModalOpen, setIsLinkDiscordModalOpen] = useState(false)
   const [isAccountsConnectModalOpen, setIsAccountsConnectModalOpen] = useState(false)
 
   useEffect(() => {
-    setIsLinkDiscordModalOpen(!!account && shouldShowModal() && !isDiscordLinked)
-  }, [account, isDiscordLinked])
+    setIsLinkDiscordModalOpen(!!account && shouldShowModal() && !isDiscordLinked && !isLoadingIsDiscordLinked)
+  }, [account, isDiscordLinked, isLoadingIsDiscordLinked])
 
   const handleClose = () => {
     localStorage.setItem(HIDE_LINK_DISCORD_MODAL_KEY, 'true')
