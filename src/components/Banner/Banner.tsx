@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
 
+import classNames from 'classnames'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 
 import Text from '../Common/Typography/Text'
 
 import './Banner.css'
+
+type BannerColor = 'blue' | 'purple'
 
 export type BannerProps = {
   isVisible: boolean
@@ -16,6 +19,7 @@ export type BannerProps = {
   buttonLabel: string
   onButtonClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
   buttonHref?: string
+  color?: BannerColor
 }
 
 function Banner({
@@ -27,6 +31,7 @@ function Banner({
   buttonLabel,
   onButtonClick,
   buttonHref,
+  color = 'blue',
 }: BannerProps) {
   const [show, setShow] = useState(isVisible)
 
@@ -47,18 +52,18 @@ function Banner({
   return (
     <>
       {show && (
-        <div className="Banner">
+        <div className={classNames('Banner', `Banner--${color}`)}>
           <div className="Banner__Icon">{icon}</div>
           <div className="Banner__Content">
             <div className="Banner__Description">
-              <Text weight="medium" size="lg">
+              <Text className="Banner__Text" weight="medium" size="lg">
                 {title}
               </Text>
               <Text>{description}</Text>
             </div>
             <div className="Banner__ButtonContainer">
               <Button
-                className="Banner__Button"
+                className={classNames('Banner__Button', `Banner__Button--${color}`)}
                 primary
                 size="small"
                 onClick={onButtonClick}

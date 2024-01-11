@@ -6,9 +6,16 @@
   padding: 16px 16px 16px 20px;
   margin-top: 24px;
   margin-bottom: 8px;
-  border-radius: 12px;
+  border-radius: 8px;
   outline: 1px solid #0000000a;
+}
+
+.Banner--blue {
   background-color: var(--blue-200);
+}
+
+.Banner--purple {
+  background: var(--alpha-purple-200);
 }
 
 .Banner .Banner__Icon {
@@ -27,6 +34,7 @@
 
 .Banner .Banner__Description {
   flex-grow: 1;
+  margin-right: 10px;
 }
 
 .Banner > .dcl.close {
@@ -38,8 +46,16 @@
   z-index: 8;
 }
 
-.Banner .Banner__Button {
+.Banner__Button--blue {
   background-color: var(--blue-800) !important;
+}
+
+.Banner__Button--purple {
+  background-color: var(--iris-100) !important;
+}
+
+.Banner__Text {
+  margin: 0 !important;
 }
 
 @media (max-width: 767px) {
@@ -94,8 +110,7 @@
     margin-right: 2em;
   }
 
-  .Banner .Banner__Button {
+  .Banner__Button {
     position: relative;
-    background-color: var(--blue-800) !important;
   }
 }

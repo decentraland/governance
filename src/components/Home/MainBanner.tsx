@@ -3,13 +3,12 @@ import { useEffect, useState } from 'react'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { DAO_DISCORD_URL, DOCS_URL } from '../../constants'
+import { HIDE_HOME_BANNER_KEY } from '../../front/localStorageKeys'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Link from '../Common/Typography/Link'
 import CloseCircle from '../Icon/CloseCircle'
 
 import './MainBanner.css'
-
-const HIDE_HOME_BANNER_KEY = 'org.decentraland.governance.home_banner.hide'
 
 const shouldShowMainBanner = () => {
   if (typeof window !== 'undefined') {

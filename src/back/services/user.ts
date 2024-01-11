@@ -82,13 +82,17 @@ export class UserService {
 
   static async updateDiscordActiveStatus(address: string, is_discord_notifications_active: boolean) {
     await UserModel.updateDiscordActiveStatus(address, is_discord_notifications_active)
-    const account = await UserModel.getDiscordIdsByAddresses([address], false)
+    const account = await UserModel.getDiscordIds([address])
     return account.length > 0 ? account[0] : null
   }
 
   static async getIsDiscordActive(address: string) {
-    const account = await UserModel.getDiscordIdsByAddresses([address], false)
+    const account = await UserModel.getDiscordIds([address])
     return account.length > 0 ? account[0].is_discord_notifications_active : false
+  }
+
+  static async isDiscordLinked(address: string) {
+    return await UserModel.isValidated(address, new Set([AccountType.Discord]))
   }
 
   static async isValidated(address: string, accounts: Set<AccountType>): Promise<boolean> {

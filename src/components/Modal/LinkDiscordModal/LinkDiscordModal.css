@@ -1,0 +1,19 @@
+.LinkDiscordModal__Content {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.LinkDiscordModal__Description {
+  margin-bottom: 0.5rem;
+  max-width: 406px;
+}
+
+.LinkDiscordModal__Secondary {
+  line-height: 24px !important;
+}
+
+.LinkDiscordModal__Action {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}

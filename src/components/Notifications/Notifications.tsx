@@ -9,6 +9,7 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 import { Governance } from '../../clients/Governance'
 import { PUSH_CHANNEL_ID } from '../../constants'
 import { isSameAddress } from '../../entities/Snapshot/utils'
+import { NOTIFICATIONS_NEW_FEATURE_DISMISSED_LOCAL_STORAGE_KEY } from '../../front/localStorageKeys'
 import { DEFAULT_QUERY_STALE_TIME } from '../../hooks/constants'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import { getCaipAddress, getPushNotificationsEnv } from '../../utils/notifications'
@@ -18,9 +19,6 @@ import NotificationBellInactive from '../Icon/NotificationBellInactive'
 import './Notifications.css'
 import NotificationsFeed from './NotificationsFeed'
 
-const NOTIFICATIONS_NEW_FEATURE_DISMISSED_LOCAL_STORAGE_KEY =
-  'org.decentraland.governance.notifications-new-feature-dismissed'
-
 export default function Notifications() {
   const t = useFormatMessage()
   const [user, userState] = useAuthContext()
@@ -29,7 +27,7 @@ export default function Notifications() {
   const queryClient = useQueryClient()
   const lastNotificationQueryKey = `lastNotificationId#${user}`
   const [isNewFeatureDismissed, setIsNewFeatureDismissed] = useState(
-    typeof window !== undefined
+    typeof window !== 'undefined'
       ? localStorage.getItem(NOTIFICATIONS_NEW_FEATURE_DISMISSED_LOCAL_STORAGE_KEY) === 'true'
       : true
   )

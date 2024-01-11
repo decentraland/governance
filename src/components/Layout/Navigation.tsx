@@ -6,6 +6,7 @@ import { Mobile, NotMobile, useMobileMediaQuery } from 'decentraland-ui/dist/com
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 
+import { PROFILE_POP_UP_LOCAL_STORAGE_KEY } from '../../front/localStorageKeys'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useIsDebugAddress from '../../hooks/useIsDebugAddress'
 import useIsProfileValidated from '../../hooks/useIsProfileValidated'
@@ -31,8 +32,6 @@ export enum NavigationTab {
 export type NavigationProps = {
   activeTab?: NavigationTab
 }
-
-const PROFILE_POP_UP_LOCAL_STORAGE_KEY = 'org.decentraland.governance.profile-pop-up-dismissed'
 
 type DismissState = {
   isDismissClicked: boolean

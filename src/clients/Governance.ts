@@ -531,6 +531,15 @@ export class Governance extends API {
     return result.data
   }
 
+  async isDiscordLinked() {
+    const result = await this.fetch<ApiResponse<boolean>>(
+      `/user/discord-linked`,
+      this.options().method('GET').authorization({ sign: true })
+    )
+
+    return result.data
+  }
+
   async updateDiscordStatus(is_discord_notifications_active: boolean) {
     const result = await this.fetch<ApiResponse<void>>(
       `/user/discord-active`,
