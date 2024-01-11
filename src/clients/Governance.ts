@@ -6,7 +6,7 @@ import snakeCase from 'lodash/snakeCase'
 import { AirdropOutcome } from '../back/types/AirdropJob'
 import { SpecState } from '../components/Debug/UploadBadgeSpec'
 import { GOVERNANCE_API } from '../constants'
-import { BadgeCreationResult, RevokeOrReinstateResult, UserBadges } from '../entities/Badges/types'
+import { BadgeCreationResult, GovernanceBadgeSpec, RevokeOrReinstateResult, UserBadges } from '../entities/Badges/types'
 import { BidRequest, UnpublishedBidAttributes } from '../entities/Bid/types'
 import { Budget, BudgetWithContestants, CategoryBudget } from '../entities/Budget/types'
 import { CoauthorAttributes, CoauthorStatus } from '../entities/Coauthor/types'
@@ -551,6 +551,11 @@ export class Governance extends API {
 
   async getBadges(address: string) {
     const response = await this.fetch<ApiResponse<UserBadges>>(`/badges/${address}`)
+    return response.data
+  }
+
+  async getCoreUnitsBadges() {
+    const response = await this.fetch<ApiResponse<GovernanceBadgeSpec[]>>(`/badges/core-units`)
     return response.data
   }
 

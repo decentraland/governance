@@ -9,6 +9,7 @@ interface Props {
   className?: string
   iconClassName?: string
   variant?: BadgeVariant
+  size?: number
 }
 
 export enum BadgeVariant {
@@ -37,7 +38,11 @@ function getVariantClass(variant: BadgeVariant) {
   }
 }
 
-export default function Badge({ badge, className, iconClassName, variant = BadgeVariant.Primary }: Props) {
+export default function Badge({ badge, className, iconClassName, variant = BadgeVariant.Primary, size }: Props) {
+  const style: Record<string, string> = { backgroundImage: `url(${badge.image})` }
+  if (size) {
+    style['--size'] = `${size}px`
+  }
   return (
     <div className={classNames('Badge', className)}>
       <div
@@ -47,7 +52,7 @@ export default function Badge({ badge, className, iconClassName, variant = Badge
           badge.isPastBadge && 'Badge__Icon--past',
           iconClassName
         )}
-        style={{ backgroundImage: `url(${badge.image})` }}
+        style={style}
       />
     </div>
   )

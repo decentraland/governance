@@ -6,7 +6,7 @@ import Open from '../../Icon/Open'
 import './DetailsSection.css'
 import './SectionButton.css'
 
-interface Props {
+export interface SidebarLinkButtonProps {
   loading?: boolean
   disabled?: boolean
   href: string
@@ -15,7 +15,7 @@ interface Props {
   icon?: React.ReactNode
 }
 
-function SidebarLinkButton({ loading, disabled, href, isExternal = true, children, icon }: Props) {
+function SidebarLinkButton({ loading, disabled, href, isExternal = true, children, icon }: SidebarLinkButtonProps) {
   return (
     // eslint-disable-next-line react/jsx-no-target-blank
     <a

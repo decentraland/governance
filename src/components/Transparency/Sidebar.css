@@ -1,0 +1,9 @@
+.Transparency__Sidebar {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .Transparency__Sidebar {
+    max-width: var(--dao-sidebar-width);
+  }
+}
