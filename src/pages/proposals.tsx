@@ -21,6 +21,7 @@ import ActionableLayout from '../components/Layout/ActionableLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
+import { LinkDiscordModal } from '../components/Modal/LinkDiscordModal/LinkDiscordModal'
 import PriorityProposalsBox from '../components/Profile/PriorityProposalsBox'
 import ProposalItem from '../components/Proposal/ProposalItem'
 import CategoryFilter from '../components/Search/CategoryFilter'
@@ -116,9 +117,6 @@ export default function ProposalsPage() {
         {isLoading && <LoadingView />}
         {!isLoading && (
           <>
-            <div className="OnlyDesktop">
-              <RandomBanner isVisible={!searching} />
-            </div>
             {search && (
               <NotMobile>
                 <SearchTitle />
@@ -140,6 +138,9 @@ export default function ProposalsPage() {
                     <SearchTitle />
                   </Mobile>
                 )}
+                <div className="OnlyDesktop">
+                  <RandomBanner isVisible={!searching} />
+                </div>
                 {!filtering && <PriorityProposalsBox address={userAddress} collapsible />}
                 <ActionableLayout
                   leftAction={
@@ -224,6 +225,7 @@ export default function ProposalsPage() {
             </div>
           </>
         )}
+        <LinkDiscordModal />
       </WiderContainer>
     </>
   )

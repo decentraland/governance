@@ -749,6 +749,12 @@
       "soon": "Soon",
       "verified": "Verified"
     },
+    "link_discord": {
+      "title": "Receive DAO Notifications in Discord!",
+      "description": "Connect your Decentraland and Discord in one click! \n\nBy linking your accounts, you can receive real-time, governance-related notifications directly in your Discord inbox.",
+      "sub": "Stay in the loop and never miss out on important updates and opportunities to participate.",
+      "action": "Link your discord account"
+    },
     "wallet_selector": {
       "title": "Sign In",
       "subtitle": "Choose a method to connect",
@@ -765,6 +771,23 @@
       "title": "There's still more reviewing to do",
       "description": "The best way to vote is from consciousness.\n\nPlease, make sure you go through all {amount} proposals.",
       "action": "Vote \"{vote}\" anyway"
+    }
+  },
+  "banner": {
+    "subscription": {
+      "title": "Stay in the loop",
+      "description": "The DAO Weekly Newsletter includes updates regarding proposals",
+      "subscribe_button_label": "Subscribe"
+    },
+    "delegate": {
+      "title": "Call for Delegates Open",
+      "description": "Tell the community about your vision and get more VP delegated by other accounts",
+      "button_label": "Read more"
+    },
+    "link_discord": {
+      "title": "Receive DAO Notifications in Discord!",
+      "description": "Receive real-time, governance-related notifications directly in your Discord inbox.",
+      "button_label": "Link Discord Account"
     }
   },
   "component": {
@@ -1569,6 +1592,11 @@
         "about_dao_button": "How the DAO Works",
         "wearables_curator_button": "Apply as Wearables Curator",
         "delegate_button": "Apply as DAO Delegate"
+      },
+      "core_units": {
+        "title": "Core Units",
+        "description": "Our DAO has determined that projects of importance for the Operations of Decentraland are to be considered and refered to as Core-Units",
+        "members": "{amount} {amount, plural, one {member} other {members}}"
       }
     },
     "update_detail": {
@@ -2070,16 +2098,6 @@
         "email_error_message": "Please enter a valid email",
         "email_note": "Note: The address will be published in the proposal and publicly visible. If you want to keep your anonymity consider using an email address without personally identifiable information."
       }
-    },
-    "subscription_banner": {
-      "title": "Stay in the loop",
-      "description": "The DAO Weekly Newsletter includes updates regarding proposals",
-      "subscribe_button_label": "Subscribe"
-    },
-    "delegate_banner": {
-      "title": "Call for Delegates Open",
-      "description": "The Decentraland DAO is looking to get committed individuals on the spotlight to help them get more VP",
-      "button_label": "Read more"
     },
     "proposal_update": {
       "title": "Publish New Grant Update",

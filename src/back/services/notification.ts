@@ -129,7 +129,7 @@ export class NotificationService {
         const title = NotificationTitle.GrantEnacted
         const body = NotificationBody.GrantEnacted
 
-        const validatedUsers = await UserModel.getDiscordIdsByAddresses(addresses)
+        const validatedUsers = await UserModel.getActiveDiscordIds(addresses)
         for (const user of validatedUsers) {
           DiscordService.sendDirectMessage(user.discord_id, {
             title,
@@ -165,7 +165,7 @@ export class NotificationService {
       const title = NotificationTitle.CoAuthorRequestReceived
       const body = NotificationBody.CoAuthorRequestReceived
 
-      const validatedUsers = await UserModel.getDiscordIdsByAddresses(coAuthors)
+      const validatedUsers = await UserModel.getActiveDiscordIds(coAuthors)
       for (const user of validatedUsers) {
         DiscordService.sendDirectMessage(user.discord_id, {
           title,
@@ -204,7 +204,7 @@ export class NotificationService {
       const title = `${NotificationTitle.ProposalVotedFinished} ${proposal.title}`
       const body = NotificationBody.ProposalVotedFinished
 
-      const validatedUsers = await UserModel.getDiscordIdsByAddresses(addresses)
+      const validatedUsers = await UserModel.getActiveDiscordIds(addresses)
       for (const user of validatedUsers) {
         DiscordService.sendDirectMessage(user.discord_id, {
           title,
@@ -239,7 +239,7 @@ export class NotificationService {
       const title = NotificationTitle.ProposalVotedFinished
       const body = NotificationBody.ProposalVotedFinished
 
-      const validatedUsers = await UserModel.getDiscordIdsByAddresses(addresses)
+      const validatedUsers = await UserModel.getActiveDiscordIds(addresses)
       for (const user of validatedUsers) {
         DiscordService.sendDirectMessage(user.discord_id, {
           title,

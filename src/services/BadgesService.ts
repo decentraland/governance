@@ -12,7 +12,12 @@ import {
   trimOtterspaceId,
 } from '../back/utils/contractInteractions'
 import { OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgraph'
-import { LAND_OWNER_BADGE_SPEC_CID, LEGISLATOR_BADGE_SPEC_CID, TOP_VOTERS_PER_MONTH } from '../constants'
+import {
+  CORE_UNITS_BADGE_CID as CORE_UNITS_BADGE_SPEC_CID,
+  LAND_OWNER_BADGE_SPEC_CID,
+  LEGISLATOR_BADGE_SPEC_CID,
+  TOP_VOTERS_PER_MONTH,
+} from '../constants'
 import { storeBadgeSpecWithRetry } from '../entities/Badges/storeBadgeSpec'
 import {
   ActionStatus,
@@ -20,11 +25,13 @@ import {
   BadgeCreationResult,
   BadgeStatus,
   ErrorReason,
+  GovernanceBadgeSpec,
   OtterspaceRevokeReason,
   RevokeOrReinstateResult,
   UserBadges,
   shouldDisplayBadge,
   toGovernanceBadge,
+  toGovernanceBadgeSpec,
 } from '../entities/Badges/types'
 import {
   getLandOwnerAddresses,
@@ -46,6 +53,10 @@ export class BadgesService {
   public static async getBadges(address: string): Promise<UserBadges> {
     const otterspaceBadges: OtterspaceBadge[] = await OtterspaceSubgraph.get().getBadgesForAddress(address)
     return this.createBadgesList(otterspaceBadges)
+  }
+
+  static async getBadgesByCid(badgeSpecCid: string) {
+    return await OtterspaceSubgraph.get().getBadges(badgeSpecCid)
   }
 
   private static createBadgesList(otterspaceBadges: OtterspaceBadge[]): UserBadges {
@@ -217,6 +228,7 @@ export class BadgesService {
             address: badgeOwnership.address,
             badgeId: trimmedId,
           })
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
           actionResults.push({
             status: ActionStatus.Failed,
@@ -280,5 +292,22 @@ export class BadgesService {
         })
       }
     })
+  }
+
+  static async getCoreUnitsBadgeSpecs(): Promise<GovernanceBadgeSpec[]> {
+    try {
+      const otterspaceBadgesSpecs = await Promise.all(
+        CORE_UNITS_BADGE_SPEC_CID.map((badgeSpecCid) => this.getBadgesByCid(badgeSpecCid))
+      )
+
+      return otterspaceBadgesSpecs.map(toGovernanceBadgeSpec)
+    } catch (error) {
+      const msg = 'Error while attempting to get core unit badges'
+      ErrorService.report(msg, {
+        error,
+        category: ErrorCategory.Badges,
+      })
+      throw new Error(msg)
+    }
   }
 }

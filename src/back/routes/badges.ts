@@ -8,11 +8,13 @@ import { storeBadgeSpec } from '../../entities/Badges/storeBadgeSpec'
 import {
   ActionStatus,
   BadgeCreationResult,
+  GovernanceBadgeSpec,
   RevokeOrReinstateResult,
   UserBadges,
   toOtterspaceRevokeReason,
 } from '../../entities/Badges/types'
 import { BadgesService } from '../../services/BadgesService'
+import CacheService, { TTL_24_HS } from '../../services/CacheService'
 import { AirdropOutcome } from '../types/AirdropJob'
 import { createSpec } from '../utils/contractInteractions'
 import {
@@ -25,6 +27,7 @@ import {
 
 export default routes((router) => {
   const withAuth = auth()
+  router.get('/badges/core-units/', handleAPI(getCoreUnitsBadgeSpecs))
   router.get('/badges/:address/', handleAPI(getBadges))
   router.post('/badges/airdrop/', withAuth, handleAPI(airdrop))
   router.post('/badges/revoke/', withAuth, handleAPI(revoke))
@@ -35,6 +38,19 @@ export default routes((router) => {
 async function getBadges(req: Request<{ address: string }>): Promise<UserBadges> {
   const address = validateAddress(req.params.address)
   return await BadgesService.getBadges(address)
+}
+
+async function getCoreUnitsBadgeSpecs() {
+  const cacheKey = 'core-units-badges'
+  const cachedCoreUnitsBadges = CacheService.get<GovernanceBadgeSpec[]>(cacheKey)
+
+  if (cachedCoreUnitsBadges) {
+    return cachedCoreUnitsBadges
+  }
+
+  const coreUnitsBadgeSpecs = await BadgesService.getCoreUnitsBadgeSpecs()
+  CacheService.set(cacheKey, coreUnitsBadgeSpecs, TTL_24_HS)
+  return coreUnitsBadgeSpecs
 }
 
 async function airdrop(req: WithAuth): Promise<AirdropOutcome> {

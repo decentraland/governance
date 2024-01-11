@@ -45,10 +45,11 @@ export default class UserModel extends Model<UserAttributes> {
     return await this.namedQuery('get_addresses_by_forum_ids', query)
   }
 
-  static async getDiscordIdsByAddresses(
-    addresses: string[],
-    shouldDiscordBeActive = true
-  ): Promise<ValidatedDiscordAccount[]> {
+  static async getActiveDiscordIds(addresses: string[]): Promise<ValidatedDiscordAccount[]> {
+    return await this.getDiscordIds(addresses, true)
+  }
+
+  static async getDiscordIds(addresses: string[], shouldDiscordBeActive = false): Promise<ValidatedDiscordAccount[]> {
     if (addresses.length === 0) return Promise.resolve([])
 
     const query = SQL`

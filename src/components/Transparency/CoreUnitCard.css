@@ -1,0 +1,9 @@
+.CoreUnitCard {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.CoreUnitCard__Title {
+  margin: 0;
+}

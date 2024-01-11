@@ -46,11 +46,22 @@ query Badges($badgeCid: String!, $skip: Int!, $first: Int!) {
         skip: $skip
         ){
            id
+           createdAt
+           status
+           statusReason
+           transactionHash
             owner {
               id
             }
-            status
-            statusReason
+            spec {
+              id
+              metadata {
+                name
+                description
+                expiresAt
+                image
+              }
+            }
           }
        }`
 
@@ -187,7 +198,7 @@ export class OtterspaceSubgraph {
         })
 
         const body = await response.json()
-        return (body?.data?.badges || []) as Pick<OtterspaceBadge, 'id' | 'owner' | 'status' | 'statusReason'>[]
+        return (body?.data?.badges || []) as OtterspaceBadge[]
       },
       { badgeCid }
     )
