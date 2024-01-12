@@ -34,11 +34,14 @@ const twoWeeksAgo = Time(now).subtract(2, 'week').toDate()
 const OpenProposals = ({ endingSoonProposals, isLoadingProposals }: Props) => {
   const t = useFormatMessage()
   const [activeTab, setActiveTab] = useState(Tab.EndingSoon)
-  const proposalIds = (endingSoonProposals || []).map((proposal) => proposal.id)
-  const { segmentedVotes } = useProposalsCachedVotes(proposalIds)
 
   const { proposals: proposalsByParticipatingVP, isLoadingProposals: isLoadingProposalsByParticipatingVp } =
     useProposalsByParticipatingVP(twoWeeksAgo, now)
+
+  const proposalIds = [...(endingSoonProposals ?? []), ...(proposalsByParticipatingVP ?? [])].map(
+    (proposal) => proposal.id
+  )
+  const { segmentedVotes } = useProposalsCachedVotes(proposalIds)
 
   return (
     <div className="OpenProposals">
