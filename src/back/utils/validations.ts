@@ -1,8 +1,12 @@
+import crypto from 'crypto'
+import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
+import { Request } from 'express'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
 import { SnapshotProposal } from '../../clients/SnapshotTypes'
+import { DISCOURSE_WEBHOOK_SECRET } from '../../constants'
 import isDebugAddress from '../../entities/Debug/isDebugAddress'
 
 export function validateDates(start?: string, end?: string) {
@@ -100,5 +104,22 @@ export function validateRequiredStrings(fieldNames: string[], requestBody: Recor
 export function validateDebugAddress(user: string | undefined) {
   if (!isDebugAddress(user)) {
     throw new RequestError('Invalid user', RequestError.Unauthorized)
+  }
+}
+
+export function validateDiscourseWebhookSignature(req: Request) {
+  const providedSignature = req.get('X-Discourse-Event-Signature') || ''
+  if (DISCOURSE_WEBHOOK_SECRET) {
+    const payload = req.body
+    const calculatedSignature = crypto
+      .createHmac('sha256', DISCOURSE_WEBHOOK_SECRET)
+      .update(JSON.stringify(payload))
+      .digest('hex')
+
+    if (providedSignature !== calculatedSignature) {
+      throw new RequestError('Invalid signature', RequestError.Forbidden)
+    }
+  } else {
+    logger.warning('Unable to find secret for discourse webhook validation')
   }
 }

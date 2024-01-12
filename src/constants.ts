@@ -38,6 +38,7 @@ export const LAND_OWNER_BADGE_SPEC_CID = process.env.LAND_OWNER_BADGE_SPEC_CID |
 export const TRIMMED_OTTERSPACE_RAFT_ID = trimOtterspaceId(OTTERSPACE_DAO_RAFT_ID)
 export const TOP_VOTERS_PER_MONTH = 3
 export const TOP_VOTER_BADGE_IMG_URL = process.env.TOP_VOTER_BADGE_IMG_URL || ''
+export const DISCOURSE_WEBHOOK_SECRET = process.env.DISCOURSE_WEBHOOK_SECRET || ''
 export const CORE_UNITS_BADGE_CID = [
   'bafyreia2x3a2kvcocnrogbckuz544jyo2dqiusvlac7ur5phyrum4pqxgu',
   'bafyreib2avzzxwxvb4onqt3oj6s5yg2peko227dh7mebxmp3674r64z6gu',
