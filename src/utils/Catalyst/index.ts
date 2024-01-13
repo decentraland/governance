@@ -10,7 +10,9 @@ export const DEFAULT_AVATAR_IMAGE = 'https://decentraland.org/images/male.png'
 
 function getDclProfile(profile: CatalystProfile | null, address: string): DclProfile {
   const profileHasName = !!profile && profile.hasClaimedName && !!profile.name && profile.name.length > 0
-  const username = profileHasName ? profile.name : null
+  const profileHasGuestName = !!profile && !profile.hasClaimedName && !!profile.name && profile.name.length > 0
+  const guestName = profileHasGuestName ? `${profile.name.split('#')[0]}#${address.slice(-4)}` : null
+  const username = profileHasName ? profile.name : profileHasGuestName ? guestName : null
   const hasAvatar = !!profile && !!profile.avatar
   const avatar = hasAvatar ? profile.avatar.snapshots.face256 : DEFAULT_AVATAR_IMAGE
   return { username, avatar, hasCustomAvatar: hasAvatar, address: address.toLowerCase() }
