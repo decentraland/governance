@@ -9,6 +9,7 @@ import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import { EDIT_DELEGATE_SNAPSHOT_URL } from '../../../entities/Proposal/utils'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useSnapshotDelegateContract, { DelegateContractStatusCode } from '../../../hooks/useSnapshotDelegateContract'
+import Link from '../../Common/Typography/Link'
 import Info from '../../Icon/Info'
 
 import './VotingPowerDelegationHandler.css'
@@ -42,6 +43,7 @@ function VotingPowerDelegationHandler({ buttonText, candidateAddress, userVP, ba
       } else {
         await setDelegate(candidateAddress)
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(error)
       if (error.code !== DelegateContractStatusCode.TRANSACTION_CANCELED_BY_USER) {
@@ -67,14 +69,9 @@ function VotingPowerDelegationHandler({ buttonText, candidateAddress, userVP, ba
                   content={<span>{t('modal.vp_delegation.delegated_globally_helper')}</span>}
                   position="bottom center"
                   trigger={
-                    <a
-                      className="DelegateButton__Container--Global"
-                      href={EDIT_DELEGATE_SNAPSHOT_URL}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
+                    <Link className="DelegateButton__Container--Global" href={EDIT_DELEGATE_SNAPSHOT_URL}>
                       {t('modal.vp_delegation.delegated_globally')} <Info size="18" />
-                    </a>
+                    </Link>
                   }
                   on="hover"
                 />

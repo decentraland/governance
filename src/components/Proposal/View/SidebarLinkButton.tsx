@@ -1,6 +1,7 @@
 import classNames from 'classnames'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
+import Link from '../../Common/Typography/Link'
 import Open from '../../Icon/Open'
 
 import './DetailsSection.css'
@@ -18,10 +19,8 @@ export interface SidebarLinkButtonProps {
 function SidebarLinkButton({ loading, disabled, href, isExternal = true, children, icon }: SidebarLinkButtonProps) {
   return (
     // eslint-disable-next-line react/jsx-no-target-blank
-    <a
+    <Link
       href={href}
-      target={isExternal ? '_blank' : undefined}
-      rel={isExternal ? 'noopener noreferrer' : undefined}
       className={classNames(
         'DetailsSection',
         'SectionButton',
@@ -36,7 +35,7 @@ function SidebarLinkButton({ loading, disabled, href, isExternal = true, childre
         <span>{children}</span>
       </div>
       {isExternal && <Open />}
-    </a>
+    </Link>
   )
 }
 

@@ -8,6 +8,7 @@ import { EDIT_DELEGATE_SNAPSHOT_URL } from '../../../entities/Proposal/utils'
 import useDelegatesInfo, { Delegate } from '../../../hooks/useDelegatesInfo'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useVotingPowerDistribution from '../../../hooks/useVotingPowerDistribution'
+import Link from '../../Common/Typography/Link'
 import Markdown from '../../Common/Typography/Markdown'
 import DelegatesTable from '../../Delegation/DelegatesTable'
 
@@ -67,8 +68,7 @@ function VotingPowerDelegationCandidatesList({
           fluid
           primary
           href={EDIT_DELEGATE_SNAPSHOT_URL}
-          target="_blank"
-          rel="noopener noreferrer"
+          as={Link}
         >
           {t('modal.vp_delegation.pick_button')}
         </Button>

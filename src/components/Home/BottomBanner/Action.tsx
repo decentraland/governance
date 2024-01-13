@@ -12,7 +12,7 @@ export interface ActionProps {
 
 function Action({ icon, title, description, url, onClick }: ActionProps) {
   return (
-    <Link href={url} onClick={onClick} target="_blank" rel="noreferrer" className="Action">
+    <Link href={url} onClick={onClick} className="Action">
       <div className="Action__Icon">{icon}</div>
       <div>
         <div className="Action__Title">{title}</div>
