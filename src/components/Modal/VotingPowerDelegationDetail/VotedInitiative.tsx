@@ -20,7 +20,7 @@ const VotedInitiative = ({ vote, voteMatch }: Props) => {
   const { choice, proposal } = vote
 
   return (
-    <Link className="VotedInitiative" href={locations.proposal(proposal.proposal_id)} target="_blank">
+    <Link className="VotedInitiative" href={locations.proposal(proposal.proposal_id)}>
       <div className="VotedInitiative__TitleContainer">
         {voteMatch === undefined ? (
           <QuestionCircle size="16" />

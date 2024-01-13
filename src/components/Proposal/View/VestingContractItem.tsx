@@ -34,7 +34,7 @@ function VestingContractItem({ address, itemNumber, logs, vestingStartAt }: Prop
   const lastLog = filteredLogs[0]
   const isVestingActive = filteredLogs.length === 0 || lastLog.topic === TOPICS_V2.UNPAUSED
   return (
-    <Link className="VestingContractItem" target="_blank" href={getVestingContractUrl(address)}>
+    <Link className="VestingContractItem" href={getVestingContractUrl(address)}>
       <div>
         <div className="VestingContractItem__title">
           {t('page.proposal_detail.grant.vesting_dropdown_item_title', { number: itemNumber })}

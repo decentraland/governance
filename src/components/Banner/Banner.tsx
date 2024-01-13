@@ -4,6 +4,7 @@ import classNames from 'classnames'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 
+import Link from '../Common/Typography/Link'
 import Text from '../Common/Typography/Text'
 
 import './Banner.css'
@@ -68,7 +69,7 @@ function Banner({
                 size="small"
                 onClick={onButtonClick}
                 href={buttonHref}
-                target="blank"
+                as={Link}
               >
                 {buttonLabel}
               </Button>
