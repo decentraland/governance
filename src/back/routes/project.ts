@@ -1,6 +1,7 @@
 import { handleJSON } from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 
+import CacheService from '../../services/CacheService'
 import { ProjectService } from '../../services/ProjectService'
 
 export default routes((route) => {
@@ -10,7 +11,14 @@ export default routes((route) => {
 })
 
 async function getProjects() {
-  return await ProjectService.getProjects()
+  const cacheKey = 'projects'
+  const cachedProjects = CacheService.get<Awaited<ReturnType<typeof ProjectService.getProjects>>>(cacheKey)
+  if (cachedProjects) {
+    return cachedProjects
+  }
+  const projects = await ProjectService.getProjects()
+  CacheService.set(cacheKey, projects)
+  return projects
 }
 
 async function getOpenPitchesTotal() {
