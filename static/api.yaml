@@ -9,6 +9,8 @@ tags:
     description: The Proposals section of the API provides endpoints to interact with proposals and grants related to the. DAO. Proposals are the format community members use to propose changes to the Decentraland ecosystem.
   - name: Coauthor
     description: The Coauthor section of the API is focused on retrieving information about the co-authors associated with a particular proposal. Co-authors are individuals or organizations who are collaborating on a proposal, and may have contributed to its creation.
+  - name: Projects
+    description: The Projects section of the API provides endpoints to interact with projects.  
   - name: Grant Updates
     description: The Grant Updates section of the API is focused on retrieving information related to updates associated with a specific approved Grant. Updates are  used to inform the community or stakeholders about the progress of a Grant project, highlighting any important milestones, challenges, or changes.
   - name: DAO Committee
@@ -171,6 +173,31 @@ paths:
           $ref: '#/components/parameters/address'
         - name: status
           $ref: '#/components/parameters/coauthorStatus'
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+
+  /projects:
+    get:
+      tags:
+        - Projects
+      summary: Get projects ordered from the most recent to the oldest
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+  /projects/pitches-total:
+    get:
+      tags:
+        - Projects
+      summary: Get the total number of open pitches for projects
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+  /projects/tenders-total:
+    get:
+      tags:
+        - Projects
+      summary: Get the total number of open tenders for projects
       responses:
         '200':
           $ref: '#/components/responses/200'
