@@ -16,7 +16,6 @@ import DiscordCircled from '../../Icon/DiscordCircled'
 import LinkAccounts from '../../Icon/LinkAccounts'
 import NotificationBellCircled from '../../Icon/NotificationBellCircled'
 import AccountsConnectModal from '../IdentityConnectModal/AccountsConnectModal'
-import '../ProposalModal.css'
 
 import './LinkDiscordModal.css'
 
@@ -53,7 +52,7 @@ export function LinkDiscordModal() {
     <>
       <Modal
         size="tiny"
-        className={classNames('GovernanceActionModal', 'ProposalModal', 'LinkDiscordModal')}
+        className={classNames('GovernanceActionModal', 'LinkDiscordModal')}
         closeIcon={<Close />}
         open={isLinkDiscordModalOpen}
         onClose={handleClose}
