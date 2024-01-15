@@ -23,7 +23,7 @@ const TARGET_BLANK = '_blank'
 export default function Link({ target, rel, href, onClick, className, ...props }: Props) {
   const isLocal = isLocalLink(href)
   const linkTarget = !isLocal ? target || TARGET_BLANK : undefined
-  const linkRel = !isLocal ? classNames(rel, 'noopener', 'noreferrer') : classNames('canonical', rel)
+  const linkRel = !isLocal ? classNames(rel, 'noopener', 'noreferrer') : rel
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (onClick) {
       onClick(e)
