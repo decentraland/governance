@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
+import Head from '../components/Common/Head'
 import Heading from '../components/Common/Typography/Heading'
 import WiderContainer from '../components/Common/WiderContainer'
 import ChartBar from '../components/Icon/ChartBar'
@@ -48,9 +48,10 @@ export default function TransparencyPage() {
     <>
       <Navigation activeTab={NavigationTab.Transparency} />
       <Head
-        title={t('page.transparency.title') || ''}
-        description={t('page.transparency.mission.description') || ''}
+        title={t('page.transparency.title')}
+        description={t('page.transparency.mission.description')}
         image="https://decentraland.org/images/decentraland.png"
+        link={[{ rel: 'canonical', href: locations.transparency() }]}
       />
       <div className="TransparencyPage">
         {!data && <LoadingView withNavigation />}
