@@ -1039,8 +1039,8 @@
         "ended": "Ended"
       },
       "legislative_tracker": {
-        "title": "How did we get here?",
-        "description": "Find all the binding outcomes from past DAO initiatives in this living document",
+        "title": "How do we govern?",
+        "description": "Check the latest binding Governance decisions the community approved on this living document maintained by the Facilitation Squad",
         "button": "Legislative Tracker"
       }
     },
