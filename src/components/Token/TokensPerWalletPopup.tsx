@@ -5,6 +5,7 @@ import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import { TokenInWallet } from '../../entities/Transparency/types'
 import { blockExplorerLink } from '../../entities/Transparency/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
+import Link from '../Common/Typography/Link'
 import Text from '../Common/Typography/Text'
 import Info from '../Icon/Info'
 
@@ -27,12 +28,10 @@ export default function TokensPerWalletPopup({ tokensPerWallet, open, onClose }:
 
           const explorerLink = blockExplorerLink(tokenInWallet)
           return (
-            <a
+            <Link
               className="TokensPerWalletPopup__Row"
               key={[tokenInWallet.name, '_popup', index].join('::')}
               href={explorerLink.link}
-              target="_blank"
-              rel="noopener noreferrer"
             >
               <div className="TokensPerWalletPopup__Block">
                 <Header>{tokenInWallet.name}</Header>
@@ -47,7 +46,7 @@ export default function TokensPerWalletPopup({ tokensPerWallet, open, onClose }:
                   {t('page.transparency.mission.audit', { service_name: explorerLink.name })}
                 </Header>
               </div>
-            </a>
+            </Link>
           )
         })}
       </Card.Content>

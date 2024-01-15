@@ -22,8 +22,6 @@ export default function ProposalCardContainer({ id, title, isDisabled, children,
     <Link
       className={classNames('ProposalCardContainer', isDisabled && 'ProposalCardContainer--disabled', className)}
       href={proposalUrl(id)}
-      target="_blank"
-      rel="noopener noreferrer"
     >
       <div className="ProposalCardContainer__Container">
         <span className="ProposalCardContainer__Title">{title}</span>

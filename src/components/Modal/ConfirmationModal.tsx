@@ -3,6 +3,7 @@ import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import Heading from '../Common/Typography/Heading'
+import Link from '../Common/Typography/Link'
 import Text from '../Common/Typography/Text'
 
 import './ConfirmationModal.css'
@@ -52,8 +53,7 @@ export default function ConfirmationModal({
             disabled={isLoading || isDisabled}
             loading={isLoading}
             href={primaryButtonHref}
-            as={primaryButtonHref ? 'a' : undefined}
-            target={primaryButtonHref ? '_blank' : undefined}
+            as={primaryButtonHref ? Link : undefined}
           >
             {primaryButtonText}
           </Button>
