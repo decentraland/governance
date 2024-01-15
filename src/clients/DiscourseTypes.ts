@@ -286,6 +286,7 @@ export type DiscourseWebhookPost = {
   deleted_at: string
   user_deleted: boolean
 }
+
 export type DiscourseUser = {
   username: string
 }

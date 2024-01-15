@@ -30,7 +30,7 @@ export default class EventModel extends Model<Event> {
     await this.namedQuery('delete_old_events', query)
   }
 
-  static async alreadyRegistered(discourseEventId: string) {
+  static async isDiscourseEventRegistered(discourseEventId: string) {
     const query = SQL`
       SELECT count(*)
       FROM ${table(EventModel)}

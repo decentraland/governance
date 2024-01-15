@@ -29,7 +29,7 @@ async function voted(req: WithAuth) {
 async function newDiscourseEvent(req: Request) {
   validateDiscourseWebhookSignature(req)
 
-  const eventId = req.get('X-Discourse-Event-Id')
-  const event = req.get('X-Discourse-Event')
-  return await EventsService.commented(eventId, event, req.body.post)
+  const discourseEventId = req.get('X-Discourse-Event-Id')
+  const discourseEvent = req.get('X-Discourse-Event')
+  return await EventsService.commented(discourseEventId, discourseEvent, req.body.post)
 }

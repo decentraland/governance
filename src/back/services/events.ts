@@ -160,13 +160,17 @@ export class EventsService {
     return profiles
   }
 
-  static async commented(eventId: string | undefined, event: string | undefined, discoursePost: DiscourseWebhookPost) {
+  static async commented(
+    discourseEventId: string | undefined,
+    discourseEvent: string | undefined,
+    discoursePost: DiscourseWebhookPost
+  ) {
     try {
       if (
-        !eventId ||
-        !event ||
-        event !== 'post_created' || //TODO: we don't register editions or deletions
-        (await EventModel.alreadyRegistered(eventId)) ||
+        !discourseEventId ||
+        !discourseEvent ||
+        discourseEvent !== 'post_created' || //TODO: we don't register editions or deletions
+        (await EventModel.isDiscourseEventRegistered(discourseEventId)) ||
         discoursePost.category_id !== DiscourseService.getCategory()
       ) {
         return
@@ -177,9 +181,9 @@ export class EventsService {
       })
       if (!commentedProposal) {
         ErrorService.report('Unable to find commented proposal', {
-          discourse_data: {
-            event_id: eventId,
-            event,
+          event_data: {
+            discourse_event_id: discourseEventId,
+            discourse_event: discourseEvent,
             discourse_post: discoursePost,
           },
           category: ErrorCategory.Events,
@@ -199,8 +203,8 @@ export class EventsService {
         address: user.address,
         event_type: EventType.Commented,
         event_data: {
-          discourse_event_id: eventId,
-          discourse_event: event,
+          discourse_event_id: discourseEventId,
+          discourse_event: discourseEvent,
           discourse_post: discoursePost,
           proposal_id: commentedProposal.id,
           proposal_title: commentedProposal.title,
