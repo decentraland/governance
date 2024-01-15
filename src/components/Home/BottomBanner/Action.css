@@ -2,14 +2,16 @@
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
+  width: 100%;
   background: rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 4px 9px rgba(255, 255, 255, 0.05);
   border-radius: 8px;
   padding: 16px;
+  cursor: pointer;
 }
 
-.Action .Action__Icon {
+.Action__Icon {
   --size: 32px;
   background: rgba(0, 0, 0, 0.2);
   border-radius: 30px;
@@ -26,33 +28,32 @@
   padding: 5px;
 }
 
-.Action .Action__Icon svg {
+.Action__Icon svg {
   --iconSize: 20px;
   width: var(--iconSize);
   height: var(--iconSize);
 }
 
-.Action .Action__Icon svg path {
+.Action__Icon svg path {
   fill: var(--white-900);
 }
 
-.Action .Action__Title {
-  font-style: normal;
+.Action__Info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.Action__Title {
   font-weight: var(--weight-semi-bold);
   font-size: 16px;
   line-height: 19px;
-
   color: var(--white-900);
 }
 
-.Action .Action__Description {
-  font-style: normal;
+.Action__Description {
   font-weight: var(--weight-normal);
   font-size: 14px;
   line-height: 17px;
   color: var(--white-900);
-}
-
-.Action .ui.grid .column:last-child {
-  padding-left: 0;
 }
