@@ -1,7 +1,8 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 
-import { Discourse, DiscoursePost } from '../../clients/Discourse'
+import { Discourse } from '../../clients/Discourse'
+import { DiscoursePost } from '../../clients/DiscourseTypes'
 import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import UpdateModel from '../../entities/Updates/model'

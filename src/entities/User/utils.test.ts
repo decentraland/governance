@@ -1,4 +1,4 @@
-import { DiscoursePostInTopic, DiscourseTopic } from '../../clients/Discourse'
+import { DiscoursePostInTopic, DiscourseTopic } from '../../clients/DiscourseTypes'
 import { FORUM_URL } from '../../constants'
 import { ProposalCommentsInDiscourse } from '../Proposal/types'
 

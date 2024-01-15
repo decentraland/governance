@@ -111,10 +111,9 @@ export function validateDiscourseWebhookSignature(req: Request) {
   const providedSignature = req.get('X-Discourse-Event-Signature') || ''
   if (DISCOURSE_WEBHOOK_SECRET) {
     const payload = req.body
-    const calculatedSignature = crypto
-      .createHmac('sha256', DISCOURSE_WEBHOOK_SECRET)
-      .update(JSON.stringify(payload))
-      .digest('hex')
+    const calculatedSignature = 'sha256='.concat(
+      crypto.createHmac('sha256', DISCOURSE_WEBHOOK_SECRET).update(JSON.stringify(payload)).digest('hex')
+    )
 
     if (providedSignature !== calculatedSignature) {
       throw new RequestError('Invalid signature', RequestError.Forbidden)

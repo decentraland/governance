@@ -1,9 +1,16 @@
 import crypto from 'crypto'
 
+import { DiscourseWebhookPost } from '../../clients/DiscourseTypes'
+import ProposalModel from '../../entities/Proposal/model'
+import { ProposalAttributes } from '../../entities/Proposal/types'
+import UserModel from '../../entities/User/model'
+import { UserAttributes } from '../../entities/User/types'
 import { addressShortener } from '../../helpers'
 import CacheService, { TTL_1_HS } from '../../services/CacheService'
+import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
 import {
+  CommentedEvent,
   EventType,
   EventWithAuthor,
   ProposalCreatedEvent,
@@ -151,5 +158,59 @@ export class EventsService {
     }
 
     return profiles
+  }
+
+  static async commented(eventId: string | undefined, event: string | undefined, discoursePost: DiscourseWebhookPost) {
+    try {
+      if (
+        !eventId ||
+        !event ||
+        event !== 'post_created' || //TODO: we don't register editions or deletions
+        (await EventModel.alreadyRegistered(eventId)) ||
+        discoursePost.category_id !== DiscourseService.getCategory()
+      ) {
+        return
+      }
+
+      const commentedProposal = await ProposalModel.findOne<ProposalAttributes>({
+        discourse_topic_id: discoursePost.topic_id,
+      })
+      if (!commentedProposal) {
+        ErrorService.report('Unable to find commented proposal', {
+          discourse_data: {
+            event_id: eventId,
+            event,
+            discourse_post: discoursePost,
+          },
+          category: ErrorCategory.Events,
+        })
+        return
+      }
+
+      const user = await UserModel.findOne<UserAttributes>({ forum_id: discoursePost.user_id })
+
+      //TODO: for the time being we only register events for linked users comments
+      if (!user) {
+        return
+      }
+
+      const commentedEvent: CommentedEvent = {
+        id: crypto.randomUUID(),
+        address: user.address,
+        event_type: EventType.Commented,
+        event_data: {
+          discourse_event_id: eventId,
+          discourse_event: event,
+          discourse_post: discoursePost,
+          proposal_id: commentedProposal.id,
+          proposal_title: commentedProposal.title,
+        },
+        created_at: new Date(), //TODO: should we use the discord event creation date?
+      }
+
+      return await EventModel.create(commentedEvent)
+    } catch (e) {
+      ErrorService.report('Unexpected error while creating comment event', { error: e, category: ErrorCategory.Events })
+    }
   }
 }

@@ -27,9 +27,9 @@ async function voted(req: WithAuth) {
 }
 
 async function newDiscourseEvent(req: Request) {
-  console.log('req', req)
-
   validateDiscourseWebhookSignature(req)
 
-  return 'hello'
+  const eventId = req.get('X-Discourse-Event-Id')
+  const event = req.get('X-Discourse-Event')
+  return await EventsService.commented(eventId, event, req.body.post)
 }
