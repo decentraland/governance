@@ -1,5 +1,4 @@
 import crypto from 'crypto'
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import { Request } from 'express'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
@@ -8,6 +7,8 @@ import isUUID from 'validator/lib/isUUID'
 import { SnapshotProposal } from '../../clients/SnapshotTypes'
 import { DISCOURSE_WEBHOOK_SECRET } from '../../constants'
 import isDebugAddress from '../../entities/Debug/isDebugAddress'
+import { ErrorService } from '../../services/ErrorService'
+import { ErrorCategory } from '../../utils/errorCategories'
 
 export function validateDates(start?: string, end?: string) {
   const validatedStart = new Date(validateDate(start)!)
@@ -116,9 +117,10 @@ export function validateDiscourseWebhookSignature(req: Request) {
     )
 
     if (providedSignature !== calculatedSignature) {
+      ErrorService.report('Invalid discourse webhook signature', { category: ErrorCategory.Discourse })
       throw new RequestError('Invalid signature', RequestError.Forbidden)
     }
   } else {
-    logger.warning('Unable to find secret for discourse webhook validation')
+    throw new RequestError('Endpoint disabled', RequestError.NotImplemented)
   }
 }
