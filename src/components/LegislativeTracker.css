@@ -1,0 +1,41 @@
+.LegislativeTracker {
+  padding: 14px;
+  border-radius: 6px;
+  background: var(--black-700);
+}
+
+.LegislativeTracker__Title {
+  color: var(--white-900);
+  margin-top: 0;
+  margin-bottom: 5px;
+  font-size: 13px;
+  font-weight: var(--weight-semi-bold);
+  line-height: 18px;
+  text-transform: uppercase;
+}
+
+.LegislativeTracker__Description {
+  color: var(--black-400) !important;
+  font-weight: var(--weight-semi-normal);
+  margin-bottom: 16px;
+}
+
+.LegislativeTracker__LinkButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 25px;
+  border-radius: 6px;
+  border: 2px solid var(--white-900);
+  color: var(--white-900);
+  font-size: 13px;
+  font-weight: var(--weight-semi-bold);
+  line-height: 18px;
+  text-transform: uppercase;
+}
+
+.LegislativeTracker__LinkButton:hover {
+  color: var(--white-900);
+}

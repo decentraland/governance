@@ -949,18 +949,6 @@
         "update_created": "**{author}** published an Update on the Project **{title}**"
       }
     },
-    "welcome": {
-      "title": "Welcome to the Decentraland DAO",
-      "description": "A quick-start guide to participating in the governance of Decentraland’s virtual world",
-      "1_panel_title": "Welcome to the new DAO!",
-      "1_panel_description": "The DAO is a voting platform where you can vote on (or create) specific proposals like banning names, highlighting interesting areas of the world on the map, adding community servers, creating polls, or even requesting a grant!",
-      "2_panel_title": "Before you start",
-      "2_panel_description": "Sign in by clicking SIGN IN in the upper right corner. Before you can vote or make proposals on the DAO, you have to wrap MANA or LAND. The more you wrap, the more your vote is weighted. You can pull out any wrapped assets at any time, but this will affect the weight of your vote in any active proposals.\n\nYou will have to pay an ETH transaction fee (gas) when wrapping or unwrapping MANA or LAND, but you will **not** have to pay transaction fees when voting or creating proposals.",
-      "3_panel_title": "How to vote",
-      "3_panel_description": "Browse open proposals by clicking Proposals. Clicking on a proposal opens the details page where you can read the full description and view the current status. Don’t forget to go to the related conversation on the Forum, where you can read other opinions and share your own.",
-      "4_panel_title": "How to create a proposal",
-      "4_panel_description": "Click New Proposal and select the correct category. The form provided for each category is different, so be careful to select the correct one. Finish by filling out the provided form.\n\nThe DAO will post a new thread on the Forum automatically where the community can discuss your proposal. The DAO will then post your proposal on Snapshot, the decentralized voting tool used to record votes. Keep tabs on your proposal’s status from the My Proposals tab."
-    },
     "proposal_view": {
       "bid": {
         "header": "Should funds from the DAO Treasury be allocated to finance a new community-led project addressing issues outlined herein?",
@@ -1049,6 +1037,11 @@
         "starts": "Starts",
         "ends": "Ends",
         "ended": "Ended"
+      },
+      "legislative_tracker": {
+        "title": "How do we govern?",
+        "description": "Check the latest binding Governance decisions the community approved on this living document maintained by the Facilitation Squad",
+        "button": "Legislative Tracker"
       }
     },
     "proposal_enacted_list": {

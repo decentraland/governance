@@ -21,6 +21,7 @@ import ActionableLayout from '../components/Layout/ActionableLayout'
 import LoadingView from '../components/Layout/LoadingView'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
+import LegislativeTracker from '../components/LegislativeTracker'
 import PriorityProposalsBox from '../components/Profile/PriorityProposalsBox'
 import ProposalItem from '../components/Proposal/ProposalItem'
 import CategoryFilter from '../components/Search/CategoryFilter'
@@ -128,6 +129,7 @@ export default function ProposalsPage() {
                     <CategoryFilter filterType={ProposalType} />
                     <StatusFilter statusType={ProposalStatus} />
                     <TimeFrameFilter />
+                    <LegislativeTracker />
                   </div>
                 </NotMobile>
               </div>
