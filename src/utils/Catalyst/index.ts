@@ -8,11 +8,16 @@ import { CatalystProfile, DclProfile, ProfileResponse } from './types'
 const CATALYST_URL = 'https://peer.decentraland.org'
 export const DEFAULT_AVATAR_IMAGE = 'https://decentraland.org/images/male.png'
 
+function getUsername(profile: CatalystProfile | null, address: string) {
+  const hasName = !!profile && !!profile.name && profile.name.length > 0
+  if (hasName) {
+    return profile.hasClaimedName ? profile.name : `${profile.name.split('#')[0]}#${address.slice(-4)}`
+  }
+  return null
+}
+
 function getDclProfile(profile: CatalystProfile | null, address: string): DclProfile {
-  const profileHasName = !!profile && profile.hasClaimedName && !!profile.name && profile.name.length > 0
-  const profileHasGuestName = !!profile && !profile.hasClaimedName && !!profile.name && profile.name.length > 0
-  const guestName = profileHasGuestName ? `${profile.name.split('#')[0]}#${address.slice(-4)}` : null
-  const username = profileHasName ? profile.name : profileHasGuestName ? guestName : null
+  const username = getUsername(profile, address)
   const hasAvatar = !!profile && !!profile.avatar
   const avatar = hasAvatar ? profile.avatar.snapshots.face256 : DEFAULT_AVATAR_IMAGE
   return { username, avatar, hasCustomAvatar: hasAvatar, address: address.toLowerCase() }
