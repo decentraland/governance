@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { DAO_VESTING_CONTRACT_ADDRESS } from '../../constants'
+import { SubtypeAlternativeOptions } from '../../entities/Grant/types'
 import { CURRENCY_FORMAT_OPTIONS, getVestingContractUrl } from '../../helpers'
 import useBudgetByCategory from '../../hooks/useBudgetByCategory'
 import useFormatMessage from '../../hooks/useFormatMessage'
@@ -16,7 +17,7 @@ function CardsSection() {
   const t = useFormatMessage()
   const { vestingData } = useVestingContractData([DAO_VESTING_CONTRACT_ADDRESS])
   const { released, releasable } = vestingData?.[0] || {}
-  const { allocatedPercentage: percentage, allocated } = useBudgetByCategory('all_grants')
+  const { allocatedPercentage: percentage, allocated } = useBudgetByCategory(SubtypeAlternativeOptions.All)
   const currentQuarter = Time().quarter()
   const currentYear = Time().year()
   const { formatNumber } = useIntl()
