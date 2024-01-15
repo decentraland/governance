@@ -1,7 +1,7 @@
 import { handleJSON } from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 
-import CacheService from '../../services/CacheService'
+import CacheService, { TTL_1_HS } from '../../services/CacheService'
 import { ProjectService } from '../../services/ProjectService'
 
 export default routes((route) => {
@@ -17,7 +17,7 @@ async function getProjects() {
     return cachedProjects
   }
   const projects = await ProjectService.getProjects()
-  CacheService.set(cacheKey, projects)
+  CacheService.set(cacheKey, projects, TTL_1_HS)
   return projects
 }
 
