@@ -42,7 +42,7 @@ import {
 } from '../entities/Updates/types'
 import { AccountType } from '../entities/User/types'
 import { Participation, VoteByAddress, VotedProposal, Voter, VotesForProposals } from '../entities/Votes/types'
-import { EventWithAuthor } from '../shared/types/events'
+import { ActivityTickerEvent } from '../shared/types/events'
 import { NewsletterSubscriptionResult } from '../shared/types/newsletter'
 import { PushNotification } from '../shared/types/notifications'
 import Time from '../utils/date/Time'
@@ -759,7 +759,7 @@ export class Governance extends API {
   }
 
   async getLatestEvents() {
-    const response = await this.fetch<ApiResponse<EventWithAuthor[]>>(`/events`, this.options().method('GET'))
+    const response = await this.fetch<ApiResponse<ActivityTickerEvent[]>>(`/events`, this.options().method('GET'))
     return response.data
   }
 

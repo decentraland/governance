@@ -4,7 +4,7 @@ import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Governance } from '../../clients/Governance'
 import { ONE_MINUTE_MS } from '../../hooks/constants'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import { EventType, EventWithAuthor } from '../../shared/types/events'
+import { ActivityTickerEvent, CommentedEventData, EventType } from '../../shared/types/events'
 import Time from '../../utils/date/Time'
 import locations from '../../utils/locations'
 import Avatar from '../Common/Avatar'
@@ -16,7 +16,7 @@ import Text from '../Common/Typography/Text'
 
 import './ActivityTicker.css'
 
-const getLink = (event: EventWithAuthor) => {
+const getLink = (event: ActivityTickerEvent) => {
   if (event.event_type === EventType.ProposalCreated) {
     return locations.proposal(event.event_data.proposal_id)
   }
@@ -63,9 +63,14 @@ export default function ActivityTicker() {
             <div className="ActivityTicker__List">
               {events.map((item) => (
                 <div key={item.id} className="ActivityTicker__ListItem">
-                  <Link href={locations.profile({ address: item.address })}>
-                    <Avatar size="xs" avatar={item.avatar} address={item.address} />
-                  </Link>
+                  {!!item.address && (
+                    <Link href={locations.profile({ address: item.address })}>
+                      <Avatar size="xs" avatar={item.avatar} address={item.address} />
+                    </Link>
+                  )}
+                  {!item.address && item.event_type === EventType.Commented && (
+                    <Avatar size="xs" src={(item.event_data as CommentedEventData).discourse_post.avatar_template} />
+                  )}
                   <div>
                     <Link href={getLink(item)}>
                       <Markdown
@@ -73,7 +78,7 @@ export default function ActivityTicker() {
                         componentsClassNames={{ strong: 'ActivityTicker__ListItemMarkdownTitle' }}
                       >
                         {t(`page.home.activity_ticker.${item.event_type}`, {
-                          author: item.author,
+                          author: item.author || (item.event_data as CommentedEventData).discourse_post.username,
                           title: item.event_data.proposal_title.trim(),
                         })}
                       </Markdown>

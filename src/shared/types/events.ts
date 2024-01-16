@@ -2,7 +2,7 @@ import { DiscourseWebhookPost } from '../../clients/DiscourseTypes'
 
 export type CommonEventAttributes = {
   id: string
-  address: string
+  address: string | null
   created_at: Date
 }
 
@@ -16,7 +16,7 @@ type DiscourseEventData = {
   discourse_event: string
   discourse_post: DiscourseWebhookPost
 }
-type CommentedEventData = DiscourseEventData & ProposalEventData
+export type CommentedEventData = DiscourseEventData & ProposalEventData
 
 export enum EventType {
   Voted = 'voted',
@@ -47,7 +47,7 @@ export type CommentedEvent = {
 
 export type Event = VotedEvent | ProposalCreatedEvent | UpdateCreatedEvent | CommentedEvent
 
-export type EventWithAuthor = {
-  author: string
-  avatar: string
+export type ActivityTickerEvent = {
+  author?: string
+  avatar?: string
 } & Event

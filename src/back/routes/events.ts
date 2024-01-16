@@ -1,4 +1,5 @@
 import { WithAuth, auth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
+import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
@@ -31,5 +32,8 @@ async function newDiscourseEvent(req: Request) {
 
   const discourseEventId = req.get('X-Discourse-Event-Id')
   const discourseEvent = req.get('X-Discourse-Event')
+  if (!discourseEventId || !discourseEvent) {
+    throw new RequestError('Discourse event data missing', RequestError.BadRequest)
+  }
   return await EventsService.commented(discourseEventId, discourseEvent, req.body.post)
 }

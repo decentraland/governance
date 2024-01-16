@@ -5,14 +5,15 @@ import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import UserModel from '../../entities/User/model'
 import { UserAttributes } from '../../entities/User/types'
+import { DISCOURSE_USER } from '../../entities/User/utils'
 import { addressShortener } from '../../helpers'
 import CacheService, { TTL_1_HS } from '../../services/CacheService'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
 import {
+  ActivityTickerEvent,
   CommentedEvent,
   EventType,
-  EventWithAuthor,
   ProposalCreatedEvent,
   UpdateCreatedEvent,
   VotedEvent,
@@ -23,24 +24,31 @@ import { ErrorCategory } from '../../utils/errorCategories'
 import EventModel from '../models/Event'
 
 export class EventsService {
-  static async getLatest(): Promise<EventWithAuthor[]> {
+  static async getLatest(): Promise<ActivityTickerEvent[]> {
     try {
       const latestEvents = await EventModel.getLatest()
-      const addresses = latestEvents.map((event) => event.address)
+
+      const addresses: string[] = latestEvents
+        .map((event) => event.address)
+        .filter((address) => address !== null) as string[]
 
       const addressesToProfile = await this.getAddressesToProfiles(addresses)
 
-      const latestEventsWithAuthor: EventWithAuthor[] = []
+      const activityTickerEvents: ActivityTickerEvent[] = []
       for (const event of latestEvents) {
         const { address } = event
-        latestEventsWithAuthor.push({
-          author: addressesToProfile[address].username || addressShortener(address),
-          avatar: addressesToProfile[address].avatar,
-          ...event,
-        })
+        activityTickerEvents.push(
+          address
+            ? {
+                author: addressesToProfile[address].username || addressShortener(address),
+                avatar: addressesToProfile[address].avatar,
+                ...event,
+              }
+            : event
+        )
       }
 
-      return latestEventsWithAuthor
+      return activityTickerEvents
     } catch (error) {
       ErrorService.report('Error fetching events', { error, category: ErrorCategory.Events })
       return []
@@ -160,18 +168,13 @@ export class EventsService {
     return profiles
   }
 
-  static async commented(
-    discourseEventId: string | undefined,
-    discourseEvent: string | undefined,
-    discoursePost: DiscourseWebhookPost
-  ) {
+  static async commented(discourseEventId: string, discourseEvent: string, discoursePost: DiscourseWebhookPost) {
     try {
       if (
-        !discourseEventId ||
-        !discourseEvent ||
-        discourseEvent !== 'post_created' || //TODO: we don't register editions or deletions
+        discourseEvent !== 'post_created' ||
         (await EventModel.isDiscourseEventRegistered(discourseEventId)) ||
-        discoursePost.category_id !== DiscourseService.getCategory()
+        discoursePost.category_id !== DiscourseService.getCategory() ||
+        discoursePost.username === DISCOURSE_USER
       ) {
         return
       }
@@ -193,14 +196,9 @@ export class EventsService {
 
       const user = await UserModel.findOne<UserAttributes>({ forum_id: discoursePost.user_id })
 
-      //TODO: for the time being we only register events for linked users comments
-      if (!user) {
-        return
-      }
-
       const commentedEvent: CommentedEvent = {
         id: crypto.randomUUID(),
-        address: user.address,
+        address: user ? user.address : null,
         event_type: EventType.Commented,
         event_data: {
           discourse_event_id: discourseEventId,
@@ -209,7 +207,7 @@ export class EventsService {
           proposal_id: commentedProposal.id,
           proposal_title: commentedProposal.title,
         },
-        created_at: new Date(), //TODO: should we use the discord event creation date?
+        created_at: new Date(discoursePost.created_at),
       }
 
       return await EventModel.create(commentedEvent)
