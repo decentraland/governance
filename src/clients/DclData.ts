@@ -34,7 +34,7 @@ export type TransparencyData = {
     total: bigint
     budget: bigint
   }
-  teams: Team[]
+  committees: Team[]
 }
 
 type Grants = {

@@ -201,7 +201,7 @@ export default function TransparencyPage() {
                       <div className="TransparencySection">
                         <Card className="TransparencyCard">
                           {data &&
-                            data.teams.map((team, index) => {
+                            data.committees.map((team, index) => {
                               return (
                                 <MembersSection
                                   key={[team.name.trim(), index].join('::')}
