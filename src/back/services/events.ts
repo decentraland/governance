@@ -1,6 +1,5 @@
 import crypto from 'crypto'
 
-import { DiscourseWebhookPost } from '../../clients/DiscourseTypes'
 import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import UserModel from '../../entities/User/model'
@@ -10,6 +9,7 @@ import { addressShortener } from '../../helpers'
 import CacheService, { TTL_1_HS } from '../../services/CacheService'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
+import { DiscourseWebhookPost } from '../../shared/types/discourse'
 import {
   ActivityTickerEvent,
   CommentedEvent,

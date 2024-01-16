@@ -3,7 +3,6 @@ import Options from 'decentraland-gatsby/dist/utils/api/Options'
 import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 
 import { DISCOURSE_API, DISCOURSE_USER } from '../entities/User/utils'
-
 import {
   DiscourseAuth,
   DiscourseCloseTopic,
@@ -13,7 +12,8 @@ import {
   DiscourseTopic,
   DiscourseUpdatePost,
   DiscourseUser,
-} from './DiscourseTypes'
+} from '../shared/types/discourse'
+
 import { trimLastForwardSlash } from './utils'
 
 export class Discourse extends API {

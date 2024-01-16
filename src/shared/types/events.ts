@@ -1,4 +1,4 @@
-import { DiscourseWebhookPost } from '../../clients/DiscourseTypes'
+import { DiscourseWebhookPost } from './discourse'
 
 export type CommonEventAttributes = {
   id: string
