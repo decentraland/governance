@@ -1,4 +1,3 @@
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import WiderContainer from '../components/Common/WiderContainer'
@@ -12,6 +11,7 @@ import MetricsCards from '../components/Home/MetricsCards'
 import OpenProposals from '../components/Home/OpenProposals'
 import UpcomingOpportunities from '../components/Home/UpcomingOpportunities'
 import { Desktop1200 } from '../components/Layout/Desktop1200'
+import Head from '../components/Layout/Head'
 import LoadingView from '../components/Layout/LoadingView'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
@@ -45,11 +45,7 @@ export default function HomePage() {
 
   return (
     <>
-      <Head
-        title={t('page.home.title')}
-        description={t('page.home.description')}
-        image="https://decentraland.org/images/decentraland.png"
-      />
+      <Head title={t('page.home.title')} description={t('page.home.description')} />
       <Navigation activeTab={NavigationTab.Home} />
       {!endingSoonProposals && <LoadingView withNavigation />}
       {endingSoonProposals && (

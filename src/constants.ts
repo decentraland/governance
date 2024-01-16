@@ -65,3 +65,5 @@ export const BUY_LAND_URL = process.env.GATSBY_BUY_LAND_URL || clientEnv('GATSBY
 export const BUY_WEARABLES_URL = process.env.GATSBY_BUY_WEARABLES_URL || clientEnv('GATSBY_BUY_WEARABLES_URL')
 export const BUY_NAME_URL = process.env.GATSBY_BUY_NAME_URL || clientEnv('GATSBY_BUY_NAME_URL')
 export const BUY_MANA_URL = process.env.GATSBY_BUY_MANA_URL || clientEnv('GATSBY_BUY_MANA_URL')
+
+export const DCL_META_IMAGE_URL = 'https://decentraland.org/images/decentraland.png'

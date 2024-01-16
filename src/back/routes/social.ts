@@ -8,6 +8,7 @@ import { resolve } from 'path'
 import isUUID from 'validator/lib/isUUID'
 
 import { requiredEnv } from '../../config'
+import { DCL_META_IMAGE_URL } from '../../constants'
 import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import intl from '../../intl/en.json'
@@ -23,7 +24,7 @@ const DEFAULT_INFO: Partial<MetadataOptions> = {
   'og:site_name': 'Decentraland DAO',
   'twitter:site': '@decentraland',
   'twitter:card': 'summary',
-  image: 'https://decentraland.org/images/decentraland.png',
+  image: DCL_META_IMAGE_URL,
 }
 
 export default routes((route) => {
@@ -35,15 +36,7 @@ async function readFile(req: Request) {
   return readOnce(path)
 }
 
-export async function injectHomeMetadata(req: Request) {
-  const page = await readFile(req)
-  return replaceHelmetMetadata(page.toString(), {
-    ...DEFAULT_INFO,
-    url: DEFAULT_INFO.url! + req.originalUrl.slice(1),
-  })
-}
-
-export async function injectProposalMetadata(req: Request) {
+async function injectProposalMetadata(req: Request) {
   const id = req.query.id as string
   const page = await readFile(req)
   if (!isUUID(id || '')) {

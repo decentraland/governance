@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import Helmet from 'react-helmet'
 import { SubmitHandler, useForm, useWatch } from 'react-hook-form'
 
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Field as DCLField } from 'decentraland-ui/dist/components/Field/Field'
@@ -21,6 +19,7 @@ import Text from '../../components/Common/Typography/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
 import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
+import Head from '../../components/Layout/Head'
 import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/Layout/LogIn'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
@@ -156,6 +155,7 @@ export default function SubmitPoll() {
           choices,
         })
         navigate(locations.proposal(proposal.id, { new: 'true' }), { replace: true })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         setError(error.body?.error || error.message)
         setFormDisabled(false)
@@ -174,13 +174,7 @@ export default function SubmitPoll() {
 
   return (
     <ContentLayout small preventNavigation={preventNavigation.current}>
-      <Head
-        title={t('page.submit_poll.title') || ''}
-        description={t('page.submit_poll.description') || ''}
-        image="https://decentraland.org/images/decentraland.png"
-      />
-      <Helmet title={t('page.submit_poll.title') || ''} />
-
+      <Head title={t('page.submit_poll.title') || ''} description={t('page.submit_poll.description') || ''} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <ContentSection>
           <Header size="huge">{t('page.submit_poll.title')}</Header>

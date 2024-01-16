@@ -1,7 +1,7 @@
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
 
 import ContentLayout from './ContentLayout'
+import Head from './Head'
 import Navigation, { NavigationTab } from './Navigation'
 
 interface Props {
@@ -13,7 +13,7 @@ interface Props {
 const MaintenanceLayout = ({ title, description, activeTab }: Props) => {
   return (
     <>
-      <Head title={title} description={description} image="https://decentraland.org/images/decentraland.png" />
+      <Head title={title} description={description} />
       {activeTab && (
         <>
           <Navigation activeTab={activeTab} />

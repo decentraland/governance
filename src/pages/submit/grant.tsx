@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import Helmet from 'react-helmet'
 
 import classNames from 'classnames'
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -29,6 +27,7 @@ import GrantRequestTeamSection, {
 } from '../../components/GrantRequest/GrantRequestTeamSection'
 import DecentralandLogo from '../../components/Icon/DecentralandLogo'
 import { ContentSection } from '../../components/Layout/ContentLayout'
+import Head from '../../components/Layout/Head'
 import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/Layout/LogIn'
 import CategorySelector from '../../components/Projects/CategorySelector'
@@ -96,6 +95,8 @@ function parseStringsAsNumbers(grantRequest: GrantRequest) {
 }
 
 function handleCancel() {
+  // TODO: Type window. Where is routeUpdate coming from?
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if ((window as any).routeUpdate) {
     window.history.back()
   } else {
@@ -211,8 +212,7 @@ export default function SubmitGrant() {
 
   return (
     <div>
-      <Head title={title} description={description} image="https://decentraland.org/images/decentraland.png" />
-      <Helmet title={title} />
+      <Head title={title} description={description} />
       <Container className="GrantRequest__Head">
         <div className="GrantRequest__Header">
           <DecentralandLogo
@@ -227,7 +227,6 @@ export default function SubmitGrant() {
       <Container className="ProjectRequestSection__Container">
         <Markdown componentsClassNames={{ p: 'GrantRequest__HeaderDescription' }}>{description}</Markdown>
       </Container>
-
       {!isCategorySelected && (
         <Container className="ProjectRequestSection__Container">
           <CategorySelector
@@ -241,7 +240,6 @@ export default function SubmitGrant() {
           />
         </Container>
       )}
-
       {isCategorySelected && (
         <>
           <GrantRequestFundingSection

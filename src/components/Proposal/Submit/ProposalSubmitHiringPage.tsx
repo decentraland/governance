@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import Helmet from 'react-helmet'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
 import classNames from 'classnames'
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import type { DropdownItemProps } from 'decentraland-ui'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -25,6 +23,7 @@ import Label from '../../Common/Typography/Label'
 import Text from '../../Common/Typography/Text'
 import ErrorMessage from '../../Error/ErrorMessage'
 import ContentLayout, { ContentSection } from '../../Layout/ContentLayout'
+import Head from '../../Layout/Head'
 import LoadingView from '../../Layout/LoadingView'
 import LogIn from '../../Layout/LogIn'
 
@@ -136,8 +135,7 @@ export default function ProposalSubmitHiringPage({ type, committees, isCommittee
 
   return (
     <ContentLayout small preventNavigation={preventNavigation.current}>
-      <Head title={title} description={description} image="https://decentraland.org/images/decentraland.png" />
-      <Helmet title={title} />
+      <Head title={title} description={description} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <ContentSection>
           <Header size="huge">{title}</Header>
