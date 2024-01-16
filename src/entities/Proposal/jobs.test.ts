@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { cloneDeep } from 'lodash'
 
 import { DiscordService } from '../../back/services/discord'
@@ -7,6 +6,7 @@ import { NotificationService } from '../../back/services/notification'
 import { BudgetService } from '../../services/BudgetService'
 import { DiscourseService } from '../../services/DiscourseService'
 import Time from '../../utils/date/Time'
+import logger from '../../utils/logger'
 import CoauthorModel from '../Coauthor/model'
 import { NewGrantCategory } from '../Grant/types'
 import { getQuarterEndDate } from '../QuarterBudget/utils'
@@ -356,7 +356,7 @@ describe('finishProposals', () => {
 })
 
 describe('getFinishabledLinkedProposals', () => {
-  const pendingProposals: ProposalAttributes<any>[] = [
+  const pendingProposals: ProposalAttributes[] = [
     createTestTender('1', '123'),
     createTestTender('2', '123'),
     createTestTender('3', '123'),
@@ -367,7 +367,7 @@ describe('getFinishabledLinkedProposals', () => {
     createTestProposal(ProposalType.Grant, ProposalStatus.Active, 200, NewGrantCategory.Accelerator),
   ]
 
-  const proposalsList: ProposalAttributes<any>[] = [
+  const proposalsList: ProposalAttributes[] = [
     ...pendingProposals,
     createTestTender('5', '456'),
     createTestTender('6', '456'),
@@ -379,6 +379,7 @@ describe('getFinishabledLinkedProposals', () => {
   it('does not return duplicate proposals to tender type proposals', async () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     jest.spyOn(ProposalModel, 'getProposalList').mockImplementation((filter: any) => {
       return proposalsList.filter((p) => {
         return p.configuration.linked_proposal_id === filter.linkedProposalId && p.type === ProposalType.Tender
@@ -392,6 +393,7 @@ describe('getFinishabledLinkedProposals', () => {
   it('does not return duplicate proposals to bid type proposals', async () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     jest.spyOn(ProposalModel, 'getProposalList').mockImplementation((filter: any) => {
       return proposalsList.filter((p) => {
         return p.configuration.linked_proposal_id === filter.linkedProposalId && p.type === ProposalType.Bid

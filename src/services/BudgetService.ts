@@ -1,4 +1,3 @@
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import validate from 'decentraland-gatsby/dist/entities/Route/validate'
 import schema from 'decentraland-gatsby/dist/entities/Schema'
 import snakeCase from 'lodash/snakeCase'
@@ -24,6 +23,7 @@ import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { toNewGrantCategory } from '../entities/QuarterCategoryBudget/utils'
 import { getUncappedRoundedPercentage } from '../helpers'
 import { ErrorCategory } from '../utils/errorCategories'
+import logger from '../utils/logger'
 
 import { ErrorService } from './ErrorService'
 import { ProposalService } from './ProposalService'

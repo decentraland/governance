@@ -1,4 +1,3 @@
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import type { Client, EmbedBuilder, Snowflake } from 'discord.js'
 
 import { DISCORD_SERVICE_ENABLED } from '../../constants'
@@ -64,7 +63,7 @@ export class DiscordService {
   private static client: Client
   static init() {
     if (!DISCORD_SERVICE_ENABLED) {
-      logger.log('Discord service disabled')
+      console.log('Discord service disabled')
       return
     }
 

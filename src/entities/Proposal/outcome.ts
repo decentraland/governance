@@ -1,7 +1,7 @@
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import orderBy from 'lodash/orderBy'
 
 import { isProdEnv } from '../../utils/governanceEnvs'
+import logger from '../../utils/logger'
 import { Scores } from '../Votes/utils'
 
 import { calculateWinnerChoice, getVotingResults, sameOptions } from './outcomeUtils'
@@ -28,6 +28,8 @@ const YES_NO_OPTIONS = ['yes', 'no']
 const getVotingOutcome = (
   winnerChoice: string,
   winnerVotingPower: number,
+  // TODO: Type choices
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   choices: any,
   results: Scores,
   requiredToPass?: number | null

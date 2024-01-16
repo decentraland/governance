@@ -1,4 +1,3 @@
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { cloneDeep } from 'lodash'
 
 import { Transparency } from '../clients/Transparency'
@@ -12,6 +11,7 @@ import QuarterBudgetModel from '../entities/QuarterBudget/model'
 import { QuarterCategoryBudgetAttributes } from '../entities/QuarterCategoryBudget/types'
 import { getUncappedRoundedPercentage } from '../helpers'
 import Time from '../utils/date/Time'
+import logger from '../utils/logger'
 
 import { BudgetService } from './BudgetService'
 

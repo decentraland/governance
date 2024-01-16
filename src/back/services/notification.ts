@@ -1,5 +1,4 @@
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { ethers } from 'ethers'
 
 import { NOTIFICATIONS_SERVICE_ENABLED, PUSH_CHANNEL_ID } from '../../constants'
@@ -11,6 +10,7 @@ import { ErrorService } from '../../services/ErrorService'
 import { Notification, NotificationCustomType, Recipient } from '../../shared/types/notifications'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
+import logger from '../../utils/logger'
 import {
   NotificationBody,
   NotificationTitle,

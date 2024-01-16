@@ -1,4 +1,3 @@
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import isNumber from 'lodash/isNumber'
 
 import { SnapshotApi, SnapshotReceipt } from '../clients/SnapshotApi'
@@ -10,6 +9,7 @@ import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { isSameAddress } from '../entities/Snapshot/utils'
 import { inBackground } from '../helpers'
 import { DclProfile } from '../utils/Catalyst/types'
+import logger from '../utils/logger'
 
 import { ProposalInCreation, ProposalLifespan } from './ProposalService'
 import RpcService from './RpcService'

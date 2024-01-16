@@ -1,4 +1,3 @@
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { ethers } from 'ethers'
 import { NFTStorage } from 'nft.storage'
 
@@ -10,6 +9,7 @@ import {
   TRIMMED_OTTERSPACE_RAFT_ID,
 } from '../../constants'
 import { toIsoStringDate } from '../../utils/date/toIsoString'
+import logger from '../../utils/logger'
 
 import { ActionStatus, BadgeCreationResult } from './types'
 
@@ -83,6 +83,7 @@ export async function storeBadgeSpecWithRetry(badgeSpec: BadgeSpec, retries = 3)
   try {
     const { badgeCid } = await storeBadgeSpec(badgeSpec)
     return { status: ActionStatus.Success, badgeCid, badgeTitle }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     if (retries > 0) {
       logger.log(`Retrying upload spec... Attempts left: ${retries}`, error)
