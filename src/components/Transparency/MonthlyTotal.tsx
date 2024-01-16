@@ -5,7 +5,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import { MonthlyTotal as MonthlyTotalType } from '../../clients/DclData'
+import { MonthlyTotal as MonthlyTotalType } from '../../clients/Transparency'
 import { formatBalance } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import { DetailItem } from '../Proposal/View/DetailItem'

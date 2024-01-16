@@ -4,7 +4,7 @@ import { Control, Controller } from 'react-hook-form'
 import type { DropdownItemProps } from 'decentraland-ui'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 
-import { CommitteeName } from '../../../clients/DclData'
+import { CommitteeName } from '../../../clients/Transparency'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useTransparency from '../../../hooks/useTransparency'
 
@@ -13,6 +13,7 @@ interface ExtendedController extends React.ComponentProps<typeof Controller> {
   loading?: boolean
   disabled?: boolean
   error?: boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<any>
   onOptionClick?: (event: React.MouseEvent<HTMLDivElement>, data: DropdownItemProps) => void
 }

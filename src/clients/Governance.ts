@@ -47,7 +47,6 @@ import { NewsletterSubscriptionResult } from '../shared/types/newsletter'
 import { PushNotification } from '../shared/types/notifications'
 import Time from '../utils/date/Time'
 
-import { TransparencyBudget, TransparencyVesting } from './DclData'
 import {
   DetailedScores,
   SnapshotConfig,
@@ -57,6 +56,7 @@ import {
   SnapshotVote,
   VpDistribution,
 } from './SnapshotTypes'
+import { TransparencyBudget, TransparencyVesting } from './Transparency'
 import { VestingInfo } from './VestingData'
 
 type NewProposalMap = {

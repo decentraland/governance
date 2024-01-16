@@ -11,8 +11,8 @@ import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-import { CommitteeName } from '../../../clients/DclData'
 import { Governance } from '../../../clients/Governance'
+import { CommitteeName } from '../../../clients/Transparency'
 import { SUBMISSION_THRESHOLD_HIRING } from '../../../entities/Proposal/constants'
 import { HiringType, NewProposalHiring, newProposalHiringScheme } from '../../../entities/Proposal/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
@@ -109,12 +109,14 @@ export default function ProposalSubmitHiringPage({ type, committees, isCommittee
       navigate(locations.proposal(proposal.id, { new: 'true' }), {
         replace: true,
       })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setError(error.body?.error || error.message)
       setFormDisabled(false)
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleRemoveMemberClick = (_: any, data: DropdownItemProps) => {
     setValue('address', data.value as string)
     setValue('name', data.text as string)

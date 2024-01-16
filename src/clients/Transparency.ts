@@ -1,5 +1,3 @@
-import API from 'decentraland-gatsby/dist/utils/api/API'
-
 import { ProjectStatus } from '../entities/Grant/types'
 import { TokenInWallet } from '../entities/Transparency/types'
 import { ErrorCategory } from '../utils/errorCategories'
@@ -88,41 +86,36 @@ const EMPTY_API: TransparencyData = {
   committees: [],
 }
 
-export class DclData extends API {
-  static Url = process.env.GATSBY_DCL_DATA_API || 'https://data.decentraland.vote/'
+const API_URL = process.env.GATSBY_DCL_DATA_API || 'https://data.decentraland.vote/'
 
-  static Cache = new Map<string, DclData>()
-
-  static from(baseUrl: string) {
-    if (!this.Cache.has(baseUrl)) {
-      this.Cache.set(baseUrl, new this(baseUrl))
-    }
-
-    return this.Cache.get(baseUrl)!
-  }
-
-  static get() {
-    return this.from(this.Url)
-  }
-
-  private async trycatch<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
+export class Transparency {
+  static async getData() {
     try {
-      return await fn()
+      const response = (await (await fetch(`${API_URL}/api.json`)).json()) as TransparencyData
+      return response
     } catch (error) {
       ErrorClient.report('Failed to fetch transparency data', { error, category: ErrorCategory.Transparency })
-      return fallback
+      return EMPTY_API
     }
   }
 
-  async getData() {
-    return this.trycatch(() => this.fetch<TransparencyData>('/api.json', this.options().method('GET')), EMPTY_API)
+  static async getBudgets() {
+    try {
+      const response = (await (await fetch(`${API_URL}/budgets.json`)).json()) as TransparencyBudget[]
+      return response
+    } catch (error) {
+      ErrorClient.report('Failed to fetch transparency budgets data', { error, category: ErrorCategory.Transparency })
+      return []
+    }
   }
 
-  async getBudgets() {
-    return this.trycatch(() => this.fetch<TransparencyBudget[]>('/budgets.json', this.options().method('GET')), [])
-  }
-
-  async getVestings() {
-    return this.trycatch(() => this.fetch<TransparencyVesting[]>('/vestings.json', this.options().method('GET')), [])
+  static async getVestings() {
+    try {
+      const response = (await (await fetch(`${API_URL}/vestings.json`)).json()) as TransparencyVesting[]
+      return response
+    } catch (error) {
+      ErrorClient.report('Failed to fetch transparency vestings data', { error, category: ErrorCategory.Transparency })
+      return []
+    }
   }
 }
