@@ -186,7 +186,7 @@ export default function WrappingPage() {
               <Grid.Column tablet="12">
                 <div className="TransparencySection">
                   <Card className="TransparencyCard">
-                    {data && data.teams.map((team, index) => {
+                    {data && data.committees.map((team, index) => {
                       return <MembersSection
                         key={[team.name.trim(), index].join('::')}
                         title={team.name}

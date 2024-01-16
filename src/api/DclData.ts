@@ -31,7 +31,7 @@ export type TransparencyData = {
     total: bigint,
     budget: bigint
   },
-  teams: Team[]
+  committees: Team[]
 }
 
 export class DclData extends API {
