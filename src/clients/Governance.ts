@@ -1,10 +1,10 @@
 import API from 'decentraland-gatsby/dist/utils/api/API'
 import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
-import env from 'decentraland-gatsby/dist/utils/env'
 import snakeCase from 'lodash/snakeCase'
 
 import { AirdropOutcome } from '../back/types/AirdropJob'
 import { SpecState } from '../components/Debug/UploadBadgeSpec'
+import env from '../config'
 import { GOVERNANCE_API } from '../constants'
 import { BadgeCreationResult, GovernanceBadgeSpec, RevokeOrReinstateResult, UserBadges } from '../entities/Badges/types'
 import { BidRequest, UnpublishedBidAttributes } from '../entities/Bid/types'

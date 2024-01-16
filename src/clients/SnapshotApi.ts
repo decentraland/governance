@@ -3,8 +3,8 @@ import { Wallet } from '@ethersproject/wallet'
 import snapshot from '@snapshot-labs/snapshot.js'
 import Client from '@snapshot-labs/snapshot.js/dist/sign'
 import { CancelProposal, ProposalType, Vote } from '@snapshot-labs/snapshot.js/dist/sign/types'
-import env from 'decentraland-gatsby/dist/utils/env'
 
+import env from '../config'
 import { DEBUG_ADDRESSES } from '../constants'
 import {
   SNAPSHOT_ADDRESS,

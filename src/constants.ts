@@ -1,11 +1,12 @@
 import { ChainId } from '@dcl/schemas'
-import env from 'decentraland-gatsby/dist/utils/env'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { trimOtterspaceId } from './back/utils/contractInteractions'
 import { OTTERSPACE_DAO_RAFT_ID } from './entities/Snapshot/constants'
 import { clientEnv } from './utils/clientEnv'
 import Candidates from './utils/delegates/candidates.json'
+
+import env from './config'
 
 function getBooleanStringVar(variableName: string, defaultValue: boolean) {
   const enabled = env(variableName)

@@ -3,11 +3,11 @@ import { replaceHelmetMetadata } from 'decentraland-gatsby/dist/entities/Gatsby/
 import { handleRaw } from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { readOnce } from 'decentraland-gatsby/dist/entities/Route/routes/file'
-import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 import { Request } from 'express'
 import { resolve } from 'path'
 import isUUID from 'validator/lib/isUUID'
 
+import { requiredEnv } from '../../config'
 import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import intl from '../../intl/en.json'
