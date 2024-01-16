@@ -13,20 +13,21 @@ import Heading from '../Common/Typography/Heading'
 import Link from '../Common/Typography/Link'
 import Markdown from '../Common/Typography/Markdown'
 import Text from '../Common/Typography/Text'
+import ForumBlue from '../Icon/ForumBlue'
 
 import './ActivityTicker.css'
 
 const getLink = (event: ActivityTickerEvent) => {
-  if (event.event_type === EventType.ProposalCreated) {
+  if (
+    event.event_type === EventType.ProposalCreated ||
+    event.event_type === EventType.Voted ||
+    event.event_type === EventType.Commented
+  ) {
     return locations.proposal(event.event_data.proposal_id)
   }
 
   if (event.event_type === EventType.UpdateCreated) {
     return locations.update(event.event_data.update_id)
-  }
-
-  if (event.event_type === EventType.Voted) {
-    return locations.proposal(event.event_data.proposal_id)
   }
 }
 
@@ -63,14 +64,12 @@ export default function ActivityTicker() {
             <div className="ActivityTicker__List">
               {events.map((item) => (
                 <div key={item.id} className="ActivityTicker__ListItem">
-                  {!!item.address && (
+                  {!!item.address && item.event_type !== EventType.Commented && (
                     <Link href={locations.profile({ address: item.address })}>
                       <Avatar size="xs" avatar={item.avatar} address={item.address} />
                     </Link>
                   )}
-                  {!item.address && item.event_type === EventType.Commented && (
-                    <Avatar size="xs" src={(item.event_data as CommentedEventData).discourse_post.avatar_template} />
-                  )}
+                  {item.event_type === EventType.Commented && <ForumBlue size={48} />}
                   <div>
                     <Link href={getLink(item)}>
                       <Markdown
