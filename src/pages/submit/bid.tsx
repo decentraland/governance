@@ -33,6 +33,7 @@ import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/Layout/LogIn'
 import { BID_MIN_PROJECT_DURATION } from '../../entities/Bid/constants'
 import { BidRequest } from '../../entities/Bid/types'
+import { ProposalType } from '../../entities/Proposal/types'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
 import useBidsInfoOnTender from '../../hooks/useBidsInfoOnTender'
 import useFormatMessage from '../../hooks/useFormatMessage'
@@ -188,8 +189,8 @@ export default function SubmitBid() {
     return <LoadingView />
   }
 
-  const title = t('page.submit_bid.title') || ''
-  const description = t('page.submit_bid.description') || ''
+  const title = t('page.submit_bid.title')
+  const description = t('page.submit_bid.description')
 
   if (!account) {
     return <LogIn title={title} description={description} />
@@ -197,7 +198,11 @@ export default function SubmitBid() {
 
   return (
     <div>
-      <Head title={title} description={description} />
+      <Head
+        title={title}
+        description={description}
+        links={[{ rel: 'canonical', href: locations.submit(ProposalType.Bid) }]}
+      />
       <Container className="GrantRequest__Head">
         <div className="GrantRequest__Header">
           <DecentralandLogo

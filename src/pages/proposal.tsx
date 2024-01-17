@@ -371,7 +371,11 @@ export default function ProposalPage() {
   if (isLoadingProposal) {
     return (
       <>
-        <Head title={title} description={description} />
+        <Head
+          title={title}
+          description={description}
+          links={[{ rel: 'canonical', href: locations.proposal(proposal?.id || '') }]}
+        />
         <Navigation activeTab={NavigationTab.Proposals} />
         <LoadingView withNavigation />
       </>
@@ -380,7 +384,11 @@ export default function ProposalPage() {
 
   return (
     <>
-      <Head title={title} description={description} />
+      <Head
+        title={title}
+        description={description}
+        links={[{ rel: 'canonical', href: locations.proposal(proposal?.id || '') }]}
+      />
       <Navigation activeTab={NavigationTab.Proposals} />
       <NotMobile>{proposal && <FloatingHeader isVisible={isFloatingHeaderVisible} proposal={proposal} />}</NotMobile>
       <WiderContainer className={'ProposalDetailPage'}>

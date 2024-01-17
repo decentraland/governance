@@ -111,7 +111,7 @@ export default function ProposalsPage() {
       <Mobile>
         <RandomBanner isVisible={!searching} />
       </Mobile>
-      <Head title={title} description={description} />
+      <Head title={title} description={description} links={[{ rel: 'canonical', href: locations.proposals() }]} />
       <Navigation activeTab={NavigationTab.Proposals} />
       <WiderContainer>
         {isLoading && <LoadingView />}

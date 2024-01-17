@@ -55,12 +55,16 @@ export default function NewProposalPage() {
 
   return (
     <>
-      <Head title={t('page.submit.title') || ''} description={t('page.submit.description') || ''} />
+      <Head
+        title={t('page.submit.title')}
+        description={t('page.submit.description')}
+        links={[{ rel: 'canonical', href: locations.submit() }]}
+      />
       <ContentLayout className="ProposalDetailPage">
         <ContentSection>
           <Header size="huge">{t('page.submit.title')}</Header>
           <Text size="lg" weight="normal">
-            {t('page.submit.description') || ''}
+            {t('page.submit.description')}
           </Text>
         </ContentSection>
         <ContentSection>

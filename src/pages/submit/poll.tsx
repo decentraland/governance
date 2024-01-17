@@ -24,7 +24,7 @@ import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/Layout/LogIn'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import { SUBMISSION_THRESHOLD_POLL } from '../../entities/Proposal/constants'
-import { INVALID_PROPOSAL_POLL_OPTIONS, newProposalPollScheme } from '../../entities/Proposal/types'
+import { INVALID_PROPOSAL_POLL_OPTIONS, ProposalType, newProposalPollScheme } from '../../entities/Proposal/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
 import locations, { navigate } from '../../utils/locations'
@@ -169,12 +169,16 @@ export default function SubmitPoll() {
   }
 
   if (!account) {
-    return <LogIn title={t('page.submit_poll.title') || ''} description={t('page.submit_poll.description') || ''} />
+    return <LogIn title={t('page.submit_poll.title')} description={t('page.submit_poll.description')} />
   }
 
   return (
     <ContentLayout small preventNavigation={preventNavigation.current}>
-      <Head title={t('page.submit_poll.title') || ''} description={t('page.submit_poll.description') || ''} />
+      <Head
+        title={t('page.submit_poll.title')}
+        description={t('page.submit_poll.description')}
+        links={[{ rel: 'canonical', href: locations.submit(ProposalType.Poll) }]}
+      />
       <form onSubmit={handleSubmit(onSubmit)}>
         <ContentSection>
           <Header size="huge">{t('page.submit_poll.title')}</Header>
@@ -236,7 +240,7 @@ export default function SubmitPoll() {
             disabled={submissionVpNotMet || formDisabled}
             error={!!errors.description}
             message={
-              (errors.description?.message || '') +
+              errors.description?.message +
               ' ' +
               t('page.submit.character_counter', {
                 current: watch('description').length,

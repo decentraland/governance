@@ -18,6 +18,7 @@ import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import { ProposalStatus, SortingOrder } from '../entities/Proposal/types'
 import useFormatMessage from '../hooks/useFormatMessage'
 import useProposals from '../hooks/useProposals'
+import locations from '../utils/locations'
 import { isUnderMaintenance } from '../utils/maintenance'
 
 import './index.css'
@@ -45,7 +46,11 @@ export default function HomePage() {
 
   return (
     <>
-      <Head title={t('page.home.title')} description={t('page.home.description')} />
+      <Head
+        title={t('page.home.title')}
+        description={t('page.home.description')}
+        links={[{ rel: 'canonical', href: locations.home() }]}
+      />
       <Navigation activeTab={NavigationTab.Home} />
       {!endingSoonProposals && <LoadingView withNavigation />}
       {endingSoonProposals && (

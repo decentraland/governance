@@ -19,7 +19,12 @@ import MarkdownNotice from '../../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../../components/Layout/ContentLayout'
 import LoadingView from '../../../components/Layout/LoadingView'
 import CoAuthors from '../../../components/Proposal/Submit/CoAuthor/CoAuthors'
-import { CatalystType, NewProposalCatalyst, newProposalCatalystScheme } from '../../../entities/Proposal/types'
+import {
+  CatalystType,
+  NewProposalCatalyst,
+  ProposalType,
+  newProposalCatalystScheme,
+} from '../../../entities/Proposal/types'
 import { isAlreadyACatalyst, isValidDomainName } from '../../../entities/Proposal/utils'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import locations, { navigate } from '../../../utils/locations'
@@ -124,12 +129,16 @@ export default function ProposalSubmitCatalystPage({ catalystType }: Props) {
   }
 
   if (!account) {
-    return <LogIn title={title || ''} description={description} />
+    return <LogIn title={title} description={description} />
   }
 
   return (
     <ContentLayout small preventNavigation={preventNavigation.current}>
-      <Head title={title || ''} description={description} />
+      <Head
+        title={title}
+        description={description}
+        links={[{ rel: 'canonical', href: locations.submit(ProposalType.Catalyst, { request: catalystType }) }]}
+      />
       <form onSubmit={handleSubmit(onSubmit)}>
         <ContentSection>
           <Header size="huge">{title}</Header>

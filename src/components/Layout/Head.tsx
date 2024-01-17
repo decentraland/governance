@@ -14,10 +14,10 @@ type Props = {
 }
 
 function getAbsoluteUrls(linkProps?: HelmetProps['link']) {
-  if (!linkProps) return undefined
+  if (linkProps === undefined) return undefined
   return linkProps.map((props) => {
     const href = props.href
-    if (!href) return props
+    if (href === undefined) return props
     return isLocalLink(href) ? { ...props, href: `${GOVERNANCE_URL}${href}` } : props
   })
 }

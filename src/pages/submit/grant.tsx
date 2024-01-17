@@ -203,8 +203,8 @@ export default function SubmitGrant() {
     return <LoadingView />
   }
 
-  const title = t('page.submit_grant.title') || ''
-  const description = t('page.submit_grant.description', { threshold: SUBMISSION_THRESHOLD_GRANT }) || ''
+  const title = t('page.submit_grant.title')
+  const description = t('page.submit_grant.description', { threshold: SUBMISSION_THRESHOLD_GRANT })
 
   if (!account) {
     return <LogIn title={title} description={description} />
@@ -212,7 +212,11 @@ export default function SubmitGrant() {
 
   return (
     <div>
-      <Head title={title} description={description} />
+      <Head
+        title={title}
+        description={description}
+        links={[{ rel: 'canonical', href: locations.submit(ProposalType.Grant) }]}
+      />
       <Container className="GrantRequest__Head">
         <div className="GrantRequest__Header">
           <DecentralandLogo

@@ -21,7 +21,7 @@ import LogIn from '../../components/Layout/LogIn'
 import PostLabel from '../../components/PostLabel'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import { SUBMISSION_THRESHOLD_PITCH } from '../../entities/Proposal/constants'
-import { NewProposalPitch, newProposalPitchScheme } from '../../entities/Proposal/types'
+import { NewProposalPitch, ProposalType, newProposalPitchScheme } from '../../entities/Proposal/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
 import locations, { navigate } from '../../utils/locations'
@@ -86,12 +86,16 @@ export default function SubmitPitchProposal() {
   }
 
   if (!account) {
-    return <LogIn title={t('page.submit_pitch.title') || ''} description={t('page.submit_pitch.description') || ''} />
+    return <LogIn title={t('page.submit_pitch.title')} description={t('page.submit_pitch.description')} />
   }
 
   return (
     <ContentLayout small preventNavigation={preventNavigation.current}>
-      <Head title={t('page.submit_pitch.title') || ''} description={t('page.submit_pitch.description') || ''} />
+      <Head
+        title={t('page.submit_pitch.title')}
+        description={t('page.submit_pitch.description')}
+        links={[{ rel: 'canonical', href: locations.submit(ProposalType.Pitch) }]}
+      />
       <form onSubmit={handleSubmit(onSubmit)}>
         <ContentSection>
           <Header size="huge">{t('page.submit_pitch.title')}</Header>
@@ -123,7 +127,7 @@ export default function SubmitPitchProposal() {
             loading={isLoadingVpDistribution}
             disabled={submissionVpNotMet || formDisabled}
             message={
-              (errors.initiative_name?.message || '') +
+              errors.initiative_name?.message +
               ' ' +
               t('page.submit.character_counter', {
                 current: watch('initiative_name').length,
@@ -156,7 +160,7 @@ export default function SubmitPitchProposal() {
             disabled={submissionVpNotMet || formDisabled}
             error={!!errors.problem_statement}
             message={
-              (errors.problem_statement?.message || '') +
+              errors.problem_statement?.message +
               ' ' +
               t('page.submit.character_counter', {
                 current: watch('problem_statement').length,
@@ -188,7 +192,7 @@ export default function SubmitPitchProposal() {
             disabled={submissionVpNotMet || formDisabled}
             error={!!errors.proposed_solution}
             message={
-              (errors.proposed_solution?.message || '') +
+              errors.proposed_solution?.message +
               ' ' +
               t('page.submit.character_counter', {
                 current: watch('proposed_solution').length,
@@ -220,7 +224,7 @@ export default function SubmitPitchProposal() {
             disabled={submissionVpNotMet || formDisabled}
             error={!!errors.target_audience}
             message={
-              (errors.target_audience?.message || '') +
+              errors.target_audience?.message +
               ' ' +
               t('page.submit.character_counter', {
                 current: watch('target_audience').length,
@@ -252,7 +256,7 @@ export default function SubmitPitchProposal() {
             disabled={submissionVpNotMet || formDisabled}
             error={!!errors.relevance}
             message={
-              (errors.relevance?.message || '') +
+              errors.relevance?.message +
               ' ' +
               t('page.submit.character_counter', {
                 current: watch('relevance').length,

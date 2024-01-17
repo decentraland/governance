@@ -22,7 +22,12 @@ import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/Layout/LogIn'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import { SUBMISSION_THRESHOLD_GOVERNANCE } from '../../entities/Proposal/constants'
-import { NewProposalDraft, NewProposalGovernance, newProposalGovernanceScheme } from '../../entities/Proposal/types'
+import {
+  NewProposalDraft,
+  NewProposalGovernance,
+  ProposalType,
+  newProposalGovernanceScheme,
+} from '../../entities/Proposal/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import usePreselectedProposal from '../../hooks/usePreselectedProposal'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
@@ -116,19 +121,15 @@ export default function SubmitGovernanceProposal() {
   }
 
   if (!account) {
-    return (
-      <LogIn
-        title={t('page.submit_governance.title') || ''}
-        description={t('page.submit_governance.description') || ''}
-      />
-    )
+    return <LogIn title={t('page.submit_governance.title')} description={t('page.submit_governance.description')} />
   }
 
   return (
     <ContentLayout small preventNavigation={preventNavigation.current}>
       <Head
-        title={t('page.submit_governance.title') || ''}
-        description={t('page.submit_governance.description') || ''}
+        title={t('page.submit_governance.title')}
+        description={t('page.submit_governance.description')}
+        links={[{ rel: 'canonical', href: locations.submit(ProposalType.Governance) }]}
       />
       <form onSubmit={handleSubmit(onSubmit)}>
         <ContentSection>

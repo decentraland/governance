@@ -25,6 +25,7 @@ import { ProjectWithUpdate, ProposalType } from '../entities/Proposal/types'
 import useFormatMessage from '../hooks/useFormatMessage'
 import useProjects from '../hooks/useProjects'
 import useURLSearchParams from '../hooks/useURLSearchParams'
+import locations from '../utils/locations'
 import { isUnderMaintenance } from '../utils/maintenance'
 
 import './projects.css'
@@ -107,7 +108,11 @@ export default function ProjectsPage() {
 
   return (
     <>
-      <Head title={t('page.grants.title') || ''} description={t('page.grants.description') || ''} />
+      <Head
+        title={t('page.grants.title')}
+        description={t('page.grants.description')}
+        links={[{ rel: 'canonical', href: locations.projects() }]}
+      />
       <Navigation activeTab={NavigationTab.Grants} />
       {isLoadingProjects && <LoadingView withNavigation />}
       {!isLoadingProjects && (

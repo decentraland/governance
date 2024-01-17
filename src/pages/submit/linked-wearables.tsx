@@ -27,7 +27,7 @@ import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/Layout/LogIn'
 import PostLabel from '../../components/PostLabel'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
-import { newProposalLinkedWearablesScheme } from '../../entities/Proposal/types'
+import { ProposalType, newProposalLinkedWearablesScheme } from '../../entities/Proposal/types'
 import { asNumber, isValidImage } from '../../entities/Proposal/utils'
 import { disableOnWheelInput, isHttpsURL } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
@@ -302,8 +302,8 @@ export default function SubmitLinkedWearables() {
   if (!account) {
     return (
       <LogIn
-        title={t('page.submit_linked_wearables.title') || ''}
-        description={t('page.submit_linked_wearables.description') || ''}
+        title={t('page.submit_linked_wearables.title')}
+        description={t('page.submit_linked_wearables.description')}
       />
     )
   }
@@ -311,8 +311,9 @@ export default function SubmitLinkedWearables() {
   return (
     <ContentLayout small preventNavigation={preventNavigation.current}>
       <Head
-        title={t('page.submit_linked_wearables.title') || ''}
-        description={t('page.submit_linked_wearables.description') || ''}
+        title={t('page.submit_linked_wearables.title')}
+        description={t('page.submit_linked_wearables.description')}
+        links={[{ rel: 'canonical', href: locations.submit(ProposalType.LinkedWearables) }]}
       />
       <form onSubmit={handleSubmit(onSubmit)}>
         <ContentSection>
@@ -341,7 +342,7 @@ export default function SubmitLinkedWearables() {
             }}
             error={!!errors.name}
             message={
-              (errors.name?.message || '') +
+              errors.name?.message +
               ' ' +
               t('page.submit.character_counter', {
                 current: watch('name').length,
@@ -396,7 +397,7 @@ export default function SubmitLinkedWearables() {
             placeholder={t('page.submit_linked_wearables.nft_collections_placeholder')}
             error={!!errors.nft_collections}
             message={
-              (errors.nft_collections?.message || '') +
+              errors.nft_collections?.message +
               ' ' +
               t('page.submit.character_counter', {
                 current: watch('nft_collections').length,
@@ -429,7 +430,7 @@ export default function SubmitLinkedWearables() {
             }}
             error={!!errors.motivation}
             message={
-              (errors.motivation?.message || '') +
+              errors.motivation?.message +
               ' ' +
               t('page.submit.character_counter', {
                 current: watch('motivation').length,
@@ -489,7 +490,7 @@ export default function SubmitLinkedWearables() {
             }}
             error={!!errors.governance}
             message={
-              (errors.governance?.message || '') +
+              errors.governance?.message +
               ' ' +
               t('page.submit.character_counter', {
                 current: watch('governance').length,
@@ -510,7 +511,7 @@ export default function SubmitLinkedWearables() {
               label={
                 <label>
                   <Markdown componentsClassNames={{ p: 'ProposalSubmit__RadioLabelText' }}>
-                    {t('modal.votes_list.voted_yes') || ''}
+                    {t('modal.votes_list.voted_yes')}
                   </Markdown>
                 </label>
               }
@@ -521,7 +522,7 @@ export default function SubmitLinkedWearables() {
               label={
                 <label>
                   <Markdown componentsClassNames={{ p: 'ProposalSubmit__RadioLabelText' }}>
-                    {t('modal.votes_list.voted_no') || ''}
+                    {t('modal.votes_list.voted_no')}
                   </Markdown>
                 </label>
               }
@@ -554,7 +555,7 @@ export default function SubmitLinkedWearables() {
               }}
               error={!!errors.method}
               message={
-                (errors.method?.message || '') +
+                errors.method?.message +
                 ' ' +
                 t('page.submit.character_counter', {
                   current: watch('method').length,
