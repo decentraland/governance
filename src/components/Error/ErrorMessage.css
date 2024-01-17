@@ -24,7 +24,7 @@
   align-items: center;
 }
 
-.ErrorMessage__Header span {
+.ErrorMessage__ErrorNoticeLabel {
   font-weight: var(--weight-normal);
   line-height: 20px;
   font-size: 15px;
@@ -32,12 +32,12 @@
   padding-right: 8px;
 }
 
-a.Link.Link--pointer.ui.basic.button.ErrorMessage__Show {
+.ui.button.ErrorMessage__Show {
   height: 20px;
   text-transform: uppercase;
   font-weight: var(--weight-semi-bold);
   font-size: 13px;
-  line-height: 20px;
+  line-height: 21px;
   color: var(--red-800) !important;
   padding: 0;
 }

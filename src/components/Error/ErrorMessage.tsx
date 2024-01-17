@@ -6,7 +6,6 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import useClipboardCopy from '../../hooks/useClipboardCopy'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Time from '../../utils/date/Time'
-import Link from '../Common/Typography/Link'
 import Markdown from '../Common/Typography/Markdown'
 import ErrorNotice from '../Icon/ErrorNotice'
 
@@ -33,9 +32,9 @@ export default function ErrorMessage({ label, errorMessage, className, verticalH
       <div className={classNames('ErrorMessage__Header', verticalHeader && 'ErrorMessage__Header--vertical')}>
         <div className="ErrorMessage__ErrorNotice">
           <ErrorNotice />
-          <span>{label}</span>
+          <span className="ErrorMessage__ErrorNoticeLabel">{label}</span>
         </div>
-        <Button className="ErrorMessage__Show" basic as={Link} onClick={toggleHandler}>
+        <Button className="ErrorMessage__Show" basic onClick={toggleHandler}>
           {open ? t('error.message.hide') : t('error.message.show')}
         </Button>
       </div>
