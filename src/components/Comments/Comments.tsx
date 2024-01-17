@@ -81,7 +81,6 @@ export default function Comments({ comments, topicId, topicSlug, isLoading, topi
             basic
             className="Comments__ReadMore"
             disabled={!topicId}
-            as={Link}
             onClick={() => {
               setShowAllComments(true)
             }}
