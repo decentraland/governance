@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 import classNames from 'classnames'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -23,7 +23,8 @@ export default function ErrorMessage({ label, errorMessage, className, verticalH
   const { copiedValue, handleCopy } = useClipboardCopy(Time.Second)
   const [open, setOpen] = useState(false)
 
-  const toggleHandler = () => {
+  const toggleHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
     setOpen(!open)
   }
 
