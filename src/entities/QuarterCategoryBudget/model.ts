@@ -1,6 +1,6 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 
-import { TransparencyBudget } from '../../clients/DclData'
+import { TransparencyBudget } from '../../clients/Transparency'
 import { QuarterBudgetAttributes } from '../QuarterBudget/types'
 
 import { QuarterCategoryBudgetAttributes } from './types'

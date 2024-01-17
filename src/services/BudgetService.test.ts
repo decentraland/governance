@@ -1,7 +1,6 @@
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { cloneDeep } from 'lodash'
 
-import { DclData } from '../clients/DclData'
+import { Transparency } from '../clients/Transparency'
 import { CategoryBudget, NULL_BUDGET } from '../entities/Budget/types'
 import { BUDGETING_START_DATE } from '../entities/Grant/constants'
 import { NewGrantCategory } from '../entities/Grant/types'
@@ -12,6 +11,7 @@ import QuarterBudgetModel from '../entities/QuarterBudget/model'
 import { QuarterCategoryBudgetAttributes } from '../entities/QuarterCategoryBudget/types'
 import { getUncappedRoundedPercentage } from '../helpers'
 import Time from '../utils/date/Time'
+import logger from '../utils/logger'
 
 import { BudgetService } from './BudgetService'
 
@@ -128,7 +128,7 @@ describe('BudgetService', () => {
     })
     describe('when it receives a list of valid budgets', () => {
       jest
-        .spyOn(DclData.get(), 'getBudgets')
+        .spyOn(Transparency, 'getBudgets')
         .mockResolvedValue([VALID_TRANSPARENCY_BUDGET_1, VALID_TRANSPARENCY_BUDGET_2])
       it('returns a list of parsed budgets', async () => {
         expect(await BudgetService.getTransparencyBudgets()).toEqual([
@@ -142,7 +142,7 @@ describe('BudgetService', () => {
     describe('when it receives a list with no valid budgets', () => {
       beforeAll(() =>
         jest
-          .spyOn(DclData.get(), 'getBudgets')
+          .spyOn(Transparency, 'getBudgets')
           .mockImplementation(async () => [INVALID_CATEGORIES_AMOUNT_TRANSPARENCY_BUDGET])
       )
 
@@ -156,7 +156,7 @@ describe('BudgetService', () => {
     })
 
     describe('when it receives an empty list of budgets', () => {
-      beforeAll(() => jest.spyOn(DclData.get(), 'getBudgets').mockResolvedValue([]))
+      beforeAll(() => jest.spyOn(Transparency, 'getBudgets').mockResolvedValue([]))
 
       asserErrorLogging()
 
@@ -170,7 +170,7 @@ describe('BudgetService', () => {
     describe('when it receives a list with valid and invalid budgets', () => {
       beforeAll(() =>
         jest
-          .spyOn(DclData.get(), 'getBudgets')
+          .spyOn(Transparency, 'getBudgets')
           .mockResolvedValue([VALID_TRANSPARENCY_BUDGET_1, INVALID_CATEGORIES_AMOUNT_TRANSPARENCY_BUDGET])
       )
 

@@ -5,6 +5,7 @@ import { DEFAULT_QUERY_STALE_TIME } from '../../../hooks/constants'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Open from '../../Icon/Open'
 
+import Link from './Link'
 import './LinkWithTitle.css'
 
 interface Props {
@@ -30,9 +31,9 @@ function LinkWithTitle({ url }: Props) {
   })
 
   return (
-    <a href={url} target="_blank" rel="noopener noreferrer" className="LinkWithTitle">
+    <Link href={url} className="LinkWithTitle">
       {title || t('page.proposal_view.grant.relevant_link')} <Open />
-    </a>
+    </Link>
   )
 }
 

@@ -1,9 +1,8 @@
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import validate from 'decentraland-gatsby/dist/entities/Route/validate'
 import schema from 'decentraland-gatsby/dist/entities/Schema'
 import snakeCase from 'lodash/snakeCase'
 
-import { DclData, TransparencyBudget } from '../clients/DclData'
+import { Transparency, TransparencyBudget } from '../clients/Transparency'
 import {
   Budget,
   BudgetWithContestants,
@@ -24,6 +23,7 @@ import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { toNewGrantCategory } from '../entities/QuarterCategoryBudget/utils'
 import { getUncappedRoundedPercentage } from '../helpers'
 import { ErrorCategory } from '../utils/errorCategories'
+import logger from '../utils/logger'
 
 import { ErrorService } from './ErrorService'
 import { ProposalService } from './ProposalService'
@@ -100,7 +100,7 @@ export class BudgetService {
   public static async getTransparencyBudgets() {
     let budgets: TransparencyBudget[] = []
     try {
-      budgets = await DclData.get().getBudgets()
+      budgets = await Transparency.getBudgets()
       if (!budgets || budgets.length < 1) {
         logger.error(`Received an empty list of transparency budgets`)
         return []
@@ -227,7 +227,7 @@ export class BudgetService {
     const budgetWithContestants: BudgetWithContestants = {
       ...budget,
       total_contested: 0,
-    } as any as BudgetWithContestants
+    } as unknown as BudgetWithContestants
     for (const category of Object.keys(budget.categories)) {
       const contestedCategoryBudget: CategoryBudgetWithContestants = {
         ...budget.categories[category],

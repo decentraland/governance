@@ -1,0 +1,14 @@
+diff --git a/node_modules/@dcl/ui-env/dist/env.d.ts b/node_modules/@dcl/ui-env/dist/env.d.ts
+index af8de20..acefb76 100644
+--- a/node_modules/@dcl/ui-env/dist/env.d.ts
++++ b/node_modules/@dcl/ui-env/dist/env.d.ts
+@@ -1,7 +1,8 @@
+ export declare enum Env {
++    LOCAL = "local",
+     DEVELOPMENT = "dev",
+     STAGING = "stg",
+-    PRODUCTION = "prod"
++    PRODUCTION = "prod",
+ }
+ /**
+  * Returns an array with all the possible envs

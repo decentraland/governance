@@ -3,7 +3,6 @@ import { useMemo } from 'react'
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
-import Head from '../components/Common/Head'
 import Heading from '../components/Common/Typography/Heading'
 import WiderContainer from '../components/Common/WiderContainer'
 import ChartBar from '../components/Icon/ChartBar'
@@ -13,6 +12,7 @@ import Document from '../components/Icon/Document'
 import DocumentOutline from '../components/Icon/DocumentOutline'
 import OpenFolder from '../components/Icon/OpenFolder'
 import Person from '../components/Icon/Person'
+import Head from '../components/Layout/Head'
 import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import TokenBalanceCard from '../components/Token/TokenBalanceCard'
@@ -50,8 +50,7 @@ export default function TransparencyPage() {
       <Head
         title={t('page.transparency.title')}
         description={t('page.transparency.mission.description')}
-        image="https://decentraland.org/images/decentraland.png"
-        link={[{ rel: 'canonical', href: locations.transparency() }]}
+        links={[{ rel: 'canonical', href: locations.transparency() }]}
       />
       <div className="TransparencyPage">
         {!data && <LoadingView withNavigation />}

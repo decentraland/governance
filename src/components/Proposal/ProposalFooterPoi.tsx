@@ -21,7 +21,6 @@ export default function ProposalFooterPoi({ configuration }: ProposalFooterPoiPr
         as={Link}
         className="ProposalFooterPoi__Button"
         href={`https://play.decentraland.org/?position=${configuration.x},${configuration.y}`}
-        target="_blank"
       >
         {t('general.jump_in')}
         <JumpIn width="17" height="17" className="ProposalFooterPoi__Icon" />

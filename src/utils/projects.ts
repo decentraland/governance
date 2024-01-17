@@ -1,4 +1,4 @@
-import { TransparencyVesting } from '../clients/DclData'
+import { TransparencyVesting } from '../clients/Transparency'
 import { ProjectStatus } from '../entities/Grant/types'
 import { Project, ProposalAttributes } from '../entities/Proposal/types'
 

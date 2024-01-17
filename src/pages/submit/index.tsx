@@ -1,11 +1,11 @@
 import { useState } from 'react'
 
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import CategoryBanner from '../../components/Category/CategoryBanner'
 import Text from '../../components/Common/Typography/Text'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
+import Head from '../../components/Layout/Head'
 import {
   AddRemoveProposalModal,
   AddRemoveProposalModalProps,
@@ -55,11 +55,7 @@ export default function NewProposalPage() {
 
   return (
     <>
-      <Head
-        title={t('page.submit.title') || ''}
-        description={t('page.submit.description') || ''}
-        image="https://decentraland.org/images/decentraland.png"
-      />
+      <Head title={t('page.submit.title') || ''} description={t('page.submit.description') || ''} />
       <ContentLayout className="ProposalDetailPage">
         <ContentSection>
           <Header size="huge">{t('page.submit.title')}</Header>

@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import Helmet from 'react-helmet'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
 import { useQuery } from '@tanstack/react-query'
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -25,6 +23,7 @@ import { CatalystType, NewProposalCatalyst, newProposalCatalystScheme } from '..
 import { isAlreadyACatalyst, isValidDomainName } from '../../../entities/Proposal/utils'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import locations, { navigate } from '../../../utils/locations'
+import Head from '../../Layout/Head'
 import LogIn from '../../Layout/LogIn'
 
 import './ProposalSubmitCatalystPage.css'
@@ -110,6 +109,7 @@ export default function ProposalSubmitCatalystPage({ catalystType }: Props) {
 
       const proposal = await Governance.get().createProposalCatalyst({ ...data, type: catalystType })
       navigate(locations.proposal(proposal.id, { new: 'true' }), { replace: true })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setError(error.body?.error || error.message)
       setFormDisabled(false)
@@ -129,8 +129,7 @@ export default function ProposalSubmitCatalystPage({ catalystType }: Props) {
 
   return (
     <ContentLayout small preventNavigation={preventNavigation.current}>
-      <Head title={title || ''} description={description} image="https://decentraland.org/images/decentraland.png" />
-      <Helmet title={title || ''} />
+      <Head title={title || ''} description={description} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <ContentSection>
           <Header size="huge">{title}</Header>

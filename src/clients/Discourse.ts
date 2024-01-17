@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import API from 'decentraland-gatsby/dist/utils/api/API'
 import Options from 'decentraland-gatsby/dist/utils/api/Options'
-import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
 
+import { requiredEnv } from '../config'
 import { DISCOURSE_API, DISCOURSE_USER } from '../entities/User/utils'
 
 import { trimLastForwardSlash } from './utils'

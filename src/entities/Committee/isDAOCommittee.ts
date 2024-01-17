@@ -1,6 +1,7 @@
 import chalk from 'chalk'
-import env from 'decentraland-gatsby/dist/utils/env'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
+
+import env from '../../config'
 
 export const COMMITTEE_ADDRESSES = (env('COMMITTEE_ADDRESSES', '') || '')
   .split(',')

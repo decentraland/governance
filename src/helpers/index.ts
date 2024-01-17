@@ -1,12 +1,12 @@
 import { FormatNumberOptions } from 'react-intl'
 
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isURL from 'validator/lib/isURL'
 
 import { DEFAULT_CHAIN_ID } from '../constants'
 import { clientEnv } from '../utils/clientEnv'
+import logger from '../utils/logger'
 
 import { toGovernancePathname } from './browser'
 

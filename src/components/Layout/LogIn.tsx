@@ -1,4 +1,3 @@
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { DappsFeatureFlags } from 'decentraland-gatsby/dist/context/FeatureFlag/types'
 import useFeatureFlagContext from 'decentraland-gatsby/dist/context/FeatureFlag/useFeatureFlagContext'
@@ -7,13 +6,15 @@ import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
 
+import { DCL_META_IMAGE_URL } from '../../constants'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import locations, { navigate } from '../../utils/locations'
 import Text from '../Common/Typography/Text'
 
+import Head from './Head'
 import './LogIn.css'
 
-type LogInProps = {
+type Props = {
   title: string
   description: string
 }
@@ -26,9 +27,7 @@ function handleBack() {
   }
 }
 
-const IMAGE_URL = 'https://decentraland.org/images/decentraland.png'
-
-function LogIn({ title, description }: LogInProps) {
+function LogIn({ title, description }: Props) {
   const [, accountState] = useAuthContext()
   const t = useFormatMessage()
   const [ff] = useFeatureFlagContext()
@@ -38,8 +37,8 @@ function LogIn({ title, description }: LogInProps) {
   if (isMobile) {
     return (
       <Container className="LoginMobile__Container">
-        <Head title={title} description={description} image={IMAGE_URL} />
-        <img src={IMAGE_URL} className="LoginMobile__Logo" />
+        <Head title={title} description={description} />
+        <img src={DCL_META_IMAGE_URL} className="LoginMobile__Logo" />
         <Text weight="semi-bold" className="LoginMobile__Title">
           {t(`mobile_login.exclamation`)}
         </Text>
@@ -55,7 +54,7 @@ function LogIn({ title, description }: LogInProps) {
 
   return (
     <Container>
-      <Head title={title} description={description} image={IMAGE_URL} />
+      <Head title={title} description={description} />
       <SignIn
         isConnecting={accountState.selecting || accountState.loading}
         onConnect={isAuthDappEnabled ? accountState.authorize : accountState.select}
