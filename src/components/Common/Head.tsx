@@ -7,17 +7,17 @@ import { GOVERNANCE_URL } from '../../constants'
 
 type Props = Partial<HeadProps> & HelmetProps
 
-function setAbsoluteUrl(links?: HelmetProps['link']) {
-  if (!links) return undefined
-  return links.map((link) => {
-    const href = link.href
-    if (!href) return link
-    return isLocalLink(href) ? { ...link, href: `${GOVERNANCE_URL}${href}` } : link
+function getAbsoluteUrls(linkProps?: HelmetProps['link']) {
+  if (!linkProps) return undefined
+  return linkProps.map((props) => {
+    const href = props.href
+    if (!href) return props
+    return isLocalLink(href) ? { ...props, href: `${GOVERNANCE_URL}${href}` } : props
   })
 }
 
 function Head({ lang, title, titleTemplate, defaultTitle, description, image, meta, link, ...props }: Props) {
-  const absoluteLink = setAbsoluteUrl(link)
+  const absoluteLinks = getAbsoluteUrls(link)
   return (
     <>
       <DclHead
@@ -29,7 +29,7 @@ function Head({ lang, title, titleTemplate, defaultTitle, description, image, me
         image={image}
         meta={meta}
       />
-      <Helmet {...props} link={absoluteLink} />
+      <Helmet {...props} link={absoluteLinks} />
     </>
   )
 }
