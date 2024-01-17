@@ -1,5 +1,3 @@
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
-
 import UnpublishedBidModel from '../entities/Bid/model'
 import { GrantTier } from '../entities/Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../entities/Grant/constants'
@@ -18,6 +16,7 @@ import { getPublicUpdates } from '../entities/Updates/utils'
 import { formatError } from '../helpers'
 import Time from '../utils/date/Time'
 import { isProdEnv } from '../utils/governanceEnvs'
+import logger from '../utils/logger'
 import { createProject } from '../utils/projects'
 
 import { BudgetService } from './BudgetService'

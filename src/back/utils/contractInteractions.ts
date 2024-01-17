@@ -1,10 +1,10 @@
 import { abi as BadgesAbi } from '@otterspace-xyz/contracts/out/Badges.sol/Badges.json'
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { ethers } from 'ethers'
 
 import { POLYGON_BADGES_CONTRACT_ADDRESS, RAFT_OWNER_PK, TRIMMED_OTTERSPACE_RAFT_ID } from '../../constants'
 import { ActionStatus, BadgeCreationResult, GAS_MULTIPLIER, GasConfig } from '../../entities/Badges/types'
 import RpcService from '../../services/RpcService'
+import logger from '../../utils/logger'
 import { AirdropJobStatus, AirdropOutcome } from '../types/AirdropJob'
 
 const TRANSACTION_UNDERPRICED_ERROR_CODE = -32000
@@ -117,6 +117,7 @@ export async function airdropWithRetry(
   try {
     await airdrop(badgeCid, recipients, shouldPumpGas)
     return { status: AirdropJobStatus.FINISHED, error: '' }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     if (retries > 0) {
       logger.log(`Retrying airdrop... Attempts left: ${retries}`, error)
@@ -133,6 +134,7 @@ export async function createSpecWithRetry(badgeCid: string, retries = 3): Promis
   try {
     await createSpec(badgeCid)
     return { status: ActionStatus.Success, badgeCid }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     if (retries > 0) {
       logger.log(`Retrying create spec... Attempts left: ${retries}`, error)
@@ -144,7 +146,7 @@ export async function createSpecWithRetry(badgeCid: string, retries = 3): Promis
   }
 }
 
-export function isTransactionUnderpricedError(error: any) {
+export function isTransactionUnderpricedError(error: { body: string }) {
   try {
     const errorParsed = JSON.parse(error.body)
     const errorCode = errorParsed?.error?.code

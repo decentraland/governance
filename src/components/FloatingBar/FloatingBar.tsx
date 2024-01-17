@@ -6,6 +6,7 @@ import { useTabletMediaQuery } from 'decentraland-ui/dist/components/Media/Media
 import { forumUrl } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useProposalComments from '../../hooks/useProposalComments'
+import Link from '../Common/Typography/Link'
 import Forum from '../Icon/Forum'
 import Open from '../Icon/Open'
 
@@ -67,8 +68,7 @@ const FloatingBar = ({
       <Button
         basic
         disabled={!discourseTopicId}
-        target="_blank"
-        rel="noopener noreferrer"
+        as={Link}
         href={(discourseTopicId && forumUrl(discourseTopicSlug, discourseTopicId)) || ''}
         className="FloatingBar__JoinDiscussion"
       >

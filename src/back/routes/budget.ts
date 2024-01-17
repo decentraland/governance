@@ -3,7 +3,7 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
-import { TransparencyBudget } from '../../clients/DclData'
+import { TransparencyBudget } from '../../clients/Transparency'
 import { Budget, BudgetWithContestants, CategoryBudget } from '../../entities/Budget/types'
 import { QuarterBudgetAttributes } from '../../entities/QuarterBudget/types'
 import { toNewGrantCategory } from '../../entities/QuarterCategoryBudget/utils'

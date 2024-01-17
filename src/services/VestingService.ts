@@ -1,4 +1,4 @@
-import { DclData, TransparencyVesting } from '../clients/DclData'
+import { Transparency, TransparencyVesting } from '../clients/Transparency'
 import { VestingInfo, getVestingContractData } from '../clients/VestingData'
 
 import CacheService, { TTL_24_HS } from './CacheService'
@@ -12,7 +12,7 @@ export class VestingService {
       return cachedData
     }
 
-    const transparencyVestings = await DclData.get().getVestings()
+    const transparencyVestings = await Transparency.getVestings()
     CacheService.set(cacheKey, transparencyVestings, TTL_24_HS)
     return transparencyVestings
   }

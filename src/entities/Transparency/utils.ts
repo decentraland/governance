@@ -1,4 +1,4 @@
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
+import logger from '../../utils/logger'
 
 import { AggregatedTokenBalance, BlockExplorerLink, TokenInWallet } from './types'
 
@@ -50,7 +50,7 @@ export function blockExplorerLink(wallet: TokenInWallet): BlockExplorerLink {
     case 'Polygon':
       return { name: 'Polygonscan', link: POLYGONSCAN_BASE_URL + addressUrl }
     default:
-      logger.error('Unable to get block explorer link', { wallet: wallet })
+      logger.error('Unable to get block explorer link', { wallet })
       return { name: '', link: '/' }
   }
 }

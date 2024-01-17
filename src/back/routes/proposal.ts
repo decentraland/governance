@@ -1,5 +1,4 @@
 import { WithAuth, auth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
@@ -92,6 +91,7 @@ import { getProfile } from '../../utils/Catalyst'
 import Time from '../../utils/date/Time'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
+import logger from '../../utils/logger'
 import { NotificationService } from '../services/notification'
 import { validateAddress, validateProposalId } from '../utils/validations'
 

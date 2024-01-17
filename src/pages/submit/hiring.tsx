@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 
-import { CommitteeName } from '../../clients/DclData'
+import { CommitteeName } from '../../clients/Transparency'
 import ProposalSubmitHiringPage from '../../components/Proposal/Submit/ProposalSubmitHiringPage'
 import { getCommitteesWithOpenSlots } from '../../entities/Committee/utils'
 import { HiringType, toHiringType } from '../../entities/Proposal/types'

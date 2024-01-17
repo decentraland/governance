@@ -10,6 +10,7 @@ import { JOIN_DISCORD_URL } from '../../entities/Proposal/utils'
 import useClipboardCopy from '../../hooks/useClipboardCopy'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Time from '../../utils/date/Time'
+import Link from '../Common/Typography/Link'
 import Text from '../Common/Typography/Text'
 
 import './ProposalModal.css'
@@ -69,8 +70,7 @@ export function SuccessModal({
               primary
               size="small"
               href={linkToForum}
-              target="_blank"
-              rel="noopener noreferrer"
+              as={Link}
               loading={loading}
             >
               {t('modal.success.view_on_forum_label')}
@@ -84,14 +84,7 @@ export function SuccessModal({
             </Text>
             <Text>{t('modal.success.join_discord_description')}</Text>
           </div>
-          <Button
-            className={classNames('Button', 'Discord')}
-            primary
-            size="small"
-            href={JOIN_DISCORD_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <Button className={classNames('Button', 'Discord')} primary size="small" href={JOIN_DISCORD_URL} as={Link}>
             {t('modal.success.join_discord_label')}
           </Button>
         </div>

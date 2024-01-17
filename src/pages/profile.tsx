@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 
 import { useLocation } from '@reach/router'
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import WiderContainer from '../components/Common/WiderContainer'
+import Head from '../components/Layout/Head'
 import LoadingView from '../components/Layout/LoadingView'
 import LogIn from '../components/Layout/LogIn'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
@@ -65,7 +65,6 @@ export default function ProfilePage() {
       <Head
         title={t('page.profile.title', { address: username || address })}
         description={t('page.profile.description')}
-        image="https://decentraland.org/images/decentraland.png"
       />
       <Navigation activeTab={NavigationTab.Profile} />
       <WiderContainer className="ProfilePage__Container">

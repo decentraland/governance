@@ -1,9 +1,7 @@
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
-import { requiredEnv } from 'decentraland-gatsby/dist/utils/env'
-
 import { UpdateService } from '../back/services/update'
 import { VoteService } from '../back/services/vote'
 import { Discourse } from '../clients/Discourse'
+import { requiredEnv } from '../config'
 import ProposalModel from '../entities/Proposal/model'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import * as proposalTemplates from '../entities/Proposal/templates'
@@ -18,6 +16,7 @@ import { filterComments } from '../entities/User/utils'
 import { inBackground } from '../helpers'
 import { DiscourseComment, DiscoursePost, DiscoursePostInTopic } from '../shared/types/discourse'
 import { DclProfile } from '../utils/Catalyst/types'
+import logger from '../utils/logger'
 
 import { ProposalInCreation } from './ProposalService'
 import { SnapshotService } from './SnapshotService'

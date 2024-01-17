@@ -1,5 +1,6 @@
 import classNames from 'classnames'
 
+import Link from '../Common/Typography/Link'
 import ChevronRight from '../Icon/ChevronRight'
 
 import './BannerItem.css'
@@ -14,12 +15,7 @@ interface Props {
 const BannerItem = ({ title, description, url, showDivider }: Props) => {
   return (
     <>
-      <a
-        href={url || ''}
-        target="_blank"
-        className={classNames(!url && 'ProjectsBannerItem--noUrl')}
-        rel="noopener noreferrer"
-      >
+      <Link href={url || ''} className={classNames(!url && 'ProjectsBannerItem--noUrl')}>
         <div className="ProjectsBannerItem">
           <div>
             <h3 className="ProjectsBannerItem__Title">{title}</h3>
@@ -31,7 +27,7 @@ const BannerItem = ({ title, description, url, showDivider }: Props) => {
             </div>
           )}
         </div>
-      </a>
+      </Link>
       {showDivider && <div className="ProjectsBanner__ItemsDivider" />}
     </>
   )
