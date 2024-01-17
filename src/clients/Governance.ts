@@ -1,10 +1,10 @@
 import API from 'decentraland-gatsby/dist/utils/api/API'
 import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
-import env from 'decentraland-gatsby/dist/utils/env'
 import snakeCase from 'lodash/snakeCase'
 
 import { AirdropOutcome } from '../back/types/AirdropJob'
 import { SpecState } from '../components/Debug/UploadBadgeSpec'
+import env from '../config'
 import { GOVERNANCE_API } from '../constants'
 import { BadgeCreationResult, GovernanceBadgeSpec, RevokeOrReinstateResult, UserBadges } from '../entities/Badges/types'
 import { BidRequest, UnpublishedBidAttributes } from '../entities/Bid/types'
@@ -47,7 +47,6 @@ import { NewsletterSubscriptionResult } from '../shared/types/newsletter'
 import { PushNotification } from '../shared/types/notifications'
 import Time from '../utils/date/Time'
 
-import { TransparencyBudget, TransparencyVesting } from './DclData'
 import {
   DetailedScores,
   SnapshotConfig,
@@ -57,6 +56,7 @@ import {
   SnapshotVote,
   VpDistribution,
 } from './SnapshotTypes'
+import { TransparencyBudget, TransparencyVesting } from './Transparency'
 import { VestingInfo } from './VestingData'
 
 type NewProposalMap = {

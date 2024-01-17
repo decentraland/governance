@@ -1,4 +1,3 @@
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 import snakeCase from 'lodash/snakeCase'
 import { Pool } from 'pg'
@@ -13,6 +12,7 @@ import { ErrorService } from '../../services/ErrorService'
 import { ProposalService } from '../../services/ProposalService'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
+import logger from '../../utils/logger'
 import { Budget } from '../Budget/types'
 
 import ProposalModel from './model'

@@ -1,10 +1,9 @@
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
-
 import { ActionStatus } from '../../entities/Badges/types'
 import { BadgesService } from '../../services/BadgesService'
 import { ErrorService } from '../../services/ErrorService'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
+import logger from '../../utils/logger'
 import AirdropJobModel, { AirdropJobAttributes } from '../models/AirdropJob'
 
 export async function runAirdropJobs() {

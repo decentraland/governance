@@ -1,7 +1,6 @@
 import { useCallback, useEffect } from 'react'
 
 import { useLocation } from '@reach/router'
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
@@ -18,6 +17,7 @@ import Link from '../components/Common/Typography/Link'
 import Text from '../components/Common/Typography/Text'
 import WiderContainer from '../components/Common/WiderContainer'
 import ActionableLayout from '../components/Layout/ActionableLayout'
+import Head from '../components/Layout/Head'
 import LoadingView from '../components/Layout/LoadingView'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
@@ -111,7 +111,7 @@ export default function ProposalsPage() {
       <Mobile>
         <RandomBanner isVisible={!searching} />
       </Mobile>
-      <Head title={title} description={description} image="https://decentraland.org/images/decentraland.png" />
+      <Head title={title} description={description} />
       <Navigation activeTab={NavigationTab.Proposals} />
       <WiderContainer>
         {isLoading && <LoadingView />}

@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import Helmet from 'react-helmet'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
@@ -21,6 +20,7 @@ import Text from '../../Common/Typography/Text'
 import ErrorMessage from '../../Error/ErrorMessage'
 import MarkdownNotice from '../../Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../Layout/ContentLayout'
+import Head from '../../Layout/Head'
 import LoadingView from '../../Layout/LoadingView'
 import LogIn from '../../Layout/LogIn'
 
@@ -123,6 +123,7 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
       navigate(locations.proposal(proposal.id, { new: 'true' }), {
         replace: true,
       })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setError(error.body?.error || error.message)
       setFormDisabled(false)
@@ -147,11 +148,7 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
 
   return (
     <ContentLayout small preventNavigation={preventNavigation.current}>
-      <Head
-        title={t(`page.submit_poi.${action}.title`) || ''}
-        description={t('page.submit_poi.description') || ''}
-        image="https://decentraland.org/images/decentraland.png"
-      />
+      <Head title={t(`page.submit_poi.${action}.title`) || ''} description={t('page.submit_poi.description') || ''} />
       <Helmet title={t(`page.submit_poi.${action}.title`) || ''} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <ContentSection>

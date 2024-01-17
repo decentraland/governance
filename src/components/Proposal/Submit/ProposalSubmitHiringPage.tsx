@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import Helmet from 'react-helmet'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
 import classNames from 'classnames'
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import type { DropdownItemProps } from 'decentraland-ui'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -11,8 +9,8 @@ import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-import { CommitteeName } from '../../../clients/DclData'
 import { Governance } from '../../../clients/Governance'
+import { CommitteeName } from '../../../clients/Transparency'
 import { SUBMISSION_THRESHOLD_HIRING } from '../../../entities/Proposal/constants'
 import { HiringType, NewProposalHiring, newProposalHiringScheme } from '../../../entities/Proposal/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
@@ -25,6 +23,7 @@ import Label from '../../Common/Typography/Label'
 import Text from '../../Common/Typography/Text'
 import ErrorMessage from '../../Error/ErrorMessage'
 import ContentLayout, { ContentSection } from '../../Layout/ContentLayout'
+import Head from '../../Layout/Head'
 import LoadingView from '../../Layout/LoadingView'
 import LogIn from '../../Layout/LogIn'
 
@@ -109,12 +108,14 @@ export default function ProposalSubmitHiringPage({ type, committees, isCommittee
       navigate(locations.proposal(proposal.id, { new: 'true' }), {
         replace: true,
       })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setError(error.body?.error || error.message)
       setFormDisabled(false)
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleRemoveMemberClick = (_: any, data: DropdownItemProps) => {
     setValue('address', data.value as string)
     setValue('name', data.text as string)
@@ -134,8 +135,7 @@ export default function ProposalSubmitHiringPage({ type, committees, isCommittee
 
   return (
     <ContentLayout small preventNavigation={preventNavigation.current}>
-      <Head title={title} description={description} image="https://decentraland.org/images/decentraland.png" />
-      <Helmet title={title} />
+      <Head title={title} description={description} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <ContentSection>
           <Header size="huge">{title}</Header>

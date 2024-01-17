@@ -1,4 +1,4 @@
-import { TransparencyBudget } from '../../clients/DclData'
+import { TransparencyBudget } from '../../clients/Transparency'
 import Time from '../../utils/date/Time'
 
 import { QuarterBudgetAttributes } from './types'

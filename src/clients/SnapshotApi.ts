@@ -3,9 +3,8 @@ import { Wallet } from '@ethersproject/wallet'
 import snapshot from '@snapshot-labs/snapshot.js'
 import Client from '@snapshot-labs/snapshot.js/dist/sign'
 import { CancelProposal, ProposalType, Vote } from '@snapshot-labs/snapshot.js/dist/sign/types'
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
-import env from 'decentraland-gatsby/dist/utils/env'
 
+import env from '../config'
 import { DEBUG_ADDRESSES } from '../constants'
 import {
   SNAPSHOT_ADDRESS,
@@ -175,7 +174,7 @@ export class SnapshotApi {
         strategies,
       }
     } catch (e) {
-      logger.log(
+      console.log(
         `Space: ${spaceName}, Strategies: ${JSON.stringify(
           strategies
         )}, Network: ${network}, Addresses: ${formattedAddresses}`

@@ -2,8 +2,8 @@ import { useState } from 'react'
 
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
-import { TransparencyBudget } from '../../clients/DclData'
 import { Governance } from '../../clients/Governance'
+import { TransparencyBudget } from '../../clients/Transparency'
 import { QuarterBudgetAttributes } from '../../entities/QuarterBudget/types'
 import Heading from '../Common/Typography/Heading'
 import Label from '../Common/Typography/Label'
@@ -18,7 +18,7 @@ interface Props {
 export default function BudgetsUpdate({ className }: Props) {
   const [transparencyBudgets, setTransparencyBudgets] = useState<TransparencyBudget[]>([])
   const [governanceBudgets, setGovernanceBudgets] = useState<QuarterBudgetAttributes[]>([])
-  const [errorMessage, setErrorMessage] = useState<any>()
+  const [errorMessage, setErrorMessage] = useState<string>()
   const [formDisabled, setFormDisabled] = useState(false)
 
   async function handleFetchBudgets() {

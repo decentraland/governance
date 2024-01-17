@@ -1,7 +1,7 @@
 import API from 'decentraland-gatsby/dist/utils/api/API'
-import env from 'decentraland-gatsby/dist/utils/env'
 import uniqBy from 'lodash/uniqBy'
 
+import env from '../config'
 import { SNAPSHOT_API, SNAPSHOT_API_KEY, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { getAMonthAgo } from '../utils/date/date'
 import { ErrorCategory } from '../utils/errorCategories'

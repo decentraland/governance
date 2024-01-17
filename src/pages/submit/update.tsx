@@ -1,9 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
-import Helmet from 'react-helmet'
 import { SubmitHandler } from 'react-hook-form'
 
 import { useLocation } from '@reach/router'
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { DappsFeatureFlags } from 'decentraland-gatsby/dist/context/FeatureFlag/types'
@@ -16,6 +14,7 @@ import { Governance } from '../../clients/Governance'
 import Text from '../../components/Common/Typography/Text'
 import ContentLayout from '../../components/Layout/ContentLayout'
 import ContentSection from '../../components/Layout/ContentSection'
+import Head from '../../components/Layout/Head'
 import LoadingView from '../../components/Layout/LoadingView'
 import { EditUpdateModal } from '../../components/Modal/EditUpdateModal/EditUpdateModal'
 import FinancialSection from '../../components/Updates/FinancialSection'
@@ -208,7 +207,7 @@ export default function Update({ isEdit }: Props) {
   if (!account) {
     return (
       <Container>
-        <Head title={title} description={description} image="https://decentraland.org/images/decentraland.png" />
+        <Head title={title} description={description} />
         <SignIn
           isConnecting={accountState.selecting || accountState.loading}
           onConnect={isAuthDappEnabled ? accountState.authorize : accountState.select}
@@ -227,8 +226,7 @@ export default function Update({ isEdit }: Props) {
   return (
     <div>
       <ContentLayout>
-        <Head title={title} description={description} image="https://decentraland.org/images/decentraland.png" />
-        <Helmet title="Publish Update" />
+        <Head title={title} description={description} />
         <ContentSection className="UpdateSubmit__HeaderContainer">
           <h1 className="UpdateSubmit__HeaderTitle">{title}</h1>
           <Text size="lg">{description}</Text>

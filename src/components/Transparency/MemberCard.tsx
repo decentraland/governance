@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { Member } from '../../clients/DclData'
+import { Member } from '../../clients/Transparency'
 import locations from '../../utils/locations'
 import Avatar from '../Common/Avatar'
 import Link from '../Common/Typography/Link'
