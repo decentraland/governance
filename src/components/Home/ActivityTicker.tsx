@@ -13,7 +13,7 @@ import Heading from '../Common/Typography/Heading'
 import Link from '../Common/Typography/Link'
 import Markdown from '../Common/Typography/Markdown'
 import Text from '../Common/Typography/Text'
-import ForumBlue from '../Icon/ForumBlue'
+import CircledComment from '../Icon/CircledComment'
 
 import './ActivityTicker.css'
 
@@ -69,7 +69,11 @@ export default function ActivityTicker() {
                       <Avatar size="xs" avatar={item.avatar} address={item.address} />
                     </Link>
                   )}
-                  {item.event_type === EventType.Commented && <ForumBlue size={48} />}
+                  {item.event_type === EventType.Commented && (
+                    <div>
+                      <CircledComment />
+                    </div>
+                  )}
                   <div>
                     <Link href={getLink(item)}>
                       <Markdown

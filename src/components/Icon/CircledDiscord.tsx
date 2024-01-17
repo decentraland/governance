@@ -1,4 +1,4 @@
-function CircledDiscord({ className, size = '64' }: { size?: string; className?: string }) {
+function CircledDiscord({ className, size = 64 }: { size?: number; className?: string }) {
   return (
     <svg
       width={size}

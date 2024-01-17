@@ -947,7 +947,7 @@
         "no_activity": "No activity",
         "proposal_created": "**{author}** published a new Proposal **{title}**",
         "update_created": "**{author}** published an Update on the Project **{title}**",
-        "commented": "**{author}** commented on Proposal **{title}**"
+        "commented": "New comment on **{title}**"
       }
     },
     "welcome": {

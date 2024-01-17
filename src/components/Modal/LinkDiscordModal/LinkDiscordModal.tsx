@@ -12,7 +12,7 @@ import { HIDE_LINK_DISCORD_MODAL_KEY } from '../../../front/localStorageKeys'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useIsDiscordLinked from '../../../hooks/useIsDiscordLinked'
 import Text from '../../Common/Typography/Text'
-import DiscordCircled from '../../Icon/DiscordCircled'
+import CircledDiscord from '../../Icon/CircledDiscord'
 import LinkAccounts from '../../Icon/LinkAccounts'
 import NotificationBellCircled from '../../Icon/NotificationBellCircled'
 import AccountsConnectModal from '../IdentityConnectModal/AccountsConnectModal'
@@ -62,7 +62,7 @@ export function LinkDiscordModal() {
           <div className="PostConnection__Icons">
             <NotificationBellCircled />
             <LinkAccounts />
-            <DiscordCircled />
+            <CircledDiscord size={96} />
           </div>
           <div className="LinkDiscordModal__Content">
             <Header>{t('modal.link_discord.title')}</Header>
