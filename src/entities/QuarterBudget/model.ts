@@ -91,6 +91,20 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
     }
   }
 
+  static async getAllBudgets(): Promise<Budget[]> {
+    const query = SQL`
+        SELECT qb.id, qcb.category, qcb.total as category_total, qcb.allocated as category_allocated, qb.start_at, qb.finish_at, qb.total
+        FROM ${table(QuarterCategoryBudgetModel)} as qcb 
+        INNER JOIN ${table(QuarterBudgetModel)} as qb
+        ON qcb.quarter_budget_id = qb.id
+    `
+    const result = await this.namedQuery('get_current_budget', query)
+    if (!result || result.length === 0) {
+      return []
+    }
+    return this.parseBudget(result)
+  }
+
   static async getCurrentBudget(): Promise<Budget | null> {
     const now = new Date()
     const query = SQL`
@@ -107,7 +121,7 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
     if (!result || result.length === 0) {
       return null
     }
-    return this.parseBudget(result)
+    return this.parseBudget(result)[0]
   }
 
   static async getBudgetForDate(dateWithinBudget: Date): Promise<Budget | null> {
@@ -130,7 +144,7 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
     if (!result || result.length === 0) {
       return null
     }
-    return this.parseBudget(result)
+    return this.parseBudget(result)[0]
   }
 
   static async getCategoryBudgetForCurrentQuarter(
@@ -172,27 +186,43 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
     })
   }
 
-  static parseBudget(result: BudgetQueryResult[]): Budget {
-    const categoriesResults: Record<string, CategoryBudget> = {}
+  static parseBudget(result: BudgetQueryResult[]): Budget[] {
+    const budgetCategoriesResultsMap = new Map<string, Record<string, CategoryBudget>>()
+    const budgetDetailsMap = new Map<string, Omit<Budget, 'id' | 'categories' | 'allocated'>>()
+
     result.forEach((categoryResult) => {
-      const { category_total, category_allocated } = categoryResult
-      const total = asNumber(category_total)
+      const { category_total, category_allocated, id, start_at, finish_at, total } = categoryResult
+      const categoryTotal = asNumber(category_total)
       const allocated = asNumber(category_allocated)
 
-      categoriesResults[snakeCase(categoryResult.category)] = {
-        total,
-        allocated,
-        available: total - allocated,
+      const budgetDetails = budgetDetailsMap.get(id)
+      const categoriesResults = budgetCategoriesResultsMap.get(id) || {}
+
+      if (!budgetDetails) {
+        budgetDetailsMap.set(id, {
+          start_at: Time.date(start_at),
+          finish_at: Time.date(finish_at),
+          total: asNumber(total),
+        })
       }
+
+      categoriesResults[snakeCase(categoryResult.category)] = {
+        total: categoryTotal,
+        allocated,
+        available: categoryTotal - allocated,
+      }
+      budgetCategoriesResultsMap.set(id, categoriesResults)
     })
 
-    return {
-      id: result[0].id,
-      start_at: Time.date(result[0].start_at),
-      finish_at: Time.date(result[0].finish_at),
-      total: asNumber(result[0].total),
-      allocated: Object.values(categoriesResults).reduce((acc, category) => acc + category.allocated, 0),
-      categories: categoriesResults,
-    }
+    return Array.from(budgetCategoriesResultsMap.entries())
+      .map(([id, categoriesResults]) => ({
+        id: id,
+        start_at: budgetDetailsMap.get(id)!.start_at,
+        finish_at: budgetDetailsMap.get(id)!.finish_at,
+        total: budgetDetailsMap.get(id)!.total,
+        allocated: Object.values(categoriesResults).reduce((acc, category) => acc + category.allocated, 0),
+        categories: categoriesResults,
+      }))
+      .sort((a, b) => a.start_at.getTime() - b.start_at.getTime())
   }
 }

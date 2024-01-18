@@ -14,6 +14,7 @@ export default routes((route) => {
   const withAuth = auth()
   route.get('/budget/fetch/', handleAPI(fetchBudgets))
   route.post('/budget/update/', withAuth, handleAPI(updateBudgets))
+  route.get('/budget/all', handleAPI(getAllBudgets))
   route.get('/budget/current', handleAPI(getCurrentBudget))
   route.get('/budget/current-contested', handleAPI(getCurrentContestedBudget))
   route.get('/budget/contested/:proposal', handleAPI(getBudgetWithContestants))
@@ -32,6 +33,10 @@ async function updateBudgets(): Promise<QuarterBudgetAttributes[]> {
 
 async function fetchBudgets(): Promise<TransparencyBudget[]> {
   return await BudgetService.getTransparencyBudgets()
+}
+
+async function getAllBudgets(): Promise<Budget[]> {
+  return await BudgetService.getAllBudgets()
 }
 
 async function getCurrentBudget(): Promise<Budget> {
