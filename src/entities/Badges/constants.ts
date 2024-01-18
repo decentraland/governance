@@ -1,8 +1,5 @@
 import { UploadedBadgeSpec } from './types'
 
-export const GITHUB_BADGE_IMAGE_BASE_URL =
-  'https://github.com/Decentraland-DAO/badges/blob/ae5e518aabfc7adacad29733bc7bca118d56895c/images/'
-
 export const UPLOADED_BADGES: UploadedBadgeSpec[] = [
   {
     name: 'Security Advisory Board',

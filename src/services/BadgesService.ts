@@ -17,7 +17,7 @@ import {
   LEGISLATOR_BADGE_SPEC_CID,
   TOP_VOTERS_PER_MONTH,
 } from '../constants'
-import { GITHUB_BADGE_IMAGE_BASE_URL, UPLOADED_BADGES } from '../entities/Badges/constants'
+import { UPLOADED_BADGES } from '../entities/Badges/constants'
 import { storeBadgeSpecWithRetry } from '../entities/Badges/storeBadgeSpec'
 import {
   ActionStatus,
@@ -35,6 +35,7 @@ import {
   toBadgeStatusReason,
 } from '../entities/Badges/types'
 import {
+  getGithubBadgeImageUrl,
   getIpfsHttpsLink,
   getLandOwnerAddresses,
   getTopVotersBadgeSpec,
@@ -340,6 +341,6 @@ export class BadgesService {
       ErrorService.report('Could not find image for badge.', { badgeName, ipfsLink, category: ErrorCategory.Badges })
       return getIpfsHttpsLink(ipfsLink)
     }
-    return `${GITHUB_BADGE_IMAGE_BASE_URL}${badge.imageName}?raw=true`
+    return getGithubBadgeImageUrl(badge.imageName)
   }
 }

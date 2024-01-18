@@ -104,3 +104,6 @@ export async function isSpecAlreadyCreated(title: string): Promise<boolean> {
 export function getIpfsHttpsLink(ipfsLink: string) {
   return ipfsLink.replace('ipfs://', 'https://ipfs.io/ipfs/')
 }
+
+export const getGithubBadgeImageUrl = (imageName: string) =>
+  `https://github.com/Decentraland-DAO/badges/blob/ae5e518aabfc7adacad29733bc7bca118d56895c/images/${imageName}?raw=true`
