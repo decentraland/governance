@@ -299,11 +299,8 @@ export class BadgesService {
 
   static async getCoreUnitsBadgeSpecs(): Promise<GovernanceBadgeSpec[]> {
     try {
-      const otterspaceBadgesSpecs = await Promise.all(
-        CORE_UNITS_BADGE_SPEC_CID.map((badgeSpecCid) => this.getBadgesByCid(badgeSpecCid))
-      )
-
-      return otterspaceBadgesSpecs.map(BadgesService.toGovernanceBadgeSpec)
+      const otterspaceBadgesSpecs = await Promise.all(CORE_UNITS_BADGE_SPEC_CID.map(this.getBadgesByCid))
+      return otterspaceBadgesSpecs.map((spec) => this.toGovernanceBadgeSpec(spec))
     } catch (error) {
       const msg = 'Error while attempting to get core unit badges'
       ErrorService.report(msg, {
@@ -314,7 +311,7 @@ export class BadgesService {
     }
   }
 
-  static toGovernanceBadge(otterspaceBadge: OtterspaceBadge) {
+  private static toGovernanceBadge(otterspaceBadge: OtterspaceBadge) {
     const { name, description, image } = otterspaceBadge.spec.metadata
     const badge: Badge = {
       name,
@@ -330,14 +327,14 @@ export class BadgesService {
     return badge
   }
 
-  static toGovernanceBadgeSpec(otterspaceBadges: OtterspaceBadge[]): GovernanceBadgeSpec {
+  private static toGovernanceBadgeSpec(otterspaceBadges: OtterspaceBadge[]): GovernanceBadgeSpec {
     if (otterspaceBadges.length === 0) throw new Error('No badges found')
     const { name, description, image } = otterspaceBadges[0].spec.metadata
-    const badges = otterspaceBadges.map(BadgesService.toGovernanceBadge)
+    const badges = otterspaceBadges.map(this.toGovernanceBadge)
     return { name, description, image: BadgesService.getGithubImagePermalink(name, image), badges }
   }
 
-  static getGithubImagePermalink(badgeName: string, ipfsLink: string): string {
+  private static getGithubImagePermalink(badgeName: string, ipfsLink: string): string {
     const badge = UPLOADED_BADGES.find((uploadedBadge) => badgeName.includes(uploadedBadge.name))
     if (!badge) {
       ErrorService.report('Could not find image for badge.', { badgeName, ipfsLink, category: ErrorCategory.Badges })
