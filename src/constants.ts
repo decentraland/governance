@@ -40,13 +40,10 @@ export const TRIMMED_OTTERSPACE_RAFT_ID = trimOtterspaceId(OTTERSPACE_DAO_RAFT_I
 export const TOP_VOTERS_PER_MONTH = 3
 export const TOP_VOTER_BADGE_IMG_URL = process.env.TOP_VOTER_BADGE_IMG_URL || ''
 export const CORE_UNITS_BADGE_CID = [
-  'bafyreia2x3a2kvcocnrogbckuz544jyo2dqiusvlac7ur5phyrum4pqxgu',
-  'bafyreib2avzzxwxvb4onqt3oj6s5yg2peko227dh7mebxmp3674r64z6gu',
-  'bafyreichc4f6knrkbqg5e2yucymvcwm5ppry5d6dgubady2kw7wc7nim7m',
-  'bafyreidmzou4wiy2prxq4jdyg66z7s3wulpfq2a7ar6sdkrixrj3b5mgwe',
-  'bafyreih5t62qmeiugca6bp7dtubrd3ponqfndbim54e3vg4cfbroledohq',
-  'bafyreicsrpymlwm4hutebi2qio3e5hhzpqtyr6fv3ei6nsybb3vannhfgy',
-  'bafyreigm5fqqryvoboszxbrzeks5jihsc4mwb4mq26csdmooaju5g7ksja',
+  'bafyreidmzou4wiy2prxq4jdyg66z7s3wulpfq2a7ar6sdkrixrj3b5mgwe', // Governance Squad
+  'bafyreih5t62qmeiugca6bp7dtubrd3ponqfndbim54e3vg4cfbroledohq', // Grant Support Squad
+  'bafyreicsrpymlwm4hutebi2qio3e5hhzpqtyr6fv3ei6nsybb3vannhfgy', // Facilitation Squad
+  'bafyreigm5fqqryvoboszxbrzeks5jihsc4mwb4mq26csdmooaju5g7ksja', // Strategic Unit Squad
 ]
 export const DEBUG_ADDRESSES = (process.env.DEBUG_ADDRESSES || '')
   .split(',')
