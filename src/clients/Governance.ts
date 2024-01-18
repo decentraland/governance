@@ -270,7 +270,7 @@ export class Governance extends API {
 
   async createProposalUpdate(
     proposal_id: string,
-    update: Pick<UpdateSubmissionDetails, 'author'> & GeneralUpdateSection & FinancialUpdateSection
+    update: UpdateSubmissionDetails & GeneralUpdateSection & FinancialUpdateSection
   ) {
     const result = await this.fetch<ApiResponse<UpdateAttributes>>(
       `/proposals/${proposal_id}/update`,

@@ -26,6 +26,7 @@ import {
   GeneralUpdateSectionSchema,
   UpdateAttributes,
   UpdateStatus,
+  UpdateSubmissionDetails,
 } from '../../entities/Updates/types'
 import { getLatestUpdate, getReleases } from '../../entities/Updates/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
@@ -142,7 +143,8 @@ export default function Update({ isEdit }: Props) {
 
     setFormDisabled(true)
 
-    const newUpdate: GeneralUpdateSection & FinancialUpdateSection = {
+    const newUpdate: UpdateSubmissionDetails & GeneralUpdateSection & FinancialUpdateSection = {
+      author: account!,
       health: data.health,
       introduction: data.introduction,
       highlights: data.highlights,
@@ -154,12 +156,12 @@ export default function Update({ isEdit }: Props) {
 
     try {
       if (updateId) {
-        await Governance.get().updateProposalUpdate(proposalId, { id: updateId, author: account!, ...newUpdate })
+        await Governance.get().updateProposalUpdate(proposalId, { id: updateId, ...newUpdate })
         if (isEdit) {
           setIsEditModalOpen(false)
         }
       } else {
-        await Governance.get().createProposalUpdate(proposalId, { author: account!, ...newUpdate })
+        await Governance.get().createProposalUpdate(proposalId, newUpdate)
       }
       await refetchUpdate()
       navigate(locations.proposal(proposalId, { newUpdate: 'true' }), { replace: true })

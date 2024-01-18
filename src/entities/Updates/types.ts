@@ -2,7 +2,7 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import { z } from 'zod'
 
 export type UpdateSubmissionDetails = {
-  id: string
+  id?: string
   author: string
 }
 
