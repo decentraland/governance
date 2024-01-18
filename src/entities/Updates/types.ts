@@ -1,6 +1,11 @@
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import { z } from 'zod'
 
+export type UpdateSubmissionDetails = {
+  id: string
+  author: string
+}
+
 export type GeneralUpdateSection = {
   health: ProjectHealth
   introduction: string
