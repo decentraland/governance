@@ -100,3 +100,7 @@ export async function isSpecAlreadyCreated(title: string): Promise<boolean> {
   const existingBadge = await OtterspaceSubgraph.get().getBadgeSpecByTitle(title)
   return !!existingBadge[0]
 }
+
+export function getIpfsHttpsLink(ipfsLink: string) {
+  return ipfsLink.replace('ipfs://', 'https://ipfs.io/ipfs/')
+}
