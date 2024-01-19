@@ -25,7 +25,6 @@ import { SEGMENT_KEY, SSO_URL } from "./src/constants"
 import { flattenMessages } from "./src/utils/intl"
 import en from "./src/intl/en.json"
 import SnapshotStatus from "./src/components/Debug/SnapshotStatus"
-import UserInformation from 'decentraland-gatsby/dist/components/User/UserInformation'
 
 const queryClient = new QueryClient()
 
@@ -43,7 +42,7 @@ export const wrapPageElement = ({ element, props }) => {
     <QueryClientProvider client={queryClient}>
       <IntlProvider defaultLocale='en' locale='en' messages={flattenMessages(en)}>
         <SnapshotStatus />
-        <Layout {...props} rightMenu={<UserInformation />}>
+        <Layout {...props}>
           {element}
         </Layout>
       </IntlProvider>
