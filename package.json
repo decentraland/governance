@@ -73,8 +73,8 @@
     "dayjs": "^1.11.9",
     "dayjs-precise-range": "^1.0.1",
     "dcl-catalyst-client": "^21.5.0",
-    "decentraland-gatsby": "5.98.1",
-    "decentraland-ui": "^4.35.5",
+    "decentraland-gatsby": "5.106.0",
+    "decentraland-ui": "^5.2.0",
     "discord.js": "^14.7.1",
     "dompurify": "^2.3.3",
     "dotenv": "^16.0.0",
@@ -182,5 +182,8 @@
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --cache --fix",
     "*.{js,jsx,ts,tsx,css,json}": "prettier --write"
+  },
+  "overrides": {
+    "decentraland-connect": "5.2.4"
   }
 }
