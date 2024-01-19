@@ -2,7 +2,7 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { BigNumber, ethers } from 'ethers'
 
 import RpcService from '../services/RpcService'
-import ERC20_ABI from '../utils/contracts/abi/erc20.abi.json'
+import ERC20_ABI from '../utils/contracts/abi/ERC20.abi.json'
 import VESTING_ABI from '../utils/contracts/abi/vesting/vesting.json'
 import VESTING_V2_ABI from '../utils/contracts/abi/vesting/vesting_v2.json'
 import { ContractVersion, TopicsByVersion } from '../utils/contracts/vesting'
