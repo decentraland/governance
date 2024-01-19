@@ -2,6 +2,7 @@ import { Card } from 'decentraland-ui/dist/components/Card/Card'
 
 import Link from '../Common/Typography/Link'
 import Text from '../Common/Typography/Text'
+import Helper from '../Helper/Helper'
 import ChevronRight from '../Icon/ChevronRight'
 import IncomeArrow from '../Icon/IncomeArrow'
 import OutcomeArrow from '../Icon/OutcomeArrow'
@@ -19,14 +20,16 @@ interface Props {
   value: string
   subtitle?: string
   href?: string
+  helper?: string
 }
 
-function FinancialCard({ type, title, value, subtitle, href }: Props) {
+function FinancialCard({ type, title, value, subtitle, href, helper }: Props) {
   return (
     <Card className="FinancialCard" as={href ? Link : undefined} href={href}>
       <div>
         <Text className="FinancialCard__Text FinancialCard__Text--upper" size="sm">
           {title}
+          {helper && <Helper text={helper} size="16" position="bottom center" />}
         </Text>
         <div className="FinancialCard__Value">
           {type && (type === FinancialCardType.Income ? <IncomeArrow /> : <OutcomeArrow />)}

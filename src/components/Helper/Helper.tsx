@@ -3,6 +3,7 @@ import { Popup, PopupProps } from 'decentraland-ui/dist/components/Popup/Popup'
 import Markdown from '../Common/Typography/Markdown'
 import Info from '../Icon/Info'
 
+import './Helper.css'
 import { HELPER_TEXT_MARKDOWN_STYLES } from './HelperText'
 
 type Props = Pick<PopupProps, 'position'> & {

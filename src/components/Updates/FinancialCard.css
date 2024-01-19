@@ -13,6 +13,9 @@
 .FinancialCard .Text.FinancialCard__Text {
   color: var(--black-400);
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .FinancialCard__Text--upper {

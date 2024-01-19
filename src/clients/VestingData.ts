@@ -1,7 +1,8 @@
 import { JsonRpcProvider } from '@ethersproject/providers'
-import { ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 
 import RpcService from '../services/RpcService'
+import ERC20_ABI from '../utils/contracts/abi/erc20.abi.json'
 import VESTING_ABI from '../utils/contracts/abi/vesting/vesting.json'
 import VESTING_V2_ABI from '../utils/contracts/abi/vesting/vesting_v2.json'
 import { ContractVersion, TopicsByVersion } from '../utils/contracts/vesting'
@@ -17,6 +18,7 @@ export type VestingDates = {
 export type VestingValues = {
   released: number
   releasable: number
+  total: number
 }
 
 export type VestingLog = {
@@ -44,7 +46,7 @@ function getVestingDates(contractStart: number, contractEndsTimestamp: number) {
   }
 }
 
-function parseVestingValue(value: unknown) {
+function parseContractValue(value: unknown) {
   return Math.round(Number(value) / 1e18)
 }
 
@@ -93,10 +95,14 @@ async function getVestingContractDataV1(
   const contractDuration = Number(await vestingContract.duration())
   const contractEndsTimestamp = contractStart + contractDuration
 
-  const released = parseVestingValue(await vestingContract.released())
-  const releasable = parseVestingValue(await vestingContract.releasableAmount())
+  const released = parseContractValue(await vestingContract.released())
+  const releasable = parseContractValue(await vestingContract.releasableAmount())
 
-  return { ...getVestingDates(contractStart, contractEndsTimestamp), released, releasable }
+  const tokenContractAddress = await vestingContract.token()
+  const tokenContract = new ethers.Contract(tokenContractAddress, ERC20_ABI, provider)
+  const total = parseContractValue(await tokenContract.balanceOf(vestingAddress)) + released
+
+  return { ...getVestingDates(contractStart, contractEndsTimestamp), released, releasable, total }
 }
 
 async function getVestingContractDataV2(
@@ -115,10 +121,13 @@ async function getVestingContractDataV2(
     contractEndsTimestamp = contractStart + contractDuration * periods
   }
 
-  const released = parseVestingValue(await vestingContract.getReleased())
-  const releasable = parseVestingValue(await vestingContract.getReleasable())
+  const released = parseContractValue(await vestingContract.getReleased())
+  const releasable = parseContractValue(await vestingContract.getReleasable())
+  const vestedPerPeriod: BigNumber[] = await vestingContract.getVestedPerPeriod()
 
-  return { ...getVestingDates(contractStart, contractEndsTimestamp), released, releasable }
+  const total = vestedPerPeriod.map(parseContractValue).reduce((acc, curr) => acc + curr, 0)
+
+  return { ...getVestingDates(contractStart, contractEndsTimestamp), released, releasable, total }
 }
 
 export async function getVestingContractData(

@@ -16,8 +16,9 @@ import Head from '../components/Layout/Head'
 import LoadingView from '../components/Layout/LoadingView'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import TokenBalanceCard from '../components/Token/TokenBalanceCard'
-import CardsSection from '../components/Transparency/CardsSection'
+import BudgetCard from '../components/Transparency/BudgetCard'
 import CoreUnitsSection from '../components/Transparency/CoreUnitsSection'
+import DaoVestingCard from '../components/Transparency/DaoVestingCard'
 import GrantList from '../components/Transparency/GrantList'
 import MembersSection from '../components/Transparency/MembersSection'
 import MonthlyTotal from '../components/Transparency/MonthlyTotal'
@@ -81,7 +82,7 @@ export default function TransparencyPage() {
                 ]}
               />
               <div>
-                <CardsSection />
+                <DaoVestingCard />
                 <div className="Transparency__Section Transparency__BalanceCard">
                   <Card className="Transparency__Card">
                     <Card.Content>
@@ -131,6 +132,7 @@ export default function TransparencyPage() {
               />
 
               <div className="Transparency__Section">
+                <BudgetCard />
                 <Card className="Transparency__Card">
                   <Card.Content>
                     <Heading size="sm" weight="normal">

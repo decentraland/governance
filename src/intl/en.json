@@ -1562,12 +1562,13 @@
         "monthly_income": "Last 30 Days Income",
         "monthly_expenses": "Last 30 Days Expenses",
         "diff_label": "vs previous 30 days",
-        "budget_title": "Grants program budget",
-        "budget_value": "{value} for Q{quarter}’{year}",
-        "budget_subtitle": "{percentage}% consumed so far",
+        "budget_title": "Grants program budget, Q{quarter}",
+        "budget_subtitle": "{consumed} consumed so far ({percentage}%)",
+        "budget_helper": "The Decentraland DAO operates a community development Grants Program to support builders, artists, and hackers who enrich the open metaverse through various contributions. The DAO has decided to allocate up to 70% of the MANA received quarterly through its vesting contract, to fund this program.",
         "vesting_title": "DAO vesting contract",
-        "vesting_value": "{value} MANA vested",
-        "vesting_subtitle": "{value} MANA not released"
+        "vesting_helper": "The main source of financial support for the Decentraland DAO is a 10-year vesting contract worth 222,000,000 MANA tokens vested continuously that started on February 19, 2020.",
+        "releasable_value": "{value} releasable",
+        "vesting_subtitle": "{value} unvested"
       },
       "funding": {
         "title": "Ongoing DAO-funded Projects",
