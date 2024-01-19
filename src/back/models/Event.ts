@@ -3,6 +3,8 @@ import { SQL, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 
 import { Event } from '../../shared/types/events'
 
+const LATEST_EVENTS_LIMIT = 50
+
 export default class EventModel extends Model<Event> {
   static tableName = 'events'
   static withTimestamps = false
@@ -14,6 +16,7 @@ export default class EventModel extends Model<Event> {
       FROM ${table(EventModel)}
       WHERE created_at >= NOW() - INTERVAL '7 day'
       ORDER BY created_at DESC
+      LIMIT ${LATEST_EVENTS_LIMIT}
     `
     const result = await this.namedQuery<Event>('get_latest_events', query)
     return result
