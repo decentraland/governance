@@ -165,7 +165,7 @@ export default function Layout({ children }: LayoutProps) {
         onClickSignIn={isAuthDappEnabled ? userState.authorize : userState.select}
         onClickSignOut={handleSignOut}
       />
-      )<main>{children}</main>
+      <main>{children}</main>
       <WrongNetworkModal
         currentNetwork={userState.chainId}
         expectedNetworks={getSupportedChainIds()}
