@@ -1,5 +1,4 @@
 import crypto from 'crypto'
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 
 import AirdropJobModel from '../back/models/AirdropJob'
 import { VoteService } from '../back/services/vote'
@@ -46,6 +45,7 @@ import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Pr
 import { getChecksumAddress } from '../entities/Snapshot/utils'
 import { inBackground, splitArray } from '../helpers'
 import { ErrorCategory } from '../utils/errorCategories'
+import logger from '../utils/logger'
 
 import { ErrorService } from './ErrorService'
 

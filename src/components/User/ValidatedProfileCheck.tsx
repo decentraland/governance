@@ -1,6 +1,7 @@
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { forumUserUrl } from '../../entities/Proposal/utils'
+import Link from '../Common/Typography/Link'
 import ValidatedProfile from '../Icon/ValidatedProfile'
 
 import './ValidatedProfileCheck.css'
@@ -22,9 +23,9 @@ export default function ValidatedProfileCheck({ forumUsername, isLoading }: Prop
   return (
     <>
       {!isLoading && !!forumUsername && (
-        <a href={forumUserUrl(forumUsername)} target="_blank" rel="noreferrer" className="ValidatedProfileCheck">
+        <Link href={forumUserUrl(forumUsername)} className="ValidatedProfileCheck">
           <ValidatedProfile className="ValidatedProfileCheck__Icon" />
-        </a>
+        </Link>
       )}
     </>
   )

@@ -23,11 +23,6 @@ function LinkDiscordBanner() {
   const t = useFormatMessage()
   const [isAccountsConnectModalOpen, setIsAccountsConnectModalOpen] = useState(false)
 
-  const handleCloseModal = () => {
-    localStorage.setItem(HIDE_LINK_DISCORD_BANNER_KEY, 'true')
-    setIsAccountsConnectModalOpen(false)
-  }
-
   return (
     <>
       <Banner
@@ -42,7 +37,7 @@ function LinkDiscordBanner() {
       />
       <AccountsConnectModal
         open={isAccountsConnectModalOpen}
-        onClose={handleCloseModal}
+        onClose={() => setIsAccountsConnectModalOpen(false)}
         account={AccountType.Discord}
       />
     </>

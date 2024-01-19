@@ -8,6 +8,7 @@ import { forumUrl } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Comment from '../Comments/Comment'
 import Empty from '../Common/Empty'
+import Link from '../Common/Typography/Link'
 import Section from '../Proposal/View/Section'
 
 import './Comments.css'
@@ -48,13 +49,7 @@ export default function Comments({ comments, topicId, topicSlug, isLoading, topi
       title={t('page.comments.title', { count: commentsCount })}
       action={
         renderComments && (
-          <Button
-            basic
-            disabled={!topicId}
-            target="_blank"
-            rel="noopener noreferrer"
-            href={(topicId && forumUrl(topicSlug, topicId)) || ''}
-          >
+          <Button basic disabled={!topicId} as={Link} href={(topicId && forumUrl(topicSlug, topicId)) || ''}>
             {t('page.comments.join_discussion_label')}
           </Button>
         )
@@ -86,8 +81,6 @@ export default function Comments({ comments, topicId, topicSlug, isLoading, topi
             basic
             className="Comments__ReadMore"
             disabled={!topicId}
-            target="_blank"
-            rel="noopener noreferrer"
             onClick={() => {
               setShowAllComments(true)
             }}
@@ -100,8 +93,7 @@ export default function Comments({ comments, topicId, topicSlug, isLoading, topi
             basic
             className="Comments__ReadMore"
             disabled={!topicId}
-            target="_blank"
-            rel="noopener noreferrer"
+            as={Link}
             href={(topicId && forumUrl(topicSlug, topicId)) || ''}
           >
             {t(`page.comments.comment_on_this_${topicType}_label`)}

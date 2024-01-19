@@ -3,8 +3,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
-import { CommitteeName } from '../../clients/DclData'
 import { SnapshotProposal } from '../../clients/SnapshotTypes'
+import { CommitteeName } from '../../clients/Transparency'
 import { UnpublishedBidInfo } from '../Bid/types'
 import {
   CategoryAssessmentQuestions,

@@ -1,4 +1,3 @@
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import { ethers } from 'ethers'
 
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
@@ -10,6 +9,7 @@ import {
   SnapshotProposal,
   SnapshotVote,
 } from '../../clients/SnapshotTypes'
+import logger from '../../utils/logger'
 
 import { SNAPSHOT_SPACE } from './constants'
 import { getDelegatedQuery } from './queries'

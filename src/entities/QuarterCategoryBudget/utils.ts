@@ -1,6 +1,6 @@
 import snakeCase from 'lodash/snakeCase'
 
-import { TransparencyBudget } from '../../clients/DclData'
+import { TransparencyBudget } from '../../clients/Transparency'
 import { NewGrantCategory } from '../Grant/types'
 
 export function toNewGrantCategory(category: string | null): NewGrantCategory {

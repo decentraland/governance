@@ -1,9 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
-import Helmet from 'react-helmet'
 import { SubmitHandler } from 'react-hook-form'
 
 import { useLocation } from '@reach/router'
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { DappsFeatureFlags } from 'decentraland-gatsby/dist/context/FeatureFlag/types'
@@ -16,6 +14,7 @@ import { Governance } from '../../clients/Governance'
 import Text from '../../components/Common/Typography/Text'
 import ContentLayout from '../../components/Layout/ContentLayout'
 import ContentSection from '../../components/Layout/ContentSection'
+import Head from '../../components/Layout/Head'
 import LoadingView from '../../components/Layout/LoadingView'
 import { EditUpdateModal } from '../../components/Modal/EditUpdateModal/EditUpdateModal'
 import FinancialSection from '../../components/Updates/FinancialSection'
@@ -27,6 +26,7 @@ import {
   GeneralUpdateSectionSchema,
   UpdateAttributes,
   UpdateStatus,
+  UpdateSubmissionDetails,
 } from '../../entities/Updates/types'
 import { getLatestUpdate, getReleases } from '../../entities/Updates/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
@@ -86,7 +86,7 @@ export default function Update({ isEdit }: Props) {
   const location = useLocation()
   const [ff] = useFeatureFlagContext()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
-  const updateId = params.get('id') || ''
+  const updateId = params.get('id')
   const [isPreviewMode, setPreviewMode] = useState(false)
   const { update, isLoadingUpdate, isErrorOnUpdate, refetchUpdate } = useProposalUpdate(updateId)
   const proposalId = useMemo(() => params.get('proposalId') || update?.proposal_id || '', [update, params])
@@ -143,10 +143,8 @@ export default function Update({ isEdit }: Props) {
 
     setFormDisabled(true)
 
-    const newUpdate = {
-      proposal_id: proposalId,
+    const newUpdate: UpdateSubmissionDetails & GeneralUpdateSection & FinancialUpdateSection = {
       author: account!,
-      id: updateId,
       health: data.health,
       introduction: data.introduction,
       highlights: data.highlights,
@@ -158,12 +156,12 @@ export default function Update({ isEdit }: Props) {
 
     try {
       if (updateId) {
-        await Governance.get().updateProposalUpdate(newUpdate)
+        await Governance.get().updateProposalUpdate(proposalId, { id: updateId, ...newUpdate })
         if (isEdit) {
           setIsEditModalOpen(false)
         }
       } else {
-        await Governance.get().createProposalUpdate(newUpdate)
+        await Governance.get().createProposalUpdate(proposalId, newUpdate)
       }
       await refetchUpdate()
       navigate(locations.proposal(proposalId, { newUpdate: 'true' }), { replace: true })
@@ -208,7 +206,7 @@ export default function Update({ isEdit }: Props) {
   if (!account) {
     return (
       <Container>
-        <Head title={title} description={description} image="https://decentraland.org/images/decentraland.png" />
+        <Head title={title} description={description} />
         <SignIn
           isConnecting={accountState.selecting || accountState.loading}
           onConnect={isAuthDappEnabled ? accountState.authorize : accountState.select}
@@ -227,8 +225,7 @@ export default function Update({ isEdit }: Props) {
   return (
     <div>
       <ContentLayout>
-        <Head title={title} description={description} image="https://decentraland.org/images/decentraland.png" />
-        <Helmet title="Publish Update" />
+        <Head title={title} description={description} />
         <ContentSection className="UpdateSubmit__HeaderContainer">
           <h1 className="UpdateSubmit__HeaderTitle">{title}</h1>
           <Text size="lg">{description}</Text>

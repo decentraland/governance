@@ -7,6 +7,7 @@ import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media
 import { FinancialRecord, FinancialRecordCateogry } from '../../entities/Updates/types'
 import { CURRENCY_FORMAT_OPTIONS, addressShortener } from '../../helpers'
 import Divider from '../Common/Divider'
+import Link from '../Common/Typography/Link'
 import Text from '../Common/Typography/Text'
 import LinkIcon from '../Icon/LinkIcon'
 
@@ -49,14 +50,9 @@ function SummaryContent({ category, group }: SummaryContentProps) {
             <div className="SummaryContentItem_DetailsContainer">
               <span className="SummaryContentItem_Token">{token}</span>
               <span className="SummaryContentItem_Amount">{formatNumber(amount, CURRENCY_FORMAT_OPTIONS)}</span>
-              <a
-                href={link}
-                target="_blank"
-                rel="noreferrer"
-                className={classNames(!link && 'SummaryContentItem_Link--hidden')}
-              >
+              <Link href={link} className={classNames(!link && 'SummaryContentItem_Link--hidden')}>
                 <LinkIcon color="var(--black-600)" />
-              </a>
+              </Link>
             </div>
           </div>
           <Divider className="SummaryContentItem__Divider" />

@@ -5,6 +5,8 @@ import { snapshotProposalUrl } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import OpenExternalLink from '../Icon/OpenExternalLink'
 
+import Link from './Typography/Link'
+
 import './SnapshotRedirectButton.css'
 
 interface Props {
@@ -20,8 +22,7 @@ const SnapshotRedirectButton = ({ proposal, inverted }: Props) => {
       inverted={inverted}
       primary={!inverted}
       href={snapshotProposalUrl(proposal)}
-      target="_blank"
-      rel="noopener noreferrer"
+      as={Link}
       className="SnapshotRedirectButton"
     >
       <div className="SnapshotRedirectButton__Hidden" />

@@ -7,6 +7,7 @@ import { getVestingContractUrl } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useVestingContractData from '../../../hooks/useVestingContractData'
 import Pill from '../../Common/Pill'
+import Link from '../../Common/Typography/Link'
 import Markdown from '../../Common/Typography/Markdown'
 
 import './DetailsSection.css'
@@ -70,13 +71,7 @@ function VestingContract({ vestingAddresses }: Props) {
                 />
               </Menu>
             ) : (
-              <Button
-                href={getVestingContractUrl(vestingData[0].address)}
-                target="_blank"
-                rel="noopener noreferrer"
-                primary
-                size="small"
-              >
+              <Button href={getVestingContractUrl(vestingData[0].address)} as={Link} primary size="small">
                 {t('page.proposal_detail.grant.vesting_dropdown', { amount: vestingData.length })}
               </Button>
             )}

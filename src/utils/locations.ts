@@ -1,5 +1,4 @@
 import { NavigateOptions } from '@reach/router'
-import API from 'decentraland-gatsby/dist/utils/api/API'
 import { navigate as gatsbyNavigate } from 'gatsby'
 
 import { ProjectTypeFilter } from '../components/Search/CategoryFilter'
@@ -39,8 +38,13 @@ export type ProposalsModal = {
   modal: 'new'
 }
 
-export function url(path = '/', query: Record<string, string> | URLSearchParams = {}) {
-  return API.url(GATSBY_BASE_URL, path, query)
+function url(base = GATSBY_BASE_URL, query: Record<string, string> | URLSearchParams = {}, path = '') {
+  const params = new URLSearchParams(query).toString()
+  const formattedBase = base.endsWith('/') ? base.slice(0, -1) : base
+  const formattedPath = path !== '' && !path.startsWith('/') ? '/' + path : path
+  const formattedParams = path.includes('?') ? '&' + params : '?' + params
+
+  return formattedBase + formattedPath + (params ? formattedParams : '')
 }
 
 export default {

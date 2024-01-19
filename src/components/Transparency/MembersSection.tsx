@@ -2,7 +2,7 @@ import { Card } from 'decentraland-ui/dist/components/Card/Card'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 
-import { Member } from '../../clients/DclData'
+import { Member } from '../../clients/Transparency'
 import Text from '../Common/Typography/Text'
 import Info from '../Icon/Info'
 

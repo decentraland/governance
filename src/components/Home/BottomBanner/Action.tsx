@@ -11,14 +11,16 @@ export interface ActionProps {
 }
 
 function Action({ icon, title, description, url, onClick }: ActionProps) {
+  const Component = url ? Link : 'button'
+
   return (
-    <Link href={url} onClick={onClick} target="_blank" rel="noreferrer" className="Action">
+    <Component href={url} onClick={onClick} className="Action">
       <div className="Action__Icon">{icon}</div>
-      <div>
+      <div className="Action__Information">
         <div className="Action__Title">{title}</div>
         <div className="Action__Description">{description}</div>
       </div>
-    </Link>
+    </Component>
   )
 }
 

@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react'
 import { ErrorCode } from '@ethersproject/logger'
 import { Web3Provider } from '@ethersproject/providers'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
@@ -17,6 +16,7 @@ import WiderContainer from '../components/Common/WiderContainer'
 import FloatingBar from '../components/FloatingBar/FloatingBar'
 import FloatingHeader from '../components/FloatingHeader/FloatingHeader'
 import { Desktop1200 } from '../components/Layout/Desktop1200'
+import Head from '../components/Layout/Head'
 import LoadingView from '../components/Layout/LoadingView'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
@@ -367,12 +367,11 @@ export default function ProposalPage() {
   const title = proposal?.title || t('page.proposal_detail.title') || ''
   const description =
     (proposal?.description && formatDescription(proposal.description)) || t('page.proposal_detail.description') || ''
-  const image = 'https://decentraland.org/images/decentraland.png'
 
   if (isLoadingProposal) {
     return (
       <>
-        <Head title={title} description={description} image={image} />
+        <Head title={title} description={description} />
         <Navigation activeTab={NavigationTab.Proposals} />
         <LoadingView withNavigation />
       </>
@@ -381,7 +380,7 @@ export default function ProposalPage() {
 
   return (
     <>
-      <Head title={title} description={description} image={image} />
+      <Head title={title} description={description} />
       <Navigation activeTab={NavigationTab.Proposals} />
       <NotMobile>{proposal && <FloatingHeader isVisible={isFloatingHeaderVisible} proposal={proposal} />}</NotMobile>
       <WiderContainer className={'ProposalDetailPage'}>

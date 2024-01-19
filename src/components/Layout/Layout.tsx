@@ -9,7 +9,7 @@ import {
   DROPDOWN_MENU_DISPLAY_EVENT,
   DROPDOWN_MENU_ITEM_CLICK_EVENT,
   DROPDOWN_MENU_SIGN_OUT_EVENT,
-} from 'decentraland-dapps/dist/containers/UserInformation/constants'
+} from 'decentraland-dapps/dist/containers/Navbar/constants'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import useProfileInjected from 'decentraland-gatsby/dist/context/Auth/useProfileContext'
 import useFeatureFlagContext from 'decentraland-gatsby/dist/context/FeatureFlag/useFeatureFlagContext'
@@ -19,8 +19,7 @@ import useAsyncState from 'decentraland-gatsby/dist/hooks/useAsyncState'
 import useChainId from 'decentraland-gatsby/dist/hooks/useChainId'
 import { fetchManaBalance } from 'decentraland-gatsby/dist/utils/loader/manaBalance'
 import { Footer } from 'decentraland-ui/dist/components/Footer/Footer'
-import { Navbar2 } from 'decentraland-ui/dist/components/Navbar2/Navbar2'
-import { Navbar, NavbarProps } from 'decentraland-ui/dist/components/Navbar/Navbar'
+import { Navbar } from 'decentraland-ui/dist/components/Navbar/Navbar'
 import { ManaBalancesProps } from 'decentraland-ui/dist/components/UserMenu/ManaBalances/ManaBalances.types'
 import { config } from 'decentraland-ui/dist/config'
 import type { PageProps } from 'gatsby'
@@ -34,15 +33,13 @@ import WrongNetworkModal from '../Modal/WrongNetworkModal'
 import './Layout.css'
 
 export type LayoutProps = Omit<PageProps, 'children'> & {
-  rightMenu: NavbarProps['rightMenu']
   children?: React.ReactNode
 }
 
-export default function Layout({ children, ...props }: LayoutProps) {
+export default function Layout({ children }: LayoutProps) {
   const [user, userState] = useAuthContext()
   const track = useTrackContext()
   const [ff] = useFeatureFlagContext()
-  const isNewMenu = ff.flags['dapps-navbar2_variant']
 
   const handleClickUserMenuOption = useTrackLinkContext(function (
     event: React.MouseEvent<HTMLElement, MouseEvent>,
@@ -152,37 +149,22 @@ export default function Layout({ children, ...props }: LayoutProps) {
     [track, userState]
   )
 
-  const handleClickMenuOption = function (event: React.MouseEvent, section: string) {
-    if (!event.defaultPrevented) {
-      return {
-        place: 'navbar',
-        section,
-        menu: section.split('_'),
-      }
-    }
-
-    return null
-  }
-
   return (
     <>
-      {!isNewMenu && <Navbar activePage="dao" onClickMenuOption={handleClickMenuOption} rightMenu={props.rightMenu} />}
-      {isNewMenu && (
-        <Navbar2
-          manaBalances={manaBalances as ManaBalancesProps['manaBalances']}
-          address={user || undefined}
-          avatar={(profile as Avatar) || undefined}
-          activePage={'governance'}
-          isSignedIn={!!profile}
-          isSigningIn={loading}
-          onClickBalance={handleClickBalance}
-          onClickNavbarItem={handleClickNavbarOption}
-          onClickUserMenuItem={handleClickUserMenuOption}
-          onClickOpen={handleOpen}
-          onClickSignIn={isAuthDappEnabled ? userState.authorize : userState.select}
-          onClickSignOut={handleSignOut}
-        />
-      )}
+      <Navbar
+        manaBalances={manaBalances as ManaBalancesProps['manaBalances']}
+        address={user || undefined}
+        avatar={(profile as Avatar) || undefined}
+        activePage={'governance'}
+        isSignedIn={!!profile}
+        isSigningIn={loading}
+        onClickBalance={handleClickBalance}
+        onClickNavbarItem={handleClickNavbarOption}
+        onClickUserMenuItem={handleClickUserMenuOption}
+        onClickOpen={handleOpen}
+        onClickSignIn={isAuthDappEnabled ? userState.authorize : userState.select}
+        onClickSignOut={handleSignOut}
+      />
       <main>{children}</main>
       <WrongNetworkModal
         currentNetwork={userState.chainId}

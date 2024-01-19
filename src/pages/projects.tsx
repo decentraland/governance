@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import { NotMobile } from 'decentraland-ui/dist/components/Media/Media'
 import toSnakeCase from 'lodash/snakeCase'
 
 import WiderContainer from '../components/Common/WiderContainer'
+import Head from '../components/Layout/Head'
 import LoadingView from '../components/Layout/LoadingView'
 import MaintenanceLayout from '../components/Layout/MaintenanceLayout'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
@@ -107,11 +107,7 @@ export default function ProjectsPage() {
 
   return (
     <>
-      <Head
-        title={t('page.grants.title') || ''}
-        description={t('page.grants.description') || ''}
-        image="https://decentraland.org/images/decentraland.png"
-      />
+      <Head title={t('page.grants.title') || ''} description={t('page.grants.description') || ''} />
       <Navigation activeTab={NavigationTab.Grants} />
       {isLoadingProjects && <LoadingView withNavigation />}
       {!isLoadingProjects && (

@@ -1,5 +1,4 @@
 import { WithAuth, auth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
@@ -18,6 +17,7 @@ import {
 import { isCoauthoringUpdatable } from '../../entities/Coauthor/utils'
 import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
+import logger from '../../utils/logger'
 import { validateAddress } from '../utils/validations'
 
 export default routes((route) => {

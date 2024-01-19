@@ -1,8 +1,8 @@
-import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import Rollbar from 'rollbar'
 
 import { DAO_ROLLBAR_TOKEN } from '../constants'
 import { isProdEnv } from '../utils/governanceEnvs'
+import logger from '../utils/logger'
 
 const FILTERED_ERRORS = ['FETCH_ERROR', 'ACTION_REJECTED']
 

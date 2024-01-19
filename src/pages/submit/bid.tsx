@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import Helmet from 'react-helmet'
 
 import classNames from 'classnames'
-import Head from 'decentraland-gatsby/dist/components/Head/Head'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -30,6 +28,7 @@ import GrantRequestTeamSection, {
 import DecentralandLogo from '../../components/Icon/DecentralandLogo'
 import OpenExternalLink from '../../components/Icon/OpenExternalLink'
 import { ContentSection } from '../../components/Layout/ContentLayout'
+import Head from '../../components/Layout/Head'
 import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/Layout/LogIn'
 import { BID_MIN_PROJECT_DURATION } from '../../entities/Bid/constants'
@@ -78,7 +77,9 @@ function parseStringsAsNumbers(bidRequest: BidRequest) {
   return { ...bidRequest, funding }
 }
 
+// TODO: This function is repeated in other files...
 function handleCancel() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if ((window as any).routeUpdate) {
     window.history.back()
   } else {
@@ -140,6 +141,7 @@ export default function SubmitBid() {
       try {
         await Governance.get().createProposalBid(bidRequestParsed)
         navigate(locations.proposal(bidRequestParsed.linked_proposal_id, { bid: 'true' }))
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         setSubmitError(error.body?.error || error.message)
         setIsLoading(false)
@@ -195,8 +197,7 @@ export default function SubmitBid() {
 
   return (
     <div>
-      <Head title={title} description={description} image="https://decentraland.org/images/decentraland.png" />
-      <Helmet title={title} />
+      <Head title={title} description={description} />
       <Container className="GrantRequest__Head">
         <div className="GrantRequest__Header">
           <DecentralandLogo

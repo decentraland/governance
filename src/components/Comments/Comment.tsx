@@ -46,13 +46,11 @@ export default function Comment({ forumUsername, avatarUrl, createdAt, cooked, a
 
   const discourseUserUrl = getDiscourseProfileUrl(forumUsername, address)
   const { username, avatar, hasCustomAvatar, isLoadingDclProfile } = useDclProfile(address)
-  const linkTarget = address ? undefined : '_blank'
-  const linkRel = address ? undefined : 'noopener noreferrer'
 
   return (
     <div className="Comment">
       <div className="Comment__ProfileImage">
-        <Link href={discourseUserUrl} target={linkTarget} rel={linkRel}>
+        <Link href={discourseUserUrl}>
           <Avatar
             address={address}
             avatar={hasCustomAvatar ? avatar : avatarUrl}
@@ -63,7 +61,7 @@ export default function Comment({ forumUsername, avatarUrl, createdAt, cooked, a
       </div>
       <div className="Comment__Content">
         <div className="Comment__Author">
-          <Link href={discourseUserUrl} target={linkTarget} rel={linkRel}>
+          <Link href={discourseUserUrl}>
             <Text weight="bold">
               {username || forumUsername}
               {address && <ValidatedProfile />}

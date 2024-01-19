@@ -39,7 +39,7 @@ export default function HttpStatus({ className }: Props) {
 
   const onSubmit: SubmitHandler<TestState> = async (data) => {
     try {
-      const result = await HttpStat.get().fetchResponse(data.httpStatus, data.sleepTime)
+      const result = await HttpStat.fetchResponse(data.httpStatus, data.sleepTime)
       console.log('result', result)
       setFormDisabled(false)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

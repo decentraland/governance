@@ -1,10 +1,10 @@
 import API from 'decentraland-gatsby/dist/utils/api/API'
 import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
-import env from 'decentraland-gatsby/dist/utils/env'
 import snakeCase from 'lodash/snakeCase'
 
 import { AirdropOutcome } from '../back/types/AirdropJob'
 import { SpecState } from '../components/Debug/UploadBadgeSpec'
+import env from '../config'
 import { GOVERNANCE_API } from '../constants'
 import { BadgeCreationResult, GovernanceBadgeSpec, RevokeOrReinstateResult, UserBadges } from '../entities/Badges/types'
 import { BidRequest, UnpublishedBidAttributes } from '../entities/Bid/types'
@@ -39,6 +39,7 @@ import {
   GeneralUpdateSection,
   UpdateAttributes,
   UpdateResponse,
+  UpdateSubmissionDetails,
 } from '../entities/Updates/types'
 import { AccountType } from '../entities/User/types'
 import { Participation, VoteByAddress, VotedProposal, Voter, VotesForProposals } from '../entities/Votes/types'
@@ -47,7 +48,6 @@ import { NewsletterSubscriptionResult } from '../shared/types/newsletter'
 import { PushNotification } from '../shared/types/notifications'
 import Time from '../utils/date/Time'
 
-import { TransparencyBudget, TransparencyVesting } from './DclData'
 import {
   DetailedScores,
   SnapshotConfig,
@@ -57,6 +57,7 @@ import {
   SnapshotVote,
   VpDistribution,
 } from './SnapshotTypes'
+import { TransparencyBudget, TransparencyVesting } from './Transparency'
 import { VestingInfo } from './VestingData'
 
 type NewProposalMap = {
@@ -268,29 +269,23 @@ export class Governance extends API {
   }
 
   async createProposalUpdate(
-    update: {
-      proposal_id: string
-    } & GeneralUpdateSection &
-      FinancialUpdateSection
+    proposal_id: string,
+    update: UpdateSubmissionDetails & GeneralUpdateSection & FinancialUpdateSection
   ) {
     const result = await this.fetch<ApiResponse<UpdateAttributes>>(
-      `/proposals/${update.proposal_id}/update`,
+      `/proposals/${proposal_id}/update`,
       this.options().method('POST').authorization({ sign: true }).json(update)
     )
     return result.data
   }
 
   async updateProposalUpdate(
-    update: {
-      id: string
-      proposal_id: string
-    } & GeneralUpdateSection &
-      FinancialUpdateSection
+    proposal_id: string,
+    update: UpdateSubmissionDetails & GeneralUpdateSection & FinancialUpdateSection
   ) {
-    const { proposal_id, ...updateData } = update
     const result = await this.fetch<ApiResponse<UpdateAttributes>>(
       `/proposals/${proposal_id}/update`,
-      this.options().method('PATCH').authorization({ sign: true }).json(updateData)
+      this.options().method('PATCH').authorization({ sign: true }).json(update)
     )
     return result.data
   }
