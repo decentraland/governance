@@ -30,6 +30,11 @@ export type Badge = {
   owner?: string
 }
 
+export type UploadedBadgeSpec = {
+  name: string
+  imageName: string
+}
+
 export type GovernanceBadgeSpec = {
   name: string
   description: string
@@ -87,33 +92,6 @@ export function isPastBadge(badge: OtterspaceBadge) {
     (status === BadgeStatus.Revoked && badge.statusReason === BadgeStatusReason.TenureEnded) ||
     (!!expiresAt && expiresAt.length > 0 && Time.utc(badge.spec.metadata.expiresAt).isBefore(Time.utc()))
   )
-}
-
-export function toGovernanceBadge(otterspaceBadge: OtterspaceBadge) {
-  const { name, description, image } = otterspaceBadge.spec.metadata
-  const badge: Badge = {
-    name,
-    description,
-    createdAt: otterspaceBadge.createdAt,
-    owner: otterspaceBadge.owner?.id,
-    image: getIpfsHttpsLink(image),
-    status: toBadgeStatus(otterspaceBadge.status),
-    statusReason: toBadgeStatusReason(otterspaceBadge.statusReason),
-    isPastBadge: isPastBadge(otterspaceBadge),
-    transactionHash: otterspaceBadge.transactionHash || '',
-  }
-  return badge
-}
-
-export function toGovernanceBadgeSpec(otterspaceBadges: OtterspaceBadge[]): GovernanceBadgeSpec {
-  if (otterspaceBadges.length === 0) throw new Error('No badges found')
-  const { name, description, image } = otterspaceBadges[0].spec.metadata
-  const badges = otterspaceBadges.map(toGovernanceBadge)
-  return { name, description, image: getIpfsHttpsLink(image), badges }
-}
-
-function getIpfsHttpsLink(ipfsLink: string) {
-  return ipfsLink.replace('ipfs://', 'https://ipfs.io/ipfs/')
 }
 
 export function isOtterspaceRevokeReason(value: string | null | undefined): boolean {

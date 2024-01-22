@@ -17,6 +17,7 @@ import {
   LEGISLATOR_BADGE_SPEC_CID,
   TOP_VOTERS_PER_MONTH,
 } from '../constants'
+import { UPLOADED_BADGES } from '../entities/Badges/constants'
 import { storeBadgeSpecWithRetry } from '../entities/Badges/storeBadgeSpec'
 import {
   ActionStatus,
@@ -28,11 +29,14 @@ import {
   OtterspaceRevokeReason,
   RevokeOrReinstateResult,
   UserBadges,
+  isPastBadge,
   shouldDisplayBadge,
-  toGovernanceBadge,
-  toGovernanceBadgeSpec,
+  toBadgeStatus,
+  toBadgeStatusReason,
 } from '../entities/Badges/types'
 import {
+  getGithubBadgeImageUrl,
+  getIpfsHttpsLink,
   getLandOwnerAddresses,
   getTopVotersBadgeSpec,
   getValidatedUsersForBadge,
@@ -64,7 +68,7 @@ export class BadgesService {
     const expiredBadges: Badge[] = []
     for (const otterspaceBadge of otterspaceBadges) {
       try {
-        const badge = toGovernanceBadge(otterspaceBadge)
+        const badge = this.toGovernanceBadge(otterspaceBadge)
         if (shouldDisplayBadge(badge)) {
           if (badge.isPastBadge) {
             expiredBadges.push(badge)
@@ -296,11 +300,8 @@ export class BadgesService {
 
   static async getCoreUnitsBadgeSpecs(): Promise<GovernanceBadgeSpec[]> {
     try {
-      const otterspaceBadgesSpecs = await Promise.all(
-        CORE_UNITS_BADGE_SPEC_CID.map((badgeSpecCid) => this.getBadgesByCid(badgeSpecCid))
-      )
-
-      return otterspaceBadgesSpecs.map(toGovernanceBadgeSpec)
+      const otterspaceBadgesSpecs = await Promise.all(CORE_UNITS_BADGE_SPEC_CID.map(this.getBadgesByCid))
+      return otterspaceBadgesSpecs.map((spec) => this.toGovernanceBadgeSpec(spec))
     } catch (error) {
       const msg = 'Error while attempting to get core unit badges'
       ErrorService.report(msg, {
@@ -309,5 +310,37 @@ export class BadgesService {
       })
       throw new Error(msg)
     }
+  }
+
+  private static toGovernanceBadge(otterspaceBadge: OtterspaceBadge) {
+    const { name, description, image } = otterspaceBadge.spec.metadata
+    const badge: Badge = {
+      name,
+      description,
+      createdAt: otterspaceBadge.createdAt,
+      owner: otterspaceBadge.owner?.id,
+      image: BadgesService.getGithubImagePermalink(name, image),
+      status: toBadgeStatus(otterspaceBadge.status),
+      statusReason: toBadgeStatusReason(otterspaceBadge.statusReason),
+      isPastBadge: isPastBadge(otterspaceBadge),
+      transactionHash: otterspaceBadge.transactionHash || '',
+    }
+    return badge
+  }
+
+  private static toGovernanceBadgeSpec(otterspaceBadges: OtterspaceBadge[]): GovernanceBadgeSpec {
+    if (otterspaceBadges.length === 0) throw new Error('No badges found')
+    const { name, description, image } = otterspaceBadges[0].spec.metadata
+    const badges = otterspaceBadges.map(this.toGovernanceBadge)
+    return { name, description, image: BadgesService.getGithubImagePermalink(name, image), badges }
+  }
+
+  private static getGithubImagePermalink(badgeName: string, ipfsLink: string): string {
+    const badge = UPLOADED_BADGES.find((uploadedBadge) => badgeName.includes(uploadedBadge.name))
+    if (!badge) {
+      ErrorService.report('Could not find image for badge.', { badgeName, ipfsLink, category: ErrorCategory.Badges })
+      return getIpfsHttpsLink(ipfsLink)
+    }
+    return getGithubBadgeImageUrl(badge.imageName)
   }
 }
