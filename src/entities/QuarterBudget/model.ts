@@ -98,11 +98,11 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
         INNER JOIN ${table(QuarterBudgetModel)} as qb
         ON qcb.quarter_budget_id = qb.id
     `
-    const result = await this.namedQuery('get_current_budget', query)
+    const result = await this.namedQuery('get_all_budgets', query)
     if (!result || result.length === 0) {
       return []
     }
-    return this.parseBudget(result)
+    return this.parseBudgets(result)
   }
 
   static async getCurrentBudget(): Promise<Budget | null> {
@@ -121,7 +121,7 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
     if (!result || result.length === 0) {
       return null
     }
-    return this.parseBudget(result)[0]
+    return this.parseBudget(result)
   }
 
   static async getBudgetForDate(dateWithinBudget: Date): Promise<Budget | null> {
@@ -144,7 +144,7 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
     if (!result || result.length === 0) {
       return null
     }
-    return this.parseBudget(result)[0]
+    return this.parseBudget(result)
   }
 
   static async getCategoryBudgetForCurrentQuarter(
@@ -186,43 +186,48 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
     })
   }
 
-  static parseBudget(result: BudgetQueryResult[]): Budget[] {
-    const budgetCategoriesResultsMap = new Map<string, Record<string, CategoryBudget>>()
-    const budgetDetailsMap = new Map<string, Omit<Budget, 'id' | 'categories' | 'allocated'>>()
-
+  static parseBudget(result: BudgetQueryResult[]): Budget {
+    const categoriesResults: Record<string, CategoryBudget> = {}
     result.forEach((categoryResult) => {
-      const { category_total, category_allocated, id, start_at, finish_at, total } = categoryResult
-      const categoryTotal = asNumber(category_total)
+      const { category_total, category_allocated } = categoryResult
+      const total = asNumber(category_total)
       const allocated = asNumber(category_allocated)
 
-      const budgetDetails = budgetDetailsMap.get(id)
-      const categoriesResults = budgetCategoriesResultsMap.get(id) || {}
-
-      if (!budgetDetails) {
-        budgetDetailsMap.set(id, {
-          start_at: Time.date(start_at),
-          finish_at: Time.date(finish_at),
-          total: asNumber(total),
-        })
-      }
-
       categoriesResults[snakeCase(categoryResult.category)] = {
-        total: categoryTotal,
+        total,
         allocated,
-        available: categoryTotal - allocated,
+        available: total - allocated,
       }
-      budgetCategoriesResultsMap.set(id, categoriesResults)
     })
 
-    return Array.from(budgetCategoriesResultsMap.entries())
-      .map(([id, categoriesResults]) => ({
-        id: id,
-        start_at: budgetDetailsMap.get(id)!.start_at,
-        finish_at: budgetDetailsMap.get(id)!.finish_at,
-        total: budgetDetailsMap.get(id)!.total,
-        allocated: Object.values(categoriesResults).reduce((acc, category) => acc + category.allocated, 0),
-        categories: categoriesResults,
-      }))
-      .sort((a, b) => a.start_at.getTime() - b.start_at.getTime())
+    return {
+      id: result[0].id,
+      start_at: Time.date(result[0].start_at),
+      finish_at: Time.date(result[0].finish_at),
+      total: asNumber(result[0].total),
+      allocated: Object.values(categoriesResults).reduce((acc, category) => acc + category.allocated, 0),
+      categories: categoriesResults,
+    }
+  }
+
+  static parseBudgets(results: BudgetQueryResult[]): Budget[] {
+    const budgetsByQuarter = new Map<string, BudgetQueryResult[]>()
+
+    results.forEach((result) => {
+      const { id } = result
+      const group = budgetsByQuarter.get(id)
+
+      if (group) {
+        group.push(result)
+      } else {
+        budgetsByQuarter.set(id, [result])
+      }
+    })
+
+    const budgets: Budget[] = []
+
+    budgetsByQuarter.forEach((resultsForQuarter) => budgets.push(this.parseBudget(resultsForQuarter)))
+
+    return budgets.sort((a, b) => a.start_at.getTime() - b.start_at.getTime())
   }
 }

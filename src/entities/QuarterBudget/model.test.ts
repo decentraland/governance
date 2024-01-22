@@ -269,52 +269,50 @@ describe('QuarterBudgetModel', () => {
           total: 1501500,
         },
       ]
-      expect(QuarterBudgetModel.parseBudget(results)).toStrictEqual([
-        {
-          categories: {
-            accelerator: {
-              allocated: 5105,
-              available: 100000,
-              total: 105105,
-            },
-            core_unit: {
-              allocated: 225225,
-              available: 0,
-              total: 225225,
-            },
-            documentation: {
-              allocated: 60000,
-              available: -14955,
-              total: 45045,
-            },
-            in_world_content: {
-              allocated: 0,
-              available: 300300,
-              total: 300300,
-            },
-            platform: {
-              allocated: 0,
-              available: 600600,
-              total: 600600,
-            },
-            social_media_content: {
-              allocated: 0,
-              available: 75075,
-              total: 75075,
-            },
-            sponsorship: {
-              allocated: 0,
-              available: 150150,
-              total: 150150,
-            },
+      expect(QuarterBudgetModel.parseBudget(results)).toStrictEqual({
+        categories: {
+          accelerator: {
+            allocated: 5105,
+            available: 100000,
+            total: 105105,
           },
-          finish_at: Time.date('2023-04-01T00:00:00.000Z'),
-          start_at: Time.date('2023-01-01T00:00:00.000Z'),
-          total: 1501500,
-          allocated: 290330,
-          id: 'budget_id',
+          core_unit: {
+            allocated: 225225,
+            available: 0,
+            total: 225225,
+          },
+          documentation: {
+            allocated: 60000,
+            available: -14955,
+            total: 45045,
+          },
+          in_world_content: {
+            allocated: 0,
+            available: 300300,
+            total: 300300,
+          },
+          platform: {
+            allocated: 0,
+            available: 600600,
+            total: 600600,
+          },
+          social_media_content: {
+            allocated: 0,
+            available: 75075,
+            total: 75075,
+          },
+          sponsorship: {
+            allocated: 0,
+            available: 150150,
+            total: 150150,
+          },
         },
-      ])
+        finish_at: Time.date('2023-04-01T00:00:00.000Z'),
+        start_at: Time.date('2023-01-01T00:00:00.000Z'),
+        total: 1501500,
+        allocated: 290330,
+        id: 'budget_id',
+      })
     })
   })
 })
