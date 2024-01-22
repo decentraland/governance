@@ -1,5 +1,7 @@
 import { useIntl } from 'react-intl'
 
+import isNumber from 'lodash/isNumber'
+
 import { DAO_VESTING_CONTRACT_ADDRESS } from '../../constants'
 import { CURRENCY_FORMAT_OPTIONS, getVestingContractUrl } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
@@ -7,7 +9,7 @@ import useManaPrice from '../../hooks/useManaPrice'
 import useVestingContractData from '../../hooks/useVestingContractData'
 import FinancialCard from '../Updates/FinancialCard'
 
-import './DaoFinancial.css'
+import DaoFinancial from './DaoFinancial'
 
 function DaoVestingCard() {
   const t = useFormatMessage()
@@ -18,20 +20,25 @@ function DaoVestingCard() {
   const manaPrice = useManaPrice()
 
   return (
-    <div className="DaoFinancial">
+    <DaoFinancial>
       <FinancialCard
         title={t('page.transparency.mission.vesting_title')}
         value={t('page.transparency.mission.releasable_value', {
-          value: releasable && manaPrice ? formatNumber(releasable * manaPrice, CURRENCY_FORMAT_OPTIONS) : '$--',
+          value:
+            isNumber(releasable) && isNumber(manaPrice)
+              ? formatNumber(releasable * manaPrice, CURRENCY_FORMAT_OPTIONS)
+              : '$--',
         })}
         subtitle={t('page.transparency.mission.vesting_subtitle', {
           value:
-            total && vested && manaPrice ? formatNumber((total - vested) * manaPrice, CURRENCY_FORMAT_OPTIONS) : '$--',
+            isNumber(total) && isNumber(vested) && isNumber(manaPrice)
+              ? formatNumber((total - vested) * manaPrice, CURRENCY_FORMAT_OPTIONS)
+              : '$--',
         })}
         href={getVestingContractUrl(DAO_VESTING_CONTRACT_ADDRESS)}
         helper={t('page.transparency.mission.vesting_helper')}
       />
-    </div>
+    </DaoFinancial>
   )
 }
 

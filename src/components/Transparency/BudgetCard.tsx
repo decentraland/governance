@@ -9,6 +9,8 @@ import locations from '../../utils/locations'
 import { ProjectTypeFilter } from '../Search/CategoryFilter'
 import FinancialCard from '../Updates/FinancialCard'
 
+import DaoFinancial from './DaoFinancial'
+
 function BudgetCard() {
   const t = useFormatMessage()
   const { allocatedPercentage: percentage, allocated, total } = useBudgetByCategory(SubtypeAlternativeOptions.All)
@@ -16,7 +18,7 @@ function BudgetCard() {
   const { formatNumber } = useIntl()
 
   return (
-    <div className="DaoFinancial">
+    <DaoFinancial>
       <FinancialCard
         title={t('page.transparency.mission.budget_title', { quarter })}
         value={formatNumber(total, CURRENCY_FORMAT_OPTIONS)}
@@ -27,7 +29,7 @@ function BudgetCard() {
         href={locations.projects(ProjectTypeFilter.Grants)}
         helper={t('page.transparency.mission.budget_helper')}
       />
-    </div>
+    </DaoFinancial>
   )
 }
 

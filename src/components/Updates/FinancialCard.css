@@ -33,6 +33,6 @@
   color: var(--white-900) !important;
 }
 
-.Link.FinancialCard::after {
+.FinancialCard::after {
   content: none !important;
 }
