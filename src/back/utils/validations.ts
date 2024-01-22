@@ -1,9 +1,14 @@
+import crypto from 'crypto'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
+import { Request } from 'express'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
 import { SnapshotProposal } from '../../clients/SnapshotTypes'
+import { DISCOURSE_WEBHOOK_SECRET } from '../../constants'
 import isDebugAddress from '../../entities/Debug/isDebugAddress'
+import { ErrorService } from '../../services/ErrorService'
+import { ErrorCategory } from '../../utils/errorCategories'
 
 export function validateDates(start?: string, end?: string) {
   const validatedStart = new Date(validateDate(start)!)
@@ -100,5 +105,22 @@ export function validateRequiredStrings(fieldNames: string[], requestBody: Recor
 export function validateDebugAddress(user: string | undefined) {
   if (!isDebugAddress(user)) {
     throw new RequestError('Invalid user', RequestError.Unauthorized)
+  }
+}
+
+export function validateDiscourseWebhookSignature(req: Request) {
+  const providedSignature = req.get('X-Discourse-Event-Signature') || ''
+  if (DISCOURSE_WEBHOOK_SECRET) {
+    const payload = req.body
+    const calculatedSignature = 'sha256='.concat(
+      crypto.createHmac('sha256', DISCOURSE_WEBHOOK_SECRET).update(JSON.stringify(payload)).digest('hex')
+    )
+
+    if (providedSignature !== calculatedSignature) {
+      ErrorService.report('Invalid discourse webhook signature', { category: ErrorCategory.Discourse })
+      throw new RequestError('Invalid signature', RequestError.Forbidden)
+    }
+  } else {
+    throw new RequestError('Endpoint disabled', RequestError.NotImplemented)
   }
 }

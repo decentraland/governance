@@ -1,4 +1,4 @@
-import { DiscoursePostInTopic } from '../../../clients/Discourse'
+import { DiscoursePostInTopic } from '../../../shared/types/discourse'
 
 export const ONE_USER_POST = [
   {

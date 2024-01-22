@@ -1,11 +1,19 @@
 import crypto from 'crypto'
 
+import ProposalModel from '../../entities/Proposal/model'
+import { ProposalAttributes } from '../../entities/Proposal/types'
+import UserModel from '../../entities/User/model'
+import { UserAttributes } from '../../entities/User/types'
+import { DISCOURSE_USER } from '../../entities/User/utils'
 import { addressShortener } from '../../helpers'
 import CacheService, { TTL_1_HS } from '../../services/CacheService'
+import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
+import { DiscourseWebhookPost } from '../../shared/types/discourse'
 import {
+  ActivityTickerEvent,
+  CommentedEvent,
   EventType,
-  EventWithAuthor,
   ProposalCreatedEvent,
   UpdateCreatedEvent,
   VotedEvent,
@@ -16,24 +24,31 @@ import { ErrorCategory } from '../../utils/errorCategories'
 import EventModel from '../models/Event'
 
 export class EventsService {
-  static async getLatest(): Promise<EventWithAuthor[]> {
+  static async getLatest(): Promise<ActivityTickerEvent[]> {
     try {
       const latestEvents = await EventModel.getLatest()
-      const addresses = latestEvents.map((event) => event.address)
+
+      const addresses: string[] = latestEvents
+        .map((event) => event.address)
+        .filter((address) => address !== null) as string[]
 
       const addressesToProfile = await this.getAddressesToProfiles(addresses)
 
-      const latestEventsWithAuthor: EventWithAuthor[] = []
+      const activityTickerEvents: ActivityTickerEvent[] = []
       for (const event of latestEvents) {
         const { address } = event
-        latestEventsWithAuthor.push({
-          author: addressesToProfile[address].username || addressShortener(address),
-          avatar: addressesToProfile[address].avatar,
-          ...event,
-        })
+        activityTickerEvents.push(
+          address
+            ? {
+                author: addressesToProfile[address].username || addressShortener(address),
+                avatar: addressesToProfile[address].avatar,
+                ...event,
+              }
+            : event
+        )
       }
 
-      return latestEventsWithAuthor
+      return activityTickerEvents
     } catch (error) {
       ErrorService.report('Error fetching events', { error, category: ErrorCategory.Events })
       return []
@@ -151,5 +166,53 @@ export class EventsService {
     }
 
     return profiles
+  }
+
+  static async commented(discourseEventId: string, discourseEvent: string, discoursePost: DiscourseWebhookPost) {
+    try {
+      if (
+        discourseEvent !== 'post_created' ||
+        (await EventModel.isDiscourseEventRegistered(discourseEventId)) ||
+        discoursePost.category_id !== DiscourseService.getCategory() ||
+        discoursePost.username === DISCOURSE_USER
+      ) {
+        return
+      }
+
+      const commentedProposal = await ProposalModel.findOne<ProposalAttributes>({
+        discourse_topic_id: discoursePost.topic_id,
+      })
+      if (!commentedProposal) {
+        ErrorService.report('Unable to find commented proposal', {
+          event_data: {
+            discourse_event_id: discourseEventId,
+            discourse_event: discourseEvent,
+            discourse_post: discoursePost,
+          },
+          category: ErrorCategory.Events,
+        })
+        return
+      }
+
+      const user = await UserModel.findOne<UserAttributes>({ forum_id: discoursePost.user_id })
+
+      const commentedEvent: CommentedEvent = {
+        id: crypto.randomUUID(),
+        address: user ? user.address : null,
+        event_type: EventType.Commented,
+        event_data: {
+          discourse_event_id: discourseEventId,
+          discourse_event: discourseEvent,
+          discourse_post: discoursePost,
+          proposal_id: commentedProposal.id,
+          proposal_title: commentedProposal.title,
+        },
+        created_at: new Date(discoursePost.created_at),
+      }
+
+      return await EventModel.create(commentedEvent)
+    } catch (e) {
+      ErrorService.report('Unexpected error while creating comment event', { error: e, category: ErrorCategory.Events })
+    }
   }
 }

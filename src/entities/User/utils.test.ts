@@ -1,5 +1,5 @@
-import { DiscoursePostInTopic, DiscourseTopic } from '../../clients/Discourse'
 import { FORUM_URL } from '../../constants'
+import { DiscoursePostInTopic, DiscourseTopic } from '../../shared/types/discourse'
 import { ProposalCommentsInDiscourse } from '../Proposal/types'
 
 import { ONE_USER_POST, SEVERAL_USERS_POST, createWithPosts } from './__data__/discourse_samples'
