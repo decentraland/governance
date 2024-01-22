@@ -1,6 +1,7 @@
 import classNames from 'classnames'
 import { withPrefix } from 'gatsby'
 
+import { isLocalLink } from '../../../clients/utils'
 import { toGovernancePathname } from '../../../helpers/browser'
 import { navigate } from '../../../utils/locations'
 
@@ -11,12 +12,6 @@ function isMetaClick(event: React.MouseEvent<HTMLAnchorElement>) {
 }
 
 type Props = React.AnchorHTMLAttributes<HTMLAnchorElement>
-
-function isLocalLink(href?: string | null) {
-  return (
-    typeof href === 'string' && !href.startsWith('https://') && !href.startsWith('http://') && !href.startsWith('//')
-  )
-}
 
 const TARGET_BLANK = '_blank'
 

@@ -22,7 +22,7 @@ import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/Layout/LogIn'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import { SUBMISSION_THRESHOLD_TENDER } from '../../entities/Proposal/constants'
-import { NewProposalTender, newProposalTenderScheme } from '../../entities/Proposal/types'
+import { NewProposalTender, ProposalType, newProposalTenderScheme } from '../../entities/Proposal/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import usePreselectedProposal from '../../hooks/usePreselectedProposal'
 import useURLSearchParams from '../../hooks/useURLSearchParams'
@@ -125,7 +125,11 @@ export default function SubmitTenderProposal() {
 
   return (
     <ContentLayout small preventNavigation={preventNavigation.current}>
-      <Head title={title} description={description} />
+      <Head
+        title={title}
+        description={description}
+        links={[{ rel: 'canonical', href: locations.submit(ProposalType.Tender) }]}
+      />
       <form onSubmit={handleSubmit(onSubmit)}>
         <ContentSection>
           <Header size="huge">{title}</Header>

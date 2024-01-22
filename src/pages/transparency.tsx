@@ -47,7 +47,11 @@ export default function TransparencyPage() {
   return (
     <>
       <Navigation activeTab={NavigationTab.Transparency} />
-      <Head title={t('page.transparency.title') || ''} description={t('page.transparency.mission.description') || ''} />
+      <Head
+        title={t('page.transparency.title')}
+        description={t('page.transparency.mission.description')}
+        links={[{ rel: 'canonical', href: locations.transparency() }]}
+      />
       <div className="TransparencyPage">
         {!data && <LoadingView withNavigation />}
         {data && (

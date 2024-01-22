@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import Helmet from 'react-helmet'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
@@ -7,7 +6,7 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { Governance } from '../../../clients/Governance'
-import { PoiType, getPoiTypeAction, newProposalPOIScheme } from '../../../entities/Proposal/types'
+import { PoiType, ProposalType, getPoiTypeAction, newProposalPOIScheme } from '../../../entities/Proposal/types'
 import { asNumber, isAlreadyPointOfInterest, isValidPointOfInterest } from '../../../entities/Proposal/utils'
 import { disableOnWheelInput } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'
@@ -141,15 +140,16 @@ export default function ProposalSubmitPoiPage({ poiType }: Props) {
   }
 
   if (!account) {
-    return (
-      <LogIn title={t(`page.submit_poi.${action}.title`) || ''} description={t('page.submit_poi.description') || ''} />
-    )
+    return <LogIn title={t(`page.submit_poi.${action}.title`)} description={t('page.submit_poi.description')} />
   }
 
   return (
     <ContentLayout small preventNavigation={preventNavigation.current}>
-      <Head title={t(`page.submit_poi.${action}.title`) || ''} description={t('page.submit_poi.description') || ''} />
-      <Helmet title={t(`page.submit_poi.${action}.title`) || ''} />
+      <Head
+        title={t(`page.submit_poi.${action}.title`)}
+        description={t('page.submit_poi.description')}
+        links={[{ rel: 'canonical', href: locations.submit(ProposalType.POI, { request: poiType }) }]}
+      />
       <form onSubmit={handleSubmit(onSubmit)}>
         <ContentSection>
           <Header size="huge">{t(`page.submit_poi.${action}.title`)}</Header>

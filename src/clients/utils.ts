@@ -33,3 +33,9 @@ export async function inBatches<T, K>(
 export function trimLastForwardSlash(url: string) {
   return url.replace(/\/$/, '')
 }
+
+export function isLocalLink(href?: string | null) {
+  return (
+    typeof href === 'string' && !href.startsWith('https://') && !href.startsWith('http://') && !href.startsWith('//')
+  )
+}

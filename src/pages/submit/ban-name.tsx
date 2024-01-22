@@ -18,7 +18,7 @@ import Head from '../../components/Layout/Head'
 import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/Layout/LogIn'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
-import { NewProposalBanName, newProposalBanNameScheme } from '../../entities/Proposal/types'
+import { NewProposalBanName, ProposalType, newProposalBanNameScheme } from '../../entities/Proposal/types'
 import { isAlreadyBannedName, isValidName } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import locations, { navigate } from '../../utils/locations'
@@ -75,14 +75,16 @@ export default function SubmitBanName() {
   }
 
   if (!account) {
-    return (
-      <LogIn title={t('page.submit_ban_name.title') || ''} description={t('page.submit_ban_name.description') || ''} />
-    )
+    return <LogIn title={t('page.submit_ban_name.title')} description={t('page.submit_ban_name.description')} />
   }
 
   return (
     <ContentLayout small preventNavigation={preventNavigation.current}>
-      <Head title={t('page.submit_ban_name.title') || ''} description={t('page.submit_ban_name.description') || ''} />
+      <Head
+        title={t('page.submit_ban_name.title')}
+        description={t('page.submit_ban_name.description')}
+        links={[{ rel: 'canonical', href: locations.submit(ProposalType.BanName) }]}
+      />
       <form onSubmit={handleSubmit(onSubmit)}>
         <ContentSection>
           <Header size="huge">{t('page.submit_ban_name.title')}</Header>
@@ -146,7 +148,7 @@ export default function SubmitBanName() {
             disabled={formDisabled}
             error={!!errors.description}
             message={
-              (errors.description?.message || '') +
+              errors.description?.message +
               ' ' +
               t('page.submit.character_counter', {
                 current: watch('description').length,

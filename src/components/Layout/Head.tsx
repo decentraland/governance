@@ -1,6 +1,7 @@
-import { Helmet } from 'react-helmet'
+import { Helmet, HelmetProps } from 'react-helmet'
 
-import { DCL_META_IMAGE_URL } from '../../constants'
+import { isLocalLink } from '../../clients/utils'
+import { DCL_META_IMAGE_URL, GOVERNANCE_URL } from '../../constants'
 
 // TODO: Review how this data is built in non-gatsby DCL apps for consistency.
 
@@ -9,9 +10,19 @@ type Props = {
   description?: string
   image?: string
   children?: React.ReactNode
+  links?: HelmetProps['link']
 }
 
-export default function Head({ title, description, image, children }: Props) {
+function getAbsoluteUrls(linkProps?: HelmetProps['link']) {
+  if (linkProps === undefined) return undefined
+  return linkProps.map((props) => {
+    const href = props.href
+    if (href === undefined) return props
+    return isLocalLink(href) ? { ...props, href: `${GOVERNANCE_URL}${href}` } : props
+  })
+}
+
+export default function Head({ title, description, image, children, links }: Props) {
   const meta: Record<string, string> = {
     'og:title': title || '',
     'twitter:title': title || '',
@@ -23,9 +34,10 @@ export default function Head({ title, description, image, children }: Props) {
   }
 
   const metaKeys = Object.keys(meta).filter((name) => Boolean(meta[name]))
+  const absoluteLinks = getAbsoluteUrls(links)
 
   return (
-    <Helmet htmlAttributes={{ lang: 'en' }}>
+    <Helmet htmlAttributes={{ lang: 'en' }} link={absoluteLinks}>
       {title && <title>{title}</title>}
       {description && <meta name="description" content={description} />}
       {image && <meta name="image" content={image} />}

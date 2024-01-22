@@ -19,7 +19,7 @@ import UserStats from '../components/User/UserStats'
 import useDclProfile from '../hooks/useDclProfile'
 import useFormatMessage from '../hooks/useFormatMessage'
 import useVotingPowerInformation from '../hooks/useVotingPowerInformation'
-import { navigate } from '../utils/locations'
+import locations, { navigate } from '../utils/locations'
 import { isUnderMaintenance } from '../utils/maintenance'
 
 import './profile.css'
@@ -65,6 +65,7 @@ export default function ProfilePage() {
       <Head
         title={t('page.profile.title', { address: username || address })}
         description={t('page.profile.description')}
+        links={[{ rel: 'canonical', href: locations.profile({ address: address }) }]}
       />
       <Navigation activeTab={NavigationTab.Profile} />
       <WiderContainer className="ProfilePage__Container">
