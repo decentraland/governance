@@ -26,6 +26,7 @@ import {
   GeneralUpdateSectionSchema,
   UpdateAttributes,
   UpdateStatus,
+  UpdateSubmissionDetails,
 } from '../../entities/Updates/types'
 import { getLatestUpdate, getReleases } from '../../entities/Updates/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
@@ -85,7 +86,7 @@ export default function Update({ isEdit }: Props) {
   const location = useLocation()
   const [ff] = useFeatureFlagContext()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
-  const updateId = params.get('id') || ''
+  const updateId = params.get('id')
   const [isPreviewMode, setPreviewMode] = useState(false)
   const { update, isLoadingUpdate, isErrorOnUpdate, refetchUpdate } = useProposalUpdate(updateId)
   const proposalId = useMemo(() => params.get('proposalId') || update?.proposal_id || '', [update, params])
@@ -142,10 +143,8 @@ export default function Update({ isEdit }: Props) {
 
     setFormDisabled(true)
 
-    const newUpdate = {
-      proposal_id: proposalId,
+    const newUpdate: UpdateSubmissionDetails & GeneralUpdateSection & FinancialUpdateSection = {
       author: account!,
-      id: updateId,
       health: data.health,
       introduction: data.introduction,
       highlights: data.highlights,
@@ -157,12 +156,12 @@ export default function Update({ isEdit }: Props) {
 
     try {
       if (updateId) {
-        await Governance.get().updateProposalUpdate(newUpdate)
+        await Governance.get().updateProposalUpdate(proposalId, { id: updateId, ...newUpdate })
         if (isEdit) {
           setIsEditModalOpen(false)
         }
       } else {
-        await Governance.get().createProposalUpdate(newUpdate)
+        await Governance.get().createProposalUpdate(proposalId, newUpdate)
       }
       await refetchUpdate()
       navigate(locations.proposal(proposalId, { newUpdate: 'true' }), { replace: true })

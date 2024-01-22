@@ -1,7 +1,7 @@
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 
-import { Discourse, DiscoursePost } from '../../clients/Discourse'
+import { Discourse } from '../../clients/Discourse'
 import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import UpdateModel from '../../entities/Updates/model'
@@ -11,6 +11,7 @@ import { inBackground } from '../../helpers'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
 import { FinancialService } from '../../services/FinancialService'
+import { DiscoursePost } from '../../shared/types/discourse'
 import { ErrorCategory } from '../../utils/errorCategories'
 
 import { CoauthorService } from './coauthor'

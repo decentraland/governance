@@ -69,8 +69,8 @@ function Banner({
                 size="small"
                 onClick={onButtonClick}
                 href={buttonHref}
-                target="_blank"
-                as={Link}
+                target={buttonHref ? '_blank' : undefined}
+                as={buttonHref ? Link : undefined}
               >
                 {buttonLabel}
               </Button>

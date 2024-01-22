@@ -39,10 +39,11 @@ import {
   GeneralUpdateSection,
   UpdateAttributes,
   UpdateResponse,
+  UpdateSubmissionDetails,
 } from '../entities/Updates/types'
 import { AccountType } from '../entities/User/types'
 import { Participation, VoteByAddress, VotedProposal, Voter, VotesForProposals } from '../entities/Votes/types'
-import { EventWithAuthor } from '../shared/types/events'
+import { ActivityTickerEvent } from '../shared/types/events'
 import { NewsletterSubscriptionResult } from '../shared/types/newsletter'
 import { PushNotification } from '../shared/types/notifications'
 import Time from '../utils/date/Time'
@@ -268,29 +269,23 @@ export class Governance extends API {
   }
 
   async createProposalUpdate(
-    update: {
-      proposal_id: string
-    } & GeneralUpdateSection &
-      FinancialUpdateSection
+    proposal_id: string,
+    update: UpdateSubmissionDetails & GeneralUpdateSection & FinancialUpdateSection
   ) {
     const result = await this.fetch<ApiResponse<UpdateAttributes>>(
-      `/proposals/${update.proposal_id}/update`,
+      `/proposals/${proposal_id}/update`,
       this.options().method('POST').authorization({ sign: true }).json(update)
     )
     return result.data
   }
 
   async updateProposalUpdate(
-    update: {
-      id: string
-      proposal_id: string
-    } & GeneralUpdateSection &
-      FinancialUpdateSection
+    proposal_id: string,
+    update: UpdateSubmissionDetails & GeneralUpdateSection & FinancialUpdateSection
   ) {
-    const { proposal_id, ...updateData } = update
     const result = await this.fetch<ApiResponse<UpdateAttributes>>(
       `/proposals/${proposal_id}/update`,
-      this.options().method('PATCH').authorization({ sign: true }).json(updateData)
+      this.options().method('PATCH').authorization({ sign: true }).json(update)
     )
     return result.data
   }
@@ -759,7 +754,7 @@ export class Governance extends API {
   }
 
   async getLatestEvents() {
-    const response = await this.fetch<ApiResponse<EventWithAuthor[]>>(`/events`, this.options().method('GET'))
+    const response = await this.fetch<ApiResponse<ActivityTickerEvent[]>>(`/events`, this.options().method('GET'))
     return response.data
   }
 

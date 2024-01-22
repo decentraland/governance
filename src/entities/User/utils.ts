@@ -1,8 +1,8 @@
 import { hashMessage, recoverAddress } from 'ethers/lib/utils'
 import capitalize from 'lodash/capitalize'
 
-import { DiscoursePostInTopic } from '../../clients/Discourse'
 import { FORUM_URL } from '../../constants'
+import { DiscoursePostInTopic } from '../../shared/types/discourse'
 import { clientEnv } from '../../utils/clientEnv'
 import { ProposalComment, ProposalCommentsInDiscourse } from '../Proposal/types'
 import { isSameAddress } from '../Snapshot/utils'

@@ -4,7 +4,6 @@ import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { Vote } from '../../../../entities/Votes/types'
 import useFormatMessage from '../../../../hooks/useFormatMessage'
-import Link from '../../../Common/Typography/Link'
 
 interface ChangeVoteButtonProps {
   vote: Vote | null
@@ -50,12 +49,12 @@ export function ChangeVoteButton({
   return (
     <>
       {showChangeVoteButton && (
-        <Button className={'VotingSectionFooter__Button'} as={Link} basic onClick={changeVote}>
+        <Button className={'VotingSectionFooter__Button'} basic onClick={changeVote}>
           {t('page.proposal_detail.vote_change')}
         </Button>
       )}
       {showOverruleVoteButton && (
-        <Button className={'VotingSectionFooter__Button'} as={Link} basic onClick={changeVote}>
+        <Button className={'VotingSectionFooter__Button'} basic onClick={changeVote}>
           {t('page.proposal_detail.vote_overrule')}
         </Button>
       )}
