@@ -38,6 +38,7 @@ import update from './back/routes/update'
 import users from './back/routes/user'
 import vestings from './back/routes/vestings'
 import score from './back/routes/votes'
+import webhooks from './back/routes/webhooks'
 import { DiscordService } from './back/services/discord'
 import { EventsService } from './back/services/events'
 import { updateGovernanceBudgets } from './entities/Budget/jobs'
@@ -101,6 +102,7 @@ app.use('/api', [
   project,
   newsletter,
   notification,
+  webhooks,
   handle(async () => {
     throw new RequestError('NotFound', RequestError.NotFound)
   }),

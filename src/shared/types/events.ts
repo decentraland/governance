@@ -7,22 +7,36 @@ export type CommonEventAttributes = {
 }
 
 type VoteEventData = { choice: string } & ProposalEventData
+
 type ProposalEventData = { proposal_id: string; proposal_title: string }
+
 type UpdateCreatedEventData = {
   update_id: string
 } & ProposalEventData
+
 type DiscourseEventData = {
   discourse_event_id: string
   discourse_event: string
   discourse_post: DiscourseWebhookPost
 }
+
 export type CommentedEventData = DiscourseEventData & ProposalEventData
+
+type DelegationSetData = {
+  new_delegate: string | null
+}
+
+type DelegationClearData = {
+  removed_delegate: string | null
+}
 
 export enum EventType {
   Voted = 'voted',
   ProposalCreated = 'proposal_created',
   UpdateCreated = 'update_created',
   Commented = 'commented',
+  DelegationSet = 'delegation_set',
+  DelegationClear = 'delegation_clear',
 }
 
 export type VotedEvent = {
@@ -45,7 +59,23 @@ export type CommentedEvent = {
   event_data: CommentedEventData
 } & CommonEventAttributes
 
-export type Event = VotedEvent | ProposalCreatedEvent | UpdateCreatedEvent | CommentedEvent
+export type DelegationSetEvent = {
+  event_type: EventType.DelegationSet
+  event_data: DelegationSetData
+} & CommonEventAttributes
+
+export type DelegationClearEvent = {
+  event_type: EventType.DelegationClear
+  event_data: DelegationClearData
+} & CommonEventAttributes
+
+export type Event =
+  | VotedEvent
+  | ProposalCreatedEvent
+  | UpdateCreatedEvent
+  | CommentedEvent
+  | DelegationSetEvent
+  | DelegationClearEvent
 
 export type ActivityTickerEvent = {
   author?: string

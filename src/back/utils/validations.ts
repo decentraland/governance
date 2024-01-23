@@ -5,7 +5,7 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
 import { SnapshotProposal } from '../../clients/SnapshotTypes'
-import { DISCOURSE_WEBHOOK_SECRET } from '../../constants'
+import { ALCHEMY_WEBHOOK_SECRET, DISCOURSE_WEBHOOK_SECRET } from '../../constants'
 import isDebugAddress from '../../entities/Debug/isDebugAddress'
 import { ErrorService } from '../../services/ErrorService'
 import { ErrorCategory } from '../../utils/errorCategories'
@@ -118,6 +118,22 @@ export function validateDiscourseWebhookSignature(req: Request) {
 
     if (providedSignature !== calculatedSignature) {
       ErrorService.report('Invalid discourse webhook signature', { category: ErrorCategory.Discourse })
+      throw new RequestError('Invalid signature', RequestError.Forbidden)
+    }
+  } else {
+    throw new RequestError('Endpoint disabled', RequestError.NotImplemented)
+  }
+}
+
+export function validateAlchemyWebhookSignature(req: Request) {
+  const signature = req.get('x-alchemy-signature')
+  const body = JSON.stringify(req.body)
+  if (ALCHEMY_WEBHOOK_SECRET && signature && signature.length > 0) {
+    const hmac = crypto.createHmac('sha256', ALCHEMY_WEBHOOK_SECRET)
+    hmac.update(body, 'utf8')
+    const digest = hmac.digest('hex')
+    if (signature !== digest) {
+      ErrorService.report('Invalid alchemy webhook signature', { category: ErrorCategory.Webhook })
       throw new RequestError('Invalid signature', RequestError.Forbidden)
     }
   } else {

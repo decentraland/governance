@@ -13,6 +13,8 @@ import { DiscourseWebhookPost } from '../../shared/types/discourse'
 import {
   ActivityTickerEvent,
   CommentedEvent,
+  DelegationClearEvent,
+  DelegationSetEvent,
   EventType,
   ProposalCreatedEvent,
   UpdateCreatedEvent,
@@ -118,6 +120,36 @@ export class EventsService {
       await EventModel.create(votedEvent)
     } catch (error) {
       this.reportEventError(error as Error, EventType.Voted, { address, proposal_id, proposal_title, choice })
+    }
+  }
+
+  static async delegationSet(new_delegate: string, delegator: string) {
+    try {
+      const delegationSetEvent: DelegationSetEvent = {
+        id: crypto.randomUUID(),
+        address: delegator,
+        event_type: EventType.DelegationSet,
+        event_data: { new_delegate },
+        created_at: new Date(),
+      }
+      await EventModel.create(delegationSetEvent)
+    } catch (error) {
+      this.reportEventError(error as Error, EventType.DelegationSet, { delegator, new_delegate })
+    }
+  }
+
+  static async delegationClear(removed_delegate: string, delegator: string) {
+    try {
+      const delegationSetEvent: DelegationClearEvent = {
+        id: crypto.randomUUID(),
+        address: delegator,
+        event_type: EventType.DelegationClear,
+        event_data: { removed_delegate },
+        created_at: new Date(),
+      }
+      await EventModel.create(delegationSetEvent)
+    } catch (error) {
+      this.reportEventError(error as Error, EventType.DelegationClear, { delegator, removed_delegate })
     }
   }
 

@@ -947,7 +947,9 @@
         "no_activity": "No activity",
         "proposal_created": "**{author}** published a new Proposal **{title}**",
         "update_created": "**{author}** published an Update on the Project **{title}**",
-        "commented": "New comment on **{title}**"
+        "commented": "New comment on **{title}**",
+        "delegation_set": "**{delegator}** delegated to **{new_delegate}**",
+        "delegation_clear": "**{delegator}** removed delegation from **{removed_delegate}**"
       }
     },
     "proposal_view": {
