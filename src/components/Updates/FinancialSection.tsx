@@ -219,7 +219,7 @@ function FinancialSection({
     >
       <ContentSection>
         <FinancialCardsSection
-          latestUpdate={latestUpdate}
+          lastUpdate={latestUpdate}
           releases={releases}
           disclosedFunds={sum(financial_records.map(({ amount }) => amount))}
         />

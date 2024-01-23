@@ -25,14 +25,14 @@ import './UpdateMarkdownView.css'
 interface Props {
   update: Omit<UpdateAttributes, 'id' | 'proposal_id'>
   author?: string
-  latestUpdate?: Omit<UpdateAttributes, 'id' | 'proposal_id'>
+  lastUpdate?: Omit<UpdateAttributes, 'id' | 'proposal_id'>
   proposal: ProposalAttributes | null
   className?: string
 }
 
 const UPDATE_DETAIL_MARKDOWN_STYLES = { p: 'UpdateDetail__ContentText', li: 'UpdateDetail__ListItem' }
 
-const UpdateMarkdownView = ({ update, author, latestUpdate, proposal, className }: Props) => {
+const UpdateMarkdownView = ({ update, author, lastUpdate, proposal, className }: Props) => {
   const t = useFormatMessage()
   const { vestingData } = useVestingContractData(proposal?.vesting_addresses || [])
 
@@ -64,7 +64,8 @@ const UpdateMarkdownView = ({ update, author, latestUpdate, proposal, className 
           <ArticleSectionHeading>{t('page.update_detail.financial_details')}</ArticleSectionHeading>
           <div className="UpdateDetail__FinancialContainer">
             <FinancialCardsSection
-              latestUpdate={latestUpdate}
+              currentUpdate={update}
+              lastUpdate={lastUpdate}
               releases={releases}
               disclosedFunds={sum(financial_records.map(({ amount }) => amount))}
             />
