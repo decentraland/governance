@@ -148,7 +148,7 @@ export default function SubmitBanName() {
             disabled={formDisabled}
             error={!!errors.description}
             message={
-              errors.description?.message +
+              (errors.description?.message || '') +
               ' ' +
               t('page.submit.character_counter', {
                 current: watch('description').length,

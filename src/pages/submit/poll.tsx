@@ -240,7 +240,7 @@ export default function SubmitPoll() {
             disabled={submissionVpNotMet || formDisabled}
             error={!!errors.description}
             message={
-              errors.description?.message +
+              (errors.description?.message || '') +
               ' ' +
               t('page.submit.character_counter', {
                 current: watch('description').length,
