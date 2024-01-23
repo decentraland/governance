@@ -1,6 +1,8 @@
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 import { JsonRpcProvider, getNetwork } from '@ethersproject/providers'
 
+import { getEnvironmentChainId } from '../helpers'
+
 export default class RpcService {
   static async getBlockNumber(): Promise<number> {
     try {
@@ -14,10 +16,8 @@ export default class RpcService {
     }
   }
 
-  public static getRpcUrl() {
-    /* WARNING: USING ONLY MAINNET */
-    const network = getNetwork(Number(ChainId.ETHEREUM_MAINNET))
-    // const network = getNetwork(Number(getEnvironmentChainId()))
+  public static getRpcUrl(chainId?: ChainId) {
+    const network = getNetwork(Number(chainId) || Number(getEnvironmentChainId()))
 
     const networkName = network.name === 'homestead' ? 'mainnet' : network.name
     return process.env.RPC_PROVIDER_URL + networkName

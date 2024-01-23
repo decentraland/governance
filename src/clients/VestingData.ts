@@ -1,3 +1,4 @@
+import { ChainId } from '@dcl/schemas'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { ethers } from 'ethers'
 
@@ -113,7 +114,7 @@ export async function getVestingContractData(
     throw new Error('Unable to fetch vesting data for empty contract address')
   }
 
-  const provider = new ethers.providers.JsonRpcProvider(RpcService.getRpcUrl())
+  const provider = new ethers.providers.JsonRpcProvider(RpcService.getRpcUrl(ChainId.ETHEREUM_MAINNET))
 
   try {
     const datesPromise = getVestingContractDataV2(vestingAddress, provider)
