@@ -143,7 +143,7 @@ export default function SubmitDraftProposal() {
             loading={isLoadingVpDistribution}
             disabled={submissionVpNotMet || formDisabled}
             message={
-              errors.title?.message +
+              (errors.title?.message || '') +
               ' ' +
               t('page.submit.character_counter', {
                 current: watch('title').length,
@@ -175,7 +175,7 @@ export default function SubmitDraftProposal() {
             disabled={submissionVpNotMet || formDisabled}
             error={!!errors.summary}
             message={
-              errors.summary?.message +
+              (errors.summary?.message || '') +
               ' ' +
               t('page.submit.character_counter', {
                 current: watch('summary').length,
@@ -207,7 +207,7 @@ export default function SubmitDraftProposal() {
             disabled={submissionVpNotMet || formDisabled}
             error={!!errors.abstract}
             message={
-              errors.abstract?.message +
+              (errors.abstract?.message || '') +
               ' ' +
               t('page.submit.character_counter', {
                 current: watch('abstract').length,
@@ -239,7 +239,7 @@ export default function SubmitDraftProposal() {
             disabled={submissionVpNotMet || formDisabled}
             error={!!errors.motivation}
             message={
-              errors.motivation?.message +
+              (errors.motivation?.message || '') +
               ' ' +
               t('page.submit.character_counter', {
                 current: watch('motivation').length,
@@ -271,7 +271,7 @@ export default function SubmitDraftProposal() {
             disabled={submissionVpNotMet || formDisabled}
             error={!!errors.specification}
             message={
-              errors.specification?.message +
+              (errors.specification?.message || '') +
               ' ' +
               t('page.submit.character_counter', {
                 current: watch('specification').length,
@@ -303,7 +303,7 @@ export default function SubmitDraftProposal() {
             disabled={submissionVpNotMet || formDisabled}
             error={!!errors.conclusion}
             message={
-              errors.conclusion?.message +
+              (errors.conclusion?.message || '') +
               ' ' +
               t('page.submit.character_counter', {
                 current: watch('conclusion').length,

@@ -127,7 +127,7 @@ export default function SubmitPitchProposal() {
             loading={isLoadingVpDistribution}
             disabled={submissionVpNotMet || formDisabled}
             message={
-              errors.initiative_name?.message +
+              (errors.initiative_name?.message || '') +
               ' ' +
               t('page.submit.character_counter', {
                 current: watch('initiative_name').length,
@@ -160,7 +160,7 @@ export default function SubmitPitchProposal() {
             disabled={submissionVpNotMet || formDisabled}
             error={!!errors.problem_statement}
             message={
-              errors.problem_statement?.message +
+              (errors.problem_statement?.message || '') +
               ' ' +
               t('page.submit.character_counter', {
                 current: watch('problem_statement').length,
@@ -192,7 +192,7 @@ export default function SubmitPitchProposal() {
             disabled={submissionVpNotMet || formDisabled}
             error={!!errors.proposed_solution}
             message={
-              errors.proposed_solution?.message +
+              (errors.proposed_solution?.message || '') +
               ' ' +
               t('page.submit.character_counter', {
                 current: watch('proposed_solution').length,
@@ -224,7 +224,7 @@ export default function SubmitPitchProposal() {
             disabled={submissionVpNotMet || formDisabled}
             error={!!errors.target_audience}
             message={
-              errors.target_audience?.message +
+              (errors.target_audience?.message || '') +
               ' ' +
               t('page.submit.character_counter', {
                 current: watch('target_audience').length,
@@ -256,7 +256,7 @@ export default function SubmitPitchProposal() {
             disabled={submissionVpNotMet || formDisabled}
             error={!!errors.relevance}
             message={
-              errors.relevance?.message +
+              (errors.relevance?.message || '') +
               ' ' +
               t('page.submit.character_counter', {
                 current: watch('relevance').length,
