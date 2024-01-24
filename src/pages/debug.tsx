@@ -11,6 +11,7 @@ import BudgetsUpdate from '../components/Debug/BudgetsUpdate'
 import EnvStatus from '../components/Debug/EnvStatus'
 import ErrorReporting from '../components/Debug/ErrorReporting'
 import HttpStatus from '../components/Debug/HttpStatus'
+import InvalidateCache from '../components/Debug/InvalidateCache'
 import Notifications from '../components/Debug/Notifications'
 import Snapshot from '../components/Debug/Snapshot'
 import TriggerFunction from '../components/Debug/TriggerFunction'
@@ -64,6 +65,7 @@ export default function DebugPage() {
         )}
         {isDebugActive && (
           <>
+            <InvalidateCache className="DebugPage__Section" />
             <ErrorReporting className="DebugPage__Section" />
             <HttpStatus className="DebugPage__Section" />
             <EnvStatus className="DebugPage__Section" />

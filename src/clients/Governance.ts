@@ -456,6 +456,14 @@ export class Governance extends API {
     return response.data
   }
 
+  async invalidateCache(key: string) {
+    const response = await this.fetch<ApiResponse<number>>(
+      `/debug/invalidate-cache`,
+      this.options().method('DELETE').authorization({ sign: true }).json({ key })
+    )
+    return response.data
+  }
+
   async checkUrlTitle(url: string) {
     const response = await this.fetch<ApiResponse<{ title?: string }>>(
       `/url-title`,
