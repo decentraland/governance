@@ -25,7 +25,10 @@ import { ProposalInCreation } from './ProposalService'
 import { VestingService } from './VestingService'
 
 function newestVestingFirst(a: TransparencyVesting, b: TransparencyVesting): number {
-  return new Date(b.vesting_start_at).getTime() - new Date(a.vesting_start_at).getTime()
+  const startDateSort = new Date(b.vesting_start_at).getTime() - new Date(a.vesting_start_at).getTime()
+  const finishDateSort = new Date(b.vesting_finish_at).getTime() - new Date(a.vesting_finish_at).getTime()
+
+  return startDateSort !== 0 ? startDateSort : finishDateSort
 }
 
 export class ProjectService {
