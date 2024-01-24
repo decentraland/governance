@@ -3,57 +3,24 @@ import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { Governance } from '../../clients/Governance'
 import { ONE_MINUTE_MS } from '../../hooks/constants'
-import useFormatMessage, { FormatMessageFunction } from '../../hooks/useFormatMessage'
-import { ActivityTickerEvent, CommentedEventData, EventType } from '../../shared/types/events'
-import Time from '../../utils/date/Time'
+import useFormatMessage from '../../hooks/useFormatMessage'
+import { ActivityTickerEvent, EventType } from '../../shared/types/events'
 import locations from '../../utils/locations'
 import Avatar from '../Common/Avatar'
 import Empty from '../Common/Empty'
 import Heading from '../Common/Typography/Heading'
 import Link from '../Common/Typography/Link'
-import Markdown from '../Common/Typography/Markdown'
-import Text from '../Common/Typography/Text'
+import DelegationEvent from '../Events/DelegationEvent'
+import ProposalRelatedEvent from '../Events/ProposalRelatedEvent'
 import CircledComment from '../Icon/CircledComment'
 
 import './ActivityTicker.css'
 
-const getLink = (event: ActivityTickerEvent) => {
-  if (
-    event.event_type === EventType.ProposalCreated ||
-    event.event_type === EventType.Voted ||
-    event.event_type === EventType.Commented
-  ) {
-    return locations.proposal(event.event_data.proposal_id)
-  }
-
-  if (event.event_type === EventType.UpdateCreated) {
-    return locations.update(event.event_data.update_id)
-  }
-}
-
-function getEventText(event: ActivityTickerEvent, t: FormatMessageFunction): string {
-  if (
-    event.event_type === EventType.ProposalCreated ||
-    event.event_type === EventType.UpdateCreated ||
-    event.event_type === EventType.Voted ||
-    event.event_type === EventType.Commented
-  ) {
-    return t(`page.home.activity_ticker.${event.event_type}`, {
-      author: event.author || (event.event_data as CommentedEventData).discourse_post.username,
-      title: event.event_data.proposal_title.trim(),
-    })
+function getActivityTickerEvent(event: ActivityTickerEvent) {
+  if (event.event_type === EventType.DelegationClear || event.event_type === EventType.DelegationSet) {
+    return <DelegationEvent event={event} />
   } else {
-    if (event.event_type === EventType.DelegationSet) {
-      return t(`page.home.activity_ticker.${event.event_type}`, {
-        delegator: event.author,
-        new_delegate: event.event_data.new_delegate,
-      })
-    } else {
-      return t(`page.home.activity_ticker.${event.event_type}`, {
-        delegator: event.author,
-        removed_delegate: event.event_data.removed_delegate,
-      })
-    }
+    return <ProposalRelatedEvent event={event} />
   }
 }
 
@@ -101,19 +68,7 @@ export default function ActivityTicker() {
                         <CircledComment />
                       </div>
                     )}
-                    <div>
-                      <Link href={getLink(item)}>
-                        <Markdown
-                          className="ActivityTicker__ListItemMarkdown"
-                          componentsClassNames={{ strong: 'ActivityTicker__ListItemMarkdownTitle' }}
-                        >
-                          {getEventText(item, t)}
-                        </Markdown>
-                        <Text className="ActivityTicker__ListItemDate" size="xs">
-                          {Time(item.created_at).fromNow()}
-                        </Text>
-                      </Link>
-                    </div>
+                    <div>{getActivityTickerEvent(item)}</div>
                   </div>
                 )
               })}

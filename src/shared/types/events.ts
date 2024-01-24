@@ -8,7 +8,7 @@ export type CommonEventAttributes = {
 
 type VoteEventData = { choice: string } & ProposalEventData
 
-type ProposalEventData = { proposal_id: string; proposal_title: string }
+export type ProposalEventData = { proposal_id: string; proposal_title: string }
 
 type UpdateCreatedEventData = {
   update_id: string
