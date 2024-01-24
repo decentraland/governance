@@ -4,8 +4,6 @@ import { navigate as gatsbyNavigate } from 'gatsby'
 import { NewGrantCategory } from '../entities/Grant/types'
 import { CatalystType, HiringType, PoiType, ProposalStatus, ProposalType } from '../entities/Proposal/types'
 
-const GATSBY_BASE_URL = process.env.GATSBY_BASE_URL || '/'
-
 export function toProposalListPage(value: string | number | null | undefined): number {
   if (typeof value === 'number') {
     return Math.max(1, value)
@@ -37,13 +35,12 @@ export type ProposalsModal = {
   modal: 'new'
 }
 
-function url(base = GATSBY_BASE_URL, query: Record<string, string> | URLSearchParams = {}, path = '') {
+function url(path = '', query: Record<string, string> | URLSearchParams = {}) {
   const params = new URLSearchParams(query).toString()
-  const formattedBase = base.endsWith('/') ? base.slice(0, -1) : base
   const formattedPath = path !== '' && !path.startsWith('/') ? '/' + path : path
   const formattedParams = path.includes('?') ? '&' + params : '?' + params
 
-  return formattedBase + formattedPath + (params ? formattedParams : '')
+  return formattedPath + (params ? formattedParams : '')
 }
 
 export default {
