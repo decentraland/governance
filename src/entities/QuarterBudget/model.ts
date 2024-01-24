@@ -211,7 +211,7 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
   }
 
   static parseBudgets(results: BudgetQueryResult[]): Budget[] {
-    const budgetsByQuarter = new Map<string, BudgetQueryResult[]>()
+    const budgetsByQuarter = new Map<BudgetQueryResult['id'], BudgetQueryResult[]>()
 
     results.forEach((result) => {
       const { id } = result
