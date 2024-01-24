@@ -12,18 +12,18 @@ import './FinancialCardsSection.css'
 
 interface Props {
   releases?: VestingLog[]
-  lastUpdate?: Omit<UpdateAttributes, 'id' | 'proposal_id'>
+  previousUpdate?: Omit<UpdateAttributes, 'id' | 'proposal_id'>
   currentUpdate?: Omit<UpdateAttributes, 'id' | 'proposal_id'>
   disclosedFunds: number
 }
 
-function FinancialCardsSection({ releases, lastUpdate, currentUpdate, disclosedFunds }: Props) {
+function FinancialCardsSection({ releases, previousUpdate, currentUpdate, disclosedFunds }: Props) {
   const t = useFormatMessage()
   const {
     value: releasedFundsValue,
     txAmount,
     latestTimestamp,
-  } = getFundsReleasedSinceLatestUpdate(lastUpdate, releases, currentUpdate?.completion_date)
+  } = getFundsReleasedSinceLatestUpdate(previousUpdate, releases, currentUpdate?.completion_date)
   const undisclosedFunds = disclosedFunds <= releasedFundsValue ? releasedFundsValue - disclosedFunds : 0
   const { formatNumber } = useIntl()
   return (

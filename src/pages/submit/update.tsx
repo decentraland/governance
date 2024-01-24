@@ -264,7 +264,9 @@ export default function Update({ isEdit }: Props) {
         </>
       )}
       <Container>
-        {isPreviewMode && <UpdateMarkdownView update={previewUpdate} proposal={proposal} lastUpdate={latestUpdate} />}
+        {isPreviewMode && (
+          <UpdateMarkdownView update={previewUpdate} proposal={proposal} previousUpdate={latestUpdate} />
+        )}
       </Container>
       <Container className="ContentLayout__Container">
         <ContentSection className="UpdateSubmit__Actions">

@@ -48,7 +48,7 @@ export default function UpdateDetail() {
   const index = getUpdateNumber(publicUpdates, updateId)
   const proposalHref = locations.proposal(update.proposal_id)
 
-  const lastUpdate = getLatestUpdate(publicUpdates || [], Time(update.completion_date).toDate())
+  const previousUpdate = getLatestUpdate(publicUpdates || [], Time(update.completion_date).toDate())
 
   return (
     <>
@@ -66,7 +66,12 @@ export default function UpdateDetail() {
         </ContentSection>
         {update && (
           <>
-            <UpdateMarkdownView update={update} author={update.author} lastUpdate={lastUpdate} proposal={proposal} />
+            <UpdateMarkdownView
+              update={update}
+              author={update.author}
+              previousUpdate={previousUpdate}
+              proposal={proposal}
+            />
             <UpdateComments update={update} />
           </>
         )}
