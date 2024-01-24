@@ -371,11 +371,7 @@ export default function ProposalPage() {
   if (isLoadingProposal) {
     return (
       <>
-        <Head
-          title={title}
-          description={description}
-          links={[{ rel: 'canonical', href: locations.proposal(proposal?.id || '') }]}
-        />
+        <Head title={title} description={description} />
         <Navigation activeTab={NavigationTab.Proposals} />
         <LoadingView withNavigation />
       </>
