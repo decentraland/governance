@@ -2,7 +2,9 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
+import { ErrorService } from '../../services/ErrorService'
 import { AlchemyBlock } from '../../shared/types/events'
+import { ErrorCategory } from '../../utils/errorCategories'
 import { EventsService } from '../services/events'
 import { validateAlchemyWebhookSignature } from '../utils/validations'
 
@@ -11,8 +13,12 @@ export default routes((route) => {
 })
 
 async function delegationUpdate(req: Request) {
-  validateAlchemyWebhookSignature(req)
+  try {
+    validateAlchemyWebhookSignature(req)
 
-  const block = req.body.event.data.block as AlchemyBlock
-  return await EventsService.delegationUpdate(block)
+    const block = req.body.event.data.block as AlchemyBlock
+    return await EventsService.delegationUpdate(block)
+  } catch (error) {
+    ErrorService.report('Something failed on delegation update webhook', { error, category: ErrorCategory.Webhook })
+  }
 }
