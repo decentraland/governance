@@ -1,7 +1,10 @@
 import crypto from 'crypto'
+import { ethers } from 'ethers'
+import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
+import { SNAPSHOT_SPACE } from '../../entities/Snapshot/constants'
 import UserModel from '../../entities/User/model'
 import { UserAttributes } from '../../entities/User/types'
 import { DISCOURSE_USER } from '../../entities/User/utils'
@@ -12,6 +15,7 @@ import { ErrorService } from '../../services/ErrorService'
 import { DiscourseWebhookPost } from '../../shared/types/discourse'
 import {
   ActivityTickerEvent,
+  AlchemyBlock,
   CommentedEvent,
   DelegationClearEvent,
   DelegationSetEvent,
@@ -24,6 +28,9 @@ import { DEFAULT_AVATAR_IMAGE, getProfiles } from '../../utils/Catalyst'
 import { DclProfile } from '../../utils/Catalyst/types'
 import { ErrorCategory } from '../../utils/errorCategories'
 import EventModel from '../models/Event'
+
+const CLEAR_DELEGATE_SIGNATURE_HASH = '0x9c4f00c4291262731946e308dc2979a56bd22cce8f95906b975065e96cd5a064'
+const SET_DELEGATE_SIGNATURE_HASH = '0xa9a7fd460f56bddb880a465a9c3e9730389c70bc53108148f16d55a87a6c468e'
 
 export class EventsService {
   static async getLatest(): Promise<ActivityTickerEvent[]> {
@@ -123,13 +130,13 @@ export class EventsService {
     }
   }
 
-  static async delegationSet(new_delegate: string, delegator: string) {
+  static async delegationSet(new_delegate: string, delegator: string, transaction_hash: string) {
     try {
       const delegationSetEvent: DelegationSetEvent = {
         id: crypto.randomUUID(),
         address: delegator,
         event_type: EventType.DelegationSet,
-        event_data: { new_delegate },
+        event_data: { new_delegate, transaction_hash },
         created_at: new Date(),
       }
       await EventModel.create(delegationSetEvent)
@@ -138,13 +145,13 @@ export class EventsService {
     }
   }
 
-  static async delegationClear(removed_delegate: string, delegator: string) {
+  static async delegationClear(removed_delegate: string, delegator: string, transaction_hash: string) {
     try {
       const delegationSetEvent: DelegationClearEvent = {
         id: crypto.randomUUID(),
         address: delegator,
         event_type: EventType.DelegationClear,
-        event_data: { removed_delegate },
+        event_data: { removed_delegate, transaction_hash },
         created_at: new Date(),
       }
       await EventModel.create(delegationSetEvent)
@@ -246,5 +253,42 @@ export class EventsService {
     } catch (e) {
       ErrorService.report('Unexpected error while creating comment event', { error: e, category: ErrorCategory.Events })
     }
+  }
+
+  static async delegationUpdate(block: AlchemyBlock) {
+    if (block.logs.length === 0) {
+      return
+    }
+
+    if (block.logs.length > 0) {
+      const txHash = block.logs[0].transaction.hash
+      if (await EventModel.isDelegationTxRegistered(txHash)) {
+        return
+      }
+      for (const log of block.logs) {
+        const spaceId = ethers.utils.parseBytes32String(log.topics[2])
+        if (spaceId !== SNAPSHOT_SPACE) {
+          continue
+        }
+        const methodSignature = log.topics[0]
+        const delegator = this.decodeTopicToAddress(log.topics[1])
+        const delegate = this.decodeTopicToAddress(log.topics[3])
+
+        if (methodSignature === CLEAR_DELEGATE_SIGNATURE_HASH) {
+          await this.delegationClear(delegate, delegator, txHash)
+        }
+        if (methodSignature === SET_DELEGATE_SIGNATURE_HASH) {
+          await this.delegationSet(delegate, delegator, txHash)
+        }
+      }
+    }
+  }
+
+  private static decodeTopicToAddress(topic: string) {
+    const address = '0x' + topic.slice(topic.length - 40)
+    if (!isEthereumAddress(address)) {
+      throw new Error('Decoded string is not a valid address')
+    }
+    return address
   }
 }

@@ -24,10 +24,12 @@ export type CommentedEventData = DiscourseEventData & ProposalEventData
 
 type DelegationSetData = {
   new_delegate: string | null
+  transaction_hash: string
 }
 
 type DelegationClearData = {
   removed_delegate: string | null
+  transaction_hash: string
 }
 
 export enum EventType {
@@ -81,3 +83,26 @@ export type ActivityTickerEvent = {
   author?: string
   avatar?: string
 } & Event
+
+export type AlchemyBlock = {
+  hash: string
+  number: number
+  timestamp: number
+  logs: AlchemyLog[]
+}
+
+export type AlchemyLog = {
+  index: number
+  topics: string[]
+  data: string
+  transaction: AlchemyTransaction
+}
+
+export type AlchemyTransaction = {
+  hash: string
+  nonce: number
+  index: number
+  from: {
+    address: string
+  }
+}
