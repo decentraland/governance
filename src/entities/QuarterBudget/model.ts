@@ -91,6 +91,20 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
     }
   }
 
+  static async getAllBudgets(): Promise<Budget[]> {
+    const query = SQL`
+        SELECT qb.id, qcb.category, qcb.total as category_total, qcb.allocated as category_allocated, qb.start_at, qb.finish_at, qb.total
+        FROM ${table(QuarterCategoryBudgetModel)} as qcb 
+        INNER JOIN ${table(QuarterBudgetModel)} as qb
+        ON qcb.quarter_budget_id = qb.id
+    `
+    const result = await this.namedQuery('get_all_budgets', query)
+    if (!result || result.length === 0) {
+      return []
+    }
+    return this.parseBudgets(result)
+  }
+
   static async getCurrentBudget(): Promise<Budget | null> {
     const now = new Date()
     const query = SQL`
@@ -194,5 +208,26 @@ export default class QuarterBudgetModel extends Model<QuarterBudgetAttributes> {
       allocated: Object.values(categoriesResults).reduce((acc, category) => acc + category.allocated, 0),
       categories: categoriesResults,
     }
+  }
+
+  static parseBudgets(results: BudgetQueryResult[]): Budget[] {
+    const budgetsByQuarter = new Map<BudgetQueryResult['id'], BudgetQueryResult[]>()
+
+    results.forEach((result) => {
+      const { id } = result
+      const group = budgetsByQuarter.get(id)
+
+      if (group) {
+        group.push(result)
+      } else {
+        budgetsByQuarter.set(id, [result])
+      }
+    })
+
+    const budgets: Budget[] = []
+
+    budgetsByQuarter.forEach((resultsForQuarter) => budgets.push(this.parseBudget(resultsForQuarter)))
+
+    return budgets.sort((a, b) => a.start_at.getTime() - b.start_at.getTime())
   }
 }

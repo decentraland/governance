@@ -116,13 +116,20 @@ export class BudgetService {
       logger.error(`Unable to fetch transparency budgets. ${JSON.stringify(e)}`)
       console.error('Unable to fetch transparency budgets', e)
     }
-    console.log('Transparency budgets: ', JSON.stringify(budgets))
     return budgets
   }
 
   public static async updateGovernanceBudgets(): Promise<QuarterBudgetAttributes[]> {
     const transparencyBudgets = await this.getTransparencyBudgets()
     return await QuarterBudgetModel.createNewBudgets(transparencyBudgets)
+  }
+
+  static async getAllBudgets(): Promise<Budget[]> {
+    const budgets = await QuarterBudgetModel.getAllBudgets()
+    if (budgets.length === 0) {
+      ErrorService.report('Could not find any budgets', { category: ErrorCategory.Budget })
+    }
+    return budgets
   }
 
   static async getCurrentBudget(): Promise<Budget> {
