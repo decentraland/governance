@@ -85,7 +85,7 @@ const UpdateMarkdownView = ({ update, author, previousUpdate, proposal, classNam
               </Text>
               {author && <Username address={author} linked />}
             </div>
-            {update.updated_at !== update.created_at && (
+            {update.updated_at !== update.completion_date && (
               <div className="UpdateDetail__CompletionDate">
                 <DateTooltip date={update.updated_at}>
                   <Markdown
