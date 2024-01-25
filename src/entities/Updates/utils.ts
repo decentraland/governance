@@ -99,8 +99,9 @@ export function getUpdateNumber(publicUpdates?: UpdateAttributes[] | null, updat
 
 export function getFundsReleasedSinceLatestUpdate(
   latestUpdate: Omit<UpdateAttributes, 'id' | 'proposal_id'> | undefined,
-  releases: VestingLog[] | undefined
-): { value: number; txAmount: number } {
+  releases: VestingLog[] | undefined,
+  beforeDate?: Date
+): { value: number; txAmount: number; latestTimestamp?: string } {
   if (!releases || releases.length === 0) return { value: 0, txAmount: 0 }
 
   if (!latestUpdate) {
@@ -109,10 +110,14 @@ export function getFundsReleasedSinceLatestUpdate(
 
   const { completion_date } = latestUpdate
 
-  const releasesSinceLatestUpdate = releases.filter(({ timestamp }) => Time(timestamp).isAfter(completion_date))
+  const releasesSinceLatestUpdate = releases.filter(
+    ({ timestamp }) =>
+      Time(timestamp).isAfter(completion_date) && (beforeDate ? Time(timestamp).isBefore(beforeDate) : true)
+  )
   return {
     value: sum(releasesSinceLatestUpdate.map(({ amount }) => amount || 0)),
     txAmount: releasesSinceLatestUpdate.length,
+    latestTimestamp: releasesSinceLatestUpdate[0]?.timestamp,
   }
 }
 
@@ -124,14 +129,15 @@ export function getReleases(vestings: VestingInfo[]) {
 }
 
 export function getLatestUpdate(publicUpdates: UpdateAttributes[], beforeDate?: Date): UpdateAttributes | undefined {
-  if (!publicUpdates?.length) return undefined
+  if (publicUpdates.length === 0) return undefined
 
-  return publicUpdates
+  const filteredUpdates = publicUpdates
     .filter((update) => update.status === UpdateStatus.Done || update.status === UpdateStatus.Late)
-    .reduce((latest, current) => {
-      if (!latest || !latest.completion_date || (beforeDate && Time(latest.completion_date).isAfter(beforeDate))) {
-        return current
-      }
-      return Time(latest.completion_date).isAfter(current.completion_date) ? latest : current
-    }, undefined as UpdateAttributes | undefined)
+    .sort((a, b) => (Time(a.completion_date).isAfter(b.completion_date) ? -1 : 0))
+
+  if (filteredUpdates.length === 0) return undefined
+
+  if (!beforeDate) return filteredUpdates[0]
+
+  return filteredUpdates.find((update) => Time(update.completion_date).isBefore(beforeDate))
 }

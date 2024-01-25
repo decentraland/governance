@@ -12,14 +12,18 @@ import './FinancialCardsSection.css'
 
 interface Props {
   releases?: VestingLog[]
-  latestUpdate?: Omit<UpdateAttributes, 'id' | 'proposal_id'>
+  previousUpdate?: Omit<UpdateAttributes, 'id' | 'proposal_id'>
+  currentUpdate?: Omit<UpdateAttributes, 'id' | 'proposal_id'>
   disclosedFunds: number
 }
 
-function FinancialCardsSection({ releases, latestUpdate, disclosedFunds }: Props) {
+function FinancialCardsSection({ releases, previousUpdate, currentUpdate, disclosedFunds }: Props) {
   const t = useFormatMessage()
-  const { value: releasedFundsValue, txAmount } = getFundsReleasedSinceLatestUpdate(latestUpdate, releases)
-  const latestRelease = releases?.[0]
+  const {
+    value: releasedFundsValue,
+    txAmount,
+    latestTimestamp,
+  } = getFundsReleasedSinceLatestUpdate(previousUpdate, releases, currentUpdate?.completion_date)
   const undisclosedFunds = disclosedFunds <= releasedFundsValue ? releasedFundsValue - disclosedFunds : 0
   const { formatNumber } = useIntl()
   return (
@@ -29,10 +33,10 @@ function FinancialCardsSection({ releases, latestUpdate, disclosedFunds }: Props
         title={t('page.proposal_update.funds_released_label')}
         value={releasedFundsValue}
         subtitle={
-          latestRelease
+          latestTimestamp
             ? t('page.proposal_update.funds_released_sublabel', {
                 amount: txAmount,
-                time: formatDate(new Date(latestRelease.timestamp)),
+                time: formatDate(new Date(latestTimestamp)),
               })
             : undefined
         }
