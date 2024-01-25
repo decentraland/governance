@@ -3,11 +3,12 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 
 import { DEBUG_ADDRESSES } from '../../constants'
+import CacheService from '../../services/CacheService'
 import { ErrorService } from '../../services/ErrorService'
 import { giveAndRevokeLandOwnerBadges, giveTopVoterBadges, runQueuedAirdropJobs } from '../jobs/BadgeAirdrop'
 import { validateDebugAddress } from '../utils/validations'
 
-const FUNCTIONS_MAP: { [key: string]: () => Promise<any> } = {
+const FUNCTIONS_MAP: { [key: string]: () => Promise<unknown> } = {
   runQueuedAirdropJobs,
   giveAndRevokeLandOwnerBadges,
   giveTopVoterBadges,
@@ -21,6 +22,7 @@ export default routes((router) => {
   )
   router.post('/debug/report-error', withAuth, handleAPI(reportClientError))
   router.post('/debug/trigger', withAuth, handleAPI(triggerFunction))
+  router.delete('/debug/invalidate-cache', withAuth, handleAPI(invalidateCache))
 })
 
 function reportClientError(req: WithAuth): void {
@@ -43,4 +45,15 @@ async function triggerFunction(req: WithAuth) {
   } else {
     throw new Error(`Function '${functionName}' not found.`)
   }
+}
+function invalidateCache(req: WithAuth) {
+  const user = req.auth!
+  validateDebugAddress(user)
+
+  const { key } = req.body
+  if (!key || typeof key !== 'string') {
+    throw new Error(`Invalid cache key: ${key}`)
+  }
+
+  return CacheService.remove(key)
 }

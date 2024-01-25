@@ -18,12 +18,16 @@ class CacheService {
     return CacheService.instance
   }
 
-  set<T>(key: string, data: T, ttlSeconds?: number) {
+  public set<T>(key: string, data: T, ttlSeconds?: number) {
     ttlSeconds ? this.cache.set(key, data, ttlSeconds) : this.cache.set(key, data)
   }
 
   public get<T>(key: string): T | undefined {
     return this.cache.get<T>(key)
+  }
+
+  public remove(key: string) {
+    return this.cache.del(key)
   }
 
   public flush() {
