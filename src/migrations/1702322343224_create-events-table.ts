@@ -5,7 +5,7 @@ import { EventType } from "../shared/types/events"
 
 export const shorthands: ColumnDefinitions | undefined = undefined
 
-const EVENT_TYPE = 'event_type'
+export const EVENT_TYPE = 'event_type'
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
   pgm.createType(EVENT_TYPE, Object.values(EventType))

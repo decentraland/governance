@@ -1,7 +1,7 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import { SQL, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 
-import { Event } from '../../shared/types/events'
+import { Event, EventType } from '../../shared/types/events'
 
 const LATEST_EVENTS_LIMIT = 50
 
@@ -35,9 +35,23 @@ export default class EventModel extends Model<Event> {
     const query = SQL`
       SELECT count(*)
       FROM ${table(EventModel)}
-      WHERE (event_data ->>'discourse_event_id') = ${discourseEventId}
+      WHERE
+          event_type = ${EventType.Commented} AND 
+          (event_data ->>'discourse_event_id') = ${discourseEventId}
     `
     const count = (await this.namedQuery<{ count: string }>('find_discourse_event_id', query))[0].count
+    return Number(count) !== 0
+  }
+
+  static async isDelegationTxRegistered(txHash: string) {
+    const query = SQL`
+      SELECT count(*)
+      FROM ${table(EventModel)}
+      WHERE
+          event_type IN (${EventType.DelegationSet}, ${EventType.DelegationClear}) AND 
+          (event_data ->>'transaction_hash') = ${txHash}
+    `
+    const count = (await this.namedQuery<{ count: string }>('find_delegation_tx', query))[0].count
     return Number(count) !== 0
   }
 }

@@ -4,30 +4,40 @@ import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Governance } from '../../clients/Governance'
 import { ONE_MINUTE_MS } from '../../hooks/constants'
 import useFormatMessage from '../../hooks/useFormatMessage'
-import { ActivityTickerEvent, CommentedEventData, EventType } from '../../shared/types/events'
-import Time from '../../utils/date/Time'
+import { ActivityTickerEvent, EventType } from '../../shared/types/events'
 import locations from '../../utils/locations'
 import Avatar from '../Common/Avatar'
 import Empty from '../Common/Empty'
 import Heading from '../Common/Typography/Heading'
 import Link from '../Common/Typography/Link'
-import Markdown from '../Common/Typography/Markdown'
-import Text from '../Common/Typography/Text'
+import DelegationEvent from '../Events/DelegationEvent'
+import ProposalRelatedEvent from '../Events/ProposalRelatedEvent'
 import CircledComment from '../Icon/CircledComment'
 
 import './ActivityTicker.css'
 
-const getLink = (event: ActivityTickerEvent) => {
-  if (
-    event.event_type === EventType.ProposalCreated ||
-    event.event_type === EventType.Voted ||
-    event.event_type === EventType.Commented
-  ) {
-    return locations.proposal(event.event_data.proposal_id)
+function getActivityTickerEvent(event: ActivityTickerEvent) {
+  if (event.event_type === EventType.DelegationClear || event.event_type === EventType.DelegationSet) {
+    return <DelegationEvent event={event} />
+  } else {
+    return <ProposalRelatedEvent event={event} />
   }
+}
 
-  if (event.event_type === EventType.UpdateCreated) {
-    return locations.update(event.event_data.update_id)
+function getActivityTickerImage(item: ActivityTickerEvent) {
+  if (!!item.address && item.event_type !== EventType.Commented) {
+    return (
+      <Link href={locations.profile({ address: item.address })}>
+        <Avatar size="xs" avatar={item.avatar} address={item.address} />
+      </Link>
+    )
+  }
+  if (item.event_type === EventType.Commented) {
+    return (
+      <div>
+        <CircledComment />
+      </div>
+    )
   }
 }
 
@@ -62,36 +72,14 @@ export default function ActivityTicker() {
           )}
           {events && events.length > 0 && (
             <div className="ActivityTicker__List">
-              {events.map((item) => (
-                <div key={item.id} className="ActivityTicker__ListItem">
-                  {!!item.address && item.event_type !== EventType.Commented && (
-                    <Link href={locations.profile({ address: item.address })}>
-                      <Avatar size="xs" avatar={item.avatar} address={item.address} />
-                    </Link>
-                  )}
-                  {item.event_type === EventType.Commented && (
-                    <div>
-                      <CircledComment />
-                    </div>
-                  )}
-                  <div>
-                    <Link href={getLink(item)}>
-                      <Markdown
-                        className="ActivityTicker__ListItemMarkdown"
-                        componentsClassNames={{ strong: 'ActivityTicker__ListItemMarkdownTitle' }}
-                      >
-                        {t(`page.home.activity_ticker.${item.event_type}`, {
-                          author: item.author || (item.event_data as CommentedEventData).discourse_post.username,
-                          title: item.event_data.proposal_title.trim(),
-                        })}
-                      </Markdown>
-                      <Text className="ActivityTicker__ListItemDate" size="xs">
-                        {Time(item.created_at).fromNow()}
-                      </Text>
-                    </Link>
+              {events.map((item) => {
+                return (
+                  <div key={item.id} className="ActivityTicker__ListItem">
+                    {getActivityTickerImage(item)}
+                    <div>{getActivityTickerEvent(item)}</div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           )}
         </>
