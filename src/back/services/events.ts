@@ -15,7 +15,7 @@ import { ErrorService } from '../../services/ErrorService'
 import { DiscourseWebhookPost } from '../../shared/types/discourse'
 import {
   ActivityTickerEvent,
-  AlchemyBlock,
+  AlchemyLog,
   CommentedEvent,
   DelegationClearEvent,
   DelegationSetEvent,
@@ -147,14 +147,14 @@ export class EventsService {
 
   static async delegationClear(removed_delegate: string, delegator: string, transaction_hash: string) {
     try {
-      const delegationSetEvent: DelegationClearEvent = {
+      const delegationClearEvent: DelegationClearEvent = {
         id: crypto.randomUUID(),
         address: delegator,
         event_type: EventType.DelegationClear,
         event_data: { removed_delegate, transaction_hash },
         created_at: new Date(),
       }
-      await EventModel.create(delegationSetEvent)
+      await EventModel.create(delegationClearEvent)
     } catch (error) {
       this.reportEventError(error as Error, EventType.DelegationClear, { delegator, removed_delegate })
     }
@@ -255,31 +255,25 @@ export class EventsService {
     }
   }
 
-  static async delegationUpdate(block: AlchemyBlock) {
-    if (block.logs.length === 0) {
+  static async delegationUpdate(alchemyLogs: AlchemyLog[]) {
+    const txHash = alchemyLogs[0].transaction.hash
+    if (await EventModel.isDelegationTxRegistered(txHash)) {
       return
     }
-
-    if (block.logs.length > 0) {
-      const txHash = block.logs[0].transaction.hash
-      if (await EventModel.isDelegationTxRegistered(txHash)) {
-        return
+    for (const log of alchemyLogs) {
+      const spaceId = ethers.utils.parseBytes32String(log.topics[2])
+      if (spaceId !== SNAPSHOT_SPACE) {
+        continue
       }
-      for (const log of block.logs) {
-        const spaceId = ethers.utils.parseBytes32String(log.topics[2])
-        if (spaceId !== SNAPSHOT_SPACE) {
-          continue
-        }
-        const methodSignature = log.topics[0]
-        const delegator = this.decodeTopicToAddress(log.topics[1])
-        const delegate = this.decodeTopicToAddress(log.topics[3])
+      const methodSignature = log.topics[0]
+      const delegator = this.decodeTopicToAddress(log.topics[1])
+      const delegate = this.decodeTopicToAddress(log.topics[3])
 
-        if (methodSignature === CLEAR_DELEGATE_SIGNATURE_HASH) {
-          await this.delegationClear(delegate, delegator, txHash)
-        }
-        if (methodSignature === SET_DELEGATE_SIGNATURE_HASH) {
-          await this.delegationSet(delegate, delegator, txHash)
-        }
+      if (methodSignature === CLEAR_DELEGATE_SIGNATURE_HASH) {
+        await this.delegationClear(delegate, delegator, txHash)
+      }
+      if (methodSignature === SET_DELEGATE_SIGNATURE_HASH) {
+        await this.delegationSet(delegate, delegator, txHash)
       }
     }
   }

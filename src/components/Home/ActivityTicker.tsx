@@ -24,6 +24,23 @@ function getActivityTickerEvent(event: ActivityTickerEvent) {
   }
 }
 
+function getActivityTickerImage(item: ActivityTickerEvent) {
+  if (!!item.address && item.event_type !== EventType.Commented) {
+    return (
+      <Link href={locations.profile({ address: item.address })}>
+        <Avatar size="xs" avatar={item.avatar} address={item.address} />
+      </Link>
+    )
+  }
+  if (item.event_type === EventType.Commented) {
+    return (
+      <div>
+        <CircledComment />
+      </div>
+    )
+  }
+}
+
 export default function ActivityTicker() {
   const t = useFormatMessage()
   const { data: events, isLoading } = useQuery({
@@ -58,16 +75,7 @@ export default function ActivityTicker() {
               {events.map((item) => {
                 return (
                   <div key={item.id} className="ActivityTicker__ListItem">
-                    {!!item.address && item.event_type !== EventType.Commented && (
-                      <Link href={locations.profile({ address: item.address })}>
-                        <Avatar size="xs" avatar={item.avatar} address={item.address} />
-                      </Link>
-                    )}
-                    {item.event_type === EventType.Commented && (
-                      <div>
-                        <CircledComment />
-                      </div>
-                    )}
+                    {getActivityTickerImage(item)}
                     <div>{getActivityTickerEvent(item)}</div>
                   </div>
                 )
