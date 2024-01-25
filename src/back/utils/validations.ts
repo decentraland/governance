@@ -5,7 +5,7 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
 import { SnapshotProposal } from '../../clients/SnapshotTypes'
-import { ALCHEMY_WEBHOOK_SECRET, DISCOURSE_WEBHOOK_SECRET } from '../../constants'
+import { ALCHEMY_DELEGATIONS_WEBHOOK_SECRET, DISCOURSE_WEBHOOK_SECRET } from '../../constants'
 import isDebugAddress from '../../entities/Debug/isDebugAddress'
 import { ErrorService } from '../../services/ErrorService'
 import { ErrorCategory } from '../../utils/errorCategories'
@@ -126,11 +126,11 @@ export function validateDiscourseWebhookSignature(req: Request) {
 
 export function validateAlchemyWebhookSignature(req: Request) {
   const signature = req.get('x-alchemy-signature')
-  if (!ALCHEMY_WEBHOOK_SECRET || ALCHEMY_WEBHOOK_SECRET.length === 0) {
+  if (!ALCHEMY_DELEGATIONS_WEBHOOK_SECRET || ALCHEMY_DELEGATIONS_WEBHOOK_SECRET.length === 0) {
     throw new RequestError('Endpoint disabled', RequestError.NotImplemented)
   }
   const body = JSON.stringify(req.body)
-  const hmac = crypto.createHmac('sha256', ALCHEMY_WEBHOOK_SECRET)
+  const hmac = crypto.createHmac('sha256', ALCHEMY_DELEGATIONS_WEBHOOK_SECRET)
   hmac.update(body, 'utf8')
   const digest = hmac.digest('hex')
   if (signature !== digest) {
