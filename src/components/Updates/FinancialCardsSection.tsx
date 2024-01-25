@@ -31,7 +31,7 @@ function FinancialCardsSection({ releases, previousUpdate, currentUpdate, disclo
       <FinancialCard
         type="income"
         title={t('page.proposal_update.funds_released_label')}
-        value={releasedFundsValue}
+        value={formatNumber(releasedFundsValue, CURRENCY_FORMAT_OPTIONS)}
         subtitle={
           latestTimestamp
             ? t('page.proposal_update.funds_released_sublabel', {
@@ -44,7 +44,7 @@ function FinancialCardsSection({ releases, previousUpdate, currentUpdate, disclo
       <FinancialCard
         type="outcome"
         title={t('page.proposal_update.funds_disclosed_label')}
-        value={disclosedFunds}
+        value={formatNumber(disclosedFunds, CURRENCY_FORMAT_OPTIONS)}
         subtitle={t('page.proposal_update.funds_disclosed_sublabel', {
           funds: formatNumber(undisclosedFunds, CURRENCY_FORMAT_OPTIONS),
         })}

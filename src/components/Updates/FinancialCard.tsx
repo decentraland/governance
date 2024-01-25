@@ -1,9 +1,9 @@
-import { useIntl } from 'react-intl'
-
 import { Card } from 'decentraland-ui/dist/components/Card/Card'
 
-import { CURRENCY_FORMAT_OPTIONS } from '../../helpers'
+import Link from '../Common/Typography/Link'
 import Text from '../Common/Typography/Text'
+import Helper from '../Helper/Helper'
+import ChevronRight from '../Icon/ChevronRight'
 import IncomeArrow from '../Icon/IncomeArrow'
 import OutcomeArrow from '../Icon/OutcomeArrow'
 
@@ -15,30 +15,35 @@ enum FinancialCardType {
 }
 
 interface Props {
-  type: `${FinancialCardType}`
+  type?: `${FinancialCardType}`
   title: string
-  value: number
+  value: string
   subtitle?: string
+  href?: string
+  helper?: string
 }
 
-function FinancialCard({ type, title, value, subtitle }: Props) {
-  const { formatNumber } = useIntl()
+function FinancialCard({ type, title, value, subtitle, href, helper }: Props) {
   return (
-    <Card className="FinancialCard">
-      <Text className="FinancialCard__Text" size="sm">
-        {title}
-      </Text>
-      <div className="FinancialCard__Value">
-        {type === FinancialCardType.Income ? <IncomeArrow /> : <OutcomeArrow />}
-        <Text className="FinancialCard__Text" size="xl">
-          {formatNumber(value, CURRENCY_FORMAT_OPTIONS)}
+    <Card className="FinancialCard" as={href ? Link : undefined} href={href}>
+      <div>
+        <Text className="FinancialCard__Text FinancialCard__Text--upper" size="sm">
+          {title}
+          {helper && <Helper text={helper} size="16" position="bottom center" />}
         </Text>
+        <div className="FinancialCard__Value">
+          {type && (type === FinancialCardType.Income ? <IncomeArrow /> : <OutcomeArrow />)}
+          <Text className="FinancialCard__Text" size="xl">
+            {value}
+          </Text>
+        </div>
+        {subtitle && (
+          <Text className="FinancialCard__Text" size="sm" weight="semi-bold">
+            {subtitle}
+          </Text>
+        )}
       </div>
-      {subtitle && (
-        <Text className="FinancialCard__Text" size="sm" weight="semi-bold">
-          {subtitle}
-        </Text>
-      )}
+      {href && <ChevronRight />}
     </Card>
   )
 }
