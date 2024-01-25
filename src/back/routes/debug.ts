@@ -26,8 +26,6 @@ export default routes((router) => {
 })
 
 function reportClientError(req: WithAuth): void {
-  const user = req.auth!
-  validateDebugAddress(user)
   ErrorService.report(req.body.message, { frontend: true, ...req.body.extraInfo })
 }
 
