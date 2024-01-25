@@ -7,22 +7,20 @@ export const shorthands: ColumnDefinitions | undefined = undefined
 
 const EVENT_TYPE_OLD = 'event_type_old'
 
-export async function up(pgm: MigrationBuilder): Promise<void> {
+function resetEventType(pgm: MigrationBuilder) {
   pgm.renameType(EVENT_TYPE, EVENT_TYPE_OLD)
   pgm.createType(EVENT_TYPE, Object.values(EventType))
-  pgm.alterColumn(EventModel.tableName, 'event_type', {
+  pgm.alterColumn(EventModel.tableName, EVENT_TYPE, {
     type: EVENT_TYPE,
-    using: `"event_type"::text::${EVENT_TYPE}`
+    using: `"${EVENT_TYPE}"::text::${EVENT_TYPE}`
   })
   pgm.dropType(EVENT_TYPE_OLD)
 }
 
+export async function up(pgm: MigrationBuilder): Promise<void> {
+  resetEventType(pgm)
+}
+
 export async function down(pgm: MigrationBuilder): Promise<void> {
-  pgm.renameType(EVENT_TYPE, EVENT_TYPE_OLD)
-  pgm.createType(EVENT_TYPE, Object.values(EventType))
-  pgm.alterColumn(EventModel.tableName, 'event_type', {
-    type: EVENT_TYPE,
-    using: `"event_type"::text::${EVENT_TYPE}`
-  })
-  pgm.dropType(EVENT_TYPE_OLD)
+  resetEventType(pgm)
 }
