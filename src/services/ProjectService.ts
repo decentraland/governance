@@ -1,7 +1,8 @@
+import { TransparencyVesting } from '../clients/Transparency'
 import UnpublishedBidModel from '../entities/Bid/model'
 import { GrantTier } from '../entities/Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../entities/Grant/constants'
-import { GrantRequest } from '../entities/Grant/types'
+import { GrantRequest, ProjectStatus } from '../entities/Grant/types'
 import ProposalModel from '../entities/Proposal/model'
 import {
   GrantProposalConfiguration,
@@ -23,6 +24,13 @@ import { BudgetService } from './BudgetService'
 import { ProposalInCreation } from './ProposalService'
 import { VestingService } from './VestingService'
 
+function newestVestingFirst(a: TransparencyVesting, b: TransparencyVesting): number {
+  const startDateSort = new Date(b.vesting_start_at).getTime() - new Date(a.vesting_start_at).getTime()
+  const finishDateSort = new Date(b.vesting_finish_at).getTime() - new Date(a.vesting_finish_at).getTime()
+
+  return startDateSort !== 0 ? startDateSort : finishDateSort
+}
+
 export class ProjectService {
   public static async getProjects() {
     const data = await ProposalModel.getProjectList()
@@ -32,15 +40,13 @@ export class ProjectService {
     await Promise.all(
       data.map(async (proposal: ProposalAttributes) => {
         try {
-          const proposalVestings = vestings
-            .filter((item) => item.proposal_id === proposal.id)
-            .sort(function compare(a, b) {
-              const dateA = new Date(a.vesting_start_at).getTime()
-              const dateB = new Date(b.vesting_start_at).getTime()
-              return dateB - dateA
-            })
-          const latestVesting = proposalVestings[0]
-          const project = createProject(proposal, latestVesting)
+          const proposalVestings = vestings.filter((item) => item.proposal_id === proposal.id).sort(newestVestingFirst)
+          const prioritizedVesting: TransparencyVesting | undefined =
+            proposalVestings.find(
+              (vesting) =>
+                vesting.vesting_status === ProjectStatus.InProgress || vesting.vesting_status === ProjectStatus.Finished
+            ) || proposalVestings[0]
+          const project = createProject(proposal, prioritizedVesting)
 
           try {
             const update = await this.getProjectLatestUpdate(project.id)
