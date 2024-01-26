@@ -222,14 +222,17 @@ export class EventsService {
         discourse_topic_id: discoursePost.topic_id,
       })
       if (!commentedProposal) {
-        ErrorService.report('Unable to find commented proposal', {
-          event_data: {
-            discourse_event_id: discourseEventId,
-            discourse_event: discourseEvent,
-            discourse_post: discoursePost,
-          },
-          category: ErrorCategory.Events,
-        })
+        const isAnUpdateTopic = /Update #\d+/.test(discoursePost.topic_title)
+        if (!isAnUpdateTopic) {
+          ErrorService.report('Unable to find commented proposal', {
+            event_data: {
+              discourse_event_id: discourseEventId,
+              discourse_event: discourseEvent,
+              discourse_post: discoursePost,
+            },
+            category: ErrorCategory.Events,
+          })
+        }
         return
       }
 
