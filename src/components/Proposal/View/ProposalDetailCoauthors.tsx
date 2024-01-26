@@ -26,7 +26,7 @@ const helperConfig: Record<CoauthorStatus, CoauthorHelperConfiguration> = {
   },
   [CoauthorStatus.APPROVED]: {
     helperKey: 'page.proposal_detail.details_coauthor_accepted_helper',
-    icon: <Check size="10" />,
+    icon: <Check size={10} />,
   },
   [CoauthorStatus.REJECTED]: {
     helperKey: 'page.proposal_detail.details_coauthor_rejected_helper',

@@ -32,7 +32,7 @@ export default function FilterMenu({ children }: Props) {
         <div className="FilterMenu__SidebarContent">
           {children}
           <div className="FilterMenu__CloseButton" onClick={handleClose}>
-            <Cross color="var(--black-800)" size="14" />
+            <Cross color="var(--black-800)" size={14} />
           </div>
         </div>
       </div>

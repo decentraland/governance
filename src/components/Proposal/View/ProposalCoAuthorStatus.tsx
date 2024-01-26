@@ -36,7 +36,7 @@ const labelConfig: Record<CoauthorStatus, CoauthorLabelConfiguration> = {
   [CoauthorStatus.APPROVED]: {
     title: 'page.coauthor_detail.accepted_label',
     description: 'page.coauthor_detail.accepted_description',
-    icon: <Check size="9px" />,
+    icon: <Check size={9} />,
   },
   [CoauthorStatus.REJECTED]: {
     title: 'page.coauthor_detail.rejected_label',

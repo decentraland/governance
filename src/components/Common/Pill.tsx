@@ -45,7 +45,7 @@ export default function Pill({
   return (
     <div className={classNames(`Pill`, `Pill--${size}`, `Pill--${style}-${color}`, className)}>
       {icon}
-      <span>{children}</span>
+      <span className="Pill__Content">{children}</span>
     </div>
   )
 }
