@@ -103,7 +103,7 @@ export default function SearchInputMobile() {
           />
           {open && (
             <button className="SearchInputMobile__CloseButton" onClick={handleClear}>
-              <Cross className="SearchInputMobile__CloseIcon" size="14" color="var(--black-800)" />
+              <Cross className="SearchInputMobile__CloseIcon" size={14} color="var(--black-800)" />
             </button>
           )}
         </div>

@@ -19,6 +19,7 @@ import VestingProgress from '../Projects/ProjectCard/VestingProgress'
 import ProjectPill from '../Projects/ProjectPill'
 
 import './GrantBeneficiaryItem.css'
+import VestingPill from './VestingPill'
 
 interface Props {
   grant: Project
@@ -42,22 +43,25 @@ function GrantBeneficiaryItem({ grant }: Props) {
             <Username className="GrantBeneficiaryItem__Avatar" address={user} variant="avatar" size="md" />
             <div>
               <h3 className="GrantBeneficiaryItem__Title">{title}</h3>
-              {formattedEnactedDate && (
-                <Markdown
-                  className="GrantBeneficiaryItem__Details"
-                  size="xs"
-                  componentsClassNames={{
-                    p: 'GrantBeneficiaryItem__DetailsText',
-                    strong: 'GrantBeneficiaryItem__DetailsStrongText',
-                  }}
-                >
-                  {t('page.profile.grants.item_description', {
-                    time: formattedEnactedDate,
-                    amount: intl.formatNumber(grant.size),
-                    token: isInMana ? 'USD' : token,
-                  })}
-                </Markdown>
-              )}
+              <div className="GrantBeneficiaryItem__DetailsContainer">
+                {grant.status && <VestingPill status={grant.status} />}
+                {formattedEnactedDate && (
+                  <Markdown
+                    className="GrantBeneficiaryItem__Details"
+                    size="xs"
+                    componentsClassNames={{
+                      p: 'GrantBeneficiaryItem__DetailsText',
+                      strong: 'GrantBeneficiaryItem__DetailsStrongText',
+                    }}
+                  >
+                    {t('page.profile.grants.item_description', {
+                      time: formattedEnactedDate,
+                      amount: intl.formatNumber(grant.size),
+                      token: isInMana ? 'USD' : token,
+                    })}
+                  </Markdown>
+                )}
+              </div>
             </div>
           </div>
           <div className="GrantBeneficiaryItem__CategorySection">

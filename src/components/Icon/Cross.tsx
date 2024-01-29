@@ -1,12 +1,12 @@
 function Cross({
   className,
   onClick,
-  size = '10',
+  size = 10,
   color = 'var(--black-600)',
 }: {
   className?: string
   onClick?: () => void
-  size?: string
+  size?: number
   color?: string
 }) {
   return (

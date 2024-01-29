@@ -1,4 +1,4 @@
-function Check({ size = '20', color = 'var(--green-800)' }: { size?: string; color?: string }) {
+function Check({ size = 20, color = 'var(--green-800)' }: { size?: number; color?: string }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} fill="none" viewBox="0 0 20 20">
       <path

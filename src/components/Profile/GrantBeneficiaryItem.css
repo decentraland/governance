@@ -39,6 +39,12 @@ a.ui.card:hover,
   color: var(--black-600);
 }
 
+.GrantBeneficiaryItem__DetailsContainer {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
 .GrantBeneficiaryItem__Avatar {
   display: none;
 }
