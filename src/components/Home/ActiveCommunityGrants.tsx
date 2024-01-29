@@ -35,7 +35,7 @@ const ActiveCommunityGrants = () => {
         <Grid columns={2} stackable className="ActiveCommunityGrants__Container">
           {grants &&
             grants.slice(0, GRANTS_TO_SHOW).map((project) => (
-              <Grid.Column key={`HoverableCard__${project.id}`}>
+              <Grid.Column key={`CommunityGrant__${project.id}`}>
                 <ProjectCard project={project} />
               </Grid.Column>
             ))}
