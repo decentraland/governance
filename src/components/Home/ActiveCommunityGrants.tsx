@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import classNames from 'classnames'
+import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { ProposalType } from '../../entities/Proposal/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
@@ -32,17 +32,14 @@ const ActiveCommunityGrants = () => {
         </div>
       )}
       {!isLoadingProjects && (
-        <div className="ActiveCommunityGrants__Container">
+        <Grid columns={2} stackable className="ActiveCommunityGrants__Container">
           {grants &&
-            grants.slice(0, GRANTS_TO_SHOW).map((project, index) => (
-              <div
-                className={classNames('HoverableCardContainer', index <= 1 && 'HoverableCardContainer__FirstRow')}
-                key={`HoverableCard__${project.id}`}
-              >
-                <ProjectCard project={project} hoverable />
-              </div>
+            grants.slice(0, GRANTS_TO_SHOW).map((project) => (
+              <Grid.Column key={`HoverableCard__${project.id}`}>
+                <ProjectCard project={project} />
+              </Grid.Column>
             ))}
-        </div>
+        </Grid>
       )}
       <FullWidthButton href={locations.projects()}>
         {t('page.home.active_community_grants.view_all_grants')}
