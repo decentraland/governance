@@ -11,6 +11,7 @@
   background: var(--white-900);
   transition: var(--card-transition);
   min-width: 0;
+  height: 100%;
 }
 
 .CurrentProjectsList__Container .ProjectCard i.icon.chevron.right:before {
