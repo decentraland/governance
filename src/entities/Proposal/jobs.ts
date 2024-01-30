@@ -172,12 +172,21 @@ async function prepareProposalsAndBudgetsUpdates(
   }
 }
 
+function logFinishableProposals(finishableProposals: ProposalAttributes[]) {
+  if (isProdEnv()) {
+    logger.log(`Finishable proposals:`)
+    finishableProposals.forEach((proposal, index) => {
+      console.log(`${index}: ${proposal.id} - ${proposal.title}`)
+    })
+  }
+}
+
 export async function finishProposal() {
   logger.log(`Running finish proposal job...`)
 
   try {
     const finishableProposals = await ProposalModel.getFinishableProposals()
-    logger.log(`Finishable proposals`, finishableProposals)
+    logFinishableProposals(finishableProposals)
     if (finishableProposals.length === 0) {
       return
     }
