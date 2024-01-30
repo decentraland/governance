@@ -64,6 +64,10 @@ export class EventsService {
     }
   }
 
+  public static async getAll() {
+    return await EventModel.getAll()
+  }
+
   private static async getAddressesToProfiles(addresses: string[]) {
     try {
       const profiles = await this.getProfilesWithCache(addresses)

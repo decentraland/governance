@@ -10,6 +10,16 @@ export default class EventModel extends Model<Event> {
   static withTimestamps = false
   static primaryKey = 'id'
 
+  static async getAll(): Promise<Event[]> {
+    const query = SQL`
+      SELECT *
+      FROM ${table(EventModel)}
+      ORDER BY created_at DESC
+    `
+    const result = await this.namedQuery<Event>('get_all_events', query)
+    return result
+  }
+
   static async getLatest(): Promise<Event[]> {
     const query = SQL`
       SELECT *
