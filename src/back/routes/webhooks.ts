@@ -17,12 +17,11 @@ export default routes((route) => {
 async function delegationUpdate(req: Request) {
   try {
     validateAlchemyWebhookSignature(req)
-
     const block = req.body.event.data.block as AlchemyBlock
-    if (block.logs.length === 0) {
+    if (block.transactions.length === 0) {
       return
     }
-    return await EventsService.delegationUpdate(block.logs)
+    return await EventsService.delegationUpdate(block)
   } catch (error) {
     ErrorService.report('Something failed on delegation update webhook', { error, category: ErrorCategory.Webhook })
   }

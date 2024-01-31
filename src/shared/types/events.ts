@@ -88,7 +88,7 @@ export type AlchemyBlock = {
   hash: string
   number: number
   timestamp: number
-  logs: AlchemyLog[]
+  transactions: AlchemyTransaction[]
 }
 
 export type AlchemyLog = {
@@ -105,4 +105,5 @@ export type AlchemyTransaction = {
   from: {
     address: string
   }
+  logs: AlchemyLog[]
 }
