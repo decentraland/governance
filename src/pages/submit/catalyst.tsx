@@ -1,5 +1,4 @@
-import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
-
+import NotFound from '../../components/Layout/NotFound'
 import ProposalSubmitCatalystPage from '../../components/Proposal/Submit/ProposalSubmitCatalystPage'
 import { toCatalystType } from '../../entities/Proposal/utils'
 import useURLSearchParams from '../../hooks/useURLSearchParams'
