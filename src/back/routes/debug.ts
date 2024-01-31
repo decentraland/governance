@@ -46,6 +46,7 @@ async function triggerFunction(req: WithAuth) {
     throw new Error(`Function '${functionName}' not found.`)
   }
 }
+
 function invalidateCache(req: WithAuth) {
   const user = req.auth!
   validateDebugAddress(user)
