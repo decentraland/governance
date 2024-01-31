@@ -15,6 +15,7 @@ import { ErrorService } from '../../services/ErrorService'
 import { DiscourseWebhookPost } from '../../shared/types/discourse'
 import {
   ActivityTickerEvent,
+  AlchemyBlock,
   AlchemyLog,
   CommentedEvent,
   DelegationClearEvent,
@@ -134,14 +135,14 @@ export class EventsService {
     }
   }
 
-  static async delegationSet(new_delegate: string, delegator: string, transaction_hash: string) {
+  static async delegationSet(new_delegate: string, delegator: string, transaction_hash: string, created_at: Date) {
     try {
       const delegationSetEvent: DelegationSetEvent = {
         id: crypto.randomUUID(),
         address: delegator,
         event_type: EventType.DelegationSet,
         event_data: { new_delegate, transaction_hash },
-        created_at: new Date(),
+        created_at,
       }
       await EventModel.create(delegationSetEvent)
     } catch (error) {
@@ -149,14 +150,19 @@ export class EventsService {
     }
   }
 
-  static async delegationClear(removed_delegate: string, delegator: string, transaction_hash: string) {
+  static async delegationClear(
+    removed_delegate: string,
+    delegator: string,
+    transaction_hash: string,
+    created_at: Date
+  ) {
     try {
       const delegationClearEvent: DelegationClearEvent = {
         id: crypto.randomUUID(),
         address: delegator,
         event_type: EventType.DelegationClear,
         event_data: { removed_delegate, transaction_hash },
-        created_at: new Date(),
+        created_at,
       }
       await EventModel.create(delegationClearEvent)
     } catch (error) {
@@ -262,27 +268,43 @@ export class EventsService {
     }
   }
 
-  static async delegationUpdate(alchemyLogs: AlchemyLog[]) {
-    const txHash = alchemyLogs[0].transaction.hash
-    if (await EventModel.isDelegationTxRegistered(txHash)) {
-      return
-    }
-    for (const log of alchemyLogs) {
-      const spaceId = ethers.utils.parseBytes32String(log.topics[2])
-      if (spaceId !== SNAPSHOT_SPACE) {
+  static async delegationUpdate(block: AlchemyBlock) {
+    const blockTimestamp = block.timestamp
+    for (const transaction of block.transactions) {
+      const txHash = transaction.hash
+      if (await EventModel.isDelegationTxRegistered(txHash)) {
         continue
       }
-      const methodSignature = log.topics[0]
-      const delegator = this.decodeTopicToAddress(log.topics[1])
-      const delegate = this.decodeTopicToAddress(log.topics[3])
-
-      if (methodSignature === CLEAR_DELEGATE_SIGNATURE_HASH) {
-        await this.delegationClear(delegate, delegator, txHash)
-      }
-      if (methodSignature === SET_DELEGATE_SIGNATURE_HASH) {
-        await this.delegationSet(delegate, delegator, txHash)
+      for (const log of transaction.logs) {
+        const { spaceId, methodSignature, delegator, delegate } = this.decodeLogTopics(log.topics)
+        if (spaceId !== SNAPSHOT_SPACE) {
+          continue
+        }
+        const creationDate = this.getContractEventDate(blockTimestamp, log)
+        if (methodSignature === CLEAR_DELEGATE_SIGNATURE_HASH) {
+          await this.delegationClear(delegate, delegator, txHash, creationDate)
+        }
+        if (methodSignature === SET_DELEGATE_SIGNATURE_HASH) {
+          await this.delegationSet(delegate, delegator, txHash, creationDate)
+        }
       }
     }
+  }
+
+  private static decodeLogTopics(topics: string[]) {
+    const methodSignature = topics[0]
+    const delegator = this.decodeTopicToAddress(topics[1])
+    const spaceId = ethers.utils.parseBytes32String(topics[2])
+    const delegate = this.decodeTopicToAddress(topics[3])
+    return { spaceId, methodSignature, delegator, delegate }
+  }
+
+  /**
+   * This is so each log event is chronologically ordered, and has the closest date
+   * to the block timestamp
+   */
+  private static getContractEventDate(blockTimestamp: number, log: AlchemyLog) {
+    return new Date(blockTimestamp * 1000 + log.index)
   }
 
   private static decodeTopicToAddress(topic: string) {
