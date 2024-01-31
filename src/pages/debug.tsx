@@ -13,6 +13,7 @@ import ErrorReporting from '../components/Debug/ErrorReporting'
 import HttpStatus from '../components/Debug/HttpStatus'
 import InvalidateCache from '../components/Debug/InvalidateCache'
 import Notifications from '../components/Debug/Notifications'
+import QueryData from '../components/Debug/QueryData'
 import Snapshot from '../components/Debug/Snapshot'
 import TriggerFunction from '../components/Debug/TriggerFunction'
 import LogIn from '../components/Layout/LogIn'
@@ -70,6 +71,7 @@ export default function DebugPage() {
             <HttpStatus className="DebugPage__Section" />
             <EnvStatus className="DebugPage__Section" />
             <Snapshot className="DebugPage__Section" />
+            <QueryData className="DebugPage__Section" />
           </>
         )}
       </WiderContainer>

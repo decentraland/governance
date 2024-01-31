@@ -777,4 +777,12 @@ export class Governance extends API {
     )
     return response.data
   }
+
+  async getAllEvents() {
+    const response = await this.fetch<ApiResponse<ActivityTickerEvent[]>>(
+      `/events/all`,
+      this.options().method('GET').authorization({ sign: true })
+    )
+    return response.data
+  }
 }
