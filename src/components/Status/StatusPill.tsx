@@ -6,7 +6,6 @@ import { getProposalStatusShortName } from '../../entities/Proposal/utils'
 import { getEnumDisplayName } from '../../helpers'
 import locations from '../../utils/locations'
 import Pill, { PillColor, Props as PillProps } from '../Common/Pill'
-import Link from '../Common/Typography/Link'
 import Check from '../Icon/Check'
 
 type Props = {
@@ -39,25 +38,16 @@ export default function StatusPill({ className, status, size, isLink, color }: P
   const name = isMobile ? getProposalStatusShortName(status) : getEnumDisplayName(status)
   const pillSize = isMobile ? 'sm' : size || 'md'
 
-  const component = (
+  return (
     <Pill
       size={pillSize}
       style={style}
       className={classNames('StatusPill', className)}
       color={color || ColorsConfig[status]}
       icon={icon}
+      href={href}
     >
       {name}
     </Pill>
   )
-
-  if (isLink) {
-    return (
-      <Link href={href} className="Pill__Link">
-        {component}
-      </Link>
-    )
-  }
-
-  return component
 }
