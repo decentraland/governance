@@ -2,6 +2,7 @@ import API from 'decentraland-gatsby/dist/utils/api/API'
 import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
 import snakeCase from 'lodash/snakeCase'
 
+import { AirdropJobAttributes } from '../back/models/AirdropJob'
 import { AirdropOutcome } from '../back/types/AirdropJob'
 import { SpecState } from '../components/Debug/UploadBadgeSpec'
 import env from '../config'
@@ -774,6 +775,22 @@ export class Governance extends API {
         proposalTitle,
         choice,
       })
+    )
+    return response.data
+  }
+
+  async getAllEvents() {
+    const response = await this.fetch<ApiResponse<ActivityTickerEvent[]>>(
+      `/events/all`,
+      this.options().method('GET').authorization({ sign: true })
+    )
+    return response.data
+  }
+
+  async getAllAirdropJobs() {
+    const response = await this.fetch<ApiResponse<AirdropJobAttributes[]>>(
+      `/airdrops/all`,
+      this.options().method('GET').authorization({ sign: true })
     )
     return response.data
   }

@@ -29,4 +29,14 @@ export default class AirdropJobModel extends Model<AirdropJobAttributes> {
     const result = await this.namedQuery<AirdropJobAttributes>('get_pending_airdrop_jobs', query)
     return result
   }
+
+  static async getAll() {
+    const query = SQL`
+        SELECT *
+        FROM ${table(AirdropJobModel)}
+    `
+
+    const result = await this.namedQuery<AirdropJobAttributes>('get_all_airdrop_jobs', query)
+    return result
+  }
 }

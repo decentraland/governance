@@ -17,6 +17,7 @@ import YAML from 'yaml'
 
 import { giveTopVoterBadges, runAirdropJobs } from './back/jobs/BadgeAirdrop'
 import { pingSnapshot } from './back/jobs/PingSnapshot'
+import airdrops from './back/routes/airdrop'
 import badges from './back/routes/badges'
 import bid from './back/routes/bid'
 import budget from './back/routes/budget'
@@ -83,25 +84,26 @@ app.use('/api', [
   withDDosProtection(),
   withCors(),
   withBody(),
+  airdrops,
+  badges,
+  budget,
+  bid,
+  common,
+  coauthor,
   committee,
   debug,
   events,
-  users,
+  newsletter,
+  notification,
+  project,
   proposal,
   proposalSurveyTopics,
   score,
+  snapshot,
+  users,
   subscription,
   update,
-  coauthor,
-  budget,
-  badges,
-  common,
-  bid,
-  snapshot,
   vestings,
-  project,
-  newsletter,
-  notification,
   webhooks,
   handle(async () => {
     throw new RequestError('NotFound', RequestError.NotFound)

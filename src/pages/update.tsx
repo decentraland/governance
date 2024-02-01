@@ -1,13 +1,13 @@
 import { useMemo } from 'react'
 
 import { useLocation } from '@reach/router'
-import NotFound from 'decentraland-gatsby/dist/components/Layout/NotFound'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import Link from '../components/Common/Typography/Link'
 import ContentLayout, { ContentSection } from '../components/Layout/ContentLayout'
 import Head from '../components/Layout/Head'
 import LoadingView from '../components/Layout/LoadingView'
+import NotFound from '../components/Layout/NotFound'
 import UpdateComments from '../components/Updates/UpdateComments'
 import UpdateMarkdownView from '../components/Updates/UpdateMarkdownView'
 import { getLatestUpdate, getUpdateNumber } from '../entities/Updates/utils'

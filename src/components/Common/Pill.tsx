@@ -1,5 +1,7 @@
 import classNames from 'classnames'
 
+import Link from './Typography/Link'
+
 import './Pill.css'
 
 export enum PillColor {
@@ -32,6 +34,7 @@ export type Props = {
   style?: PillStyleType
   className?: string
   icon?: React.ReactNode
+  href?: string
 }
 
 export default function Pill({
@@ -40,12 +43,23 @@ export default function Pill({
   style = 'shiny',
   color = PillColor.Green,
   className,
+  href,
   icon,
 }: Props) {
-  return (
+  const component = (
     <div className={classNames(`Pill`, `Pill--${size}`, `Pill--${style}-${color}`, className)}>
       {icon}
       <span className="Pill__Content">{children}</span>
     </div>
   )
+
+  if (href) {
+    return (
+      <Link href={href} className="Pill__Link">
+        {component}
+      </Link>
+    )
+  }
+
+  return component
 }

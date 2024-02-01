@@ -67,3 +67,4 @@ export const BUY_NAME_URL = process.env.GATSBY_BUY_NAME_URL || clientEnv('GATSBY
 export const BUY_MANA_URL = process.env.GATSBY_BUY_MANA_URL || clientEnv('GATSBY_BUY_MANA_URL')
 
 export const DCL_META_IMAGE_URL = 'https://decentraland.org/images/decentraland.png'
+export const JOIN_DISCORD_URL = clientEnv('GATSBY_JOIN_DISCORD_URL') || 'https://dcl.gg/discord'
