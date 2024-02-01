@@ -1,5 +1,6 @@
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 
+import { ProposalAttributes } from '../entities/Proposal/types'
 import { ENV } from '../shared/types/notifications'
 
 export const NotificationType = {
@@ -22,16 +23,21 @@ export function getPushNotificationsEnv(chainId: ChainId) {
   }
 }
 
-export enum NotificationTitle {
-  ProposalVotedFinished = 'Voting Ended on a Proposal You Voted On',
-  ProposalAuthoredFinished = 'Voting Ended on Your Proposal',
-  CoAuthorRequestReceived = 'Co-author Request Received',
-  GrantEnacted = 'Grant Proposal Enacted',
-}
-
-export enum NotificationBody {
-  ProposalVotedFinished = 'Discover the results of the proposal you participated in as a voter. Your input matters!',
-  ProposalAuthoredFinished = 'The votes are in! Find out the outcome of the voting on your proposal now',
-  CoAuthorRequestReceived = "You've been invited to collaborate as a co-author on a published proposal. Accept it or reject it here",
-  GrantEnacted = 'Congratulations! Your Grant Proposal has been successfully enacted and a Vesting Contract was added',
+export const Notifications = {
+  ProposalVotedFinished: {
+    title: (proposal: ProposalAttributes) => `Voting Ended on a Proposal You Voted On ${proposal.title}`,
+    body: 'Discover the results of the proposal you participated in as a voter. Your input matters!',
+  },
+  ProposalAuthoredFinished: {
+    title: (proposal: ProposalAttributes) => `Voting Ended on Your Proposal ${proposal.title}`,
+    body: 'The votes are in! Find out the outcome of the voting on your proposal now',
+  },
+  CoAuthorRequestReceived: {
+    title: 'Co-author Request Received',
+    body: "You've been invited to collaborate as a co-author on a published proposal. Accept it or reject it here",
+  },
+  GrantEnacted: {
+    title: 'Grant Proposal Enacted',
+    body: 'Congratulations! Your Grant Proposal has been successfully enacted and a Vesting Contract was added',
+  },
 }
