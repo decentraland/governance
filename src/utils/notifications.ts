@@ -25,19 +25,19 @@ export function getPushNotificationsEnv(chainId: ChainId) {
 
 export const Notifications = {
   ProposalVotedFinished: {
-    title: (proposal: ProposalAttributes) => `Voting Ended on a Proposal You Voted On ${proposal.title}`,
+    title: (proposal: ProposalAttributes) => `Voting ended on a proposal you voted on ${proposal.title}`,
     body: 'Discover the results of the proposal you participated in as a voter. Your input matters!',
   },
   ProposalAuthoredFinished: {
-    title: (proposal: ProposalAttributes) => `Voting Ended on Your Proposal ${proposal.title}`,
+    title: (proposal: ProposalAttributes) => `Voting ended on your proposal ${proposal.title}`,
     body: 'The votes are in! Find out the outcome of the voting on your proposal now',
   },
   CoAuthorRequestReceived: {
-    title: 'Co-author Request Received',
+    title: 'Co-author request received',
     body: "You've been invited to collaborate as a co-author on a published proposal. Accept it or reject it here",
   },
   GrantEnacted: {
-    title: 'Grant Proposal Enacted',
+    title: 'Grant Proposal enacted',
     body: 'Congratulations! Your Grant Proposal has been successfully enacted and a Vesting Contract was added',
   },
 }
