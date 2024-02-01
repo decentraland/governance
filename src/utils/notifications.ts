@@ -1,5 +1,6 @@
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 
+import { ProposalAttributes } from '../entities/Proposal/types'
 import { ENV } from '../shared/types/notifications'
 
 export const NotificationType = {
@@ -24,11 +25,11 @@ export function getPushNotificationsEnv(chainId: ChainId) {
 
 export const Notifications = {
   ProposalVotedFinished: {
-    title: 'Voting Ended on a Proposal You Voted On',
+    title: (proposal: ProposalAttributes) => `Voting Ended on a Proposal You Voted On ${proposal.title}`,
     body: 'Discover the results of the proposal you participated in as a voter. Your input matters!',
   },
   ProposalAuthoredFinished: {
-    title: 'Voting Ended on Your Proposal',
+    title: (proposal: ProposalAttributes) => `Voting Ended on Your Proposal ${proposal.title}`,
     body: 'The votes are in! Find out the outcome of the voting on your proposal now',
   },
   CoAuthorRequestReceived: {

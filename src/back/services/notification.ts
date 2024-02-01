@@ -209,7 +209,7 @@ export class NotificationService {
         throw new Error('Invalid addresses')
       }
 
-      const title = `${Notifications.ProposalAuthoredFinished.title} ${proposal.title}`
+      const title = Notifications.ProposalAuthoredFinished.title(proposal)
       const body = Notifications.ProposalAuthoredFinished.body
 
       const validatedUsers = await UserModel.getActiveDiscordIds(addresses)
@@ -244,7 +244,7 @@ export class NotificationService {
         throw new Error('Invalid addresses')
       }
 
-      const title = `${Notifications.ProposalVotedFinished.title} ${proposal.title}`
+      const title = Notifications.ProposalVotedFinished.title(proposal)
       const body = Notifications.ProposalVotedFinished.body
 
       const validatedUsers = await UserModel.getActiveDiscordIds(addresses)
