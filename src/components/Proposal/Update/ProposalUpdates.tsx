@@ -1,6 +1,5 @@
-import { ProposalAttributes, ProposalType } from '../../../entities/Proposal/types'
+import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { UpdateAttributes } from '../../../entities/Updates/types'
-import { isProposalStatusWithUpdates } from '../../../entities/Updates/utils'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Empty from '../../Common/Empty'
 import Megaphone from '../../Icon/Megaphone'
@@ -19,10 +18,7 @@ interface Props {
 export default function ProposalUpdates({ proposal, updates, isCoauthor, onUpdateDeleted }: Props) {
   const t = useFormatMessage()
 
-  const showProposalUpdates =
-    updates && isProposalStatusWithUpdates(proposal?.status) && proposal?.type === ProposalType.Grant
-
-  if (!updates || !proposal || !showProposalUpdates) {
+  if (!updates || !proposal) {
     return null
   }
 

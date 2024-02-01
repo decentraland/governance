@@ -4,7 +4,8 @@ import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext
 import useTrackContext from 'decentraland-gatsby/dist/context/Track/useTrackContext'
 
 import { SegmentEvent } from '../../entities/Events/types'
-import { ProposalAttributes, ProposalStatus, ProposalType } from '../../entities/Proposal/types'
+import { ProposalAttributes, ProposalStatus } from '../../entities/Proposal/types'
+import { isProjectProposal } from '../../entities/Proposal/utils'
 import { SubscriptionAttributes } from '../../entities/Subscription/types'
 import { Survey } from '../../entities/SurveyTopic/types'
 import { UpdateAttributes } from '../../entities/Updates/types'
@@ -112,7 +113,7 @@ export default function ProposalSidebar({
   const showProposalUpdatesActions =
     proposal &&
     isProposalStatusWithUpdates(proposal?.status) &&
-    proposal?.type === ProposalType.Grant &&
+    isProjectProposal(proposal?.type) &&
     (isOwner || isCoauthor)
   const showProposalThresholdsSummary = !!(
     proposal &&

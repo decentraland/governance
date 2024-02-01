@@ -312,3 +312,7 @@ export function getDisplayedPriorityProposals(
     return showTheProposal
   })
 }
+
+export function isProjectProposal(proposalType?: ProposalType) {
+  return proposalType === ProposalType.Grant || proposalType === ProposalType.Bid
+}
