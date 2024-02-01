@@ -67,7 +67,7 @@ describe('finishProposals', () => {
     jest.spyOn(DiscordService, 'finishProposal').mockImplementation(() => {})
     jest.spyOn(DiscordService, 'newProposal').mockImplementation(() => {})
     jest.spyOn(DiscordService, 'newUpdate').mockImplementation(() => {})
-    jest.spyOn(NotificationService, 'votingEndedAuthors').mockImplementation()
+    jest.spyOn(NotificationService, 'authoredProposalFinished').mockImplementation()
     jest.spyOn(DiscourseService, 'getCategory').mockImplementation(() => 5)
   })
   beforeEach(() => {
