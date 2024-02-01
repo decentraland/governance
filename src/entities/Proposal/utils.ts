@@ -7,7 +7,6 @@ import { Governance } from '../../clients/Governance'
 import { GOVERNANCE_API, GOVERNANCE_URL } from '../../constants'
 import { getEnumDisplayName } from '../../helpers'
 import { getTile } from '../../utils/Land'
-import { clientEnv } from '../../utils/clientEnv'
 import Time from '../../utils/date/Time'
 import { SNAPSHOT_SPACE, SNAPSHOT_URL } from '../Snapshot/constants'
 import { isSameAddress } from '../Snapshot/utils'
@@ -37,8 +36,6 @@ export const SITEMAP_ITEMS_PER_PAGE = 100
 
 export const DEFAULT_CHOICES = ['yes', 'no', 'abstain']
 export const REGEX_NAME = new RegExp(`^([a-zA-Z0-9]){${MIN_NAME_SIZE},${MAX_NAME_SIZE}}$`)
-
-export const JOIN_DISCORD_URL = clientEnv('GATSBY_JOIN_DISCORD_URL') || 'https://dcl.gg/discord'
 
 export const CLIFF_PERIOD_IN_DAYS = 29
 
