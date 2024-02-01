@@ -5,7 +5,6 @@ import { ProposalType } from '../../entities/Proposal/types'
 import { getEnumDisplayName } from '../../helpers'
 import locations from '../../utils/locations'
 import Pill, { PillColor } from '../Common/Pill'
-import Link from '../Common/Typography/Link'
 
 export const ColorsConfig: Record<ProposalType, PillColor> = {
   [ProposalType.POI]: PillColor.Green,
@@ -42,19 +41,9 @@ export default function CategoryPill({ className, proposalType, size = 'md', isL
   const href = isLink ? locations.proposals({ type: proposalType }) : undefined
   const pillSize = isMobile ? 'sm' : size
 
-  const component = (
-    <Pill style="light" color={pillColor} className={pillClassNames} size={pillSize}>
+  return (
+    <Pill href={href} style="light" color={pillColor} className={pillClassNames} size={pillSize}>
       {label}
     </Pill>
   )
-
-  if (isLink) {
-    return (
-      <Link href={href} className="Pill__Link">
-        {component}
-      </Link>
-    )
-  }
-
-  return component
 }
