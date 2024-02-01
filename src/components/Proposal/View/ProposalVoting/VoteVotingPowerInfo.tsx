@@ -1,8 +1,7 @@
-import Bold from 'decentraland-gatsby/dist/components/Text/Bold'
-
 import { MINIMUM_VP_REQUIRED_TO_VOTE } from '../../../../entities/Votes/constants'
 import { Vote } from '../../../../entities/Votes/types'
 import useFormatMessage from '../../../../hooks/useFormatMessage'
+import Text from '../../../Common/Typography/Text'
 
 interface VoteVotingPowerInfoProps {
   accountVotingPower: number
@@ -14,7 +13,11 @@ const VoteVotingPowerInfo = ({ accountVotingPower, hasEnoughToVote, vote }: Vote
   const t = useFormatMessage()
 
   function vpLabel(value: number) {
-    return <Bold>{t(`general.number`, { value: value })} VP</Bold>
+    return (
+      <Text as="span" weight="bold" size="sm">
+        {t(`general.number`, { value: value })} VP
+      </Text>
+    )
   }
 
   return (
