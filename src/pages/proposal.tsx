@@ -49,7 +49,11 @@ import ProposalImagesPreview from '../components/Proposal/View/ProposalImagesPre
 import ProposalMarkdown from '../components/Proposal/View/ProposalMarkdown'
 import { OldGrantCategory } from '../entities/Grant/types'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
-import { isBiddingAndTenderingProposal, isGovernanceProcessProposal } from '../entities/Proposal/utils'
+import {
+  isBiddingAndTenderingProposal,
+  isGovernanceProcessProposal,
+  isProjectProposal,
+} from '../entities/Proposal/utils'
 import { Survey } from '../entities/SurveyTopic/types'
 import { SurveyEncoder } from '../entities/SurveyTopic/utils'
 import { isProposalStatusWithUpdates } from '../entities/Updates/utils'
@@ -165,7 +169,7 @@ export default function ProposalPage() {
 
   const { publicUpdates, pendingUpdates, nextUpdate, currentUpdate, refetchUpdates } = useProposalUpdates(proposal?.id)
   const showProposalUpdates =
-    publicUpdates && isProposalStatusWithUpdates(proposal?.status) && proposal?.type === ProposalType.Grant
+    publicUpdates && isProposalStatusWithUpdates(proposal?.status) && isProjectProposal(proposal?.type)
 
   const { surveyTopics, isLoadingSurveyTopics, voteWithSurvey, showSurveyResults } = useSurvey(
     proposal,

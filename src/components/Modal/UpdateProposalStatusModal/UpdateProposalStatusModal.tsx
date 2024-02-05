@@ -12,7 +12,8 @@ import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { Governance } from '../../../clients/Governance'
-import { ProposalAttributes, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
+import { ProposalAttributes, ProposalStatus } from '../../../entities/Proposal/types'
+import { isProjectProposal } from '../../../entities/Proposal/utils'
 import { validateUniqueAddresses } from '../../../entities/Transparency/utils'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Label from '../../Common/Typography/Label'
@@ -86,8 +87,8 @@ export function UpdateProposalStatusModal({
 
   const values = useWatch({ control })
 
-  const isGrantProposal = proposal?.type === ProposalType.Grant
-  const showAddButton = isGrantProposal && !!vesting_addresses && vesting_addresses.length > 0
+  const isProject = isProjectProposal(proposal?.type)
+  const showAddButton = isProject && !!vesting_addresses && vesting_addresses.length > 0
   const hasValues = values.vestingAddresses && values.vestingAddresses.filter((value) => value.length > 0).length > 0
 
   useEffect(() => {
@@ -136,7 +137,7 @@ export function UpdateProposalStatusModal({
           const updateProposal = await Governance.get().updateProposalStatus(
             proposal.id,
             status,
-            isGrantProposal ? filteredVestingContracts : undefined
+            isProject ? filteredVestingContracts : undefined
           )
           onClose()
           return updateProposal
@@ -182,7 +183,7 @@ export function UpdateProposalStatusModal({
             <Markdown size="lg">{t('modal.update_status_proposal.description', { status }) || ''}</Markdown>
           </div>
 
-          {proposal && isGrantProposal && (
+          {proposal && isProject && (
             <div className="ProposalModal__GrantTransaction">
               <Label>{t('modal.update_status_proposal.grant_vesting_addresses')}</Label>
               {values.vestingAddresses?.map((address, idx) => (
@@ -226,7 +227,7 @@ export function UpdateProposalStatusModal({
               type="submit"
               primary
               fluid
-              disabled={isSubmitting || (isGrantProposal && !hasValues)}
+              disabled={isSubmitting || (isProject && !hasValues)}
               loading={loading && isSubmitting}
             >
               {t(getPrimaryButtonTextKey(status, showAddButton))}

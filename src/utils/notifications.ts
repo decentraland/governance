@@ -36,8 +36,8 @@ export const Notifications = {
     title: 'Co-author Request Received',
     body: "You've been invited to collaborate as a co-author on a published proposal. Accept it or reject it here",
   },
-  GrantEnacted: {
-    title: 'Grant Proposal Enacted',
-    body: 'Congratulations! Your Grant Proposal has been successfully enacted and a Vesting Contract was added',
+  ProjectEnacted: {
+    title: 'Your Project has been funded',
+    body: 'Congratulations! Your Project has been successfully enacted and a funding Vesting Contract was created',
   },
 }
