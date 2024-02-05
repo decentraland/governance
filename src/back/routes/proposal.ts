@@ -71,6 +71,7 @@ import {
   isAlreadyACatalyst,
   isAlreadyBannedName,
   isAlreadyPointOfInterest,
+  isProjectProposal,
   isValidName,
   isValidPointOfInterest,
   isValidUpdateProposalStatus,
@@ -538,12 +539,12 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
     updated_at: new Date(),
   }
 
+  const isProject = isProjectProposal(proposal.type)
   const isEnactedStatus = update.status === ProposalStatus.Enacted
-  const isProjectProposal = proposal.type === ProposalType.Grant || proposal.type === ProposalType.Bid
   if (isEnactedStatus) {
     update.enacted = true
     update.enacted_by = user
-    if (isProjectProposal) {
+    if (isProject) {
       const { vesting_addresses } = configuration
       if (!vesting_addresses || vesting_addresses.length === 0) {
         throw new RequestError('Vesting addresses are required for grant or bid proposals', RequestError.BadRequest)
@@ -571,8 +572,8 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
   }
 
   await ProposalModel.update<ProposalAttributes>(update, { id })
-  if (isEnactedStatus && isProjectProposal) {
-    NotificationService.grantProposalEnacted(proposal)
+  if (isEnactedStatus && isProject) {
+    NotificationService.projectProposalEnacted(proposal)
   }
 
   const updatedProposal = await ProposalModel.findOne<ProposalAttributes>({
