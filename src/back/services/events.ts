@@ -30,6 +30,8 @@ import { DclProfile } from '../../utils/Catalyst/types'
 import { ErrorCategory } from '../../utils/errorCategories'
 import EventModel from '../models/Event'
 
+import { NotificationService } from './notification'
+
 const CLEAR_DELEGATE_SIGNATURE_HASH = '0x9c4f00c4291262731946e308dc2979a56bd22cce8f95906b975065e96cd5a064'
 const SET_DELEGATE_SIGNATURE_HASH = '0xa9a7fd460f56bddb880a465a9c3e9730389c70bc53108148f16d55a87a6c468e'
 
@@ -262,7 +264,9 @@ export class EventsService {
         created_at: new Date(discoursePost.created_at),
       }
 
-      return await EventModel.create(commentedEvent)
+      const commentEvent = await EventModel.create(commentedEvent)
+      NotificationService.newCommentOnProposal(commentEvent)
+      return commentEvent
     } catch (e) {
       ErrorService.report('Unexpected error while creating comment event', { error: e, category: ErrorCategory.Events })
     }

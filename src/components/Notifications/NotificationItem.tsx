@@ -5,6 +5,7 @@ import Time from '../../utils/date/Time'
 import Link from '../Common/Typography/Link'
 import Markdown from '../Common/Typography/Markdown'
 import Text from '../Common/Typography/Text'
+import CircledComment from '../Icon/CircledComment'
 import Announcement from '../Icon/Notifications/Announcement'
 import Grant from '../Icon/Notifications/Grant'
 import Proposal from '../Icon/Notifications/Proposal'
@@ -22,6 +23,8 @@ function getIcon(metadata: { customType: string }) {
       return Announcement
     case NotificationCustomType.Grant:
       return Grant
+    case NotificationCustomType.ProposalComment:
+      return CircledComment
     case NotificationCustomType.Proposal:
     default:
       return Proposal
