@@ -1,0 +1,12 @@
+.ProposalHeaderPoiImage {
+  width: 100%;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center center;
+  border-radius: 8px;
+}
+
+.ProposalHeaderPoiImage img {
+  width: 100%;
+  height: auto;
+}
