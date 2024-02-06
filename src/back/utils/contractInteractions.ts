@@ -42,7 +42,6 @@ export async function airdrop(badgeCid: string, recipients: string[], gasIncreme
   logger.log(`Preparing airdrop with gas increment: ${gasIncrement}`)
 
   const gasConfig = await getGasConfig(contract, formattedRecipients, ipfsAddress, gasIncrement)
-  logger.log('Airdropping with gas config: ', gasConfig)
   const txn = await contract.connect(signer).airdrop(formattedRecipients, ipfsAddress, gasConfig)
   await txn.wait()
   logger.log('Airdropped badge with txn hash:', txn.hash)
@@ -60,11 +59,12 @@ async function getGasConfig(
 }
 
 function increaseGas(gasConfig: GasConfig, gasIncrement: number) {
-  const incrementFactor = 1 + (gasIncrement * 10) / 100
+  const incrementFactor = 100 + gasIncrement * 10
+
   return {
-    gasLimit: BigNumber.from(gasConfig.gasLimit).mul(incrementFactor),
-    maxFeePerGas: BigNumber.from(gasConfig.maxFeePerGas).mul(incrementFactor),
-    maxPriorityFeePerGas: BigNumber.from(gasConfig.maxPriorityFeePerGas).mul(incrementFactor),
+    gasLimit: BigNumber.from(gasConfig.gasLimit).mul(incrementFactor).div(100),
+    maxFeePerGas: BigNumber.from(gasConfig.maxFeePerGas).mul(incrementFactor).div(100),
+    maxPriorityFeePerGas: BigNumber.from(gasConfig.maxPriorityFeePerGas).mul(incrementFactor).div(100),
   }
 }
 
@@ -131,7 +131,7 @@ export async function airdropWithRetry(
   badgeCid: string,
   recipients: string[],
   retries = 3,
-  gasIncrement = 0
+  gasIncrement = 2
 ): Promise<AirdropOutcome> {
   try {
     await airdrop(badgeCid, recipients, gasIncrement)
