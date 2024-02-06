@@ -64,8 +64,36 @@ export enum ActionStatus {
 
 export type RevokeOrReinstateResult = { status: ActionStatus; address: string; badgeId: string; error?: string }
 export type BadgeCreationResult = { status: ActionStatus; badgeCid?: string; error?: string; badgeTitle?: string }
-export type GasConfig = { gasPrice: ethers.BigNumber; gasLimit: ethers.BigNumber }
-export const GAS_MULTIPLIER = 2
+export type GasConfig = {
+  gasLimit: ethers.BigNumber
+} & PolygonGasData
+export type PolygonGasData = {
+  maxFeePerGas: ethers.BigNumber
+  maxPriorityFeePerGas: ethers.BigNumber
+}
+type BlockNativeEstimation = {
+  confidence: number
+  price: number
+  maxPriorityFeePerGas: number
+  maxFeePerGas: number
+}
+export type BlockNativeResponse = {
+  system: string
+  network: string
+  unit: string
+  maxPrice: number
+  currentBlockNumber: number
+  msSinceLastBlock: number
+  blockPrices: [
+    {
+      blockNumber: number
+      estimatedTransactionCount: number
+      baseFeePerGas: number
+      estimatedPrices: BlockNativeEstimation[]
+    }
+  ]
+  estimatedBaseFees: never[]
+}
 
 export function isBadgeStatus(value: string | null | undefined): boolean {
   return !!value && new Set<string>(Object.values(BadgeStatus)).has(value)

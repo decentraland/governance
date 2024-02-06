@@ -1,8 +1,10 @@
+import { Contract } from '@ethersproject/contracts'
 import { abi as BadgesAbi } from '@otterspace-xyz/contracts/out/Badges.sol/Badges.json'
-import { ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 
+import { BlockNative } from '../../clients/BlockNative'
 import { POLYGON_BADGES_CONTRACT_ADDRESS, RAFT_OWNER_PK, TRIMMED_OTTERSPACE_RAFT_ID } from '../../constants'
-import { ActionStatus, BadgeCreationResult, GAS_MULTIPLIER, GasConfig } from '../../entities/Badges/types'
+import { ActionStatus, BadgeCreationResult, GasConfig } from '../../entities/Badges/types'
 import RpcService from '../../services/RpcService'
 import logger from '../../utils/logger'
 import { AirdropJobStatus, AirdropOutcome } from '../types/AirdropJob'
@@ -20,33 +22,50 @@ function getBadgesSignerAndContract() {
   return { signer, contract }
 }
 
+const GAS_LIMIT_PERCENTAGE_OVER_ESTIMATED = 20
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function estimateGas(estimateFunction: (...args: any[]) => Promise<any>): Promise<GasConfig> {
-  const provider = RpcService.getPolygonProvider()
-  const gasLimit = await estimateFunction()
-  const gasPrice = await provider.getGasPrice()
-  const adjustedGasPrice = gasPrice.mul(GAS_MULTIPLIER)
+  const gasData = await BlockNative.getPolygonGasData()
+  const estimatedGasLimit = await estimateFunction()
+  const gasLimit = estimatedGasLimit.add(estimatedGasLimit.mul(GAS_LIMIT_PERCENTAGE_OVER_ESTIMATED).div(100))
+
   return {
-    gasPrice: adjustedGasPrice,
+    ...gasData,
     gasLimit,
   }
 }
 
-export async function airdrop(badgeCid: string, recipients: string[], shouldPumpGas = false) {
+export async function airdrop(badgeCid: string, recipients: string[], gasIncrement = 0) {
   const { signer, contract } = getBadgesSignerAndContract()
   const ipfsAddress = `ipfs://${badgeCid}/metadata.json`
   const formattedRecipients = checksumAddresses(recipients)
-  logger.log(`Airdropping, pumping gas ${shouldPumpGas}`)
-  let txn
-  if (shouldPumpGas) {
-    const gasConfig = await estimateGas(async () => contract.estimateGas.airdrop(formattedRecipients, ipfsAddress))
-    txn = await contract.connect(signer).airdrop(formattedRecipients, ipfsAddress, gasConfig)
-  } else {
-    txn = await contract.connect(signer).airdrop(formattedRecipients, ipfsAddress)
-  }
+  logger.log(`Preparing airdrop with gas increment: ${gasIncrement}`)
+
+  const gasConfig = await getGasConfig(contract, formattedRecipients, ipfsAddress, gasIncrement)
+  logger.log('Airdropping with gas config: ', gasConfig)
+  const txn = await contract.connect(signer).airdrop(formattedRecipients, ipfsAddress, gasConfig)
   await txn.wait()
   logger.log('Airdropped badge with txn hash:', txn.hash)
   return txn.hash
+}
+
+async function getGasConfig(
+  contract: Contract,
+  formattedRecipients: string[],
+  ipfsAddress: string,
+  gasIncrement: number
+) {
+  const defaultGasConfig = await estimateGas(async () => contract.estimateGas.airdrop(formattedRecipients, ipfsAddress))
+  return gasIncrement > 0 ? increaseGas(defaultGasConfig, gasIncrement) : defaultGasConfig
+}
+
+function increaseGas(gasConfig: GasConfig, gasIncrement: number) {
+  const incrementFactor = 1 + (gasIncrement * 10) / 100
+  return {
+    gasLimit: BigNumber.from(gasConfig.gasLimit).mul(incrementFactor),
+    maxFeePerGas: BigNumber.from(gasConfig.maxFeePerGas).mul(incrementFactor),
+    maxPriorityFeePerGas: BigNumber.from(gasConfig.maxPriorityFeePerGas).mul(incrementFactor),
+  }
 }
 
 export async function reinstateBadge(badgeId: string) {
@@ -112,17 +131,20 @@ export async function airdropWithRetry(
   badgeCid: string,
   recipients: string[],
   retries = 3,
-  shouldPumpGas = false
+  gasIncrement = 0
 ): Promise<AirdropOutcome> {
   try {
-    await airdrop(badgeCid, recipients, shouldPumpGas)
+    await airdrop(badgeCid, recipients, gasIncrement)
     return { status: AirdropJobStatus.FINISHED, error: '' }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     if (retries > 0) {
       logger.log(`Retrying airdrop... Attempts left: ${retries}`, error)
-      const shouldPumpGas = isTransactionUnderpricedError(error)
-      return await airdropWithRetry(badgeCid, recipients, retries - 1, shouldPumpGas)
+      let newGasIncrement = gasIncrement
+      if (isTransactionUnderpricedError(error)) {
+        newGasIncrement += 1
+      }
+      return await airdropWithRetry(badgeCid, recipients, retries - 1, newGasIncrement)
     } else {
       logger.error('Airdrop failed after maximum retries', error)
       return { status: AirdropJobStatus.FAILED, error: JSON.stringify(error) }
