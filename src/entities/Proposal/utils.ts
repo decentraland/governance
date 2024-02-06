@@ -1,5 +1,8 @@
-import { getCatalystServersFromCache, getNameDenylistFromCache } from 'dcl-catalyst-client/dist/contracts-snapshots'
-import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
+import {
+  getCatalystServersFromCache,
+  getNameDenylistFromCache,
+  getPoisFromCache,
+} from 'dcl-catalyst-client/dist/contracts-snapshots'
 import 'isomorphic-fetch'
 import numeral from 'numeral'
 
@@ -62,8 +65,8 @@ export function isAlreadyBannedName(name: string) {
 }
 
 export async function isAlreadyPointOfInterest(x: number, y: number) {
-  const pois = await Catalyst.getInstance().getPOIs()
-  return !!pois.find((position) => position[0] === x && position[1] === y)
+  const pois = getPoisFromCache('polygon').map((poi) => poi.split(','))
+  return !!pois.find((position) => position[0] === String(x) && position[1] === String(y))
 }
 
 export async function isValidPointOfInterest(x: number, y: number) {
