@@ -115,7 +115,7 @@ export function externalTooltipHandler({ context, votes, title }: TooltipHandler
   //Set Avatar
   const avatar = document.createElement('img')
   avatar.className = `avatar color--${((vote?.address || '')[2] || '').toLowerCase()}`
-  avatar.src = vote?.profile?.avatar || DEFAULT_AVATAR_IMAGE
+  avatar.src = vote?.profile?.avatarUrl || DEFAULT_AVATAR_IMAGE
 
   // Set Text
   const textContainer = document.createElement('div')
