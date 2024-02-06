@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
-import Catalyst from 'decentraland-gatsby/dist/utils/api/Catalyst'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { DEFAULT_QUERY_STALE_TIME } from '../../hooks/constants'
+import { getContentUrl, getEntityScenes } from '../../utils/Catalyst'
 import { getParcelImageUrl, getTile } from '../../utils/Land'
 import Link from '../Common/Typography/Link'
 import Pin from '../Icon/Pin'
@@ -16,22 +16,24 @@ interface Props {
 }
 
 const fetchSceneImg = async (x: number, y: number) => {
-  const scenes = await Catalyst.getInstance().getEntityScenes([[x, y]])
+  const scenes = await getEntityScenes([[x, y]])
   const scene = scenes[0]
   if (!scene) {
     return null
   }
 
-  let image = scene?.metadata?.display?.navmapThumbnail || ''
-  if (image && !image.startsWith('https://')) {
+  let image = scene.metadata?.display?.navmapThumbnail || ''
+  const isHttpsImage = image.startsWith('https://')
+
+  if (image && !isHttpsImage) {
     const list = scene.content || []
     const content = list.find((content) => content.file === image)
     if (content) {
-      image = Catalyst.getInstance().getContentUrl(content.hash)
+      image = getContentUrl(content.hash)
     }
   }
 
-  if (!image || !image.startsWith('https://')) {
+  if (!image || !isHttpsImage) {
     return null
   }
 
