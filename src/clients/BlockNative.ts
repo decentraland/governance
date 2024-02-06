@@ -1,7 +1,6 @@
 import { ethers } from 'ethers'
 import fetch from 'isomorphic-fetch'
 
-import { BLOCKNATIVE_API_KEY } from '../constants'
 import { BlockNativeResponse, PolygonGasData } from '../entities/Badges/types'
 import { ErrorService } from '../services/ErrorService'
 import { ErrorCategory } from '../utils/errorCategories'
@@ -14,7 +13,7 @@ export class BlockNative {
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          Authorization: BLOCKNATIVE_API_KEY,
+          Authorization: require('../constants').BLOCKNATIVE_API_KEY,
         },
       })
       const data: BlockNativeResponse = await response.json()

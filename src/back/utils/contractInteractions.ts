@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Contract } from '@ethersproject/contracts'
 import { abi as BadgesAbi } from '@otterspace-xyz/contracts/out/Badges.sol/Badges.json'
 import { BigNumber, ethers } from 'ethers'
@@ -9,7 +10,8 @@ import RpcService from '../../services/RpcService'
 import logger from '../../utils/logger'
 import { AirdropJobStatus, AirdropOutcome } from '../types/AirdropJob'
 
-const TRANSACTION_UNDERPRICED_ERROR_CODE = -32000
+const TRANSACTION_UNDERPRICED_ERROR_CODE = '-32000'
+const TRANSACTION_REPLACED_CODE = 'TRANSACTION_REPLACED'
 
 function checksumAddresses(addresses: string[]): string[] {
   return addresses.map((address) => ethers.utils.getAddress(address))
@@ -101,14 +103,6 @@ export async function checkBalance() {
   console.log(`Balance of ${signer.address}: ${balanceInEther} ETH = ${balanceBigNumber}`)
 }
 
-export function trimOtterspaceId(rawId: string) {
-  const parts = rawId.split(':')
-  if (parts.length === 2) {
-    return parts[1]
-  }
-  return ''
-}
-
 export function getIpfsAddress(badgeCid: string) {
   return `ipfs://${badgeCid}/metadata.json`
 }
@@ -131,14 +125,19 @@ export async function airdropWithRetry(
   badgeCid: string,
   recipients: string[],
   retries = 3,
-  gasIncrement = 2
+  gasIncrement = 0
 ): Promise<AirdropOutcome> {
   try {
     await airdrop(badgeCid, recipients, gasIncrement)
     return { status: AirdropJobStatus.FINISHED, error: '' }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     if (retries > 0) {
+      if (isTransactionReplacedError(error)) {
+        logger.log(`Found replacement transaction for airdrop`, error)
+        if (error.receipt.status === 1) {
+          return { status: AirdropJobStatus.FINISHED, error: JSON.stringify(error) }
+        }
+      }
       logger.log(`Retrying airdrop... Attempts left: ${retries}`, error)
       let newGasIncrement = gasIncrement
       if (isTransactionUnderpricedError(error)) {
@@ -156,7 +155,6 @@ export async function createSpecWithRetry(badgeCid: string, retries = 3): Promis
   try {
     await createSpec(badgeCid)
     return { status: ActionStatus.Success, badgeCid }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     if (retries > 0) {
       logger.log(`Retrying create spec... Attempts left: ${retries}`, error)
@@ -168,12 +166,40 @@ export async function createSpecWithRetry(badgeCid: string, retries = 3): Promis
   }
 }
 
-export function isTransactionUnderpricedError(error: { body: string }) {
-  try {
-    const errorParsed = JSON.parse(error.body)
-    const errorCode = errorParsed?.error?.code
-    return errorCode === TRANSACTION_UNDERPRICED_ERROR_CODE
-  } catch (e) {
+export function isTransactionUnderpricedError(error: any): boolean {
+  const checkError = (err: any): boolean => {
+    if (!err) return false
+    if (
+      err.code === 'REPLACEMENT_UNDERPRICED' ||
+      err.code === TRANSACTION_UNDERPRICED_ERROR_CODE ||
+      String(err.error?.error?.code) === TRANSACTION_UNDERPRICED_ERROR_CODE ||
+      err.reason === 'replacement fee too low'
+    ) {
+      return true
+    }
+    if (err.error) {
+      return checkError(err.error)
+    }
     return false
   }
+
+  return checkError(error)
+}
+
+export function isTransactionReplacedError(error: any): boolean {
+  const checkError = (err: any): boolean => {
+    if (!err) return false
+
+    if (err.code === TRANSACTION_REPLACED_CODE || err.reason === 'replaced') {
+      return true
+    }
+
+    if (err.error) {
+      return checkError(err.error)
+    }
+
+    return false
+  }
+
+  return checkError(error)
 }

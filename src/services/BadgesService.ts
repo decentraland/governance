@@ -3,19 +3,14 @@ import crypto from 'crypto'
 import AirdropJobModel from '../back/models/AirdropJob'
 import { VoteService } from '../back/services/vote'
 import { AirdropJobStatus, AirdropOutcome } from '../back/types/AirdropJob'
-import {
-  airdropWithRetry,
-  createSpecWithRetry,
-  reinstateBadge,
-  revokeBadge,
-  trimOtterspaceId,
-} from '../back/utils/contractInteractions'
+import { airdropWithRetry, createSpecWithRetry, reinstateBadge, revokeBadge } from '../back/utils/contractInteractions'
 import { OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgraph'
 import {
   CORE_UNITS_BADGE_CID as CORE_UNITS_BADGE_SPEC_CID,
   LAND_OWNER_BADGE_SPEC_CID,
   LEGISLATOR_BADGE_SPEC_CID,
   TOP_VOTERS_PER_MONTH,
+  trimOtterspaceId,
 } from '../constants'
 import { UPLOADED_BADGES } from '../entities/Badges/constants'
 import { storeBadgeSpecWithRetry } from '../entities/Badges/storeBadgeSpec'
