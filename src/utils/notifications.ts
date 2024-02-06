@@ -40,6 +40,10 @@ export const Notifications = {
     title: 'Grant Proposal enacted',
     body: 'Congratulations! Your Grant Proposal has been successfully enacted and a Vesting Contract was added',
   },
+  ProjectEnacted: {
+    title: 'Your Project has been funded',
+    body: 'Congratulations! Your Project has been successfully enacted and a funding Vesting Contract was created',
+  },
   ProposalCommented: {
     title: (proposal: ProposalAttributes) => `New comment posted on proposal ${proposal.title}`,
     body: 'Engage in a productive conversation by replying to this comment.',

@@ -125,7 +125,7 @@ export class NotificationService {
     }
   }
 
-  static grantProposalEnacted(proposal: ProposalAttributes) {
+  static projectProposalEnacted(proposal: ProposalAttributes) {
     inBackground(async () => {
       try {
         const coauthors = await CoauthorService.getAllFromProposalId(proposal.id)
@@ -136,8 +136,8 @@ export class NotificationService {
           throw new Error('Invalid addresses')
         }
 
-        const title = Notifications.GrantEnacted.title
-        const body = Notifications.GrantEnacted.body
+        const title = Notifications.ProjectEnacted.title
+        const body = Notifications.ProjectEnacted.body
 
         const validatedUsers = await UserModel.getActiveDiscordIds(addresses)
         for (const user of validatedUsers) {

@@ -1,7 +1,6 @@
 import { useRef } from 'react'
 import Flickity from 'react-flickity-component'
 
-import Bold from 'decentraland-gatsby/dist/components/Text/Bold'
 import 'flickity/css/flickity.css'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
@@ -78,7 +77,7 @@ export default function ProposalThresholdsSummary({ proposal, partialResults }: 
             {thresholdReached && t('page.proposal_detail.threshold_reached', { threshold: abbreviatedThreshold })}
           </div>
           <div className="ProposalThresholdsSummary__Title">
-            <Bold>{t('page.proposal_detail.voting_ends', { countdown: endDate.fromNow() })}</Bold>
+            {t('page.proposal_detail.voting_ends', { countdown: endDate.fromNow() })}
           </div>
         </div>
       )}
@@ -90,11 +89,9 @@ export default function ProposalThresholdsSummary({ proposal, partialResults }: 
               : t('page.proposal_detail.threshold_not_reached', { threshold: abbreviatedThreshold })}
           </div>
           <div className="ProposalThresholdsSummary__Title">
-            <Bold>
-              {t('page.proposal_detail.proposal_status', {
-                status: getEnumDisplayName(proposal?.status).toLowerCase(),
-              })}
-            </Bold>
+            {t('page.proposal_detail.proposal_status', {
+              status: getEnumDisplayName(proposal?.status).toLowerCase(),
+            })}
           </div>
         </div>
       )}
