@@ -58,10 +58,6 @@ export default function ProposalSubmitCatalystPage({ catalystType }: Props) {
   const [error, setError] = useState('')
   const [domain, setDomain] = useState('')
 
-  const { isLoading: isCommsStatusLoading, isError: isErrorOnCommsStatus } = useQuery({
-    queryKey: [`commsStatus#${domain}`],
-    queryFn: () => (domain ? Catalyst.getInstanceFrom('https://' + domain).getCommsStatus() : null),
-  })
   const { isLoading: isContentStatusLoading, isError: isErrorOnContentStatus } = useQuery({
     queryKey: [`contentStatus#${domain}`],
     queryFn: () => (domain ? Catalyst.getInstanceFrom('https://' + domain).getContentStatus() : null),
@@ -75,10 +71,10 @@ export default function ProposalSubmitCatalystPage({ catalystType }: Props) {
   const preventNavigation = useRef(false)
 
   useEffect(() => {
-    if (!errors.domain && (isErrorOnCommsStatus || isErrorOnContentStatus || isErrorOnLambdasStatus)) {
+    if (!errors.domain && (isErrorOnContentStatus || isErrorOnLambdasStatus)) {
       setFormError('domain', { message: t('error.catalyst.server_invalid_status') })
     }
-  }, [isErrorOnCommsStatus, isErrorOnContentStatus, isErrorOnLambdasStatus, errors.domain, setFormError, t])
+  }, [isErrorOnContentStatus, isErrorOnLambdasStatus, errors.domain, setFormError, t])
 
   const setCoAuthors = (addresses?: string[]) => setValue('coAuthors', addresses)
 
@@ -87,7 +83,7 @@ export default function ProposalSubmitCatalystPage({ catalystType }: Props) {
   }, [isDirty])
 
   const onSubmit: SubmitHandler<NewProposalCatalyst> = async (data) => {
-    const errors = [isErrorOnCommsStatus, isErrorOnContentStatus, isErrorOnLambdasStatus].filter(Boolean)
+    const errors = [isErrorOnContentStatus, isErrorOnLambdasStatus].filter(Boolean)
     if (errors.length > 0) {
       setFormError('domain', { message: t('error.catalyst.server_invalid_status') })
       setError('error.catalyst.server_invalid_status')
@@ -95,7 +91,7 @@ export default function ProposalSubmitCatalystPage({ catalystType }: Props) {
       return
     }
 
-    const loading = [isCommsStatusLoading, isContentStatusLoading, isLambdasStatusLoading].filter(Boolean)
+    const loading = [isContentStatusLoading, isLambdasStatusLoading].filter(Boolean)
     if (loading.length > 0) {
       return
     }
@@ -189,15 +185,6 @@ export default function ProposalSubmitCatalystPage({ catalystType }: Props) {
           {!!domain && (
             <div>
               <Text>
-                {isCommsStatusLoading && (
-                  <span className="Catalyst__Loading">{t('page.submit_catalyst.domain_comms_checking')}</span>
-                )}
-                {isErrorOnCommsStatus && (
-                  <span className="Catalyst__Error">{t('page.submit_catalyst.domain_comms_failed')}</span>
-                )}
-                {!isCommsStatusLoading && !isErrorOnCommsStatus && (
-                  <span className="Catalyst__Success">{t('page.submit_catalyst.domain_comms_ok')}</span>
-                )}
                 {isContentStatusLoading && (
                   <span className="Catalyst__Loading">{t('page.submit_catalyst.domain_content_checking')}</span>
                 )}
@@ -259,7 +246,7 @@ export default function ProposalSubmitCatalystPage({ catalystType }: Props) {
           <Button
             type="submit"
             primary
-            disabled={formDisabled || isCommsStatusLoading || isContentStatusLoading || isLambdasStatusLoading}
+            disabled={formDisabled || isContentStatusLoading || isLambdasStatusLoading}
             loading={isSubmitting}
           >
             {t('page.submit.button_submit')}
