@@ -21,6 +21,7 @@ export enum ENV {
 export enum NotificationCustomType {
   Announcement = 'announcement',
   Proposal = 'proposal',
+  ProposalComment = 'proposal_comment',
   Grant = 'grant',
 }
 

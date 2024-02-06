@@ -2,11 +2,13 @@ import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 import { ethers } from 'ethers'
 
 import { NOTIFICATIONS_SERVICE_ENABLED, PUSH_CHANNEL_ID } from '../../constants'
+import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { proposalUrl } from '../../entities/Proposal/utils'
 import UserModel from '../../entities/User/model'
 import { inBackground } from '../../helpers'
 import { ErrorService } from '../../services/ErrorService'
+import { CommentedEvent } from '../../shared/types/events'
 import { Notification, NotificationCustomType, Recipient } from '../../shared/types/notifications'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
@@ -288,5 +290,40 @@ export class NotificationService {
         }
       })
     }
+  }
+
+  static newCommentOnProposal(commentEvent: CommentedEvent) {
+    inBackground(async () => {
+      const proposalId = commentEvent.event_data.proposal_id
+      try {
+        const proposal = await ProposalModel.getProposal(proposalId)
+        const coauthors = await CoauthorService.getAllFromProposalId(proposalId)
+        const coauthorsAddresses = coauthors.length > 0 ? coauthors.map((coauthor) => coauthor.address) : []
+        const addresses = [proposal.user, ...coauthorsAddresses]
+        const activeDiscordUsers = await UserModel.getActiveDiscordIds(addresses)
+        for (const user of activeDiscordUsers) {
+          DiscordService.sendDirectMessage(user.discord_id, {
+            title: Notifications.ProposalCommented.title(proposal),
+            action: Notifications.ProposalCommented.body,
+            url: proposalUrl(proposal.id),
+            fields: [],
+          })
+        }
+        return await this.sendNotification({
+          title: Notifications.ProposalCommented.title(proposal),
+          body: Notifications.ProposalCommented.body,
+          recipient: addresses,
+          url: proposalUrl(proposal.id),
+          customType: NotificationCustomType.ProposalComment,
+        })
+      } catch (error) {
+        ErrorService.report('Error sending notifications for new comment on proposal', {
+          error,
+          category: ErrorCategory.Notifications,
+          proposal_id: proposalId,
+          event: commentEvent,
+        })
+      }
+    })
   }
 }
