@@ -4,6 +4,7 @@ import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 import { Network } from '@dcl/schemas/dist/dapps/network'
 import { ProviderType } from '@dcl/schemas/dist/dapps/provider-type'
 import { Avatar } from '@dcl/schemas/dist/platform/profile'
+import { useQuery } from '@tanstack/react-query'
 import {
   DROPDOWN_MENU_BALANCE_CLICK_EVENT,
   DROPDOWN_MENU_DISPLAY_EVENT,
@@ -15,8 +16,6 @@ import useProfileInjected from 'decentraland-gatsby/dist/context/Auth/useProfile
 import useFeatureFlagContext from 'decentraland-gatsby/dist/context/FeatureFlag/useFeatureFlagContext'
 import useTrackContext from 'decentraland-gatsby/dist/context/Track/useTrackContext'
 import useTrackLinkContext from 'decentraland-gatsby/dist/context/Track/useTrackLinkContext'
-import useAsyncState from 'decentraland-gatsby/dist/hooks/useAsyncState'
-import useChainId from 'decentraland-gatsby/dist/hooks/useChainId'
 import { fetchManaBalance } from 'decentraland-gatsby/dist/utils/loader/manaBalance'
 import { Footer } from 'decentraland-ui/dist/components/Footer/Footer'
 import { Navbar } from 'decentraland-ui/dist/components/Navbar/Navbar'
@@ -78,47 +77,51 @@ export default function Layout({ children }: LayoutProps) {
   const handleCancelConnect = useCallback(() => userState.select(false), [userState])
 
   const [profile, profileState] = useProfileInjected()
-  const chainId = useChainId()
+  const chainId = userState.chainId
   const isAuthDappEnabled = ff.enabled('dapps-auth-dapp')
   const loading = userState.loading || profileState.loading
 
-  const [manaBalances] = useAsyncState<ManaBalancesProps['manaBalances']>(async () => {
-    if (!user) {
-      return {}
-    }
-
-    switch (chainId) {
-      case ChainId.ETHEREUM_MAINNET: {
-        const [ETHEREUM, MATIC] = await Promise.all([
-          fetchManaBalance(user, chainId),
-          fetchManaBalance(user, ChainId.MATIC_MAINNET),
-        ])
-
-        return { ETHEREUM, MATIC }
-      }
-
-      case ChainId.ETHEREUM_SEPOLIA:
-      case ChainId.ETHEREUM_GOERLI:
-      case ChainId.ETHEREUM_RINKEBY:
-      case ChainId.ETHEREUM_ROPSTEN: {
-        const [ETHEREUM, MATIC] = await Promise.all([
-          fetchManaBalance(user, chainId),
-          fetchManaBalance(user, ChainId.MATIC_MUMBAI),
-        ])
-
-        return { ETHEREUM, MATIC }
-      }
-
-      case ChainId.MATIC_MAINNET:
-      case ChainId.MATIC_MUMBAI: {
-        const MATIC = await fetchManaBalance(user, chainId)
-        return { MATIC }
-      }
-
-      default:
+  const { data: manaBalances } = useQuery({
+    queryKey: [`manaBalances#${user}`],
+    queryFn: async () => {
+      if (!user) {
         return {}
-    }
-  }, [user, chainId])
+      }
+
+      switch (chainId) {
+        case ChainId.ETHEREUM_MAINNET: {
+          const [ETHEREUM, MATIC] = await Promise.all([
+            fetchManaBalance(user, chainId),
+            fetchManaBalance(user, ChainId.MATIC_MAINNET),
+          ])
+
+          return { ETHEREUM, MATIC }
+        }
+
+        case ChainId.ETHEREUM_SEPOLIA:
+        case ChainId.ETHEREUM_GOERLI:
+        case ChainId.ETHEREUM_RINKEBY:
+        case ChainId.ETHEREUM_ROPSTEN: {
+          const [ETHEREUM, MATIC] = await Promise.all([
+            fetchManaBalance(user, chainId),
+            fetchManaBalance(user, ChainId.MATIC_MUMBAI),
+          ])
+
+          return { ETHEREUM, MATIC }
+        }
+
+        case ChainId.MATIC_MAINNET:
+        case ChainId.MATIC_MUMBAI: {
+          const MATIC = await fetchManaBalance(user, chainId)
+          return { MATIC }
+        }
+
+        default:
+          return {}
+      }
+    },
+    enabled: !!user,
+  })
 
   const handleClickBalance = useCallback(
     (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, network: Network) => {
@@ -167,7 +170,7 @@ export default function Layout({ children }: LayoutProps) {
       />
       <main>{children}</main>
       <WrongNetworkModal
-        currentNetwork={userState.chainId}
+        currentNetwork={chainId}
         expectedNetworks={getSupportedChainIds()}
         onSwitchNetwork={handleSwitchNetwork}
         providerType={userState.providerType}
