@@ -39,6 +39,7 @@ import {
   getIpfsHttpsLink,
   getLandOwnerAddresses,
   getTopVotersBadgeSpec,
+  getUsersWithoutBadge,
   getValidatedUsersForBadge,
   isSpecAlreadyCreated,
 } from '../entities/Badges/utils'
@@ -123,7 +124,8 @@ export class BadgesService {
       })
       return
     }
-    await this.queueAirdropJob(LEGISLATOR_BADGE_SPEC_CID, recipients)
+    const { usersWithoutBadge } = await getUsersWithoutBadge(LEGISLATOR_BADGE_SPEC_CID, recipients)
+    await this.queueAirdropJob(LEGISLATOR_BADGE_SPEC_CID, usersWithoutBadge)
   }
 
   static async giveAndRevokeLandOwnerBadges() {

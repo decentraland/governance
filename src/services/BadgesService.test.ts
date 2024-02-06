@@ -1,4 +1,5 @@
 import AirdropJobModel from '../back/models/AirdropJob'
+import * as BadgesUtils from '../entities/Badges/utils'
 import CoauthorModel from '../entities/Coauthor/model'
 import { createTestProposal } from '../entities/Proposal/testHelpers'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
@@ -15,8 +16,10 @@ describe('giveLegislatorBadges', () => {
   it('should call queueAirdropJob with correct arguments for governance proposals', async () => {
     jest.spyOn(AirdropJobModel, 'create').mockResolvedValue(async () => {})
     jest.spyOn(CoauthorModel, 'findAllByProposals').mockResolvedValue(COAUTHORS)
+    jest.spyOn(BadgesUtils, 'getUsersWithoutBadge').mockImplementation((badgeCid: string, users: string[]) => {
+      return Promise.resolve({ usersWithoutBadge: users, usersWithBadgesToReinstate: [] })
+    })
     const proposal = createTestProposal(ProposalType.Governance, ProposalStatus.Passed)
-    proposal.user = '0x4757ce43dc5429b8f1a132dc29ef970e55ae722b'
     const expectedAuthorsAndCoauthors = [proposal.user, ...COAUTHORS].map(getChecksumAddress)
     await BadgesService.giveLegislatorBadges([proposal])
     expect(AirdropJobModel.create).toHaveBeenCalledWith({
