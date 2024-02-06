@@ -48,7 +48,7 @@ export default function AuthorDetails({ address }: Props) {
   const intl = useIntl()
   const hasPreviouslySubmittedGrants = !!grants && grants?.total > 1
   const [isSidebarVisible, setIsSidebarVisible] = useState(false)
-  const { username } = useDclProfile(address)
+  const { profile: dclProfile } = useDclProfile(address)
 
   const { data: vestings } = useVestings(hasPreviouslySubmittedGrants)
   const projects = useMemo(
@@ -162,7 +162,7 @@ export default function AuthorDetails({ address }: Props) {
       </div>
       <GovernanceSidebar
         title={t('page.proposal_detail.author_details.sidebar.title', {
-          username: username || addressShortener(address || ''),
+          username: dclProfile.username || addressShortener(address || ''),
         })}
         visible={isSidebarVisible}
         onClose={handleClose}

@@ -45,7 +45,8 @@ export default function Comment({ forumUsername, avatarUrl, createdAt, cooked, a
   }
 
   const discourseUserUrl = getDiscourseProfileUrl(forumUsername, address)
-  const { username, avatar, hasCustomAvatar, isLoadingDclProfile } = useDclProfile(address)
+  const { profile, isLoadingDclProfile } = useDclProfile(address)
+  const { username, hasCustomAvatar, avatarUrl: profileAvatarUrl } = profile
 
   return (
     <div className="Comment">
@@ -53,7 +54,7 @@ export default function Comment({ forumUsername, avatarUrl, createdAt, cooked, a
         <Link href={discourseUserUrl}>
           <Avatar
             address={address}
-            avatar={hasCustomAvatar ? avatar : avatarUrl}
+            avatar={hasCustomAvatar ? profileAvatarUrl : avatarUrl}
             size="md"
             isLoadingDclProfile={isLoadingDclProfile}
           />

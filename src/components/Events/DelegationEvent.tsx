@@ -12,7 +12,7 @@ export default function DelegationEvent({ event }: { event: ActivityTickerEvent 
   const t = useFormatMessage()
   const delegateKey = event.event_type === 'delegation_set' ? 'new_delegate' : 'removed_delegate'
   const delegate = (event.event_data as never)[delegateKey]
-  const { username } = useDclProfile(delegate)
+  const { profile } = useDclProfile(delegate)
 
   return (
     <Link href={locations.profile({ address: delegate })}>
@@ -22,7 +22,7 @@ export default function DelegationEvent({ event }: { event: ActivityTickerEvent 
       >
         {t(`page.home.activity_ticker.${event.event_type}`, {
           delegator: event.author,
-          [delegateKey]: username || addressShortener(delegate),
+          [delegateKey]: profile.username || addressShortener(delegate),
         })}
       </Markdown>
       <Text className="ActivityTicker__ListItemDate" size="xs">
