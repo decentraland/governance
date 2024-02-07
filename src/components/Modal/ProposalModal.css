@@ -1,13 +1,10 @@
 .ProposalModal__Title {
   margin-bottom: 32px;
+  text-align: center;
 }
 
 .ProposalModal .content.ProposalModal__Form {
   width: 100%;
-}
-
-.ProposalModal .ProposalModal__Title {
-  text-align: center;
 }
 
 .ProposalModal .ProposalModal__Title .ui.header {
