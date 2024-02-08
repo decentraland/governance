@@ -5,6 +5,8 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { SNAPSHOT_SPACE } from '../../entities/Snapshot/constants'
+import UpdateModel from '../../entities/Updates/model'
+import { UpdateAttributes } from '../../entities/Updates/types'
 import UserModel from '../../entities/User/model'
 import { UserAttributes } from '../../entities/User/types'
 import { DISCOURSE_USER } from '../../entities/User/utils'
@@ -17,10 +19,11 @@ import {
   ActivityTickerEvent,
   AlchemyBlock,
   AlchemyLog,
-  CommentedEvent,
   DelegationClearEvent,
   DelegationSetEvent,
   EventType,
+  ProjectUpdateCommentedEvent,
+  ProposalCommentedEvent,
   ProposalCreatedEvent,
   UpdateCreatedEvent,
   VotedEvent,
@@ -230,46 +233,108 @@ export class EventsService {
         return
       }
 
-      const commentedProposal = await ProposalModel.findOne<ProposalAttributes>({
-        discourse_topic_id: discoursePost.topic_id,
-      })
-      if (!commentedProposal) {
-        const isAnUpdateTopic = /Update #\d+/.test(discoursePost.topic_title)
-        if (!isAnUpdateTopic) {
-          ErrorService.report('Unable to find commented proposal', {
-            event_data: {
-              discourse_event_id: discourseEventId,
-              discourse_event: discourseEvent,
-              discourse_post: discoursePost,
-            },
-            category: ErrorCategory.Events,
-          })
-        }
-        return
-      }
-
+      const isAnUpdateTopic = /Update #\d+/.test(discoursePost.topic_title)
       const user = await UserModel.findOne<UserAttributes>({ forum_id: discoursePost.user_id })
+      if (isAnUpdateTopic) {
+        return await this.commentedOnProjectUpdate(discoursePost, discourseEventId, discourseEvent, user)
+      } else {
+        return await this.commentedOnProposal(discoursePost, discourseEventId, discourseEvent, user)
+      }
+    } catch (e) {
+      ErrorService.report('Unexpected error while creating comment event', { error: e, category: ErrorCategory.Events })
+    }
+  }
 
-      const commentedEvent: CommentedEvent = {
-        id: crypto.randomUUID(),
-        address: user ? user.address : null,
-        event_type: EventType.Commented,
+  private static async commentedOnProposal(
+    discoursePost: DiscourseWebhookPost,
+    discourseEventId: string,
+    discourseEvent: string,
+    user: UserAttributes | undefined
+  ) {
+    const commentedProposal = await ProposalModel.findOne<ProposalAttributes>({
+      discourse_topic_id: discoursePost.topic_id,
+    })
+    if (!commentedProposal) {
+      ErrorService.report('Unable to find commented proposal', {
         event_data: {
           discourse_event_id: discourseEventId,
           discourse_event: discourseEvent,
           discourse_post: discoursePost,
-          proposal_id: commentedProposal.id,
-          proposal_title: commentedProposal.title,
         },
-        created_at: new Date(discoursePost.created_at),
-      }
-
-      const commentEvent = await EventModel.create(commentedEvent)
-      NotificationService.newCommentOnProposal(commentEvent)
-      return commentEvent
-    } catch (e) {
-      ErrorService.report('Unexpected error while creating comment event', { error: e, category: ErrorCategory.Events })
+        category: ErrorCategory.Events,
+      })
+      return
     }
+    const commentedEvent: ProposalCommentedEvent = {
+      id: crypto.randomUUID(),
+      address: user ? user.address : null,
+      event_type: EventType.ProposalCommented,
+      event_data: {
+        discourse_event_id: discourseEventId,
+        discourse_event: discourseEvent,
+        discourse_post: discoursePost,
+        proposal_id: commentedProposal.id,
+        proposal_title: commentedProposal.title,
+      },
+      created_at: new Date(discoursePost.created_at),
+    }
+
+    const commentEvent = await EventModel.create(commentedEvent)
+    NotificationService.newCommentOnProposal(commentEvent)
+    return commentEvent
+  }
+
+  private static async commentedOnProjectUpdate(
+    discoursePost: DiscourseWebhookPost,
+    discourseEventId: string,
+    discourseEvent: string,
+    user: UserAttributes | undefined
+  ) {
+    const commentedUpdate = await UpdateModel.findOne<UpdateAttributes>({
+      discourse_topic_id: discoursePost.topic_id,
+    })
+    if (!commentedUpdate) {
+      ErrorService.report('Unable to find commented update', {
+        event_data: {
+          discourse_event_id: discourseEventId,
+          discourse_event: discourseEvent,
+          discourse_post: discoursePost,
+        },
+        category: ErrorCategory.Events,
+      })
+      return
+    }
+    const commentedProposal = await ProposalModel.findOne<ProposalAttributes>({
+      id: commentedUpdate?.proposal_id,
+    })
+    if (!commentedProposal) {
+      ErrorService.report('Unable to find proposal for commented update', {
+        event_data: {
+          discourse_event_id: discourseEventId,
+          discourse_event: discourseEvent,
+          discourse_post: discoursePost,
+        },
+        commentedUpdate,
+        category: ErrorCategory.Events,
+      })
+      return
+    }
+    const commentedEvent: ProjectUpdateCommentedEvent = {
+      id: crypto.randomUUID(),
+      address: user ? user.address : null,
+      event_type: EventType.ProjectUpdateCommented,
+      event_data: {
+        discourse_event_id: discourseEventId,
+        discourse_event: discourseEvent,
+        discourse_post: discoursePost,
+        proposal_id: commentedUpdate.proposal_id,
+        proposal_title: commentedProposal.title,
+        update_id: commentedUpdate.id,
+      },
+      created_at: new Date(discoursePost.created_at),
+    }
+
+    return await EventModel.create(commentedEvent)
   }
 
   static async delegationUpdate(block: AlchemyBlock) {

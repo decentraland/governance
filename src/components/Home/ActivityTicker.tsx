@@ -11,6 +11,7 @@ import Empty from '../Common/Empty'
 import Heading from '../Common/Typography/Heading'
 import Link from '../Common/Typography/Link'
 import DelegationEvent from '../Events/DelegationEvent'
+import ProjectUpdateCommentedEvent from '../Events/ProjectUpdateCommentedEvent'
 import ProposalRelatedEvent from '../Events/ProposalRelatedEvent'
 import CircledComment from '../Icon/CircledComment'
 
@@ -19,20 +20,20 @@ import './ActivityTicker.css'
 function getActivityTickerEvent(event: ActivityTickerEvent) {
   if (event.event_type === EventType.DelegationClear || event.event_type === EventType.DelegationSet) {
     return <DelegationEvent event={event} />
-  } else {
-    return <ProposalRelatedEvent event={event} />
   }
+  if (event.event_type === EventType.ProjectUpdateCommented) return <ProjectUpdateCommentedEvent event={event} />
+  return <ProposalRelatedEvent event={event} />
 }
 
 function getActivityTickerImage(item: ActivityTickerEvent) {
-  if (!!item.address && item.event_type !== EventType.Commented) {
+  if (!!item.address && item.event_type !== EventType.ProposalCommented) {
     return (
       <Link href={locations.profile({ address: item.address })}>
         <Avatar size="xs" avatar={item.avatar} address={item.address} />
       </Link>
     )
   }
-  if (item.event_type === EventType.Commented) {
+  if (item.event_type === EventType.ProposalCommented || item.event_type === EventType.ProjectUpdateCommented) {
     return (
       <div>
         <CircledComment />
