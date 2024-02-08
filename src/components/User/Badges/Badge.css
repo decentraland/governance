@@ -9,6 +9,7 @@
   min-width: var(--size);
   border-radius: 50%;
   background-size: calc(var(--size) / (2 / 3) * 4);
+  background-color: var(--white-900);
   background-repeat: no-repeat;
 }
 
