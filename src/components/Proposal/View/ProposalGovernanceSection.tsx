@@ -34,6 +34,7 @@ interface Props {
   castingVote: boolean
   proposalPageState: ProposalPageState
   updatePageState: React.Dispatch<React.SetStateAction<ProposalPageState>>
+  onChoiceClick: () => void
 }
 
 export default function ProposalGovernanceSection({
@@ -45,6 +46,7 @@ export default function ProposalGovernanceSection({
   choices,
   onChangeVote,
   onVote,
+  onChoiceClick,
   castingVote,
   voteWithSurvey,
   proposalPageState,
@@ -115,7 +117,7 @@ export default function ProposalGovernanceSection({
             {partialResults.map((result) => {
               return (
                 <ChoiceProgress
-                  onClick={() => updatePageState((prevState) => ({ ...prevState, showVotesList: true }))}
+                  onClick={onChoiceClick}
                   key={result.choice}
                   color={result.color}
                   choice={result.choice}

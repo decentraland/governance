@@ -12,9 +12,11 @@ import { UpdateAttributes } from '../../entities/Updates/types'
 import { isProposalStatusWithUpdates } from '../../entities/Updates/utils'
 import { SelectedVoteChoice, VoteByAddress } from '../../entities/Votes/types'
 import { calculateResult } from '../../entities/Votes/utils'
+import useProposalVotes from '../../hooks/useProposalVotes'
 import { ProposalPageState } from '../../pages/proposal'
 import { NotDesktop1200 } from '../Layout/Desktop1200'
 import CalendarAlertModal from '../Modal/CalendarAlertModal'
+import VotesListModal from '../Modal/Votes/VotesList'
 
 import CalendarAlertButton from './View/CalendarAlertButton'
 import ProposalCoAuthorStatus from './View/ProposalCoAuthorStatus'
@@ -47,8 +49,6 @@ interface Props {
   subscriptions: SubscriptionAttributes[] | null
   subscriptionsLoading: boolean
   votes?: VoteByAddress | null
-  votesLoading: boolean
-  highQualityVotes?: VoteByAddress | null
   isOwner: boolean
   isCoauthor: boolean
 }
@@ -69,9 +69,6 @@ export default function ProposalSidebar({
   subscribe,
   subscriptions,
   subscriptionsLoading,
-  highQualityVotes,
-  votes,
-  votesLoading,
   isOwner,
   isCoauthor,
 }: Props) {
@@ -80,9 +77,12 @@ export default function ProposalSidebar({
     () => !!account && !!subscriptions && !!subscriptions.find((sub) => sub.user === account),
     [account, subscriptions]
   )
+  const { votes, isLoadingVotes, segmentedVotes } = useProposalVotes(proposal?.id)
+  const { highQualityVotes, lowQualityVotes } = segmentedVotes || {}
   const choices: string[] = proposal?.snapshot_proposal?.choices || EMPTY_VOTE_CHOICES
   const partialResults = useMemo(() => calculateResult(choices, highQualityVotes || {}), [choices, highQualityVotes])
 
+  const [isVotesListModalOpen, setIsVotesListModalOpen] = useState(false)
   const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false)
   const track = useTrackContext()
   const setIsCalendarModalOpenWithTracking = (isOpen: boolean) => {
@@ -96,18 +96,22 @@ export default function ProposalSidebar({
     if (voteWithSurvey) {
       updatePageState((prevState) => ({
         ...prevState,
-        selectedChoice: selectedChoice,
+        selectedChoice,
         showVotingModal: true,
       }))
     } else if (voteOnBid) {
       updatePageState((prevState) => ({
         ...prevState,
-        selectedChoice: selectedChoice,
+        selectedChoice,
         showBidVotingModal: true,
       }))
     } else {
       castVote(selectedChoice)
     }
+  }
+
+  const handleChoiceClick = () => {
+    setIsVotesListModalOpen(true)
   }
 
   const showProposalUpdatesActions =
@@ -141,7 +145,7 @@ export default function ProposalSidebar({
         )}
         <ProposalGovernanceSection
           disabled={!proposal || !votes}
-          loading={proposalLoading || votesLoading}
+          loading={proposalLoading || isLoadingVotes}
           proposal={proposal}
           votes={votes}
           partialResults={partialResults}
@@ -150,6 +154,7 @@ export default function ProposalSidebar({
           castingVote={castingVote}
           onChangeVote={(_, changing) => updatePageState((prevState) => ({ ...prevState, changingVote: changing }))}
           onVote={handleVoteClick}
+          onChoiceClick={handleChoiceClick}
           updatePageState={updatePageState}
           proposalPageState={proposalPageState}
         />
@@ -177,6 +182,13 @@ export default function ProposalSidebar({
               proposal={proposal}
               open={isCalendarModalOpen}
               onClose={() => setIsCalendarModalOpenWithTracking(false)}
+            />
+            <VotesListModal
+              open={isVotesListModalOpen}
+              proposal={proposal}
+              highQualityVotes={highQualityVotes}
+              lowQualityVotes={lowQualityVotes}
+              onClose={() => setIsVotesListModalOpen(false)}
             />
           </>
         )}

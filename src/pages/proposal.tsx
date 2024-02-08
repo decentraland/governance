@@ -25,7 +25,6 @@ import ProposalSuccessModal from '../components/Modal/ProposalSuccessModal'
 import TenderPublishedModal from '../components/Modal/TenderPublishedModal'
 import UpdateSuccessModal from '../components/Modal/UpdateSuccessModal'
 import { VoteRegisteredModal } from '../components/Modal/Votes/VoteRegisteredModal'
-import VotesListModal from '../components/Modal/Votes/VotesList'
 import { VotingModal } from '../components/Modal/Votes/VotingModal/VotingModal'
 import ProposalComments from '../components/Proposal/Comments/ProposalComments'
 import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
@@ -82,7 +81,6 @@ export type ProposalPageState = {
   confirmSubscription: boolean
   confirmDeletion: boolean
   confirmStatusUpdate: ProposalStatus | false
-  showVotesList: boolean
   showProposalSuccessModal: boolean
   showTenderPublishedModal: boolean
   showBidSubmittedModal: boolean
@@ -127,7 +125,6 @@ export default function ProposalPage() {
     confirmSubscription: false,
     confirmDeletion: false,
     confirmStatusUpdate: false,
-    showVotesList: false,
     showProposalSuccessModal: false,
     showTenderPublishedModal: false,
     showBidSubmittedModal: false,
@@ -146,7 +143,7 @@ export default function ProposalPage() {
   const { isCoauthor } = useIsProposalCoAuthor(proposal)
   const { isOwner } = useIsProposalOwner(proposal)
   const { votes, segmentedVotes, isLoadingVotes, reloadVotes } = useProposalVotes(proposal?.id)
-  const { highQualityVotes, lowQualityVotes } = segmentedVotes || {}
+  const { highQualityVotes } = segmentedVotes || {}
 
   const subscriptionsQueryKey = `proposalSubscriptions#${proposal?.id || ''}`
   const { data: subscriptions, isLoading: isSubscriptionsLoading } = useQuery({
@@ -455,9 +452,6 @@ export default function ProposalPage() {
             subscribe={updateSubscription}
             subscriptions={subscriptions ?? []}
             subscriptionsLoading={isSubscriptionsLoading}
-            highQualityVotes={highQualityVotes}
-            votes={votes}
-            votesLoading={isLoadingVotes}
             isCoauthor={isCoauthor}
             isOwner={isOwner}
           />
@@ -491,13 +485,7 @@ export default function ProposalPage() {
           }}
         />
       )}
-      <VotesListModal
-        open={proposalPageState.showVotesList}
-        proposal={proposal}
-        highQualityVotes={highQualityVotes}
-        lowQualityVotes={lowQualityVotes}
-        onClose={() => updatePageState((prevState) => ({ ...prevState, showVotesList: false }))}
-      />
+
       <VoteRegisteredModal
         loading={isUpdatingSubscription}
         open={proposalPageState.confirmSubscription}
