@@ -30,12 +30,11 @@ import './ProposalSidebar.css'
 
 const EMPTY_VOTE_CHOICES: string[] = []
 
-type Props = {
+interface Props {
   proposal: ProposalAttributes | null
   proposalLoading: boolean
-  deleting: boolean
   proposalPageState: ProposalPageState
-  updatePageState: (newState: Partial<ProposalPageState>) => void
+  updatePageState: React.Dispatch<React.SetStateAction<ProposalPageState>>
   pendingUpdates?: UpdateAttributes[]
   nextUpdate?: UpdateAttributes
   currentUpdate?: UpdateAttributes | null
@@ -59,7 +58,6 @@ export default function ProposalSidebar({
   proposalLoading,
   proposalPageState,
   updatePageState,
-  deleting,
   pendingUpdates,
   nextUpdate,
   currentUpdate,
@@ -96,15 +94,17 @@ export default function ProposalSidebar({
 
   const handleVoteClick = (selectedChoice: SelectedVoteChoice) => {
     if (voteWithSurvey) {
-      updatePageState({
+      updatePageState((prevState) => ({
+        ...prevState,
         selectedChoice: selectedChoice,
         showVotingModal: true,
-      })
+      }))
     } else if (voteOnBid) {
-      updatePageState({
+      updatePageState((prevState) => ({
+        ...prevState,
         selectedChoice: selectedChoice,
         showBidVotingModal: true,
-      })
+      }))
     } else {
       castVote(selectedChoice)
     }
@@ -148,7 +148,7 @@ export default function ProposalSidebar({
           choices={choices}
           voteWithSurvey={voteWithSurvey}
           castingVote={castingVote}
-          onChangeVote={(_, changing) => updatePageState({ changingVote: changing })}
+          onChangeVote={(_, changing) => updatePageState((prevState) => ({ ...prevState, changingVote: changing }))}
           onVote={handleVoteClick}
           updatePageState={updatePageState}
           proposalPageState={proposalPageState}
@@ -172,7 +172,7 @@ export default function ProposalSidebar({
             <NotDesktop1200>
               <ProposalDetailSection proposal={proposal} />
             </NotDesktop1200>
-            <ProposalActions proposal={proposal} deleting={deleting} updatePageState={updatePageState} />
+            <ProposalActions proposal={proposal} />
             <CalendarAlertModal
               proposal={proposal}
               open={isCalendarModalOpen}

@@ -4,8 +4,12 @@ import { Governance } from '../clients/Governance'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
+export function getProposalQueryKey(proposalId?: string | null) {
+  return `proposal#${proposalId}`
+}
+
 export default function useProposal(proposalId?: string | null) {
-  const proposalKey = `proposal#${proposalId}`
+  const proposalKey = getProposalQueryKey(proposalId)
 
   const {
     data: proposal,

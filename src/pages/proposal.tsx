@@ -4,7 +4,6 @@ import { ErrorCode } from '@ethersproject/logger'
 import { Web3Provider } from '@ethersproject/providers'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
 import { NotMobile, useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ErrorClient } from '../clients/ErrorClient'
@@ -22,10 +21,8 @@ import Navigation, { NavigationTab } from '../components/Layout/Navigation'
 import NotFound from '../components/Layout/NotFound'
 import BidSubmittedModal from '../components/Modal/BidSubmittedModal'
 import BidVotingModal from '../components/Modal/BidVotingModal/BidVotingModal'
-import { DeleteProposalModal } from '../components/Modal/DeleteProposalModal/DeleteProposalModal'
 import ProposalSuccessModal from '../components/Modal/ProposalSuccessModal'
 import TenderPublishedModal from '../components/Modal/TenderPublishedModal'
-import { UpdateProposalStatusModal } from '../components/Modal/UpdateProposalStatusModal/UpdateProposalStatusModal'
 import UpdateSuccessModal from '../components/Modal/UpdateSuccessModal'
 import { VoteRegisteredModal } from '../components/Modal/Votes/VoteRegisteredModal'
 import VotesListModal from '../components/Modal/Votes/VotesList'
@@ -62,7 +59,6 @@ import { DEFAULT_QUERY_STALE_TIME } from '../hooks/constants'
 import useAsyncTask from '../hooks/useAsyncTask'
 import useBudgetWithContestants from '../hooks/useBudgetWithContestants'
 import useFormatMessage from '../hooks/useFormatMessage'
-import useIsDAOCommittee from '../hooks/useIsDAOCommittee'
 import useIsProposalCoAuthor from '../hooks/useIsProposalCoAuthor'
 import useIsProposalOwner from '../hooks/useIsProposalOwner'
 import useProposal from '../hooks/useProposal'
@@ -126,7 +122,7 @@ export default function ProposalPage() {
   const t = useFormatMessage()
   const params = useURLSearchParams()
   const isMobile = useMobileMediaQuery()
-  const [proposalPageState, updatePageState] = usePatchState<ProposalPageState>({
+  const [proposalPageState, updatePageState] = useState<ProposalPageState>({
     changingVote: false,
     confirmSubscription: false,
     confirmDeletion: false,
@@ -145,10 +141,8 @@ export default function ProposalPage() {
     selectedChoice: EMPTY_VOTE_CHOICE_SELECTION,
   })
   const [account, { provider }] = useAuthContext()
-  const { isDAOCommittee } = useIsDAOCommittee(account)
   const [errorCounter, setErrorCounter] = useState(0)
-  const updatePageStateRef = useRef(updatePageState)
-  const { proposal, isLoadingProposal, isErrorOnProposal, proposalKey } = useProposal(params.get('id'))
+  const { proposal, isLoadingProposal, isErrorOnProposal } = useProposal(params.get('id'))
   const { isCoauthor } = useIsProposalCoAuthor(proposal)
   const { isOwner } = useIsProposalOwner(proposal)
   const { votes, segmentedVotes, isLoadingVotes, reloadVotes } = useProposalVotes(proposal?.id)
@@ -236,13 +230,14 @@ export default function ProposalPage() {
           } catch (e) {
             // do nothing
           }
-          updatePageState({
+          updatePageState((prevState) => ({
+            ...prevState,
             changingVote: false,
             showVotingModal: false,
             showBidVotingModal: false,
             showVotingError: false,
             confirmSubscription: !votes![account!],
-          })
+          }))
           await reloadVotes()
           await queryClient.invalidateQueries({ queryKey: [PROPOSAL_CACHED_VOTES_QUERY_KEY] })
         } catch (error) {
@@ -254,15 +249,17 @@ export default function ProposalPage() {
           })
           /* eslint-disable @typescript-eslint/no-explicit-any */
           if ((error as any).code === ErrorCode.ACTION_REJECTED) {
-            updatePageState({
+            updatePageState((prevState) => ({
+              ...prevState,
               changingVote: false,
-            })
+            }))
           } else {
-            updatePageState({
+            updatePageState((prevState) => ({
+              ...prevState,
               changingVote: false,
               showVotingError: true,
               showSnapshotRedirect: errorCounter + 1 >= MAX_ERRORS_BEFORE_SNAPSHOT_REDIRECT,
-            })
+            }))
             setErrorCounter((prev) => prev + 1)
           }
         }
@@ -285,25 +282,19 @@ export default function ProposalPage() {
       }
     },
     onSuccess: (updatedSubscriptions) => {
-      updatePageState({ confirmSubscription: false })
+      updatePageState((prevState) => ({ ...prevState, confirmSubscription: false }))
       if (!proposal) return
       queryClient.setQueryData([subscriptionsQueryKey], updatedSubscriptions)
     },
   })
 
-  const [deleting, deleteProposal] = useAsyncTask(async () => {
-    if (proposal && account && (proposal.user === account || isDAOCommittee)) {
-      await Governance.get().deleteProposal(proposal.id)
-      navigate(locations.proposals())
-    }
-  }, [proposal, account, isDAOCommittee])
-
   useEffect(() => {
-    updatePageStateRef.current({
+    updatePageState((prevState) => ({
+      ...prevState,
       showProposalSuccessModal: params.get('new') === 'true',
       showTenderPublishedModal: params.get('pending') === 'true',
       showBidSubmittedModal: params.get('bid') === 'true',
-    })
+    }))
   }, [params])
 
   useEffect(() => {
@@ -311,29 +302,29 @@ export default function ProposalPage() {
     if (isNewUpdate) {
       refetchUpdates()
     }
-    updatePageStateRef.current({ showUpdateSuccessModal: isNewUpdate })
+    updatePageState((prevState) => ({ ...prevState, showUpdateSuccessModal: isNewUpdate }))
   }, [params, refetchUpdates])
 
   useEffect(() => {
     if (proposalPageState.showVotingError) {
       const timer = setTimeout(() => {
-        updatePageState({ retryTimer: proposalPageState.retryTimer - 1 })
+        updatePageState((prevState) => ({ ...prevState, retryTimer: proposalPageState.retryTimer - 1 }))
       }, 1000)
 
       if (proposalPageState.retryTimer <= 0) {
-        updatePageState({ retryTimer: SECONDS_FOR_VOTING_RETRY, showVotingError: false })
+        updatePageState((prevState) => ({ ...prevState, retryTimer: SECONDS_FOR_VOTING_RETRY, showVotingError: false }))
       }
       return () => clearTimeout(timer)
     }
   }, [proposalPageState.showVotingError, proposalPageState.retryTimer, updatePageState])
 
   const closeProposalSuccessModal = () => {
-    updatePageState({ showProposalSuccessModal: false })
+    updatePageState((prevState) => ({ ...prevState, showProposalSuccessModal: false }))
     navigate(locations.proposal(proposal!.id), { replace: true })
   }
 
   const closeUpdateSuccessModal = () => {
-    updatePageState({ showUpdateSuccessModal: false })
+    updatePageState((prevState) => ({ ...prevState, showUpdateSuccessModal: false }))
     navigate(locations.proposal(proposal!.id), { replace: true })
   }
 
@@ -451,7 +442,6 @@ export default function ProposalPage() {
           <ProposalSidebar
             proposal={proposal}
             proposalLoading={isLoadingProposal}
-            deleting={deleting}
             proposalPageState={proposalPageState}
             updatePageState={updatePageState}
             pendingUpdates={pendingUpdates}
@@ -481,7 +471,7 @@ export default function ProposalPage() {
           isLoadingSurveyTopics={isLoadingSurveyTopics}
           onClose={() => {
             setErrorCounter(0)
-            updatePageState({ showVotingModal: false, showSnapshotRedirect: false })
+            updatePageState((prevState) => ({ ...prevState, showVotingModal: false, showSnapshotRedirect: false }))
           }}
           onCastVote={castVote}
           castingVote={castingVote}
@@ -497,7 +487,7 @@ export default function ProposalPage() {
           proposalPageState={proposalPageState}
           onClose={() => {
             setErrorCounter(0)
-            updatePageState({ showBidVotingModal: false, showSnapshotRedirect: false })
+            updatePageState((prevState) => ({ ...prevState, showBidVotingModal: false, showSnapshotRedirect: false }))
           }}
         />
       )}
@@ -506,28 +496,15 @@ export default function ProposalPage() {
         proposal={proposal}
         highQualityVotes={highQualityVotes}
         lowQualityVotes={lowQualityVotes}
-        onClose={() => updatePageState({ showVotesList: false })}
+        onClose={() => updatePageState((prevState) => ({ ...prevState, showVotesList: false }))}
       />
       <VoteRegisteredModal
         loading={isUpdatingSubscription}
         open={proposalPageState.confirmSubscription}
         onClickAccept={() => updateSubscription(true)}
-        onClose={() => updatePageState({ confirmSubscription: false })}
+        onClose={() => updatePageState((prevState) => ({ ...prevState, confirmSubscription: false }))}
       />
-      <DeleteProposalModal
-        loading={deleting}
-        open={proposalPageState.confirmDeletion}
-        onClickAccept={() => deleteProposal()}
-        onClose={() => updatePageState({ confirmDeletion: false })}
-      />
-      <UpdateProposalStatusModal
-        open={!!proposalPageState.confirmStatusUpdate}
-        proposal={proposal}
-        isDAOCommittee={isDAOCommittee}
-        status={proposalPageState.confirmStatusUpdate || null}
-        proposalKey={proposalKey}
-        onClose={() => updatePageState({ confirmStatusUpdate: false })}
-      />
+
       {proposal && (
         <>
           <ProposalSuccessModal
