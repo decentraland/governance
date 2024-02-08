@@ -1,9 +1,10 @@
 import { ethers } from 'ethers'
 import fetch from 'isomorphic-fetch'
 
-import { BlockNativeResponse, PolygonGasData } from '../entities/Badges/types'
-import { ErrorService } from '../services/ErrorService'
-import { ErrorCategory } from '../utils/errorCategories'
+import { PolygonGasData } from '../../entities/Badges/types'
+import { ErrorService } from '../../services/ErrorService'
+import { ErrorCategory } from '../../utils/errorCategories'
+import { BlockNativeResponse } from '../types/BlockNative'
 
 export class BlockNative {
   static async getPolygonGasData(): Promise<PolygonGasData> {
@@ -13,7 +14,7 @@ export class BlockNative {
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          Authorization: require('../constants').BLOCKNATIVE_API_KEY,
+          Authorization: require('../../constants').BLOCKNATIVE_API_KEY,
         },
       })
       const data: BlockNativeResponse = await response.json()
@@ -27,10 +28,7 @@ export class BlockNative {
       }
     } catch (error) {
       ErrorService.report('Error while fetching polygon gas prices', { error, category: ErrorCategory.Badges })
-      return {
-        maxFeePerGas: ethers.utils.parseUnits('33.3', 'gwei'),
-        maxPriorityFeePerGas: ethers.utils.parseUnits('40.19', 'gwei'),
-      }
+      throw error
     }
   }
 }

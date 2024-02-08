@@ -3,11 +3,11 @@ import { Contract } from '@ethersproject/contracts'
 import { abi as BadgesAbi } from '@otterspace-xyz/contracts/out/Badges.sol/Badges.json'
 import { BigNumber, ethers } from 'ethers'
 
-import { BlockNative } from '../../clients/BlockNative'
 import { POLYGON_BADGES_CONTRACT_ADDRESS, RAFT_OWNER_PK, TRIMMED_OTTERSPACE_RAFT_ID } from '../../constants'
 import { ActionStatus, BadgeCreationResult, GasConfig } from '../../entities/Badges/types'
 import RpcService from '../../services/RpcService'
 import logger from '../../utils/logger'
+import { BlockNative } from '../clients/BlockNative'
 import { AirdropJobStatus, AirdropOutcome } from '../types/AirdropJob'
 
 const TRANSACTION_UNDERPRICED_ERROR_CODE = '-32000'

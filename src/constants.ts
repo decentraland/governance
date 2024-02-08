@@ -7,18 +7,18 @@ import Candidates from './utils/delegates/candidates.json'
 
 import env from './config'
 
-function getBooleanStringVar(variableName: string, defaultValue: boolean) {
-  const enabled = env(variableName)
-  if (enabled && enabled.length > 0) return enabled === 'true'
-  return defaultValue
-}
-
 export function trimOtterspaceId(rawId: string) {
   const parts = rawId.split(':')
   if (parts.length === 2) {
     return parts[1]
   }
   return ''
+}
+
+function getBooleanStringVar(variableName: string, defaultValue: boolean) {
+  const enabled = env(variableName)
+  if (enabled && enabled.length > 0) return enabled === 'true'
+  return defaultValue
 }
 
 export const DAO_VESTING_CONTRACT_ADDRESS = '0x7a3abf8897f31b56f09c6f69d074a393a905c1ac'
