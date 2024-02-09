@@ -14,7 +14,7 @@ import FullWidthButton from '../../Common/FullWidthButton'
 import '../ProposalModal.css'
 
 import { VoteListItem } from './VoteListItem'
-import './VotesList.css'
+import './VotesListModal.css'
 
 type Props = Omit<ModalProps, 'children'> & {
   proposal?: ProposalAttributes | null
@@ -47,7 +47,7 @@ export default function VotesListModal({ proposal, highQualityVotes, lowQualityV
       }}
     >
       <Modal.Content>
-        <div className="ProposalModal__Title">
+        <div className="VotesList__Title">
           <Header>{t('modal.votes_list.title', { votes: Object.keys(highQualityVotes || {}).length })}</Header>
           {hasLowQualityVotes && (
             <Header sub>

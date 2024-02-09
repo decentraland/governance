@@ -4,8 +4,9 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 import { Vote } from '../../../entities/Votes/types'
 import { abbreviateNumber } from '../../../entities/Votes/utils'
 import useFormatMessage from '../../../hooks/useFormatMessage'
-import locations, { navigate } from '../../../utils/locations'
+import locations from '../../../utils/locations'
 import { formatChoice } from '../../../utils/votes/utils'
+import Link from '../../Common/Typography/Link'
 import Username from '../../Common/Username'
 
 export type VoteListItemModalProps = {
@@ -20,7 +21,8 @@ export function VoteListItem({ address, vote, choices, isLowQuality, active }: V
   const t = useFormatMessage()
   return (
     <Grid.Row
-      onClick={() => navigate(locations.profile({ address }))}
+      as={Link}
+      href={locations.profile({ address })}
       key={address}
       className={classNames(
         'VoteList__Item VotesList__DividerLine',
@@ -29,7 +31,7 @@ export function VoteListItem({ address, vote, choices, isLowQuality, active }: V
       )}
     >
       <Grid.Column width={6}>
-        <Username address={address} size="sm" />
+        <Username className="VoteList__ItemUsername" address={address} size="sm" />
       </Grid.Column>
       <Grid.Column width={6}>
         <p>{formatChoice(choices[vote.choice - 1])}</p>
