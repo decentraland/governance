@@ -1,12 +1,19 @@
 import { ChainId } from '@dcl/schemas'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-import { trimOtterspaceId } from './back/utils/contractInteractions'
 import { OTTERSPACE_DAO_RAFT_ID } from './entities/Snapshot/constants'
 import { clientEnv } from './utils/clientEnv'
 import Candidates from './utils/delegates/candidates.json'
 
 import env from './config'
+
+export function trimOtterspaceId(rawId: string) {
+  const parts = rawId.split(':')
+  if (parts.length === 2) {
+    return parts[1]
+  }
+  return ''
+}
 
 function getBooleanStringVar(variableName: string, defaultValue: boolean) {
   const enabled = env(variableName)
@@ -68,3 +75,4 @@ export const BUY_MANA_URL = process.env.GATSBY_BUY_MANA_URL || clientEnv('GATSBY
 
 export const DCL_META_IMAGE_URL = 'https://decentraland.org/images/decentraland.png'
 export const JOIN_DISCORD_URL = clientEnv('GATSBY_JOIN_DISCORD_URL') || 'https://dcl.gg/discord'
+export const BLOCKNATIVE_API_KEY = process.env.BLOCKNATIVE_API_KEY || ''

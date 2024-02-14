@@ -1,8 +1,9 @@
-.VotesList .ProposalModal__Title {
+.VotesList__Title {
   text-align: start;
+  margin-bottom: 32px;
 }
 
-.VotesList .ProposalModal__Title .ui.header.sub {
+.VotesList__Title .ui.header.sub {
   margin: 0;
   text-transform: none;
   font-style: normal;
@@ -12,11 +13,11 @@
   color: var(--black-700);
 }
 
-.VotesList .VotesList__HeaderContainer {
+.VotesList__HeaderContainer {
   margin: 0 auto 20px;
 }
 
-.VotesList .VotesList__ItemsContainer {
+.VotesList__ItemsContainer {
   height: 71vh;
   padding: 20px 0;
   overflow-y: auto;
@@ -30,19 +31,19 @@
   }
 }
 
-.VotesList .VotesList__ItemsContainer .VoteList__Item:hover {
+.VotesList__ItemsContainer .VoteList__Item:hover {
   cursor: pointer;
 }
 
-.VotesList .VotesList__HeaderContainer .VotesList__Header {
-  color: #a4a2a8;
+.VotesList__HeaderContainer .VotesList__Header {
+  color: var(--black-600);
 }
 
 .VotesList__Divider {
   position: relative;
 }
 
-.VotesList__ItemsContainer .VotesList__Divider .VotesList__DividerLine:first-child:after {
+.VotesList__Divider .VotesList__DividerLine:first-child:after {
   content: '';
   position: absolute;
   top: 0;
@@ -128,11 +129,11 @@
 }
 
 @media (max-width: 991px) {
-  .VotesList .VotesList__ItemsContainer {
+  .VotesList__ItemsContainer {
     font-size: 13px;
   }
 
-  .VotesList .VotesList__HeaderContainer .VotesList__Header {
+  .VotesList__HeaderContainer .VotesList__Header {
     font-size: 13px;
   }
 
@@ -140,4 +141,8 @@
     margin: 0 0.25em 0 0;
     width: 20px;
   }
+}
+
+.VoteList__ItemUsername {
+  color: var(--black-800);
 }
