@@ -57,10 +57,10 @@ async function getGasConfig(
   gasIncrement: number
 ) {
   const defaultGasConfig = await estimateGas(async () => contract.estimateGas.airdrop(formattedRecipients, ipfsAddress))
-  return gasIncrement > 0 ? increaseGas(defaultGasConfig, gasIncrement) : defaultGasConfig
+  return gasIncrement > 0 ? getIncreasedGasConfig(defaultGasConfig, gasIncrement) : defaultGasConfig
 }
 
-function increaseGas(gasConfig: GasConfig, gasIncrement: number) {
+function getIncreasedGasConfig(gasConfig: GasConfig, gasIncrement: number) {
   const incrementFactor = 100 + gasIncrement * 10
 
   return {
