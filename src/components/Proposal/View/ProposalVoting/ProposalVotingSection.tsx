@@ -37,7 +37,7 @@ interface Props {
   onChangeVote?: (e: React.MouseEvent<unknown, MouseEvent>, changing: boolean) => void
   castingVote: boolean
   proposalPageState: ProposalPageState
-  updatePageState: (newState: Partial<ProposalPageState>) => void
+  updatePageState: React.Dispatch<React.SetStateAction<ProposalPageState>>
 }
 
 const ProposalVotingSection = ({

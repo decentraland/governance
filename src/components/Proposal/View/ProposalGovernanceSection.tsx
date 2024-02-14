@@ -33,7 +33,8 @@ interface Props {
   onVote: (selectedChoice: SelectedVoteChoice) => void
   castingVote: boolean
   proposalPageState: ProposalPageState
-  updatePageState: (newState: Partial<ProposalPageState>) => void
+  updatePageState: React.Dispatch<React.SetStateAction<ProposalPageState>>
+  onChoiceClick: () => void
 }
 
 export default function ProposalGovernanceSection({
@@ -45,6 +46,7 @@ export default function ProposalGovernanceSection({
   choices,
   onChangeVote,
   onVote,
+  onChoiceClick,
   castingVote,
   voteWithSurvey,
   proposalPageState,
@@ -70,7 +72,7 @@ export default function ProposalGovernanceSection({
 
   const handleShowResults = useCallback(
     (show: boolean) => {
-      updatePageState({ showResults: show })
+      updatePageState((prevState) => ({ ...prevState, showResults: show }))
     },
     [updatePageState]
   )
@@ -115,7 +117,7 @@ export default function ProposalGovernanceSection({
             {partialResults.map((result) => {
               return (
                 <ChoiceProgress
-                  onClick={() => updatePageState({ showVotesList: true })}
+                  onClick={onChoiceClick}
                   key={result.choice}
                   color={result.color}
                   choice={result.choice}

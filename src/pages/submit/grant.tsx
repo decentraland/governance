@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import classNames from 'classnames'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import camelCase from 'lodash/camelCase'
@@ -125,7 +124,7 @@ export default function SubmitGrant() {
   }, [])
 
   const [grantRequest, patchGrantRequest] = useState<GrantRequest>(initialState)
-  const [validationState, patchValidationState] = usePatchState<GrantRequestValidationState>(initialValidationState)
+  const [validationState, setValidationState] = useState<GrantRequestValidationState>(initialValidationState)
   const [isFormDisabled, setIsFormDisabled] = useState(false)
   const [hasScrolled, setHasScrolled] = useState(false)
   const allSectionsValid = Object.values(validationState).every((prop) => prop)
@@ -186,17 +185,17 @@ export default function SubmitGrant() {
   const handleFundingSectionValidation = useCallback(
     (data, sectionValid) => {
       patchGrantRequest((prevState) => ({ ...prevState, ...data }))
-      patchValidationState({ fundingSectionValid: sectionValid })
+      setValidationState((prevState) => ({ ...prevState, fundingSectionValid: sectionValid }))
     },
-    [patchGrantRequest, patchValidationState]
+    [patchGrantRequest, setValidationState]
   )
 
   const handleCategorySection = useCallback(
     (data, sectionValid) => {
       patchGrantRequest((prevState) => ({ ...prevState, ...data }))
-      patchValidationState({ categoryAssessmentSectionValid: sectionValid })
+      setValidationState((prevState) => ({ ...prevState, categoryAssessmentSectionValid: sectionValid }))
     },
-    [patchValidationState]
+    [setValidationState]
   )
 
   if (accountState.loading) {
@@ -236,9 +235,10 @@ export default function SubmitGrant() {
           <CategorySelector
             onCategoryClick={(value: NewGrantCategory) => {
               patchGrantRequest((prevState) => ({ ...prevState, category: value }))
-              patchValidationState({
+              setValidationState((prevState) => ({
+                ...prevState,
                 categoryAssessmentSectionValid: value === NewGrantCategory.Platform,
-              })
+              }))
               navigate(locations.submit(ProposalType.Grant, { category: value }), { replace: true })
             }}
           />
@@ -264,7 +264,7 @@ export default function SubmitGrant() {
           <GrantRequestGeneralInfoSection
             onValidation={(data, sectionValid) => {
               patchGrantRequest((prevState) => ({ ...prevState, ...data }))
-              patchValidationState({ generalInformationSectionValid: sectionValid })
+              setValidationState((prevState) => ({ ...prevState, generalInformationSectionValid: sectionValid }))
             }}
             isFormDisabled={isFormDisabled || submissionVpNotMet}
             sectionNumber={getSectionNumber()}
@@ -273,7 +273,7 @@ export default function SubmitGrant() {
           <GrantRequestTeamSection
             onValidation={(data, sectionValid) => {
               patchGrantRequest((prevState) => ({ ...prevState, ...data }))
-              patchValidationState({ teamSectionValid: sectionValid })
+              setValidationState((prevState) => ({ ...prevState, teamSectionValid: sectionValid }))
             }}
             sectionNumber={getSectionNumber()}
             isDisabled={isFormDisabled || submissionVpNotMet}
@@ -283,7 +283,7 @@ export default function SubmitGrant() {
             funding={Number(grantRequest.funding)}
             onValidation={(data, sectionValid) => {
               patchGrantRequest((prevState) => ({ ...prevState, ...data }))
-              patchValidationState({ dueDiligenceSectionValid: sectionValid })
+              setValidationState((prevState) => ({ ...prevState, dueDiligenceSectionValid: sectionValid }))
             }}
             sectionNumber={getSectionNumber()}
             projectDuration={grantRequest.projectDuration}
@@ -301,7 +301,9 @@ export default function SubmitGrant() {
 
           <GrantRequestFinalConsentSection
             category={grantRequest.category}
-            onValidation={(sectionValid) => patchValidationState({ finalConsentSectionValid: sectionValid })}
+            onValidation={(sectionValid) =>
+              setValidationState((prevState) => ({ ...prevState, finalConsentSectionValid: sectionValid }))
+            }
             isFormDisabled={isFormDisabled || submissionVpNotMet}
             sectionNumber={getSectionNumber()}
           />

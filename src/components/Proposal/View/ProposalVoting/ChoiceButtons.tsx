@@ -20,7 +20,7 @@ interface Props {
   voteWithSurvey: boolean
   castingVote: boolean
   proposalPageState: ProposalPageState
-  updatePageState: (newState: Partial<ProposalPageState>) => void
+  updatePageState: React.Dispatch<React.SetStateAction<ProposalPageState>>
   startAt?: Date
 }
 
@@ -54,7 +54,10 @@ export const ChoiceButtons = ({
       return () => onVote(getSelectedChoice(currentChoice, currentChoiceIndex))
     } else {
       return () => {
-        updatePageState({ selectedChoice: getSelectedChoice(currentChoice, currentChoiceIndex) })
+        updatePageState((prevState) => ({
+          ...prevState,
+          selectedChoice: getSelectedChoice(currentChoice, currentChoiceIndex),
+        }))
       }
     }
   }

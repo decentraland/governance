@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import classNames from 'classnames'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import usePatchState from 'decentraland-gatsby/dist/hooks/usePatchState'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
@@ -92,7 +91,7 @@ export default function SubmitBid() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
   const [bidRequest, patchBidRequest] = useState(initialState)
-  const [validationState, patchValidationState] = usePatchState<BidRequestValidationState>(initialValidationState)
+  const [validationState, setValidationState] = useState<BidRequestValidationState>(initialValidationState)
   const [isFormDisabled, setIsFormDisabled] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [hasScrolled, setHasScrolled] = useState(false)
@@ -172,17 +171,17 @@ export default function SubmitBid() {
   const handleFundingSectionValidation = useCallback(
     (data, sectionValid) => {
       patchBidRequest((prevState) => ({ ...prevState, ...data }))
-      patchValidationState({ fundingSectionValid: sectionValid })
+      setValidationState((prevState) => ({ ...prevState, fundingSectionValid: sectionValid }))
     },
-    [patchBidRequest, patchValidationState]
+    [patchBidRequest, setValidationState]
   )
 
   const handleGeneralInfoSectionValidation = useCallback(
     (data, sectionValid) => {
       patchBidRequest((prevState) => ({ ...prevState, ...data }))
-      patchValidationState({ generalInformationSectionValid: sectionValid })
+      setValidationState((prevState) => ({ ...prevState, generalInformationSectionValid: sectionValid }))
     },
-    [patchBidRequest, patchValidationState]
+    [patchBidRequest, setValidationState]
   )
 
   if (accountState.loading) {
@@ -266,7 +265,7 @@ export default function SubmitBid() {
       <GrantRequestTeamSection
         onValidation={(data, sectionValid) => {
           patchBidRequest((prevState) => ({ ...prevState, ...data }))
-          patchValidationState({ teamSectionValid: sectionValid })
+          setValidationState((prevState) => ({ ...prevState, teamSectionValid: sectionValid }))
         }}
         sectionNumber={getSectionNumber()}
         isDisabled={isFormDisabled}
@@ -276,7 +275,7 @@ export default function SubmitBid() {
         funding={Number(bidRequest.funding)}
         onValidation={(data, sectionValid) => {
           patchBidRequest((prevState) => ({ ...prevState, ...data }))
-          patchValidationState({ dueDiligenceSectionValid: sectionValid })
+          setValidationState((prevState) => ({ ...prevState, dueDiligenceSectionValid: sectionValid }))
         }}
         sectionNumber={getSectionNumber()}
         projectDuration={bidRequest.projectDuration || BID_MIN_PROJECT_DURATION}
@@ -284,7 +283,9 @@ export default function SubmitBid() {
       />
 
       <BidRequestFinalConsentSection
-        onValidation={(sectionValid) => patchValidationState({ finalConsentSectionValid: sectionValid })}
+        onValidation={(sectionValid) =>
+          setValidationState((prevState) => ({ ...prevState, finalConsentSectionValid: sectionValid }))
+        }
         isFormDisabled={isFormDisabled}
         sectionNumber={getSectionNumber()}
       />
