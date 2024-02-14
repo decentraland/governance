@@ -8,7 +8,7 @@ import { proposalUrl } from '../../entities/Proposal/utils'
 import UserModel from '../../entities/User/model'
 import { inBackground } from '../../helpers'
 import { ErrorService } from '../../services/ErrorService'
-import { CommentedEvent } from '../../shared/types/events'
+import { ProposalCommentedEvent } from '../../shared/types/events'
 import { Notification, NotificationCustomType, Recipient } from '../../shared/types/notifications'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
@@ -292,7 +292,7 @@ export class NotificationService {
     }
   }
 
-  static newCommentOnProposal(commentEvent: CommentedEvent) {
+  static newCommentOnProposal(commentEvent: ProposalCommentedEvent) {
     inBackground(async () => {
       const proposalId = commentEvent.event_data.proposal_id
       try {

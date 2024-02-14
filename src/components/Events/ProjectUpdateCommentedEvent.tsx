@@ -1,16 +1,16 @@
 import useFormatMessage from '../../hooks/useFormatMessage'
-import { ActivityTickerEvent, ProposalCommentedEventData } from '../../shared/types/events'
+import { ActivityTickerEvent, UpdateCommentedEventData } from '../../shared/types/events'
 import Time from '../../utils/date/Time'
 import Link from '../Common/Typography/Link'
 import Markdown from '../Common/Typography/Markdown'
 import Text from '../Common/Typography/Text'
 
-import { getLink } from './utils'
+import { extractUpdateNumber, getLink } from './utils'
 
-export default function ProposalRelatedEvent({ event }: { event: ActivityTickerEvent }) {
+export default function ProjectUpdateCommentedEvent({ event }: { event: ActivityTickerEvent }) {
   const t = useFormatMessage()
 
-  const eventData = event.event_data as ProposalCommentedEventData
+  const eventData = event.event_data as UpdateCommentedEventData
   return (
     <Link href={getLink(event)}>
       <Markdown
@@ -19,7 +19,8 @@ export default function ProposalRelatedEvent({ event }: { event: ActivityTickerE
       >
         {t(`page.home.activity_ticker.${event.event_type}`, {
           author: event.author || eventData.discourse_post.username,
-          title: eventData.proposal_title.trim(),
+          update_title: extractUpdateNumber(eventData.discourse_post.topic_title),
+          proposal_title: eventData.proposal_title.trim(),
         })}
       </Markdown>
       <Text className="ActivityTicker__ListItemDate" size="xs">

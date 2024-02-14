@@ -7,7 +7,7 @@ export const shorthands: ColumnDefinitions | undefined = undefined
 
 const EVENT_TYPE_OLD = 'event_type_old'
 
-function resetEventType(pgm: MigrationBuilder) {
+export function resetEventType(pgm: MigrationBuilder) {
   pgm.renameType(EVENT_TYPE, EVENT_TYPE_OLD)
   pgm.createType(EVENT_TYPE, Object.values(EventType))
   pgm.alterColumn(EventModel.tableName, EVENT_TYPE, {
