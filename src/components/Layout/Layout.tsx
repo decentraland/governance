@@ -161,7 +161,7 @@ export default function Layout({ children }: LayoutProps) {
         address={user || undefined}
         avatar={hasProfile ? (profile as unknown as Avatar) : undefined}
         activePage="governance"
-        isSignedIn={!isEmpty(profile)}
+        isSignedIn={hasProfile}
         isSigningIn={userState.loading || isLoadingDclProfile}
         onClickBalance={handleClickBalance}
         onClickNavbarItem={handleClickNavbarOption}
