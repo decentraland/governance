@@ -233,13 +233,12 @@ export class EventsService {
         return
       }
 
-      const isAnUpdateTopic = /Update #\d+/.test(discoursePost.topic_title)
+      const isUpdateTopic = /Update #\d+/.test(discoursePost.topic_title)
       const user = await UserModel.findOne<UserAttributes>({ forum_id: discoursePost.user_id })
-      if (isAnUpdateTopic) {
+      if (isUpdateTopic) {
         return await this.commentedOnProjectUpdate(discoursePost, discourseEventId, discourseEvent, user)
-      } else {
-        return await this.commentedOnProposal(discoursePost, discourseEventId, discourseEvent, user)
       }
+      return await this.commentedOnProposal(discoursePost, discourseEventId, discourseEvent, user)
     } catch (e) {
       ErrorService.report('Unexpected error while creating comment event', { error: e, category: ErrorCategory.Events })
     }

@@ -46,7 +46,7 @@ export default class EventModel extends Model<Event> {
       SELECT count(*)
       FROM ${table(EventModel)}
       WHERE
-          event_type = ${EventType.ProposalCommented}AND 
+          event_type = ${EventType.ProposalCommented} AND 
           (event_data ->>'discourse_event_id') = ${discourseEventId}
     `
     const count = (await this.namedQuery<{ count: string }>('find_discourse_event_id', query))[0].count

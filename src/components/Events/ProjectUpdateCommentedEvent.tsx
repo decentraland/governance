@@ -5,12 +5,7 @@ import Link from '../Common/Typography/Link'
 import Markdown from '../Common/Typography/Markdown'
 import Text from '../Common/Typography/Text'
 
-import { getLink } from './ProposalRelatedEvent'
-
-function extractUpdateNumber(title: string) {
-  const match = title.match(/Update #\d+/)
-  return match ? match[0] : null
-}
+import { extractUpdateNumber, getLink } from './utils'
 
 export default function ProjectUpdateCommentedEvent({ event }: { event: ActivityTickerEvent }) {
   const t = useFormatMessage()
