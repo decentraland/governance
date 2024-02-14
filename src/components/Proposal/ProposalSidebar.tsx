@@ -16,7 +16,7 @@ import useProposalVotes from '../../hooks/useProposalVotes'
 import { ProposalPageState } from '../../pages/proposal'
 import { NotDesktop1200 } from '../Layout/Desktop1200'
 import CalendarAlertModal from '../Modal/CalendarAlertModal'
-import VotesListModal from '../Modal/Votes/VotesList'
+import VotesListModal from '../Modal/Votes/VotesListModal'
 
 import CalendarAlertButton from './View/CalendarAlertButton'
 import ProposalCoAuthorStatus from './View/ProposalCoAuthorStatus'
