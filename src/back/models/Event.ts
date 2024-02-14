@@ -1,7 +1,7 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
-import { SQL, conditional, join, table } from 'decentraland-gatsby/dist/entities/Database/utils'
+import { SQL, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 
-import { Event, EventFilter, EventType } from '../../shared/types/events'
+import { Event, EventType } from '../../shared/types/events'
 
 const LATEST_EVENTS_LIMIT = 50
 
@@ -20,16 +20,11 @@ export default class EventModel extends Model<Event> {
     return result
   }
 
-  static async getLatest(filters?: EventFilter): Promise<Event[]> {
-    const { event_type } = filters || {}
+  static async getLatest(): Promise<Event[]> {
     const query = SQL`
       SELECT *
       FROM ${table(EventModel)}
       WHERE created_at >= NOW() - INTERVAL '7 day'
-      ${conditional(
-        !!event_type,
-        SQL`AND event_type IN (${join(event_type?.map((type) => SQL`${type}`) || [], SQL`, `)})`
-      )}
       ORDER BY created_at DESC
       LIMIT ${LATEST_EVENTS_LIMIT}
     `
