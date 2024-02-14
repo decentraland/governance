@@ -32,7 +32,8 @@ const Username = ({
   strong = false,
   className,
 }: Props) => {
-  const { username, avatar, isLoadingDclProfile } = useDclProfile(address)
+  const { profile, isLoadingDclProfile } = useDclProfile(address)
+  const { username, avatarUrl } = profile
   const isAddressVariant = variant === UsernameVariant.Address
   const isFullVariant = variant === UsernameVariant.Full
   const checksumAddress = address ? getChecksumAddress(address) : ''
@@ -46,7 +47,7 @@ const Username = ({
 
       {!isAddressVariant && (
         <>
-          <Avatar size={size} address={address} avatar={avatar} isLoadingDclProfile={isLoadingDclProfile} />
+          <Avatar size={size} address={address} avatar={avatarUrl} isLoadingDclProfile={isLoadingDclProfile} />
           {username && isFullVariant && <span className="Username__Name">{username}</span>}
           {!username && isFullVariant && <Address value={checksumAddress} strong={strong} />}
         </>

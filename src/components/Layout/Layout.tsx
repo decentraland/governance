@@ -12,7 +12,6 @@ import {
   DROPDOWN_MENU_SIGN_OUT_EVENT,
 } from 'decentraland-dapps/dist/containers/Navbar/constants'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useProfileInjected from 'decentraland-gatsby/dist/context/Auth/useProfileContext'
 import useFeatureFlagContext from 'decentraland-gatsby/dist/context/FeatureFlag/useFeatureFlagContext'
 import useTrackContext from 'decentraland-gatsby/dist/context/Track/useTrackContext'
 import useTrackLinkContext from 'decentraland-gatsby/dist/context/Track/useTrackLinkContext'
@@ -22,8 +21,10 @@ import { Navbar } from 'decentraland-ui/dist/components/Navbar/Navbar'
 import { ManaBalancesProps } from 'decentraland-ui/dist/components/UserMenu/ManaBalances/ManaBalances.types'
 import { config } from 'decentraland-ui/dist/config'
 import type { PageProps } from 'gatsby'
+import { isEmpty } from 'lodash'
 
 import { getSupportedChainIds } from '../../helpers'
+import useDclProfile from '../../hooks/useDclProfile'
 import ExternalLinkWarningModal from '../Modal/ExternalLinkWarningModal'
 import { LinkDiscordModal } from '../Modal/LinkDiscordModal/LinkDiscordModal'
 import WalletSelectorModal from '../Modal/WalletSelectorModal'
@@ -55,7 +56,7 @@ export default function Layout({ children }: LayoutProps) {
   }, [])
 
   const handleClickNavbarOption = useTrackLinkContext(function (
-    event: React.MouseEvent<HTMLElement, MouseEvent>,
+    _event: React.MouseEvent<HTMLElement, MouseEvent>,
     options: {
       eventTrackingName: string
       url?: string
@@ -76,10 +77,9 @@ export default function Layout({ children }: LayoutProps) {
 
   const handleCancelConnect = useCallback(() => userState.select(false), [userState])
 
-  const [profile, profileState] = useProfileInjected()
+  const { profile, isLoadingDclProfile } = useDclProfile(user)
   const chainId = userState.chainId
   const isAuthDappEnabled = ff.enabled('dapps-auth-dapp')
-  const loading = userState.loading || profileState.loading
 
   const { data: manaBalances } = useQuery({
     queryKey: [`manaBalances#${user}`],
@@ -152,15 +152,17 @@ export default function Layout({ children }: LayoutProps) {
     [track, userState]
   )
 
+  const hasProfile = !isEmpty(profile)
+
   return (
     <>
       <Navbar
         manaBalances={manaBalances as ManaBalancesProps['manaBalances']}
         address={user || undefined}
-        avatar={(profile as Avatar) || undefined}
-        activePage={'governance'}
-        isSignedIn={!!profile}
-        isSigningIn={loading}
+        avatar={hasProfile ? (profile as unknown as Avatar) : undefined}
+        activePage="governance"
+        isSignedIn={!isEmpty(profile)}
+        isSigningIn={userState.loading || isLoadingDclProfile}
         onClickBalance={handleClickBalance}
         onClickNavbarItem={handleClickNavbarOption}
         onClickUserMenuItem={handleClickUserMenuOption}

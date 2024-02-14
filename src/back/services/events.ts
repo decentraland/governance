@@ -57,7 +57,7 @@ export class EventsService {
           address
             ? {
                 author: addressesToProfile[address].username || addressShortener(address),
-                avatar: addressesToProfile[address].avatar,
+                avatar: addressesToProfile[address].avatarUrl,
                 ...event,
               }
             : event
@@ -85,7 +85,7 @@ export class EventsService {
     } catch (error) {
       ErrorService.report('Error fetching profiles', { error, category: ErrorCategory.Events })
       return addresses.reduce((acc, address) => {
-        acc[address] = { address, avatar: DEFAULT_AVATAR_IMAGE, username: null, hasCustomAvatar: false }
+        acc[address] = { address, avatarUrl: DEFAULT_AVATAR_IMAGE, username: null, hasCustomAvatar: false }
         return acc
       }, {} as Record<string, DclProfile>)
     }

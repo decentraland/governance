@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { getProfile } from '../utils/Catalyst'
+import { DclProfile } from '../utils/Catalyst/types'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
@@ -15,13 +16,15 @@ export default function useDclProfile(address?: string | null) {
       return null
     }
   }
-  const { data, isLoading: isLoadingDclProfile } = useQuery({
+  const { data: profile, isLoading: isLoadingDclProfile } = useQuery({
     queryKey: [`userProfile#${address?.toLowerCase()}`],
     queryFn: () => fetchProfile(),
     staleTime: DEFAULT_QUERY_STALE_TIME,
+    enabled: !!address,
   })
 
-  const { username, avatar, hasCustomAvatar } = data || {}
-
-  return { username, avatar, hasCustomAvatar, isLoadingDclProfile }
+  return {
+    profile: profile || ({} as DclProfile),
+    isLoadingDclProfile,
+  }
 }

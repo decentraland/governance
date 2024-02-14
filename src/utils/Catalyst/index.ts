@@ -22,8 +22,8 @@ function getUsername(profile: CatalystProfile | null, address: string) {
 function getDclProfile(profile: CatalystProfile | null, address: string): DclProfile {
   const username = getUsername(profile, address)
   const hasAvatar = !!profile && !!profile.avatar
-  const avatar = hasAvatar ? profile.avatar.snapshots.face256 : DEFAULT_AVATAR_IMAGE
-  return { username, avatar, hasCustomAvatar: hasAvatar, address: address.toLowerCase() }
+  const avatarUrl = hasAvatar ? profile.avatar.snapshots.face256 : DEFAULT_AVATAR_IMAGE
+  return { ...profile, username, avatarUrl, hasCustomAvatar: hasAvatar, address: address.toLowerCase() }
 }
 
 export async function getProfile(address: string): Promise<DclProfile> {

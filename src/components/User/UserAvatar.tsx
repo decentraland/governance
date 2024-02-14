@@ -15,7 +15,7 @@ interface Props {
 export default function UserAvatar({ address }: Props) {
   const [wearablePreviewController, setWearablePreviewController] = useState<any>()
 
-  const { hasCustomAvatar } = useDclProfile(address)
+  const { profile } = useDclProfile(address)
   const handleLoad = useCallback(() => {
     setWearablePreviewController(WearablePreview.createController('wearable-preview'))
   }, [])
@@ -39,7 +39,7 @@ export default function UserAvatar({ address }: Props) {
     return () => clearInterval(interval)
   }, [wearablePreviewController])
 
-  if (!address || !hasCustomAvatar) {
+  if (!address || !profile.hasCustomAvatar) {
     return null
   }
 

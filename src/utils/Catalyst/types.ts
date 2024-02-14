@@ -43,7 +43,7 @@ export type ProfileResponse = {
 
 export type DclProfile = {
   username: string | null
-  avatar: string
+  avatarUrl: string
   hasCustomAvatar: boolean
   address: string
 }

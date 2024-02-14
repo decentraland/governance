@@ -38,7 +38,7 @@ export default function ProfilePage() {
     navigate(`/profile/?address=${userAddress}`, { replace: true })
   }
 
-  const { username } = useDclProfile(address)
+  const { profile } = useDclProfile(address)
   const { delegation, isDelegationLoading, scores, isLoadingScores, vpDistribution, isLoadingVpDistribution } =
     useVotingPowerInformation(address)
 
@@ -63,7 +63,7 @@ export default function ProfilePage() {
   return (
     <>
       <Head
-        title={t('page.profile.title', { address: username || address })}
+        title={t('page.profile.title', { address: profile.username || address })}
         description={t('page.profile.description')}
         links={[{ rel: 'canonical', href: locations.profile({ address: address }) }]}
       />

@@ -152,7 +152,7 @@ export class DiscordService {
 
         embed.setAuthor({
           name: profile.username || user,
-          iconURL: profile.avatar,
+          iconURL: profile.avatarUrl,
           url: getProfileUrl(user),
         })
       } catch (error) {
