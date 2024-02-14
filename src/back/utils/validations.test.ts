@@ -38,9 +38,9 @@ describe('validateEventTypesFilters', () => {
   })
 
   test('Should keep event_type as an array when it is already an array', () => {
-    const req = { query: { event_type: [EventType.Voted, EventType.Commented] } } as never
+    const req = { query: { event_type: [EventType.Voted, EventType.ProjectUpdateCommented] } } as never
     const result = validateEventTypesFilters(req)
-    expect(result).toEqual({ event_type: [EventType.Voted, EventType.Commented] })
+    expect(result).toEqual({ event_type: [EventType.Voted, EventType.ProjectUpdateCommented] })
   })
 
   test('Should throw an error if EventFilterSchema returns an error', () => {

@@ -16,6 +16,7 @@ import ProposalRelatedEvent from '../Events/ProposalRelatedEvent'
 import CircledComment from '../Icon/CircledComment'
 
 import './ActivityTicker.css'
+import ActivityTickerFilter from './ActivityTickerFilter'
 
 function getActivityTickerEvent(event: ActivityTickerEvent) {
   if (event.event_type === EventType.DelegationClear || event.event_type === EventType.DelegationSet) {
@@ -58,6 +59,7 @@ export default function ActivityTicker() {
         <Heading className="ActivityTicker__Title" size="3xs" weight="normal">
           {t('page.home.activity_ticker.title')}
         </Heading>
+        <ActivityTickerFilter />
       </div>
       {isLoading && (
         <div className="ActivityTicker__LoadingContainer">
