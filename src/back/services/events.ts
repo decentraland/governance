@@ -21,6 +21,7 @@ import {
   AlchemyLog,
   DelegationClearEvent,
   DelegationSetEvent,
+  EventFilter,
   EventType,
   ProjectUpdateCommentedEvent,
   ProposalCommentedEvent,
@@ -39,9 +40,9 @@ const CLEAR_DELEGATE_SIGNATURE_HASH = '0x9c4f00c4291262731946e308dc2979a56bd22cc
 const SET_DELEGATE_SIGNATURE_HASH = '0xa9a7fd460f56bddb880a465a9c3e9730389c70bc53108148f16d55a87a6c468e'
 
 export class EventsService {
-  static async getLatest(): Promise<ActivityTickerEvent[]> {
+  static async getLatest(filters?: EventFilter): Promise<ActivityTickerEvent[]> {
     try {
-      const latestEvents = await EventModel.getLatest()
+      const latestEvents = await EventModel.getLatest(filters)
 
       const addresses: string[] = latestEvents
         .map((event) => event.address)
@@ -65,7 +66,7 @@ export class EventsService {
 
       return activityTickerEvents
     } catch (error) {
-      ErrorService.report('Error fetching events', { error, category: ErrorCategory.Events })
+      ErrorService.report('Error fetching events', { error: `${error}`, category: ErrorCategory.Events })
       return []
     }
   }

@@ -1,6 +1,7 @@
 import crypto from 'crypto'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import { Request } from 'express'
+import isArray from 'lodash/isArray'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
@@ -8,6 +9,7 @@ import { SnapshotProposal } from '../../clients/SnapshotTypes'
 import { ALCHEMY_DELEGATIONS_WEBHOOK_SECRET, DISCOURSE_WEBHOOK_SECRET } from '../../constants'
 import isDebugAddress from '../../entities/Debug/isDebugAddress'
 import { ErrorService } from '../../services/ErrorService'
+import { EventFilterSchema } from '../../shared/types/events'
 import { ErrorCategory } from '../../utils/errorCategories'
 
 export function validateDates(start?: string, end?: string) {
@@ -137,4 +139,18 @@ export function validateAlchemyWebhookSignature(req: Request) {
     ErrorService.report('Invalid alchemy webhook signature', { category: ErrorCategory.Webhook })
     throw new RequestError('Invalid signature', RequestError.Forbidden)
   }
+}
+
+export function validateEventTypesFilters(req: Request) {
+  const { event_type } = req.query
+  const filters: Record<string, unknown> = {}
+  if (event_type) {
+    filters.event_type = isArray(event_type) ? event_type : [event_type]
+  }
+  const parsedEventTypes = EventFilterSchema.safeParse(filters)
+  if (!parsedEventTypes.success) {
+    throw new Error('Invalid event types: ' + parsedEventTypes.error.message)
+  }
+
+  return parsedEventTypes.data
 }
