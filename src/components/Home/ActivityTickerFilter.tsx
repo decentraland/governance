@@ -14,20 +14,18 @@ import ActivityTickerFilterItem from './ActivityTickerFilterItem'
 
 export type TickerFilter = {
   proposals_created: boolean
-  proposals_ended: boolean
   votes: boolean
   delegation: boolean
   comments: boolean
-  projects: boolean
+  project_updates: boolean
 }
 
-export const INITIAL_TICKER_FILTER_STATE = {
+export const INITIAL_TICKER_FILTER_STATE: TickerFilter = {
   proposals_created: false,
-  proposals_ended: false,
   votes: false,
   delegation: false,
   comments: false,
-  projects: false,
+  project_updates: false,
 }
 
 function countTrueProperties(obj: Record<string, boolean>): number {
@@ -88,13 +86,6 @@ export default function ActivityTickerFilter({ setFilterState, filterState, refe
               label={t('page.home.activity_ticker.filter.proposals_created')}
             />
             <ActivityTickerFilterItem
-              onClick={() =>
-                setFilterState((prevState) => ({ ...prevState, proposals_ended: !prevState.proposals_ended }))
-              }
-              checked={filterState.proposals_ended}
-              label={t('page.home.activity_ticker.filter.proposals_ended')}
-            />
-            <ActivityTickerFilterItem
               onClick={() => setFilterState((prevState) => ({ ...prevState, votes: !prevState.votes }))}
               checked={filterState.votes}
               label={t('page.home.activity_ticker.filter.votes')}
@@ -110,9 +101,11 @@ export default function ActivityTickerFilter({ setFilterState, filterState, refe
               label={t('page.home.activity_ticker.filter.comments')}
             />
             <ActivityTickerFilterItem
-              onClick={() => setFilterState((prevState) => ({ ...prevState, projects: !prevState.projects }))}
-              checked={filterState.projects}
-              label={t('page.home.activity_ticker.filter.projects')}
+              onClick={() =>
+                setFilterState((prevState) => ({ ...prevState, project_updates: !prevState.project_updates }))
+              }
+              checked={filterState.project_updates}
+              label={t('page.home.activity_ticker.filter.project_updates')}
             />
           </div>
           <div className={'ActivityTickerFilterBox__Buttons'}>

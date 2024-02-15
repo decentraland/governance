@@ -953,11 +953,10 @@
         "delegation_clear": "**{delegator}** removed delegation from **{removed_delegate}**",
         "filter": {
           "proposals_created": "Proposals Created",
-          "proposals_ended": "Proposals Ended",
           "votes": "Votes",
           "delegation": "Delegation",
           "comments": "Comments",
-          "projects": "Projects",
+          "project_updates": "Project Updates",
           "label": "Filter",
           "apply": "Apply",
           "clear": "Clear"

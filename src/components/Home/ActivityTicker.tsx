@@ -54,14 +54,11 @@ function parseTickerFilter(tickerFilter: TickerFilter) {
   if (tickerFilter.delegation) {
     eventTypes.push(EventType.DelegationSet, EventType.DelegationClear)
   }
-  if (tickerFilter.projects) {
+  if (tickerFilter.project_updates) {
     eventTypes.push(EventType.UpdateCreated)
   }
   if (tickerFilter.votes) {
     eventTypes.push(EventType.Voted)
-  }
-  if (tickerFilter.proposals_ended) {
-    // we don't have proposal ended events
   }
   if (tickerFilter.proposals_created) {
     eventTypes.push(EventType.ProposalCreated)
