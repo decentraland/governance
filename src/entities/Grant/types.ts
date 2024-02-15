@@ -59,7 +59,8 @@ export enum PaymentToken {
 
 export type ProposalGrantCategory = OldGrantCategory | NewGrantCategory
 
-export const VALID_CATEGORIES = Object.values(NewGrantCategory)
+export const VALID_CATEGORIES = [NewGrantCategory.CoreUnit, NewGrantCategory.Platform]
+export const INVALID_CATEGORIES = Object.values(NewGrantCategory).filter((item) => !VALID_CATEGORIES.includes(item))
 
 export enum ProjectStatus {
   Pending = 'Pending',
