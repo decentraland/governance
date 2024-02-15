@@ -1,12 +1,11 @@
 .ActivityTickerFilter {
   height: 18px;
-  width: 77px;
   flex-shrink: 0;
   display: flex;
   justify-content: center;
-  align-items: baseline;
+  align-items: center;
   cursor: pointer;
-  border-radius: 8px;
+  z-index: 1;
 }
 
 .ActivityTickerFilter__Label {
@@ -20,9 +19,17 @@
   margin-right: 4px;
 }
 
-.ActivityTickerFilter--open {
+.ActivityTickerFilter__LabeledArrow {
+  display: flex;
+  align-items: baseline;
+  width: 100%;
+  padding-left: 10px;
+  padding-right: 9px;
+}
+
+.ActivityTickerFilter__LabeledArrow--open {
+  border-radius: 8px;
   background: var(--alpha-black-200);
-  opacity: 0.9;
 }
 
 .ActivityTickerFilterBox {

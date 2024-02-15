@@ -1,15 +1,18 @@
 import React, { useState } from 'react'
 
+import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from '@tanstack/react-query'
 import classNames from 'classnames'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import useFormatMessage from '../../hooks/useFormatMessage'
+import { ActivityTickerEvent } from '../../shared/types/events'
+import Counter from '../Common/Counter'
 import Sort from '../Icon/Sort'
 
 import './ActivityTickerFilter.css'
 import ActivityTickerFilterItem from './ActivityTickerFilterItem'
 
-type TickerFilter = {
+export type TickerFilter = {
   proposals_created: boolean
   proposals_ended: boolean
   votes: boolean
@@ -18,7 +21,7 @@ type TickerFilter = {
   projects: boolean
 }
 
-const INITIAL_TICKER_FILTER_STATE = {
+export const INITIAL_TICKER_FILTER_STATE = {
   proposals_created: false,
   proposals_ended: false,
   votes: false,
@@ -27,10 +30,30 @@ const INITIAL_TICKER_FILTER_STATE = {
   projects: false,
 }
 
-export default function ActivityTickerFilter() {
+function countTrueProperties(obj: Record<string, boolean>): number {
+  let count = 0
+  for (const key in obj) {
+    if (Object.hasOwn(obj, key)) {
+      if (obj[key]) {
+        count++
+      }
+    }
+  }
+  return count
+}
+
+interface Props {
+  setFilterState: React.Dispatch<React.SetStateAction<TickerFilter>>
+  filterState: TickerFilter
+  refetch: (
+    options?: (RefetchOptions & RefetchQueryFilters) | undefined
+  ) => Promise<QueryObserverResult<ActivityTickerEvent[]>>
+}
+
+export default function ActivityTickerFilter({ setFilterState, filterState, refetch }: Props) {
   const t = useFormatMessage()
   const [isOpen, setIsOpen] = useState(false)
-  const [filterState, setFilterState] = useState<TickerFilter>(INITIAL_TICKER_FILTER_STATE)
+  const selectedFiltersCount = countTrueProperties(filterState)
 
   const onClick = () => {
     setIsOpen(true)
@@ -40,11 +63,27 @@ export default function ActivityTickerFilter() {
     setIsOpen(false)
   }
 
+  const onApply = () => {
+    refetch().then(() => onClose())
+  }
+
+  const onClear = () => {
+    setFilterState(() => INITIAL_TICKER_FILTER_STATE)
+  }
+
   return (
     <>
-      <div className={classNames('ActivityTickerFilter', isOpen && `ActivityTickerFilter--open`)} onClick={onClick}>
-        <span className="ActivityTickerFilter__Label">{'Filter'}</span>
-        <Sort descending selectedColor="primary" />
+      <div className={classNames('ActivityTickerFilter')} onClick={onClick}>
+        <Counter count={selectedFiltersCount} size="small" hidden={isOpen || selectedFiltersCount === 0} />
+        <div
+          className={classNames(
+            'ActivityTickerFilter__LabeledArrow',
+            isOpen && `ActivityTickerFilter__LabeledArrow--open`
+          )}
+        >
+          <span className="ActivityTickerFilter__Label">{t('page.home.activity_ticker.filter.label')}</span>
+          <Sort descending selectedColor="primary" />
+        </div>
       </div>
       {isOpen && (
         <div className="ActivityTickerFilterBox">
@@ -85,11 +124,11 @@ export default function ActivityTickerFilter() {
             />
           </div>
           <div className={'ActivityTickerFilterBox__Buttons'}>
-            <Button basic size={'small'} onClick={onClose}>
-              {'Clear'}
+            <Button basic size={'small'} onClick={onClear}>
+              {t('page.home.activity_ticker.filter.clear')}
             </Button>
-            <Button primary size={'small'} onClick={onClose}>
-              {'Apply'}
+            <Button primary size={'small'} onClick={onApply}>
+              {t('page.home.activity_ticker.filter.apply')}
             </Button>
           </div>
         </div>

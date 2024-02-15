@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { useQuery } from '@tanstack/react-query'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
@@ -16,7 +18,7 @@ import ProposalRelatedEvent from '../Events/ProposalRelatedEvent'
 import CircledComment from '../Icon/CircledComment'
 
 import './ActivityTicker.css'
-import ActivityTickerFilter from './ActivityTickerFilter'
+import ActivityTickerFilter, { INITIAL_TICKER_FILTER_STATE, TickerFilter } from './ActivityTickerFilter'
 
 function getActivityTickerEvent(event: ActivityTickerEvent) {
   if (event.event_type === EventType.DelegationClear || event.event_type === EventType.DelegationSet) {
@@ -45,9 +47,15 @@ function getActivityTickerImage(item: ActivityTickerEvent) {
 
 export default function ActivityTicker() {
   const t = useFormatMessage()
-  const { data: events, isLoading } = useQuery({
+  const [filterState, setFilterState] = useState<TickerFilter>(INITIAL_TICKER_FILTER_STATE)
+
+  const {
+    data: events,
+    refetch,
+    isLoading,
+  } = useQuery({
     queryKey: ['events'],
-    queryFn: () => Governance.get().getLatestEvents(),
+    queryFn: () => Governance.get().getLatestEvents(filterState),
     refetchInterval: ONE_MINUTE_MS,
     refetchIntervalInBackground: true,
   })
@@ -59,7 +67,7 @@ export default function ActivityTicker() {
         <Heading className="ActivityTicker__Title" size="3xs" weight="normal">
           {t('page.home.activity_ticker.title')}
         </Heading>
-        <ActivityTickerFilter />
+        <ActivityTickerFilter setFilterState={setFilterState} filterState={filterState} refetch={refetch} />
       </div>
       {isLoading && (
         <div className="ActivityTicker__LoadingContainer">

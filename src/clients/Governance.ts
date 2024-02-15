@@ -5,6 +5,7 @@ import snakeCase from 'lodash/snakeCase'
 import { AirdropJobAttributes } from '../back/models/AirdropJob'
 import { AirdropOutcome } from '../back/types/AirdropJob'
 import { SpecState } from '../components/Debug/UploadBadgeSpec'
+import { TickerFilter } from '../components/Home/ActivityTickerFilter'
 import env from '../config'
 import { GOVERNANCE_API } from '../constants'
 import { BadgeCreationResult, GovernanceBadgeSpec, RevokeOrReinstateResult, UserBadges } from '../entities/Badges/types'
@@ -762,7 +763,8 @@ export class Governance extends API {
     return response.data
   }
 
-  async getLatestEvents() {
+  async getLatestEvents(tickerFilter: TickerFilter) {
+    console.log('tickerFilter', tickerFilter)
     const response = await this.fetch<ApiResponse<ActivityTickerEvent[]>>(`/events`, this.options().method('GET'))
     return response.data
   }

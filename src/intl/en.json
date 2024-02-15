@@ -957,7 +957,10 @@
           "votes": "Votes",
           "delegation": "Delegation",
           "comments": "Comments",
-          "projects": "Projects"
+          "projects": "Projects",
+          "label": "Filter",
+          "apply": "Apply",
+          "clear": "Clear"
         }
       }
     },
