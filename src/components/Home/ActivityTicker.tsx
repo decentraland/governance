@@ -45,6 +45,30 @@ function getActivityTickerImage(item: ActivityTickerEvent) {
   }
 }
 
+function parseTickerFilter(tickerFilter: TickerFilter) {
+  const eventTypes: EventType[] = []
+
+  if (tickerFilter.comments) {
+    eventTypes.push(EventType.ProposalCommented, EventType.ProjectUpdateCommented)
+  }
+  if (tickerFilter.delegation) {
+    eventTypes.push(EventType.DelegationSet, EventType.DelegationClear)
+  }
+  if (tickerFilter.projects) {
+    eventTypes.push(EventType.UpdateCreated)
+  }
+  if (tickerFilter.votes) {
+    eventTypes.push(EventType.Voted)
+  }
+  if (tickerFilter.proposals_ended) {
+    // we don't have proposal ended events
+  }
+  if (tickerFilter.proposals_created) {
+    eventTypes.push(EventType.ProposalCreated)
+  }
+  return eventTypes
+}
+
 export default function ActivityTicker() {
   const t = useFormatMessage()
   const [filterState, setFilterState] = useState<TickerFilter>(INITIAL_TICKER_FILTER_STATE)
@@ -55,7 +79,7 @@ export default function ActivityTicker() {
     isLoading,
   } = useQuery({
     queryKey: ['events'],
-    queryFn: () => Governance.get().getLatestEvents(filterState),
+    queryFn: () => Governance.get().getLatestEvents(parseTickerFilter(filterState)),
     refetchInterval: ONE_MINUTE_MS,
     refetchIntervalInBackground: true,
   })
