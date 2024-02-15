@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react'
 
 import classNames from 'classnames'
+import { Desktop } from 'decentraland-ui/dist/components/Media/Media'
 
 import { HIDE_PROJECTS_BANNER_KEY } from '../../../front/localStorageKeys'
 import useFormatMessage from '../../../hooks/useFormatMessage'
+import Mobile from '../../Common/MediaQuery/Mobile'
 import Text from '../../Common/Typography/Text'
 import Info from '../../Icon/Info'
 import LayoutTop from '../../Icon/LayoutTop'
@@ -55,18 +57,29 @@ export default function ProjectsBanner() {
     return (
       <div className="ProjectsBanner__Collapsed">
         <div className="ProjectsBanner__CollapsedInfo">
-          <Info size="16" color="var(--black-600)" />
+          <Desktop>
+            <div className="ProjectsBanner__CollapsedInfoIconContainer">
+              <Info size="16" color="var(--black-600)" />
+            </div>
+          </Desktop>
           <Text className="ProjectsBanner__CollapsedInfoText">
             Find General Information about our Projects and their funding in here
           </Text>
         </div>
-        <button
-          onClick={handleCollapseClick}
-          className={'ProjectsBanner__CollapseButton'}
-          aria-label={t('page.grants.banner.collapse_button_show_label')}
-        >
-          <LayoutTop />
-        </button>
+        <Desktop>
+          <button
+            onClick={handleCollapseClick}
+            className="ProjectsBanner__CollapseButton"
+            aria-label={t('page.grants.banner.collapse_button_show_label')}
+          >
+            <LayoutTop />
+          </button>
+        </Desktop>
+        <Mobile>
+          <button className="ProjectsBanner__ExpandButton" onClick={handleCollapseClick}>
+            {t('page.grants.banner.expand_button')}
+          </button>
+        </Mobile>
       </div>
     )
   }
