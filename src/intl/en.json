@@ -1358,7 +1358,9 @@
         "transparency_title": "Transparency",
         "transparency_description": "How the Grants System is performing",
         "faq_title": "FAQ",
-        "faq_description": "Learn more about our Grants System"
+        "faq_description": "Learn more about our Grants System",
+        "collapse_button_hide_label": "Hide projects banner",
+        "collapse_button_show_label": "Show projects banner"
       },
       "projects_category_title": "{status}{category} Projects",
       "budget_banner": {

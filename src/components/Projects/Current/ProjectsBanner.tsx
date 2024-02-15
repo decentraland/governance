@@ -1,8 +1,13 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 
 import classNames from 'classnames'
 
+import { HIDE_PROJECTS_BANNER_KEY } from '../../../front/localStorageKeys'
 import useFormatMessage from '../../../hooks/useFormatMessage'
+import Text from '../../Common/Typography/Text'
+import Info from '../../Icon/Info'
+import LayoutTop from '../../Icon/LayoutTop'
+import Minus from '../../Icon/Minus'
 import BannerItem from '../BannerItem'
 
 import './ProjectsBanner.css'
@@ -37,10 +42,39 @@ export default function ProjectsBanner() {
     ],
     [t]
   )
+  const [collapsed, setCollapsed] = useState(() => localStorage.getItem(HIDE_PROJECTS_BANNER_KEY) === 'true')
+
+  const handleCollapseClick = () => {
+    const isProjectsBannerVisible = localStorage.getItem(HIDE_PROJECTS_BANNER_KEY) !== 'true'
+    const nextLocalStorageValue = isProjectsBannerVisible ? 'true' : 'false'
+    localStorage.setItem(HIDE_PROJECTS_BANNER_KEY, nextLocalStorageValue)
+    setCollapsed(isProjectsBannerVisible)
+  }
+
+  if (collapsed) {
+    return (
+      <div className="ProjectsBanner__Collapsed">
+        <div className="ProjectsBanner__CollapsedInfo">
+          <Info size="16" color="var(--black-600)" />
+          <Text className="ProjectsBanner__CollapsedInfoText">
+            Find General Information about our Projects and their funding in here
+          </Text>
+        </div>
+        <button
+          onClick={handleCollapseClick}
+          className={'ProjectsBanner__CollapseButton'}
+          aria-label={t('page.grants.banner.collapse_button_show_label')}
+        >
+          <LayoutTop />
+        </button>
+      </div>
+    )
+  }
 
   return (
     <div className={classNames('ProjectsBanner', `ProjectsBanner--current`)}>
-      <div className="ProjectsBannerItem_Text">
+      <div className="ProjectsBanner__Background" />
+      <div className="ProjectsBannerItem__Text">
         <h2 className="ProjectsBanner__Title">{title}</h2>
         <p className="ProjectsBanner__Description">{description}</p>
       </div>
@@ -55,6 +89,13 @@ export default function ProjectsBanner() {
           />
         ))}
       </div>
+      <button
+        onClick={handleCollapseClick}
+        className={classNames('ProjectsBanner__CollapseButton', 'ProjectsBanner__CollapseButton--hide')}
+        aria-label={t('page.grants.banner.collapse_button_hide_label')}
+      >
+        <Minus />
+      </button>
     </div>
   )
 }
