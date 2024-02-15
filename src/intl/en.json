@@ -1796,7 +1796,7 @@
       "cancel": "Cancel",
       "category_selection": {
         "description": "Choose a category that best suits your project",
-        "suspended_description": "The budget allocation for the following  Grant categories has been suspended for the time being as a result of a binding community decision on [this proposal](https://decentraland.org/governance/proposal/?id=a89f79f1-7171-4982-8ca1-5a21b5872373)",
+        "suspended_description": "The budget allocation for the following Grant categories has been suspended for the time being as a result of a binding community decision on [this proposal](https://decentraland.org/governance/proposal/?id=a89f79f1-7171-4982-8ca1-5a21b5872373)",
         "documentation": "Not sure which one to choose? Find out more about our Categories on our [Grants Documentation](https://docs.decentraland.org/player/general/dao/overview/grants-program/#grant-categories-and-requirements)"
       },
       "modal_actions": {
