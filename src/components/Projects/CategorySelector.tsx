@@ -1,4 +1,4 @@
-import { NewGrantCategory, VALID_CATEGORIES } from '../../entities/Grant/types'
+import { INVALID_CATEGORIES, NewGrantCategory, VALID_CATEGORIES } from '../../entities/Grant/types'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Markdown from '../Common/Typography/Markdown'
 
@@ -18,6 +18,14 @@ const CategorySelector = ({ onCategoryClick }: Props) => {
       <div className="CategorySelector__ItemsContainer">
         {VALID_CATEGORIES.map((category) => {
           return <CategoryItem key={category} category={category} onCategoryClick={onCategoryClick} />
+        })}
+      </div>
+      <Markdown className="CategorySelector__SuspendedDescription">
+        {t('page.submit_grant.category_selection.suspended_description')}
+      </Markdown>
+      <div className="CategorySelector__ItemsContainer">
+        {INVALID_CATEGORIES.map((category) => {
+          return <CategoryItem key={category} category={category} onCategoryClick={onCategoryClick} disabled />
         })}
       </div>
       <Markdown componentsClassNames={{ p: 'CategorySelector__DocumentationText' }}>
