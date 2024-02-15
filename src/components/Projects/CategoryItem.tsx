@@ -11,6 +11,16 @@ import { getNewGrantsCategoryIcon } from '../Icon/NewGrantsCategoryIcons'
 
 import './CategoryItem.css'
 
+const PROJECT_CATEGORY_COLORS: Record<NewGrantCategory, string> = {
+  [NewGrantCategory.Accelerator]: 'green',
+  [NewGrantCategory.CoreUnit]: 'blue',
+  [NewGrantCategory.Documentation]: 'purple',
+  [NewGrantCategory.InWorldContent]: 'red',
+  [NewGrantCategory.Platform]: 'fuchsia',
+  [NewGrantCategory.SocialMediaContent]: 'yellow',
+  [NewGrantCategory.Sponsorship]: 'orange',
+}
+
 interface Props {
   category: NewGrantCategory
   onCategoryClick: (value: NewGrantCategory) => void
@@ -21,12 +31,17 @@ const CategoryItem = ({ category, onCategoryClick, disabled }: Props) => {
   const t = useFormatMessage()
   const Icon = getNewGrantsCategoryIcon(category)
   const [iconVariant, setIconVariant] = useState(CategoryIconVariant.Normal)
+  const borderColor = PROJECT_CATEGORY_COLORS[category]
 
   return (
     <Card
       onMouseEnter={() => !disabled && setIconVariant(CategoryIconVariant.Hover)}
       onMouseLeave={() => !disabled && setIconVariant(CategoryIconVariant.Normal)}
-      className={classNames('CategoryItem', disabled && 'CategoryItem--disabled')}
+      className={classNames(
+        'CategoryItem',
+        disabled && 'CategoryItem--disabled',
+        !disabled && borderColor && `CategoryItem--border-${borderColor}`
+      )}
       onClick={() => !disabled && onCategoryClick(category)}
       disabled
     >

@@ -37,3 +37,31 @@
   letter-spacing: -0.2px;
   color: var(--black-600);
 }
+
+.ui.card.CategoryItem--border-green:hover {
+  border: 1px solid var(--green-900) !important;
+}
+
+.ui.card.CategoryItem--border-blue:hover {
+  outline: 2px solid var(--blue-800) !important;
+}
+
+.ui.card.CategoryItem--border-purple:hover {
+  outline: 2px solid var(--purple-800) !important;
+}
+
+.ui.card.CategoryItem--border-red:hover {
+  outline: 2px solid var(--red-800) !important;
+}
+
+.ui.card.CategoryItem--border-fuchsia:hover {
+  outline: 2px solid var(--fuchsia-800) !important;
+}
+
+.ui.card.CategoryItem--border-yellow:hover {
+  outline: 2px solid var(--yellow-800) !important;
+}
+
+.ui.card.CategoryItem--border-orange:hover {
+  outline: 2px solid var(--orange-800) !important;
+}
