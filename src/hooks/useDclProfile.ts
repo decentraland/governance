@@ -20,7 +20,6 @@ export default function useDclProfile(address?: string | null) {
     queryKey: [`userProfile#${address?.toLowerCase()}`],
     queryFn: () => fetchProfile(),
     staleTime: DEFAULT_QUERY_STALE_TIME,
-    enabled: !!address,
   })
 
   return {

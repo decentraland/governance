@@ -26,6 +26,7 @@ export type CatalystProfile = {
   }
   inventory?: string[]
   hasConnectedWeb3?: boolean
+  isDefaultProfile: boolean
 }
 
 type Color = {

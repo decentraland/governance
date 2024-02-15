@@ -17,37 +17,18 @@
   }
 }
 
-.CategorySelector__Item {
-  width: 100% !important;
-  padding: 20px 30px !important;
-  display: flex;
-  flex-direction: row !important;
-  align-items: center;
-  gap: 25px;
-  margin: 0 !important;
-  min-height: 121px !important;
-}
-
-.CategorySelector__Content h2 {
-  margin-bottom: 5px;
-  font-weight: var(--weight-semi-bold);
-  font-size: 17px;
-  line-height: 26px;
-}
-
-.CategorySelector__Content p {
-  font-weight: var(--weight-normal);
-  font-size: 15px;
-  line-height: 24px;
-  letter-spacing: -0.2px;
-  color: var(--black-600);
-}
-
 .CategorySelector__Description {
   font-weight: var(--weight-semi-bold);
   font-size: 15px;
   line-height: 24px;
   color: var(--black-600);
+}
+
+.CategorySelector__SuspendedDescription {
+  font-weight: var(--weight-normal);
+  font-size: 15px;
+  line-height: 24px;
+  color: var(--black-800);
 }
 
 .CategorySelector__DocumentationText {
