@@ -17,6 +17,7 @@
 .ActivityTickerFilterItem .CheckboxField {
   height: 28px;
 }
+
 .ActivityTickerFilterItem .CheckboxField:hover {
   background: none;
 }
@@ -29,6 +30,7 @@
   border-radius: 2px;
 }
 
+/* Hover */
 .ActivityTickerFilterItem__Checkbox.ui.checkbox input[type='checkbox'].hidden ~ label:hover:before,
 .ActivityTickerFilterItem__Checkbox.ui.checkbox input[type='checkbox'].hidden:focus ~ label:hover:before {
   border: 1px solid var(--black-400);
@@ -45,16 +47,9 @@
 
 div.ui.fitted.checkbox.ActivityTickerFilterItem__Checkbox,
 .ActivityTickerFilterItem__Checkbox.ui.checkbox input[type='checkbox'],
+.ActivityTickerFilterItem__Checkbox.ui.checkbox input[type='checkbox'].hidden + label,
 .ActivityTickerFilterItem__Checkbox.ui.checkbox input[type='checkbox'].hidden ~ label:before,
-.ActivityTickerFilterItem__Checkbox.ui.checkbox input[type='checkbox'].hidden ~ label,
-.ActivityTickerFilterItem__Checkbox.ui.checkbox input[type='checkbox'].hidden ~ label:after,
-.ActivityTickerFilterItem__Checkbox.ui.toggle.checkbox input[type='checkbox'].hidden:focus ~ label:before,
-.ActivityTickerFilterItem__Checkbox.ui.toggle.checkbox input[type='checkbox'].hidden:focus ~ label:after,
-.ActivityTickerFilterItem__Checkbox.ui.checkbox input[type='checkbox'].hidden ~ label:hover:before,
-.ActivityTickerFilterItem__Checkbox.ui.checkbox input[type='checkbox'].hidden:focus ~ label:hover:before,
-.ActivityTickerFilterItem__Checkbox.ui.checkbox input[type='checkbox'].hidden:focus ~ label:hover:after,
-.ActivityTickerFilterItem__Checkbox.ui.checkbox.checked input[type='checkbox'].hidden + label:before,
-.ActivityTickerFilterItem__Checkbox.ui.checkbox.checked input[type='checkbox'].hidden:focus + label:before {
+.ActivityTickerFilterItem__Checkbox.ui.checkbox.checked:not(.toggle) input[type='checkbox'].hidden + label:after {
   width: 12px !important;
   height: 12px !important;
   min-width: 12px !important;

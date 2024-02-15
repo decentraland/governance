@@ -55,16 +55,8 @@ export default function ActivityTickerFilter({ setFilterState, filterState, refe
   const [isOpen, setIsOpen] = useState(false)
   const selectedFiltersCount = countTrueProperties(filterState)
 
-  const onClick = () => {
-    setIsOpen(true)
-  }
-
-  const onClose = () => {
-    setIsOpen(false)
-  }
-
   const onApply = () => {
-    refetch().then(() => onClose())
+    refetch().then(() => setIsOpen(false))
   }
 
   const onClear = () => {
@@ -73,7 +65,7 @@ export default function ActivityTickerFilter({ setFilterState, filterState, refe
 
   return (
     <>
-      <div className={classNames('ActivityTickerFilter')} onClick={onClick}>
+      <div className={classNames('ActivityTickerFilter')} onClick={() => setIsOpen(true)}>
         <Counter count={selectedFiltersCount} size="small" hidden={isOpen || selectedFiltersCount === 0} />
         <div
           className={classNames(
