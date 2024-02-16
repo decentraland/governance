@@ -30,7 +30,12 @@ import Head from '../../components/Layout/Head'
 import LoadingView from '../../components/Layout/LoadingView'
 import LogIn from '../../components/Layout/LogIn'
 import CategorySelector from '../../components/Projects/CategorySelector'
-import { GrantRequest, GrantRequestCategoryAssessment, NewGrantCategory } from '../../entities/Grant/types'
+import {
+  GrantRequest,
+  GrantRequestCategoryAssessment,
+  NewGrantCategory,
+  VALID_CATEGORIES,
+} from '../../entities/Grant/types'
 import { SUBMISSION_THRESHOLD_GRANT } from '../../entities/Proposal/constants'
 import { ProposalType } from '../../entities/Proposal/types'
 import { asNumber, isGrantProposalSubmitEnabled, userModifiedForm } from '../../entities/Proposal/utils'
@@ -118,7 +123,11 @@ export default function SubmitGrant() {
     } catch (error) {
       console.error(error)
     } finally {
-      patchGrantRequest((prevState) => ({ ...prevState, category }))
+      if (category && VALID_CATEGORIES.includes(category)) {
+        patchGrantRequest((prevState) => ({ ...prevState, category }))
+      } else {
+        navigate('/submit/grant')
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
