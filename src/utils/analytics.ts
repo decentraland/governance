@@ -48,9 +48,9 @@ const getContext = once(() => {
   }
 })
 
-export function track(event: string, data: Record<string, any> = {}) {
+export function track(event: string, data: Record<string, any> = {}, callback?: () => void) {
   if (typeof window !== 'undefined' && window?.analytics) {
     const analytics = window.analytics
-    analytics.track(event, { ...getContext(), ...data })
+    analytics.track(event, { ...getContext(), ...data }, callback)
   }
 }

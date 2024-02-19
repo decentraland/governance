@@ -1,15 +1,10 @@
 import classNames from 'classnames'
 import { withPrefix } from 'gatsby'
 
-import { isLocalLink } from '../../../clients/utils'
-import { toGovernancePathname } from '../../../helpers/browser'
+import { isLocalLink, isMetaClick, toGovernancePathname } from '../../../helpers/browser'
 import { navigate } from '../../../utils/locations'
 
 import './Link.css'
-
-function isMetaClick(event: React.MouseEvent<HTMLAnchorElement>) {
-  return event.metaKey || event.altKey || event.ctrlKey || event.shiftKey
-}
 
 type Props = React.AnchorHTMLAttributes<HTMLAnchorElement>
 

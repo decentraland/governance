@@ -1,7 +1,7 @@
 import { Helmet, HelmetProps } from 'react-helmet'
 
-import { isLocalLink } from '../../clients/utils'
 import { DCL_META_IMAGE_URL, GOVERNANCE_URL } from '../../constants'
+import { isLocalLink } from '../../helpers/browser'
 
 // TODO: Review how this data is built in non-gatsby DCL apps for consistency.
 
