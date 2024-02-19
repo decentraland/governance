@@ -1361,6 +1361,7 @@
         "faq_description": "Learn more about our Grants System",
         "collapse_button_hide_label": "Hide projects banner",
         "collapse_button_show_label": "Show projects banner",
+        "collapsed_description": "Find General Information about our Projects and their funding [in here](https://MISSING_LINK)",
         "expand_button": "EXPAND"
       },
       "projects_category_title": "{status}{category} Projects",

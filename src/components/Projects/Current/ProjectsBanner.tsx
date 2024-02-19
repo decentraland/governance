@@ -6,7 +6,7 @@ import { Desktop } from 'decentraland-ui/dist/components/Media/Media'
 import { HIDE_PROJECTS_BANNER_KEY } from '../../../front/localStorageKeys'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Mobile from '../../Common/MediaQuery/Mobile'
-import Text from '../../Common/Typography/Text'
+import Markdown from '../../Common/Typography/Markdown'
 import Info from '../../Icon/Info'
 import LayoutTop from '../../Icon/LayoutTop'
 import Minus from '../../Icon/Minus'
@@ -62,9 +62,9 @@ export default function ProjectsBanner() {
               <Info size="16" color="var(--black-600)" />
             </div>
           </Desktop>
-          <Text className="ProjectsBanner__CollapsedInfoText">
-            Find General Information about our Projects and their funding in here
-          </Text>
+          <Markdown componentsClassNames={{ p: 'ProjectsBanner__CollapsedInfoText' }}>
+            {t('page.grants.banner.collapsed_description')}
+          </Markdown>
         </div>
         <Desktop>
           <button
