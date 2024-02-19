@@ -17,7 +17,6 @@ import {
 
 import { IntlProvider } from "react-intl"
 import AuthProvider from 'decentraland-gatsby/dist/context/Auth/AuthProvider'
-import FeatureFlagProvider from 'decentraland-gatsby/dist/context/FeatureFlag/FeatureFlagProvider'
 import segment from 'decentraland-gatsby/dist/utils/segment/segment'
 import Layout from './src/components/Layout/Layout'
 import Segment from "decentraland-gatsby/dist/components/Development/Segment"
@@ -31,7 +30,7 @@ const queryClient = new QueryClient()
 export const wrapRootElement = ({ element }) => {
   return (
     <AuthProvider sso={SSO_URL}>
-      <FeatureFlagProvider applicationName={["dao", "dapps"]}>{element}</FeatureFlagProvider>
+      {element}
       {SEGMENT_KEY && <Segment key="segment" segmentKey={SEGMENT_KEY} />}
     </AuthProvider>
   )

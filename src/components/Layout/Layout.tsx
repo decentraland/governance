@@ -12,7 +12,6 @@ import {
   DROPDOWN_MENU_SIGN_OUT_EVENT,
 } from 'decentraland-dapps/dist/containers/Navbar/constants'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useFeatureFlagContext from 'decentraland-gatsby/dist/context/FeatureFlag/useFeatureFlagContext'
 import useTrackContext from 'decentraland-gatsby/dist/context/Track/useTrackContext'
 import useTrackLinkContext from 'decentraland-gatsby/dist/context/Track/useTrackLinkContext'
 import { fetchManaBalance } from 'decentraland-gatsby/dist/utils/loader/manaBalance'
@@ -24,7 +23,9 @@ import type { PageProps } from 'gatsby'
 import { isEmpty } from 'lodash'
 
 import { getSupportedChainIds } from '../../helpers'
+import useDclFeatureFlags from '../../hooks/useDclFeatureFlags'
 import useDclProfile from '../../hooks/useDclProfile'
+import { FeatureFlags } from '../../utils/features'
 import ExternalLinkWarningModal from '../Modal/ExternalLinkWarningModal'
 import { LinkDiscordModal } from '../Modal/LinkDiscordModal/LinkDiscordModal'
 import WalletSelectorModal from '../Modal/WalletSelectorModal'
@@ -39,7 +40,7 @@ export type LayoutProps = Omit<PageProps, 'children'> & {
 export default function Layout({ children }: LayoutProps) {
   const [user, userState] = useAuthContext()
   const track = useTrackContext()
-  const [ff] = useFeatureFlagContext()
+  const { isFeatureFlagEnabled } = useDclFeatureFlags()
 
   const handleClickUserMenuOption = useTrackLinkContext(function (
     event: React.MouseEvent<HTMLElement, MouseEvent>,
@@ -79,7 +80,7 @@ export default function Layout({ children }: LayoutProps) {
 
   const { profile, isLoadingDclProfile } = useDclProfile(user)
   const chainId = userState.chainId
-  const isAuthDappEnabled = ff.enabled('dapps-auth-dapp')
+  const isAuthDappEnabled = isFeatureFlagEnabled(FeatureFlags.AuthDapp)
 
   const { data: manaBalances } = useQuery({
     queryKey: [`manaBalances#${user}`],
