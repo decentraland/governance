@@ -3,8 +3,6 @@ import { SubmitHandler } from 'react-hook-form'
 
 import { useLocation } from '@reach/router'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import { DappsFeatureFlags } from 'decentraland-gatsby/dist/context/FeatureFlag/types'
-import useFeatureFlagContext from 'decentraland-gatsby/dist/context/FeatureFlag/useFeatureFlagContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
@@ -29,12 +27,14 @@ import {
   UpdateSubmissionDetails,
 } from '../../entities/Updates/types'
 import { getLatestUpdate, getReleases } from '../../entities/Updates/utils'
+import useDclFeatureFlags from '../../hooks/useDclFeatureFlags'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import usePreventNavigation from '../../hooks/usePreventNavigation'
 import useProposal from '../../hooks/useProposal'
 import useProposalUpdate from '../../hooks/useProposalUpdate'
 import useProposalUpdates from '../../hooks/useProposalUpdates'
 import useVestingContractData from '../../hooks/useVestingContractData'
+import { FeatureFlags } from '../../utils/features'
 import locations, { navigate } from '../../utils/locations'
 
 import './submit.css'
@@ -84,7 +84,6 @@ export default function Update({ isEdit }: Props) {
 
   const [formDisabled, setFormDisabled] = useState(false)
   const location = useLocation()
-  const [ff] = useFeatureFlagContext()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const updateId = params.get('id')
   const [isPreviewMode, setPreviewMode] = useState(false)
@@ -101,7 +100,8 @@ export default function Update({ isEdit }: Props) {
   const [csvInputField, patchCsvInputField] = useState<string | undefined>()
   const [validationState, patchValidationState] = useState<UpdateValidationState>(intialValidationState)
   const isValidToSubmit = Object.values(validationState).every((valid) => valid)
-  const isAuthDappEnabled = ff.enabled(DappsFeatureFlags.AuthDappEnabled)
+  const { isFeatureFlagEnabled } = useDclFeatureFlags()
+  const isAuthDappEnabled = isFeatureFlagEnabled(FeatureFlags.AuthDapp)
 
   usePreventNavigation(true)
 
