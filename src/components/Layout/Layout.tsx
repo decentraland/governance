@@ -12,7 +12,6 @@ import {
   DROPDOWN_MENU_SIGN_OUT_EVENT,
 } from 'decentraland-dapps/dist/containers/Navbar/constants'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useTrackContext from 'decentraland-gatsby/dist/context/Track/useTrackContext'
 import useTrackLinkContext from 'decentraland-gatsby/dist/context/Track/useTrackLinkContext'
 import { fetchManaBalance } from 'decentraland-gatsby/dist/utils/loader/manaBalance'
 import { Footer } from 'decentraland-ui/dist/components/Footer/Footer'
@@ -23,6 +22,7 @@ import type { PageProps } from 'gatsby'
 import { isEmpty } from 'lodash'
 
 import { getSupportedChainIds } from '../../helpers'
+import useAnalyticsTrack from '../../hooks/useAnalyticsTrack'
 import useDclFeatureFlags from '../../hooks/useDclFeatureFlags'
 import useDclProfile from '../../hooks/useDclProfile'
 import { FeatureFlags } from '../../utils/features'
@@ -39,7 +39,7 @@ export type LayoutProps = Omit<PageProps, 'children'> & {
 
 export default function Layout({ children }: LayoutProps) {
   const [user, userState] = useAuthContext()
-  const track = useTrackContext()
+  const track = useAnalyticsTrack()
   const { isFeatureFlagEnabled } = useDclFeatureFlags()
 
   const handleClickUserMenuOption = useTrackLinkContext(function (

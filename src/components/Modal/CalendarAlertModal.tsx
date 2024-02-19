@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import { UnitTypeLongPlural } from 'dayjs'
-import useTrackContext from 'decentraland-gatsby/dist/context/Track/useTrackContext'
 
 import { SegmentEvent } from '../../entities/Events/types'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { proposalUrl } from '../../entities/Proposal/utils'
+import useAnalyticsTrack from '../../hooks/useAnalyticsTrack'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Time from '../../utils/date/Time'
 import { getGoogleCalendarUrl } from '../../utils/projects'
@@ -39,7 +39,7 @@ function CalendarAlertModal({ proposal, onClose, open }: Props) {
   const [timeValue, setTimeValue] = useState(0)
   const [unit, setUnit] = useState<UnitTypeLongPlural | undefined>()
   const [isDisabled, setIsDisabled] = useState(false)
-  const track = useTrackContext()
+  const track = useAnalyticsTrack()
 
   const trackAddToCalendar = () => track(SegmentEvent.ActionPerformed, { type: 'add to calendar' })
 

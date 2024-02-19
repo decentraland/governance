@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { Web3Provider } from '@ethersproject/providers'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useTrackContext from 'decentraland-gatsby/dist/context/Track/useTrackContext'
 
 import { Governance } from '../clients/Governance'
 import { MESSAGE_TIMEOUT_TIME } from '../entities/User/constants'
@@ -16,7 +15,6 @@ export const VALIDATION_CHECK_INTERVAL = 10 * 1000 // 10 seconds
 
 function useValidationSetup(account?: AccountType) {
   const [user, userState] = useAuthContext()
-  const track = useTrackContext()
 
   const [clipboardMessage, setClipboardMessage] = useState('')
   const { handleCopy } = useClipboardCopy(Time.Second)
@@ -77,7 +75,6 @@ function useValidationSetup(account?: AccountType) {
 
   return {
     user,
-    track,
     getSignedMessage,
     copyMessageToClipboard,
     resetTimer,
