@@ -152,8 +152,19 @@ export class Governance extends API {
     }
   }
 
-  async getProjects() {
-    const proposals = await this.fetch<ApiResponse<ProjectWithUpdate[]>>(`/projects`, this.options().method('GET'))
+  async getProjects(from?: Date, to?: Date) {
+    const params = new URLSearchParams()
+    if (from) {
+      params.append('from', from.toISOString().split('T')[0])
+    }
+    if (to) {
+      params.append('to', to.toISOString().split('T')[0])
+    }
+    const paramsStr = params.toString()
+    const proposals = await this.fetch<ApiResponse<ProjectWithUpdate[]>>(
+      `/projects${paramsStr ? `?${paramsStr}` : ''}`,
+      this.options().method('GET')
+    )
 
     return proposals
   }
