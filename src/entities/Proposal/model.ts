@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import {
   SQL,
@@ -27,9 +28,11 @@ import {
   PriorityProposal,
   PriorityProposalType,
   ProposalAttributes,
- ProposalListFilter, ProposalStatus,
+  ProposalListFilter,
+  ProposalStatus,
   ProposalType,
- SortingOrder, isProposalType,
+  SortingOrder,
+  isProposalType,
 } from './types'
 import { SITEMAP_ITEMS_PER_PAGE, isProposalStatus } from './utils'
 
@@ -426,9 +429,13 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return proposals.map(this.parse)
   }
 
-  static async getProjectList(): Promise<ProposalAttributes[]> {
+  static async getProjectList(from?: Date, to?: Date): Promise<ProposalAttributes[]> {
     const status = [ProposalStatus.Passed, ProposalStatus.Enacted].map((status) => SQL`${status}`)
     const types = [ProposalType.Bid, ProposalType.Grant].map((type) => SQL`${type}`)
+
+    if (from && to && from > to) {
+      throw new Error('Invalid date range')
+    }
 
     const proposals = await this.namedQuery(
       'get_project_list',
@@ -438,6 +445,8 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         WHERE "deleted" = FALSE
           AND "type" IN (${join(types)})
           AND "status" IN (${join(status)})
+          ${conditional(!!from, SQL`AND "start_at" >= ${from}`)}
+          ${conditional(!!to, SQL`AND "start_at" < ${to}`)}
           ORDER BY "created_at" DESC 
     `
     )
