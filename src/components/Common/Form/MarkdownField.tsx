@@ -1,13 +1,15 @@
 import { Control, Controller, FieldValues, Path, PathValue } from 'react-hook-form'
 
-import MarkdownTextarea from 'decentraland-gatsby/dist/components/Form/MarkdownTextarea'
-import { FieldProps } from 'decentraland-ui/dist/components/Field/Field'
+import MarkdownTextarea from './MarkdownTextArea'
 
-export interface MarkdownFieldProps<T extends FieldValues> extends FieldProps {
+export interface MarkdownFieldProps<T extends FieldValues> extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   control: Control<T>
   name: Path<T>
   defaultValue?: PathValue<T, Path<T>> | undefined
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   rules?: any
+  error?: boolean
+  message?: string
 }
 
 export default function MarkdownField<T extends FieldValues>({
