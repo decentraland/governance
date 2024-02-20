@@ -8,17 +8,15 @@ import ProposalMarkdown from '../../Proposal/View/ProposalMarkdown'
 
 import './MarkdownTextArea.css'
 
-type MarkdownTextarea = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
+export type MarkdownTextAreaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
   message?: string
   error?: boolean
-  preview?: boolean
-  previewLabel?: string
   minHeight?: number
 }
 
-export default function MarkdownTextarea({ preview, previewLabel, className, ...props }: MarkdownTextarea) {
+export default function MarkdownTextarea({ className, ...props }: MarkdownTextAreaProps) {
   const ref = useRef<HTMLTextAreaElement | null>(null)
-  const [previewing, setPreviewing] = useState(preview)
+  const [previewing, setPreviewing] = useState(false)
 
   const handleRowChange = useCallback(() => {
     if (!ref.current) {
@@ -50,8 +48,8 @@ export default function MarkdownTextarea({ preview, previewLabel, className, ...
       <div className="MarkdownTextarea__PreviewButtonContainer">
         <Radio
           toggle
-          label={previewLabel ?? 'PREVIEW'}
-          checked={preview ?? previewing}
+          label="PREVIEW"
+          checked={previewing}
           onChange={() => setPreviewing(!previewing)}
           style={{ position: 'absolute', right: 0, top: 0 }}
         />

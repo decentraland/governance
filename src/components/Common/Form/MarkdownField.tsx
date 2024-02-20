@@ -1,16 +1,13 @@
 import { Control, Controller, FieldValues, Path, PathValue } from 'react-hook-form'
 
-import MarkdownTextarea from './MarkdownTextArea'
+import MarkdownTextarea, { MarkdownTextAreaProps } from './MarkdownTextArea'
 
-export interface MarkdownFieldProps<T extends FieldValues> extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+export interface MarkdownFieldProps<T extends FieldValues> extends MarkdownTextAreaProps {
   control: Control<T>
   name: Path<T>
   defaultValue?: PathValue<T, Path<T>> | undefined
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   rules?: any
-  error?: boolean
-  message?: string
-  minHeight?: number
 }
 
 export default function MarkdownField<T extends FieldValues>({
