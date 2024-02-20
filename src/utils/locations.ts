@@ -36,6 +36,12 @@ export type ProposalsModal = {
   modal: 'new'
 }
 
+export type ProjectsParams = {
+  type: ProjectTypeFilter
+  from: string
+  to: string
+}
+
 function url(path = '', query: Record<string, string> | URLSearchParams = {}) {
   const params = new URLSearchParams(query).toString()
   const formattedPath = path !== '' && !path.startsWith('/') ? '/' + path : path
@@ -81,7 +87,10 @@ export default {
   debug: () => url('/debug/'),
   welcome: () => url('/welcome/', {}),
   update: (id: string) => url('/update/', { id }),
-  projects: (type?: ProjectTypeFilter) => url(`/projects/${type ? `?type=${type}` : ''}`, {}),
+  projects: (params?: Partial<ProjectsParams>) => {
+    const urlParams = new URLSearchParams(params as Record<string, string>)
+    return url(`/projects/${urlParams.size > 0 ? `?${urlParams.toString()}` : ''}`, {})
+  },
   edit: {
     update: (id: string) => url('edit/update/', { id }),
   },

@@ -51,7 +51,8 @@
         "all": "All",
         "week": "Last Week",
         "month": "Last Month",
-        "3months": "Last 90 Days"
+        "3months": "Last 90 Days",
+        "year": "Year"
       }
     },
     "notifications": {

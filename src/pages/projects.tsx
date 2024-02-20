@@ -12,6 +12,7 @@ import CurrentProjectsList from '../components/Projects/Current/CurrentProjectsL
 import ProjectsBanner from '../components/Projects/Current/ProjectsBanner'
 import RequestBanner from '../components/Projects/RequestBanner'
 import CategoryFilter, { ProjectTypeFilter } from '../components/Search/CategoryFilter'
+import QuarterFilter from '../components/Search/QuarterFilter'
 import StatusFilter from '../components/Search/StatusFilter'
 import {
   OldGrantCategory,
@@ -134,6 +135,7 @@ export default function ProjectsPage() {
               <NotMobile>
                 <CategoryFilter filterType={ProjectTypeFilter} categoryCount={counter} showAllFilter={false} />
                 <StatusFilter statusType={ProjectStatus} />
+                <QuarterFilter />
                 <RequestBanner />
               </NotMobile>
             </div>
