@@ -6,7 +6,8 @@ import {
 } from 'decentraland-crypto-middleware/lib/types'
 import { Identity, getCurrentIdentity } from 'decentraland-gatsby/dist/utils/auth'
 import { signPayload } from 'decentraland-gatsby/dist/utils/auth/identify'
-import { toBase64 } from 'decentraland-gatsby/dist/utils/string/base64'
+
+import { toBase64 } from './base64'
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
 const METHODS_WITH_BODY: HttpMethod[] = ['POST', 'PUT', 'PATCH']
