@@ -1,0 +1,113 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  AUTH_CHAIN_HEADER_PREFIX,
+  AUTH_METADATA_HEADER,
+  AUTH_TIMESTAMP_HEADER,
+} from 'decentraland-crypto-middleware/lib/types'
+import { Identity, getCurrentIdentity } from 'decentraland-gatsby/dist/utils/auth'
+import { signPayload } from 'decentraland-gatsby/dist/utils/auth/identify'
+import { toBase64 } from 'decentraland-gatsby/dist/utils/string/base64'
+
+type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
+const METHODS_WITH_BODY: HttpMethod[] = ['POST', 'PUT', 'PATCH']
+
+type ApiOptions = {
+  method: HttpMethod
+  json?: any
+  sign?: boolean
+  headers?: Record<string, string>
+}
+
+export default abstract class API {
+  private readonly baseUrl: string
+  private defaultHeaders: Record<string, string> = {}
+
+  constructor(baseUrl: string) {
+    this.baseUrl = baseUrl
+  }
+
+  protected async fetch<T>(endpoint: string, options: ApiOptions = { method: 'GET', sign: false }): Promise<T> {
+    const { method, json, sign, headers = {} } = options
+    const jsonHeaders = this.getJsonHeaders(method, json)
+    const authAndSignatureHeaders = sign ? await this.getAuthorizationAndSignature(endpoint, options) : {}
+
+    const finalHeaders = {
+      ...this.defaultHeaders,
+      ...headers,
+      ...jsonHeaders,
+      ...authAndSignatureHeaders,
+    }
+
+    const response = await fetch(this.url(endpoint), {
+      method,
+      headers: finalHeaders,
+      body: json ? JSON.stringify(json) : undefined,
+    })
+
+    await this.checkForErrors(response)
+
+    const contentType = response.headers.get('Content-Type')
+    if (contentType && contentType.includes('application/json')) {
+      return response.json()
+    } else {
+      throw new Error(`Expected JSON response but received non-JSON content: ${await response.text()}`)
+    }
+  }
+
+  private async checkForErrors(response: Response) {
+    if (!response.ok) {
+      let errorBody = await response.text()
+      const contentType = response.headers.get('Content-Type')
+      if (contentType && contentType.includes('application/json')) {
+        try {
+          const errorJson = await response.json()
+          errorBody = JSON.stringify(errorJson)
+        } catch (e) {
+          // If JSON parsing fails, fallback to using the text response (errorBody already set)
+        }
+      }
+      throw new Error(`HTTP error! status: ${response.status}, body: ${errorBody}`)
+    }
+  }
+
+  private getJsonHeaders(method: HttpMethod, json?: any) {
+    const hasBody = METHODS_WITH_BODY.includes(method) && json !== undefined
+    const jsonHeaders: Record<string, string> = {}
+    if (hasBody) {
+      jsonHeaders['Content-Type'] = 'application/json'
+    }
+    return jsonHeaders
+  }
+
+  private url(endpoint: string) {
+    return `${this.baseUrl}${endpoint}`
+  }
+
+  protected setDefaultHeader(key: string, value: string): void {
+    this.defaultHeaders[key] = value
+  }
+
+  async getAuthorizationAndSignature(endpoint: string, options: ApiOptions): Promise<Record<string, string>> {
+    const identity: Identity | null = getCurrentIdentity()
+    if (!identity?.authChain) {
+      throw new Error('Missing identity to authorize & sign the request') //TODO: add error data
+    }
+    const auth = { Authorization: 'Bearer ' + toBase64(JSON.stringify(identity.authChain)) }
+
+    const signature: Record<string, string> = {}
+    const timestamp = String(Date.now())
+    const pathname = new URL(this.url(endpoint), 'https://localhost').pathname
+    const method = options.method
+    const metadata = ''
+    const payload = [method, pathname, timestamp, metadata].join(':').toLowerCase()
+    const chain = await signPayload(identity, payload)
+
+    chain.forEach((link, index) => {
+      signature[AUTH_CHAIN_HEADER_PREFIX + index] = JSON.stringify(link)
+    })
+    signature[AUTH_TIMESTAMP_HEADER] = timestamp
+    signature[AUTH_METADATA_HEADER] = metadata
+
+    return { ...auth, ...signature }
+  }
+}
