@@ -10,6 +10,7 @@ export interface MarkdownFieldProps<T extends FieldValues> extends React.Textare
   rules?: any
   error?: boolean
   message?: string
+  minHeight?: number
 }
 
 export default function MarkdownField<T extends FieldValues>({
