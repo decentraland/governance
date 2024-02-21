@@ -225,7 +225,6 @@ export default function ProposalSubmitHiringPage({ type, committees, isCommittee
               maxLength: { value: schema.reasons.maxLength, message: t('page.submit_hiring.error.reasons_max_length') },
             }}
             disabled={formDisabled}
-            loading={isLoadingVpDistribution}
             error={!!errors.reasons}
             message={
               t(errors.reasons?.message) +
@@ -255,7 +254,6 @@ export default function ProposalSubmitHiringPage({ type, committees, isCommittee
               },
             }}
             disabled={formDisabled}
-            loading={isLoadingVpDistribution}
             error={!!errors.evidence}
             message={
               t(errors.evidence?.message) +

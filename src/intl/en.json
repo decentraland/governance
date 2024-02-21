@@ -2167,5 +2167,9 @@
     "delegation_empty_title": "VP not delegated",
     "delegation_address_empty": "This account has not delegated their VP",
     "choose_delegate": "Choose a delegate"
+  },
+  "maintenance": {
+    "title": "Site under maintenance",
+    "description": "We will be back soon, sorry for the inconvenience..."
   }
 }

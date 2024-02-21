@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import {
   SQL,
@@ -27,9 +28,11 @@ import {
   PriorityProposal,
   PriorityProposalType,
   ProposalAttributes,
- ProposalListFilter, ProposalStatus,
+  ProposalListFilter,
+  ProposalStatus,
   ProposalType,
- SortingOrder, isProposalType,
+  SortingOrder,
+  isProposalType,
 } from './types'
 import { SITEMAP_ITEMS_PER_PAGE, isProposalStatus } from './utils'
 

@@ -7,6 +7,7 @@ import { AccountType } from '../entities/User/types'
 import { DISCOURSE_API } from '../entities/User/utils'
 import { openUrl } from '../helpers'
 
+import useAnalyticsTrack from './useAnalyticsTrack'
 import useValidationSetup, { VALIDATION_CHECK_INTERVAL } from './useValidationSetup'
 
 export const THREAD_URL = `${DISCOURSE_API}${
@@ -16,7 +17,6 @@ export const THREAD_URL = `${DISCOURSE_API}${
 export default function useForumConnect() {
   const {
     user,
-    track,
     getSignedMessage,
     copyMessageToClipboard,
     resetTimer,
@@ -27,6 +27,8 @@ export default function useForumConnect() {
     setIsValidated,
     resetValidation,
   } = useValidationSetup(AccountType.Forum)
+
+  const track = useAnalyticsTrack()
 
   const openThread = useCallback(() => {
     openUrl(THREAD_URL)

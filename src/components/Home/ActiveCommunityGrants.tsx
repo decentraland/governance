@@ -18,7 +18,7 @@ const GRANTS_TO_SHOW = 4
 const ActiveCommunityGrants = () => {
   const t = useFormatMessage()
   const { projects, isLoadingProjects } = useProjects()
-  const grants = useMemo(() => projects?.data.filter((item) => item.type === ProposalType.Grant), [projects])
+  const grants = useMemo(() => projects?.filter((item) => item.type === ProposalType.Grant), [projects])
 
   return (
     <div className="ActiveCommunityGrants">
