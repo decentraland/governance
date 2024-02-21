@@ -31,10 +31,6 @@
   color: var(--white-900);
 }
 
-.Counter--hidden {
-  opacity: 0;
-}
-
 @media (min-width: 425px) {
   .Counter--normal {
     --counter-size: 20px;

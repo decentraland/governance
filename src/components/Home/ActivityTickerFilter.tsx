@@ -54,17 +54,18 @@ export default function ActivityTickerFilter({ setFilterState, filterState, refe
   const selectedFiltersCount = countTrueProperties(filterState)
 
   const onApply = () => {
-    refetch().then(() => setIsOpen(false))
+    refetch()
+    setIsOpen(false)
   }
 
   const onClear = () => {
-    setFilterState(() => INITIAL_TICKER_FILTER_STATE)
+    setFilterState(INITIAL_TICKER_FILTER_STATE)
   }
 
   return (
     <>
       <div className={classNames('ActivityTickerFilter')} onClick={() => setIsOpen(true)}>
-        <Counter count={selectedFiltersCount} size="small" hidden={isOpen || selectedFiltersCount === 0} />
+        {!(isOpen || selectedFiltersCount === 0) && <Counter count={selectedFiltersCount} size="small" />}
         <div
           className={classNames(
             'ActivityTickerFilter__LabeledArrow',
