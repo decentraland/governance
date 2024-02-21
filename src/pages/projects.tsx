@@ -81,11 +81,11 @@ function toProjectTypeFilter(category?: string | null): ProjectTypeFilter | unde
 
   return index !== -1 ? categories[index] : undefined
 }
-function toDateFilter(date: string | null): Date | undefined {
-  if (date) {
-    const parsedDate = new Date(date)
-    if (!isNaN(parsedDate.getTime())) {
-      return parsedDate
+function toDateFilter(value: string | null): number | undefined {
+  if (value) {
+    const parsedValue = Number(value)
+    if (!isNaN(parsedValue)) {
+      return parsedValue
     }
   }
   return undefined
@@ -97,10 +97,10 @@ export default function ProjectsPage() {
   const type = toProjectTypeFilter(params.get('type'))
   const status = toProjectStatus(params.get('status'))
   const subtype = toGrantSubtype(params.get('subtype'), () => undefined)
-  const from = toDateFilter(params.get('from'))
-  const to = toDateFilter(params.get('to'))
+  const year = toDateFilter(params.get('year'))
+  const quarter = toDateFilter(params.get('quarter'))
 
-  const { projects, isLoadingProjects } = useProjects(from, to)
+  const { projects, isLoadingProjects } = useProjects(year && quarter ? { year, quarter } : undefined)
   const displayableProjects = useMemo(
     () => filterDisplayableProjects(projects?.data, type, subtype, status),
     [projects?.data, type, subtype, status]

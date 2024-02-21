@@ -6,7 +6,6 @@ import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Time from '../../utils/date/Time'
-import locations from '../../utils/locations'
 import Link from '../Common/Typography/Link'
 
 import FilterContainer from './FilterContainer'
@@ -16,7 +15,7 @@ const QUARTERS = [1, 2, 3, 4]
 
 function getYears() {
   const currentYear = Time().year()
-  const startYear = 2021
+  const startYear = 2022
   const years = []
 
   for (let year = startYear; year <= currentYear; year++) {
@@ -26,54 +25,46 @@ function getYears() {
   return years
 }
 
-function getQuarterDates(quarter: number, year: number) {
-  if (quarter < 1 || quarter > 4) {
-    throw new Error('Quarter should be between 1 and 4')
-  }
-
-  const startMonth = (quarter - 1) * 3 + 1
-
-  const endMonth = startMonth + 2
-
-  const startDate = Time(`${year}-${startMonth}-01`).startOf('month').format('YYYY-MM-DD')
-  const endDate = Time(`${year}-${endMonth}-01`).endOf('month').add(1, 'day').format('YYYY-MM-DD')
-
-  return { startDate, endDate }
-}
-
-function getQuarterButtons(year: number, from: string | null, to: string | null) {
-  return QUARTERS.map((quarter) => {
-    const { startDate, endDate } = getQuarterDates(quarter, year)
-    const isActive = from === startDate && to === endDate
-
-    return (
-      <Button
-        className="QuarterFilter__Button"
-        as={Link}
-        href={locations.projects({ from: startDate, to: endDate })}
-        key={quarter}
-        active={isActive}
-        fluid
-      >
-        Q{quarter}
-      </Button>
-    )
-  })
-}
-
 function QuarterFilter() {
   const t = useFormatMessage()
   const [selectedYear, setSelectedYear] = useState<number | undefined>()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
-  const from = params.get('from')
-  const to = params.get('to')
+  const yearParam = params.get('year')
+  const quarterParam = params.get('quarter')
+
   useEffect(() => {
-    if (from) {
-      const year = Time(from).year()
+    if (yearParam) {
+      const year = Time(`${yearParam}-01-01`).year()
       if (!isNaN(year)) setSelectedYear(year)
     }
-  }, [from])
+  }, [yearParam])
+
+  const getQuarterButtons = (year: number) => {
+    return QUARTERS.map((quarter) => {
+      const isActive = Number(yearParam) === year && Number(quarterParam) === quarter
+      if (isActive) {
+        params.delete('year')
+        params.delete('quarter')
+      } else {
+        params.set('year', String(year))
+        params.set('quarter', String(quarter))
+      }
+
+      return (
+        <Button
+          className="QuarterFilter__Button"
+          as={Link}
+          href={`${location.pathname}?${params.toString()}`}
+          key={quarter}
+          active={isActive}
+          fluid
+        >
+          Q{quarter}
+        </Button>
+      )
+    })
+  }
 
   return (
     <FilterContainer title={t('navigation.search.timeframe_filter.title')}>
@@ -87,9 +78,7 @@ function QuarterFilter() {
           onChange={(_, { value }) => setSelectedYear(value as number)}
           value={selectedYear}
         />
-        {selectedYear && (
-          <div className="QuarterFilter__ButtonsContainer">{getQuarterButtons(selectedYear, from, to)}</div>
-        )}
+        {selectedYear && <div className="QuarterFilter__ButtonsContainer">{getQuarterButtons(selectedYear)}</div>}
       </div>
     </FilterContainer>
   )
