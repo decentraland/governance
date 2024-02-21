@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query'
-import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { ErrorClient } from '../clients/ErrorClient'
@@ -16,8 +15,9 @@ export default function useGovernanceProfile(address?: string | null) {
 
       try {
         return await Governance.get().getUserProfile(address)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
-        if (error.statusCode !== RequestError.NotFound) {
+        if (error.statusCode !== 404) {
           ErrorClient.report('Error getting governance profile', { error, address, category: ErrorCategory.Profile })
         }
         return null

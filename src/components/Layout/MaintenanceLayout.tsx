@@ -1,7 +1,6 @@
-import MaintenancePage from 'decentraland-gatsby/dist/components/Layout/MaintenancePage'
-
 import ContentLayout from './ContentLayout'
 import Head from './Head'
+import MaintenancePage from './MaintenancePage'
 import Navigation, { NavigationTab } from './Navigation'
 
 interface Props {

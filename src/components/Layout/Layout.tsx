@@ -12,7 +12,6 @@ import {
   DROPDOWN_MENU_SIGN_OUT_EVENT,
 } from 'decentraland-dapps/dist/containers/Navbar/constants'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import { fetchManaBalance } from 'decentraland-gatsby/dist/utils/loader/manaBalance'
 import { Footer } from 'decentraland-ui/dist/components/Footer/Footer'
 import { Navbar } from 'decentraland-ui/dist/components/Navbar/Navbar'
 import { ManaBalancesProps } from 'decentraland-ui/dist/components/UserMenu/ManaBalances/ManaBalances.types'
@@ -25,6 +24,7 @@ import useAnalyticsTrackLink from '../../hooks/useAnalyticsTrackLink'
 import useDclFeatureFlags from '../../hooks/useDclFeatureFlags'
 import useDclProfile from '../../hooks/useDclProfile'
 import { FeatureFlags } from '../../utils/features'
+import { fetchManaBalance } from '../../utils/mana'
 import ExternalLinkWarningModal from '../Modal/ExternalLinkWarningModal'
 import { LinkDiscordModal } from '../Modal/LinkDiscordModal/LinkDiscordModal'
 import WalletSelectorModal from '../Modal/WalletSelectorModal'
@@ -82,7 +82,7 @@ export default function Layout({ children }: LayoutProps) {
   const isAuthDappEnabled = isFeatureFlagEnabled(FeatureFlags.AuthDapp)
 
   const { data: manaBalances } = useQuery({
-    queryKey: [`manaBalances#${user}`],
+    queryKey: ['manaBalances', user, chainId],
     queryFn: async () => {
       if (!user) {
         return {}

@@ -1,0 +1,60 @@
+.MarkdownTextArea {
+  position: relative;
+}
+
+.MarkdownTextArea__Preview {
+  padding-top: 4px;
+  padding-bottom: 12px;
+}
+
+.MarkdownTextarea__PreviewButtonContainer {
+  margin-bottom: 24px;
+}
+
+.MarkdownTextArea__Preview--error {
+  border-bottom: 1px solid var(--error);
+}
+
+.GovernanceTextArea {
+  width: 100%;
+  position: relative;
+  padding: 8px;
+  border-radius: 8px;
+  background: transparent;
+  margin: 0;
+  max-width: 100%;
+  flex: 1 0 auto;
+  outline: 0;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  text-align: left;
+  font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  transition: box-shadow 0.1s ease, border-color 0.1s ease;
+  box-shadow: none;
+}
+
+.GovernanceTextArea__Text {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.GovernanceTextArea--error {
+  border-color: var(--error);
+  padding-right: 2.67142857em !important;
+}
+
+.GovernanceTextArea--disabled {
+  opacity: 0.5;
+}
+
+.MarkdownTextArea__MessageContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.MarkdownTextArea__MessageContainer--error {
+  color: var(--error);
+}
