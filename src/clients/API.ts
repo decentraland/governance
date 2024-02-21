@@ -91,7 +91,7 @@ export default abstract class API {
   async getAuthorizationAndSignature(endpoint: string, options: ApiOptions): Promise<Record<string, string>> {
     const identity: Identity | null = getCurrentIdentity()
     if (!identity?.authChain) {
-      throw new Error('Missing identity to authorize & sign the request') //TODO: add error data
+      throw new Error(`Missing identity to authorize & sign the request, ${JSON.stringify({ endpoint, options })}`)
     }
     const auth = { Authorization: 'Bearer ' + toBase64(JSON.stringify(identity.authChain)) }
 
