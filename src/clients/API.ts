@@ -111,4 +111,16 @@ export default abstract class API {
 
     return { ...auth, ...signature }
   }
+
+  protected toQueryString(params: Record<string, unknown>): string {
+    const searchParams = new URLSearchParams()
+    Object.entries(params).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        value.forEach((item) => searchParams.append(key, String(item)))
+      } else {
+        searchParams.append(key, String(value))
+      }
+    })
+    return searchParams.toString() ? `?${searchParams.toString()}` : ''
+  }
 }

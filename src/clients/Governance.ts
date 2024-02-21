@@ -134,11 +134,7 @@ export class Governance extends API {
   }
 
   async getProposals(filters: Partial<GetProposalsFilter> = {}) {
-    const params = new URLSearchParams(filters as never)
-    let query = params.toString()
-    if (query) {
-      query = '?' + query
-    }
+    const query = this.toQueryString(filters)
 
     const proposals = await this.fetch<ApiResponse<ProposalAttributes[]> & { total: number }>(`/proposals${query}`, {
       method: 'GET',
@@ -639,11 +635,7 @@ export class Governance extends API {
   }
 
   async getLatestEvents(eventTypes: EventType[]) {
-    let query = eventTypes.map((type) => `event_type=${type}`).join('&')
-    if (query) {
-      query = '?' + query
-    }
-
+    const query = this.toQueryString({ event_type: eventTypes })
     return await this.fetchApiResponse<ActivityTickerEvent[]>(`/events${query}`)
   }
 
