@@ -439,6 +439,11 @@ export class Governance extends API {
     return response.data
   }
 
+  async getAllBudgets() {
+    const response = await this.fetch<ApiResponse<Budget[]>>(`/budget/all`, this.options().method('GET'))
+    return response.data
+  }
+
   async getBudgetWithContestants(proposalId: string) {
     const result = await this.fetch<ApiResponse<BudgetWithContestants>>(`/budget/contested/${proposalId}`)
     return result.data
