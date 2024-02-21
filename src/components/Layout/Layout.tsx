@@ -12,16 +12,15 @@ import {
   DROPDOWN_MENU_SIGN_OUT_EVENT,
 } from 'decentraland-dapps/dist/containers/Navbar/constants'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useTrackContext from 'decentraland-gatsby/dist/context/Track/useTrackContext'
-import useTrackLinkContext from 'decentraland-gatsby/dist/context/Track/useTrackLinkContext'
 import { Footer } from 'decentraland-ui/dist/components/Footer/Footer'
 import { Navbar } from 'decentraland-ui/dist/components/Navbar/Navbar'
 import { ManaBalancesProps } from 'decentraland-ui/dist/components/UserMenu/ManaBalances/ManaBalances.types'
 import { config } from 'decentraland-ui/dist/config'
-import type { PageProps } from 'gatsby'
 import { isEmpty } from 'lodash'
 
 import { getSupportedChainIds } from '../../helpers'
+import useAnalyticsTrack from '../../hooks/useAnalyticsTrack'
+import useAnalyticsTrackLink from '../../hooks/useAnalyticsTrackLink'
 import useDclFeatureFlags from '../../hooks/useDclFeatureFlags'
 import useDclProfile from '../../hooks/useDclProfile'
 import { FeatureFlags } from '../../utils/features'
@@ -33,16 +32,16 @@ import WrongNetworkModal from '../Modal/WrongNetworkModal'
 
 import './Layout.css'
 
-export type LayoutProps = Omit<PageProps, 'children'> & {
+type LayoutProps = {
   children?: React.ReactNode
 }
 
 export default function Layout({ children }: LayoutProps) {
   const [user, userState] = useAuthContext()
-  const track = useTrackContext()
+  const track = useAnalyticsTrack()
   const { isFeatureFlagEnabled } = useDclFeatureFlags()
 
-  const handleClickUserMenuOption = useTrackLinkContext(function (
+  const handleClickUserMenuOption = useAnalyticsTrackLink(function (
     event: React.MouseEvent<HTMLElement, MouseEvent>,
     options: {
       eventTrackingName: string
@@ -54,9 +53,9 @@ export default function Layout({ children }: LayoutProps) {
     track(DROPDOWN_MENU_ITEM_CLICK_EVENT, options)
 
     return null
-  }, [])
+  })
 
-  const handleClickNavbarOption = useTrackLinkContext(function (
+  const handleClickNavbarOption = useAnalyticsTrackLink(function (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     options: {
       eventTrackingName: string
@@ -67,7 +66,7 @@ export default function Layout({ children }: LayoutProps) {
     track('Click on Navbar', options)
 
     return null
-  }, [])
+  })
 
   const handleSwitchNetwork = useCallback((chainId: ChainId) => userState.switchTo(chainId), [userState])
 

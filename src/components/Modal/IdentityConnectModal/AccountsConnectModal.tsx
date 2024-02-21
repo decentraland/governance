@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useQueryClient } from '@tanstack/react-query'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useTrackContext from 'decentraland-gatsby/dist/context/Track/useTrackContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
@@ -10,6 +9,7 @@ import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 import { SegmentEvent } from '../../../entities/Events/types'
 import { GATSBY_DISCORD_PROFILE_VERIFICATION_URL } from '../../../entities/User/constants'
 import { AccountType } from '../../../entities/User/types'
+import useAnalyticsTrack from '../../../hooks/useAnalyticsTrack'
 import useDiscordConnect from '../../../hooks/useDiscordConnect'
 import useFormatMessage, { FormatMessageFunction } from '../../../hooks/useFormatMessage'
 import useForumConnect, { THREAD_URL } from '../../../hooks/useForumConnect'
@@ -176,7 +176,7 @@ function getTimeFormatted(totalSeconds: number) {
 function AccountsConnectModal({ open, onClose, account }: Props) {
   const t = useFormatMessage()
   const [address] = useAuthContext()
-  const track = useTrackContext()
+  const track = useAnalyticsTrack()
   const {
     getSignedMessage: getForumMessage,
     copyMessageToClipboard: copyForumMessage,
