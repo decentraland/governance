@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import classNames from 'classnames'
 import { Desktop } from 'decentraland-ui/dist/components/Media/Media'
@@ -45,12 +45,10 @@ export default function ProjectsBanner() {
   )
   const [collapsed, setCollapsed] = useState(() => localStorage.getItem(HIDE_PROJECTS_BANNER_KEY) === 'true')
 
-  const handleCollapseClick = () => {
-    const isProjectsBannerVisible = localStorage.getItem(HIDE_PROJECTS_BANNER_KEY) !== 'true'
-    const nextLocalStorageValue = isProjectsBannerVisible ? 'true' : 'false'
-    localStorage.setItem(HIDE_PROJECTS_BANNER_KEY, nextLocalStorageValue)
-    setCollapsed(isProjectsBannerVisible)
-  }
+  const handleCollapseClick = useCallback(() => {
+    localStorage.setItem(HIDE_PROJECTS_BANNER_KEY, (!collapsed).toString())
+    setCollapsed((prevState) => !prevState)
+  }, [collapsed])
 
   if (collapsed) {
     return (
