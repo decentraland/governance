@@ -47,7 +47,7 @@ import { NewsletterSubscriptionResult } from '../shared/types/newsletter'
 import { PushNotification } from '../shared/types/notifications'
 import Time from '../utils/date/Time'
 
-import API from './API'
+import API, { ApiOptions } from './API'
 import { ApiResponse } from './ApiResponse'
 import {
   DetailedScores,
@@ -104,6 +104,10 @@ export class Governance extends API {
 
   static get() {
     return this.from(env('GOVERNANCE_API', this.Url))
+  }
+
+  async fetchApiResponse<T>(endpoint: string, options: ApiOptions = { method: 'GET', sign: false }): Promise<T> {
+    return (await this.fetch<ApiResponse<T>>(endpoint, options)).data
   }
 
   static parseProposal(proposal: ProposalAttributes): ProposalAttributes {
@@ -166,17 +170,15 @@ export class Governance extends API {
   }
 
   async getGrantsByUser(user: string) {
-    return (await this.fetch<ApiResponse<{ total: number; data: Project[] }>>(`/proposals/grants/${user}`)).data
+    return await this.fetchApiResponse<{ total: number; data: Project[] }>(`/proposals/grants/${user}`)
   }
 
   async createProposal<P extends keyof NewProposalMap>(path: P, proposal: NewProposalMap[P]) {
-    const newProposal = await this.fetch<ApiResponse<ProposalAttributes>>(path, {
+    return await this.fetchApiResponse<ProposalAttributes>(path, {
       method: 'POST',
       sign: true,
       json: proposal,
     })
-
-    return newProposal.data
   }
 
   async createProposalPoll(proposal: NewProposalPoll) {
@@ -228,67 +230,59 @@ export class Governance extends API {
   }
 
   async deleteProposal(proposal_id: string) {
-    const result = await this.fetch<ApiResponse<boolean>>(`/proposals/${proposal_id}`, { method: 'DELETE', sign: true })
-
-    return result.data
+    return await this.fetchApiResponse<boolean>(`/proposals/${proposal_id}`, { method: 'DELETE', sign: true })
   }
 
   async updateProposalStatus(proposal_id: string, status: ProposalStatus, vesting_addresses?: string[]) {
-    const result = await this.fetch<ApiResponse<ProposalAttributes>>(`/proposals/${proposal_id}`, {
+    const proposal = await this.fetchApiResponse<ProposalAttributes>(`/proposals/${proposal_id}`, {
       method: 'PATCH',
       sign: true,
       json: { status, vesting_addresses },
     })
 
-    return Governance.parseProposal(result.data)
+    return Governance.parseProposal(proposal)
   }
 
   async getProposalUpdate(update_id: string) {
-    return (await this.fetch<ApiResponse<UpdateAttributes>>(`/proposals/${update_id}/update`)).data
+    return await this.fetchApiResponse<UpdateAttributes>(`/proposals/${update_id}/update`)
   }
 
   async getProposalUpdates(proposal_id: string) {
-    return (await this.fetch<ApiResponse<UpdateResponse>>(`/proposals/${proposal_id}/updates`)).data
+    return await this.fetchApiResponse<UpdateResponse>(`/proposals/${proposal_id}/updates`)
   }
 
   async createProposalUpdate(
     proposal_id: string,
     update: UpdateSubmissionDetails & GeneralUpdateSection & FinancialUpdateSection
   ) {
-    return (
-      await this.fetch<ApiResponse<UpdateAttributes>>(`/proposals/${proposal_id}/update`, {
-        method: 'POST',
-        sign: true,
-        json: update,
-      })
-    ).data
+    return await this.fetchApiResponse<UpdateAttributes>(`/proposals/${proposal_id}/update`, {
+      method: 'POST',
+      sign: true,
+      json: update,
+    })
   }
 
   async updateProposalUpdate(
     proposal_id: string,
     update: UpdateSubmissionDetails & GeneralUpdateSection & FinancialUpdateSection
   ) {
-    return (
-      await this.fetch<ApiResponse<UpdateAttributes>>(`/proposals/${proposal_id}/update`, {
-        method: 'PATCH',
-        sign: true,
-        json: update,
-      })
-    ).data
+    return await this.fetchApiResponse<UpdateAttributes>(`/proposals/${proposal_id}/update`, {
+      method: 'PATCH',
+      sign: true,
+      json: update,
+    })
   }
 
   async deleteProposalUpdate(update: { id: string; proposal_id: string }) {
-    return (
-      await this.fetch<ApiResponse<UpdateAttributes>>(`/proposals/${update.proposal_id}/update`, {
-        method: 'DELETE',
-        sign: true,
-        json: update,
-      })
-    ).data
+    return await this.fetchApiResponse<UpdateAttributes>(`/proposals/${update.proposal_id}/update`, {
+      method: 'DELETE',
+      sign: true,
+      json: update,
+    })
   }
 
   async getVotesByProposal(proposal_id: string) {
-    return (await this.fetch<ApiResponse<VoteByAddress>>(`/proposals/${proposal_id}/votes`)).data
+    return await this.fetchApiResponse<VoteByAddress>(`/proposals/${proposal_id}/votes`)
   }
 
   async getCachedVotesByProposals(proposal_ids: string[]) {
@@ -301,146 +295,133 @@ export class Governance extends API {
       return result
     }, new URLSearchParams())
 
-    return (await this.fetch<ApiResponse<VotesForProposals>>(`/votes?${params.toString()}`)).data
+    return await this.fetchApiResponse<VotesForProposals>(`/votes?${params.toString()}`)
   }
 
   async getVotesAndProposalsByAddress(address: string, first?: number, skip?: number) {
-    return (await this.fetch<ApiResponse<VotedProposal[]>>(`/votes/${address}?first=${first}&skip=${skip}`)).data
+    return await this.fetchApiResponse<VotedProposal[]>(`/votes/${address}?first=${first}&skip=${skip}`)
   }
 
   async getTopVotersForLast30Days() {
-    return (await this.fetch<ApiResponse<Voter[]>>(`/votes/top-voters`)).data
+    return await this.fetchApiResponse<Voter[]>(`/votes/top-voters`)
   }
 
   async getParticipation() {
-    return (await this.fetch<ApiResponse<Participation>>(`/votes/participation`)).data
+    return await this.fetchApiResponse<Participation>(`/votes/participation`)
   }
 
   async getUserSubscriptions() {
-    return (await this.fetch<ApiResponse<SubscriptionAttributes[]>>(`/subscriptions`, { method: 'GET', sign: true }))
-      .data
+    return await this.fetchApiResponse<SubscriptionAttributes[]>(`/subscriptions`, { method: 'GET', sign: true })
   }
 
   async getSubscriptions(proposal_id: string) {
-    return (await this.fetch<ApiResponse<SubscriptionAttributes[]>>(`/proposals/${proposal_id}/subscriptions`)).data
+    return await this.fetchApiResponse<SubscriptionAttributes[]>(`/proposals/${proposal_id}/subscriptions`)
   }
 
   async subscribe(proposal_id: string) {
-    return (
-      await this.fetch<ApiResponse<SubscriptionAttributes>>(`/proposals/${proposal_id}/subscriptions`, {
-        method: 'POST',
-        sign: true,
-      })
-    ).data
+    return await this.fetchApiResponse<SubscriptionAttributes>(`/proposals/${proposal_id}/subscriptions`, {
+      method: 'POST',
+      sign: true,
+    })
   }
 
   async unsubscribe(proposal_id: string) {
-    return (
-      await this.fetch<ApiResponse<boolean>>(`/proposals/${proposal_id}/subscriptions`, {
-        method: 'DELETE',
-        sign: true,
-      })
-    ).data
+    return await this.fetchApiResponse<boolean>(`/proposals/${proposal_id}/subscriptions`, {
+      method: 'DELETE',
+      sign: true,
+    })
   }
 
   async getCommittee() {
-    return (await this.fetch<ApiResponse<string[]>>(`/committee`)).data
+    return await this.fetchApiResponse<string[]>(`/committee`)
   }
 
   async getDebugAddresses() {
-    return (await this.fetch<ApiResponse<string[]>>(`/debug`)).data
+    return await this.fetchApiResponse<string[]>(`/debug`)
   }
 
   async getProposalComments(proposal_id: string) {
-    return (await this.fetch<ApiResponse<ProposalCommentsInDiscourse>>(`/proposals/${proposal_id}/comments`)).data
+    return await this.fetchApiResponse<ProposalCommentsInDiscourse>(`/proposals/${proposal_id}/comments`)
   }
 
   async getProposalsByCoAuthor(address: string, status?: CoauthorStatus) {
-    return (
-      await this.fetch<ApiResponse<CoauthorAttributes[]>>(
-        `/coauthors/proposals/${address}${status ? `/${status}` : ''}`
-      )
-    ).data
+    return await this.fetchApiResponse<CoauthorAttributes[]>(
+      `/coauthors/proposals/${address}${status ? `/${status}` : ''}`
+    )
   }
 
   async getCoAuthorsByProposal(id: string, status?: CoauthorStatus) {
     if (!id) {
       return []
     }
-    return (await this.fetch<ApiResponse<CoauthorAttributes[]>>(`/coauthors/${id}${status ? `/${status}` : ''}`)).data
+    return await this.fetchApiResponse<CoauthorAttributes[]>(`/coauthors/${id}${status ? `/${status}` : ''}`)
   }
 
   async updateCoauthorStatus(proposalId: string, status: CoauthorStatus) {
-    return (
-      await this.fetch<ApiResponse<CoauthorAttributes>>(`/coauthors/${proposalId}`, {
-        method: 'PUT',
-        sign: true,
-        json: { status },
-      })
-    ).data
+    return await this.fetchApiResponse<CoauthorAttributes>(`/coauthors/${proposalId}`, {
+      method: 'PUT',
+      sign: true,
+      json: { status },
+    })
   }
 
   async checkImage(imageUrl: string) {
-    return (await this.fetch<ApiResponse<boolean>>(`/proposals/linked-wearables/image?url=${imageUrl}`)).data
+    return await this.fetchApiResponse<boolean>(`/proposals/linked-wearables/image?url=${imageUrl}`)
   }
 
   async getCategoryBudget(category: ProposalGrantCategory): Promise<CategoryBudget> {
-    return (await this.fetch<ApiResponse<CategoryBudget>>(`/budget/${snakeCase(category)}`)).data
+    return await this.fetchApiResponse<CategoryBudget>(`/budget/${snakeCase(category)}`)
   }
 
   async getTransparencyBudgets() {
-    return (await this.fetch<ApiResponse<TransparencyBudget[]>>(`/budget/fetch`)).data
+    return await this.fetchApiResponse<TransparencyBudget[]>(`/budget/fetch`)
   }
 
   async getCurrentBudget() {
-    return (await this.fetch<ApiResponse<Budget>>(`/budget/current`)).data
+    return await this.fetchApiResponse<Budget>(`/budget/current`)
   }
 
   async getBudgetWithContestants(proposalId: string) {
-    return (await this.fetch<ApiResponse<BudgetWithContestants>>(`/budget/contested/${proposalId}`)).data
+    return await this.fetchApiResponse<BudgetWithContestants>(`/budget/contested/${proposalId}`)
   }
 
   async updateGovernanceBudgets() {
-    return (
-      await this.fetch<ApiResponse<QuarterBudgetAttributes[]>>(`/budget/update`, {
-        method: 'POST',
-        sign: true,
-      })
-    ).data
+    return await this.fetchApiResponse<QuarterBudgetAttributes[]>(`/budget/update`, {
+      method: 'POST',
+      sign: true,
+    })
   }
 
   async reportErrorToServer(message: string, extraInfo?: Record<string, unknown>) {
-    return (
-      await this.fetch<ApiResponse<string>>(`/debug/report-error`, {
-        method: 'POST',
-        sign: true,
-        json: { message, extraInfo },
-      })
-    ).data
+    return await this.fetchApiResponse<string>(`/debug/report-error`, {
+      method: 'POST',
+      sign: true,
+      json: { message, extraInfo },
+    })
   }
 
   async triggerFunction(functionName: string) {
-    return (
-      await this.fetch<ApiResponse<string>>(`/debug/trigger`, {
-        method: 'POST',
-        sign: true,
-        json: { functionName },
-      })
-    ).data
+    return await this.fetchApiResponse<string>(`/debug/trigger`, {
+      method: 'POST',
+      sign: true,
+      json: { functionName },
+    })
   }
 
   async invalidateCache(key: string) {
-    return (
-      await this.fetch<ApiResponse<number>>(`/debug/invalidate-cache`, { method: 'DELETE', sign: true, json: { key } })
-    ).data
+    return await this.fetchApiResponse<number>(`/debug/invalidate-cache`, {
+      method: 'DELETE',
+      sign: true,
+      json: { key },
+    })
   }
 
   async checkUrlTitle(url: string) {
-    return (await this.fetch<ApiResponse<{ title?: string }>>(`/url-title`, { method: 'POST', json: { url } })).data
+    return await this.fetchApiResponse<{ title?: string }>(`/url-title`, { method: 'POST', json: { url } })
   }
 
   async getSurveyTopics(proposalId: string) {
-    return (await this.fetch<ApiResponse<Topic[]>>(`/proposals/${proposalId}/survey-topics`)).data
+    return await this.fetchApiResponse<Topic[]>(`/proposals/${proposalId}/survey-topics`)
   }
 
   async getValidationMessage(account?: AccountType) {
@@ -448,22 +429,18 @@ export class Governance extends API {
     if (account) {
       params.append('account', account)
     }
-    return (
-      await this.fetch<ApiResponse<string>>(`/user/validate?${params.toString()}`, {
-        method: 'GET',
-        sign: true,
-      })
-    ).data
+    return await this.fetchApiResponse<string>(`/user/validate?${params.toString()}`, {
+      method: 'GET',
+      sign: true,
+    })
   }
 
   async validateForumProfile() {
-    return (await this.fetch<ApiResponse<{ valid: boolean }>>('/user/validate/forum', { method: 'POST', sign: true }))
-      .data
+    return await this.fetchApiResponse<{ valid: boolean }>('/user/validate/forum', { method: 'POST', sign: true })
   }
 
   async validateDiscordProfile() {
-    return (await this.fetch<ApiResponse<{ valid: boolean }>>('/user/validate/discord', { method: 'POST', sign: true }))
-      .data
+    return await this.fetchApiResponse<{ valid: boolean }>('/user/validate/discord', { method: 'POST', sign: true })
   }
 
   async isProfileValidated(address: string, accounts: AccountType[]) {
@@ -471,248 +448,216 @@ export class Governance extends API {
     for (const account of accounts) {
       params.append('account', account)
     }
-    return (await this.fetch<ApiResponse<boolean>>(`/user/${address}/is-validated/?${params.toString()}`)).data
+    return await this.fetchApiResponse<boolean>(`/user/${address}/is-validated/?${params.toString()}`)
   }
 
   async isDiscordActive() {
-    return (await this.fetch<ApiResponse<boolean>>(`/user/discord-active`, { method: 'GET', sign: true })).data
+    return await this.fetchApiResponse<boolean>(`/user/discord-active`, { method: 'GET', sign: true })
   }
 
   async isDiscordLinked() {
-    return (await this.fetch<ApiResponse<boolean>>(`/user/discord-linked`, { method: 'GET', sign: true })).data
+    return await this.fetchApiResponse<boolean>(`/user/discord-linked`, { method: 'GET', sign: true })
   }
 
   async updateDiscordStatus(is_discord_notifications_active: boolean) {
-    return (
-      await this.fetch<ApiResponse<void>>(`/user/discord-active`, {
-        method: 'POST',
-        sign: true,
-        json: { is_discord_notifications_active },
-      })
-    ).data
+    return await this.fetchApiResponse<void>(`/user/discord-active`, {
+      method: 'POST',
+      sign: true,
+      json: { is_discord_notifications_active },
+    })
   }
 
   async getUserProfile(address: string) {
-    return (
-      await this.fetch<ApiResponse<{ forum_id: number | null; forum_username: string | null }>>(`/user/${address}`)
-    ).data
+    return await this.fetchApiResponse<{ forum_id: number | null; forum_username: string | null }>(`/user/${address}`)
   }
 
   async getBadges(address: string) {
-    return (await this.fetch<ApiResponse<UserBadges>>(`/badges/${address}`)).data
+    return await this.fetchApiResponse<UserBadges>(`/badges/${address}`)
   }
 
   async getCoreUnitsBadges() {
-    return (await this.fetch<ApiResponse<GovernanceBadgeSpec[]>>(`/badges/core-units`)).data
+    return await this.fetchApiResponse<GovernanceBadgeSpec[]>(`/badges/core-units`)
   }
 
   async getBidsInfoOnTender(tenderId: string) {
-    return (
-      await this.fetch<ApiResponse<{ is_submission_window_finished: boolean; publish_at: string }>>(`/bids/${tenderId}`)
-    ).data
+    return await this.fetchApiResponse<{ is_submission_window_finished: boolean; publish_at: string }>(
+      `/bids/${tenderId}`
+    )
   }
 
   async getUserBidOnTender(tenderId: string) {
-    return (
-      await this.fetch<
-        ApiResponse<Pick<UnpublishedBidAttributes, 'author_address' | 'publish_at' | 'created_at'> | null>
-      >(`/bids/${tenderId}/get-user-bid`, { method: 'GET', sign: true })
-    ).data
+    return await this.fetchApiResponse<Pick<
+      UnpublishedBidAttributes,
+      'author_address' | 'publish_at' | 'created_at'
+    > | null>(`/bids/${tenderId}/get-user-bid`, { method: 'GET', sign: true })
   }
 
   async getSnapshotConfigAndSpace(spaceName?: string) {
-    return (
-      await this.fetch<ApiResponse<{ config: SnapshotConfig; space: SnapshotSpace }>>(`/snapshot/config/${spaceName}`)
-    ).data
+    return await this.fetchApiResponse<{ config: SnapshotConfig; space: SnapshotSpace }>(
+      `/snapshot/config/${spaceName}`
+    )
   }
 
   async getSnapshotStatus() {
-    return (await this.fetch<ApiResponse<SnapshotStatus>>(`/snapshot/status`)).data
+    return await this.fetchApiResponse<SnapshotStatus>(`/snapshot/status`)
   }
 
   async getVotesByAddresses(addresses: string[]) {
-    return (
-      await this.fetch<ApiResponse<SnapshotVote[]>>(`/snapshot/votes/`, {
-        method: 'POST',
-        json: { addresses },
-      })
-    ).data
+    return await this.fetchApiResponse<SnapshotVote[]>(`/snapshot/votes/`, {
+      method: 'POST',
+      json: { addresses },
+    })
   }
 
   async getVotesByProposalFromSnapshot(proposalId: string) {
-    return (await this.fetch<ApiResponse<SnapshotVote[]>>(`/snapshot/votes/${proposalId}`)).data
+    return await this.fetchApiResponse<SnapshotVote[]>(`/snapshot/votes/${proposalId}`)
   }
 
   async getSnapshotProposals(start: Date, end: Date, fields: (keyof SnapshotProposal)[]) {
-    return (
-      await this.fetch<ApiResponse<Partial<SnapshotProposal>[]>>(`/snapshot/proposals`, {
-        method: 'POST',
-        json: { start, end, fields },
-      })
-    ).data
+    return await this.fetchApiResponse<Partial<SnapshotProposal>[]>(`/snapshot/proposals`, {
+      method: 'POST',
+      json: { start, end, fields },
+    })
   }
 
   async getPendingProposals(query: PendingProposalsQuery) {
-    return (
-      await this.fetch<ApiResponse<Partial<SnapshotProposal>[]>>(`/snapshot/proposals/pending`, {
-        method: 'POST',
-        json: query,
-      })
-    ).data
+    return await this.fetchApiResponse<Partial<SnapshotProposal>[]>(`/snapshot/proposals/pending`, {
+      method: 'POST',
+      json: query,
+    })
   }
 
   async getProposalScores(proposalSnapshotId: string) {
-    return (await this.fetch<ApiResponse<number[]>>(`/snapshot/proposal-scores/${proposalSnapshotId}`)).data
+    return await this.fetchApiResponse<number[]>(`/snapshot/proposal-scores/${proposalSnapshotId}`)
   }
 
   async getVpDistribution(address: string, proposalSnapshotId?: string) {
     const snapshotId = proposalSnapshotId ? `/${proposalSnapshotId}` : ''
     const url = `/snapshot/vp-distribution/${address}${snapshotId}`
-    return (await this.fetch<ApiResponse<VpDistribution>>(url)).data
+    return await this.fetchApiResponse<VpDistribution>(url)
   }
 
   async getScores(addresses: string[]) {
-    return (await this.fetch<ApiResponse<DetailedScores>>('/snapshot/scores', { method: 'POST', json: { addresses } }))
-      .data
+    return await this.fetchApiResponse<DetailedScores>('/snapshot/scores', { method: 'POST', json: { addresses } })
   }
 
   async getAllVestings() {
-    return (await this.fetch<ApiResponse<TransparencyVesting[]>>(`/all-vestings`)).data
+    return await this.fetchApiResponse<TransparencyVesting[]>(`/all-vestings`)
   }
 
   async getVestingContractData(addresses: string[]) {
-    return (await this.fetch<ApiResponse<VestingInfo[]>>(`/vesting`, { method: 'POST', json: { addresses } })).data
+    return await this.fetchApiResponse<VestingInfo[]>(`/vesting`, { method: 'POST', json: { addresses } })
   }
 
   async getUpdateComments(update_id: string) {
-    return (await this.fetch<ApiResponse<ProposalCommentsInDiscourse>>(`/proposals/${update_id}/update/comments`)).data
+    return await this.fetchApiResponse<ProposalCommentsInDiscourse>(`/proposals/${update_id}/update/comments`)
   }
 
   async airdropBadge(badgeSpecCid: string, recipients: string[]) {
-    return (
-      await this.fetch<ApiResponse<AirdropOutcome>>(`/badges/airdrop/`, {
-        method: 'POST',
-        sign: true,
-        json: {
-          badgeSpecCid,
-          recipients,
-        },
-      })
-    ).data
+    return await this.fetchApiResponse<AirdropOutcome>(`/badges/airdrop/`, {
+      method: 'POST',
+      sign: true,
+      json: {
+        badgeSpecCid,
+        recipients,
+      },
+    })
   }
 
   async revokeBadge(badgeSpecCid: string, recipients: string[], reason?: string) {
-    return (
-      await this.fetch<ApiResponse<RevokeOrReinstateResult[]>>(`/badges/revoke/`, {
-        method: 'POST',
-        sign: true,
-        json: {
-          badgeSpecCid,
-          recipients,
-          reason,
-        },
-      })
-    ).data
+    return await this.fetchApiResponse<RevokeOrReinstateResult[]>(`/badges/revoke/`, {
+      method: 'POST',
+      sign: true,
+      json: {
+        badgeSpecCid,
+        recipients,
+        reason,
+      },
+    })
   }
 
   async uploadBadgeSpec(spec: SpecState) {
-    return (
-      await this.fetch<ApiResponse<BadgeCreationResult>>(`/badges/upload-badge-spec/`, {
-        method: 'POST',
-        sign: true,
-        json: {
-          spec,
-        },
-      })
-    ).data
+    return await this.fetchApiResponse<BadgeCreationResult>(`/badges/upload-badge-spec/`, {
+      method: 'POST',
+      sign: true,
+      json: {
+        spec,
+      },
+    })
   }
 
   async createBadgeSpec(badgeCid: string) {
-    return (
-      await this.fetch<ApiResponse<string>>(`/badges/create-badge-spec/`, {
-        method: 'POST',
-        sign: true,
-        json: {
-          badgeCid,
-        },
-      })
-    ).data
+    return await this.fetchApiResponse<string>(`/badges/create-badge-spec/`, {
+      method: 'POST',
+      sign: true,
+      json: {
+        badgeCid,
+      },
+    })
   }
 
   async subscribeToNewsletter(email: string) {
-    return (
-      await this.fetch<ApiResponse<NewsletterSubscriptionResult>>(`/newsletter-subscribe`, {
-        method: 'POST',
-        json: {
-          email,
-        },
-      })
-    ).data
+    return await this.fetchApiResponse<NewsletterSubscriptionResult>(`/newsletter-subscribe`, {
+      method: 'POST',
+      json: {
+        email,
+      },
+    })
   }
 
   async getUserNotifications(address: string) {
-    return (await this.fetch<ApiResponse<PushNotification[]>>(`/notifications/user/${address}`)).data
+    return await this.fetchApiResponse<PushNotification[]>(`/notifications/user/${address}`)
   }
 
   async sendNotification(recipient: string, title: string, body: string, type: number, url: string) {
-    return (
-      await this.fetch<ApiResponse<string>>(`/notifications/send`, {
-        method: 'POST',
-        sign: true,
-        json: {
-          recipient,
-          title,
-          body,
-          type,
-          url,
-        },
-      })
-    ).data
+    return await this.fetchApiResponse<string>(`/notifications/send`, {
+      method: 'POST',
+      sign: true,
+      json: {
+        recipient,
+        title,
+        body,
+        type,
+        url,
+      },
+    })
   }
 
   async getUserLastNotification() {
-    return (
-      await this.fetch<ApiResponse<number>>(`/notifications/last-notification`, {
-        method: 'GET',
-        sign: true,
-      })
-    ).data
+    return await this.fetchApiResponse<number>(`/notifications/last-notification`, {
+      method: 'GET',
+      sign: true,
+    })
   }
 
   async updateUserLastNotification(last_notification_id: number) {
-    return (
-      await this.fetch<ApiResponse<string>>(`/notifications/last-notification`, {
-        method: 'POST',
-        sign: true,
-        json: { last_notification_id },
-      })
-    ).data
+    return await this.fetchApiResponse<string>(`/notifications/last-notification`, {
+      method: 'POST',
+      sign: true,
+      json: { last_notification_id },
+    })
   }
 
   async getLatestEvents() {
-    return (await this.fetch<ApiResponse<ActivityTickerEvent[]>>(`/events`)).data
+    return await this.fetchApiResponse<ActivityTickerEvent[]>(`/events`)
   }
 
   async createVoteEvent(proposalId: string, proposalTitle: string, choice: string) {
-    return (
-      await this.fetch<ApiResponse<string>>(`/events/voted`, {
-        method: 'POST',
-        sign: true,
-        json: { proposalId, proposalTitle, choice },
-      })
-    ).data
+    return await this.fetchApiResponse<string>(`/events/voted`, {
+      method: 'POST',
+      sign: true,
+      json: { proposalId, proposalTitle, choice },
+    })
   }
 
   async getAllEvents() {
-    return (await this.fetch<ApiResponse<ActivityTickerEvent[]>>(`/events/all`, { method: 'GET', sign: true })).data
+    return await this.fetchApiResponse<ActivityTickerEvent[]>(`/events/all`, { method: 'GET', sign: true })
   }
 
   async getAllAirdropJobs() {
-    return (
-      await this.fetch<ApiResponse<AirdropJobAttributes[]>>(`/airdrops/all`, {
-        method: 'GET',
-        sign: true,
-      })
-    ).data
+    return await this.fetchApiResponse<AirdropJobAttributes[]>(`/airdrops/all`, {
+      method: 'GET',
+      sign: true,
+    })
   }
 }

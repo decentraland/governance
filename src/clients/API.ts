@@ -12,7 +12,7 @@ import { toBase64 } from './base64'
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
 const METHODS_WITH_BODY: HttpMethod[] = ['POST', 'PUT', 'PATCH']
 
-type ApiOptions = {
+export type ApiOptions = {
   method: HttpMethod
   json?: any
   sign?: boolean
