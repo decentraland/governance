@@ -429,13 +429,9 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return proposals.map(this.parse)
   }
 
-  static async getProjectList(from?: Date, to?: Date): Promise<ProposalAttributes[]> {
+  static async getProjectList(): Promise<ProposalAttributes[]> {
     const status = [ProposalStatus.Passed, ProposalStatus.Enacted].map((status) => SQL`${status}`)
     const types = [ProposalType.Bid, ProposalType.Grant].map((type) => SQL`${type}`)
-
-    if (from && to && from > to) {
-      throw new Error('Invalid date range')
-    }
 
     const proposals = await this.namedQuery(
       'get_project_list',
@@ -445,8 +441,6 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         WHERE "deleted" = FALSE
           AND "type" IN (${join(types)})
           AND "status" IN (${join(status)})
-          ${conditional(!!from, SQL`AND "start_at" >= ${from}`)}
-          ${conditional(!!to, SQL`AND "start_at" < ${to}`)}
           ORDER BY "created_at" DESC 
     `
     )
