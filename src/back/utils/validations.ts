@@ -23,8 +23,8 @@ export function validateDate(date?: string, required?: 'optional') {
   return date
 }
 
-function isValidDate(date: string) {
-  if (date.length === 0) return false
+export function isValidDate(date?: string) {
+  if (!date || date.length === 0) return false
   const parsedDate = new Date(date)
   return !isNaN(parsedDate.getTime())
 }
