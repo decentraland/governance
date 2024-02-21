@@ -32,8 +32,8 @@ function newestVestingFirst(a: TransparencyVesting, b: TransparencyVesting): num
 }
 
 export class ProjectService {
-  public static async getProjects(from?: Date, to?: Date) {
-    const data = await ProposalModel.getProjectList(from, to)
+  public static async getProjects() {
+    const data = await ProposalModel.getProjectList()
     const vestings = await VestingService.getAllVestings()
     const projects: ProjectWithUpdate[] = []
 
