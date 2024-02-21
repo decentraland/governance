@@ -8,6 +8,7 @@
 }
 
 .ProposalPreviewCard--vote {
+  gap: 8px;
   border-bottom: 1px solid var(--black-300);
 }
 
