@@ -151,6 +151,12 @@
   color: var(--black-600) !important;
 }
 
+.ProjectsBanner__CollapsedInfoTextButton {
+  color: var(--dcl-primary);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+}
+
 .ProjectsBanner__ExpandButton {
   display: flex;
   background: none;
