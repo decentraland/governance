@@ -30,7 +30,7 @@ export default abstract class API {
   protected async fetch<T>(endpoint: string, options: ApiOptions = { method: 'GET', sign: false }): Promise<T> {
     const { method, json, sign, headers = {} } = options
     const jsonHeaders = this.getJsonHeaders(method, json)
-    const authAndSignatureHeaders = sign ? await this.getAuthorizationAndSignature(endpoint, options) : {}
+    const authAndSignatureHeaders = sign ? await this.getAuthorizationAndSignatureHeaders(endpoint, options) : {}
 
     const finalHeaders = {
       ...this.defaultHeaders,
@@ -88,7 +88,7 @@ export default abstract class API {
     this.defaultHeaders[key] = value
   }
 
-  async getAuthorizationAndSignature(endpoint: string, options: ApiOptions): Promise<Record<string, string>> {
+  async getAuthorizationAndSignatureHeaders(endpoint: string, options: ApiOptions): Promise<Record<string, string>> {
     const identity: Identity | null = getCurrentIdentity()
     if (!identity?.authChain) {
       throw new Error(`Missing identity to authorize & sign the request, ${JSON.stringify({ endpoint, options })}`)
