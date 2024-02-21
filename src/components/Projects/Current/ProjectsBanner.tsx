@@ -86,7 +86,7 @@ export default function ProjectsBanner() {
           <button
             className="ProjectsBanner__ExpandButton"
             onClick={handleCollapseClick}
-            aria-label={t('page.grants.banner.collapse_button_sow_label')}
+            aria-label={t('page.grants.banner.collapse_button_show_label')}
           >
             {t('page.grants.banner.expand_button')}
           </button>
