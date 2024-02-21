@@ -152,7 +152,7 @@ export class Governance extends API {
   }
 
   async getProjects() {
-    return await this.fetch<ApiResponse<ProjectWithUpdate[]>>(`/projects`)
+    return await this.fetchApiResponse<ProjectWithUpdate[]>(`/projects`)
   }
 
   async getOpenPitchesTotal() {
