@@ -1,11 +1,9 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
-import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from '@tanstack/react-query'
 import classNames from 'classnames'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import useFormatMessage from '../../hooks/useFormatMessage'
-import { ActivityTickerEvent } from '../../shared/types/events'
 import Counter from '../Common/Counter'
 import Sort from '../Icon/Sort'
 
@@ -41,26 +39,46 @@ function countTrueProperties(obj: Record<string, boolean>): number {
 }
 
 interface Props {
-  setFilterState: React.Dispatch<React.SetStateAction<TickerFilter>>
+  onApply: (filters: TickerFilter) => void
   filterState: TickerFilter
-  refetch: (
-    options?: (RefetchOptions & RefetchQueryFilters) | undefined
-  ) => Promise<QueryObserverResult<ActivityTickerEvent[]>>
 }
 
-export default function ActivityTickerFilter({ setFilterState, filterState, refetch }: Props) {
+export default function ActivityTickerFilter({ onApply, filterState }: Props) {
   const t = useFormatMessage()
   const [isOpen, setIsOpen] = useState(false)
+  const [checkedFilters, setCheckedFilters] = useState<TickerFilter>(filterState)
   const selectedFiltersCount = countTrueProperties(filterState)
+  const filterRef = useRef<HTMLDivElement>(null)
 
-  const onApply = () => {
-    refetch()
+  const handleApply = () => {
+    onApply(checkedFilters)
     setIsOpen(false)
   }
 
-  const onClear = () => {
-    setFilterState(INITIAL_TICKER_FILTER_STATE)
+  const handleClear = () => {
+    setCheckedFilters(INITIAL_TICKER_FILTER_STATE)
   }
+
+  useEffect(() => {
+    setCheckedFilters(filterState)
+  }, [filterState, isOpen])
+
+  const onEventTypeClick = (filterClicked: keyof TickerFilter) => {
+    setCheckedFilters((prev) => ({ ...prev, [filterClicked]: !prev[filterClicked] }))
+  }
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [filterRef])
 
   return (
     <>
@@ -77,43 +95,39 @@ export default function ActivityTickerFilter({ setFilterState, filterState, refe
         </div>
       </div>
       {isOpen && (
-        <div className="ActivityTickerFilterBox">
+        <div className="ActivityTickerFilterBox" ref={filterRef}>
           <div className="ActivityTickerFilterItems">
             <ActivityTickerFilterItem
-              onClick={() =>
-                setFilterState((prevState) => ({ ...prevState, proposals_created: !prevState.proposals_created }))
-              }
-              checked={filterState.proposals_created}
+              onClick={() => onEventTypeClick('proposals_created')}
+              checked={checkedFilters.proposals_created}
               label={t('page.home.activity_ticker.filter.proposals_created')}
             />
             <ActivityTickerFilterItem
-              onClick={() => setFilterState((prevState) => ({ ...prevState, votes: !prevState.votes }))}
-              checked={filterState.votes}
+              onClick={() => onEventTypeClick('votes')}
+              checked={checkedFilters.votes}
               label={t('page.home.activity_ticker.filter.votes')}
             />
             <ActivityTickerFilterItem
-              onClick={() => setFilterState((prevState) => ({ ...prevState, delegation: !prevState.delegation }))}
-              checked={filterState.delegation}
+              onClick={() => onEventTypeClick('delegation')}
+              checked={checkedFilters.delegation}
               label={t('page.home.activity_ticker.filter.delegation')}
             />
             <ActivityTickerFilterItem
-              onClick={() => setFilterState((prevState) => ({ ...prevState, comments: !prevState.comments }))}
-              checked={filterState.comments}
+              onClick={() => onEventTypeClick('comments')}
+              checked={checkedFilters.comments}
               label={t('page.home.activity_ticker.filter.comments')}
             />
             <ActivityTickerFilterItem
-              onClick={() =>
-                setFilterState((prevState) => ({ ...prevState, project_updates: !prevState.project_updates }))
-              }
-              checked={filterState.project_updates}
+              onClick={() => onEventTypeClick('project_updates')}
+              checked={checkedFilters.project_updates}
               label={t('page.home.activity_ticker.filter.project_updates')}
             />
           </div>
           <div className={'ActivityTickerFilterBox__Buttons'}>
-            <Button basic size={'small'} onClick={onClear}>
+            <Button basic size={'small'} onClick={handleClear}>
               {t('page.home.activity_ticker.filter.clear')}
             </Button>
-            <Button primary size={'small'} onClick={onApply}>
+            <Button primary size={'small'} onClick={handleApply}>
               {t('page.home.activity_ticker.filter.apply')}
             </Button>
           </div>

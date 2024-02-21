@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useQuery } from '@tanstack/react-query'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
@@ -81,6 +81,14 @@ export default function ActivityTicker() {
     refetchIntervalInBackground: true,
   })
 
+  const handleApply = (filters: TickerFilter) => {
+    setFilterState(filters)
+  }
+
+  useEffect(() => {
+    refetch()
+  }, [filterState, refetch])
+
   return (
     <div className="ActivityTicker">
       <div className="ActivityTicker__TitleContainer">
@@ -88,7 +96,7 @@ export default function ActivityTicker() {
         <Heading className="ActivityTicker__Title" size="3xs" weight="normal">
           {t('page.home.activity_ticker.title')}
         </Heading>
-        <ActivityTickerFilter setFilterState={setFilterState} filterState={filterState} refetch={refetch} />
+        <ActivityTickerFilter onApply={handleApply} filterState={filterState} />
       </div>
       {isLoading && (
         <div className="ActivityTicker__LoadingContainer">
