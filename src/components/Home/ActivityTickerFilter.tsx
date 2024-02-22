@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import classNames from 'classnames'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
+import { useClickOutside } from '../../hooks/useClickOutside'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Counter from '../Common/Counter'
 import Sort from '../Icon/Sort'
@@ -48,7 +49,6 @@ export default function ActivityTickerFilter({ onApply, filterState }: Props) {
   const [isOpen, setIsOpen] = useState(false)
   const [checkedFilters, setCheckedFilters] = useState<TickerFilter>(filterState)
   const selectedFiltersCount = countTrueProperties(filterState)
-  const filterRef = useRef<HTMLDivElement>(null)
 
   const handleApply = () => {
     onApply(checkedFilters)
@@ -63,22 +63,11 @@ export default function ActivityTickerFilter({ onApply, filterState }: Props) {
     setCheckedFilters(filterState)
   }, [filterState, isOpen])
 
-  const onEventTypeClick = (filterClicked: keyof TickerFilter) => {
+  const handleEventTypeClick = (filterClicked: keyof TickerFilter) => {
     setCheckedFilters((prev) => ({ ...prev, [filterClicked]: !prev[filterClicked] }))
   }
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
-        setIsOpen(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [filterRef])
+  useClickOutside('.ActivityTickerFilterBox', isOpen, () => setIsOpen(false))
 
   return (
     <>
@@ -95,30 +84,30 @@ export default function ActivityTickerFilter({ onApply, filterState }: Props) {
         </div>
       </div>
       {isOpen && (
-        <div className="ActivityTickerFilterBox" ref={filterRef}>
+        <div className="ActivityTickerFilterBox">
           <div className="ActivityTickerFilterItems">
             <ActivityTickerFilterItem
-              onClick={() => onEventTypeClick('proposals_created')}
+              onClick={() => handleEventTypeClick('proposals_created')}
               checked={checkedFilters.proposals_created}
               label={t('page.home.activity_ticker.filter.proposals_created')}
             />
             <ActivityTickerFilterItem
-              onClick={() => onEventTypeClick('votes')}
+              onClick={() => handleEventTypeClick('votes')}
               checked={checkedFilters.votes}
               label={t('page.home.activity_ticker.filter.votes')}
             />
             <ActivityTickerFilterItem
-              onClick={() => onEventTypeClick('delegation')}
+              onClick={() => handleEventTypeClick('delegation')}
               checked={checkedFilters.delegation}
               label={t('page.home.activity_ticker.filter.delegation')}
             />
             <ActivityTickerFilterItem
-              onClick={() => onEventTypeClick('comments')}
+              onClick={() => handleEventTypeClick('comments')}
               checked={checkedFilters.comments}
               label={t('page.home.activity_ticker.filter.comments')}
             />
             <ActivityTickerFilterItem
-              onClick={() => onEventTypeClick('project_updates')}
+              onClick={() => handleEventTypeClick('project_updates')}
               checked={checkedFilters.project_updates}
               label={t('page.home.activity_ticker.filter.project_updates')}
             />
