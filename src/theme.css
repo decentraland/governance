@@ -101,6 +101,8 @@
   --avatar-color-ab: #edc949;
   --avatar-color-cd: #af7aa1;
   --avatar-color-ef: #ff9da7;
+
+  --z-index-loader: 1000;
 }
 
 body {
