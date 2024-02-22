@@ -4,9 +4,21 @@
   justify-content: center;
   border-radius: 50%;
   font-weight: bold;
-  width: 16px;
-  height: 16px;
-  font-size: 9px;
+  width: var(--counter-size);
+  height: var(--counter-size);
+  min-width: var(--counter-size);
+  min-height: var(--counter-size);
+  font-size: var(--counter-font-size);
+}
+
+.Counter--normal {
+  --counter-size: 16px;
+  --counter-font-size: 9px;
+}
+
+.Counter--small {
+  --counter-size: 12px;
+  --counter-font-size: 8px;
 }
 
 .Counter--primary {
@@ -20,9 +32,13 @@
 }
 
 @media (min-width: 425px) {
-  .Counter {
-    width: 20px;
-    height: 20px;
-    font-size: 12px;
+  .Counter--normal {
+    --counter-size: 20px;
+    --counter-font-size: 12px;
+  }
+
+  .Counter--small {
+    --counter-size: 14px;
+    --counter-font-size: 10px;
   }
 }

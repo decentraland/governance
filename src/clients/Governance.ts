@@ -42,7 +42,7 @@ import {
 } from '../entities/Updates/types'
 import { AccountType } from '../entities/User/types'
 import { Participation, VoteByAddress, VotedProposal, Voter, VotesForProposals } from '../entities/Votes/types'
-import { ActivityTickerEvent } from '../shared/types/events'
+import { ActivityTickerEvent, EventType } from '../shared/types/events'
 import { NewsletterSubscriptionResult } from '../shared/types/newsletter'
 import { PushNotification } from '../shared/types/notifications'
 import Time from '../utils/date/Time'
@@ -134,11 +134,7 @@ export class Governance extends API {
   }
 
   async getProposals(filters: Partial<GetProposalsFilter> = {}) {
-    const params = new URLSearchParams(filters as never)
-    let query = params.toString()
-    if (query) {
-      query = '?' + query
-    }
+    const query = this.toQueryString(filters)
 
     const proposals = await this.fetch<ApiResponse<ProposalAttributes[]> & { total: number }>(`/proposals${query}`, {
       method: 'GET',
@@ -638,8 +634,9 @@ export class Governance extends API {
     })
   }
 
-  async getLatestEvents() {
-    return await this.fetchApiResponse<ActivityTickerEvent[]>(`/events`)
+  async getLatestEvents(eventTypes: EventType[]) {
+    const query = this.toQueryString({ event_type: eventTypes })
+    return await this.fetchApiResponse<ActivityTickerEvent[]>(`/events${query}`)
   }
 
   async createVoteEvent(proposalId: string, proposalTitle: string, choice: string) {

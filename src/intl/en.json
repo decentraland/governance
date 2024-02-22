@@ -950,7 +950,17 @@
         "proposal_commented": "New comment on **{title}**",
         "project_update_commented": "New comment on **{update_title}** for **{proposal_title}**",
         "delegation_set": "**{delegator}** delegated to **{new_delegate}**",
-        "delegation_clear": "**{delegator}** removed delegation from **{removed_delegate}**"
+        "delegation_clear": "**{delegator}** removed delegation from **{removed_delegate}**",
+        "filter": {
+          "proposals_created": "Proposals Created",
+          "votes": "Votes",
+          "delegation": "Delegation",
+          "comments": "Comments",
+          "project_updates": "Project Updates",
+          "label": "Filter",
+          "apply": "Apply",
+          "clear": "Clear"
+        }
       }
     },
     "proposal_view": {
