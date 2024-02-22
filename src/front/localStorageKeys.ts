@@ -1,4 +1,5 @@
 export const HIDE_HOME_BANNER_KEY = 'org.decentraland.governance.home_banner.hide'
+export const HIDE_PROJECTS_BANNER_KEY = 'org.decentraland.governance.projects_banner.hide'
 export const HIDE_DELEGATE_BANNER_KEY = 'org.decentraland.governance.delegate_banner.hide'
 export const HIDE_LINK_DISCORD_BANNER_KEY = 'org.decentraland.governance.link_discord_banner.hide'
 export const HIDE_LINK_DISCORD_MODAL_KEY = 'org.decentraland.governance.link_discord_modal.hide'
