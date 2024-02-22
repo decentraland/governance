@@ -1,4 +1,8 @@
 .ActivityTickerFilter {
+  z-index: 1;
+}
+
+.ActivityTickerFilter__ButtonContainer {
   height: 18px;
   flex-shrink: 0;
   display: flex;
