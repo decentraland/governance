@@ -71,7 +71,7 @@ export default function ActivityTickerFilter({ onApply, filterState }: Props) {
 
   return (
     <>
-      <div className={classNames('ActivityTickerFilter')} onClick={() => setIsOpen(true)}>
+      <div className={classNames('ActivityTickerFilter')} onMouseDown={() => setIsOpen(!isOpen)}>
         {!(isOpen || selectedFiltersCount === 0) && <Counter count={selectedFiltersCount} size="small" />}
         <div
           className={classNames(
@@ -80,7 +80,7 @@ export default function ActivityTickerFilter({ onApply, filterState }: Props) {
           )}
         >
           <span className="ActivityTickerFilter__Label">{t('page.home.activity_ticker.filter.label')}</span>
-          <Sort descending selectedColor="primary" />
+          <Sort descending={!isOpen} selectedColor="primary" />
         </div>
       </div>
       {isOpen && (

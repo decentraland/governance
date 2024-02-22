@@ -944,7 +944,7 @@
       "activity_ticker": {
         "title": "Latest activity",
         "voted": "**{author}** voted on **{title}**",
-        "no_activity": "No activity",
+        "no_activity": "No activity to display",
         "proposal_created": "**{author}** published a new Proposal **{title}**",
         "update_created": "**{author}** published an Update on the Project **{title}**",
         "proposal_commented": "New comment on **{title}**",
