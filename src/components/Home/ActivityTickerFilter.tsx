@@ -67,11 +67,15 @@ export default function ActivityTickerFilter({ onApply, filterState }: Props) {
     setCheckedFilters((prev) => ({ ...prev, [filterClicked]: !prev[filterClicked] }))
   }
 
-  useClickOutside('.ActivityTickerFilterBox', isOpen, () => setIsOpen(false))
+  useClickOutside('.ActivityTickerFilter', isOpen, () => setIsOpen(false))
 
   return (
-    <>
-      <div className={classNames('ActivityTickerFilter')} onMouseDown={() => setIsOpen(!isOpen)}>
+    <div className="ActivityTickerFilter">
+      <div
+        role="button"
+        className="ActivityTickerFilter__ButtonContainer"
+        onClick={() => setIsOpen((prevState) => !prevState)}
+      >
         {selectedFiltersCount !== 0 && <Counter count={selectedFiltersCount} size="small" />}
         <div
           className={classNames(
@@ -122,6 +126,6 @@ export default function ActivityTickerFilter({ onApply, filterState }: Props) {
           </div>
         </div>
       )}
-    </>
+    </div>
   )
 }
