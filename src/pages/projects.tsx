@@ -102,11 +102,11 @@ export default function ProjectsPage() {
 
   const { projects, isLoadingProjects } = useProjects(year && quarter ? { year, quarter } : undefined)
   const displayableProjects = useMemo(
-    () => filterDisplayableProjects(projects?.data, type, subtype, status),
-    [projects?.data, type, subtype, status]
+    () => filterDisplayableProjects(projects, type, subtype, status),
+    [projects, type, subtype, status]
   )
 
-  const counter = useMemo(() => getCounter(projects?.data), [projects?.data])
+  const counter = useMemo(() => getCounter(projects), [projects])
 
   if (isUnderMaintenance()) {
     return (

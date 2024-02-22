@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import useTrackContext from 'decentraland-gatsby/dist/context/Track/useTrackContext'
 
 import { SegmentEvent } from '../../entities/Events/types'
 import { ProposalAttributes, ProposalStatus } from '../../entities/Proposal/types'
@@ -12,6 +11,7 @@ import { UpdateAttributes } from '../../entities/Updates/types'
 import { isProposalStatusWithUpdates } from '../../entities/Updates/utils'
 import { SelectedVoteChoice, VoteByAddress } from '../../entities/Votes/types'
 import { calculateResult } from '../../entities/Votes/utils'
+import useAnalyticsTrack from '../../hooks/useAnalyticsTrack'
 import useProposalVotes from '../../hooks/useProposalVotes'
 import { ProposalPageState } from '../../pages/proposal'
 import { NotDesktop1200 } from '../Layout/Desktop1200'
@@ -84,7 +84,7 @@ export default function ProposalSidebar({
 
   const [isVotesListModalOpen, setIsVotesListModalOpen] = useState(false)
   const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false)
-  const track = useTrackContext()
+  const track = useAnalyticsTrack()
   const setIsCalendarModalOpenWithTracking = (isOpen: boolean) => {
     setIsCalendarModalOpen(isOpen)
     if (isOpen) {

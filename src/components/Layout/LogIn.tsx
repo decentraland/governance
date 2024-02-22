@@ -1,13 +1,13 @@
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import { DappsFeatureFlags } from 'decentraland-gatsby/dist/context/FeatureFlag/types'
-import useFeatureFlagContext from 'decentraland-gatsby/dist/context/FeatureFlag/useFeatureFlagContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
 
 import { DCL_META_IMAGE_URL } from '../../constants'
+import useDclFeatureFlags from '../../hooks/useDclFeatureFlags'
 import useFormatMessage from '../../hooks/useFormatMessage'
+import { FeatureFlags } from '../../utils/features'
 import locations, { navigate } from '../../utils/locations'
 import Text from '../Common/Typography/Text'
 
@@ -30,9 +30,9 @@ function handleBack() {
 function LogIn({ title, description }: Props) {
   const [, accountState] = useAuthContext()
   const t = useFormatMessage()
-  const [ff] = useFeatureFlagContext()
   const isMobile = useMobileMediaQuery()
-  const isAuthDappEnabled = ff.enabled(DappsFeatureFlags.AuthDappEnabled)
+  const { isFeatureFlagEnabled } = useDclFeatureFlags()
+  const isAuthDappEnabled = isFeatureFlagEnabled(FeatureFlags.AuthDapp)
 
   if (isMobile) {
     return (

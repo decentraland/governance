@@ -6,12 +6,12 @@ import { GATSBY_DISCORD_PROFILE_VERIFICATION_URL } from '../entities/User/consta
 import { AccountType } from '../entities/User/types'
 import { openUrl } from '../helpers'
 
+import useAnalyticsTrack from './useAnalyticsTrack'
 import useValidationSetup, { VALIDATION_CHECK_INTERVAL } from './useValidationSetup'
 
 function useDiscordConnect() {
   const {
     user,
-    track,
     resetTimer,
     getSignedMessage,
     copyMessageToClipboard,
@@ -22,6 +22,8 @@ function useDiscordConnect() {
     setIsValidated,
     resetValidation,
   } = useValidationSetup(AccountType.Discord)
+
+  const track = useAnalyticsTrack()
 
   const openChannel = useCallback(() => {
     openUrl(GATSBY_DISCORD_PROFILE_VERIFICATION_URL)

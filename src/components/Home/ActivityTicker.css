@@ -17,12 +17,15 @@
 .ActivityTicker__TitleContainer {
   position: relative;
   background-color: transparent;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-left: 10px;
 }
 
 .ActivityTicker__Title {
   margin: 0;
   margin-bottom: 17px;
-  padding-left: 10px;
   color: var(--black-600);
   text-transform: uppercase;
   position: relative;

@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { DependencyList, useCallback, useEffect, useState } from 'react'
 
-import useTrackContext from 'decentraland-gatsby/dist/context/Track/useTrackContext'
-
 import { ErrorClient } from '../clients/ErrorClient'
+
+import useAnalyticsTrack from './useAnalyticsTrack'
 
 type AsyncTaskState<A extends unknown[] = []> = {
   loading: boolean
@@ -19,7 +19,7 @@ export default function useAsyncTask<A extends unknown[] = []>(
     args: null,
   })
 
-  const segment = useTrackContext()
+  const track = useAnalyticsTrack()
 
   useEffect(() => {
     if (!loading) {
@@ -48,7 +48,7 @@ export default function useAsyncTask<A extends unknown[] = []>(
           stack: err.stack,
         }
         ErrorClient.report('AsyncTask error', errorObj)
-        segment('error', errorObj)
+        track('error', errorObj)
         if (cancelled) {
           return
         }

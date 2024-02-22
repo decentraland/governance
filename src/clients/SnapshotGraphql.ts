@@ -1,4 +1,3 @@
-import API from 'decentraland-gatsby/dist/utils/api/API'
 import uniqBy from 'lodash/uniqBy'
 
 import env from '../config'
@@ -6,6 +5,7 @@ import { SNAPSHOT_API, SNAPSHOT_API_KEY, SNAPSHOT_SPACE } from '../entities/Snap
 import { getAMonthAgo } from '../utils/date/date'
 import { ErrorCategory } from '../utils/errorCategories'
 
+import API from './API'
 import { ErrorClient } from './ErrorClient'
 import {
   SnapshotConfig,
@@ -46,25 +46,25 @@ const GET_VOTES_QUERY = `
 
 export class SnapshotGraphql extends API {
   static Url = SNAPSHOT_API || 'https://hub.snapshot.org/'
-
   static Cache = new Map<string, SnapshotGraphql>()
 
-  static from(baseUrl: string) {
+  static from(baseUrl: string): SnapshotGraphql {
     baseUrl = trimLastForwardSlash(baseUrl)
     if (!this.Cache.has(baseUrl)) {
       this.Cache.set(baseUrl, new this(baseUrl))
     }
-
     return this.Cache.get(baseUrl)!
   }
 
-  static get() {
+  static get(): SnapshotGraphql {
     return this.from(env('SNAPSHOT_API', this.Url))
   }
 
   constructor(baseUrl: string) {
     super(baseUrl)
-    if (SNAPSHOT_API_KEY) this.defaultOptions.header('x-api-key', SNAPSHOT_API_KEY)
+    if (SNAPSHOT_API_KEY) {
+      this.setDefaultHeader('x-api-key', SNAPSHOT_API_KEY)
+    }
   }
 
   async getConfig() {
@@ -91,10 +91,10 @@ export class SnapshotGraphql extends API {
       }
     `
 
-    const result = await this.fetch<SnapshotQueryResponse<{ space: SnapshotSpace }>>(
-      GRAPHQL_ENDPOINT,
-      this.options().method('POST').json({ query, variables: { space } })
-    )
+    const result = await this.fetch<SnapshotQueryResponse<{ space: SnapshotSpace }>>(GRAPHQL_ENDPOINT, {
+      method: 'POST',
+      json: { query, variables: { space } },
+    })
 
     return result?.data?.space || null
   }
@@ -116,15 +116,10 @@ export class SnapshotGraphql extends API {
       }
     `
 
-    const result = await this.fetch<SnapshotVoteResponse>(
-      GRAPHQL_ENDPOINT,
-      this.options()
-        .method('POST')
-        .json({
-          query,
-          variables: { space: SNAPSHOT_SPACE, proposal: proposal, skip, first: batchSize },
-        })
-    )
+    const result = await this.fetch<SnapshotVoteResponse>(GRAPHQL_ENDPOINT, {
+      method: 'POST',
+      json: { query, variables: { space: SNAPSHOT_SPACE, proposal, first: batchSize, skip } },
+    })
 
     return result?.data?.votes
   }
@@ -144,12 +139,10 @@ export class SnapshotGraphql extends API {
       }
     `
     try {
-      const response = await this.fetch<SnapshotProposalResponse>(
-        GRAPHQL_ENDPOINT,
-        this.options()
-          .method('POST')
-          .json({ query, variables: { proposal: proposalId } })
-      )
+      const response = await this.fetch<SnapshotProposalResponse>(GRAPHQL_ENDPOINT, {
+        method: 'POST',
+        json: { query, variables: { proposal: proposalId } },
+      })
       return response?.data.proposal.scores || []
     } catch (e) {
       throw Error(`Unable to fetch proposal scores for ${proposalId}`, e as Error)
@@ -186,15 +179,13 @@ export class SnapshotGraphql extends API {
 
     try {
       while (hasNext) {
-        const result = await this.fetch<SnapshotVoteResponse>(
-          GRAPHQL_ENDPOINT,
-          this.options()
-            .method('POST')
-            .json({
-              query,
-              variables: { space: SNAPSHOT_SPACE, addresses: addresses, first: 1000, created },
-            })
-        )
+        const result = await this.fetch<SnapshotVoteResponse>(GRAPHQL_ENDPOINT, {
+          method: 'POST',
+          json: {
+            query,
+            variables: { space: SNAPSHOT_SPACE, addresses: addresses, first: 1000, created },
+          },
+        })
 
         const results = result?.data?.votes
         if (results && results.length > 0) {
@@ -236,15 +227,13 @@ export class SnapshotGraphql extends API {
       }
     `
 
-    const result = await this.fetch<SnapshotVoteResponse>(
-      GRAPHQL_ENDPOINT,
-      this.options()
-        .method('POST')
-        .json({
-          query,
-          variables: { space: SNAPSHOT_SPACE, addresses: addresses, skip, first },
-        })
-    )
+    const result = await this.fetch<SnapshotVoteResponse>(GRAPHQL_ENDPOINT, {
+      method: 'POST',
+      json: {
+        query,
+        variables: { space: SNAPSHOT_SPACE, addresses: addresses, skip, first },
+      },
+    })
 
     return result?.data?.votes
   }
@@ -264,13 +253,13 @@ export class SnapshotGraphql extends API {
           end: getQueryTimestamp(end.getTime()),
         }
 
-        const result = await this.fetch<SnapshotVoteResponse>(
-          GRAPHQL_ENDPOINT,
-          this.options().method('POST').json({
+        const result = await this.fetch<SnapshotVoteResponse>(GRAPHQL_ENDPOINT, {
+          method: 'POST',
+          json: {
             query: GET_VOTES_QUERY,
             variables,
-          })
-        )
+          },
+        })
 
         const results = result?.data?.votes
         if (results && results.length > 0) {
@@ -340,13 +329,13 @@ export class SnapshotGraphql extends API {
       variables['scores_state'] = scoresState
     }
 
-    const result = await this.fetch<SnapshotProposalsResponse>(
-      GRAPHQL_ENDPOINT,
-      this.options().method('POST').json({
+    const result = await this.fetch<SnapshotProposalsResponse>(GRAPHQL_ENDPOINT, {
+      method: 'POST',
+      json: {
         query,
         variables,
-      })
-    )
+      },
+    })
 
     return result?.data?.proposals
   }
@@ -378,13 +367,13 @@ export class SnapshotGraphql extends API {
       proposal: proposalId || '',
     }
 
-    const result = await this.fetch<SnapshotVpResponse>(
-      GRAPHQL_ENDPOINT,
-      this.options().method('POST').json({
+    const result = await this.fetch<SnapshotVpResponse>(GRAPHQL_ENDPOINT, {
+      method: 'POST',
+      json: {
         query,
         variables: variables,
-      })
-    )
+      },
+    })
 
     if (!result?.data?.vp) {
       throw Error('Unable to fetch VP Distribution')
@@ -433,12 +422,10 @@ export class SnapshotGraphql extends API {
       SnapshotQueryResponse<{
         proposal: SnapshotProposalContent
       }>
-    >(
-      GRAPHQL_ENDPOINT,
-      this.options()
-        .method('POST')
-        .json({ query, variables: { id: proposalSnapshotId } })
-    )
+    >(GRAPHQL_ENDPOINT, {
+      method: 'POST',
+      json: { query, variables: { id: proposalSnapshotId } },
+    })
 
     return result?.data?.proposal
   }
@@ -449,20 +436,18 @@ export class SnapshotGraphql extends API {
     try {
       const startDate = getAMonthAgo(now).getTime()
       const endDate = now.getTime()
-      const response = await this.fetch<SnapshotVoteResponse>(
-        GRAPHQL_ENDPOINT,
-        this.options()
-          .method('POST')
-          .json({
-            query: GET_VOTES_QUERY,
-            variables: {
-              space: SNAPSHOT_SPACE,
-              first: 10,
-              start: getQueryTimestamp(startDate),
-              end: getQueryTimestamp(endDate),
-            },
-          })
-      )
+      const response = await this.fetch<SnapshotVoteResponse>(GRAPHQL_ENDPOINT, {
+        method: 'POST',
+        json: {
+          query: GET_VOTES_QUERY,
+          variables: {
+            space: SNAPSHOT_SPACE,
+            first: 10,
+            start: getQueryTimestamp(startDate),
+            end: getQueryTimestamp(endDate),
+          },
+        },
+      })
       const endTime = new Date().getTime()
       const addressesSample = response?.data?.votes.map((vote: SnapshotVote) => vote.voter)
       return { responseTime: endTime - startTime, addressesSample }
