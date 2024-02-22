@@ -1,8 +1,10 @@
 import { useMemo } from 'react'
 import { useIntl } from 'react-intl'
 
+import { useLocation } from '@reach/router'
+
 import { ProjectWithUpdate, ProposalType } from '../../../entities/Proposal/types'
-import { CURRENCY_FORMAT_OPTIONS } from '../../../helpers'
+import { CURRENCY_FORMAT_OPTIONS, validateQuarter, validateYear } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useOpenTendersTotal from '../../../hooks/useOpenTendersTotal'
 import Time from '../../../utils/date/Time'
@@ -25,11 +27,21 @@ export default function StatsAllProjects({ projects }: Props) {
     return finishAt.isAfter(Time()) && finishAt.isBefore(Time().add(1, 'week'))
   })
 
-  const currentQuarter = Time().quarter()
+  const location = useLocation()
+  const params = useMemo(() => new URLSearchParams(location.search), [location.search])
+  const yearParam = params.get('year')
+  const quarterParam = params.get('quarter')
+  const validatedYear = validateYear(yearParam)
+  const validatedQuarter = validateQuarter(quarterParam)
+  const isYearAndQuarterValid = validatedYear && validatedQuarter
+
+  const currentYear = isYearAndQuarterValid ? validatedYear : Time().year()
+  const currentQuarter = isYearAndQuarterValid ? validatedQuarter : Time().quarter()
   const currentProjects = useMemo(() => projects.filter(({ status }) => isCurrentProject(status)), [projects])
   const currentProjectsThisQuarter = useMemo(
-    () => currentProjects.filter((item) => isCurrentQuarterProject(item.contract?.start_at)),
-    [currentProjects]
+    () =>
+      currentProjects.filter((item) => isCurrentQuarterProject(currentYear, currentQuarter, item.contract?.start_at)),
+    [currentProjects, currentQuarter, currentYear]
   )
   const currentBidProjects = useMemo(
     () => currentProjectsThisQuarter.filter((item) => item.type === ProposalType.Bid),
@@ -66,7 +78,7 @@ export default function StatsAllProjects({ projects }: Props) {
       <MetricsCard
         variant="dark"
         fullWidth
-        category={t('page.grants.all_projects_stats.funding.category', { quarter: currentQuarter })}
+        category={t('page.grants.all_projects_stats.funding.category', { year: currentYear, quarter: currentQuarter })}
         title={`${formatFundingValue(totalBidFunding + totalGrantFunding)}`}
         description={t('page.grants.all_projects_stats.funding.total', {
           grants: formattedTotalGrantFunding,

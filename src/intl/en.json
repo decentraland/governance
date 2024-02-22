@@ -1374,7 +1374,7 @@
           "ending_this_week": "{total} ending this week"
         },
         "funding": {
-          "category": "Project funding for Q{quarter}",
+          "category": "Project funding for {year}Q{quarter}",
           "total": "Grants: {grants}; B&T: {bids}"
         },
         "opportunities": {
@@ -1384,7 +1384,7 @@
       },
       "bidding_and_tendering_stats": {
         "funding": {
-          "category": "Project funding for Q{quarter}",
+          "category": "Project funding for {year}Q{quarter}",
           "total": "B&T: {bids}"
         },
         "tender_opportunities": {
