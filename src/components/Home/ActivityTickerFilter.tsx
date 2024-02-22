@@ -72,7 +72,7 @@ export default function ActivityTickerFilter({ onApply, filterState }: Props) {
   return (
     <>
       <div className={classNames('ActivityTickerFilter')} onMouseDown={() => setIsOpen(!isOpen)}>
-        {!(isOpen || selectedFiltersCount === 0) && <Counter count={selectedFiltersCount} size="small" />}
+        {selectedFiltersCount !== 0 && <Counter count={selectedFiltersCount} size="small" />}
         <div
           className={classNames(
             'ActivityTickerFilter__LabeledArrow',
