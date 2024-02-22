@@ -94,12 +94,12 @@ export class BadgesService {
       }
 
       if (error) {
-        return { status: AirdropJobStatus.FAILED, error }
+        return { status: AirdropJobStatus.FAILED, error, recipients: users, badge_spec: badgeCid }
       }
 
       return await airdropWithRetry(badgeCid, eligibleUsers)
     } catch (e) {
-      return { status: AirdropJobStatus.FAILED, error: JSON.stringify(e) }
+      return { status: AirdropJobStatus.FAILED, error: JSON.stringify(e), recipients: users, badge_spec: badgeCid }
     }
   }
 
@@ -130,42 +130,14 @@ export class BadgesService {
       landOwnerAddresses
     )
 
-    const airdropOutcomes: AirdropOutcome[] = []
-    const airdropBatches = splitArray(eligibleUsers, 50)
-    for (const batch of airdropBatches) {
-      const outcome = await airdropWithRetry(LAND_OWNER_BADGE_SPEC_CID, batch)
-      airdropOutcomes.push(outcome)
-    }
+    await this.giveLandOwnerBadges(eligibleUsers)
+    await this.reinstateLandOwnerBadges(usersWithBadgesToReinstate)
+    await this.revokeLandOwnerBadges(landOwnerAddresses)
+  }
 
-    const reinstateResults = await BadgesService.reinstateBadge(LAND_OWNER_BADGE_SPEC_CID, usersWithBadgesToReinstate)
-
-    const failedAirdropOutcomes = airdropOutcomes.filter(
-      ({ status, error }) =>
-        status === AirdropJobStatus.FAILED &&
-        error !== ErrorReason.NoUserWithoutBadge &&
-        error !== ErrorReason.NoUserHasVoted
-    )
-    if (failedAirdropOutcomes.length > 0) {
-      console.error('Unable to give LandOwner badges', failedAirdropOutcomes)
-
-      ErrorService.report('Unable to give LandOwner badges', {
-        category: ErrorCategory.Badges,
-        failedAirdropOutcomes,
-      })
-    }
-
-    const failedReinstatements = reinstateResults.filter((result) => result.status === ActionStatus.Failed)
-    if (failedReinstatements.length > 0) {
-      console.error('Unable to reinstate LandOwner badges', failedReinstatements)
-      ErrorService.report('Unable to reinstate LandOwner badges', {
-        category: ErrorCategory.Badges,
-        failedReinstatements,
-      })
-    }
-
+  private static async revokeLandOwnerBadges(landOwnerAddresses: string[]) {
     const badges = await OtterspaceSubgraph.get().getBadges(LAND_OWNER_BADGE_SPEC_CID)
     const landOwnerAddressesSet = new Set(landOwnerAddresses)
-
     const addressesToRevoke = badges
       .filter(
         (badge) =>
@@ -181,6 +153,41 @@ export class BadgesService {
       ErrorService.report('Unable to revoke LandOwner badges', {
         category: ErrorCategory.Badges,
         failedRevocations,
+      })
+    }
+  }
+
+  private static async reinstateLandOwnerBadges(usersWithBadgesToReinstate: string[]) {
+    const reinstateResults = await BadgesService.reinstateBadge(LAND_OWNER_BADGE_SPEC_CID, usersWithBadgesToReinstate)
+    const failedReinstatements = reinstateResults.filter((result) => result.status === ActionStatus.Failed)
+    if (failedReinstatements.length > 0) {
+      console.error('Unable to reinstate LandOwner badges', failedReinstatements)
+      ErrorService.report('Unable to reinstate LandOwner badges', {
+        category: ErrorCategory.Badges,
+        failedReinstatements,
+      })
+    }
+  }
+
+  private static async giveLandOwnerBadges(eligibleUsers: string[]) {
+    const airdropOutcomes: AirdropOutcome[] = []
+    const userBatches = splitArray(eligibleUsers, 50)
+    for (const userBatch of userBatches) {
+      const outcome = await airdropWithRetry(LAND_OWNER_BADGE_SPEC_CID, userBatch)
+      airdropOutcomes.push(outcome)
+    }
+    const failedAirdropOutcomes = airdropOutcomes.filter(
+      ({ status, error }) =>
+        status === AirdropJobStatus.FAILED &&
+        error !== ErrorReason.NoUserWithoutBadge &&
+        error !== ErrorReason.NoUserHasVoted
+    )
+    if (failedAirdropOutcomes.length > 0) {
+      console.error('Unable to give LandOwner badges', failedAirdropOutcomes)
+
+      ErrorService.report('Unable to give LandOwner badges', {
+        category: ErrorCategory.Badges,
+        failedAirdropOutcomes,
       })
     }
   }
