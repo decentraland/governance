@@ -12,6 +12,7 @@ import {
 } from '../../../entities/Grant/types'
 import { ProjectWithUpdate } from '../../../entities/Proposal/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
+import useYearAndQuarter from '../../../hooks/useYearAndQuarter'
 import locations from '../../../utils/locations'
 import Empty, { ActionType } from '../../Common/Empty'
 import FullWidthButton from '../../Common/FullWidthButton'
@@ -34,6 +35,7 @@ interface Props {
   status?: ProjectStatus
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CATEGORY_KEYS: Record<any, string> = {
   [ProjectTypeFilter.BiddingAndTendering]: 'page.grants.category_filters.bidding_and_tendering',
   [ProjectTypeFilter.Grants]: 'page.grants.category_filters.grants',
@@ -68,6 +70,7 @@ export default function CurrentProjectsList({ projects, selectedSubtype, selecte
   const [sortingKey, setSortingKey] = useState<SortingKey>(SortingKey.UpdateTimestamp)
   const sortedCurrentGrants = useMemo(() => orderBy(projects, [sortingKey], ['desc']), [projects, sortingKey])
   const [filteredCurrentGrants, setFilteredCurrentGrants] = useState<ProjectWithUpdate[]>([])
+  const { year, quarter } = useYearAndQuarter()
 
   useEffect(() => {
     if (!isEmpty(projects)) {
@@ -92,6 +95,8 @@ export default function CurrentProjectsList({ projects, selectedSubtype, selecte
         <div>
           <h2 className="CurrentProjectsList__Title">
             {t('page.grants.projects_category_title', {
+              quarter,
+              year,
               status: status ? `${t(GRANTS_STATUS_KEYS[status])} ` : '',
               category: t(getCategoryKey(selectedSubtype || selectedType)),
             })}

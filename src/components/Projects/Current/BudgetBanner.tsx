@@ -14,6 +14,7 @@ import { CURRENCY_FORMAT_OPTIONS } from '../../../helpers'
 import { CategoryIconVariant } from '../../../helpers/styles'
 import useBudgetByCategory from '../../../hooks/useBudgetByCategory'
 import useFormatMessage from '../../../hooks/useFormatMessage'
+import useYearAndQuarter from '../../../hooks/useYearAndQuarter'
 import ProgressBar from '../../Common/ProgressBar'
 import { getNewGrantsCategoryIcon } from '../../Icon/NewGrantsCategoryIcons'
 
@@ -41,11 +42,12 @@ export const getNewGrantIcon = (type: string, variant?: CategoryIconVariant, siz
 export default function BudgetBanner({ category, status, initiativesCount }: Props) {
   const t = useFormatMessage()
   const intl = useIntl()
+  const { year, quarter } = useYearAndQuarter()
   const {
     allocatedPercentage: percentage,
     allocated: currentAmount,
     total: totalBudget,
-  } = useBudgetByCategory(category)
+  } = useBudgetByCategory(category, year, quarter)
 
   const showProgress = !status || status === ProjectStatus.InProgress
 
@@ -57,7 +59,7 @@ export default function BudgetBanner({ category, status, initiativesCount }: Pro
         )}
         <BudgetBannerItem
           value={intl.formatNumber(totalBudget, CURRENCY_FORMAT_OPTIONS)}
-          label={t('page.grants.budget_banner.budget_label')}
+          label={t('page.grants.budget_banner.budget_label', { year, quarter })}
         />
       </div>
       <BudgetBannerItem

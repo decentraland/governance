@@ -1361,9 +1361,9 @@
         "faq_title": "FAQ",
         "faq_description": "Learn more about our Grants System"
       },
-      "projects_category_title": "{status}{category} Projects",
+      "projects_category_title": "Q{quarter} {year} {status}{category} Projects",
       "budget_banner": {
-        "budget_label": "Quarterly budget",
+        "budget_label": "Q{quarter} {year} Budget",
         "progress_label": "Initiatives",
         "spent_label": "Quarterly spend: "
       },
@@ -1374,7 +1374,7 @@
           "ending_this_week": "{total} ending this week"
         },
         "funding": {
-          "category": "Project funding for {year}Q{quarter}",
+          "category": "Project funding for Q{quarter} {year}",
           "total": "Grants: {grants}; B&T: {bids}"
         },
         "opportunities": {
@@ -1384,7 +1384,7 @@
       },
       "bidding_and_tendering_stats": {
         "funding": {
-          "category": "Project funding for {year}Q{quarter}",
+          "category": "Project funding for Q{quarter} {year}",
           "total": "B&T: {bids}"
         },
         "tender_opportunities": {

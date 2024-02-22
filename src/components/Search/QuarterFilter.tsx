@@ -4,8 +4,8 @@ import { useLocation } from '@reach/router'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 
-import { validateQuarter, validateYear } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
+import useYearAndQuarter from '../../hooks/useYearAndQuarter'
 import Time from '../../utils/date/Time'
 import Link from '../Common/Typography/Link'
 
@@ -29,22 +29,19 @@ function getYears() {
 function QuarterFilter() {
   const t = useFormatMessage()
   const [selectedYear, setSelectedYear] = useState<number | undefined>()
+  const { year: yearParam, quarter: quarterParam } = useYearAndQuarter()
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
-  const yearParam = params.get('year')
-  const quarterParam = params.get('quarter')
-  const validatedYear = validateYear(yearParam)
-  const validatedQuarter = validateQuarter(quarterParam)
 
   useEffect(() => {
-    if (validatedYear) {
-      setSelectedYear(validatedYear)
+    if (yearParam) {
+      setSelectedYear(yearParam)
     }
-  }, [validatedYear])
+  }, [yearParam])
 
   const getQuarterButtons = (year: number) => {
     return QUARTERS.map((quarter) => {
-      const isActive = validatedYear === year && validatedQuarter === quarter
+      const isActive = yearParam === year && quarterParam === quarter
       if (isActive) {
         params.delete('year')
         params.delete('quarter')
