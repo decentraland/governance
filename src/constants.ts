@@ -53,7 +53,6 @@ export const CORE_UNITS_BADGE_CID = [
   'bafyreidmzou4wiy2prxq4jdyg66z7s3wulpfq2a7ar6sdkrixrj3b5mgwe', // Governance Squad
   'bafyreih5t62qmeiugca6bp7dtubrd3ponqfndbim54e3vg4cfbroledohq', // Grant Support Squad
   'bafyreicsrpymlwm4hutebi2qio3e5hhzpqtyr6fv3ei6nsybb3vannhfgy', // Facilitation Squad
-  'bafyreigm5fqqryvoboszxbrzeks5jihsc4mwb4mq26csdmooaju5g7ksja', // Strategic Unit Squad
 ]
 export const DEBUG_ADDRESSES = (process.env.DEBUG_ADDRESSES || '')
   .split(',')
