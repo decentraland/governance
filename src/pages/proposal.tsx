@@ -396,7 +396,7 @@ export default function ProposalPage() {
           <div className="ProposalDetailPage__Body">{getProposalView(proposal)}</div>
           {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
           {proposal && isBiddingAndTenderingProposal(proposal?.type) && <BiddingAndTendering proposal={proposal} />}
-          {proposal && isGovernanceProcessProposal(proposal.type) && <GovernanceProcess proposalType={proposal.type} />}
+          {showAuthorDetails && <AuthorDetails address={proposal?.user} />}
           {showProposalUpdates && (
             <ProposalUpdates
               proposal={proposal}
@@ -405,21 +405,21 @@ export default function ProposalPage() {
               isCoauthor={isCoauthor}
             />
           )}
-          {showSurveyResults && (
-            <SurveyResults
-              votes={highQualityVotes ?? null}
-              surveyTopics={surveyTopics}
-              isLoadingSurveyTopics={isLoadingSurveyTopics}
-              ref={reactionsSectionRef}
-            />
-          )}
-          {showAuthorDetails && <AuthorDetails address={proposal?.user} />}
           {showVotesChart && (
             <ProposalVPChart
               requiredToPass={proposal?.required_to_pass}
               voteMap={highQualityVotes}
               startTimestamp={proposal?.start_at.getTime()}
               endTimestamp={proposal?.finish_at.getTime()}
+            />
+          )}
+          {proposal && isGovernanceProcessProposal(proposal.type) && <GovernanceProcess proposalType={proposal.type} />}
+          {showSurveyResults && (
+            <SurveyResults
+              votes={highQualityVotes ?? null}
+              surveyTopics={surveyTopics}
+              isLoadingSurveyTopics={isLoadingSurveyTopics}
+              ref={reactionsSectionRef}
             />
           )}
           <ProposalComments proposal={proposal} ref={commentsSectionRef} />
