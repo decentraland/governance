@@ -56,7 +56,7 @@ div.ui.fitted.checkbox.ActivityTickerFilterItem__Checkbox,
   min-height: 12px !important;
 }
 
-.ui.checkbox.checked:not(.toggle) input[type='checkbox'].hidden + label:after {
+.ActivityTickerFilterItem__Checkbox.ui.checkbox.checked:not(.toggle) input[type='checkbox'].hidden + label:after {
   left: 1px !important;
   top: 1px !important;
 }
