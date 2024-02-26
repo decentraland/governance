@@ -129,13 +129,13 @@ export async function airdropWithRetry(
 ): Promise<AirdropOutcome> {
   try {
     await airdrop(badgeCid, recipients, gasIncrement)
-    return { status: AirdropJobStatus.FINISHED, error: '' }
+    return { status: AirdropJobStatus.FINISHED, error: '', recipients, badge_spec: badgeCid }
   } catch (error: any) {
     if (retries > 0) {
       if (isTransactionReplacedError(error)) {
         logger.log(`Found replacement transaction for airdrop`, error)
         if (error.receipt.status === 1) {
-          return { status: AirdropJobStatus.FINISHED, error: JSON.stringify(error) }
+          return { status: AirdropJobStatus.FINISHED, error: JSON.stringify(error), recipients, badge_spec: badgeCid }
         }
       }
       logger.log(`Retrying airdrop... Attempts left: ${retries}`, error)
@@ -146,7 +146,7 @@ export async function airdropWithRetry(
       return await airdropWithRetry(badgeCid, recipients, retries - 1, newGasIncrement)
     } else {
       logger.error('Airdrop failed after maximum retries', error)
-      return { status: AirdropJobStatus.FAILED, error: JSON.stringify(error) }
+      return { status: AirdropJobStatus.FAILED, error: JSON.stringify(error), recipients, badge_spec: badgeCid }
     }
   }
 }
