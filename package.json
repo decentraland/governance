@@ -61,6 +61,7 @@
     "@pushprotocol/restapi": "^1.4.38",
     "@snapshot-labs/snapshot.js": "0.10.1",
     "@tanstack/react-query": "^4.29.7",
+    "@uiw/react-md-editor": "^4.0.3",
     "ace-builds": "^1.32.0",
     "autoprefixer": "^10.4.4",
     "chalk": "^4.1.2",
