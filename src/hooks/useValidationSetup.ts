@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import { Web3Provider } from '@ethersproject/providers'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 
 import { Governance } from '../clients/Governance'
 import { MESSAGE_TIMEOUT_TIME } from '../entities/User/constants'
 import { AccountType } from '../entities/User/types'
+import { useAuthContext } from '../front/context/AuthProvider'
 import Time from '../utils/date/Time'
 
 import useClipboardCopy from './useClipboardCopy'

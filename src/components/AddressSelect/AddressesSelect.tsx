@@ -3,9 +3,9 @@ import { InputActionMeta, OnChangeValue } from 'react-select'
 import CreatableSelect from 'react-select/creatable'
 
 import classNames from 'classnames'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
+import { useAuthContext } from '../../front/context/AuthProvider'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import Username from '../Common/Username'
 

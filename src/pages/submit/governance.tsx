@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
 import { useLocation } from '@reach/router'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { SelectField } from 'decentraland-ui/dist/components/SelectField/SelectField'
@@ -28,6 +27,7 @@ import {
   ProposalType,
   newProposalGovernanceScheme,
 } from '../../entities/Proposal/types'
+import { useAuthContext } from '../../front/context/AuthProvider'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import usePreselectedProposal from '../../hooks/usePreselectedProposal'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'

@@ -1,8 +1,7 @@
 import { useState } from 'react'
 
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-
 import { CANDIDATE_ADDRESSES } from '../../constants'
+import { useAuthContext } from '../../front/context/AuthProvider'
 import useDelegatesInfo from '../../hooks/useDelegatesInfo'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'

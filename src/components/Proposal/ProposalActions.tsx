@@ -1,12 +1,12 @@
 import { useState } from 'react'
 
 import { useIsMutating } from '@tanstack/react-query'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { Governance } from '../../clients/Governance'
 import { ProposalAttributes, ProposalStatus } from '../../entities/Proposal/types'
 import { isProposalDeletable, isProposalEnactable, proposalCanBePassedOrRejected } from '../../entities/Proposal/utils'
+import { useAuthContext } from '../../front/context/AuthProvider'
 import useAsyncTask from '../../hooks/useAsyncTask'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useIsDAOCommittee from '../../hooks/useIsDAOCommittee'

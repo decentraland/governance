@@ -1,6 +1,5 @@
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-
 import { isSameAddress } from '../../entities/Snapshot/utils'
+import { useAuthContext } from '../../front/context/AuthProvider'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useVotingStats from '../../hooks/useVotingStats'
 import MobileSlider from '../Common/MobileSlider'

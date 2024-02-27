@@ -1,6 +1,5 @@
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-
 import { Vote } from '../../../../entities/Votes/types'
+import { useAuthContext } from '../../../../front/context/AuthProvider'
 import useCountdown from '../../../../hooks/useCountdown'
 import useFormatMessage from '../../../../hooks/useFormatMessage'
 import { ProposalPageState } from '../../../../pages/proposal'

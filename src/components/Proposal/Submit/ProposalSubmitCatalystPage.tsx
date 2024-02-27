@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
 import { useQuery } from '@tanstack/react-query'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
@@ -25,6 +24,7 @@ import {
   newProposalCatalystScheme,
 } from '../../../entities/Proposal/types'
 import { isAlreadyACatalyst, isValidDomainName } from '../../../entities/Proposal/utils'
+import { useAuthContext } from '../../../front/context/AuthProvider'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import locations, { navigate } from '../../../utils/locations'
 import Head from '../../Layout/Head'

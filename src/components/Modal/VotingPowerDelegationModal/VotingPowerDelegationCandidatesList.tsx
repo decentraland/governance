@@ -1,10 +1,10 @@
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { CANDIDATE_ADDRESSES } from '../../../constants'
 import { EDIT_DELEGATE_SNAPSHOT_URL } from '../../../entities/Proposal/utils'
+import { useAuthContext } from '../../../front/context/AuthProvider'
 import useDelegatesInfo, { Delegate } from '../../../hooks/useDelegatesInfo'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useVotingPowerDistribution from '../../../hooks/useVotingPowerDistribution'
