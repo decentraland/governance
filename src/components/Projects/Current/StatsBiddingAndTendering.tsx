@@ -52,10 +52,14 @@ export default function StatsBiddingAndTendering({ projects }: Props) {
       <MetricsCard
         variant="dark"
         fullWidth
-        category={t('page.grants.bidding_and_tendering_stats.funding.category', {
-          year: currentYear,
-          quarter: currentQuarter,
-        })}
+        category={
+          isYearAndQuarterValid
+            ? t('page.grants.bidding_and_tendering_stats.funding.category', {
+                year: currentYear,
+                quarter: currentQuarter,
+              })
+            : t('page.grants.bidding_and_tendering_stats.funding.category_all')
+        }
         title={formatFundingValue(totalBidFunding)}
       />
       <MetricsCard

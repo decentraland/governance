@@ -72,7 +72,11 @@ export default function StatsAllProjects({ projects }: Props) {
       <MetricsCard
         variant="dark"
         fullWidth
-        category={t('page.grants.all_projects_stats.funding.category', { year: currentYear, quarter: currentQuarter })}
+        category={
+          isYearAndQuarterValid
+            ? t('page.grants.all_projects_stats.funding.category', { year: currentYear, quarter: currentQuarter })
+            : t('page.grants.all_projects_stats.funding.category_all')
+        }
         title={`${formatFundingValue(totalBidFunding + totalGrantFunding)}`}
         description={t('page.grants.all_projects_stats.funding.total', {
           grants: formattedTotalGrantFunding,

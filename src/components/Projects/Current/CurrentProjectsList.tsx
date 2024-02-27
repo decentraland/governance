@@ -71,6 +71,7 @@ export default function CurrentProjectsList({ projects, selectedSubtype, selecte
   const sortedCurrentGrants = useMemo(() => orderBy(projects, [sortingKey], ['desc']), [projects, sortingKey])
   const [filteredCurrentGrants, setFilteredCurrentGrants] = useState<ProjectWithUpdate[]>([])
   const { year, quarter } = useYearAndQuarter()
+  const isYearAndQuarterValid = year && quarter
 
   useEffect(() => {
     if (!isEmpty(projects)) {
@@ -94,9 +95,8 @@ export default function CurrentProjectsList({ projects, selectedSubtype, selecte
       <div className="CurrentProjectsList__TitleContainer">
         <div>
           <h2 className="CurrentProjectsList__Title">
+            {isYearAndQuarterValid && t('page.grants.quarter_and_year', { quarter, year }) + ' '}
             {t('page.grants.projects_category_title', {
-              quarter,
-              year,
               status: status ? `${t(GRANTS_STATUS_KEYS[status])} ` : '',
               category: t(getCategoryKey(selectedSubtype || selectedType)),
             })}

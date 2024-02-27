@@ -7,6 +7,7 @@ import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useYearAndQuarter from '../../hooks/useYearAndQuarter'
 import Time from '../../utils/date/Time'
+import { navigate } from '../../utils/locations'
 import Link from '../Common/Typography/Link'
 
 import FilterContainer from './FilterContainer'
@@ -42,6 +43,7 @@ function QuarterFilter() {
   const getQuarterButtons = (year: number) => {
     return QUARTERS.map((quarter) => {
       const isActive = yearParam === year && quarterParam === quarter
+      const isEnabled = year <= Time().year() && (year < Time().year() || quarter <= Time().quarter())
       if (isActive) {
         params.delete('year')
         params.delete('quarter')
@@ -57,6 +59,7 @@ function QuarterFilter() {
           href={`${location.pathname}?${params.toString()}`}
           key={quarter}
           active={isActive}
+          disabled={!isEnabled}
           fluid
         >
           Q{quarter}
@@ -70,11 +73,19 @@ function QuarterFilter() {
       <div className="QuarterFilter">
         <Dropdown
           className="QuarterFilter__Dropdown"
-          placeholder={t('navigation.search.timeframe_filter.year')}
+          placeholder={t('navigation.search.timeframe_filter.placeholder')}
           fluid
           selection
+          clearable
           options={getYears().map((year) => ({ text: year, value: year }))}
-          onChange={(_, { value }) => setSelectedYear(value as number)}
+          onChange={(_, { value }) => {
+            if (!value) {
+              setSelectedYear(undefined)
+              params.delete('year')
+              params.delete('quarter')
+              navigate(`${location.pathname}?${params.toString()}`)
+            } else setSelectedYear(value as number)
+          }}
           value={selectedYear}
         />
         {selectedYear && <div className="QuarterFilter__ButtonsContainer">{getQuarterButtons(selectedYear)}</div>}

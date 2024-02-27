@@ -43,6 +43,7 @@ export default function BudgetBanner({ category, status, initiativesCount }: Pro
   const t = useFormatMessage()
   const intl = useIntl()
   const { year, quarter } = useYearAndQuarter()
+  const isYearAndQuarterValid = year && quarter
   const {
     allocatedPercentage: percentage,
     allocated: currentAmount,
@@ -59,7 +60,9 @@ export default function BudgetBanner({ category, status, initiativesCount }: Pro
         )}
         <BudgetBannerItem
           value={intl.formatNumber(totalBudget, CURRENCY_FORMAT_OPTIONS)}
-          label={t('page.grants.budget_banner.budget_label', { year, quarter })}
+          label={`${isYearAndQuarterValid ? t('page.grants.quarter_and_year', { quarter, year }) + ' ' : ''}${t(
+            'page.grants.budget_banner.budget_label'
+          )}`}
         />
       </div>
       <BudgetBannerItem
