@@ -1,10 +1,10 @@
 import { useCallback, useEffect } from 'react'
 
 import classNames from 'classnames'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../../entities/Proposal/types'
 import { SelectedVoteChoice, VoteByAddress } from '../../../entities/Votes/types'
+import { useAuthContext } from '../../../front/context/AuthProvider'
 import { useBidProposals } from '../../../hooks/useBidProposals'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import { useTenderProposals } from '../../../hooks/useTenderProposals'

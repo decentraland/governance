@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { AuthIdentity } from '@dcl/crypto/dist/types'
 import {
   AUTH_CHAIN_HEADER_PREFIX,
   AUTH_METADATA_HEADER,
   AUTH_TIMESTAMP_HEADER,
 } from 'decentraland-crypto-middleware/lib/types'
-import { Identity, getCurrentIdentity } from 'decentraland-gatsby/dist/utils/auth'
-import { signPayload } from 'decentraland-gatsby/dist/utils/auth/identify'
+
+import { signPayload } from '../front/context/auth/identify'
+import { getCurrentIdentity } from '../front/context/auth/storage'
 
 import { toBase64 } from './base64'
 
@@ -89,7 +91,7 @@ export default abstract class API {
   }
 
   async getAuthorizationAndSignatureHeaders(endpoint: string, options: ApiOptions): Promise<Record<string, string>> {
-    const identity: Identity | null = getCurrentIdentity()
+    const identity: AuthIdentity | null = getCurrentIdentity()
     if (!identity?.authChain) {
       throw new Error(`Missing identity to authorize & sign the request, ${JSON.stringify({ endpoint, options })}`)
     }

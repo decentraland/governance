@@ -1,9 +1,8 @@
 import { useMemo } from 'react'
 
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalAttributes } from '../entities/Proposal/types'
+import { useAuthContext } from '../front/context/AuthProvider'
 
 import useCoauthors from './useCoauthors'
 

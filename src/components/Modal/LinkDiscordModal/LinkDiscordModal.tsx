@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 
 import classNames from 'classnames'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import { AccountType } from '../../../entities/User/types'
+import { useAuthContext } from '../../../front/context/AuthProvider'
 import { HIDE_LINK_DISCORD_MODAL_KEY } from '../../../front/localStorageKeys'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useIsDiscordLinked from '../../../hooks/useIsDiscordLinked'

@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
 import { Governance } from '../../../clients/Governance'
 import { PoiType, ProposalType, getPoiTypeAction, newProposalPOIScheme } from '../../../entities/Proposal/types'
 import { asNumber, isAlreadyPointOfInterest, isValidPointOfInterest } from '../../../entities/Proposal/utils'
+import { useAuthContext } from '../../../front/context/AuthProvider'
 import { disableOnWheelInput } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import locations, { navigate } from '../../../utils/locations'

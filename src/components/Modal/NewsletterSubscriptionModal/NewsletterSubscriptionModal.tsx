@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react'
 
 import classNames from 'classnames'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Field } from 'decentraland-ui/dist/components/Field/Field'
@@ -10,6 +9,7 @@ import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 import isEmail from 'validator/lib/isEmail'
 
 import { Governance } from '../../../clients/Governance'
+import { useAuthContext } from '../../../front/context/AuthProvider'
 import { ANONYMOUS_USR_SUBSCRIPTION, NEWSLETTER_SUBSCRIPTION_KEY } from '../../../front/localStorageKeys'
 import useAsyncTask from '../../../hooks/useAsyncTask'
 import useFormatMessage from '../../../hooks/useFormatMessage'

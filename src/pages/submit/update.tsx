@@ -2,7 +2,6 @@ import { useCallback, useMemo, useState } from 'react'
 import { SubmitHandler } from 'react-hook-form'
 
 import { useLocation } from '@reach/router'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
@@ -27,6 +26,7 @@ import {
   UpdateSubmissionDetails,
 } from '../../entities/Updates/types'
 import { getLatestUpdate, getReleases } from '../../entities/Updates/utils'
+import { useAuthContext } from '../../front/context/AuthProvider'
 import useDclFeatureFlags from '../../hooks/useDclFeatureFlags'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import usePreventNavigation from '../../hooks/usePreventNavigation'

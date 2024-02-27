@@ -1,10 +1,10 @@
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 import { useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 import { SignIn } from 'decentraland-ui/dist/components/SignIn/SignIn'
 
 import { DCL_META_IMAGE_URL } from '../../constants'
+import { useAuthContext } from '../../front/context/AuthProvider'
 import useDclFeatureFlags from '../../hooks/useDclFeatureFlags'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import { FeatureFlags } from '../../utils/features'

@@ -1,12 +1,12 @@
 import { useCallback } from 'react'
 
 import classNames from 'classnames'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 
 import { Project, ProposalAttributes } from '../../../entities/Proposal/types'
 import { UpdateAttributes, UpdateStatus } from '../../../entities/Updates/types'
 import { isBetweenLateThresholdDate } from '../../../entities/Updates/utils'
+import { useAuthContext } from '../../../front/context/AuthProvider'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import { formatDate } from '../../../utils/date/Time'
 import locations, { navigate } from '../../../utils/locations'

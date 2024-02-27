@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import classNames from 'classnames'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Container } from 'decentraland-ui/dist/components/Container/Container'
 
@@ -34,6 +33,7 @@ import { BID_MIN_PROJECT_DURATION } from '../../entities/Bid/constants'
 import { BidRequest } from '../../entities/Bid/types'
 import { ProposalType } from '../../entities/Proposal/types'
 import { asNumber, userModifiedForm } from '../../entities/Proposal/utils'
+import { useAuthContext } from '../../front/context/AuthProvider'
 import useBidsInfoOnTender from '../../hooks/useBidsInfoOnTender'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import usePreventNavigation from '../../hooks/usePreventNavigation'

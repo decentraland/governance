@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
 import { ProposalAttributes, ProposalStatus } from '../../../../entities/Proposal/types'
 import { SelectedVoteChoice, VoteByAddress } from '../../../../entities/Votes/types'
+import { useAuthContext } from '../../../../front/context/AuthProvider'
 import useDelegationOnProposal from '../../../../hooks/useDelegationOnProposal'
 import useFormatMessage from '../../../../hooks/useFormatMessage'
 import useVotesMatch from '../../../../hooks/useVotesMatch'

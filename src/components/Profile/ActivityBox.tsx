@@ -1,9 +1,8 @@
 import { useState } from 'react'
 
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-
 import { CoauthorStatus } from '../../entities/Coauthor/types'
 import { isSameAddress } from '../../entities/Snapshot/utils'
+import { useAuthContext } from '../../front/context/AuthProvider'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useProposalsByCoAuthor from '../../hooks/useProposalsByCoAuthor'
 import BoxTabs from '../Common/BoxTabs'

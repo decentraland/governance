@@ -16,7 +16,7 @@ import {
 } from '@tanstack/react-query'
 
 import { IntlProvider } from "react-intl"
-import AuthProvider from 'decentraland-gatsby/dist/context/Auth/AuthProvider'
+import AuthProvider from './src/front/context/AuthProvider'
 import segment from 'decentraland-gatsby/dist/utils/segment/segment'
 import Layout from './src/components/Layout/Layout'
 import Segment from "decentraland-gatsby/dist/components/Development/Segment"

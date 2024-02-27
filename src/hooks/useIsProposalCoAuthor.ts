@@ -1,10 +1,9 @@
 import { useMemo } from 'react'
 
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalAttributes } from '../entities/Proposal/types'
 import { isSameAddress } from '../entities/Snapshot/utils'
+import { useAuthContext } from '../front/context/AuthProvider'
 
 import useCoAuthorsByProposal from './useCoAuthorsByProposal'
 

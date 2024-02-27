@@ -1,5 +1,4 @@
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-
+import { useAuthContext } from '../../front/context/AuthProvider'
 import useFormatMessage from '../../hooks/useFormatMessage'
 
 import { ProposalCreatedList } from './ProposalCreatedList'

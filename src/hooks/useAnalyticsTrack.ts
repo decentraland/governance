@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-
+import { useAuthContext } from '../front/context/AuthProvider'
 import { track } from '../utils/analytics'
 
 import useFeatureFlags from './useDclFeatureFlags'

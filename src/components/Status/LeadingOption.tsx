@@ -1,8 +1,7 @@
 import { useMemo } from 'react'
 
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-
 import { ProposalStatus } from '../../entities/Proposal/types'
+import { useAuthContext } from '../../front/context/AuthProvider'
 import useFormatMessage from '../../hooks/useFormatMessage'
 
 import './LeadingOption.css'

@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Header } from 'decentraland-ui/dist/components/Header/Header'
 
@@ -22,6 +21,7 @@ import PostLabel from '../../components/PostLabel'
 import CoAuthors from '../../components/Proposal/Submit/CoAuthor/CoAuthors'
 import { SUBMISSION_THRESHOLD_PITCH } from '../../entities/Proposal/constants'
 import { NewProposalPitch, ProposalType, newProposalPitchScheme } from '../../entities/Proposal/types'
+import { useAuthContext } from '../../front/context/AuthProvider'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useVotingPowerDistribution from '../../hooks/useVotingPowerDistribution'
 import locations, { navigate } from '../../utils/locations'

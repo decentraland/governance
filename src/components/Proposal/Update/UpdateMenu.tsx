@@ -1,6 +1,6 @@
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 
+import { useAuthContext } from '../../../front/context/AuthProvider'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import DotsMenu from '../../Icon/DotsMenu'
 

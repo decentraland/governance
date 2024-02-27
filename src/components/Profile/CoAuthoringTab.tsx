@@ -1,7 +1,6 @@
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-
 import { CoauthorAttributes } from '../../entities/Coauthor/types'
 import { isSameAddress } from '../../entities/Snapshot/utils'
+import { useAuthContext } from '../../front/context/AuthProvider'
 import useFormatMessage from '../../hooks/useFormatMessage'
 
 import { ProposalCreatedList } from './ProposalCreatedList'

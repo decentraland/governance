@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import classNames from 'classnames'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
@@ -9,6 +8,7 @@ import { Stats } from 'decentraland-ui/dist/components/Stats/Stats'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid/Grid'
 
 import { VotedProposal } from '../../../entities/Votes/types'
+import { useAuthContext } from '../../../front/context/AuthProvider'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useVotesMatch from '../../../hooks/useVotesMatch'
 import useVotingPowerDistribution from '../../../hooks/useVotingPowerDistribution'

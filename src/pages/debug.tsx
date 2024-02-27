@@ -1,7 +1,5 @@
 import { useState } from 'react'
 
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-
 import BoxTabs from '../components/Common/BoxTabs'
 import Heading from '../components/Common/Typography/Heading'
 import Text from '../components/Common/Typography/Text'
@@ -18,6 +16,7 @@ import Snapshot from '../components/Debug/Snapshot'
 import TriggerFunction from '../components/Debug/TriggerFunction'
 import LogIn from '../components/Layout/LogIn'
 import Navigation, { NavigationTab } from '../components/Layout/Navigation'
+import { useAuthContext } from '../front/context/AuthProvider'
 import useIsDebugAddress from '../hooks/useIsDebugAddress'
 
 import './debug.css'

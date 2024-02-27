@@ -1,11 +1,10 @@
 import { useState } from 'react'
 
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-
 import { Governance } from '../../../clients/Governance'
 import { Project, ProposalAttributes } from '../../../entities/Proposal/types'
 import { isSameAddress } from '../../../entities/Snapshot/utils'
 import { ProjectHealth, UpdateAttributes } from '../../../entities/Updates/types'
+import { useAuthContext } from '../../../front/context/AuthProvider'
 import locations, { navigate } from '../../../utils/locations'
 import CancelIcon from '../../Icon/Cancel'
 import CheckCircleIcon from '../../Icon/CheckCircle'

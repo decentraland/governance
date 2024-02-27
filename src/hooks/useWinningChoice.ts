@@ -1,10 +1,9 @@
 import { useMemo } from 'react'
 
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-
 import { ProposalAttributes } from '../entities/Proposal/types'
 import { Vote } from '../entities/Votes/types'
 import { calculateResultWinner } from '../entities/Votes/utils'
+import { useAuthContext } from '../front/context/AuthProvider'
 
 type WinningChoice = ReturnType<typeof calculateResultWinner>
 

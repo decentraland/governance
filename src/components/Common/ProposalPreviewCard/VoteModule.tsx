@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import isEmpty from 'lodash/isEmpty'
 
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { VoteByAddress } from '../../../entities/Votes/types'
 import { calculateResult } from '../../../entities/Votes/utils'
+import { useAuthContext } from '../../../front/context/AuthProvider'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import CategoryPill from '../../Category/CategoryPill'
 import ChevronRight from '../../Icon/ChevronRight'

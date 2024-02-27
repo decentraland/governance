@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Mobile, NotMobile, useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 import { Popup } from 'decentraland-ui/dist/components/Popup/Popup'
 import { Tabs } from 'decentraland-ui/dist/components/Tabs/Tabs'
 
+import { useAuthContext } from '../../front/context/AuthProvider'
 import { PROFILE_POP_UP_LOCAL_STORAGE_KEY } from '../../front/localStorageKeys'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useIsDebugAddress from '../../hooks/useIsDebugAddress'
