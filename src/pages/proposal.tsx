@@ -4,7 +4,7 @@ import { ErrorCode } from '@ethersproject/logger'
 import { Web3Provider } from '@ethersproject/providers'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import { NotMobile, useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
+import { Desktop, NotMobile, TabletAndBelow } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ErrorClient } from '../clients/ErrorClient'
 import { Governance } from '../clients/Governance'
@@ -119,7 +119,6 @@ function getProposalView(proposal: ProposalAttributes | null) {
 export default function ProposalPage() {
   const t = useFormatMessage()
   const params = useURLSearchParams()
-  const isMobile = useMobileMediaQuery()
   const [proposalPageState, updatePageState] = useState<ProposalPageState>({
     changingVote: false,
     confirmSubscription: false,
@@ -165,8 +164,7 @@ export default function ProposalPage() {
   const { surveyTopics, isLoadingSurveyTopics, voteWithSurvey, showSurveyResults } = useSurvey(
     proposal,
     votes,
-    isLoadingVotes,
-    isMobile
+    isLoadingVotes
   )
 
   const [isFloatingHeaderVisible, setIsFloatingHeaderVisible] = useState<boolean>(true)
@@ -396,7 +394,7 @@ export default function ProposalPage() {
           <div className="ProposalDetailPage__Body">{getProposalView(proposal)}</div>
           {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
           {proposal && isBiddingAndTenderingProposal(proposal?.type) && <BiddingAndTendering proposal={proposal} />}
-          {proposal && isGovernanceProcessProposal(proposal.type) && <GovernanceProcess proposalType={proposal.type} />}
+          {showAuthorDetails && <AuthorDetails address={proposal?.user} />}
           {showProposalUpdates && (
             <ProposalUpdates
               proposal={proposal}
@@ -405,24 +403,33 @@ export default function ProposalPage() {
               isCoauthor={isCoauthor}
             />
           )}
-          {showSurveyResults && (
-            <SurveyResults
-              votes={highQualityVotes ?? null}
-              surveyTopics={surveyTopics}
-              isLoadingSurveyTopics={isLoadingSurveyTopics}
-              ref={reactionsSectionRef}
-            />
-          )}
-          {showAuthorDetails && <AuthorDetails address={proposal?.user} />}
-          {showVotesChart && (
-            <ProposalVPChart
-              requiredToPass={proposal?.required_to_pass}
-              voteMap={highQualityVotes}
-              startTimestamp={proposal?.start_at.getTime()}
-              endTimestamp={proposal?.finish_at.getTime()}
-            />
-          )}
-          <ProposalComments proposal={proposal} ref={commentsSectionRef} />
+          <Desktop>
+            {showVotesChart && (
+              <ProposalVPChart
+                requiredToPass={proposal?.required_to_pass}
+                voteMap={highQualityVotes}
+                startTimestamp={proposal?.start_at.getTime()}
+                endTimestamp={proposal?.finish_at.getTime()}
+              />
+            )}
+            {proposal && isGovernanceProcessProposal(proposal.type) && (
+              <GovernanceProcess proposalType={proposal.type} />
+            )}
+            {showSurveyResults && (
+              <SurveyResults
+                votes={highQualityVotes ?? null}
+                surveyTopics={surveyTopics}
+                isLoadingSurveyTopics={isLoadingSurveyTopics}
+                ref={reactionsSectionRef}
+              />
+            )}
+            <ProposalComments proposal={proposal} ref={commentsSectionRef} />
+          </Desktop>
+          <TabletAndBelow>
+            {proposal && isGovernanceProcessProposal(proposal.type) && (
+              <GovernanceProcess proposalType={proposal.type} />
+            )}
+          </TabletAndBelow>
           {proposal && (
             <FloatingBar
               isVisible={isBarVisible}
@@ -456,6 +463,25 @@ export default function ProposalPage() {
             isOwner={isOwner}
           />
         </div>
+        <TabletAndBelow>
+          {showVotesChart && (
+            <ProposalVPChart
+              requiredToPass={proposal?.required_to_pass}
+              voteMap={highQualityVotes}
+              startTimestamp={proposal?.start_at.getTime()}
+              endTimestamp={proposal?.finish_at.getTime()}
+            />
+          )}
+          {showSurveyResults && (
+            <SurveyResults
+              votes={highQualityVotes ?? null}
+              surveyTopics={surveyTopics}
+              isLoadingSurveyTopics={isLoadingSurveyTopics}
+              ref={reactionsSectionRef}
+            />
+          )}
+          <ProposalComments proposal={proposal} ref={commentsSectionRef} />
+        </TabletAndBelow>
       </WiderContainer>
 
       {proposal && voteWithSurvey && (
