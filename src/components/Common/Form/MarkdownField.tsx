@@ -1,12 +1,14 @@
 import React, { useContext } from 'react'
 import { Control, Controller, FieldValues, Path, PathValue } from 'react-hook-form'
 
-import MDEditor, { EditorContext, MDEditorProps, commands } from '@uiw/react-md-editor'
+import MDEditor, { EditorContext, ICommand, MDEditorProps, commands } from '@uiw/react-md-editor'
 import classNames from 'classnames'
+import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import rehypeSanitize from 'rehype-sanitize'
 
 import Markdown from '../Typography/Markdown'
 
+import './MarkdownField.css'
 import './MarkdownTextArea.css'
 
 export interface MarkdownFieldProps<T extends FieldValues> extends MDEditorProps {
@@ -20,6 +22,8 @@ export interface MarkdownFieldProps<T extends FieldValues> extends MDEditorProps
   message: string
 }
 
+const EXCLUDED_COMMANDS = ['hr', 'comment', 'table', 'checked-list', 'help']
+
 export default function MarkdownField<T extends FieldValues>({
   control,
   name,
@@ -30,7 +34,7 @@ export default function MarkdownField<T extends FieldValues>({
   message,
   ...markdownProps
 }: MarkdownFieldProps<T>) {
-  const Button = () => {
+  const TogglePreviewButton = () => {
     const { preview, dispatch } = useContext(EditorContext)
     const click = () => {
       !!dispatch &&
@@ -39,16 +43,36 @@ export default function MarkdownField<T extends FieldValues>({
         })
     }
     if (preview === 'edit') {
-      return <div onClick={click}>{'Preview'}</div>
+      return (
+        <Button
+          type="button"
+          className="MarkdownField__Command"
+          data-name="preview"
+          aria-label="Preview"
+          onClick={click}
+        >
+          {'Preview'}
+        </Button>
+      )
     }
-    return <div onClick={click}>{'Edit'}</div>
+    return (
+      <Button type="button" className="MarkdownField__Command" data-name="edit" aria-label="Edit" onClick={click}>
+        {'Edit'}
+      </Button>
+    )
   }
 
-  const codePreview = {
+  const togglePreviewButton = {
     name: 'preview',
     keyCommand: 'preview',
     value: 'preview',
-    icon: <Button />,
+    icon: <TogglePreviewButton />,
+  }
+
+  const emptyButton = {
+    name: 'empty',
+    keyCommand: 'empty',
+    value: 'empty',
   }
 
   return (
@@ -62,17 +86,28 @@ export default function MarkdownField<T extends FieldValues>({
         render={({ field: { ref, ...field } }) => (
           <>
             <MDEditor
-              contentEditable={!disabled}
+              contentEditable={false}
               minHeight={175}
+              data-color-mode="light"
               {...field}
               {...markdownProps}
-              preview={'edit'}
+              preview={disabled ? 'preview' : 'edit'}
               previewOptions={{
                 rehypePlugins: [[rehypeSanitize]],
               }}
-              components={{ preview: (source: string) => <Markdown>{source}</Markdown> }}
+              textareaProps={{ disabled: disabled }}
+              components={{
+                preview: (source: string) => (
+                  <div style={{ minHeight: '100%' }}>
+                    <Markdown>{source}</Markdown>
+                  </div>
+                ),
+              }}
               className={classNames(error && 'MarkdownEditor--error', 'MarkdownEditor')}
-              extraCommands={[codePreview, commands.fullscreen]}
+              commandsFilter={(command: ICommand) => {
+                return EXCLUDED_COMMANDS.some((name) => name === command.name) ? false : command
+              }}
+              extraCommands={[disabled ? emptyButton : togglePreviewButton, commands.fullscreen]}
             />
           </>
         )}
