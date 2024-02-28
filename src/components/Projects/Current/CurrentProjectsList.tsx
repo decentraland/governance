@@ -12,7 +12,7 @@ import {
 } from '../../../entities/Grant/types'
 import { ProjectWithUpdate } from '../../../entities/Proposal/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
-import useYearAndQuarter from '../../../hooks/useYearAndQuarter'
+import useYearAndQuarterParams from '../../../hooks/useYearAndQuarterParams'
 import locations from '../../../utils/locations'
 import Empty, { ActionType } from '../../Common/Empty'
 import FullWidthButton from '../../Common/FullWidthButton'
@@ -70,7 +70,7 @@ export default function CurrentProjectsList({ projects, selectedSubtype, selecte
   const [sortingKey, setSortingKey] = useState<SortingKey>(SortingKey.UpdateTimestamp)
   const sortedCurrentGrants = useMemo(() => orderBy(projects, [sortingKey], ['desc']), [projects, sortingKey])
   const [filteredCurrentGrants, setFilteredCurrentGrants] = useState<ProjectWithUpdate[]>([])
-  const { year, quarter } = useYearAndQuarter()
+  const { year, quarter } = useYearAndQuarterParams()
   const isYearAndQuarterValid = year && quarter
 
   useEffect(() => {
@@ -90,12 +90,22 @@ export default function CurrentProjectsList({ projects, selectedSubtype, selecte
 
   const showLoadMoreCurrentGrantsButton = filteredCurrentGrants?.length !== projects?.length
 
+  const getTimeframeLabel = () => {
+    if (isYearAndQuarterValid) {
+      return t('page.grants.quarter_and_year', { quarter, year }) + ' '
+    }
+    if (year) {
+      return `${year} `
+    }
+    return ''
+  }
+
   return (
     <div className="CurrentProjectsList">
       <div className="CurrentProjectsList__TitleContainer">
         <div>
           <h2 className="CurrentProjectsList__Title">
-            {isYearAndQuarterValid && t('page.grants.quarter_and_year', { quarter, year }) + ' '}
+            {getTimeframeLabel()}
             {t('page.grants.projects_category_title', {
               status: status ? `${t(GRANTS_STATUS_KEYS[status])} ` : '',
               category: t(getCategoryKey(selectedSubtype || selectedType)),

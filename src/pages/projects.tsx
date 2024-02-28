@@ -100,7 +100,7 @@ export default function ProjectsPage() {
   const year = toDateFilter(params.get('year'))
   const quarter = toDateFilter(params.get('quarter'))
 
-  const { projects, isLoadingProjects } = useProjects(year && quarter ? { year, quarter } : undefined)
+  const { projects, isLoadingProjects } = useProjects({ year, quarter })
   const displayableProjects = useMemo(
     () => filterDisplayableProjects(projects, type, subtype, status),
     [projects, type, subtype, status]

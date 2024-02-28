@@ -5,7 +5,7 @@ import { ProjectWithUpdate, ProposalType } from '../../../entities/Proposal/type
 import { CURRENCY_FORMAT_OPTIONS } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useOpenTendersTotal from '../../../hooks/useOpenTendersTotal'
-import useYearAndQuarter from '../../../hooks/useYearAndQuarter'
+import useYearAndQuarterParams from '../../../hooks/useYearAndQuarterParams'
 import Time from '../../../utils/date/Time'
 import locations from '../../../utils/locations'
 import { isCurrentProject, isCurrentQuarterProject } from '../../../utils/projects'
@@ -26,16 +26,16 @@ export default function StatsAllProjects({ projects }: Props) {
     return finishAt.isAfter(Time()) && finishAt.isBefore(Time().add(1, 'week'))
   })
 
-  const { year: yearParam, quarter: quarterParam } = useYearAndQuarter()
+  const { year: yearParam, quarter: quarterParam } = useYearAndQuarterParams()
   const isYearAndQuarterValid = yearParam && quarterParam
 
-  const currentYear = isYearAndQuarterValid ? yearParam : Time().year()
-  const currentQuarter = isYearAndQuarterValid ? quarterParam : Time().quarter()
+  const selectedYear = isYearAndQuarterValid ? yearParam : Time().year()
+  const selectedQuarter = isYearAndQuarterValid ? quarterParam : Time().quarter()
   const currentProjects = useMemo(() => projects.filter(({ status }) => isCurrentProject(status)), [projects])
   const currentProjectsThisQuarter = useMemo(
     () =>
-      currentProjects.filter((item) => isCurrentQuarterProject(currentYear, currentQuarter, item.contract?.start_at)),
-    [currentProjects, currentQuarter, currentYear]
+      currentProjects.filter((item) => isCurrentQuarterProject(selectedYear, selectedQuarter, item.contract?.start_at)),
+    [currentProjects, selectedQuarter, selectedYear]
   )
   const currentBidProjects = useMemo(
     () => currentProjectsThisQuarter.filter((item) => item.type === ProposalType.Bid),
@@ -74,8 +74,8 @@ export default function StatsAllProjects({ projects }: Props) {
         fullWidth
         category={
           isYearAndQuarterValid
-            ? t('page.grants.all_projects_stats.funding.category', { year: currentYear, quarter: currentQuarter })
-            : t('page.grants.all_projects_stats.funding.category_all')
+            ? t('page.grants.all_projects_stats.funding.category', { year: selectedYear, quarter: selectedQuarter })
+            : t('page.grants.all_projects_stats.funding.category_all', { year: yearParam ? `${yearParam} ` : '' })
         }
         title={`${formatFundingValue(totalBidFunding + totalGrantFunding)}`}
         description={t('page.grants.all_projects_stats.funding.total', {

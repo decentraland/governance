@@ -14,7 +14,7 @@ import { CURRENCY_FORMAT_OPTIONS } from '../../../helpers'
 import { CategoryIconVariant } from '../../../helpers/styles'
 import useBudgetByCategory from '../../../hooks/useBudgetByCategory'
 import useFormatMessage from '../../../hooks/useFormatMessage'
-import useYearAndQuarter from '../../../hooks/useYearAndQuarter'
+import useYearAndQuarterParams from '../../../hooks/useYearAndQuarterParams'
 import ProgressBar from '../../Common/ProgressBar'
 import { getNewGrantsCategoryIcon } from '../../Icon/NewGrantsCategoryIcons'
 
@@ -42,7 +42,7 @@ export const getNewGrantIcon = (type: string, variant?: CategoryIconVariant, siz
 export default function BudgetBanner({ category, status, initiativesCount }: Props) {
   const t = useFormatMessage()
   const intl = useIntl()
-  const { year, quarter } = useYearAndQuarter()
+  const { year, quarter } = useYearAndQuarterParams()
   const isYearAndQuarterValid = year && quarter
   const {
     allocatedPercentage: percentage,

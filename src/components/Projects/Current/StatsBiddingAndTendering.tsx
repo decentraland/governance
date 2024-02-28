@@ -6,7 +6,7 @@ import { CURRENCY_FORMAT_OPTIONS } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useOpenPitchesTotal from '../../../hooks/useOpenPitchesTotal'
 import useOpenTendersTotal from '../../../hooks/useOpenTendersTotal'
-import useYearAndQuarter from '../../../hooks/useYearAndQuarter'
+import useYearAndQuarterParams from '../../../hooks/useYearAndQuarterParams'
 import Time from '../../../utils/date/Time'
 import locations from '../../../utils/locations'
 import { isCurrentProject, isCurrentQuarterProject } from '../../../utils/projects'
@@ -23,7 +23,7 @@ export default function StatsBiddingAndTendering({ projects }: Props) {
   const t = useFormatMessage()
   const formatFundingValue = (value: number) => intl.formatNumber(value, CURRENCY_FORMAT_OPTIONS)
 
-  const { year: yearParam, quarter: quarterParam } = useYearAndQuarter()
+  const { year: yearParam, quarter: quarterParam } = useYearAndQuarterParams()
   const isYearAndQuarterValid = yearParam && quarterParam
 
   const currentYear = isYearAndQuarterValid ? yearParam : Time().year()
@@ -58,7 +58,9 @@ export default function StatsBiddingAndTendering({ projects }: Props) {
                 year: currentYear,
                 quarter: currentQuarter,
               })
-            : t('page.grants.bidding_and_tendering_stats.funding.category_all')
+            : t('page.grants.bidding_and_tendering_stats.funding.category_all', {
+                year: yearParam ? `${yearParam} ` : '',
+              })
         }
         title={formatFundingValue(totalBidFunding)}
       />

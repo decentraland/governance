@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { useLocation } from '@reach/router'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 
 import useFormatMessage from '../../hooks/useFormatMessage'
-import useYearAndQuarter from '../../hooks/useYearAndQuarter'
+import useURLSearchParams from '../../hooks/useURLSearchParams'
+import useYearAndQuarterParams from '../../hooks/useYearAndQuarterParams'
 import Time from '../../utils/date/Time'
 import { navigate } from '../../utils/locations'
 import Link from '../Common/Typography/Link'
@@ -30,10 +30,8 @@ function getYears() {
 function QuarterFilter() {
   const t = useFormatMessage()
   const [selectedYear, setSelectedYear] = useState<number | undefined>()
-  const { year: yearParam, quarter: quarterParam } = useYearAndQuarter()
-  const location = useLocation()
-  const params = useMemo(() => new URLSearchParams(location.search), [location.search])
-
+  const { year: yearParam, quarter: quarterParam } = useYearAndQuarterParams()
+  const params = useURLSearchParams()
   useEffect(() => {
     if (yearParam) {
       setSelectedYear(yearParam)
@@ -45,7 +43,6 @@ function QuarterFilter() {
       const isActive = yearParam === year && quarterParam === quarter
       const isEnabled = year <= Time().year() && (year < Time().year() || quarter <= Time().quarter())
       if (isActive) {
-        params.delete('year')
         params.delete('quarter')
       } else {
         params.set('year', String(year))
@@ -84,7 +81,12 @@ function QuarterFilter() {
               params.delete('year')
               params.delete('quarter')
               navigate(`${location.pathname}?${params.toString()}`)
-            } else setSelectedYear(value as number)
+            } else {
+              setSelectedYear(Number(value))
+              params.set('year', String(value))
+              params.delete('quarter')
+              navigate(`${location.pathname}?${params.toString()}`)
+            }
           }}
           value={selectedYear}
         />

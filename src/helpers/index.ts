@@ -169,7 +169,22 @@ export function validateQuarter(quarterParam?: string | null) {
   return null
 }
 
-export function getQuarterDates(quarter: number, year: number) {
+export function getQuarterDates(quarter?: number, year?: number) {
+  if (!quarter && !year) {
+    return { startDate: undefined, endDate: undefined }
+  }
+
+  if (!year) {
+    console.error('Year is required')
+    return { startDate: undefined, endDate: undefined }
+  }
+
+  if (!quarter) {
+    const startDate = Time(`${year}-01-01`).format('YYYY-MM-DD')
+    const endDate = Time(`${year}-12-31`).format('YYYY-MM-DD')
+    return { startDate, endDate }
+  }
+
   if (quarter < 1 || quarter > 4) {
     console.error('Quarter should be between 1 and 4')
     return { startDate: undefined, endDate: undefined }

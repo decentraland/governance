@@ -10,13 +10,12 @@ type DateFilter = {
   quarter: number
 }
 
-export default function useProjects(dateFilter?: DateFilter) {
+export default function useProjects(dateFilter?: Partial<DateFilter>) {
   const { year, quarter } = dateFilter || {}
   const { data: projects, isLoading: isLoadingProjects } = useQuery({
     queryKey: ['projects', year, quarter],
     queryFn: async () => {
-      const { startDate, endDate } =
-        quarter && year ? getQuarterDates(quarter, year) : { startDate: undefined, endDate: undefined }
+      const { startDate, endDate } = getQuarterDates(quarter, year)
       const from = startDate ? new Date(startDate) : undefined
       const to = endDate ? new Date(endDate) : undefined
       return Governance.get().getProjects(from, to)

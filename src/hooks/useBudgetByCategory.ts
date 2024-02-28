@@ -42,10 +42,10 @@ export default function useBudgetByCategory(category: SubtypeOptions, year?: num
   })
   const [budget, setBudget] = useState(INITIAL_BUDGET)
 
-  const currentYear = year ?? Time().year()
-  const currentQuarter = quarter ?? Time().quarter()
+  const selectedYear = year ?? Time().year()
+  const selectedQuarter = quarter ?? Time().quarter()
 
-  const { startDate, endDate } = getQuarterDates(currentQuarter, currentYear)
+  const { startDate, endDate } = getQuarterDates(selectedQuarter, selectedYear)
 
   const currentBudget = useMemo(
     () =>

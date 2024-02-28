@@ -4,7 +4,7 @@ import { useLocation } from '@reach/router'
 
 import { validateQuarter, validateYear } from '../helpers'
 
-function useYearAndQuarter() {
+function useYearAndQuarterParams() {
   const location = useLocation()
   const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const yearParam = params.get('year')
@@ -18,4 +18,4 @@ function useYearAndQuarter() {
   }
 }
 
-export default useYearAndQuarter
+export default useYearAndQuarterParams
