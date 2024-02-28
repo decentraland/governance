@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
-import { Desktop, TabletAndBelow, useTabletMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
+import { Desktop, TabletAndBelow, useTabletAndBelowMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
 
 import { forumUrl } from '../../entities/Proposal/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
@@ -39,8 +39,8 @@ const FloatingBar = ({
 }: Props) => {
   const t = useFormatMessage()
   const { comments, isLoadingComments } = useProposalComments(proposalId)
-  const isTablet = useTabletMediaQuery()
-  const showViewReactions = proposalHasReactions && !isTablet
+  const isTabletAndBelow = useTabletAndBelowMediaQuery()
+  const showViewReactions = proposalHasReactions && !isTabletAndBelow
 
   return (
     <div className={classNames('FloatingBar', !isVisible && 'FloatingBar--hidden')}>
