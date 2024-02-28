@@ -5,11 +5,13 @@ import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 import { Mobile } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../entities/Proposal/types'
+import Time from '../../utils/date/Time'
 import CategoryPill, { ColorsConfig } from '../Category/CategoryPill'
 import { PillColor } from '../Common/Pill'
 import StatusPill from '../Status/StatusPill'
 
 import Breadcrumb from './Breadcrumb'
+import EndingSoonPill from './EndingSoonPill'
 import HeroBanner from './HeroBanner'
 import './ProposalHero.css'
 
@@ -20,6 +22,8 @@ interface Props {
 const ProposalHero = forwardRef(({ proposal }: Props, ref: Ref<HTMLDivElement>) => {
   const color = ColorsConfig[proposal?.type || ProposalType.Grant]
   const isProposalActive = proposal?.status === ProposalStatus.Active
+  const isProposalAboutToEnd = isProposalActive && Time(proposal.finish_at).diff(Time(), 'hours') < 24
+
   return (
     <div className="ProposalHero__Container" ref={ref}>
       <HeroBanner proposalActive={isProposalActive} color={color} />
@@ -33,7 +37,11 @@ const ProposalHero = forwardRef(({ proposal }: Props, ref: Ref<HTMLDivElement>) 
         <Loader active={!proposal} />
         {proposal && (
           <div className="ProposalDetailPage__Labels">
-            <StatusPill isLink status={proposal.status} color={isProposalActive ? PillColor.White : undefined} />
+            {isProposalAboutToEnd ? (
+              <EndingSoonPill proposal={proposal} />
+            ) : (
+              <StatusPill isLink status={proposal.status} color={isProposalActive ? PillColor.White : undefined} />
+            )}
             <CategoryPill
               isLink
               proposalType={proposal.type}
