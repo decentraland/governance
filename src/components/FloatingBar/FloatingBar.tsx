@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import classNames from 'classnames'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
@@ -15,15 +17,15 @@ import './FloatingBar.css'
 const reactions = require('../../images/reactions.png').default
 
 interface Props {
-  isVisible: boolean
   proposalHasReactions: boolean
-  isProposalActive: boolean
-  scrollToComments: () => void
-  scrollToReactions: () => void
-  onVoteClick: () => void
+  isActiveProposal: boolean
+  isLoadingProposal: boolean
   proposalId?: string
   discourseTopicId?: number
   discourseTopicSlug?: string
+  reactionsSectionRef: React.MutableRefObject<HTMLDivElement | null>
+  commentsSectionRef: React.MutableRefObject<HTMLDivElement | null>
+  votingSectionRef: React.MutableRefObject<HTMLDivElement | null>
 }
 
 const FloatingBar = ({
@@ -31,16 +33,52 @@ const FloatingBar = ({
   discourseTopicId,
   discourseTopicSlug,
   proposalHasReactions,
-  isVisible,
-  isProposalActive,
-  scrollToComments,
-  scrollToReactions,
-  onVoteClick,
+  isActiveProposal,
+  isLoadingProposal,
+  reactionsSectionRef,
+  commentsSectionRef,
+  votingSectionRef,
 }: Props) => {
   const t = useFormatMessage()
   const { comments, isLoadingComments } = useProposalComments(proposalId)
   const isTabletAndBelow = useTabletAndBelowMediaQuery()
   const showViewReactions = proposalHasReactions && !isTabletAndBelow
+  const [isVisible, setIsBarVisible] = useState(true)
+
+  const scrollToReactions = () => {
+    if (reactionsSectionRef.current) {
+      reactionsSectionRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+  const scrollToComments = () => {
+    if (commentsSectionRef.current) {
+      commentsSectionRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
+  const scrollToVotingModule = () => {
+    if (votingSectionRef.current) {
+      votingSectionRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
+  useEffect(() => {
+    setIsBarVisible(true)
+    if (!isLoadingProposal && typeof window !== 'undefined') {
+      const handleScroll = () => {
+        const hideBarSectionRef = reactionsSectionRef.current || commentsSectionRef.current
+        if (!!hideBarSectionRef && !!window && !isTabletAndBelow) {
+          const hideBarSectionTop = hideBarSectionRef.getBoundingClientRect().top
+          setIsBarVisible(hideBarSectionTop > window.innerHeight)
+        }
+      }
+
+      window.addEventListener('scroll', handleScroll)
+      return () => {
+        window.removeEventListener('scroll', handleScroll)
+      }
+    }
+  }, [isLoadingProposal, isTabletAndBelow, reactionsSectionRef, commentsSectionRef])
 
   return (
     <div className={classNames('FloatingBar', !isVisible && 'FloatingBar--hidden')}>
@@ -85,8 +123,8 @@ const FloatingBar = ({
             </Button>
           </Desktop>
           <TabletAndBelow>
-            <Button basic className="FloatingBar__ActionButton" onClick={onVoteClick}>
-              {isProposalActive ? t('component.floating_bar.vote') : t('component.floating_bar.view_results')}
+            <Button basic className="FloatingBar__ActionButton" onClick={scrollToVotingModule}>
+              {isActiveProposal ? t('component.floating_bar.vote') : t('component.floating_bar.view_results')}
             </Button>
           </TabletAndBelow>
         </div>

@@ -4,12 +4,7 @@ import { ErrorCode } from '@ethersproject/logger'
 import { Web3Provider } from '@ethersproject/providers'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-import {
-  Desktop,
-  NotMobile,
-  TabletAndBelow,
-  useTabletAndBelowMediaQuery,
-} from 'decentraland-ui/dist/components/Media/Media'
+import { Desktop, NotMobile, TabletAndBelow } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ErrorClient } from '../clients/ErrorClient'
 import { Governance } from '../clients/Governance'
@@ -173,42 +168,16 @@ export default function ProposalPage() {
   )
 
   const [isFloatingHeaderVisible, setIsFloatingHeaderVisible] = useState<boolean>(true)
-  const [isBarVisible, setIsBarVisible] = useState<boolean>(true)
+
   const commentsSectionRef = useRef<HTMLDivElement | null>(null)
   const reactionsSectionRef = useRef<HTMLDivElement | null>(null)
   const heroSectionRef = useRef<HTMLDivElement | null>(null)
   const votingSectionRef = useRef<HTMLDivElement | null>(null)
 
-  const scrollToReactions = () => {
-    if (reactionsSectionRef.current) {
-      reactionsSectionRef.current.scrollIntoView({ behavior: 'smooth' })
-    }
-  }
-  const scrollToComments = () => {
-    if (commentsSectionRef.current) {
-      commentsSectionRef.current.scrollIntoView({ behavior: 'smooth' })
-    }
-  }
-
-  const scrollToVotingModule = () => {
-    if (votingSectionRef.current) {
-      votingSectionRef.current.scrollIntoView({ behavior: 'smooth' })
-    }
-  }
-
-  const isTabletAndBelow = useTabletAndBelowMediaQuery()
-
   useEffect(() => {
-    setIsBarVisible(true)
     setIsFloatingHeaderVisible(false)
     if (!isLoadingProposal && typeof window !== 'undefined') {
       const handleScroll = () => {
-        const hideBarSectionRef = reactionsSectionRef.current || commentsSectionRef.current
-        if (!!hideBarSectionRef && !!window && !isTabletAndBelow) {
-          const hideBarSectionTop = hideBarSectionRef.getBoundingClientRect().top
-          setIsBarVisible(hideBarSectionTop > window.innerHeight)
-        }
-
         if (!!heroSectionRef.current && !!window) {
           const { top: heroSectionTop, height: heroSectionHeight } = heroSectionRef.current.getBoundingClientRect()
           setIsFloatingHeaderVisible(heroSectionTop + heroSectionHeight / 2 < 0)
@@ -220,7 +189,7 @@ export default function ProposalPage() {
         window.removeEventListener('scroll', handleScroll)
       }
     }
-  }, [isLoadingProposal, isTabletAndBelow])
+  }, [isLoadingProposal])
 
   const [castingVote, castVote] = useAsyncTask(
     async (selectedChoice: SelectedVoteChoice, survey?: Survey) => {
@@ -447,15 +416,15 @@ export default function ProposalPage() {
           </TabletAndBelow>
           {proposal && (
             <FloatingBar
-              isProposalActive={proposal?.status === ProposalStatus.Active}
-              isVisible={isBarVisible}
+              isActiveProposal={proposal?.status === ProposalStatus.Active}
+              isLoadingProposal={isLoadingProposal}
               proposalHasReactions={!!showSurveyResults}
-              scrollToReactions={scrollToReactions}
-              scrollToComments={scrollToComments}
-              onVoteClick={scrollToVotingModule}
               proposalId={proposal?.id}
               discourseTopicId={proposal?.discourse_topic_id}
               discourseTopicSlug={proposal?.discourse_topic_slug}
+              reactionsSectionRef={reactionsSectionRef}
+              commentsSectionRef={commentsSectionRef}
+              votingSectionRef={votingSectionRef}
             />
           )}
         </div>
