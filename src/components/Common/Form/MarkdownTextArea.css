@@ -73,5 +73,13 @@
 }
 
 .MarkdownField__CounterCommand {
+  background: var(--white-900) !important;
+  border-radius: 2px;
+  bottom: 12px;
   padding-right: 4px;
+  padding-left: 4px;
+  position: absolute;
+  right: 9px;
+  text-align: right;
+  z-index: 1;
 }

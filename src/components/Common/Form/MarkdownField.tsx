@@ -112,7 +112,7 @@ export default function MarkdownField<T extends FieldValues>({
           <>
             <MDEditor
               contentEditable={false}
-              minHeight={180}
+              minHeight={150}
               data-color-mode="light"
               {...field}
               {...markdownProps}
