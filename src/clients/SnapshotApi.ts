@@ -32,6 +32,15 @@ export type SnapshotReceipt = {
   }
 }
 
+type CastVote = {
+  account: Web3Provider | Wallet
+  address: string
+  proposalSnapshotId: string
+  choiceNumber: number
+  metadata?: string
+  reason?: string
+}
+
 export class SnapshotApi {
   static Url = process.env.GATSBY_SNAPSHOT_API || 'https://hub.snapshot.org'
 
@@ -136,19 +145,21 @@ export class SnapshotApi {
     )) as SnapshotReceipt
   }
 
-  async castVote(
-    account: Web3Provider | Wallet,
-    address: string,
-    proposalSnapshotId: string,
-    choiceNumber: number,
-    metadata?: string
-  ): Promise<SnapshotReceipt> {
+  async castVote({
+    account,
+    address,
+    proposalSnapshotId,
+    choiceNumber,
+    metadata,
+    reason,
+  }: CastVote): Promise<SnapshotReceipt> {
     const voteMessage: Vote = {
       space: SnapshotApi.getSpaceName(),
       proposal: proposalSnapshotId,
       type: SNAPSHOT_PROPOSAL_TYPE,
       choice: choiceNumber,
       metadata,
+      reason,
       app: SNAPSHOT_APP_NAME,
     }
     return (await this.client.vote(account, address, voteMessage)) as SnapshotReceipt

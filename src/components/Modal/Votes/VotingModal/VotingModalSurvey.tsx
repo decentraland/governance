@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useIntl } from 'react-intl'
 
 import classNames from 'classnames'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
@@ -22,6 +23,7 @@ interface VotingModalSurveyProps {
   onCastVote: (selectedChoice: SelectedVoteChoice, survey?: Survey) => void
   castingVote: boolean
   proposalPageState: ProposalPageState
+  totalVpOnProposal: number
 }
 
 export function VotingModalSurvey({
@@ -30,6 +32,7 @@ export function VotingModalSurvey({
   onCastVote,
   castingVote,
   proposalPageState,
+  totalVpOnProposal,
 }: VotingModalSurveyProps) {
   const [survey, setSurvey] = useState<Survey>([])
   const t = useFormatMessage()
@@ -39,13 +42,15 @@ export function VotingModalSurvey({
     [survey]
   )
 
+  const { formatNumber } = useIntl()
+
   return (
     <Modal.Content>
       <div className="ProposalModal__Title">
         <Header>{t('modal.voting_modal_survey.title')}</Header>
         <Text size="lg">
-          {t('modal.voting_modal_survey.selected_choice')}
-          <span className="VotingModal__Choice">{formatChoice(selectedChoice.choice!)}</span>
+          {t('modal.voting_modal_survey.selected_choice', { choice: formatChoice(selectedChoice.choice!) })}
+          <span className="VotingModal__VoteVp">{formatNumber(totalVpOnProposal)} VP</span>
         </Text>
       </div>
       <SentimentSurvey

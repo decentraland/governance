@@ -19,6 +19,7 @@ interface VotingModalProps {
   onClose: () => void
   castingVote: boolean
   proposalPageState: ProposalPageState
+  totalVpOnProposal: number
 }
 
 export function VotingModal({
@@ -29,6 +30,7 @@ export function VotingModal({
   onCastVote,
   castingVote,
   proposalPageState,
+  totalVpOnProposal,
 }: VotingModalProps) {
   const { selectedChoice, showSnapshotRedirect } = proposalPageState
 
@@ -51,6 +53,7 @@ export function VotingModal({
           castingVote={castingVote}
           onCastVote={onCastVote}
           proposalPageState={proposalPageState}
+          totalVpOnProposal={totalVpOnProposal}
         />
       )}
       {showSnapshotRedirect && <SnapshotRedirect proposal={proposal} />}

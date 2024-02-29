@@ -668,7 +668,7 @@
     },
     "voting_modal_survey": {
       "title": "We'd appreciate some extra feedback",
-      "selected_choice": "You're about to vote "
+      "selected_choice": "You're about to vote \"{choice}\" with "
     },
     "identity_setup": {
       "title": "Choose accounts to link",
