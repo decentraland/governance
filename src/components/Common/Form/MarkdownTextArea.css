@@ -61,8 +61,13 @@
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
+  font-size: 15px;
 }
 
 .MarkdownTextArea__MessageContainer--error {
   color: var(--error);
+}
+
+.MarkdownTextArea__Message {
+  color: var(--secondary-text);
 }

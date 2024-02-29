@@ -87,7 +87,7 @@ export default function MarkdownField<T extends FieldValues>({
           <>
             <MDEditor
               contentEditable={false}
-              minHeight={175}
+              minHeight={180}
               data-color-mode="light"
               {...field}
               {...markdownProps}
@@ -112,11 +112,9 @@ export default function MarkdownField<T extends FieldValues>({
           </>
         )}
       />
-      {error && (
-        <div className="MarkdownTextArea__MessageContainer">
-          <p className={'MarkdownTextArea__MessageContainer--error'}>{message}</p>
-        </div>
-      )}
+      <div className="MarkdownTextArea__MessageContainer">
+        <p className={error ? 'MarkdownTextArea__MessageContainer--error' : 'MarkdownTextArea__Message'}>{message}</p>
+      </div>
     </>
   )
 }
