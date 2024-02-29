@@ -62,6 +62,24 @@ export default function MarkdownField<T extends FieldValues>({
     )
   }
 
+  const CharsCountButton = () => {
+    const { fullscreen } = useContext(EditorContext)
+
+    if (fullscreen) {
+      return (
+        <p
+          className={classNames(
+            error ? 'MarkdownTextArea__MessageContainer--error' : 'MarkdownTextArea__Message',
+            'MarkdownField__CounterCommand'
+          )}
+        >
+          {message}
+        </p>
+      )
+    }
+    return <></>
+  }
+
   const togglePreviewButton = {
     name: 'preview',
     keyCommand: 'preview',
@@ -73,6 +91,13 @@ export default function MarkdownField<T extends FieldValues>({
     name: 'empty',
     keyCommand: 'empty',
     value: 'empty',
+  }
+
+  const charsCount = {
+    name: 'charsCount',
+    keyCommand: 'charsCount',
+    value: 'charsCount',
+    icon: <CharsCountButton />,
   }
 
   return (
@@ -107,7 +132,7 @@ export default function MarkdownField<T extends FieldValues>({
               commandsFilter={(command: ICommand) => {
                 return EXCLUDED_COMMANDS.some((name) => name === command.name) ? false : command
               }}
-              extraCommands={[disabled ? emptyButton : togglePreviewButton, commands.fullscreen]}
+              extraCommands={[charsCount, disabled ? emptyButton : togglePreviewButton, commands.fullscreen]}
             />
           </>
         )}

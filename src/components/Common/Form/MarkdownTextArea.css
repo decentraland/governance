@@ -71,3 +71,7 @@
 .MarkdownTextArea__Message {
   color: var(--secondary-text);
 }
+
+.MarkdownField__CounterCommand {
+  padding-right: 4px;
+}
