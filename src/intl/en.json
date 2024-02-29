@@ -817,7 +817,9 @@
     "floating_bar": {
       "view_reactions_label": "View Reactions",
       "total_comments_label": "{count} {count, plural, one {Comment} other {Comments}}",
-      "forum_label": "Join Discussion"
+      "forum_label": "Join Discussion",
+      "vote": "Vote",
+      "view_results": "View results"
     },
     "action_box": {
       "show": "Show",
