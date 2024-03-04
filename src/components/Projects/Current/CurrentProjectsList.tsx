@@ -70,8 +70,7 @@ export default function CurrentProjectsList({ projects, selectedSubtype, selecte
   const [sortingKey, setSortingKey] = useState<SortingKey>(SortingKey.UpdateTimestamp)
   const sortedCurrentGrants = useMemo(() => orderBy(projects, [sortingKey], ['desc']), [projects, sortingKey])
   const [filteredCurrentGrants, setFilteredCurrentGrants] = useState<ProjectWithUpdate[]>([])
-  const { year, quarter } = useYearAndQuarterParams()
-  const isYearAndQuarterValid = year && quarter
+  const { year, quarter, areValidParams } = useYearAndQuarterParams()
 
   useEffect(() => {
     if (!isEmpty(projects)) {
@@ -91,7 +90,7 @@ export default function CurrentProjectsList({ projects, selectedSubtype, selecte
   const showLoadMoreCurrentGrantsButton = filteredCurrentGrants?.length !== projects?.length
 
   const getTimeframeLabel = () => {
-    if (isYearAndQuarterValid) {
+    if (areValidParams) {
       return t('page.grants.quarter_and_year', { quarter, year }) + ' '
     }
     if (year) {

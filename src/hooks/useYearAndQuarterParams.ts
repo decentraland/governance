@@ -1,20 +1,19 @@
-import { useMemo } from 'react'
-
-import { useLocation } from '@reach/router'
-
 import { validateQuarter, validateYear } from '../helpers'
 
+import useURLSearchParams from './useURLSearchParams'
+
 function useYearAndQuarterParams() {
-  const location = useLocation()
-  const params = useMemo(() => new URLSearchParams(location.search), [location.search])
+  const params = useURLSearchParams()
   const yearParam = params.get('year')
   const quarterParam = params.get('quarter')
   const year = validateYear(yearParam)
   const quarter = validateQuarter(quarterParam)
+  const areValidParams = year !== null && quarter !== null
 
   return {
     year,
     quarter,
+    areValidParams,
   }
 }
 

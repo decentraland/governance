@@ -26,11 +26,10 @@ export default function StatsAllProjects({ projects }: Props) {
     return finishAt.isAfter(Time()) && finishAt.isBefore(Time().add(1, 'week'))
   })
 
-  const { year: yearParam, quarter: quarterParam } = useYearAndQuarterParams()
-  const isYearAndQuarterValid = yearParam && quarterParam
+  const { year: yearParam, quarter: quarterParam, areValidParams } = useYearAndQuarterParams()
 
-  const selectedYear = isYearAndQuarterValid ? yearParam : Time().year()
-  const selectedQuarter = isYearAndQuarterValid ? quarterParam : Time().quarter()
+  const selectedYear = areValidParams ? yearParam! : Time().year()
+  const selectedQuarter = areValidParams ? quarterParam! : Time().quarter()
   const currentProjects = useMemo(() => projects.filter(({ status }) => isCurrentProject(status)), [projects])
   const currentProjectsThisQuarter = useMemo(
     () =>
@@ -73,7 +72,7 @@ export default function StatsAllProjects({ projects }: Props) {
         variant="dark"
         fullWidth
         category={
-          isYearAndQuarterValid
+          areValidParams
             ? t('page.grants.all_projects_stats.funding.category', { year: selectedYear, quarter: selectedQuarter })
             : t('page.grants.all_projects_stats.funding.category_all', { year: yearParam ? `${yearParam} ` : '' })
         }

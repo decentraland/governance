@@ -23,11 +23,10 @@ export default function StatsBiddingAndTendering({ projects }: Props) {
   const t = useFormatMessage()
   const formatFundingValue = (value: number) => intl.formatNumber(value, CURRENCY_FORMAT_OPTIONS)
 
-  const { year: yearParam, quarter: quarterParam } = useYearAndQuarterParams()
-  const isYearAndQuarterValid = yearParam && quarterParam
+  const { year: yearParam, quarter: quarterParam, areValidParams } = useYearAndQuarterParams()
 
-  const currentYear = isYearAndQuarterValid ? yearParam : Time().year()
-  const currentQuarter = isYearAndQuarterValid ? quarterParam : Time().quarter()
+  const currentYear = areValidParams ? yearParam! : Time().year()
+  const currentQuarter = areValidParams ? quarterParam! : Time().quarter()
 
   const currentProjects = useMemo(() => projects.filter(({ status }) => isCurrentProject(status)), [projects])
   const currentProjectsThisQuarter = useMemo(
@@ -53,7 +52,7 @@ export default function StatsBiddingAndTendering({ projects }: Props) {
         variant="dark"
         fullWidth
         category={
-          isYearAndQuarterValid
+          areValidParams
             ? t('page.grants.bidding_and_tendering_stats.funding.category', {
                 year: currentYear,
                 quarter: currentQuarter,
