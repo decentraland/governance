@@ -23,7 +23,7 @@ export interface MarkdownFieldProps<T extends FieldValues> extends MDEditorProps
   message: string
 }
 
-const EXCLUDED_COMMANDS = ['hr', 'comment', 'table', 'checked-list', 'help']
+const EXCLUDED_COMMANDS = ['hr', 'comment', 'table', 'checked-list', 'codeBlock', 'help']
 
 export default function MarkdownField<T extends FieldValues>({
   control,
@@ -116,6 +116,7 @@ export default function MarkdownField<T extends FieldValues>({
             <MDEditor
               contentEditable={false}
               minHeight={150}
+              height="100%"
               data-color-mode="light"
               {...field}
               {...markdownProps}
@@ -125,11 +126,7 @@ export default function MarkdownField<T extends FieldValues>({
               }}
               textareaProps={{ disabled: disabled }}
               components={{
-                preview: (source: string) => (
-                  <div style={{ minHeight: '100%' }}>
-                    <ProposalMarkdown text={source} />
-                  </div>
-                ),
+                preview: (source: string) => <ProposalMarkdown text={source} />,
               }}
               className={classNames(error && 'MarkdownEditor--error', 'MarkdownEditor')}
               commandsFilter={(command: ICommand) => {

@@ -25,3 +25,16 @@
   display: flex;
   align-items: center;
 }
+
+textarea.w-md-editor-text-input,
+.w-md-editor-text-pre,
+.language-markdown.code-highlight * {
+  font-size: 15px !important;
+  line-height: 24px !important;
+}
+
+.w-md-editor-preview {
+  position: relative;
+  height: 100%;
+  min-height: 100%;
+}
