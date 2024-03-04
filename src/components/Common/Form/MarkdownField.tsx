@@ -6,7 +6,8 @@ import classNames from 'classnames'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import rehypeSanitize from 'rehype-sanitize'
 
-import Markdown from '../Typography/Markdown'
+import useFormatMessage from '../../../hooks/useFormatMessage'
+import ProposalMarkdown from '../../Proposal/View/ProposalMarkdown'
 
 import './MarkdownField.css'
 import './MarkdownTextArea.css'
@@ -34,6 +35,8 @@ export default function MarkdownField<T extends FieldValues>({
   message,
   ...markdownProps
 }: MarkdownFieldProps<T>) {
+  const t = useFormatMessage()
+
   const TogglePreviewButton = () => {
     const { preview, dispatch } = useContext(EditorContext)
     const click = () => {
@@ -51,13 +54,13 @@ export default function MarkdownField<T extends FieldValues>({
           aria-label="Preview"
           onClick={click}
         >
-          {'Preview'}
+          {t('component.markdown_field.preview_button')}
         </Button>
       )
     }
     return (
       <Button type="button" className="MarkdownField__Command" data-name="edit" aria-label="Edit" onClick={click}>
-        {'Edit'}
+        {t('component.markdown_field.edit_button')}
       </Button>
     )
   }
@@ -124,7 +127,7 @@ export default function MarkdownField<T extends FieldValues>({
               components={{
                 preview: (source: string) => (
                   <div style={{ minHeight: '100%' }}>
-                    <Markdown>{source}</Markdown>
+                    <ProposalMarkdown text={source} />
                   </div>
                 ),
               }}

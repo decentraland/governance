@@ -835,6 +835,10 @@
       "open_tender": "Open for Bids",
       "tender_with_submissions": "Bids submission ends {time}",
       "active_bids": "Bid proposals voting ends {time}"
+    },
+    "markdown_field": {
+      "preview_button": "Preview",
+      "edit_button": "Edit"
     }
   },
   "page": {
