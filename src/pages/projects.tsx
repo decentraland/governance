@@ -12,6 +12,7 @@ import CurrentProjectsList from '../components/Projects/Current/CurrentProjectsL
 import ProjectsBanner from '../components/Projects/Current/ProjectsBanner'
 import RequestBanner from '../components/Projects/RequestBanner'
 import CategoryFilter, { ProjectTypeFilter } from '../components/Search/CategoryFilter'
+import QuarterFilter from '../components/Search/QuarterFilter'
 import StatusFilter from '../components/Search/StatusFilter'
 import {
   OldGrantCategory,
@@ -80,6 +81,15 @@ function toProjectTypeFilter(category?: string | null): ProjectTypeFilter | unde
 
   return index !== -1 ? categories[index] : undefined
 }
+function toDateFilter(value: string | null): number | undefined {
+  if (value) {
+    const parsedValue = Number(value)
+    if (!isNaN(parsedValue)) {
+      return parsedValue
+    }
+  }
+  return undefined
+}
 
 export default function ProjectsPage() {
   const t = useFormatMessage()
@@ -87,8 +97,10 @@ export default function ProjectsPage() {
   const type = toProjectTypeFilter(params.get('type'))
   const status = toProjectStatus(params.get('status'))
   const subtype = toGrantSubtype(params.get('subtype'), () => undefined)
+  const year = toDateFilter(params.get('year'))
+  const quarter = toDateFilter(params.get('quarter'))
 
-  const { projects, isLoadingProjects } = useProjects()
+  const { projects, isLoadingProjects } = useProjects({ year, quarter })
   const displayableProjects = useMemo(
     () => filterDisplayableProjects(projects, type, subtype, status),
     [projects, type, subtype, status]
@@ -123,6 +135,7 @@ export default function ProjectsPage() {
               <NotMobile>
                 <CategoryFilter filterType={ProjectTypeFilter} categoryCount={counter} showAllFilter={false} />
                 <StatusFilter statusType={ProjectStatus} />
+                <QuarterFilter />
                 <RequestBanner />
               </NotMobile>
             </div>
