@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { Control, Controller, FieldValues, Path, PathValue } from 'react-hook-form'
 
-import MDEditor, { EditorContext, ICommand, MDEditorProps, commands } from '@uiw/react-md-editor'
+import MDEditor, { EditorContext, ICommand, MDEditorProps, commands, getCommands } from '@uiw/react-md-editor'
 import classNames from 'classnames'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import rehypeSanitize from 'rehype-sanitize'
@@ -24,6 +24,12 @@ export interface MarkdownFieldProps<T extends FieldValues> extends MDEditorProps
 }
 
 const EXCLUDED_COMMANDS = ['hr', 'comment', 'table', 'checked-list', 'codeBlock', 'help']
+
+const getDisabledCommands = () => {
+  return getCommands().map((command) => {
+    return { ...command, buttonProps: { ...command.buttonProps, disabled: true } }
+  })
+}
 
 export default function MarkdownField<T extends FieldValues>({
   control,
@@ -120,7 +126,8 @@ export default function MarkdownField<T extends FieldValues>({
               data-color-mode="light"
               {...field}
               {...markdownProps}
-              preview={disabled ? 'preview' : 'edit'}
+              preview={'edit'}
+              highlightEnable={false}
               previewOptions={{
                 rehypePlugins: [[rehypeSanitize]],
               }}
@@ -132,7 +139,12 @@ export default function MarkdownField<T extends FieldValues>({
               commandsFilter={(command: ICommand) => {
                 return EXCLUDED_COMMANDS.some((name) => name === command.name) ? false : command
               }}
-              extraCommands={[charsCount, disabled ? emptyButton : togglePreviewButton, commands.fullscreen]}
+              commands={disabled ? getDisabledCommands() : getCommands()}
+              extraCommands={[
+                charsCount,
+                disabled ? emptyButton : togglePreviewButton,
+                disabled ? emptyButton : commands.fullscreen,
+              ]}
             />
           </>
         )}
