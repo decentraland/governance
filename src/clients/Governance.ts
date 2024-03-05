@@ -81,8 +81,16 @@ export type GetProposalsFilter = ProposalListFilter & {
   offset: number
 }
 
+const getGovernanceApiUrl = () => {
+  if (process.env.GATSBY_HEROKU_APP_NAME) {
+    return `https://governance.decentraland.vote/api`
+  }
+
+  return GOVERNANCE_API
+}
+
 export class Governance extends API {
-  static Url = GOVERNANCE_API
+  static Url = getGovernanceApiUrl()
 
   static Cache = new Map<string, Governance>()
 
