@@ -123,7 +123,7 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     generalSectionValidator,
     body
   )
-  const fundsWereReleased = true // TODO: backend validation for undisclosed funds
+  const fundsWereReleased = false // TODO: backend validation for undisclosed funds
   const financialRecords: FinancialRecord[] | null = fundsWereReleased ? parseFinancialRecords(financial_records) : null
 
   return await UpdateService.create(
