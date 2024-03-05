@@ -27,8 +27,23 @@ const EXCLUDED_COMMANDS = ['hr', 'comment', 'table', 'checked-list', 'codeBlock'
 
 const getDisabledCommands = () => {
   return getCommands().map((command) => {
-    return { ...command, buttonProps: { ...command.buttonProps, disabled: true } }
+    return { ...command, buttonProps: { ...command.buttonProps, disabled: true, tabIndex: -1 } }
   })
+}
+
+const makeCommandsUnfocusable = (commands: ICommand[]) => {
+  return commands.map((command) => {
+    return command.buttonProps ? { ...command, buttonProps: { ...command.buttonProps, tabIndex: -1 } } : command
+  })
+}
+
+function getExtraCommands(
+  charsCount: ICommand,
+  emptyButton: ICommand,
+  togglePreviewButton: ICommand,
+  disabled: boolean
+) {
+  return [charsCount, disabled ? emptyButton : togglePreviewButton, disabled ? emptyButton : commands.fullscreen]
 }
 
 export default function MarkdownField<T extends FieldValues>({
@@ -59,19 +74,27 @@ export default function MarkdownField<T extends FieldValues>({
           data-name="preview"
           aria-label="Preview"
           onClick={click}
+          tabIndex={-1}
         >
           {t('component.markdown_field.preview_button')}
         </Button>
       )
     }
     return (
-      <Button type="button" className="MarkdownField__Command" data-name="edit" aria-label="Edit" onClick={click}>
+      <Button
+        type="button"
+        className="MarkdownField__Command"
+        data-name="edit"
+        aria-label="Edit"
+        onClick={click}
+        tabIndex={-1}
+      >
         {t('component.markdown_field.edit_button')}
       </Button>
     )
   }
 
-  const CharsCountButton = () => {
+  const CharsCountMessage = () => {
     const { fullscreen } = useContext(EditorContext)
 
     if (fullscreen) {
@@ -106,7 +129,7 @@ export default function MarkdownField<T extends FieldValues>({
     name: 'charsCount',
     keyCommand: 'charsCount',
     value: 'charsCount',
-    icon: <CharsCountButton />,
+    icon: <CharsCountMessage />,
   }
 
   return (
@@ -128,9 +151,12 @@ export default function MarkdownField<T extends FieldValues>({
               {...markdownProps}
               preview={'edit'}
               highlightEnable={false}
+              enableScroll={false}
+              visibleDragbar={false}
               previewOptions={{
                 rehypePlugins: [[rehypeSanitize]],
               }}
+              defaultTabEnable={true}
               textareaProps={{ disabled: disabled }}
               components={{
                 preview: (source: string) => <ProposalMarkdown text={source} />,
@@ -139,12 +165,10 @@ export default function MarkdownField<T extends FieldValues>({
               commandsFilter={(command: ICommand) => {
                 return EXCLUDED_COMMANDS.some((name) => name === command.name) ? false : command
               }}
-              commands={disabled ? getDisabledCommands() : getCommands()}
-              extraCommands={[
-                charsCount,
-                disabled ? emptyButton : togglePreviewButton,
-                disabled ? emptyButton : commands.fullscreen,
-              ]}
+              commands={disabled ? getDisabledCommands() : makeCommandsUnfocusable(getCommands())}
+              extraCommands={makeCommandsUnfocusable(
+                getExtraCommands(charsCount, emptyButton, togglePreviewButton, disabled)
+              )}
             />
           </>
         )}
