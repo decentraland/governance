@@ -2,11 +2,12 @@ import { useEffect, useRef } from 'react'
 
 import { globalHistory } from '@reach/router'
 
-import { navigate } from '../utils/locations'
+import { toGovernancePathname } from '../helpers/browser'
+import locations, { navigate } from '../utils/locations'
 
 import useFormatMessage from './useFormatMessage'
 
-function usePreventNavigation(isActive: boolean, location = '/submit') {
+function usePreventNavigation(shouldPrevent: boolean, navigateTo = '/submit') {
   const confirmBack = useRef(false)
   const t = useFormatMessage()
   useEffect(() => {
@@ -15,15 +16,15 @@ function usePreventNavigation(isActive: boolean, location = '/submit') {
         event.preventDefault()
         event.returnValue = ''
       } else if (!window.confirm(t('navigation.exit'))) {
-        navigate(location)
+        navigate(navigateTo)
       } else {
         confirmBack.current = true
-        navigate(location)
+        navigate(navigateTo)
       }
     }
 
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      if (isActive) {
+      if (shouldPrevent) {
         preventNavigation(event)
       }
     }
@@ -31,7 +32,12 @@ function usePreventNavigation(isActive: boolean, location = '/submit') {
     window.addEventListener('beforeunload', handleBeforeUnload)
 
     const unsubscribe = globalHistory.listen(({ action }) => {
-      if (isActive && (action === 'POP' || (action === 'PUSH' && !confirmBack.current))) {
+      const pathname = toGovernancePathname(navigateTo)
+
+      if (
+        shouldPrevent &&
+        (action === 'POP' || (action === 'PUSH' && pathname === locations.proposals() && !confirmBack.current))
+      ) {
         preventNavigation()
       }
     })
@@ -41,7 +47,7 @@ function usePreventNavigation(isActive: boolean, location = '/submit') {
       window.removeEventListener('beforeunload', handleBeforeUnload)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isActive])
+  }, [shouldPrevent])
 }
 
 export default usePreventNavigation
