@@ -6,7 +6,7 @@ import { ContractVersion, TopicsByVersion } from '../../utils/contracts/vesting'
 import Time from '../../utils/date/Time'
 import { ProposalStatus } from '../Proposal/types'
 
-import { UpdateAttributes, UpdateStatus } from './types'
+import { FinancialRecord, UpdateAttributes, UpdateStatus } from './types'
 
 const TOPICS_V1 = TopicsByVersion[ContractVersion.V1]
 const TOPICS_V2 = TopicsByVersion[ContractVersion.V2]
@@ -140,4 +140,13 @@ export function getLatestUpdate(publicUpdates: UpdateAttributes[], beforeDate?: 
   if (!beforeDate) return filteredUpdates[0]
 
   return filteredUpdates.find((update) => Time(update.completion_date).isBefore(beforeDate))
+}
+
+export function getDisclosedAndUndisclosedFunds(
+  releasedForThisUpdate: number,
+  financialRecords?: FinancialRecord[] | null
+) {
+  const disclosedFunds = financialRecords?.reduce((acc, financialRecord) => acc + financialRecord.amount, 0) || 0
+  const undisclosedFunds = disclosedFunds <= releasedForThisUpdate ? releasedForThisUpdate - disclosedFunds : 0
+  return { disclosedFunds, undisclosedFunds }
 }

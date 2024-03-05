@@ -9,9 +9,10 @@ import { Request } from 'express'
 import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import {
+  FinancialRecord,
   FinancialUpdateSectionSchema,
-  GeneralUpdateSection,
   GeneralUpdateSectionSchema,
+  UpdateGeneralSection,
 } from '../../entities/Updates/types'
 import {
   getCurrentUpdate,
@@ -103,12 +104,8 @@ async function getProposalUpdateComments(req: Request<{ update_id: string }>) {
 }
 
 const generalSectionValidator = schema.compile(GeneralUpdateSectionSchema)
-async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
-  const { author, financial_records, ...body } = req.body
-  const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<GeneralUpdateSection>(
-    generalSectionValidator,
-    body
-  )
+
+function parseFinancialRecords(financial_records: unknown) {
   const parsedResult = FinancialUpdateSectionSchema.safeParse({ financial_records })
   if (!parsedResult.success) {
     ErrorService.report('Submission of invalid financial records', {
@@ -117,7 +114,17 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
     })
     throw new RequestError(`Invalid financial records`, RequestError.BadRequest)
   }
-  const parsedRecords = parsedResult.data.financial_records
+  return parsedResult.data.financial_records
+}
+
+async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
+  const { author, financial_records, ...body } = req.body
+  const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<UpdateGeneralSection>(
+    generalSectionValidator,
+    body
+  )
+  const fundsWereReleased = true // TODO: backend validation for undisclosed funds
+  const financialRecords: FinancialRecord[] | null = fundsWereReleased ? parseFinancialRecords(financial_records) : null
 
   return await UpdateService.create(
     {
@@ -129,7 +136,7 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
       blockers,
       next_steps,
       additional_notes,
-      financial_records: parsedRecords,
+      financial_records: financialRecords, //TODO: migration for nullable financial_records
     },
     req.auth!
   )
@@ -137,7 +144,7 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
 
 async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
   const { id, author, financial_records, ...body } = req.body
-  const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<GeneralUpdateSection>(
+  const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<UpdateGeneralSection>(
     generalSectionValidator,
     body
   )

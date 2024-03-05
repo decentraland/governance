@@ -1,11 +1,14 @@
 import { useMemo } from 'react'
 
 import classNames from 'classnames'
-import sum from 'lodash/sum'
 
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
-import { getReleases } from '../../entities/Updates/utils'
+import {
+  getDisclosedAndUndisclosedFunds,
+  getFundsReleasedSinceLatestUpdate,
+  getReleases,
+} from '../../entities/Updates/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useVestingContractData from '../../hooks/useVestingContractData'
 import Time, { formatDate } from '../../utils/date/Time'
@@ -42,6 +45,13 @@ const UpdateMarkdownView = ({ update, author, previousUpdate, proposal, classNam
   const releases = useMemo(() => (vestingData ? getReleases(vestingData) : undefined), [vestingData])
   const { financial_records } = update
 
+  const {
+    value: releasedFundsValue,
+    txAmount,
+    latestTimestamp,
+  } = getFundsReleasedSinceLatestUpdate(previousUpdate, releases, update.completion_date)
+  const { disclosedFunds, undisclosedFunds } = getDisclosedAndUndisclosedFunds(releasedFundsValue, financial_records)
+
   return (
     <ContentSection className={classNames('UpdateDetail__Content', className)}>
       {update?.health && <ProjectHealthStatus health={update.health} />}
@@ -64,10 +74,11 @@ const UpdateMarkdownView = ({ update, author, previousUpdate, proposal, classNam
           <ArticleSectionHeading>{t('page.update_detail.financial_details')}</ArticleSectionHeading>
           <div className="UpdateDetail__FinancialContainer">
             <FinancialCardsSection
-              currentUpdate={update}
-              previousUpdate={previousUpdate}
-              releases={releases}
-              disclosedFunds={sum(financial_records.map(({ amount }) => amount))}
+              latestTimestamp={latestTimestamp}
+              txAmount={txAmount}
+              undisclosedFunds={undisclosedFunds}
+              releasedFundsValue={releasedFundsValue}
+              disclosedFunds={disclosedFunds}
             />
             <SummaryItems financialRecords={financial_records} />
           </div>
