@@ -1,19 +1,41 @@
 .FloatingBar {
-  display: none;
-  position: sticky;
-  bottom: 30px;
+  display: flex;
+  position: fixed;
+  bottom: 25px;
   width: 100%;
   height: 48px;
-  border-radius: 6px;
-  border: 1px solid var(--black-300);
-  background: var(--white-900);
-  box-shadow: 0 0 25px 0 var(--alpha-black-400);
-  padding: 12px 1em;
+  left: 0;
   justify-content: space-between;
   align-items: center;
   transition: all 0.5s ease 0s;
   opacity: 1;
   z-index: 2;
+}
+
+@media (min-width: 768px) {
+  .FloatingBar {
+    position: sticky;
+  }
+}
+
+.FloatingBar__Container {
+  display: flex;
+  margin: 16px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid var(--black-300);
+  background: var(--white-900);
+  box-shadow: 0 0 25px 0 var(--alpha-black-400);
+  padding: 12px 1em;
+}
+
+@media (min-width: 768px) {
+  .FloatingBar__Container {
+    margin: 0;
+  }
 }
 
 .FloatingBar--hidden {
@@ -49,12 +71,18 @@
   margin-left: 3px;
 }
 
-.FloatingBar__JoinDiscussion {
-  min-width: 138px !important;
-  padding: 0 !important;
-  display: flex !important;
+.FloatingBar__ActionButtonContainer {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.FloatingBar__ActionButton {
+  display: inline-flex !important;
+  justify-content: flex-end;
   align-items: center;
   gap: 8px;
+  padding: 0 !important;
 }
 
 .FloatingBar__LoaderLeft {
@@ -64,10 +92,4 @@
 .FloatingBar__LoaderRight {
   margin-right: 84px !important;
   position: relative !important;
-}
-
-@media (min-width: 375px) {
-  .FloatingBar {
-    display: flex;
-  }
 }

@@ -29,7 +29,7 @@ export default function MetricsCard({
 }: Props) {
   return (
     <Card
-      as={Link}
+      as={href ? Link : undefined}
       href={href}
       className={classNames(
         'MetricsCard',

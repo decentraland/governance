@@ -1,6 +1,7 @@
 import { TransparencyVesting } from '../clients/Transparency'
 import { ProjectStatus } from '../entities/Grant/types'
 import { Project, ProposalAttributes } from '../entities/Proposal/types'
+import { getQuarterDates } from '../helpers'
 
 import Time from './date/Time'
 
@@ -34,13 +35,18 @@ export function isCurrentProject(status?: ProjectStatus) {
   return status === ProjectStatus.InProgress || status === ProjectStatus.Paused || status === ProjectStatus.Pending
 }
 
-export function isCurrentQuarterProject(startAt?: number) {
+export function isCurrentQuarterProject(year: number, quarter: number, startAt?: number) {
   if (!startAt) {
     return false
   }
 
-  const currentQuarterStartDate = Time().startOf('quarter')
-  return Time.unix(startAt || 0).isAfter(currentQuarterStartDate)
+  const { startDate, endDate } = getQuarterDates(quarter, year)
+
+  if (!startDate || !endDate) {
+    return false
+  }
+
+  return Time.unix(startAt || 0).isAfter(startDate) && Time.unix(startAt || 0).isBefore(endDate)
 }
 
 function getProjectVestingData(proposal: ProposalAttributes, vesting: TransparencyVesting) {

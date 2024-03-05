@@ -1,0 +1,31 @@
+.EndingSoonPill--purple {
+  color: var(--fuchsia-500);
+}
+
+.EndingSoonPill--blue {
+  color: var(--blue-800);
+}
+
+.EndingSoonPill--fuchsia {
+  color: var(--fuchsia-800);
+}
+
+.EndingSoonPill--green {
+  color: var(--green-800);
+}
+
+.EndingSoonPill--yellow {
+  color: var(--yellow-900);
+}
+
+.EndingSoonPill--orange {
+  color: var(--orange-800);
+}
+
+.EndingSoonPill--red {
+  color: var(--red-800);
+}
+
+.EndingSoonPill--aqua {
+  color: var(--aqua-800);
+}

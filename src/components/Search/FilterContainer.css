@@ -25,6 +25,5 @@
 
 .FilterContainer__Content {
   height: auto;
-  overflow: hidden;
   transition: opacity 1s ease-out;
 }

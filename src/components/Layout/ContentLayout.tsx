@@ -17,9 +17,7 @@ type Props = {
 
 export default function ContentLayout({ navigateHref, className, small, preventNavigation, children }: Props) {
   const handleBack = () => {
-    // TODO: Type window.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if ((window as any).routeUpdate) {
+    if (preventNavigation) {
       window.history.back()
     } else {
       navigate(navigateHref || locations.proposals())

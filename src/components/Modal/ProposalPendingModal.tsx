@@ -8,7 +8,7 @@ import Time from '../../utils/date/Time'
 import Heading from '../Common/Typography/Heading'
 import Link from '../Common/Typography/Link'
 import Text from '../Common/Typography/Text'
-import Clock from '../Icon/Clock'
+import Hourglass from '../Icon/Hourglass'
 
 import './ProposalModal.css'
 import './ProposalPendingModal.css'
@@ -36,7 +36,7 @@ export default function ProposalPendingModal({
       closeIcon={<Close />}
     >
       <Modal.Content className="ProposalPendingModal__Content">
-        <Clock />
+        <Hourglass />
         <Heading size="sm" weight="semi-bold">
           {title}
         </Heading>
