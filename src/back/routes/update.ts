@@ -16,18 +16,24 @@ import {
 } from '../../entities/Updates/types'
 import {
   getCurrentUpdate,
+  getFundsReleasedSinceLatestUpdate,
+  getLatestUpdate,
   getNextPendingUpdate,
   getPendingUpdates,
   getPublicUpdates,
+  getReleases,
   isBetweenLateThresholdDate,
 } from '../../entities/Updates/utils'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
 import { FinancialService } from '../../services/FinancialService'
+import { VestingService } from '../../services/VestingService'
 import Time from '../../utils/date/Time'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { CoauthorService } from '../services/coauthor'
 import { UpdateService } from '../services/update'
+
+import { getProposal } from './proposal'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -117,29 +123,52 @@ function parseFinancialRecords(financial_records: unknown) {
   return parsedResult.data.financial_records
 }
 
+async function validateFinancialRecords(
+  proposal: ProposalAttributes,
+  financial_records: unknown
+): Promise<FinancialRecord[] | null> {
+  const [vestingData, updates] = await Promise.all([
+    VestingService.getVestingInfo(proposal.vesting_addresses),
+    UpdateService.getAllByProposalId(proposal.id),
+  ])
+
+  const releases = vestingData ? getReleases(vestingData) : undefined
+  const publicUpdates = getPublicUpdates(updates)
+  const latestUpdate = getLatestUpdate(publicUpdates || [])
+  const { releasedFunds } = getFundsReleasedSinceLatestUpdate(latestUpdate, releases)
+  return releasedFunds > 0 ? parseFinancialRecords(financial_records) : null //TODO: we should also validate that financial records match release funds?
+}
+
 async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
   const { author, financial_records, ...body } = req.body
   const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<UpdateGeneralSection>(
     generalSectionValidator,
     body
   )
-  const fundsWereReleased = false // TODO: backend validation for undisclosed funds
-  const financialRecords: FinancialRecord[] | null = fundsWereReleased ? parseFinancialRecords(financial_records) : null
-
-  return await UpdateService.create(
-    {
-      proposal_id: req.params.proposal,
-      author,
-      health,
-      introduction,
-      highlights,
-      blockers,
-      next_steps,
-      additional_notes,
-      financial_records: financialRecords, //TODO: migration for nullable financial_records
-    },
-    req.auth!
-  )
+  try {
+    const proposal = await getProposal(req)
+    const financialRecords = await validateFinancialRecords(proposal, financial_records)
+    return await UpdateService.create(
+      {
+        proposal_id: req.params.proposal,
+        author,
+        health,
+        introduction,
+        highlights,
+        blockers,
+        next_steps,
+        additional_notes,
+        financial_records: financialRecords,
+      },
+      req.auth!
+    )
+  } catch (error) {
+    ErrorService.report('Error creating update', {
+      error,
+      category: ErrorCategory.Update,
+    })
+    throw new RequestError(`Something wnt wrong: ${error}`, RequestError.InternalServerError)
+  }
 }
 
 async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {

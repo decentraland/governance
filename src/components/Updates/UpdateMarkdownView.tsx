@@ -45,12 +45,12 @@ const UpdateMarkdownView = ({ update, author, previousUpdate, proposal, classNam
   const releases = useMemo(() => (vestingData ? getReleases(vestingData) : undefined), [vestingData])
   const { financial_records } = update
 
-  const {
-    value: releasedFundsValue,
-    txAmount,
-    latestTimestamp,
-  } = getFundsReleasedSinceLatestUpdate(previousUpdate, releases, update.completion_date)
-  const { disclosedFunds, undisclosedFunds } = getDisclosedAndUndisclosedFunds(releasedFundsValue, financial_records)
+  const { releasedFunds, releasesTxCount, latestReleaseTimestamp } = getFundsReleasedSinceLatestUpdate(
+    previousUpdate,
+    releases,
+    update.completion_date
+  )
+  const { disclosedFunds, undisclosedFunds } = getDisclosedAndUndisclosedFunds(releasedFunds, financial_records)
 
   return (
     <ContentSection className={classNames('UpdateDetail__Content', className)}>
@@ -74,10 +74,10 @@ const UpdateMarkdownView = ({ update, author, previousUpdate, proposal, classNam
           <ArticleSectionHeading>{t('page.update_detail.financial_details')}</ArticleSectionHeading>
           <div className="UpdateDetail__FinancialContainer">
             <FinancialCardsSection
-              latestTimestamp={latestTimestamp}
-              txAmount={txAmount}
+              latestTimestamp={latestReleaseTimestamp}
+              txAmount={releasesTxCount}
               undisclosedFunds={undisclosedFunds}
-              releasedFundsValue={releasedFundsValue}
+              releasedFundsValue={releasedFunds}
               disclosedFunds={disclosedFunds}
             />
             <SummaryItems financialRecords={financial_records} />

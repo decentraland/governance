@@ -88,12 +88,11 @@ function FinancialSection({
   const [errors, setErrors] = useState<Error[]>([])
   const financialRecords: FinancialRecord[] | null = watch('financial_records')
 
-  const {
-    value: releasedFundsValue,
-    txAmount,
-    latestTimestamp,
-  } = getFundsReleasedSinceLatestUpdate(latestUpdate, releases)
-  const { disclosedFunds, undisclosedFunds } = getDisclosedAndUndisclosedFunds(releasedFundsValue, financialRecords)
+  const { releasedFunds, releasesTxCount, latestReleaseTimestamp } = getFundsReleasedSinceLatestUpdate(
+    latestUpdate,
+    releases
+  )
+  const { disclosedFunds, undisclosedFunds } = getDisclosedAndUndisclosedFunds(releasedFunds, financialRecords)
 
   let typingTimeout: NodeJS.Timeout | null = null
 
@@ -226,9 +225,9 @@ function FinancialSection({
     >
       <ContentSection>
         <FinancialCardsSection
-          releasedFundsValue={releasedFundsValue}
-          latestTimestamp={latestTimestamp}
-          txAmount={txAmount}
+          releasedFundsValue={releasedFunds}
+          latestTimestamp={latestReleaseTimestamp}
+          txAmount={releasesTxCount}
           undisclosedFunds={undisclosedFunds}
           disclosedFunds={disclosedFunds}
         />
