@@ -11,6 +11,14 @@
   margin-bottom: 24px;
 }
 
+.MarkdownEditor {
+  margin-bottom: 8px;
+}
+
+.MarkdownEditor--error {
+  box-shadow: 0 0 0 1px var(--error);
+}
+
 .MarkdownTextArea__Preview--error {
   border-bottom: 1px solid var(--error);
 }
@@ -53,8 +61,25 @@
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
+  font-size: 15px;
 }
 
 .MarkdownTextArea__MessageContainer--error {
   color: var(--error);
+}
+
+.MarkdownTextArea__Message {
+  color: var(--secondary-text);
+}
+
+.MarkdownField__CounterCommand {
+  background: var(--white-900) !important;
+  border-radius: 2px;
+  bottom: 12px;
+  padding-right: 4px;
+  padding-left: 4px;
+  position: absolute;
+  right: 9px;
+  text-align: right;
+  z-index: 1;
 }
