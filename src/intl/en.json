@@ -48,6 +48,7 @@
       "status_filter_title": "Filter by Status",
       "timeframe_filter": {
         "title": "Filter by TimeFrame",
+        "placeholder": "Choose a timeframe",
         "all": "All",
         "week": "Last Week",
         "month": "Last Month",
@@ -819,7 +820,9 @@
     "floating_bar": {
       "view_reactions_label": "View Reactions",
       "total_comments_label": "{count} {count, plural, one {Comment} other {Comments}}",
-      "forum_label": "Join Discussion"
+      "forum_label": "Join Discussion",
+      "vote": "Vote",
+      "view_results": "View results"
     },
     "action_box": {
       "show": "Show",
@@ -837,6 +840,10 @@
       "open_tender": "Open for Bids",
       "tender_with_submissions": "Bids submission ends {time}",
       "active_bids": "Bid proposals voting ends {time}"
+    },
+    "markdown_field": {
+      "preview_button": "Preview",
+      "edit_button": "Edit"
     }
   },
   "page": {
@@ -1377,9 +1384,10 @@
         "collapsed_description_button": "in here",
         "expand_button": "EXPAND"
       },
+      "quarter_and_year": "Q{quarter} {year}",
       "projects_category_title": "{status}{category} Projects",
       "budget_banner": {
-        "budget_label": "Quarterly budget",
+        "budget_label": "Budget",
         "progress_label": "Initiatives",
         "spent_label": "Quarterly spend: "
       },
@@ -1390,7 +1398,8 @@
           "ending_this_week": "{total} ending this week"
         },
         "funding": {
-          "category": "Project funding for Q{quarter}",
+          "category_all": "{year}Project funding",
+          "category": "Project funding for Q{quarter} {year}",
           "total": "Grants: {grants}; B&T: {bids}"
         },
         "opportunities": {
@@ -1400,7 +1409,8 @@
       },
       "bidding_and_tendering_stats": {
         "funding": {
-          "category": "Project funding for Q{quarter}",
+          "category_all": "{year}Project funding",
+          "category": "Project funding for Q{quarter} {year}",
           "total": "B&T: {bids}"
         },
         "tender_opportunities": {

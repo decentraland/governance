@@ -1,0 +1,21 @@
+.QuarterFilter {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.QuarterFilter__Dropdown > .icon {
+  color: var(--black-600) !important;
+}
+
+.QuarterFilter__ButtonsContainer {
+  display: flex;
+  gap: 5px;
+}
+
+.QuarterFilter__Button {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  min-width: 0 !important;
+}

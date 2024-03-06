@@ -1,46 +1,44 @@
 import { useEffect, useRef } from 'react'
 
-import { globalHistory, useLocation } from '@reach/router'
+import { globalHistory } from '@reach/router'
 
 import { toGovernancePathname } from '../helpers/browser'
 import locations, { navigate } from '../utils/locations'
 
 import useFormatMessage from './useFormatMessage'
 
-function usePreventNavigation(isActive: boolean) {
-  const currentLocation = useLocation()
+function usePreventNavigation(shouldPrevent: boolean, navigateTo = '/submit') {
   const confirmBack = useRef(false)
   const t = useFormatMessage()
   useEffect(() => {
-    const preventNavigation = (location: string, event?: BeforeUnloadEvent) => {
+    const preventNavigation = (event?: BeforeUnloadEvent) => {
       if (event) {
         event.preventDefault()
         event.returnValue = ''
       } else if (!window.confirm(t('navigation.exit'))) {
-        const pathname = toGovernancePathname(currentLocation.pathname)
-        navigate(`${pathname}${currentLocation.search}`)
+        navigate(navigateTo)
       } else {
         confirmBack.current = true
-        navigate(location)
+        navigate(navigateTo)
       }
     }
 
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      if (isActive) {
-        preventNavigation('', event)
+      if (shouldPrevent) {
+        preventNavigation(event)
       }
     }
 
     window.addEventListener('beforeunload', handleBeforeUnload)
 
-    const unsubscribe = globalHistory.listen(({ action, location }) => {
-      const pathname = toGovernancePathname(location.pathname)
+    const unsubscribe = globalHistory.listen(({ action }) => {
+      const pathname = toGovernancePathname(navigateTo)
 
       if (
-        isActive &&
+        shouldPrevent &&
         (action === 'POP' || (action === 'PUSH' && pathname === locations.proposals() && !confirmBack.current))
       ) {
-        preventNavigation(`${pathname}${location.search}`)
+        preventNavigation()
       }
     })
 
@@ -49,7 +47,7 @@ function usePreventNavigation(isActive: boolean) {
       window.removeEventListener('beforeunload', handleBeforeUnload)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentLocation, isActive])
+  }, [shouldPrevent])
 }
 
 export default usePreventNavigation

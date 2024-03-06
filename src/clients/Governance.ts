@@ -83,7 +83,7 @@ export type GetProposalsFilter = ProposalListFilter & {
 
 const getGovernanceApiUrl = () => {
   if (process.env.GATSBY_HEROKU_APP_NAME) {
-    return `https://governance.decentraland.vote/api/`
+    return `https://governance.decentraland.vote/api`
   }
 
   return GOVERNANCE_API
@@ -147,8 +147,18 @@ export class Governance extends API {
     }
   }
 
-  async getProjects() {
-    return await this.fetchApiResponse<ProjectWithUpdate[]>(`/projects`)
+  async getProjects(from?: Date, to?: Date) {
+    const params = new URLSearchParams()
+    if (from) {
+      params.append('from', from.toISOString().split('T')[0])
+    }
+    if (to) {
+      params.append('to', to.toISOString().split('T')[0])
+    }
+    const paramsStr = params.toString()
+    const proposals = await this.fetchApiResponse<ProjectWithUpdate[]>(`/projects${paramsStr ? `?${paramsStr}` : ''}`)
+
+    return proposals
   }
 
   async getOpenPitchesTotal() {
@@ -375,6 +385,10 @@ export class Governance extends API {
 
   async getCurrentBudget() {
     return await this.fetchApiResponse<Budget>(`/budget/current`)
+  }
+
+  async getAllBudgets() {
+    return await this.fetchApiResponse<Budget[]>(`/budget/all`)
   }
 
   async getBudgetWithContestants(proposalId: string) {

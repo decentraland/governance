@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { useQuery } from '@tanstack/react-query'
 import toSnakeCase from 'lodash/snakeCase'
 
 import { Governance } from '../clients/Governance'
 import { SubtypeAlternativeOptions, SubtypeOptions } from '../entities/Grant/types'
+import { getQuarterDates } from '../helpers'
+import Time from '../utils/date/Time'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 
@@ -24,13 +26,36 @@ function convertPercentageToInt(percentage: number): number {
   return Math.ceil(percentage * 100)
 }
 
-export default function useBudgetByCategory(category: SubtypeOptions) {
-  const { data: currentBudget } = useQuery({
-    queryKey: ['budget'],
-    queryFn: () => Governance.get().getCurrentBudget(),
+function isSameDate(date1: Date, date2: Date): boolean {
+  return (
+    date1.getDate() === date2.getDate() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getFullYear() === date2.getFullYear()
+  )
+}
+
+export default function useBudgetByCategory(category: SubtypeOptions, year?: number | null, quarter?: number | null) {
+  const { data: allBudgets } = useQuery({
+    queryKey: ['all-budgets'],
+    queryFn: () => Governance.get().getAllBudgets(),
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })
   const [budget, setBudget] = useState(INITIAL_BUDGET)
+
+  const selectedYear = year ?? Time().year()
+  const selectedQuarter = quarter ?? Time().quarter()
+
+  const { startDate, endDate } = getQuarterDates(selectedQuarter, selectedYear)
+
+  const currentBudget = useMemo(
+    () =>
+      allBudgets?.find(
+        (budget) =>
+          isSameDate(new Date(budget.start_at), new Date(startDate || 0)) &&
+          isSameDate(new Date(budget.finish_at), new Date(endDate || 0))
+      ),
+    [allBudgets, endDate, startDate]
+  )
 
   useEffect(() => {
     if (currentBudget) {

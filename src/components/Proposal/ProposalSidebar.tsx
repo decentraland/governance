@@ -52,6 +52,7 @@ interface Props {
   isOwner: boolean
   isCoauthor: boolean
   shouldGiveReason?: boolean
+  votingSectionRef: React.MutableRefObject<HTMLDivElement | null>
 }
 
 export default function ProposalSidebar({
@@ -73,6 +74,7 @@ export default function ProposalSidebar({
   isOwner,
   isCoauthor,
   shouldGiveReason,
+  votingSectionRef,
 }: Props) {
   const [account] = useAuthContext()
   const subscribed = useMemo(
@@ -145,21 +147,23 @@ export default function ProposalSidebar({
             proposal={proposal}
           />
         )}
-        <ProposalGovernanceSection
-          disabled={!proposal || !votes}
-          loading={proposalLoading || isLoadingVotes}
-          proposal={proposal}
-          votes={votes}
-          partialResults={partialResults}
-          choices={choices}
-          voteWithSurvey={voteWithSurvey}
-          castingVote={castingVote}
-          onChangeVote={(_, changing) => updatePageState((prevState) => ({ ...prevState, changingVote: changing }))}
-          onVote={handleVoteClick}
-          onChoiceClick={handleChoiceClick}
-          updatePageState={updatePageState}
-          proposalPageState={proposalPageState}
-        />
+        <div ref={votingSectionRef}>
+          <ProposalGovernanceSection
+            disabled={!proposal || !votes}
+            loading={proposalLoading || isLoadingVotes}
+            proposal={proposal}
+            votes={votes}
+            partialResults={partialResults}
+            choices={choices}
+            voteWithSurvey={voteWithSurvey}
+            castingVote={castingVote}
+            onChangeVote={(_, changing) => updatePageState((prevState) => ({ ...prevState, changingVote: changing }))}
+            onVote={handleVoteClick}
+            onChoiceClick={handleChoiceClick}
+            updatePageState={updatePageState}
+            proposalPageState={proposalPageState}
+          />
+        </div>
         {showProposalThresholdsSummary && (
           <ProposalThresholdsSummary proposal={proposal} partialResults={partialResults} />
         )}

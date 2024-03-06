@@ -42,7 +42,8 @@ export default function Layout({ children }: LayoutProps) {
   const { isFeatureFlagEnabled } = useDclFeatureFlags()
 
   const handleClickUserMenuOption = useAnalyticsTrackLink(function (
-    event: React.MouseEvent<HTMLElement, MouseEvent>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    event: any,
     options: {
       eventTrackingName: string
       url?: string
@@ -56,7 +57,8 @@ export default function Layout({ children }: LayoutProps) {
   })
 
   const handleClickNavbarOption = useAnalyticsTrackLink(function (
-    _event: React.MouseEvent<HTMLElement, MouseEvent>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    _event: any,
     options: {
       eventTrackingName: string
       url?: string
@@ -124,7 +126,8 @@ export default function Layout({ children }: LayoutProps) {
   })
 
   const handleClickBalance = useCallback(
-    (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, network: Network) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (event: any, network: Network) => {
       event.preventDefault()
       track(DROPDOWN_MENU_BALANCE_CLICK_EVENT, { network })
 
@@ -136,14 +139,16 @@ export default function Layout({ children }: LayoutProps) {
   )
 
   const handleOpen = useCallback(
-    (e: React.MouseEvent<HTMLElement, MouseEvent>, track_uuid: string) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (_e: any, track_uuid: string) => {
       track(DROPDOWN_MENU_DISPLAY_EVENT, { track_uuid })
     },
     [track]
   )
 
   const handleSignOut = useCallback(
-    (e: React.MouseEvent<HTMLElement, MouseEvent>, track_uuid: string) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (_e: any, track_uuid: string) => {
       track(DROPDOWN_MENU_SIGN_OUT_EVENT, { track_uuid })
       setTimeout(() => {
         userState.disconnect()
