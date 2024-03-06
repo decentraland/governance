@@ -66,6 +66,7 @@ import useProposalVotes from '../hooks/useProposalVotes'
 import { PROPOSAL_CACHED_VOTES_QUERY_KEY } from '../hooks/useProposalsCachedVotes'
 import useSurvey from '../hooks/useSurvey'
 import useURLSearchParams from '../hooks/useURLSearchParams'
+import useVoteReason from '../hooks/useVoteReason'
 import { ErrorCategory } from '../utils/errorCategories'
 import locations, { navigate } from '../utils/locations'
 import { isUnderMaintenance } from '../utils/maintenance'
@@ -169,6 +170,8 @@ export default function ProposalPage() {
     isMobile
   )
 
+  const { shouldGiveReason, totalVpOnProposal } = useVoteReason(proposal)
+
   const [isFloatingHeaderVisible, setIsFloatingHeaderVisible] = useState<boolean>(true)
   const [isBarVisible, setIsBarVisible] = useState<boolean>(true)
   const commentsSectionRef = useRef<HTMLDivElement | null>(null)
@@ -210,18 +213,19 @@ export default function ProposalPage() {
   }, [isLoadingProposal])
 
   const [castingVote, castVote] = useAsyncTask(
-    async (selectedChoice: SelectedVoteChoice, survey?: Survey) => {
+    async (selectedChoice: SelectedVoteChoice, survey?: Survey, reason?: string) => {
       if (proposal && account && provider && votes && selectedChoice.choiceIndex) {
         const web3Provider = new Web3Provider(provider)
         const [listedAccount] = await web3Provider.listAccounts()
         try {
-          await SnapshotApi.get().castVote(
-            web3Provider,
-            listedAccount,
-            proposal.snapshot_id,
-            selectedChoice.choiceIndex!,
-            SurveyEncoder.encode(survey)
-          )
+          await SnapshotApi.get().castVote({
+            account: web3Provider,
+            address: listedAccount,
+            proposalSnapshotId: proposal.snapshot_id,
+            choiceNumber: selectedChoice.choiceIndex!,
+            metadata: SurveyEncoder.encode(survey),
+            reason,
+          })
           try {
             await Governance.get().createVoteEvent(proposal.id, proposal.title, selectedChoice.choice!)
           } catch (e) {
@@ -454,11 +458,12 @@ export default function ProposalPage() {
             subscriptionsLoading={isSubscriptionsLoading}
             isCoauthor={isCoauthor}
             isOwner={isOwner}
+            shouldGiveReason={shouldGiveReason}
           />
         </div>
       </WiderContainer>
 
-      {proposal && voteWithSurvey && (
+      {proposal && (voteWithSurvey || shouldGiveReason) && (
         <VotingModal
           proposal={proposal}
           surveyTopics={surveyTopics}
@@ -470,6 +475,9 @@ export default function ProposalPage() {
           onCastVote={castVote}
           castingVote={castingVote}
           proposalPageState={proposalPageState}
+          totalVpOnProposal={totalVpOnProposal}
+          shouldGiveReason={shouldGiveReason}
+          voteWithSurvey={voteWithSurvey}
         />
       )}
       {proposal && proposal.type === ProposalType.Bid && (

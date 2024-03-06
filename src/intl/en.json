@@ -667,8 +667,10 @@
       "reject": "I've changed my mind"
     },
     "voting_modal_survey": {
-      "title": "We'd appreciate some extra feedback",
-      "selected_choice": "You're about to vote \"{choice}\" with "
+      "title": "Please explain the reasoning behind your vote",
+      "selected_choice": "You're about to vote \"{choice}\" with ",
+      "rationale": "Rationale",
+      "rationale_placeholder": "I'm voting \"{choice}\" because..."
     },
     "identity_setup": {
       "title": "Choose accounts to link",

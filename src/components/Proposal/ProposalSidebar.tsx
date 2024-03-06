@@ -51,6 +51,7 @@ interface Props {
   votes?: VoteByAddress | null
   isOwner: boolean
   isCoauthor: boolean
+  shouldGiveReason?: boolean
 }
 
 export default function ProposalSidebar({
@@ -71,6 +72,7 @@ export default function ProposalSidebar({
   subscriptionsLoading,
   isOwner,
   isCoauthor,
+  shouldGiveReason,
 }: Props) {
   const [account] = useAuthContext()
   const subscribed = useMemo(
@@ -93,7 +95,7 @@ export default function ProposalSidebar({
   }
 
   const handleVoteClick = (selectedChoice: SelectedVoteChoice) => {
-    if (voteWithSurvey) {
+    if (voteWithSurvey || shouldGiveReason) {
       updatePageState((prevState) => ({
         ...prevState,
         selectedChoice,
