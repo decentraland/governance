@@ -1453,6 +1453,9 @@
       "empty_update": "When the team publishes their first update, it will appear here.",
       "cliff_notice": "No funds vested until"
     },
+    "rationale": {
+      "title": "Voting rationale"
+    },
     "comments": {
       "title": "{count} {count, plural, one {Comment} other {Comments}}",
       "join_discussion_label": "Join the discussion",

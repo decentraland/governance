@@ -31,6 +31,7 @@ import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
 import ProposalHero from '../components/Proposal/ProposalHero'
 import ProposalSidebar from '../components/Proposal/ProposalSidebar'
+import VotingRationaleSection from '../components/Proposal/Rationale/VotingRationaleSection'
 import SurveyResults from '../components/Proposal/SentimentSurvey/SurveyResults'
 import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
 import AuthorDetails from '../components/Proposal/View/AuthorDetails'
@@ -426,6 +427,7 @@ export default function ProposalPage() {
               endTimestamp={proposal?.finish_at.getTime()}
             />
           )}
+          <VotingRationaleSection votes={highQualityVotes} />
           <ProposalComments proposal={proposal} ref={commentsSectionRef} />
           {proposal && (
             <FloatingBar

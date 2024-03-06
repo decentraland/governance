@@ -112,6 +112,7 @@ export class SnapshotGraphql extends API {
           metadata
           vp
           vp_by_strategy
+          reason
         }
       }
     `

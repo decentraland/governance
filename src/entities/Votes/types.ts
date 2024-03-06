@@ -16,7 +16,7 @@ export type Vote = {
   timestamp: number
   choice: number
   vp: number
-} & Pick<SnapshotVote, 'metadata'>
+} & Pick<SnapshotVote, 'metadata' | 'reason'>
 
 export type VoteByAddress = Record<string, Vote>
 
