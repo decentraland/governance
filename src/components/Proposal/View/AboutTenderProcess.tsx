@@ -102,7 +102,9 @@ export default function AboutTenderProcess({ proposal }: Props) {
   const openForBidsConfig = getOpenForBidsConfig(proposal.status, !!bidsInfo?.publishAt, hasBidProposals)
   const projectAssignationConfig = getProjectAssignationConfig(
     hasBidProposals,
-    !!bidProposals?.data.find((item) => item.status === ProposalStatus.Passed),
+    !!bidProposals?.data.find(
+      (item) => item.status === ProposalStatus.Passed || item.status === ProposalStatus.Enacted
+    ),
     !!bidProposals?.data.find((item) => item.status === ProposalStatus.Rejected)
   )
 

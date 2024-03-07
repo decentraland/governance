@@ -36,7 +36,7 @@ const getOpenForBidsConfig = (hasUnpublishedBid: boolean, hasBidProposals: boole
 }
 
 const getProjectAssignationConfig = (status: ProposalStatus) => {
-  if (status === ProposalStatus.Passed) {
+  if (status === ProposalStatus.Passed || status === ProposalStatus.Enacted) {
     return { status: ProcessStatus.Passed, statusText: 'page.proposal_bidding_tendering.initiative_passed' }
   }
 

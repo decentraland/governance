@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Dropdown } from 'decentraland-ui/dist/components/Dropdown/Dropdown'
 
+import { toGovernancePathname } from '../../helpers/browser'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import useURLSearchParams from '../../hooks/useURLSearchParams'
 import useYearAndQuarterParams from '../../hooks/useYearAndQuarterParams'
@@ -53,7 +54,7 @@ function QuarterFilter() {
         <Button
           className="QuarterFilter__Button"
           as={Link}
-          href={`${location.pathname}?${params.toString()}`}
+          href={`${toGovernancePathname(location.pathname)}?${params.toString()}`}
           key={quarter}
           active={isActive}
           disabled={!isEnabled}
@@ -80,12 +81,12 @@ function QuarterFilter() {
               setSelectedYear(undefined)
               params.delete('year')
               params.delete('quarter')
-              navigate(`${location.pathname}?${params.toString()}`)
+              navigate(`${toGovernancePathname(location.pathname)}?${params.toString()}`)
             } else {
               setSelectedYear(Number(value))
               params.set('year', String(value))
               params.delete('quarter')
-              navigate(`${location.pathname}?${params.toString()}`)
+              navigate(`${toGovernancePathname(location.pathname)}?${params.toString()}`)
             }
           }}
           value={selectedYear}

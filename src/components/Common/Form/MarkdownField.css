@@ -1,0 +1,40 @@
+.MarkdownField__Command {
+  background-color: var(--black-300);
+  color: var(--black-800) !important;
+  text-transform: uppercase;
+}
+
+.MarkdownField__Command:hover {
+  background-color: var(--color-neutral-muted) !important;
+  color: var(--primary) !important;
+}
+
+.MarkdownField__Command {
+  align-items: center;
+  border-radius: 4px !important;
+  display: flex !important;
+  font-size: 10px !important;
+  height: 14px !important;
+  justify-content: center;
+  justify-items: center !important;
+  min-width: 70px !important;
+  padding: 10px 4px !important;
+}
+
+.w-md-editor-toolbar > ul {
+  display: flex;
+  align-items: center;
+}
+
+textarea.w-md-editor-text-input,
+.w-md-editor-text-pre,
+.language-markdown.code-highlight * {
+  font-size: 15px !important;
+  line-height: 24px !important;
+}
+
+.w-md-editor-preview {
+  position: relative;
+  height: 100%;
+  min-height: 150px;
+}
