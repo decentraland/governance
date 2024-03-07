@@ -279,11 +279,10 @@ export class Governance extends API {
     })
   }
 
-  async deleteProposalUpdate(update: { id: string; proposal_id: string }) {
-    return await this.fetchApiResponse<UpdateAttributes>(`/proposals/${update.proposal_id}/update`, {
+  async deleteProposalUpdate(update_id: UpdateAttributes['id']) {
+    return await this.fetchApiResponse<UpdateAttributes>(`/proposals/${update_id}/update`, {
       method: 'DELETE',
       sign: true,
-      json: update,
     })
   }
 
