@@ -4,6 +4,7 @@ import { isSameAddress } from '../../../entities/Snapshot/utils'
 import { VoteByAddress } from '../../../entities/Votes/types'
 import useDclProfiles from '../../../hooks/useDclProfiles'
 import useFormatMessage from '../../../hooks/useFormatMessage'
+import { REASON_THRESHOLD } from '../../../hooks/useVoteReason'
 import Comment from '../../Comments/Comment'
 import Section from '../View/Section'
 
@@ -15,8 +16,11 @@ interface Props {
 function VotingRationaleSection({ votes, isLoadingVotes }: Props) {
   const t = useFormatMessage()
   const votesWithRationale = useMemo(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    () => (votes ? Object.fromEntries(Object.entries(votes).filter(([_, vote]) => !!vote.reason)) : undefined),
+    () =>
+      votes
+        ? // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          Object.fromEntries(Object.entries(votes).filter(([_, vote]) => !!vote.reason && vote.vp >= REASON_THRESHOLD))
+        : undefined,
     [votes]
   )
   const showSection = votesWithRationale && Object.keys(votesWithRationale).length > 0
