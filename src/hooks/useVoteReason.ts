@@ -2,12 +2,11 @@ import { useMemo } from 'react'
 
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 
+import { REASON_THRESHOLD } from '../constants'
 import { ProposalAttributes } from '../entities/Proposal/types'
 
 import useDelegationOnProposal from './useDelegationOnProposal'
 import useVotingPowerOnProposal from './useVotingPowerOnProposal'
-
-const REASON_THRESHOLD = 50000
 
 function useVoteReason(proposal: ProposalAttributes | null) {
   const [account] = useAuthContext()

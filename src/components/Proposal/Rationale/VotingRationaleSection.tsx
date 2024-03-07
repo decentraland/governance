@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 
+import { REASON_THRESHOLD } from '../../../constants'
 import { isSameAddress } from '../../../entities/Snapshot/utils'
 import { VoteByAddress } from '../../../entities/Votes/types'
 import useDclProfiles from '../../../hooks/useDclProfiles'
 import useFormatMessage from '../../../hooks/useFormatMessage'
-import { REASON_THRESHOLD } from '../../../hooks/useVoteReason'
 import Comment from '../../Comments/Comment'
 import Section from '../View/Section'
 
