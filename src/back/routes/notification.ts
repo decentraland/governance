@@ -48,22 +48,21 @@ async function sendNotification(req: WithAuth) {
     }
   }
 
-  if (recipient) {
-    // Notification Service doesn't support broadcast announcements yet
-    const notifications = (isArray(recipient) ? recipient : [recipient]).map((address) => ({
-      type: 'governance_announcement',
-      address,
-      eventKey: crypto.randomUUID(),
-      metadata: {
-        title,
-        description: body,
-        link: url,
-      },
-      timestamp: Date.now(),
-    }))
+  const eventKey = crypto.randomUUID()
+  const addresses: (string | undefined)[] = recipient ? (isArray(recipient) ? recipient : [recipient]) : [undefined] // undefined handles broadcast notification
+  const notifications = addresses.map((address) => ({
+    type: 'governance_announcement',
+    address,
+    eventKey,
+    metadata: {
+      title,
+      description: body,
+      link: url,
+    },
+    timestamp: Date.now(),
+  }))
 
-    await DclNotificationService.sendNotification(notifications)
-  }
+  await DclNotificationService.sendNotifications(notifications)
 
   return await NotificationService.sendNotification({
     type,

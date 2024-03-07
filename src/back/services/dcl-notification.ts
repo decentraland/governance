@@ -18,7 +18,7 @@ const DCL_NOTIFICATIONS_SERVICE_API_URL = process.env.DCL_NOTIFICATIONS_SERVICE_
 const DCL_NOTIFICATIONS_SERVICE_API_TOKEN = process.env.DCL_NOTIFICATIONS_SERVICE_API_TOKEN
 
 export class DclNotificationService {
-  static async sendNotification(notifications: DclNotification[]) {
+  static async sendNotifications(notifications: DclNotification[]) {
     if (!DCL_NOTIFICATIONS_SERVICE_ENABLED) {
       return
     }
@@ -50,6 +50,7 @@ export class DclNotificationService {
           eventKey: proposal.id,
           metadata: {
             proposalId: proposal.id,
+            proposalTitle: proposal.title,
             title: Notifications.ProjectEnacted.title,
             description: Notifications.ProjectEnacted.body,
             link: proposalUrl(proposal.id),
@@ -57,7 +58,7 @@ export class DclNotificationService {
           timestamp: Date.now(),
         }))
 
-        return await this.sendNotification(notifications)
+        return await this.sendNotifications(notifications)
       } catch (error) {
         ErrorService.report('Error sending proposal enacted notification', {
           error,
@@ -80,6 +81,7 @@ export class DclNotificationService {
         eventKey: proposal.id,
         metadata: {
           proposalId: proposal.id,
+          proposalTitle: proposal.title,
           title: Notifications.CoAuthorRequestReceived.title,
           description: Notifications.CoAuthorRequestReceived.body,
           link: proposalUrl(proposal.id),
@@ -87,7 +89,7 @@ export class DclNotificationService {
         timestamp: Date.now(),
       }))
 
-      return await this.sendNotification(notifications)
+      return await this.sendNotifications(notifications)
     } catch (error) {
       ErrorService.report('Error sending co-author request notification', {
         error,
@@ -113,6 +115,7 @@ export class DclNotificationService {
         eventKey: proposal.id,
         metadata: {
           proposalId: proposal.id,
+          proposalTitle: proposal.title,
           title: Notifications.ProposalAuthoredFinished.title(proposal),
           description: Notifications.ProposalAuthoredFinished.body,
           link: proposalUrl(proposal.id),
@@ -120,7 +123,7 @@ export class DclNotificationService {
         timestamp: Date.now(),
       }))
 
-      return await this.sendNotification(notifications)
+      return await this.sendNotifications(notifications)
     } catch (error) {
       ErrorService.report('Error sending voting ended notification to authors', {
         error,
@@ -142,6 +145,7 @@ export class DclNotificationService {
         eventKey: proposal.id,
         metadata: {
           proposalId: proposal.id,
+          proposalTitle: proposal.title,
           title: Notifications.ProposalVotedFinished.title(proposal),
           description: Notifications.ProposalVotedFinished.body,
           link: proposalUrl(proposal.id),
@@ -149,7 +153,7 @@ export class DclNotificationService {
         timestamp: Date.now(),
       }))
 
-      return await this.sendNotification(notifications)
+      return await this.sendNotifications(notifications)
     } catch (error) {
       ErrorService.report('Error sending voting ended notification to voters', {
         error,
@@ -191,6 +195,7 @@ export class DclNotificationService {
           eventKey: proposal.id,
           metadata: {
             proposalId: proposal.id,
+            proposalTitle: proposal.title,
             title: Notifications.ProposalCommented.title(proposal),
             description: Notifications.ProposalCommented.body,
             link: proposalUrl(proposal.id),
@@ -198,7 +203,7 @@ export class DclNotificationService {
           timestamp: Date.now(),
         }))
 
-        return await this.sendNotification(notifications)
+        return await this.sendNotifications(notifications)
       } catch (error) {
         ErrorService.report('Error sending notifications for new comment on proposal', {
           error,

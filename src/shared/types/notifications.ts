@@ -37,7 +37,7 @@ export type Notification = {
 export type DclNotification = {
   eventKey: string
   type: string
-  address: string
+  address?: string
   metadata: object
   timestamp: number
 }
