@@ -36,6 +36,7 @@ export const TEST_ENV_VAR = clientEnv('GATSBY_TEST_ENV_VAR') || ''
 export const PROD_ENV_VAR = clientEnv('GATSBY_PROD_ENV_VAR') || ''
 export const DISCORD_SERVICE_ENABLED = getBooleanStringVar('DISCORD_SERVICE_ENABLED', true)
 export const NOTIFICATIONS_SERVICE_ENABLED = getBooleanStringVar('NOTIFICATIONS_SERVICE_ENABLED', true)
+export const DCL_NOTIFICATIONS_SERVICE_ENABLED = getBooleanStringVar('DCL_NOTIFICATIONS_SERVICE_ENABLED', true)
 export const VOTES_VP_THRESHOLD = 5
 export const SSO_URL = clientEnv('GATSBY_SSO_URL') ?? undefined
 export const RAFT_OWNER_PK = process.env.RAFT_OWNER_PK || ''
