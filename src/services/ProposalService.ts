@@ -199,8 +199,8 @@ export class ProposalService {
       await VotesModel.createEmpty(id)
       if (coAuthors) {
         await CoauthorModel.createMultiple(id, coAuthors)
-        await NotificationService.coAuthorRequested(newProposal, coAuthors)
-        await DclNotificationService.coAuthorRequested(newProposal, coAuthors)
+        NotificationService.coAuthorRequested(newProposal, coAuthors)
+        DclNotificationService.coAuthorRequested(newProposal, coAuthors)
       }
     } catch (err: any) {
       DiscourseService.dropDiscourseTopic(discourseProposal.topic_id)
