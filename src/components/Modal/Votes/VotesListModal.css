@@ -51,7 +51,8 @@
   border-bottom: 1px solid var(--black-300);
 }
 
-.VotesList__Divider .VotesList__DividerLine:before {
+.VotesList__Divider .VotesList__DividerLine:before,
+.VoteList__ItemReason.VoteList__ItemReason--active:before {
   content: '';
   position: absolute;
   bottom: 0;
@@ -60,8 +61,9 @@
 }
 
 .VoteList__Item:has(+ .VoteList__ShowButtonContainer)::before,
-.VoteList__Item:has(+ .VoteList__LowQualityDividerContainer)::before {
-  border-bottom: none;
+.VoteList__Item:has(+ .VoteList__LowQualityDividerContainer)::before,
+.VotesList__DividerLine--none::before {
+  border-bottom: none !important;
 }
 
 .VotesList .Avatar {
@@ -145,4 +147,19 @@
 
 .VoteList__ItemUsername {
   color: var(--black-800);
+}
+
+.VoteList__ItemReason {
+  display: none !important;
+}
+
+.VoteList__ItemReason.VoteList__ItemReason--active {
+  display: flex !important;
+  padding-top: 0px !important;
+  padding-bottom: 30px !important;
+}
+
+.VoteList__ItemReasonText {
+  padding: 0 42px;
+  word-break: break-word;
 }
