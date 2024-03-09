@@ -49,8 +49,6 @@ export function VotingModalSurvey({
 
   const { startTimer, time } = useTimer(REASON_TIMER_SECONDS)
 
-  const [isCastDisabled, setIsCastDisabled] = useState(true)
-
   const { formatNumber } = useIntl()
 
   const {
@@ -59,9 +57,7 @@ export function VotingModalSurvey({
     watch,
   } = useForm<Reason>({ defaultValues: { reason: '' }, mode: 'onTouched' })
 
-  useEffect(() => {
-    setIsCastDisabled((shouldGiveReason && (!!errors.reason || time > 0)) || showVotingError)
-  }, [errors.reason, shouldGiveReason, showVotingError, time, watch])
+  const isCastDisabled = (shouldGiveReason && (!!errors.reason || time > 0)) || showVotingError
 
   useEffect(() => {
     if (shouldGiveReason) {
@@ -71,6 +67,7 @@ export function VotingModalSurvey({
   }, [shouldGiveReason])
 
   const choice = formatChoice(selectedChoice.choice!)
+  const timerDisplay = shouldGiveReason && time > 0 ? ` (${time})` : ''
 
   return (
     <Modal.Content>
@@ -105,7 +102,7 @@ export function VotingModalSurvey({
         >
           {showVotingError
             ? t('page.proposal_detail.retry', { timer: retryTimer })
-            : t('page.proposal_detail.cast_vote') + (shouldGiveReason && time > 0 ? ` (${time})` : '')}
+            : t('page.proposal_detail.cast_vote') + timerDisplay}
         </Button>
       </div>
       <div className={classNames('VotingModal__ErrorNotice', !showVotingError && 'VotingModal__ErrorNotice--hidden')}>

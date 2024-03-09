@@ -57,12 +57,8 @@ const ProposalVotingSection = ({
 }: Props) => {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
-  const { delegationResult, isDelegationResultLoading } = useDelegationOnProposal(proposal, account)
+  const { delegationResult, isDelegationResultLoading, delegators } = useDelegationOnProposal(proposal, account)
   const delegate: string | null = delegationResult.delegatedTo[0]?.delegate
-  const delegators: string[] = useMemo(
-    () => delegationResult.delegatedFrom.map((delegator) => delegator.delegator),
-    [delegationResult.delegatedFrom]
-  )
 
   const {
     delegatedVp,

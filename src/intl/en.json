@@ -377,6 +377,10 @@
       },
       "submission_finished": "Submission period for this tender has finished",
       "user_has_placed_bid": "You have already placed a bid for this tender"
+    },
+    "rationale": {
+      "too_short": "Rationale is too short",
+      "too_large": "Rationale is too large"
     }
   },
   "category": {

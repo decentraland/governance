@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { useQuery } from '@tanstack/react-query'
 
 import { EMPTY_DELEGATION } from '../clients/SnapshotTypes'
@@ -15,8 +17,12 @@ export default function useDelegationOnProposal(proposal?: ProposalAttributes | 
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })
 
+  const delegators =
+    useMemo(() => data?.delegatedFrom.map((delegator) => delegator.delegator), [data?.delegatedFrom]) ?? []
+
   return {
     delegationResult: data ?? EMPTY_DELEGATION,
     isDelegationResultLoading: isLoading,
+    delegators,
   }
 }

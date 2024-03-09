@@ -27,11 +27,11 @@ function ReasonVoteArea({ choice, control, errors, watch, isDisabled }: Props) {
         rules={{
           minLength: {
             value: reasonSchema.shape.reason.minLength,
-            message: t('error.ban_name.description_too_short'),
+            message: t('error.rationale.too_short'),
           },
           maxLength: {
             value: reasonSchema.shape.reason.maxLength,
-            message: t('error.ban_name.description_too_large'),
+            message: t('error.rationale.too_large'),
           },
         }}
         error={errors.reason?.message}
