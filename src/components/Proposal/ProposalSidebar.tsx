@@ -12,6 +12,7 @@ import { isProposalStatusWithUpdates } from '../../entities/Updates/utils'
 import { SelectedVoteChoice, VoteByAddress } from '../../entities/Votes/types'
 import { calculateResult } from '../../entities/Votes/utils'
 import useAnalyticsTrack from '../../hooks/useAnalyticsTrack'
+import useProposalChoices from '../../hooks/useProposalChoices'
 import useProposalVotes from '../../hooks/useProposalVotes'
 import { ProposalPageState } from '../../pages/proposal'
 import { NotDesktop1200 } from '../Layout/Desktop1200'
@@ -29,8 +30,6 @@ import VestingContract from './View/VestingContract'
 
 import ProposalActions from './ProposalActions'
 import './ProposalSidebar.css'
-
-const EMPTY_VOTE_CHOICES: string[] = []
 
 interface Props {
   proposal: ProposalAttributes | null
@@ -83,7 +82,7 @@ export default function ProposalSidebar({
   )
   const { votes, isLoadingVotes, segmentedVotes } = useProposalVotes(proposal?.id)
   const { highQualityVotes, lowQualityVotes } = segmentedVotes || {}
-  const choices: string[] = proposal?.snapshot_proposal?.choices || EMPTY_VOTE_CHOICES
+  const choices = useProposalChoices(proposal)
   const partialResults = useMemo(() => calculateResult(choices, highQualityVotes || {}), [choices, highQualityVotes])
 
   const [isVotesListModalOpen, setIsVotesListModalOpen] = useState(false)

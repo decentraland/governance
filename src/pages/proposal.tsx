@@ -62,6 +62,7 @@ import useFormatMessage from '../hooks/useFormatMessage'
 import useIsProposalCoAuthor from '../hooks/useIsProposalCoAuthor'
 import useIsProposalOwner from '../hooks/useIsProposalOwner'
 import useProposal from '../hooks/useProposal'
+import useProposalChoices from '../hooks/useProposalChoices'
 import useProposalUpdates from '../hooks/useProposalUpdates'
 import useProposalVotes from '../hooks/useProposalVotes'
 import { PROPOSAL_CACHED_VOTES_QUERY_KEY } from '../hooks/useProposalsCachedVotes'
@@ -145,6 +146,7 @@ export default function ProposalPage() {
   const { isOwner } = useIsProposalOwner(proposal)
   const { votes, segmentedVotes, isLoadingVotes, reloadVotes } = useProposalVotes(proposal?.id)
   const { highQualityVotes } = segmentedVotes || {}
+  const choices = useProposalChoices(proposal)
 
   const subscriptionsQueryKey = `proposalSubscriptions#${proposal?.id || ''}`
   const { data: subscriptions, isLoading: isSubscriptionsLoading } = useQuery({
@@ -412,7 +414,7 @@ export default function ProposalPage() {
                 ref={reactionsSectionRef}
               />
             )}
-            <VotingRationaleSection votes={highQualityVotes} />
+            <VotingRationaleSection votes={highQualityVotes} choices={choices} />
             <ProposalComments proposal={proposal} ref={commentsSectionRef} />
           </Desktop>
           <TabletAndBelow>
@@ -474,7 +476,7 @@ export default function ProposalPage() {
               ref={reactionsSectionRef}
             />
           )}
-          <VotingRationaleSection votes={highQualityVotes} />
+          <VotingRationaleSection votes={highQualityVotes} choices={choices} />
           <ProposalComments proposal={proposal} ref={commentsSectionRef} />
         </TabletAndBelow>
       </WiderContainer>

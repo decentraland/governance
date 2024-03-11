@@ -6,6 +6,7 @@ import Time from '../../utils/date/Time'
 import locations from '../../utils/locations'
 import Avatar from '../Common/Avatar'
 import Link from '../Common/Typography/Link'
+import Markdown from '../Common/Typography/Markdown'
 import Text from '../Common/Typography/Text'
 import ValidatedProfile from '../Icon/ValidatedProfile'
 
@@ -21,10 +22,20 @@ type Props = {
   createdAt: string
   cooked?: string
   address?: string
+  isValidated?: boolean
+  extraInfo?: string
 }
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export default function Comment({ forumUsername, avatarUrl, createdAt, cooked, address }: Props) {
+export default function Comment({
+  forumUsername,
+  avatarUrl,
+  createdAt,
+  cooked,
+  address,
+  isValidated,
+  extraInfo,
+}: Props) {
   const createMarkup = (html: any) => {
     DOMPurify.addHook('afterSanitizeAttributes', function (node) {
       if (node.nodeName && node.nodeName === 'IMG' && node.getAttribute('alt') === 'image') {
@@ -65,9 +76,17 @@ export default function Comment({ forumUsername, avatarUrl, createdAt, cooked, a
           <Link href={discourseUserUrl}>
             <Text weight="bold">
               {username || forumUsername}
-              {address && <ValidatedProfile />}
+              {address && isValidated && <ValidatedProfile />}
             </Text>
           </Link>
+          {extraInfo && (
+            <Markdown
+              size="md"
+              componentsClassNames={{ p: 'Comment__ExtraInfoText', strong: 'Comment__ExtraInfoStrong' }}
+            >
+              {`${extraInfo},`}
+            </Markdown>
+          )}
           <span>
             <Text color="secondary">{Time.from(createdAt).fromNow()}</Text>
           </span>
