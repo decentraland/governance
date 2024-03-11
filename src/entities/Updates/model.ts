@@ -1,10 +1,9 @@
 import crypto from 'crypto'
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 
-import { VestingDates } from '../../clients/VestingData'
+import { type VestingInfo } from '../../clients/VestingData'
 import Time from '../../utils/date/Time'
 import { getMonthsBetweenDates } from '../../utils/date/getMonthsBetweenDates'
-import { VestingStartDate } from '../Grant/types'
 
 import { UpdateAttributes, UpdateStatus } from './types'
 
@@ -13,19 +12,12 @@ export default class UpdateModel extends Model<UpdateAttributes> {
   static withTimestamps = false
   static primaryKey = 'id'
 
-  static async createPendingUpdates(
-    proposalId: string,
-    vestingDates: VestingDates,
-    preferredVestingStartDate: VestingStartDate
-  ) {
+  static async createPendingUpdates(proposalId: string, vestingContractData: VestingInfo) {
     if (proposalId.length < 0) throw new Error('Unable to create updates for empty proposal id')
 
     const now = new Date()
-    const updatesQuantity = this.getAmountOfUpdates(vestingDates)
-    const firstUpdateStartingDate = this.getFirstUpdateStartingDate(
-      vestingDates.vestingStartAt,
-      preferredVestingStartDate
-    )
+    const updatesQuantity = this.getAmountOfUpdates(vestingContractData)
+    const firstUpdateStartingDate = Time.utc(vestingContractData.vestingStartAt).startOf('day')
 
     await UpdateModel.delete<UpdateAttributes>({ proposal_id: proposalId, status: UpdateStatus.Pending })
 
@@ -44,18 +36,12 @@ export default class UpdateModel extends Model<UpdateAttributes> {
     return await this.createMany(updates)
   }
 
-  public static getAmountOfUpdates(vestingDates: VestingDates) {
+  public static getAmountOfUpdates(vestingDates: VestingInfo) {
     const exactDuration = getMonthsBetweenDates(
       new Date(vestingDates.vestingStartAt),
       new Date(vestingDates.vestingFinishAt)
     )
     return exactDuration.months + (exactDuration.extraDays > 0 ? 1 : 0)
-  }
-
-  public static getFirstUpdateStartingDate(vestingStartDate: string, preferredPaymentDate: VestingStartDate) {
-    return Time.utc(vestingStartDate)
-      .set('date', preferredPaymentDate === VestingStartDate.First ? 1 : 15)
-      .startOf('day')
   }
 
   public static getDueDate(startingDate: Time.Dayjs, index: number) {
