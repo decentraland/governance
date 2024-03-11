@@ -564,7 +564,7 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
         update.vesting_addresses
       )
       const vestingContractData = await getVestingContractData(vesting_addresses[vesting_addresses.length - 1], id)
-      await UpdateModel.createPendingUpdates(id, vestingContractData, proposal.configuration.vestingStartDate)
+      await UpdateModel.createPendingUpdates(id, vestingContractData)
     }
   } else if (update.status === ProposalStatus.Passed) {
     update.passed_by = user
