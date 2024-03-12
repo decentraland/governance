@@ -8,6 +8,7 @@ import useFormatMessage from '../../hooks/useFormatMessage'
 import Time from '../../utils/date/Time'
 import locations from '../../utils/locations'
 import Avatar from '../Common/Avatar'
+import DateTooltip from '../Common/DateTooltip'
 import Link from '../Common/Typography/Link'
 import Text from '../Common/Typography/Text'
 import ValidatedProfile from '../Icon/ValidatedProfile'
@@ -102,9 +103,11 @@ export default function Comment({
             </>
           )}
           ,
-          <Text color="secondary" as="span">
-            {Time.from(createdAt).fromNow()}
-          </Text>
+          <DateTooltip date={Time(createdAt).toDate()}>
+            <Text color="secondary" as="span">
+              {Time.from(createdAt).fromNow()}
+            </Text>
+          </DateTooltip>
         </div>
         <div className="Comment__Cooked" dangerouslySetInnerHTML={createMarkup(cooked)} />
       </div>
