@@ -65,10 +65,10 @@ export default function VotesListModal({ proposal, highQualityVotes, lowQualityV
               <Grid.Column width={6}>
                 <div className="VotesList__Header">{t('modal.votes_list.voter')}</div>
               </Grid.Column>
-              <Grid.Column width={5}>
+              <Grid.Column width={4}>
                 <div className="VotesList__Header">{t('modal.votes_list.voted')}</div>
               </Grid.Column>
-              <Grid.Column>
+              <Grid.Column width={3}>
                 <div className="VotesList__Header">{t('modal.votes_list.vp')}</div>
               </Grid.Column>
             </Grid.Row>

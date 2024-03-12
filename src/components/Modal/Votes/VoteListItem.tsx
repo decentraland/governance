@@ -27,8 +27,6 @@ export function VoteListItem({ address, vote, choices, isLowQuality, active }: V
   return (
     <>
       <Grid.Row
-        as={Link}
-        href={locations.profile({ address })}
         key={address}
         className={classNames(
           'VoteList__Item VotesList__DividerLine',
@@ -38,12 +36,14 @@ export function VoteListItem({ address, vote, choices, isLowQuality, active }: V
         )}
       >
         <Grid.Column width={6}>
-          <Username className="VoteList__ItemUsername" address={address} size="sm" />
+          <Link href={locations.profile({ address })}>
+            <Username className="VoteList__ItemUsername" address={address} size="sm" />
+          </Link>
         </Grid.Column>
-        <Grid.Column width={5}>
+        <Grid.Column width={4}>
           <p>{formatChoice(choices[vote.choice - 1])}</p>
         </Grid.Column>
-        <Grid.Column>
+        <Grid.Column width={3}>
           <p>{`${abbreviateNumber(vote.vp)} ${t('modal.votes_list.vp')}`}</p>
         </Grid.Column>
         <Grid.Column
@@ -54,7 +54,9 @@ export function VoteListItem({ address, vote, choices, isLowQuality, active }: V
             setshowReason(!showReason)
           }}
         >
-          {vote.reason && (showReason ? <ReadReason /> : <UnreadReason />)}
+          <button className="VoteList__ItemReasonButton" aria-label="show reason">
+            {vote.reason && (showReason ? <ReadReason /> : <UnreadReason />)}
+          </button>
         </Grid.Column>
       </Grid.Row>
       <Grid.Row className={classNames('VoteList__ItemReason', showReason && 'VoteList__ItemReason--active')}>

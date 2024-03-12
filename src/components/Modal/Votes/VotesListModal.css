@@ -31,10 +31,6 @@
   }
 }
 
-.VotesList__ItemsContainer .VoteList__Item:hover {
-  cursor: pointer;
-}
-
 .VotesList__HeaderContainer .VotesList__Header {
   color: var(--black-600);
 }
@@ -162,4 +158,10 @@
 .VoteList__ItemReasonText {
   padding: 0 42px;
   word-break: break-word;
+}
+
+.VoteList__ItemReasonButton {
+  cursor: pointer;
+  background: none;
+  border: none;
 }
