@@ -199,3 +199,10 @@ export function getQuarterDates(quarter?: number, year?: number) {
 
   return { startDate, endDate }
 }
+
+export function shortenText(text: string, maxLength: number) {
+  if (text.length > maxLength) {
+    return text.substring(0, maxLength) + '...'
+  }
+  return text
+}

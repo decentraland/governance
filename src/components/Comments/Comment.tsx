@@ -1,12 +1,14 @@
 import DOMPurify from 'dompurify'
 
 import { FORUM_URL } from '../../constants'
+import { shortenText } from '../../helpers'
+import useAbbreviatedFormatter from '../../hooks/useAbbreviatedFormatter'
 import useDclProfile from '../../hooks/useDclProfile'
+import useFormatMessage from '../../hooks/useFormatMessage'
 import Time from '../../utils/date/Time'
 import locations from '../../utils/locations'
 import Avatar from '../Common/Avatar'
 import Link from '../Common/Typography/Link'
-import Markdown from '../Common/Typography/Markdown'
 import Text from '../Common/Typography/Text'
 import ValidatedProfile from '../Icon/ValidatedProfile'
 
@@ -23,8 +25,10 @@ type Props = {
   cooked?: string
   address?: string
   isValidated?: boolean
-  extraInfo?: string
+  extraInfo?: { choice: string; vp: number }
 }
+
+const CHOICE_MAX_LENGTH = 14
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export default function Comment({
@@ -59,6 +63,10 @@ export default function Comment({
   const { profile, isLoadingDclProfile } = useDclProfile(address)
   const { username, hasCustomAvatar, avatarUrl: profileAvatarUrl } = profile
 
+  const t = useFormatMessage()
+  const formatter = useAbbreviatedFormatter()
+  const isChoiceShortened = (extraInfo?.choice.length || 0) > CHOICE_MAX_LENGTH
+
   return (
     <div className="Comment">
       <div className="Comment__ProfileImage">
@@ -74,22 +82,29 @@ export default function Comment({
       <div className="Comment__Content">
         <div className="Comment__Author">
           <Link href={discourseUserUrl}>
-            <Text weight="bold">
+            <Text className="Comment__AuthorText" weight="bold" as="span">
               {username || forumUsername}
               {address && isValidated && <ValidatedProfile />}
             </Text>
           </Link>
           {extraInfo && (
-            <Markdown
-              size="md"
-              componentsClassNames={{ p: 'Comment__ExtraInfoText', strong: 'Comment__ExtraInfoStrong' }}
-            >
-              {`${extraInfo},`}
-            </Markdown>
+            <>
+              <Text
+                className="Comment__ExtraInfo Comment__ExtraInfo--choice"
+                as="span"
+                title={isChoiceShortened ? extraInfo.choice : undefined}
+              >
+                {t('page.rationale.vote_info', { choice: shortenText(extraInfo.choice, CHOICE_MAX_LENGTH) })}
+              </Text>
+              <Text className="Comment__ExtraInfo" weight="bold" as="span">
+                {formatter(extraInfo.vp)} VP
+              </Text>
+            </>
           )}
-          <span>
-            <Text color="secondary">{Time.from(createdAt).fromNow()}</Text>
-          </span>
+          ,
+          <Text color="secondary" as="span">
+            {Time.from(createdAt).fromNow()}
+          </Text>
         </div>
         <div className="Comment__Cooked" dangerouslySetInnerHTML={createMarkup(cooked)} />
       </div>

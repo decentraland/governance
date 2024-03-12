@@ -1469,7 +1469,7 @@
     },
     "rationale": {
       "title": "Voting rationale",
-      "vote_info": "voted \"{choice}\" with **{vp} VP**"
+      "vote_info": "voted \"{choice}\" with "
     },
     "comments": {
       "title": "{count} {count, plural, one {Comment} other {Comments}}",

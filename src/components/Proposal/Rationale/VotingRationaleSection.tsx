@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import { useIntl } from 'react-intl'
 
 import { REASON_THRESHOLD } from '../../../constants'
 import { isSameAddress } from '../../../entities/Snapshot/utils'
@@ -18,7 +17,6 @@ interface Props {
 
 function VotingRationaleSection({ votes, isLoadingVotes, choices }: Props) {
   const t = useFormatMessage()
-  const { formatNumber } = useIntl()
   const votesWithRationale = useMemo(
     () =>
       votes
@@ -43,10 +41,10 @@ function VotingRationaleSection({ votes, isLoadingVotes, choices }: Props) {
                 createdAt={new Date(vote.timestamp * 1000).toISOString()}
                 avatarUrl={profile.avatarUrl}
                 address={address}
-                extraInfo={t('page.rationale.vote_info', {
+                extraInfo={{
                   choice: formatChoice(choices[vote.choice - 1]),
-                  vp: formatNumber(vote.vp),
-                })}
+                  vp: vote.vp,
+                }}
               />
             )
           })}
