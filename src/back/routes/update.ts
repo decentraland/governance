@@ -136,7 +136,7 @@ async function validateFinancialRecords(
   const publicUpdates = getPublicUpdates(updates)
   const latestUpdate = getLatestUpdate(publicUpdates || [])
   const { releasedFunds } = getFundsReleasedSinceLatestUpdate(latestUpdate, releases)
-  return releasedFunds > 0 ? parseFinancialRecords(financial_records) : null //TODO: we should also validate that financial records match release funds?
+  return releasedFunds > 0 ? parseFinancialRecords(financial_records) : null
 }
 
 async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
