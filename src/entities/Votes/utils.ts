@@ -28,6 +28,7 @@ function createVotes<T>(votes: SnapshotVote[], returnValue: (vote: Vote, prevVal
         vp: getFloorOrZero(vote.vp),
         timestamp: Number(vote.created),
         metadata: vote.metadata,
+        reason: vote.reason,
       },
       prevValue
     )

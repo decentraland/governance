@@ -8,7 +8,7 @@ import { isGovernanceProcessProposal, proposalUrl } from '../../entities/Proposa
 import UpdateModel from '../../entities/Updates/model'
 import { UpdateAttributes } from '../../entities/Updates/types'
 import { getPublicUpdates, getUpdateNumber, getUpdateUrl } from '../../entities/Updates/utils'
-import { capitalizeFirstLetter, getEnumDisplayName, inBackground } from '../../helpers'
+import { capitalizeFirstLetter, getEnumDisplayName, inBackground, shortenText } from '../../helpers'
 import { ErrorService } from '../../services/ErrorService'
 import { getProfile } from '../../utils/Catalyst'
 import { ErrorCategory } from '../../utils/errorCategories'
@@ -53,10 +53,6 @@ function getChoices(choices: string[]): Field[] {
     name: `Option #${idx + 1}`,
     value: capitalizeFirstLetter(choice),
   }))
-}
-
-function getPreviewText(text: string) {
-  return text.length > PREVIEW_MAX_LENGTH ? text.slice(0, PREVIEW_MAX_LENGTH) + '...' : text
 }
 
 export class DiscordService {
@@ -124,7 +120,7 @@ export class DiscordService {
     if (!!proposalType && !!description) {
       const embedDescription = !isGovernanceProcessProposal(proposalType)
         ? description.split('\n')[0]
-        : getPreviewText(description)
+        : shortenText(description, PREVIEW_MAX_LENGTH)
 
       fields.push({
         name: getEnumDisplayName(proposalType),
@@ -231,11 +227,11 @@ export class DiscordService {
             url: getUpdateUrl(updateId, proposalId),
             title,
             fields: [
-              { name: 'Project Health', value: getPreviewText(health) },
-              { name: 'Introduction', value: getPreviewText(introduction) },
-              { name: 'Highlights', value: getPreviewText(highlights) },
-              { name: 'Blockers', value: getPreviewText(blockers) },
-              { name: 'Next Steps', value: getPreviewText(next_steps) },
+              { name: 'Project Health', value: shortenText(health, PREVIEW_MAX_LENGTH) },
+              { name: 'Introduction', value: shortenText(introduction, PREVIEW_MAX_LENGTH) },
+              { name: 'Highlights', value: shortenText(highlights, PREVIEW_MAX_LENGTH) },
+              { name: 'Blockers', value: shortenText(blockers, PREVIEW_MAX_LENGTH) },
+              { name: 'Next Steps', value: shortenText(next_steps, PREVIEW_MAX_LENGTH) },
             ],
             user,
             action,

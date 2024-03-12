@@ -21,6 +21,7 @@ interface Props {
   color?: TextColor
   style?: FontStyle
   as?: 'span'
+  title?: string
 }
 
 const Text = React.forwardRef<HTMLParagraphElement, Props>(
@@ -33,6 +34,7 @@ const Text = React.forwardRef<HTMLParagraphElement, Props>(
       style = DEFAULT_FONT_STYLE,
       className,
       as,
+      title,
     },
     ref
   ) => {
@@ -46,7 +48,7 @@ const Text = React.forwardRef<HTMLParagraphElement, Props>(
     )
     const Component = as ?? 'p'
     return (
-      <Component className={componentClassNames} ref={ref}>
+      <Component className={componentClassNames} ref={ref} title={title}>
         {children}
       </Component>
     )

@@ -377,6 +377,10 @@
       },
       "submission_finished": "Submission period for this tender has finished",
       "user_has_placed_bid": "You have already placed a bid for this tender"
+    },
+    "rationale": {
+      "too_short": "Rationale is too short",
+      "too_large": "Rationale is too large"
     }
   },
   "category": {
@@ -668,8 +672,10 @@
       "reject": "I've changed my mind"
     },
     "voting_modal_survey": {
-      "title": "We'd appreciate some extra feedback",
-      "selected_choice": "You're about to vote "
+      "title": "Please explain the reasoning behind your vote",
+      "selected_choice": "You're about to vote \"{choice}\" with ",
+      "rationale": "Rationale",
+      "rationale_placeholder": "I'm voting \"{choice}\" because..."
     },
     "identity_setup": {
       "title": "Choose accounts to link",
@@ -1460,6 +1466,10 @@
       },
       "empty_update": "When the team publishes their first update, it will appear here.",
       "cliff_notice": "No funds vested until"
+    },
+    "rationale": {
+      "title": "Voting rationale",
+      "vote_info": "voted \"{choice}\" with "
     },
     "comments": {
       "title": "{count} {count, plural, one {Comment} other {Comments}}",

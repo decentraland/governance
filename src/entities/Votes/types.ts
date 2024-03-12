@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { z } from 'zod'
+
 import { SnapshotVote } from '../../clients/SnapshotTypes'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../Proposal/types'
 
@@ -14,7 +16,7 @@ export type Vote = {
   timestamp: number
   choice: number
   vp: number
-} & Pick<SnapshotVote, 'metadata'>
+} & Pick<SnapshotVote, 'metadata' | 'reason'>
 
 export type VoteByAddress = Record<string, Vote>
 
@@ -51,3 +53,9 @@ export type VoteSegmentation<T> = {
 }
 
 export type Participation = { last30Days: number; lastWeek: number }
+
+export const reasonSchema = z.object({
+  reason: z.string().min(10).max(140),
+})
+
+export type Reason = z.infer<typeof reasonSchema>

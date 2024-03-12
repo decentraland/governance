@@ -31,6 +31,7 @@ import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
 import ProposalHero from '../components/Proposal/ProposalHero'
 import ProposalSidebar from '../components/Proposal/ProposalSidebar'
+import VotingRationaleSection from '../components/Proposal/Rationale/VotingRationaleSection'
 import SurveyResults from '../components/Proposal/SentimentSurvey/SurveyResults'
 import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
 import AuthorDetails from '../components/Proposal/View/AuthorDetails'
@@ -61,11 +62,13 @@ import useFormatMessage from '../hooks/useFormatMessage'
 import useIsProposalCoAuthor from '../hooks/useIsProposalCoAuthor'
 import useIsProposalOwner from '../hooks/useIsProposalOwner'
 import useProposal from '../hooks/useProposal'
+import useProposalChoices from '../hooks/useProposalChoices'
 import useProposalUpdates from '../hooks/useProposalUpdates'
 import useProposalVotes from '../hooks/useProposalVotes'
 import { PROPOSAL_CACHED_VOTES_QUERY_KEY } from '../hooks/useProposalsCachedVotes'
 import useSurvey from '../hooks/useSurvey'
 import useURLSearchParams from '../hooks/useURLSearchParams'
+import useVoteReason from '../hooks/useVoteReason'
 import { ErrorCategory } from '../utils/errorCategories'
 import locations, { navigate } from '../utils/locations'
 import { isUnderMaintenance } from '../utils/maintenance'
@@ -143,6 +146,7 @@ export default function ProposalPage() {
   const { isOwner } = useIsProposalOwner(proposal)
   const { votes, segmentedVotes, isLoadingVotes, reloadVotes } = useProposalVotes(proposal?.id)
   const { highQualityVotes } = segmentedVotes || {}
+  const choices = useProposalChoices(proposal)
 
   const subscriptionsQueryKey = `proposalSubscriptions#${proposal?.id || ''}`
   const { data: subscriptions, isLoading: isSubscriptionsLoading } = useQuery({
@@ -166,6 +170,8 @@ export default function ProposalPage() {
     votes,
     isLoadingVotes
   )
+
+  const { shouldGiveReason, totalVpOnProposal } = useVoteReason(proposal)
 
   const [isFloatingHeaderVisible, setIsFloatingHeaderVisible] = useState<boolean>(true)
 
@@ -192,18 +198,19 @@ export default function ProposalPage() {
   }, [isLoadingProposal])
 
   const [castingVote, castVote] = useAsyncTask(
-    async (selectedChoice: SelectedVoteChoice, survey?: Survey) => {
+    async (selectedChoice: SelectedVoteChoice, survey?: Survey, reason?: string) => {
       if (proposal && account && provider && votes && selectedChoice.choiceIndex) {
         const web3Provider = new Web3Provider(provider)
         const [listedAccount] = await web3Provider.listAccounts()
         try {
-          await SnapshotApi.get().castVote(
-            web3Provider,
-            listedAccount,
-            proposal.snapshot_id,
-            selectedChoice.choiceIndex!,
-            SurveyEncoder.encode(survey)
-          )
+          await SnapshotApi.get().castVote({
+            account: web3Provider,
+            address: listedAccount,
+            proposalSnapshotId: proposal.snapshot_id,
+            choiceNumber: selectedChoice.choiceIndex!,
+            metadata: SurveyEncoder.encode(survey),
+            reason,
+          })
           try {
             await Governance.get().createVoteEvent(proposal.id, proposal.title, selectedChoice.choice!)
           } catch (e) {
@@ -407,6 +414,7 @@ export default function ProposalPage() {
                 ref={reactionsSectionRef}
               />
             )}
+            <VotingRationaleSection votes={highQualityVotes} choices={choices} />
             <ProposalComments proposal={proposal} ref={commentsSectionRef} />
           </Desktop>
           <TabletAndBelow>
@@ -447,6 +455,7 @@ export default function ProposalPage() {
             subscriptionsLoading={isSubscriptionsLoading}
             isCoauthor={isCoauthor}
             isOwner={isOwner}
+            shouldGiveReason={shouldGiveReason}
             votingSectionRef={votingSectionRef}
           />
         </div>
@@ -467,11 +476,12 @@ export default function ProposalPage() {
               ref={reactionsSectionRef}
             />
           )}
+          <VotingRationaleSection votes={highQualityVotes} choices={choices} />
           <ProposalComments proposal={proposal} ref={commentsSectionRef} />
         </TabletAndBelow>
       </WiderContainer>
 
-      {proposal && voteWithSurvey && (
+      {proposal && (voteWithSurvey || shouldGiveReason) && (
         <VotingModal
           proposal={proposal}
           surveyTopics={surveyTopics}
@@ -483,6 +493,9 @@ export default function ProposalPage() {
           onCastVote={castVote}
           castingVote={castingVote}
           proposalPageState={proposalPageState}
+          totalVpOnProposal={totalVpOnProposal}
+          shouldGiveReason={shouldGiveReason}
+          voteWithSurvey={voteWithSurvey}
         />
       )}
       {proposal && proposal.type === ProposalType.Bid && (
