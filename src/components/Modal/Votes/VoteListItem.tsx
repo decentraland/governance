@@ -51,10 +51,10 @@ export function VoteListItem({ address, vote, choices, isLowQuality, active }: V
           onClick={(e: React.MouseEvent) => {
             e.stopPropagation()
             e.preventDefault()
-            setshowReason(!showReason)
+            setshowReason((prev) => !prev)
           }}
         >
-          <button className="VoteList__ItemReasonButton" aria-label="show reason">
+          <button className="VoteList__ItemReasonButton" aria-label="Toggle reason">
             {vote.reason && (showReason ? <ReadReason /> : <UnreadReason />)}
           </button>
         </Grid.Column>
