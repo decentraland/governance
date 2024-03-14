@@ -2,16 +2,16 @@ import { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { usePapaParse } from 'react-papaparse'
 
-import sum from 'lodash/sum'
 import toNumber from 'lodash/toNumber'
 
 import { VestingLog } from '../../clients/VestingData'
 import {
   FinancialRecord,
-  FinancialUpdateSection,
   FinancialUpdateSectionSchema,
   UpdateAttributes,
+  UpdateFinancialSection,
 } from '../../entities/Updates/types'
+import { getDisclosedAndUndisclosedFunds, getFundsReleasedSinceLatestUpdate } from '../../entities/Updates/utils'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import CSVDragAndDrop from '../Common/CSVDragAndDrop'
 import NumberedTextArea from '../Common/NumberedTextArea'
@@ -25,10 +25,10 @@ import './FinancialSection.css'
 import SummaryItems from './SummaryItems'
 
 interface Props {
-  onValidation: (data: FinancialUpdateSection, sectionValid: boolean) => void
+  onValidation: (data: UpdateFinancialSection, sectionValid: boolean) => void
   isFormDisabled: boolean
   sectionNumber: number
-  intialValues?: Partial<FinancialUpdateSection>
+  intialValues?: Partial<UpdateFinancialSection>
   releases?: VestingLog[]
   latestUpdate?: Omit<UpdateAttributes, 'id' | 'proposal_id'>
   csvInputField: string | undefined
@@ -40,7 +40,7 @@ type Error = {
   text: string
 }
 
-const UPDATE_FINANCIAL_INITIAL_STATE: FinancialUpdateSection = {
+const UPDATE_FINANCIAL_INITIAL_STATE: UpdateFinancialSection = {
   financial_records: [],
 }
 
@@ -80,13 +80,19 @@ function FinancialSection({
     formState: { isValid, isDirty },
     setValue,
     watch,
-  } = useForm<FinancialUpdateSection>({
+  } = useForm<UpdateFinancialSection>({
     defaultValues: intialValues || UPDATE_FINANCIAL_INITIAL_STATE,
     mode: 'onTouched',
   })
 
   const [errors, setErrors] = useState<Error[]>([])
-  const financial_records = watch('financial_records')
+  const financialRecords: FinancialRecord[] | null = watch('financial_records')
+
+  const { releasedFunds, releasesTxCount, latestReleaseTimestamp } = getFundsReleasedSinceLatestUpdate(
+    latestUpdate,
+    releases
+  )
+  const { disclosedFunds, undisclosedFunds } = getDisclosedAndUndisclosedFunds(releasedFunds, financialRecords)
 
   let typingTimeout: NodeJS.Timeout | null = null
 
@@ -119,12 +125,12 @@ function FinancialSection({
   }
 
   useEffect(() => {
-    if (financial_records.length > 0 && errors.length === 0) {
-      onValidation({ financial_records: financial_records }, true)
+    if ((undisclosedFunds === 0 || (financialRecords && financialRecords.length > 0)) && errors.length === 0) {
+      onValidation({ financial_records: financialRecords }, true)
     } else {
-      onValidation({ financial_records: financial_records }, false)
+      onValidation({ financial_records: financialRecords }, false)
     }
-  }, [onValidation, financial_records, errors.length])
+  }, [onValidation, financialRecords, undisclosedFunds, errors.length])
 
   const csvInputHandler = useCallback(
     (data: string[][]) => {
@@ -219,9 +225,11 @@ function FinancialSection({
     >
       <ContentSection>
         <FinancialCardsSection
-          previousUpdate={latestUpdate}
-          releases={releases}
-          disclosedFunds={sum(financial_records.map(({ amount }) => amount))}
+          releasedFundsValue={releasedFunds}
+          latestTimestamp={latestReleaseTimestamp}
+          txAmount={releasesTxCount}
+          undisclosedFunds={undisclosedFunds}
+          disclosedFunds={disclosedFunds}
         />
       </ContentSection>
       <ContentSection>
@@ -239,10 +247,10 @@ function FinancialSection({
           <CSVDragAndDrop onUploadAccepted={handleFileUpload} onRemoveFile={handleRemoveFile} />
         </div>
       </ContentSection>
-      {financial_records.length > 0 && (
+      {financialRecords && financialRecords.length > 0 && (
         <ContentSection>
           <Label>{t('page.proposal_update.summary_label')}</Label>
-          <SummaryItems financialRecords={financial_records} itemsInitiallyExpanded />
+          <SummaryItems financialRecords={financialRecords} itemsInitiallyExpanded />
         </ContentSection>
       )}
     </ProjectRequestSection>

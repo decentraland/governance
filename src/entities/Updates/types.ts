@@ -6,7 +6,7 @@ export type UpdateSubmissionDetails = {
   author: string
 }
 
-export type GeneralUpdateSection = {
+export type UpdateGeneralSection = {
   health: ProjectHealth
   introduction: string
   highlights: string
@@ -17,10 +17,10 @@ export type GeneralUpdateSection = {
 
 export type FinancialRecord = z.infer<typeof FinancialRecordSchema>
 
-export type FinancialUpdateSection = z.infer<typeof FinancialUpdateSectionSchema>
+export type UpdateFinancialSection = z.infer<typeof FinancialUpdateSectionSchema>
 
-export type UpdateAttributes = Partial<GeneralUpdateSection> &
-  Partial<FinancialUpdateSection> & {
+export type UpdateAttributes = Partial<UpdateGeneralSection> &
+  Partial<UpdateFinancialSection> & {
     id: string
     proposal_id: string
     author?: string
@@ -119,5 +119,5 @@ const FinancialRecordSchema = z
   })
 
 export const FinancialUpdateSectionSchema = z.object({
-  financial_records: z.array(FinancialRecordSchema).min(1),
+  financial_records: z.array(FinancialRecordSchema).min(1).nullable(),
 })

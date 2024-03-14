@@ -34,9 +34,9 @@ import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { Topic } from '../entities/SurveyTopic/types'
 import {
-  FinancialUpdateSection,
-  GeneralUpdateSection,
   UpdateAttributes,
+  UpdateFinancialSection,
+  UpdateGeneralSection,
   UpdateResponse,
   UpdateSubmissionDetails,
 } from '../entities/Updates/types'
@@ -259,7 +259,7 @@ export class Governance extends API {
 
   async createProposalUpdate(
     proposal_id: string,
-    update: UpdateSubmissionDetails & GeneralUpdateSection & FinancialUpdateSection
+    update: UpdateSubmissionDetails & UpdateGeneralSection & UpdateFinancialSection
   ) {
     return await this.fetchApiResponse<UpdateAttributes>(`/proposals/${proposal_id}/update`, {
       method: 'POST',
@@ -270,7 +270,7 @@ export class Governance extends API {
 
   async updateProposalUpdate(
     proposal_id: string,
-    update: UpdateSubmissionDetails & GeneralUpdateSection & FinancialUpdateSection
+    update: UpdateSubmissionDetails & UpdateGeneralSection & UpdateFinancialSection
   ) {
     return await this.fetchApiResponse<UpdateAttributes>(`/proposals/${proposal_id}/update`, {
       method: 'PATCH',
