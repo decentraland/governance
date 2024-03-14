@@ -1,8 +1,5 @@
 import { useIntl } from 'react-intl'
 
-import { VestingLog } from '../../clients/VestingData'
-import { UpdateAttributes } from '../../entities/Updates/types'
-import { getFundsReleasedSinceLatestUpdate } from '../../entities/Updates/utils'
 import { CURRENCY_FORMAT_OPTIONS } from '../../helpers'
 import useFormatMessage from '../../hooks/useFormatMessage'
 import { formatDate } from '../../utils/date/Time'
@@ -11,20 +8,21 @@ import FinancialCard from './FinancialCard'
 import './FinancialCardsSection.css'
 
 interface Props {
-  releases?: VestingLog[]
-  previousUpdate?: Omit<UpdateAttributes, 'id' | 'proposal_id'>
-  currentUpdate?: Omit<UpdateAttributes, 'id' | 'proposal_id'>
+  releasedFundsValue: number
+  latestTimestamp?: string
+  txAmount: number
   disclosedFunds: number
+  undisclosedFunds: number
 }
 
-function FinancialCardsSection({ releases, previousUpdate, currentUpdate, disclosedFunds }: Props) {
+function FinancialCardsSection({
+  releasedFundsValue,
+  latestTimestamp,
+  txAmount,
+  disclosedFunds,
+  undisclosedFunds,
+}: Props) {
   const t = useFormatMessage()
-  const {
-    value: releasedFundsValue,
-    txAmount,
-    latestTimestamp,
-  } = getFundsReleasedSinceLatestUpdate(previousUpdate, releases, currentUpdate?.completion_date)
-  const undisclosedFunds = disclosedFunds <= releasedFundsValue ? releasedFundsValue - disclosedFunds : 0
   const { formatNumber } = useIntl()
   return (
     <div className="FinancialCardsSection__CardsContainer">

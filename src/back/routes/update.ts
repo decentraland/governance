@@ -10,8 +10,8 @@ import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import {
   FinancialUpdateSectionSchema,
-  GeneralUpdateSection,
   GeneralUpdateSectionSchema,
+  UpdateGeneralSection,
 } from '../../entities/Updates/types'
 import { isBetweenLateThresholdDate } from '../../entities/Updates/utils'
 import { DiscourseService } from '../../services/DiscourseService'
@@ -74,10 +74,9 @@ async function getProposalUpdateComments(req: Request<{ update_id: string }>) {
 }
 
 const generalSectionValidator = schema.compile(GeneralUpdateSectionSchema)
-async function updateProposalUpdate(req: WithAuth<Request<{ update_id: string }>>) {
-  const id = req.params.update_id
-  const { author, financial_records, ...body } = req.body
-  const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<GeneralUpdateSection>(
+async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
+  const { id, author, financial_records, ...body } = req.body
+  const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<UpdateGeneralSection>(
     generalSectionValidator,
     body
   )
