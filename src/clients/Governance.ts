@@ -250,7 +250,7 @@ export class Governance extends API {
   }
 
   async getProposalUpdate(update_id: string) {
-    return await this.fetchApiResponse<UpdateAttributes>(`/proposals/${update_id}/update`)
+    return await this.fetchApiResponse<UpdateAttributes>(`/updates/${update_id}`)
   }
 
   async getProposalUpdates(proposal_id: string) {
@@ -269,10 +269,10 @@ export class Governance extends API {
   }
 
   async updateProposalUpdate(
-    proposal_id: string,
+    update_id: string,
     update: UpdateSubmissionDetails & GeneralUpdateSection & FinancialUpdateSection
   ) {
-    return await this.fetchApiResponse<UpdateAttributes>(`/proposals/${proposal_id}/update`, {
+    return await this.fetchApiResponse<UpdateAttributes>(`/updates/${update_id}`, {
       method: 'PATCH',
       sign: true,
       json: update,
@@ -280,7 +280,7 @@ export class Governance extends API {
   }
 
   async deleteProposalUpdate(update_id: UpdateAttributes['id']) {
-    return await this.fetchApiResponse<UpdateAttributes>(`/proposals/${update_id}/update`, {
+    return await this.fetchApiResponse<UpdateAttributes>(`/updates/${update_id}`, {
       method: 'DELETE',
       sign: true,
     })
@@ -559,7 +559,7 @@ export class Governance extends API {
   }
 
   async getUpdateComments(update_id: string) {
-    return await this.fetchApiResponse<ProposalCommentsInDiscourse>(`/proposals/${update_id}/update/comments`)
+    return await this.fetchApiResponse<ProposalCommentsInDiscourse>(`/updates/${update_id}/comments`)
   }
 
   async airdropBadge(badgeSpecCid: string, recipients: string[]) {

@@ -13,13 +13,7 @@ import {
   GeneralUpdateSection,
   GeneralUpdateSectionSchema,
 } from '../../entities/Updates/types'
-import {
-  getCurrentUpdate,
-  getNextPendingUpdate,
-  getPendingUpdates,
-  getPublicUpdates,
-  isBetweenLateThresholdDate,
-} from '../../entities/Updates/utils'
+import { isBetweenLateThresholdDate } from '../../entities/Updates/utils'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
 import { FinancialService } from '../../services/FinancialService'
@@ -30,16 +24,14 @@ import { UpdateService } from '../services/update'
 
 export default routes((route) => {
   const withAuth = auth()
-  route.get('/proposals/:proposal/updates', handleAPI(getProposalUpdates))
-  route.get('/proposals/:update/update', handleAPI(getProposalUpdate))
-  route.get('/proposals/:update_id/update/comments', handleAPI(getProposalUpdateComments))
-  route.post('/proposals/:proposal/update', withAuth, handleAPI(createProposalUpdate))
-  route.patch('/proposals/:proposal/update', withAuth, handleAPI(updateProposalUpdate))
-  route.delete('/proposals/:update_id/update', withAuth, handleAPI(deleteProposalUpdate))
+  route.get('/updates/:update_id', handleAPI(getProposalUpdate))
+  route.patch('/updates/:update_id', withAuth, handleAPI(updateProposalUpdate))
+  route.delete('/updates/:update_id', withAuth, handleAPI(deleteProposalUpdate))
+  route.get('/updates/:update_id/comments', handleAPI(getProposalUpdateComments))
 })
 
-async function getProposalUpdate(req: Request<{ update: string }>) {
-  const id = req.params.update
+async function getProposalUpdate(req: Request<{ update_id: string }>) {
+  const id = req.params.update_id
 
   if (!id) {
     throw new RequestError(`Missing id`, RequestError.NotFound)
@@ -52,27 +44,6 @@ async function getProposalUpdate(req: Request<{ update: string }>) {
   }
 
   return update
-}
-
-async function getProposalUpdates(req: Request<{ proposal: string }>) {
-  const proposal_id = req.params.proposal
-
-  if (!proposal_id) {
-    throw new RequestError(`Proposal not found: "${proposal_id}"`, RequestError.NotFound)
-  }
-
-  const updates = await UpdateService.getAllByProposalId(proposal_id)
-  const publicUpdates = getPublicUpdates(updates)
-  const nextUpdate = getNextPendingUpdate(updates)
-  const currentUpdate = getCurrentUpdate(updates)
-  const pendingUpdates = getPendingUpdates(updates)
-
-  return {
-    publicUpdates,
-    pendingUpdates,
-    nextUpdate,
-    currentUpdate,
-  }
 }
 
 async function getProposalUpdateComments(req: Request<{ update_id: string }>) {
@@ -103,40 +74,9 @@ async function getProposalUpdateComments(req: Request<{ update_id: string }>) {
 }
 
 const generalSectionValidator = schema.compile(GeneralUpdateSectionSchema)
-async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
+async function updateProposalUpdate(req: WithAuth<Request<{ update_id: string }>>) {
+  const id = req.params.update_id
   const { author, financial_records, ...body } = req.body
-  const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<GeneralUpdateSection>(
-    generalSectionValidator,
-    body
-  )
-  const parsedResult = FinancialUpdateSectionSchema.safeParse({ financial_records })
-  if (!parsedResult.success) {
-    ErrorService.report('Submission of invalid financial records', {
-      error: parsedResult.error,
-      category: ErrorCategory.Financial,
-    })
-    throw new RequestError(`Invalid financial records`, RequestError.BadRequest)
-  }
-  const parsedRecords = parsedResult.data.financial_records
-
-  return await UpdateService.create(
-    {
-      proposal_id: req.params.proposal,
-      author,
-      health,
-      introduction,
-      highlights,
-      blockers,
-      next_steps,
-      additional_notes,
-      financial_records: parsedRecords,
-    },
-    req.auth!
-  )
-}
-
-async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
-  const { id, author, financial_records, ...body } = req.body
   const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<GeneralUpdateSection>(
     generalSectionValidator,
     body
@@ -147,7 +87,6 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
   }
   const parsedRecords = parsedResult.data.financial_records
   const update = await UpdateService.getById(id)
-  const proposalId = req.params.proposal
 
   if (!update) {
     throw new RequestError(`Update not found: "${id}"`, RequestError.NotFound)
@@ -155,9 +94,9 @@ async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
 
   const user = req.auth
 
-  const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: req.params.proposal })
+  const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: update.proposal_id })
   const isAuthorOrCoauthor =
-    user && (proposal?.user === user || (await CoauthorService.isCoauthor(proposalId, user))) && author === user
+    user && (proposal?.user === user || (await CoauthorService.isCoauthor(update.proposal_id, user))) && author === user
 
   if (!proposal || !isAuthorOrCoauthor) {
     throw new RequestError(`Unauthorized`, RequestError.Forbidden)
