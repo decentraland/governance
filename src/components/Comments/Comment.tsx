@@ -100,9 +100,9 @@ export default function Comment({
               <Text className="Comment__ExtraInfo" weight="bold" as="span">
                 {formatter(extraInfo.vp)} VP
               </Text>
+              ,
             </>
           )}
-          ,
           <DateTooltip date={Time(createdAt).toDate()}>
             <Text color="secondary" as="span">
               {Time.from(createdAt).fromNow()}
