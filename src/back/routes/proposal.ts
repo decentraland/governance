@@ -136,8 +136,8 @@ export default routes((route) => {
   route.patch('/proposals/:proposal', withAuth, handleAPI(updateProposalStatus))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
   route.get('/proposals/:proposal/comments', handleAPI(getProposalComments))
-  route.get('/proposals/:proposal_id/updates', handleAPI(getProposalUpdates))
-  route.post('/proposals/:proposal_id/update', withAuth, handleAPI(createProposalUpdate))
+  route.get('/proposals/:proposal/updates', handleAPI(getProposalUpdates))
+  route.post('/proposals/:proposal/update', withAuth, handleAPI(createProposalUpdate))
   route.get('/proposals/linked-wearables/image', handleAPI(checkImage))
 })
 
@@ -780,6 +780,6 @@ async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>
       error,
       category: ErrorCategory.Update,
     })
-    throw new RequestError(`Something wnt wrong: ${error}`, RequestError.InternalServerError)
+    throw new RequestError(`Something went wrong: ${error}`, RequestError.InternalServerError)
   }
 }

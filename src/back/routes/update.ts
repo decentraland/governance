@@ -74,8 +74,9 @@ async function getProposalUpdateComments(req: Request<{ update_id: string }>) {
 }
 
 const generalSectionValidator = schema.compile(GeneralUpdateSectionSchema)
-async function updateProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
-  const { id, author, financial_records, ...body } = req.body
+async function updateProposalUpdate(req: WithAuth<Request<{ update_id: string }>>) {
+  const id = req.params.update_id
+  const { author, financial_records, ...body } = req.body
   const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<UpdateGeneralSection>(
     generalSectionValidator,
     body
