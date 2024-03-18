@@ -156,7 +156,7 @@ export default function Update({ isEdit }: Props) {
 
     try {
       if (updateId) {
-        await Governance.get().updateProposalUpdate(proposalId, { id: updateId, ...newUpdate })
+        await Governance.get().updateProposalUpdate(updateId, newUpdate)
         if (isEdit) {
           setIsEditModalOpen(false)
         }

@@ -213,11 +213,22 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/200'
-  /proposals/{update}/update:
+  /updates/{update}:
     get:
       tags:
         - Grant Updates
       summary: Get the update details from the given update ID
+      parameters:
+        - name: update
+          $ref: '#/components/parameters/updateId'
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+  /updates/{update}/comments:
+    get:
+      tags:
+        - Grant Updates
+      summary: Get the update comments from the given update ID
       parameters:
         - name: update
           $ref: '#/components/parameters/updateId'

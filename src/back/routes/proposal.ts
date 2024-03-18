@@ -83,11 +83,27 @@ import { SNAPSHOT_DURATION } from '../../entities/Snapshot/constants'
 import { isSameAddress } from '../../entities/Snapshot/utils'
 import { validateUniqueAddresses } from '../../entities/Transparency/utils'
 import UpdateModel from '../../entities/Updates/model'
+import {
+  FinancialRecord,
+  FinancialUpdateSectionSchema,
+  GeneralUpdateSectionSchema,
+  UpdateGeneralSection,
+} from '../../entities/Updates/types'
+import {
+  getCurrentUpdate,
+  getFundsReleasedSinceLatestUpdate,
+  getLatestUpdate,
+  getNextPendingUpdate,
+  getPendingUpdates,
+  getPublicUpdates,
+  getReleases,
+} from '../../entities/Updates/utils'
 import BidService from '../../services/BidService'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
 import { ProjectService } from '../../services/ProjectService'
 import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
+import { VestingService } from '../../services/VestingService'
 import { getProfile } from '../../utils/Catalyst'
 import Time from '../../utils/date/Time'
 import { ErrorCategory } from '../../utils/errorCategories'
@@ -95,6 +111,7 @@ import { isProdEnv } from '../../utils/governanceEnvs'
 import logger from '../../utils/logger'
 import { DclNotificationService } from '../services/dcl-notification'
 import { NotificationService } from '../services/notification'
+import { UpdateService } from '../services/update'
 import { validateAddress, validateProposalId } from '../utils/validations'
 
 export default routes((route) => {
@@ -119,6 +136,8 @@ export default routes((route) => {
   route.patch('/proposals/:proposal', withAuth, handleAPI(updateProposalStatus))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
   route.get('/proposals/:proposal/comments', handleAPI(getProposalComments))
+  route.get('/proposals/:proposal/updates', handleAPI(getProposalUpdates))
+  route.post('/proposals/:proposal/update', withAuth, handleAPI(createProposalUpdate))
   route.get('/proposals/linked-wearables/image', handleAPI(checkImage))
 })
 
@@ -682,4 +701,85 @@ async function checkImage(req: Request) {
         resolve(false)
       })
   })
+}
+
+async function getProposalUpdates(req: Request<{ proposal_id: string }>) {
+  const proposal_id = req.params.proposal_id
+
+  if (!proposal_id) {
+    throw new RequestError(`Proposal not found: "${proposal_id}"`, RequestError.NotFound)
+  }
+
+  const updates = await UpdateService.getAllByProposalId(proposal_id)
+  const publicUpdates = getPublicUpdates(updates)
+  const nextUpdate = getNextPendingUpdate(updates)
+  const currentUpdate = getCurrentUpdate(updates)
+  const pendingUpdates = getPendingUpdates(updates)
+
+  return {
+    publicUpdates,
+    pendingUpdates,
+    nextUpdate,
+    currentUpdate,
+  }
+}
+
+function parseFinancialRecords(financial_records: unknown) {
+  const parsedResult = FinancialUpdateSectionSchema.safeParse({ financial_records })
+  if (!parsedResult.success) {
+    ErrorService.report('Submission of invalid financial records', {
+      error: parsedResult.error,
+      category: ErrorCategory.Financial,
+    })
+    throw new RequestError(`Invalid financial records`, RequestError.BadRequest)
+  }
+  return parsedResult.data.financial_records
+}
+
+async function validateFinancialRecords(
+  proposal: ProposalAttributes,
+  financial_records: unknown
+): Promise<FinancialRecord[] | null> {
+  const [vestingData, updates] = await Promise.all([
+    VestingService.getVestingInfo(proposal.vesting_addresses),
+    UpdateService.getAllByProposalId(proposal.id),
+  ])
+
+  const releases = vestingData ? getReleases(vestingData) : undefined
+  const publicUpdates = getPublicUpdates(updates)
+  const latestUpdate = getLatestUpdate(publicUpdates || [])
+  const { releasedFunds } = getFundsReleasedSinceLatestUpdate(latestUpdate, releases)
+  return releasedFunds > 0 ? parseFinancialRecords(financial_records) : null
+}
+
+async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
+  const { author, financial_records, ...body } = req.body
+  const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<UpdateGeneralSection>(
+    schema.compile(GeneralUpdateSectionSchema),
+    body
+  )
+  try {
+    const proposal = await getProposal(req)
+    const financialRecords = await validateFinancialRecords(proposal, financial_records)
+    return await UpdateService.create(
+      {
+        proposal_id: req.params.proposal,
+        author,
+        health,
+        introduction,
+        highlights,
+        blockers,
+        next_steps,
+        additional_notes,
+        financial_records: financialRecords,
+      },
+      req.auth!
+    )
+  } catch (error) {
+    ErrorService.report('Error creating update', {
+      error,
+      category: ErrorCategory.Update,
+    })
+    throw new RequestError(`Something went wrong: ${error}`, RequestError.InternalServerError)
+  }
 }
