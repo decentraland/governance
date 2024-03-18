@@ -213,6 +213,27 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/200'
+  /updates/financials:
+    get:
+      tags:
+        - Grant Updates
+      summary: Get all financial records
+      parameters:
+        - name: page_size
+          in: query
+          description: Page size
+          schema:
+            $ref: '#/components/schemas/limitOffset'
+        - name: page_number
+          in: query
+          description: Page number
+          schema:
+            $ref: '#/components/schemas/limitOffset'
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+        '400':
+          $ref: '#/components/responses/400'
   /updates/{update}:
     get:
       tags:

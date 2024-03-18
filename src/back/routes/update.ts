@@ -24,11 +24,25 @@ import { UpdateService } from '../services/update'
 
 export default routes((route) => {
   const withAuth = auth()
+  route.get('/updates/financials', handleAPI(getAllFinancialRecords))
   route.get('/updates/:update_id', handleAPI(getProposalUpdate))
   route.patch('/updates/:update_id', withAuth, handleAPI(updateProposalUpdate))
   route.delete('/updates/:update_id', withAuth, handleAPI(deleteProposalUpdate))
   route.get('/updates/:update_id/comments', handleAPI(getProposalUpdateComments))
 })
+
+async function getAllFinancialRecords(req: Request<{ page_number: string; page_size: string }>) {
+  const page_number = Number(req.query.page_number) || 0
+  const page_size = Number(req.query.page_size) || 10
+  if (page_number < 0 || page_size < 0) {
+    throw new RequestError('Invalid page_number or page_size', RequestError.BadRequest)
+  }
+  if (page_size > 100) {
+    throw new RequestError('page_size must be less or equal than 100', RequestError.BadRequest)
+  }
+
+  return await FinancialService.getAll(page_number, page_size)
+}
 
 async function getProposalUpdate(req: Request<{ update_id: string }>) {
   const id = req.params.update_id
