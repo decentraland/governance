@@ -5,6 +5,8 @@ import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import validate from 'decentraland-gatsby/dist/entities/Route/validate'
 import schema from 'decentraland-gatsby/dist/entities/Schema'
 import { Request } from 'express'
+import isNaN from 'lodash/isNaN'
+import toNumber from 'lodash/toNumber'
 
 import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
@@ -32,16 +34,18 @@ export default routes((route) => {
 })
 
 async function getAllFinancialRecords(req: Request<{ page_number: string; page_size: string }>) {
-  const page_number = Number(req.query.page_number) || 0
-  const page_size = Number(req.query.page_size) || 10
-  if (page_number < 0 || page_size < 0) {
+  const pageNumberParam = toNumber(req.query.page_number)
+  const pageSizeParam = toNumber(req.query.page_size)
+  const pageNumber = !isNaN(pageNumberParam) ? pageNumberParam : 0
+  const pageSize = !isNaN(pageSizeParam) ? pageSizeParam : 10
+  if (pageNumber < 0 || pageSize < 0) {
     throw new RequestError('Invalid page_number or page_size', RequestError.BadRequest)
   }
-  if (page_size > 100) {
+  if (pageSize > 100) {
     throw new RequestError('page_size must be less or equal than 100', RequestError.BadRequest)
   }
 
-  return await FinancialService.getAll(page_number, page_size)
+  return await FinancialService.getAll(pageNumber, pageSize)
 }
 
 async function getProposalUpdate(req: Request<{ update_id: string }>) {
