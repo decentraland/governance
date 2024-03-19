@@ -703,8 +703,8 @@ async function checkImage(req: Request) {
   })
 }
 
-async function getProposalUpdates(req: Request<{ proposal_id: string }>) {
-  const proposal_id = req.params.proposal_id
+async function getProposalUpdates(req: Request<{ proposal: string }>) {
+  const proposal_id = req.params.proposal
 
   if (!proposal_id) {
     throw new RequestError(`Proposal not found: "${proposal_id}"`, RequestError.NotFound)
