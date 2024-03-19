@@ -151,7 +151,7 @@ export default function Update({ isEdit }: Props) {
       blockers: data.blockers,
       next_steps: data.next_steps,
       additional_notes: data.additional_notes,
-      financial_records: data.financial_records,
+      financial_records: data.financial_records?.length ? data.financial_records : null,
     }
 
     try {

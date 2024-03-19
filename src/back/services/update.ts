@@ -191,7 +191,7 @@ export class UpdateService {
       newUpdate
 
     const records = financial_records || update.financial_records
-    if (records) await FinancialService.createRecords(update.id, records)
+    if (records && records.length > 0) await FinancialService.createRecords(update.id, records)
 
     await UpdateModel.update<UpdateAttributes>(
       {
