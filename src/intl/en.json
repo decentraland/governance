@@ -795,6 +795,11 @@
       "title": "Receive DAO Notifications in Discord!",
       "description": "Receive real-time, governance-related notifications directly in your Discord inbox.",
       "button_label": "Link Discord Account"
+    },
+    "connect_accounts": {
+      "title": "Stay Updated, Wherever You Are",
+      "description": "Connect your Discord and Push accounts to receive real-time notifications about the latest news in the Decentraland DAO",
+      "button_label": "Connect your accounts"
     }
   },
   "component": {

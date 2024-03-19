@@ -1,6 +1,7 @@
 import useIsDiscordLinked from '../../hooks/useIsDiscordLinked'
 import useNewsletterSubscription from '../../hooks/useNewsletterSubscription'
 
+import ConnectAccountsBanner, { shouldShowConnectAccountsBanner } from './ConnectAccountsBanner'
 import DelegationBanner, { shouldShowDelegationBanner } from './DelegationBanner'
 import LinkDiscordBanner, { shouldShowLinkDiscordBanner } from './LinkDiscordBanner'
 import SubscriptionBanner from './SubscriptionBanner'
@@ -21,6 +22,10 @@ function RandomBanner({ isVisible }: Props) {
 
   if (shouldShowLinkDiscordBanner() && !isDiscordLinked && !isLoadingIsDiscordLinked) {
     return <LinkDiscordBanner />
+  }
+
+  if (shouldShowConnectAccountsBanner()) {
+    return <ConnectAccountsBanner />
   }
 
   const delegationBanner = <DelegationBanner />
