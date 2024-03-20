@@ -23,7 +23,7 @@ interface Props {
 const ACCOUNT_ICON: Record<AccountType, React.ReactNode> = {
   [AccountType.Forum]: <ForumBlue />,
   [AccountType.Discord]: <Discord size={90} color="var(--blue-900)" />,
-  [AccountType.Twitter]: <></>,
+  [AccountType.Push]: <></>,
 }
 
 function PostConnection({ address, isValidated, account, onPostAction }: Props) {

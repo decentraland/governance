@@ -11,16 +11,11 @@ import './UnsubscribedView.css'
 interface Props {
   unsubscribedKey: string
   isSubscribing: boolean
-  handleSubscribeUserToChannel: () => void
-  handleDiscordConnect: () => void
+  onSubscribeUserToChannel: () => void
+  onDiscordConnect?: () => void
 }
 
-function UnsubscribedView({
-  unsubscribedKey,
-  isSubscribing,
-  handleSubscribeUserToChannel,
-  handleDiscordConnect,
-}: Props) {
+function UnsubscribedView({ unsubscribedKey, isSubscribing, onSubscribeUserToChannel, onDiscordConnect }: Props) {
   const t = useFormatMessage()
   const UnsubscribedIcon = isSubscribing ? SignGray : NotificationBellInactive
   return (
@@ -32,12 +27,14 @@ function UnsubscribedView({
       <Text className="NotificationsFeed__UnsubscribedViewText">
         {t(`navigation.notifications.${unsubscribedKey}.description`)}
       </Text>
-      <Button size="small" primary disabled={isSubscribing} onClick={handleSubscribeUserToChannel}>
+      <Button size="small" primary disabled={isSubscribing} onClick={onSubscribeUserToChannel}>
         {t(`navigation.notifications.${unsubscribedKey}.button`)}
       </Button>
-      <Button size="small" basic disabled={isSubscribing} onClick={handleDiscordConnect}>
-        {t(`navigation.notifications.unsubscribed.discord`)}
-      </Button>
+      {onDiscordConnect && (
+        <Button size="small" basic disabled={isSubscribing} onClick={onDiscordConnect}>
+          {t(`navigation.notifications.unsubscribed.discord`)}
+        </Button>
+      )}
     </div>
   )
 }

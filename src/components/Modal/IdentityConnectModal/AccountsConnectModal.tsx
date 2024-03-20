@@ -1,11 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
+import { Web3Provider } from '@ethersproject/providers'
+import * as PushAPI from '@pushprotocol/restapi'
 import { useQueryClient } from '@tanstack/react-query'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
+import { PUSH_CHANNEL_ID } from '../../../constants'
 import { SegmentEvent } from '../../../entities/Events/types'
 import { GATSBY_DISCORD_PROFILE_VERIFICATION_URL } from '../../../entities/User/constants'
 import { AccountType } from '../../../entities/User/types'
@@ -15,15 +19,17 @@ import useFormatMessage, { FormatMessageFunction } from '../../../hooks/useForma
 import useForumConnect, { THREAD_URL } from '../../../hooks/useForumConnect'
 import useIsProfileValidated from '../../../hooks/useIsProfileValidated'
 import locations, { navigate } from '../../../utils/locations'
+import { getCaipAddress, getPushNotificationsEnv } from '../../../utils/notifications'
 import { ActionCardProps } from '../../ActionCard/ActionCard'
 import CheckCircle from '../../Icon/CheckCircle'
 import CircledDiscord from '../../Icon/CircledDiscord'
 import CircledForum from '../../Icon/CircledForum'
-import CircledTwitter from '../../Icon/CircledTwitter'
+import CircledPush from '../../Icon/CircledPush'
 import Comment from '../../Icon/Comment'
 import Copy from '../../Icon/Copy'
 import Lock from '../../Icon/Lock'
 import Sign from '../../Icon/Sign'
+import UnsubscribedView from '../../Notifications/NotificationsFeedView/UnsubscribedView'
 
 import AccountConnection, { AccountConnectionProps } from './AccountConnection'
 import './AccountsConnectModal.css'
@@ -40,6 +46,7 @@ enum ModalType {
   ChooseAccount,
   Forum,
   Discord,
+  Push,
 }
 
 type ModalState = {
@@ -94,7 +101,7 @@ const STEPS_HELPERS_KEYS: Record<AccountType, Record<number, CardHelperKeys>> = 
       success: GATSBY_DISCORD_PROFILE_VERIFICATION_URL,
     },
   },
-  [AccountType.Twitter]: {},
+  [AccountType.Push]: {},
 }
 
 const FORUM_CONNECT_STEPS_AMOUNT = 3
@@ -298,8 +305,7 @@ function AccountsConnectModal({ open, onClose, account }: Props) {
   const handleForumValidate = useCallback(() => {
     setIsValidating(true)
     openForumThread()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [openForumThread])
 
   const handleDiscordSign = useCallback(async () => {
     const STEP_NUMBER = 1
@@ -329,8 +335,11 @@ function AccountsConnectModal({ open, onClose, account }: Props) {
   const handleDiscordValidate = useCallback(() => {
     setIsValidating(true)
     openDiscordChannel()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [openDiscordChannel])
+
+  const initializePush = () => {
+    setModalState((prev) => ({ ...prev, currentType: ModalType.Push }))
+  }
 
   const stateMap = useMemo<Record<ModalType, AccountModal>>(
     () => ({
@@ -350,12 +359,12 @@ function AccountsConnectModal({ open, onClose, account }: Props) {
             icon: <CircledDiscord />,
             onCardClick: initializeDiscord,
             isVerified: isValidatedOnDiscord,
-            isNew: true,
           },
           {
-            title: t('modal.identity_setup.twitter.card_title'),
-            description: t('modal.identity_setup.twitter.card_description'),
-            icon: <CircledTwitter />,
+            title: t('modal.identity_setup.push.card_title'),
+            description: t('modal.identity_setup.push.card_description'),
+            icon: <CircledPush />,
+            onCardClick: initializePush,
           },
         ],
       },
@@ -396,6 +405,13 @@ function AccountsConnectModal({ open, onClose, account }: Props) {
         button: getModalButton(t('modal.identity_setup.discord.action'), modalState.isValidating),
         helperText: t(getHelperTextKey(modalState.currentStep, AccountType.Discord)),
       },
+      [ModalType.Push]: {
+        title: '',
+        subtitle: '',
+        actions: [],
+        button: <></>,
+        helperText: '',
+      },
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
@@ -418,7 +434,7 @@ function AccountsConnectModal({ open, onClose, account }: Props) {
 
   const queryClient = useQueryClient()
 
-  const handleOnClose = () => {
+  const handleClose = () => {
     resetValidation()
     setIsTimerActive(false)
     resetState(currentAccount)
@@ -438,41 +454,82 @@ function AccountsConnectModal({ open, onClose, account }: Props) {
   const handlePostAction = () => {
     if (isValidated) {
       navigate(locations.profile({ address: address || '' }))
-      handleOnClose()
+      handleClose()
     } else {
       resetValidation()
       setModalState(INITIAL_STATE)
     }
   }
 
+  const [user, userState] = useAuthContext()
+  const chainId = userState.chainId || ChainId.ETHEREUM_GOERLI
+  const env = getPushNotificationsEnv(chainId)
+
+  const handleSubscribeUserToChannel = async () => {
+    if (!user || !userState.provider) {
+      return
+    }
+
+    setIsSubscribing(true)
+    const signer = new Web3Provider(userState.provider).getSigner()
+
+    await PushAPI.channels.subscribe({
+      signer,
+      channelAddress: getCaipAddress(PUSH_CHANNEL_ID, chainId),
+      userAddress: getCaipAddress(user, chainId),
+      onSuccess: () => {},
+      env,
+    })
+
+    setIsSubscribing(false)
+    setModalState(INITIAL_STATE)
+  }
+
   const timerTextKey = isTimerExpired ? 'modal.identity_setup.timer_expired' : 'modal.identity_setup.timer'
+  const [isSubscribing, setIsSubscribing] = useState(false)
+  const unsubscribedKey = isSubscribing ? 'subscribing' : 'unsubscribed'
 
   return (
-    <Modal open={open} size="tiny" onClose={handleOnClose} closeIcon={<Close />}>
-      {isValidated === undefined ? (
-        <AccountConnection
-          title={stateMap[currentType].title}
-          subtitle={stateMap[currentType].subtitle}
-          timerText={
-            modalState.isTimerActive
-              ? t(timerTextKey, {
-                  time: getTimeFormatted(time),
-                })
-              : undefined
-          }
-          actions={stateMap[currentType].actions}
-          button={stateMap[currentType].button}
-          helperText={
-            modalState.isValidating ? t('modal.identity_setup.forum.helper_loading') : stateMap[currentType].helperText
-          }
-        />
-      ) : (
-        <PostConnection
-          account={currentAccount}
-          address={address || undefined}
-          isValidated={isValidated}
-          onPostAction={handlePostAction}
-        />
+    <Modal open={open} size="tiny" onClose={handleClose} closeIcon={<Close />}>
+      {modalState.currentType === ModalType.Push && (
+        <div className="AccountsConnectModal__PushState">
+          <UnsubscribedView
+            unsubscribedKey={unsubscribedKey}
+            isSubscribing={isSubscribing}
+            onSubscribeUserToChannel={handleSubscribeUserToChannel}
+          />
+        </div>
+      )}
+      {modalState.currentType !== ModalType.Push && (
+        <>
+          {isValidated === undefined ? (
+            <AccountConnection
+              title={stateMap[currentType].title}
+              subtitle={stateMap[currentType].subtitle}
+              timerText={
+                modalState.isTimerActive
+                  ? t(timerTextKey, {
+                      time: getTimeFormatted(time),
+                    })
+                  : undefined
+              }
+              actions={stateMap[currentType].actions}
+              button={stateMap[currentType].button}
+              helperText={
+                modalState.isValidating
+                  ? t('modal.identity_setup.forum.helper_loading')
+                  : stateMap[currentType].helperText
+              }
+            />
+          ) : (
+            <PostConnection
+              account={currentAccount}
+              address={address || undefined}
+              isValidated={isValidated}
+              onPostAction={handlePostAction}
+            />
+          )}
+        </>
       )}
     </Modal>
   )

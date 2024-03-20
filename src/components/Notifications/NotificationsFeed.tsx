@@ -210,8 +210,8 @@ export default function NotificationsFeed({
             <UnsubscribedView
               unsubscribedKey={unsubscribedKey}
               isSubscribing={isSubscribing}
-              handleSubscribeUserToChannel={handleSubscribeUserToChannel}
-              handleDiscordConnect={() => setShowDiscordConnect(true)}
+              onSubscribeUserToChannel={handleSubscribeUserToChannel}
+              onDiscordConnect={() => setShowDiscordConnect(true)}
             />
           )}
           {showDiscordConnect && (

@@ -749,9 +749,9 @@
         "error_subtext": "Maybe have a go at it one more time?",
         "error_button": "Retry"
       },
-      "twitter": {
-        "card_title": "Twitter",
-        "card_description": "Let the world know that you are behind those witty tweets about the Metaverse."
+      "push": {
+        "card_title": "Push Notifications",
+        "card_description": "Receive notifications in your wallet or on any platform using this native web3 protocol"
       },
       "soon": "Soon",
       "verified": "Verified"
