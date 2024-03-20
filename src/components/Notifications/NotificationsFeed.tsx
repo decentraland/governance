@@ -28,7 +28,6 @@ import DiscordView from './NotificationsFeedView/DiscordView'
 import EmptyView from './NotificationsFeedView/EmptyView'
 import ListView from './NotificationsFeedView/ListView'
 import SettingsView from './NotificationsFeedView/SettingsView'
-import UnsubscribedView from './NotificationsFeedView/UnsubscribedView'
 
 import './NotificationsFeed.css'
 
@@ -169,7 +168,6 @@ export default function NotificationsFeed({
   const showNotifications =
     isSubscribed && !isLoadingNotifications && hasNotifications && !isSettingsOpened && !showDiscordConnect
   const showLoadMoreButton = filteredNotifications?.length !== userNotifications?.length
-  const unsubscribedKey = isSubscribing ? 'subscribing' : 'unsubscribed'
   const isLoading =
     isLoadingSubscriptions ||
     isRefetchingSubscriptions ||
@@ -206,14 +204,7 @@ export default function NotificationsFeed({
       </div>
       {!isLoading && (
         <div className="NotificationsFeed__Content">
-          {showUnsubscribedView && (
-            <UnsubscribedView
-              unsubscribedKey={unsubscribedKey}
-              isSubscribing={isSubscribing}
-              onSubscribeUserToChannel={handleSubscribeUserToChannel}
-              onDiscordConnect={() => setShowDiscordConnect(true)}
-            />
-          )}
+          {showUnsubscribedView && null}
           {showDiscordConnect && (
             <DiscordConnectView onJoinDiscord={handleDiscordConnect} onAlreadyJoined={handleDiscordConnect} />
           )}

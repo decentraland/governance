@@ -1,15 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
-import { Web3Provider } from '@ethersproject/providers'
-import * as PushAPI from '@pushprotocol/restapi'
 import { useQueryClient } from '@tanstack/react-query'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
-import { PUSH_CHANNEL_ID } from '../../../constants'
 import { SegmentEvent } from '../../../entities/Events/types'
 import { GATSBY_DISCORD_PROFILE_VERIFICATION_URL } from '../../../entities/User/constants'
 import { AccountType } from '../../../entities/User/types'
@@ -19,7 +15,6 @@ import useFormatMessage, { FormatMessageFunction } from '../../../hooks/useForma
 import useForumConnect, { THREAD_URL } from '../../../hooks/useForumConnect'
 import useIsProfileValidated from '../../../hooks/useIsProfileValidated'
 import locations, { navigate } from '../../../utils/locations'
-import { getCaipAddress, getPushNotificationsEnv } from '../../../utils/notifications'
 import { ActionCardProps } from '../../ActionCard/ActionCard'
 import CheckCircle from '../../Icon/CheckCircle'
 import CircledDiscord from '../../Icon/CircledDiscord'
@@ -461,43 +456,13 @@ function AccountsConnectModal({ open, onClose, account }: Props) {
     }
   }
 
-  const [user, userState] = useAuthContext()
-  const chainId = userState.chainId || ChainId.ETHEREUM_GOERLI
-  const env = getPushNotificationsEnv(chainId)
-
-  const handleSubscribeUserToChannel = async () => {
-    if (!user || !userState.provider) {
-      return
-    }
-
-    setIsSubscribing(true)
-    const signer = new Web3Provider(userState.provider).getSigner()
-
-    await PushAPI.channels.subscribe({
-      signer,
-      channelAddress: getCaipAddress(PUSH_CHANNEL_ID, chainId),
-      userAddress: getCaipAddress(user, chainId),
-      onSuccess: () => {},
-      env,
-    })
-
-    setIsSubscribing(false)
-    setModalState(INITIAL_STATE)
-  }
-
   const timerTextKey = isTimerExpired ? 'modal.identity_setup.timer_expired' : 'modal.identity_setup.timer'
-  const [isSubscribing, setIsSubscribing] = useState(false)
-  const unsubscribedKey = isSubscribing ? 'subscribing' : 'unsubscribed'
 
   return (
     <Modal open={open} size="tiny" onClose={handleClose} closeIcon={<Close />}>
       {modalState.currentType === ModalType.Push && (
         <div className="AccountsConnectModal__PushState">
-          <UnsubscribedView
-            unsubscribedKey={unsubscribedKey}
-            isSubscribing={isSubscribing}
-            onSubscribeUserToChannel={handleSubscribeUserToChannel}
-          />
+          <UnsubscribedView onSubscribeUserToChannel={handleClose} />
         </div>
       )}
       {modalState.currentType !== ModalType.Push && (
