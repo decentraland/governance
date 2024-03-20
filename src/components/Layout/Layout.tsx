@@ -25,6 +25,7 @@ import useDclFeatureFlags from '../../hooks/useDclFeatureFlags'
 import useDclProfile from '../../hooks/useDclProfile'
 import { FeatureFlags } from '../../utils/features'
 import { fetchManaBalance } from '../../utils/mana'
+import AccountLinkToast from '../AccountLinkToast/AccountLinkToast'
 import ExternalLinkWarningModal from '../Modal/ExternalLinkWarningModal'
 import { LinkDiscordModal } from '../Modal/LinkDiscordModal/LinkDiscordModal'
 import WalletSelectorModal from '../Modal/WalletSelectorModal'
@@ -192,6 +193,7 @@ export default function Layout({ children }: LayoutProps) {
       />
       <LinkDiscordModal />
       <ExternalLinkWarningModal />
+      <AccountLinkToast />
       <Footer locale="en" locales={['en']} isFullWidth={false} className="WiderFooter" />
     </>
   )
