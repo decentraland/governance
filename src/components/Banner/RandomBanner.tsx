@@ -3,7 +3,6 @@ import useNewsletterSubscription from '../../hooks/useNewsletterSubscription'
 
 import ConnectAccountsBanner, { shouldShowConnectAccountsBanner } from './ConnectAccountsBanner'
 import DelegationBanner, { shouldShowDelegationBanner } from './DelegationBanner'
-import LinkDiscordBanner, { shouldShowLinkDiscordBanner } from './LinkDiscordBanner'
 import SubscriptionBanner from './SubscriptionBanner'
 
 interface Props {
@@ -14,14 +13,10 @@ const randomNumber = new Date().valueOf()
 
 function RandomBanner({ isVisible }: Props) {
   const { showSubscriptionBanner } = useNewsletterSubscription()
-  const { isDiscordLinked, isLoadingIsDiscordLinked } = useIsDiscordLinked()
+  const { isLoadingIsDiscordLinked } = useIsDiscordLinked()
 
   if (!isVisible || isLoadingIsDiscordLinked) {
     return null
-  }
-
-  if (shouldShowLinkDiscordBanner() && !isDiscordLinked && !isLoadingIsDiscordLinked) {
-    return <LinkDiscordBanner />
   }
 
   if (shouldShowConnectAccountsBanner()) {
