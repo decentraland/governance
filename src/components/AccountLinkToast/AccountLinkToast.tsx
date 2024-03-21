@@ -1,29 +1,31 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import classNames from 'classnames'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Toast } from 'decentraland-ui/dist/components/Toast/Toast'
 
 import useFormatMessage from '../../hooks/useFormatMessage'
-import useIsProfileValidated from '../../hooks/useIsProfileValidated'
 import Text from '../Common/Typography/Text'
 import BellPurple from '../Icon/BellPurple'
-import AccountsConnectModal from '../Modal/IdentityConnectModal/AccountsConnectModal'
 
 import './AccountLinkToast.css'
 
-function AccountLinkToast() {
-  const [isVisible, setIsVisible] = useState(true)
-  const [isSetUpOpen, setIsSetUpOpen] = useState(false)
-  const [user] = useAuthContext()
-  const { isProfileValidated, validationChecked } = useIsProfileValidated(user) // TODO: use Discord & Push
+interface Props {
+  show: boolean
+  setIsModalOpen: (value: boolean) => void
+}
+
+function AccountLinkToast({ show, setIsModalOpen }: Props) {
+  const [isVisible, setIsVisible] = useState(false)
+  useEffect(() => {
+    setIsVisible(show)
+  }, [show])
+
   const t = useFormatMessage()
-  const showToast = validationChecked && !isProfileValidated && isVisible
   return (
     <>
       <Toast
-        className={classNames('AccountLinkToast', { 'AccountLinkToast--hidden': !showToast })}
+        className={classNames('AccountLinkToast', { 'AccountLinkToast--hidden': !isVisible })}
         title={
           <span className="AccountLinkToast__Title">
             <BellPurple />
@@ -40,7 +42,7 @@ function AccountLinkToast() {
             <Button
               className="AccountLinkToast__Button"
               onClick={() => {
-                setIsSetUpOpen(true)
+                setIsModalOpen(true)
                 setIsVisible(false)
               }}
             >
@@ -51,7 +53,6 @@ function AccountLinkToast() {
         closable
         onClose={() => setIsVisible(false)}
       />
-      <AccountsConnectModal open={isSetUpOpen} onClose={() => setIsSetUpOpen(false)} />
     </>
   )
 }
