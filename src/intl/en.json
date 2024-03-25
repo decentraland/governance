@@ -66,15 +66,13 @@
         "discord_title": "Discord Notifications",
         "discord_description": "Get direct messages from Marvin when something relavant to you happens"
       },
-      "unsubscribed": {
-        "title": "Don't miss a beat",
-        "description": "We rely on a 3rd party service that you’ll have to opt-in to in order to proceed.",
-        "button": "In-app notifications",
-        "discord": "Discord notifications"
+      "error": {
+        "description": "Signature request failed",
+        "button": "Retry signature"
       },
       "subscribing": {
-        "title": "Setting up notifications",
-        "description": "Before we begin populating your inbox, we need you to sign a transaction...",
+        "title": "Subscribe to Push Notifications",
+        "description": "Sign the message request with your wallet to subscribe to the DCL DAO Push Notifications channel",
         "button": "Signature pending"
       },
       "discord": {
@@ -678,12 +676,13 @@
       "rationale_placeholder": "I'm voting \"{choice}\" because..."
     },
     "identity_setup": {
-      "title": "Choose accounts to link",
+      "title": "Link your Decentraland profile to external services",
+      "description": "By linking your Decentraland profile to your other social accounts you will be able to enhance your governance experience and never miss a beat of what’s going on in the DAO.",
       "timer": "Time sensitive task. {time} left to complete",
       "timer_expired": "Signature expired. You'll have to start over.",
       "forum": {
         "card_title": "Decentraland Forum",
-        "card_description": "Link your Decentraland profile to the comments you left on proposals.",
+        "card_description": "Publish comments on proposals using your Decentraland profile.",
         "title": "Decentraland Forum Account",
         "title_step_1": "1. Sign message",
         "description_step_1": "Use your web3 wallet to securely sign a message to start the linking process.",
@@ -717,7 +716,7 @@
       },
       "discord": {
         "card_title": "Discord",
-        "card_description": "Receive personalized notifications so you don't miss important events.",
+        "card_description": "Receive real-time notifications customized to your activity and never miss any important events.",
         "title": "Discord Account",
         "subtitle": "Follow these steps to link your account to your wallet and start getting notifications in Discord.",
         "action": "Confirm link",
@@ -750,8 +749,11 @@
         "error_button": "Retry"
       },
       "push": {
-        "card_title": "Push Notifications",
-        "card_description": "Receive notifications in your wallet or on any platform using this native web3 protocol"
+        "card_title": "Push Protocol Notifications",
+        "card_description": "Receive notifications in your wallet or on any platform using this native web3 messaging protocol.",
+        "success_text": "**Push Notifications enabled successfully!**",
+        "success_subtext": "Now you will receive Governance-related notifications in your Push account.",
+        "success_button": "Connect other accounts"
       },
       "soon": "Soon",
       "verified": "Verified"

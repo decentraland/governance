@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
+import { Web3Provider } from '@ethersproject/providers'
 import { useQueryClient } from '@tanstack/react-query'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
 import { Close } from 'decentraland-ui/dist/components/Close/Close'
 import { Modal, ModalProps } from 'decentraland-ui/dist/components/Modal/Modal'
 
+import { PUSH_CHANNEL_ID } from '../../../constants'
 import { SegmentEvent } from '../../../entities/Events/types'
 import { GATSBY_DISCORD_PROFILE_VERIFICATION_URL } from '../../../entities/User/constants'
 import { AccountType } from '../../../entities/User/types'
@@ -15,6 +18,7 @@ import useFormatMessage, { FormatMessageFunction } from '../../../hooks/useForma
 import useForumConnect, { THREAD_URL } from '../../../hooks/useForumConnect'
 import useIsProfileValidated from '../../../hooks/useIsProfileValidated'
 import locations, { navigate } from '../../../utils/locations'
+import { getCaipAddress, getPushNotificationsEnv } from '../../../utils/notifications'
 import { ActionCardProps } from '../../ActionCard/ActionCard'
 import CheckCircle from '../../Icon/CheckCircle'
 import CircledDiscord from '../../Icon/CircledDiscord'
@@ -119,6 +123,18 @@ function getActionComponent(action: JSX.Element, isCompleted: boolean, isDisable
   }
 
   return action
+}
+
+function getCurrentAccount(modalType: ModalType) {
+  if (modalType === ModalType.Forum) {
+    return AccountType.Forum
+  }
+
+  if (modalType === ModalType.Discord) {
+    return AccountType.Discord
+  }
+
+  return AccountType.Push
 }
 
 function getAccountActionSteps(
@@ -232,7 +248,7 @@ function AccountsConnectModal({ open, onClose, account }: Props) {
   const time = modalState.currentType === ModalType.Forum ? forumVerificationTime : discordVerificationTime
   const isTimerExpired = time <= 0
   const isValidated = isForumValidationFinished || isDiscordValidationFinished
-  const currentAccount = modalState.currentType === ModalType.Forum ? AccountType.Forum : AccountType.Discord
+  const currentAccount = getCurrentAccount(modalState.currentType)
 
   const initializeAccount = useCallback((modal: ModalType, account: AccountType) => {
     setCurrentType(modal)
@@ -332,8 +348,29 @@ function AccountsConnectModal({ open, onClose, account }: Props) {
     openDiscordChannel()
   }, [openDiscordChannel])
 
-  const initializePush = () => {
+  const [user, userState] = useAuthContext()
+  const chainId = userState.chainId || ChainId.ETHEREUM_GOERLI
+  const env = getPushNotificationsEnv(chainId)
+  const [pushState, setPushState] = useState<'subscribing' | 'success' | 'error' | null>(null)
+
+  const initializePush = async () => {
+    if (!user || !userState.provider) {
+      return
+    }
+
+    setPushState('subscribing')
     setModalState((prev) => ({ ...prev, currentType: ModalType.Push }))
+
+    const signer = new Web3Provider(userState.provider).getSigner()
+    const PushAPI = await import('@pushprotocol/restapi')
+    await PushAPI.channels.subscribe({
+      signer,
+      channelAddress: getCaipAddress(PUSH_CHANNEL_ID, chainId),
+      userAddress: getCaipAddress(user, chainId),
+      onSuccess: () => setPushState('success'),
+      onError: () => setPushState('error'),
+      env,
+    })
   }
 
   const stateMap = useMemo<Record<ModalType, AccountModal>>(
@@ -461,9 +498,21 @@ function AccountsConnectModal({ open, onClose, account }: Props) {
   return (
     <Modal open={open} size="tiny" onClose={handleClose} closeIcon={<Close />}>
       {modalState.currentType === ModalType.Push && (
-        <div className="AccountsConnectModal__PushState">
-          <UnsubscribedView onSubscribeUserToChannel={handleClose} />
-        </div>
+        <>
+          {pushState !== 'success' && (
+            <div className="AccountsConnectModal__PushState">
+              <UnsubscribedView subscriptionState={pushState} onErrorClick={initializePush} />
+            </div>
+          )}
+          {pushState === 'success' && (
+            <PostConnection
+              account={currentAccount}
+              address={address || undefined}
+              isValidated={true}
+              onPostAction={() => setModalState(INITIAL_STATE)}
+            />
+          )}
+        </>
       )}
       {modalState.currentType !== ModalType.Push && (
         <>

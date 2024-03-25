@@ -1,10 +1,14 @@
-function CircledPush() {
+interface Props {
+  size?: number
+}
+
+function CircledPush({ size = 64 }: Props) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
-      width="64"
-      height="64"
+      width={size}
+      height={size}
       fill="none"
       viewBox="0 0 64 64"
     >
