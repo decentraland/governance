@@ -27,14 +27,14 @@ function AccountLinkToast() {
         title={
           <span className="AccountLinkToast__Title">
             <BellPurple />
-            <Text color="white" as="span" weight="medium" size="lg">
+            <Text color="white-900" as="span" weight="medium" size="lg">
               {t('account_toast.title')}
             </Text>
           </span>
         }
         body={
           <div>
-            <Text color="white" size="sm">
+            <Text color="white-900" size="sm">
               {t('account_toast.description')}
             </Text>
             <Button
