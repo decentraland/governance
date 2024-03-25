@@ -30,8 +30,8 @@ function ActionCard({
   helper,
 }: ActionCardProps) {
   const t = useFormatMessage()
-  const isImplemented = !!action || !!onCardClick
-  const isActionable = isImplemented && !isDisabled && !isVerified
+  const isActionable = !isDisabled && !isVerified
+
   return (
     <Card
       className={classNames('ActionCard', !isActionable && 'ActionCard--disabled')}
@@ -44,9 +44,6 @@ function ActionCard({
             <div>
               <h3>
                 {title}
-                {!isImplemented && (
-                  <span className="ActionCard__Label ActionCard__SoonLabel">{t('modal.identity_setup.soon')}</span>
-                )}
                 {isVerified && (
                   <span className="ActionCard__Label ActionCard__VerifiedLabel">
                     {t('modal.identity_setup.verified')}

@@ -3,6 +3,7 @@ export const HIDE_PROJECTS_BANNER_KEY = 'org.decentraland.governance.projects_ba
 export const HIDE_DELEGATE_BANNER_KEY = 'org.decentraland.governance.delegate_banner.hide'
 export const HIDE_LINK_DISCORD_BANNER_KEY = 'org.decentraland.governance.link_discord_banner.hide'
 export const SHOW_DISCORD_MODAL_KEY = 'org.decentraland.governance.link_discord_modal.show_data'
+export const HIDE_CONNECT_ACCOUNTS_BANNER_KEY = 'org.decentraland.governance.connect_accounts_banner.hide'
 export const ACTION_BOX_EXPANDED_STATE_KEY = 'org.decentraland.governance.action_box.expanded'
 export const PROFILE_POP_UP_LOCAL_STORAGE_KEY = 'org.decentraland.governance.profile-pop-up-dismissed'
 export const NEWSLETTER_SUBSCRIPTION_KEY = 'org.decentraland.governance.newsletter_subscription'
