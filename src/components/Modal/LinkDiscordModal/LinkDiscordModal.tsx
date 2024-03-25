@@ -68,7 +68,7 @@ export function LinkDiscordModal() {
       } else {
         const noticeCount = parsedResult.data
         const daysSinceLastDisplay = getDaysDifference(new Date(), new Date(noticeCount.lastDisplayTime))
-        if (isLoadingIsDiscordLinked && !isDiscordLinked) {
+        if (!isLoadingIsDiscordLinked && !isDiscordLinked) {
           if (noticeCount.count < 1) {
             setIsLinkDiscordModalOpen(true)
             saveNoticeCount(1)
