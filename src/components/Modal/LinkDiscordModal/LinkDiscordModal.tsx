@@ -35,7 +35,10 @@ const getDaysDifference = (date1: Date, date2: Date) => Time(date1).diff(date2, 
 export function LinkDiscordModal() {
   const [account] = useAuthContext()
   const { isDiscordLinked, isLoadingIsDiscordLinked } = useIsDiscordLinked()
-  const { isProfileValidated, validationChecked } = useIsProfileValidated(account) // TODO: use Discord & Push
+  const { isProfileValidated, validationChecked } = useIsProfileValidated(account, [
+    AccountType.Discord,
+    AccountType.Push,
+  ])
   const t = useFormatMessage()
 
   const [isLinkDiscordModalOpen, setIsLinkDiscordModalOpen] = useState(false)
@@ -69,7 +72,7 @@ export function LinkDiscordModal() {
         const noticeCount = parsedResult.data
         const daysSinceLastDisplay = getDaysDifference(new Date(), new Date(noticeCount.lastDisplayTime))
         if (!isLoadingIsDiscordLinked && !isDiscordLinked) {
-          if (noticeCount.count < 1) {
+          if (noticeCount.count < 1 && daysSinceLastDisplay >= 1) {
             setIsLinkDiscordModalOpen(true)
             saveNoticeCount(1)
           } else {
