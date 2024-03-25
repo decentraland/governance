@@ -397,6 +397,7 @@ function AccountsConnectModal({ open, onClose, account }: Props) {
             description: t('modal.identity_setup.push.card_description'),
             icon: <CircledPush />,
             onCardClick: initializePush,
+            helper: t('modal.identity_setup.push.helper'),
           },
         ],
       },

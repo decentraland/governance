@@ -753,7 +753,8 @@
         "card_description": "Receive notifications in your wallet or on any platform using this native web3 messaging protocol.",
         "success_text": "**Push Notifications enabled successfully!**",
         "success_subtext": "Now you will receive Governance-related notifications in your Push account.",
-        "success_button": "Connect other accounts"
+        "success_button": "Connect other accounts",
+        "helper": "TRIGGERS MESSAGE SIGN REQUEST"
       },
       "soon": "Soon",
       "verified": "Verified"
