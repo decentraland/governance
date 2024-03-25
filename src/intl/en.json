@@ -2196,5 +2196,10 @@
   "maintenance": {
     "title": "Site under maintenance",
     "description": "We will be back soon, sorry for the inconvenience..."
+  },
+  "account_toast": {
+    "title": "Stay updated, wherever you are",
+    "description": "Connect your Discord and Push accounts to receive real-time notifications about the latest developments in the Decentraland DAO.",
+    "button": "Connect accounts"
   }
 }

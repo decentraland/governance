@@ -1,0 +1,37 @@
+.AccountLinkToast {
+  position: fixed !important;
+  right: 0;
+  bottom: 0;
+  background-color: var(--black-700) !important;
+  max-width: 360px !important;
+}
+
+.AccountLinkToast--hidden {
+  display: none;
+}
+
+.AccountLinkToast > .toast-info .close {
+  background-color: var(--black-600) !important;
+}
+
+.AccountLinkToast > .toast-info .close-icon {
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgdmlld0JveD0iMCAwIDEwIDEwIiBmaWxsPSJub25lIj48cGF0aCBvcGFjaXR5PSIwLjIiIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMS41OTYxOSAwLjE4MjAwNEwwLjE4MTk4IDEuNTk2MjJMMy4zNjM5NiA0Ljc3ODJMMC4xODE5OCA3Ljk2MDE4TDEuNTk2MTkgOS4zNzQzOUw0Ljc3ODE3IDYuMTkyNDFMNy45NjAxNSA5LjM3NDM5TDkuMzc0MzcgNy45NjAxOEw2LjE5MjM5IDQuNzc4Mkw5LjM3NDM3IDEuNTk2MjJMNy45NjAxNSAwLjE4MjAwNEw0Ljc3ODE3IDMuMzYzOThMMS41OTYxOSAwLjE4MjAwNFoiIGZpbGw9IndoaXRlIi8+PC9zdmc+);
+}
+
+.AccountLinkToast__Title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.AccountLinkToast__Button {
+  padding: 7px 11px !important;
+  color: var(--white-900) !important;
+  background-color: var(--black-800) !important;
+}
+
+@media (max-width: 768px) {
+  .AccountLinkToast {
+    max-width: none !important;
+  }
+}
