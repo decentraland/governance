@@ -1492,6 +1492,7 @@
       "description": "Your profile within the DAO",
       "show_badges": "{amount} More",
       "view_past_badges": "View past badges",
+      "linked_profiles": "Linked profiles",
       "badges_sidebar": {
         "title": "Your Badges",
         "current": "{amount} Current {amount, plural, one {Badge} other {Badges}}",
