@@ -277,6 +277,7 @@ function AccountsConnectModal({ open, onClose, account }: Props) {
         initializeDiscord()
         break
       default:
+        setCurrentType(ModalType.ChooseAccount)
         break
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
