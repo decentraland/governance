@@ -1,5 +1,4 @@
 .Bio__Container {
-  max-width: 65%;
   margin-bottom: 25px;
 }
 
@@ -14,4 +13,10 @@
 
 .Bio__Button {
   padding: 0 !important;
+}
+
+@media (min-width: 768px) {
+  .Bio__Container {
+    max-width: 65%;
+  }
 }
