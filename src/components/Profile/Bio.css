@@ -4,6 +4,7 @@
 
 .Bio__Heading {
   color: var(--black-600);
+  text-transform: uppercase;
 }
 
 .Bio__Heading,
