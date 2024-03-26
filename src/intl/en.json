@@ -1500,6 +1500,11 @@
         "delegated_vp_info": "Voting Power that results from the delegation of VP by other users onto this account",
         "vp_distribution": "Voting Power Distribution"
       },
+      "bio": {
+        "title": "Bio",
+        "show_more": "Show more",
+        "show_less": "Show less"
+      },
       "user_voting_stats": {
         "participation_label": "30-Day Participation",
         "participation_percentage_label": "{percentage} participation rate",

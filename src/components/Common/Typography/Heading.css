@@ -54,6 +54,10 @@
   font-weight: var(--weight-bold);
 }
 
+.Heading--weight-medium {
+  font-weight: var(--weight-medium);
+}
+
 @media only screen and (max-width: 767px) {
   .Heading--xl {
     font-size: 64px;
