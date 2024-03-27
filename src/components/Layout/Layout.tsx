@@ -11,6 +11,7 @@ import {
   DROPDOWN_MENU_ITEM_CLICK_EVENT,
   DROPDOWN_MENU_SIGN_OUT_EVENT,
 } from 'decentraland-dapps/dist/containers/Navbar/constants'
+import useNotifications from 'decentraland-dapps/dist/hooks/useNotifications'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Footer } from 'decentraland-ui/dist/components/Footer/Footer'
 import { Navbar } from 'decentraland-ui/dist/components/Navbar/Navbar'
@@ -22,6 +23,7 @@ import { getSupportedChainIds } from '../../helpers'
 import useAnalyticsTrack from '../../hooks/useAnalyticsTrack'
 import useAnalyticsTrackLink from '../../hooks/useAnalyticsTrackLink'
 import useDclFeatureFlags from '../../hooks/useDclFeatureFlags'
+import useDclIdentity from '../../hooks/useDclIdentity'
 import useDclProfile from '../../hooks/useDclProfile'
 import { FeatureFlags } from '../../utils/features'
 import { fetchManaBalance } from '../../utils/mana'
@@ -157,7 +159,20 @@ export default function Layout({ children }: LayoutProps) {
     [track, userState]
   )
 
+  const withNotifications = true
+  const dclIdentity = useDclIdentity()
   const hasProfile = !isEmpty(profile)
+  const {
+    isModalOpen,
+    isNotificationsOnboarding,
+    modalActiveTab,
+    isLoading,
+    notifications,
+    handleNotificationsOpen,
+    handleOnBegin,
+    handleOnChangeModalTab,
+    handleRenderProfile,
+  } = useNotifications(dclIdentity, withNotifications)
 
   return (
     <>
@@ -174,6 +189,23 @@ export default function Layout({ children }: LayoutProps) {
         onClickOpen={handleOpen}
         onClickSignIn={isAuthDappEnabled ? userState.authorize : userState.select}
         onClickSignOut={handleSignOut}
+        notifications={
+          withNotifications
+            ? {
+                locale: 'en',
+                isLoading,
+                isOnboarding: isNotificationsOnboarding,
+                isOpen: isModalOpen,
+                items: notifications,
+                activeTab: modalActiveTab,
+                onClick: handleNotificationsOpen,
+                onClose: handleNotificationsOpen,
+                onBegin: handleOnBegin,
+                onChangeTab: (_, tab) => handleOnChangeModalTab(tab),
+                renderProfile: handleRenderProfile,
+              }
+            : undefined
+        }
       />
       <main>{children}</main>
       <WrongNetworkModal
