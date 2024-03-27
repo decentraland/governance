@@ -1,0 +1,23 @@
+.Bio__Container {
+  margin-bottom: 25px;
+}
+
+.Bio__Heading {
+  color: var(--black-600);
+  text-transform: uppercase;
+}
+
+.Bio__Heading,
+.Bio__Text {
+  margin-bottom: 8px !important;
+}
+
+.Bio__Button {
+  padding: 0 !important;
+}
+
+@media (min-width: 768px) {
+  .Bio__Container {
+    max-width: 65%;
+  }
+}

@@ -42,6 +42,8 @@ export default function ProfilePage() {
   const { delegation, isDelegationLoading, scores, isLoadingScores, vpDistribution, isLoadingVpDistribution } =
     useVotingPowerInformation(address)
 
+  const { description: profileBio } = profile
+
   if (isUnderMaintenance()) {
     return (
       <MaintenanceLayout
@@ -73,6 +75,7 @@ export default function ProfilePage() {
           address={address}
           vpDistribution={vpDistribution}
           isLoadingVpDistribution={isLoadingVpDistribution}
+          bio={profileBio}
         />
         <GrantBeneficiaryBox address={address} />
         <ActivityBox address={address} />
