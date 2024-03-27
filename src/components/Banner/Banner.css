@@ -1,11 +1,10 @@
 .Banner {
-  display: none;
   align-items: center;
   align-content: stretch;
   position: relative;
   padding: 16px 16px 16px 20px;
   margin-top: 24px;
-  margin-bottom: 8px;
+  margin-bottom: 32px;
   border-radius: 8px;
   outline: 1px solid #0000000a;
 }
@@ -79,17 +78,15 @@
     padding-left: 0;
     padding-right: 0;
     min-width: 87px;
+    width: 100%;
   }
 }
 
 @media (min-width: 768px) {
   .Banner {
-    margin-top: 0;
-    margin-bottom: 35px;
-  }
-
-  .OnlyDesktop .Banner {
     display: flex;
+    margin-top: 0;
+    margin-bottom: 32px;
   }
 
   .Banner .Banner__Icon {

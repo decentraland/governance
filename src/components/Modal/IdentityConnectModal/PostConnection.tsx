@@ -5,6 +5,7 @@ import { AccountType } from '../../../entities/User/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Avatar from '../../Common/Avatar'
 import Markdown from '../../Common/Typography/Markdown'
+import CircledPush from '../../Icon/CircledPush'
 import Discord from '../../Icon/Discord'
 import ForumBlue from '../../Icon/ForumBlue'
 import LinkFailed from '../../Icon/LinkFailed'
@@ -23,7 +24,7 @@ interface Props {
 const ACCOUNT_ICON: Record<AccountType, React.ReactNode> = {
   [AccountType.Forum]: <ForumBlue />,
   [AccountType.Discord]: <Discord size={90} color="var(--blue-900)" />,
-  [AccountType.Twitter]: <></>,
+  [AccountType.Push]: <CircledPush size={90} />,
 }
 
 function PostConnection({ address, isValidated, account, onPostAction }: Props) {

@@ -32,5 +32,5 @@ export type ValidationComment = {
 export enum AccountType {
   Forum = 'forum',
   Discord = 'discord',
-  Twitter = 'twitter',
+  Push = 'push',
 }

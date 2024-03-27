@@ -38,6 +38,8 @@ type DismissState = {
   isPopUpDismissed: boolean
 }
 
+const NOTIFICATIONS_ENABLED = false
+
 const Navigation = ({ activeTab }: NavigationProps) => {
   const t = useFormatMessage()
   const [user] = useAuthContext()
@@ -133,7 +135,7 @@ const Navigation = ({ activeTab }: NavigationProps) => {
         <NotMobile>
           <Tabs.Right>
             <SearchInput />
-            {user && <Notifications />}
+            {NOTIFICATIONS_ENABLED && <Notifications />}
           </Tabs.Right>
         </NotMobile>
       </Tabs>

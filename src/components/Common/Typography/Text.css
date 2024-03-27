@@ -63,6 +63,10 @@
   color: var(--red-800);
 }
 
+.Text.Text--color-white-900 {
+  color: var(--white-900);
+}
+
 .Text.Text--style-normal {
   font-style: normal;
 }
