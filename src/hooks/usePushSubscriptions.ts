@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
-import * as PushAPI from '@pushprotocol/restapi'
 import { useQuery } from '@tanstack/react-query'
 import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 
@@ -18,13 +17,15 @@ export default function usePushSubscriptions() {
 
   const { data: subscriptions, isLoading: isLoadingPushSubscriptions } = useQuery({
     queryKey: [`pushSubscriptions#${user}`],
-    queryFn: () =>
-      user
-        ? PushAPI.user.getSubscriptions({
-            user: getCaipAddress(user, chainId),
-            env,
-          })
-        : null,
+    queryFn: async () => {
+      if (!user) return null
+      const PushAPI = await import('@pushprotocol/restapi')
+
+      return PushAPI.user.getSubscriptions({
+        user: getCaipAddress(user, chainId),
+        env,
+      })
+    },
     enabled: !!user,
     staleTime: DEFAULT_QUERY_STALE_TIME,
   })
