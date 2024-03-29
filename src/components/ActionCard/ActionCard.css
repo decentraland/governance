@@ -40,12 +40,8 @@
   color: var(--black-400);
 }
 
-.ui.card.ActionCard--disabled svg circle {
-  fill: var(--black-100);
-}
-
-.ui.card.ActionCard--disabled svg path {
-  fill: var(--black-400);
+.ui.card.ActionCard--disabled svg {
+  filter: grayscale(100%) opacity(50%);
 }
 
 .ui.card.ActionCard .ActionCard__Label {

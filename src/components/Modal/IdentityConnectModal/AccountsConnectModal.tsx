@@ -17,6 +17,7 @@ import useDiscordConnect from '../../../hooks/useDiscordConnect'
 import useFormatMessage, { FormatMessageFunction } from '../../../hooks/useFormatMessage'
 import useForumConnect, { THREAD_URL } from '../../../hooks/useForumConnect'
 import useIsProfileValidated from '../../../hooks/useIsProfileValidated'
+import usePushSubscriptions from '../../../hooks/usePushSubscriptions'
 import locations, { navigate } from '../../../utils/locations'
 import { getCaipAddress, getPushNotificationsEnv } from '../../../utils/notifications'
 import { ActionCardProps } from '../../ActionCard/ActionCard'
@@ -374,6 +375,8 @@ function AccountsConnectModal({ open, onClose, account }: Props) {
     })
   }
 
+  const { isSubscribedToDaoChannel } = usePushSubscriptions()
+
   const stateMap = useMemo<Record<ModalType, AccountModal>>(
     () => ({
       [ModalType.ChooseAccount]: {
@@ -399,6 +402,7 @@ function AccountsConnectModal({ open, onClose, account }: Props) {
             icon: <CircledPush />,
             onCardClick: initializePush,
             helper: t('modal.identity_setup.push.helper'),
+            isVerified: isSubscribedToDaoChannel,
           },
         ],
       },
