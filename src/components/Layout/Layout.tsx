@@ -19,7 +19,7 @@ import { ManaBalancesProps } from 'decentraland-ui/dist/components/UserMenu/Mana
 import { config } from 'decentraland-ui/dist/config'
 import { isEmpty } from 'lodash'
 
-import { getSupportedChainIds } from '../../helpers'
+import { addressShortener, getSupportedChainIds } from '../../helpers'
 import useAnalyticsTrack from '../../hooks/useAnalyticsTrack'
 import useAnalyticsTrackLink from '../../hooks/useAnalyticsTrackLink'
 import useDclFeatureFlags from '../../hooks/useDclFeatureFlags'
@@ -27,6 +27,7 @@ import useDclIdentity from '../../hooks/useDclIdentity'
 import useDclProfile from '../../hooks/useDclProfile'
 import { FeatureFlags } from '../../utils/features'
 import { fetchManaBalance } from '../../utils/mana'
+import AvatarComponent from '../Common/Avatar'
 import ExternalLinkWarningModal from '../Modal/ExternalLinkWarningModal'
 import { LinkDiscordModal } from '../Modal/LinkDiscordModal/LinkDiscordModal'
 import WalletSelectorModal from '../Modal/WalletSelectorModal'
@@ -171,7 +172,6 @@ export default function Layout({ children }: LayoutProps) {
     handleNotificationsOpen,
     handleOnBegin,
     handleOnChangeModalTab,
-    handleRenderProfile,
   } = useNotifications(dclIdentity, withNotifications)
 
   return (
@@ -202,7 +202,11 @@ export default function Layout({ children }: LayoutProps) {
                 onClose: handleNotificationsOpen,
                 onBegin: handleOnBegin,
                 onChangeTab: (_, tab) => handleOnChangeModalTab(tab),
-                renderProfile: handleRenderProfile,
+                renderProfile: (address: string) => (
+                  <div className="layout__notifications-profile">
+                    <AvatarComponent address={address} size="xs" /> {addressShortener(address)}
+                  </div>
+                ),
               }
             : undefined
         }
