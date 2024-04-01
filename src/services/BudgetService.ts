@@ -56,37 +56,37 @@ export const TransparencyBudgetSchema = {
       ],
       properties: {
         accelerator: {
-          type: 'integer',
+          type: 'number',
           minimum: 0,
           maximum: 100,
         },
         core_unit: {
-          type: 'integer',
+          type: 'number',
           minimum: 0,
           maximum: 100,
         },
         documentation: {
-          type: 'integer',
+          type: 'number',
           minimum: 0,
           maximum: 100,
         },
         in_world_content: {
-          type: 'integer',
+          type: 'number',
           minimum: 0,
           maximum: 100,
         },
         platform: {
-          type: 'integer',
+          type: 'number',
           minimum: 0,
           maximum: 100,
         },
         social_media_content: {
-          type: 'integer',
+          type: 'number',
           minimum: 0,
           maximum: 100,
         },
         sponsorship: {
-          type: 'integer',
+          type: 'number',
           minimum: 0,
           maximum: 100,
         },
