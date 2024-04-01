@@ -1,44 +1,44 @@
 import { Button } from 'decentraland-ui/dist/components/Button/Button'
+import { Modal } from 'decentraland-ui/dist/components/Modal/Modal'
 
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import Heading from '../../Common/Typography/Heading'
 import Text from '../../Common/Typography/Text'
-import NotificationBellInactive from '../../Icon/NotificationBellInactive'
 import SignGray from '../../Icon/SignGray'
 
 import './UnsubscribedView.css'
 
 interface Props {
-  unsubscribedKey: string
-  isSubscribing: boolean
-  handleSubscribeUserToChannel: () => void
-  handleDiscordConnect: () => void
+  subscriptionState: 'subscribing' | 'success' | 'error' | null
+  onErrorClick: () => void
 }
 
-function UnsubscribedView({
-  unsubscribedKey,
-  isSubscribing,
-  handleSubscribeUserToChannel,
-  handleDiscordConnect,
-}: Props) {
+function UnsubscribedView({ subscriptionState, onErrorClick }: Props) {
   const t = useFormatMessage()
-  const UnsubscribedIcon = isSubscribing ? SignGray : NotificationBellInactive
+
+  const isSubscribing = subscriptionState === 'subscribing'
+  const hasError = subscriptionState === 'error'
+
   return (
-    <div className="NotificationsFeed__UnsubscribedView">
-      <UnsubscribedIcon size="124" />
-      <Heading className="NotificationsFeed__UnsubscribedViewHeading" size="sm">
-        {t(`navigation.notifications.${unsubscribedKey}.title`)}
-      </Heading>
-      <Text className="NotificationsFeed__UnsubscribedViewText">
-        {t(`navigation.notifications.${unsubscribedKey}.description`)}
-      </Text>
-      <Button size="small" primary disabled={isSubscribing} onClick={handleSubscribeUserToChannel}>
-        {t(`navigation.notifications.${unsubscribedKey}.button`)}
-      </Button>
-      <Button size="small" basic disabled={isSubscribing} onClick={handleDiscordConnect}>
-        {t(`navigation.notifications.unsubscribed.discord`)}
-      </Button>
-    </div>
+    <Modal.Content>
+      <div className="NotificationsFeed__UnsubscribedView">
+        <SignGray size="124" />
+        <Heading className="NotificationsFeed__UnsubscribedViewHeading" size="sm">
+          {t(`navigation.notifications.subscribing.title`)}
+        </Heading>
+        <Text className="NotificationsFeed__UnsubscribedViewText">
+          {t(`navigation.notifications.subscribing.description`)}
+        </Text>
+        <Button size="small" primary disabled={isSubscribing} onClick={onErrorClick}>
+          {t(`navigation.notifications.${subscriptionState}.button`)}
+        </Button>
+        {hasError && (
+          <Text size="sm" color="error" className="NotificationsFeed__UnsubscribedViewText">
+            {t(`navigation.notifications.error.description`)}
+          </Text>
+        )}
+      </div>
+    </Modal.Content>
   )
 }
 
