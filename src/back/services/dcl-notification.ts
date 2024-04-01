@@ -2,9 +2,10 @@ import { DCL_NOTIFICATIONS_SERVICE_ENABLED } from '../../constants'
 import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { proposalUrl } from '../../entities/Proposal/utils'
+import { getUpdateUrl } from '../../entities/Updates/utils'
 import { inBackground } from '../../helpers'
 import { ErrorService } from '../../services/ErrorService'
-import { ProposalCommentedEvent } from '../../shared/types/events'
+import { ProjectUpdateCommentedEvent, ProposalCommentedEvent } from '../../shared/types/events'
 import { DclNotification } from '../../shared/types/notifications'
 import { ErrorCategory } from '../../utils/errorCategories'
 import logger from '../../utils/logger'
@@ -209,6 +210,42 @@ export class DclNotificationService {
           error,
           category: ErrorCategory.Notifications,
           proposal_id: proposalId,
+          event: commentEvent,
+        })
+      }
+    })
+  }
+
+  static newCommentOnProjectUpdate(commentEvent: ProjectUpdateCommentedEvent) {
+    inBackground(async () => {
+      const proposalId = commentEvent.event_data.proposal_id
+      const updateId = commentEvent.event_data.update_id
+      try {
+        const proposal = await ProposalModel.getProposal(proposalId)
+        const coauthors = await CoauthorService.getAllFromProposalId(proposalId)
+        const coauthorsAddresses = coauthors.length > 0 ? coauthors.map((coauthor) => coauthor.address) : []
+        const addresses = [proposal.user, ...coauthorsAddresses]
+
+        const notifications = addresses.map((address) => ({
+          type: 'governance_new_comment_on_project_update',
+          address,
+          eventKey: updateId,
+          metadata: {
+            updateId,
+            title: Notifications.ProjectUpdateCommented.title(proposal),
+            description: Notifications.ProjectUpdateCommented.body,
+            link: getUpdateUrl(updateId, proposal.id),
+          },
+          timestamp: Date.now(),
+        }))
+
+        return await this.sendNotifications(notifications)
+      } catch (error) {
+        ErrorService.report('Error sending notifications for new comment on project update', {
+          error,
+          category: ErrorCategory.Notifications,
+          proposal_id: proposalId,
+          update_id: updateId,
           event: commentEvent,
         })
       }

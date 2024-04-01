@@ -48,4 +48,8 @@ export const Notifications = {
     title: (proposal: ProposalAttributes) => `New comment posted on proposal ${proposal.title}`,
     body: 'Engage in a productive conversation by replying to this comment.',
   },
+  ProjectUpdateCommented: {
+    title: (proposal: ProposalAttributes) => `Your update for "${proposal.title}" got a new comment`,
+    body: 'Engage in a productive conversation by replying to this comment.',
+  },
 }
