@@ -1,3 +1,6 @@
+import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
+
+import { PUSH_CHANNEL_ID } from '../../constants'
 import { isSameAddress } from '../../entities/Snapshot/utils'
 import { MESSAGE_TIMEOUT_TIME } from '../../entities/User/constants'
 import UserModel from '../../entities/User/model'
@@ -8,6 +11,10 @@ import {
   toAccountType,
   validateComment,
 } from '../../entities/User/utils'
+import { isProdEnv } from '../../utils/governanceEnvs'
+import { getCaipAddress, getPushNotificationsEnv } from '../../utils/notifications'
+
+import PushAPI = require('@pushprotocol/restapi')
 
 export class UserService {
   private static VALIDATIONS_IN_PROGRESS: Record<string, ValidationMessage> = {}
@@ -96,7 +103,28 @@ export class UserService {
   }
 
   static async isValidated(address: string, accounts: Set<AccountType>): Promise<boolean> {
-    return await UserModel.isValidated(address, accounts)
+    if (!accounts.has(AccountType.Push)) {
+      return await UserModel.isValidated(address, accounts)
+    }
+
+    const chainId = isProdEnv() ? ChainId.ETHEREUM_MAINNET : ChainId.ETHEREUM_SEPOLIA
+    const env = getPushNotificationsEnv(chainId)
+
+    const pushSubscriptions = await PushAPI.user.getSubscriptions({
+      user: getCaipAddress(address, chainId),
+      env,
+    })
+
+    const isSubscribedToPush = !!pushSubscriptions?.find((item: { channel: string }) =>
+      isSameAddress(item.channel, PUSH_CHANNEL_ID)
+    )
+    accounts.delete(AccountType.Push)
+
+    if (accounts.size === 0) {
+      return isSubscribedToPush
+    }
+
+    return isSubscribedToPush && (await UserModel.isValidated(address, accounts))
   }
 
   static async getProfile(address: string) {
