@@ -466,6 +466,7 @@ function AccountsConnectModal({ open, onClose, account }: Props) {
       handleDiscordSign,
       handleDiscordCopy,
       handleDiscordValidate,
+      isSubscribedToDaoChannel,
     ]
   )
   const currentType = modalState.currentType

@@ -8,7 +8,7 @@ import { PUSH_CHANNEL_ID } from '../constants'
 import { isSameAddress } from '../entities/Snapshot/utils'
 import { getCaipAddress, getPushNotificationsEnv } from '../utils/notifications'
 
-import { DEFAULT_QUERY_STALE_TIME } from './constants'
+import { FIVE_MINUTES_MS } from './constants'
 
 export default function usePushSubscriptions() {
   const [user, userState] = useAuthContext()
@@ -27,7 +27,7 @@ export default function usePushSubscriptions() {
       })
     },
     enabled: !!user,
-    staleTime: DEFAULT_QUERY_STALE_TIME,
+    staleTime: FIVE_MINUTES_MS,
   })
 
   const isSubscribedToDaoChannel = useMemo(
