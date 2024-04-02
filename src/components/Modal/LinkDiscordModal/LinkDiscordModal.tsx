@@ -66,8 +66,10 @@ export function LinkDiscordModal() {
     if (typeof window !== 'undefined' && account) {
       const parsedResult = noticeCountSchema.safeParse(JSON.parse(localStorage.getItem(SHOW_DISCORD_MODAL_KEY) || '{}'))
       if (!parsedResult.success) {
-        setShowToast(true)
-        saveNoticeCount(0)
+        if (validationChecked && !isProfileValidated) {
+          setShowToast(true)
+          saveNoticeCount(0)
+        }
       } else {
         const noticeCount = parsedResult.data
         const daysSinceLastDisplay = getDaysDifference(new Date(), new Date(noticeCount.lastDisplayTime))
