@@ -1,6 +1,16 @@
+import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
+
 import { JOB_LOCKS, withLock } from './jobLocks'
 
 describe('Job Locking Mechanism', () => {
+  const exampleContext: JobContext = new JobContext(
+    'id',
+    'handler',
+    {},
+    async () => {},
+    async () => {}
+  )
+
   const immediateJob = jest.fn().mockResolvedValue(0)
 
   const delayedJob = jest
@@ -18,7 +28,7 @@ describe('Job Locking Mechanism', () => {
     const jobName = 'immediateJob'
     const lockedJob = withLock(jobName, immediateJob)
 
-    await lockedJob()
+    await lockedJob(exampleContext)
 
     expect(immediateJob).toHaveBeenCalledTimes(1)
     expect(JOB_LOCKS.has(jobName)).toBe(false) // Lock should be released
@@ -29,7 +39,7 @@ describe('Job Locking Mechanism', () => {
     const lockedJob = withLock(jobName, delayedJob)
 
     try {
-      await lockedJob()
+      await lockedJob(exampleContext)
     } catch (error) {
       expect(delayedJob).toHaveBeenCalledTimes(1)
       expect(JOB_LOCKS.has(jobName)).toBe(false) // Lock should be released even on error
@@ -42,8 +52,8 @@ describe('Job Locking Mechanism', () => {
     const firstJob = withLock(jobName, delayedJob)
     const secondJob = withLock(jobName, immediateJob)
 
-    const firstPromise = firstJob()
-    const secondPromise = secondJob()
+    const firstPromise = firstJob(exampleContext)
+    const secondPromise = secondJob(exampleContext)
     try {
       await Promise.all([firstPromise, secondPromise])
     } catch (error) {
@@ -54,7 +64,7 @@ describe('Job Locking Mechanism', () => {
     expect(immediateJob).not.toHaveBeenCalled()
 
     // Try again after lock is released
-    await secondJob()
+    await secondJob(exampleContext)
     expect(immediateJob).toHaveBeenCalledTimes(1) // Second job should execute now
   })
 })
