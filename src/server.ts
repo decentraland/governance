@@ -81,7 +81,7 @@ app.set('x-powered-by', false)
 app.use(withLogs())
 app.use('/api', [
   status(),
-  withDDosProtection(),
+  withDDosProtection({ limit: 1000, checkinterval: 4 }),
   withCors(),
   withBody(),
   airdrops,
