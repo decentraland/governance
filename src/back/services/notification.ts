@@ -158,7 +158,7 @@ export class NotificationService {
         })
       } catch (error) {
         ErrorService.report('Error sending proposal enacted notification', {
-          error,
+          error: `${error}`,
           category: ErrorCategory.Notifications,
           proposal,
         })
@@ -194,7 +194,7 @@ export class NotificationService {
       })
     } catch (error) {
       ErrorService.report('Error sending co-author request notification', {
-        error,
+        error: `${error}`,
         category: ErrorCategory.Notifications,
         proposal,
       })
@@ -233,7 +233,7 @@ export class NotificationService {
       })
     } catch (error) {
       ErrorService.report('Error sending voting ended notification to authors', {
-        error,
+        error: `${error}`,
         category: ErrorCategory.Notifications,
         proposal,
       })
@@ -268,7 +268,7 @@ export class NotificationService {
       })
     } catch (error) {
       ErrorService.report('Error sending voting ended notification to voters', {
-        error,
+        error: `${error}`,
         category: ErrorCategory.Notifications,
         proposal,
       })
@@ -318,7 +318,7 @@ export class NotificationService {
         })
       } catch (error) {
         ErrorService.report('Error sending notifications for new comment on proposal', {
-          error,
+          error: `${error}`,
           category: ErrorCategory.Notifications,
           proposal_id: proposalId,
           event: commentEvent,
