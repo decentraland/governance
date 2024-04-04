@@ -60,8 +60,8 @@ export class DclNotificationService {
 
         return await this.sendNotifications(notifications)
       } catch (error) {
-        ErrorService.report('Error sending proposal enacted notification', {
-          error,
+        ErrorService.report('DCL - Error sending proposal enacted notification', {
+          error: `${error}`,
           category: ErrorCategory.Notifications,
           proposal,
         })
@@ -91,8 +91,8 @@ export class DclNotificationService {
 
       return await this.sendNotifications(notifications)
     } catch (error) {
-      ErrorService.report('Error sending co-author request notification', {
-        error,
+      ErrorService.report('DCL - Error sending co-author request notification', {
+        error: `${error}`,
         category: ErrorCategory.Notifications,
         proposal,
       })
@@ -125,8 +125,8 @@ export class DclNotificationService {
 
       return await this.sendNotifications(notifications)
     } catch (error) {
-      ErrorService.report('Error sending voting ended notification to authors', {
-        error,
+      ErrorService.report('DCL - Error sending voting ended notification to authors', {
+        error: `${error}`,
         category: ErrorCategory.Notifications,
         proposal,
       })
@@ -155,8 +155,8 @@ export class DclNotificationService {
 
       return await this.sendNotifications(notifications)
     } catch (error) {
-      ErrorService.report('Error sending voting ended notification to voters', {
-        error,
+      ErrorService.report('DCL - Error sending voting ended notification to voters', {
+        error: `${error}`,
         category: ErrorCategory.Notifications,
         proposal,
       })
@@ -205,8 +205,8 @@ export class DclNotificationService {
 
         return await this.sendNotifications(notifications)
       } catch (error) {
-        ErrorService.report('Error sending notifications for new comment on proposal', {
-          error,
+        ErrorService.report('DCL - Error sending notifications for new comment on proposal', {
+          error: `${error}`,
           category: ErrorCategory.Notifications,
           proposal_id: proposalId,
           event: commentEvent,
