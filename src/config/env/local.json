@@ -8,7 +8,7 @@
   "GATSBY_DEFAULT_CHAIN_ID": "11155111",
   "GATSBY_GOVERNANCE_API": "https://localhost:8000/api",
   "GATSBY_SNAPSHOT_API": "https://testnet.hub.snapshot.org/",
-  "GATSBY_SNAPSHOT_URL": "https://demo.snapshot.org/",
+  "GATSBY_SNAPSHOT_URL": "https://testnet.snapshot.org/",
   "GATSBY_SNAPSHOT_QUERY_ENDPOINT": "https://api.thegraph.com/subgraphs/name/snapshot-labs/snapshot",
   "GATSBY_SNAPSHOT_SPACE": "daotest.dcl.eth",
   "GATSBY_SNAPSHOT_DURATION": "600",
