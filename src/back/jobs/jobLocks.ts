@@ -2,14 +2,14 @@ import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 
 type JobFunction = (context: JobContext) => Promise<void>
 
-export const JOB_LOCKS = new Map<string, boolean>() // in-memory lock store
+export const JOB_LOCKS = new Map<string, boolean>()
 
-const acquireLock = (jobName: string): boolean => {
-  if (JOB_LOCKS.get(jobName)) {
-    return false
-  }
+export const isLockAcquired = (jobName: string): boolean => {
+  return JOB_LOCKS.has(jobName)
+}
+
+const acquireLock = (jobName: string): void => {
   JOB_LOCKS.set(jobName, true)
-  return true
 }
 
 const releaseLock = (jobName: string): void => {
@@ -17,10 +17,11 @@ const releaseLock = (jobName: string): void => {
 }
 
 export const withLock = (jobName: string, jobFunction: JobFunction) => async (context: JobContext) => {
-  if (!acquireLock(jobName)) {
+  if (isLockAcquired(jobName)) {
     console.log(`${jobName} is already running.`)
     return
   }
+  acquireLock(jobName)
   try {
     await jobFunction(context)
   } finally {

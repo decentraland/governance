@@ -1,6 +1,6 @@
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 
-import { JOB_LOCKS, withLock } from './jobLocks'
+import { JOB_LOCKS, isLockAcquired, withLock } from './jobLocks'
 
 describe('Job Locking Mechanism', () => {
   const exampleContext: JobContext = new JobContext(
@@ -28,10 +28,11 @@ describe('Job Locking Mechanism', () => {
     const jobName = 'immediateJob'
     const lockedJob = withLock(jobName, immediateJob)
 
+    expect(isLockAcquired(jobName)).toBe(false)
     await lockedJob(exampleContext)
 
     expect(immediateJob).toHaveBeenCalledTimes(1)
-    expect(JOB_LOCKS.has(jobName)).toBe(false) // Lock should be released
+    expect(isLockAcquired(jobName)).toBe(false)
   })
 
   it('should acquire and release lock for a job that fails', async () => {
@@ -42,7 +43,7 @@ describe('Job Locking Mechanism', () => {
       await lockedJob(exampleContext)
     } catch (error) {
       expect(delayedJob).toHaveBeenCalledTimes(1)
-      expect(JOB_LOCKS.has(jobName)).toBe(false) // Lock should be released even on error
+      expect(isLockAcquired(jobName)).toBe(false) // Lock should be released even on error
       expect(error).toBeDefined() // Ensure error is thrown
     }
   })
@@ -66,5 +67,7 @@ describe('Job Locking Mechanism', () => {
     // Try again after lock is released
     await secondJob(exampleContext)
     expect(immediateJob).toHaveBeenCalledTimes(1) // Second job should execute now
+
+    expect(isLockAcquired(jobName)).toBe(false)
   })
 })
