@@ -135,7 +135,7 @@ Then follow instructions on [Snapshot](https://docs.snapshot.org/spaces/create)
 
   - [erc20-balance-of](https://snapshot.org/#/playground/erc20-balance-of)
 
-  - [delegation](https://demo.snapshot.org/#/strategy/delegation)
+  - [delegation](https://testnet.snapshot.org/#/strategy/delegation)
 
   ```json
   {
