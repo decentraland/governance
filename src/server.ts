@@ -63,7 +63,7 @@ import { GOVERNANCE_URL } from './constants'
 const jobs = manager()
 jobs.cron('@eachMinute', finishProposal)
 jobs.cron('@eachMinute', activateProposals)
-jobs.cron('@eachMinute', withLock('publishBids', publishBids))
+jobs.cron('@each5Minute', withLock('publishBids', publishBids))
 jobs.cron('@each10Second', pingSnapshot)
 jobs.cron('@daily', updateGovernanceBudgets)
 jobs.cron('@daily', runAirdropJobs)
