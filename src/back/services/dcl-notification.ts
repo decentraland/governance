@@ -231,7 +231,8 @@ export class DclNotificationService {
           address,
           eventKey: updateId,
           metadata: {
-            updateId,
+            proposalId: proposal.id,
+            proposalTitle: proposal.title,
             title: Notifications.ProjectUpdateCommented.title(proposal),
             description: Notifications.ProjectUpdateCommented.body,
             link: getUpdateUrl(updateId, proposal.id),
