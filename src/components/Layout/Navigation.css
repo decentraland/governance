@@ -3,6 +3,13 @@
   z-index: 9;
 }
 
+.Navigation ul {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
 .Navigation .dcl.tab svg {
   margin-left: 4px;
   vertical-align: middle;

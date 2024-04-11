@@ -74,3 +74,16 @@
 .Comment .Comment__Content {
   width: 100%;
 }
+
+.Comment__AuthorText {
+  margin: 0 !important;
+}
+
+.Comment__ExtraInfo {
+  margin: 0 !important;
+  flex: none !important;
+  color: var(--secondary-text) !important;
+}
+.Comment__ExtraInfo.Comment__ExtraInfo--choice {
+  margin: 0 7px !important;
+}

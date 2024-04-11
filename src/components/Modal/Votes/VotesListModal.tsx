@@ -10,6 +10,7 @@ import { VOTES_VP_THRESHOLD } from '../../../constants'
 import { ProposalAttributes } from '../../../entities/Proposal/types'
 import { VoteByAddress } from '../../../entities/Votes/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
+import useProposalChoices from '../../../hooks/useProposalChoices'
 import FullWidthButton from '../../Common/FullWidthButton'
 import '../ProposalModal.css'
 
@@ -24,7 +25,7 @@ type Props = Omit<ModalProps, 'children'> & {
 
 export default function VotesListModal({ proposal, highQualityVotes, lowQualityVotes, onClose, ...props }: Props) {
   const t = useFormatMessage()
-  const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [proposal])
+  const choices = useProposalChoices(proposal)
   const [showLowQualityVotes, setShowLowQualityVotes] = useState(false)
   const sortedHighQualityVotes = useMemo(
     () => Object.entries(highQualityVotes || {}).sort((a, b) => b[1].vp - a[1].vp),
@@ -64,10 +65,10 @@ export default function VotesListModal({ proposal, highQualityVotes, lowQualityV
               <Grid.Column width={6}>
                 <div className="VotesList__Header">{t('modal.votes_list.voter')}</div>
               </Grid.Column>
-              <Grid.Column width={6}>
+              <Grid.Column width={4}>
                 <div className="VotesList__Header">{t('modal.votes_list.voted')}</div>
               </Grid.Column>
-              <Grid.Column>
+              <Grid.Column width={3}>
                 <div className="VotesList__Header">{t('modal.votes_list.vp')}</div>
               </Grid.Column>
             </Grid.Row>

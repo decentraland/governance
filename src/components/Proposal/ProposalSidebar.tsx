@@ -11,6 +11,7 @@ import { SelectedVoteChoice, VoteByAddress } from '../../entities/Votes/types'
 import { calculateResult } from '../../entities/Votes/utils'
 import { useAuthContext } from '../../front/context/AuthProvider'
 import useAnalyticsTrack from '../../hooks/useAnalyticsTrack'
+import useProposalChoices from '../../hooks/useProposalChoices'
 import useProposalVotes from '../../hooks/useProposalVotes'
 import { ProposalPageState } from '../../pages/proposal'
 import { NotDesktop1200 } from '../Layout/Desktop1200'
@@ -28,8 +29,6 @@ import VestingContract from './View/VestingContract'
 
 import ProposalActions from './ProposalActions'
 import './ProposalSidebar.css'
-
-const EMPTY_VOTE_CHOICES: string[] = []
 
 interface Props {
   proposal: ProposalAttributes | null
@@ -50,6 +49,8 @@ interface Props {
   votes?: VoteByAddress | null
   isOwner: boolean
   isCoauthor: boolean
+  shouldGiveReason?: boolean
+  votingSectionRef: React.MutableRefObject<HTMLDivElement | null>
 }
 
 export default function ProposalSidebar({
@@ -70,6 +71,8 @@ export default function ProposalSidebar({
   subscriptionsLoading,
   isOwner,
   isCoauthor,
+  shouldGiveReason,
+  votingSectionRef,
 }: Props) {
   const [account] = useAuthContext()
   const subscribed = useMemo(
@@ -78,7 +81,7 @@ export default function ProposalSidebar({
   )
   const { votes, isLoadingVotes, segmentedVotes } = useProposalVotes(proposal?.id)
   const { highQualityVotes, lowQualityVotes } = segmentedVotes || {}
-  const choices: string[] = proposal?.snapshot_proposal?.choices || EMPTY_VOTE_CHOICES
+  const choices = useProposalChoices(proposal)
   const partialResults = useMemo(() => calculateResult(choices, highQualityVotes || {}), [choices, highQualityVotes])
 
   const [isVotesListModalOpen, setIsVotesListModalOpen] = useState(false)
@@ -92,7 +95,7 @@ export default function ProposalSidebar({
   }
 
   const handleVoteClick = (selectedChoice: SelectedVoteChoice) => {
-    if (voteWithSurvey) {
+    if (voteWithSurvey || shouldGiveReason) {
       updatePageState((prevState) => ({
         ...prevState,
         selectedChoice,
@@ -142,21 +145,23 @@ export default function ProposalSidebar({
             proposal={proposal}
           />
         )}
-        <ProposalGovernanceSection
-          disabled={!proposal || !votes}
-          loading={proposalLoading || isLoadingVotes}
-          proposal={proposal}
-          votes={votes}
-          partialResults={partialResults}
-          choices={choices}
-          voteWithSurvey={voteWithSurvey}
-          castingVote={castingVote}
-          onChangeVote={(_, changing) => updatePageState((prevState) => ({ ...prevState, changingVote: changing }))}
-          onVote={handleVoteClick}
-          onChoiceClick={handleChoiceClick}
-          updatePageState={updatePageState}
-          proposalPageState={proposalPageState}
-        />
+        <div ref={votingSectionRef}>
+          <ProposalGovernanceSection
+            disabled={!proposal || !votes}
+            loading={proposalLoading || isLoadingVotes}
+            proposal={proposal}
+            votes={votes}
+            partialResults={partialResults}
+            choices={choices}
+            voteWithSurvey={voteWithSurvey}
+            castingVote={castingVote}
+            onChangeVote={(_, changing) => updatePageState((prevState) => ({ ...prevState, changingVote: changing }))}
+            onVote={handleVoteClick}
+            onChoiceClick={handleChoiceClick}
+            updatePageState={updatePageState}
+            proposalPageState={proposalPageState}
+          />
+        </div>
         {showProposalThresholdsSummary && (
           <ProposalThresholdsSummary proposal={proposal} partialResults={partialResults} />
         )}

@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { useQuery } from '@tanstack/react-query'
 import { Loader } from 'decentraland-ui/dist/components/Loader/Loader'
 
@@ -16,6 +18,7 @@ import ProposalRelatedEvent from '../Events/ProposalRelatedEvent'
 import CircledComment from '../Icon/CircledComment'
 
 import './ActivityTicker.css'
+import ActivityTickerFilter, { INITIAL_TICKER_FILTER_STATE, TickerFilter } from './ActivityTickerFilter'
 
 function getActivityTickerEvent(event: ActivityTickerEvent) {
   if (event.event_type === EventType.DelegationClear || event.event_type === EventType.DelegationSet) {
@@ -42,14 +45,49 @@ function getActivityTickerImage(item: ActivityTickerEvent) {
   }
 }
 
+function parseTickerFilter(tickerFilter: TickerFilter) {
+  const eventTypes: EventType[] = []
+
+  if (tickerFilter.comments) {
+    eventTypes.push(EventType.ProposalCommented, EventType.ProjectUpdateCommented)
+  }
+  if (tickerFilter.delegation) {
+    eventTypes.push(EventType.DelegationSet, EventType.DelegationClear)
+  }
+  if (tickerFilter.project_updates) {
+    eventTypes.push(EventType.UpdateCreated)
+  }
+  if (tickerFilter.votes) {
+    eventTypes.push(EventType.Voted)
+  }
+  if (tickerFilter.proposals_created) {
+    eventTypes.push(EventType.ProposalCreated)
+  }
+  return eventTypes
+}
+
 export default function ActivityTicker() {
   const t = useFormatMessage()
-  const { data: events, isLoading } = useQuery({
+  const [filterState, setFilterState] = useState<TickerFilter>(INITIAL_TICKER_FILTER_STATE)
+
+  const {
+    data: events,
+    refetch,
+    isLoading,
+  } = useQuery({
     queryKey: ['events'],
-    queryFn: () => Governance.get().getLatestEvents(),
+    queryFn: () => Governance.get().getLatestEvents(parseTickerFilter(filterState)),
     refetchInterval: ONE_MINUTE_MS,
     refetchIntervalInBackground: true,
   })
+
+  const handleApply = (filters: TickerFilter) => {
+    setFilterState(filters)
+  }
+
+  useEffect(() => {
+    refetch()
+  }, [filterState, refetch])
 
   return (
     <div className="ActivityTicker">
@@ -58,6 +96,7 @@ export default function ActivityTicker() {
         <Heading className="ActivityTicker__Title" size="3xs" weight="normal">
           {t('page.home.activity_ticker.title')}
         </Heading>
+        <ActivityTickerFilter onApply={handleApply} filterState={filterState} />
       </div>
       {isLoading && (
         <div className="ActivityTicker__LoadingContainer">

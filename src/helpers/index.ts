@@ -6,6 +6,7 @@ import isURL from 'validator/lib/isURL'
 
 import { DEFAULT_CHAIN_ID } from '../constants'
 import { clientEnv } from '../utils/clientEnv'
+import Time from '../utils/date/Time'
 import logger from '../utils/logger'
 
 import { toGovernancePathname } from './browser'
@@ -146,4 +147,62 @@ export function getEnumDisplayName<T extends { [key: string]: string | number }>
     return 'undefined'
   }
   return anyEnum.split('_').join(' ').toUpperCase()
+}
+
+export function validateYear(yearParam?: string | null) {
+  if (yearParam) {
+    const year = Time(`${yearParam}-01-01`).year()
+    if (!isNaN(year)) return year
+
+    return null
+  }
+  return null
+}
+
+export function validateQuarter(quarterParam?: string | null) {
+  if (quarterParam) {
+    const quarter = Number(quarterParam)
+    if (quarter >= 1 && quarter <= 4) return quarter
+
+    return null
+  }
+  return null
+}
+
+export function getQuarterDates(quarter?: number, year?: number) {
+  if (!quarter && !year) {
+    return { startDate: undefined, endDate: undefined }
+  }
+
+  if (!year) {
+    console.error('Year is required')
+    return { startDate: undefined, endDate: undefined }
+  }
+
+  if (!quarter) {
+    const startDate = Time(`${year}-01-01`).format('YYYY-MM-DD')
+    const endDate = Time(`${year}-12-31`).format('YYYY-MM-DD')
+    return { startDate, endDate }
+  }
+
+  if (quarter < 1 || quarter > 4) {
+    console.error('Quarter should be between 1 and 4')
+    return { startDate: undefined, endDate: undefined }
+  }
+
+  const startMonth = (quarter - 1) * 3 + 1
+
+  const endMonth = startMonth + 2
+
+  const startDate = Time(`${year}-${startMonth}-01`).startOf('month').format('YYYY-MM-DD')
+  const endDate = Time(`${year}-${endMonth}-01`).endOf('month').add(1, 'day').format('YYYY-MM-DD')
+
+  return { startDate, endDate }
+}
+
+export function shortenText(text: string, maxLength: number) {
+  if (text.length > maxLength) {
+    return text.substring(0, maxLength) + '...'
+  }
+  return text
 }

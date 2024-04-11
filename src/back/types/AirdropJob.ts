@@ -6,4 +6,4 @@ export enum AirdropJobStatus {
   FAILED = 'failed',
 }
 
-export type AirdropOutcome = Pick<AirdropJobAttributes, 'status' | 'error'>
+export type AirdropOutcome = Pick<AirdropJobAttributes, 'status' | 'error' | 'recipients' | 'badge_spec'>

@@ -11,8 +11,8 @@ tags:
     description: The Coauthor section of the API is focused on retrieving information about the co-authors associated with a particular proposal. Co-authors are individuals or organizations who are collaborating on a proposal, and may have contributed to its creation.
   - name: Projects
     description: The Projects section of the API provides endpoints to interact with projects.  
-  - name: Grant Updates
-    description: The Grant Updates section of the API is focused on retrieving information related to updates associated with a specific approved Grant. Updates are  used to inform the community or stakeholders about the progress of a Grant project, highlighting any important milestones, challenges, or changes.
+  - name: Project Updates
+    description: The Project Updates section of the API is focused on retrieving information related to updates associated with a specific approved Grant. Updates are  used to inform the community or stakeholders about the progress of a Grant project, highlighting any important milestones, challenges, or changes.
   - name: DAO Committee
     description: The DAO Committee section of the API is focused on retrieving information related to the members of the DAO Committee, individuals resnponsible for executing transactions on chain, enacting proposals and with access to the DAO Treasury.
   - name: Votes
@@ -205,7 +205,7 @@ paths:
   /proposals/{proposal}/updates:
     get:
       tags:
-        - Grant Updates
+        - Project Updates
       summary: Get the updates from the given proposal
       parameters:
         - name: proposal
@@ -213,11 +213,43 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/200'
-  /proposals/{update}/update:
+  /updates/financials:
     get:
       tags:
-        - Grant Updates
+        - Project Updates
+      summary: Get all financial records
+      parameters:
+        - name: page_size
+          in: query
+          description: Page size
+          schema:
+            $ref: '#/components/schemas/limitOffset'
+        - name: page_number
+          in: query
+          description: Page number
+          schema:
+            $ref: '#/components/schemas/limitOffset'
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+        '400':
+          $ref: '#/components/responses/400'
+  /updates/{update}:
+    get:
+      tags:
+        - Project Updates
       summary: Get the update details from the given update ID
+      parameters:
+        - name: update
+          $ref: '#/components/parameters/updateId'
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+  /updates/{update}/comments:
+    get:
+      tags:
+        - Project Updates
+      summary: Get the update comments from the given update ID
       parameters:
         - name: update
           $ref: '#/components/parameters/updateId'

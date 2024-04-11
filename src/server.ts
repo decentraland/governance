@@ -17,6 +17,7 @@ import YAML from 'yaml'
 
 import { giveTopVoterBadges, runAirdropJobs } from './back/jobs/BadgeAirdrop'
 import { pingSnapshot } from './back/jobs/PingSnapshot'
+import { withLock } from './back/jobs/jobLocks'
 import airdrops from './back/routes/airdrop'
 import badges from './back/routes/badges'
 import bid from './back/routes/bid'
@@ -62,7 +63,7 @@ import { GOVERNANCE_URL } from './constants'
 const jobs = manager()
 jobs.cron('@eachMinute', finishProposal)
 jobs.cron('@eachMinute', activateProposals)
-jobs.cron('@eachMinute', publishBids)
+jobs.cron('@each5Minute', withLock('publishBids', publishBids))
 jobs.cron('@each10Second', pingSnapshot)
 jobs.cron('@daily', updateGovernanceBudgets)
 jobs.cron('@daily', runAirdropJobs)
@@ -81,7 +82,7 @@ app.set('x-powered-by', false)
 app.use(withLogs())
 app.use('/api', [
   status(),
-  withDDosProtection(),
+  withDDosProtection({ limit: 1000, checkinterval: 4 }),
   withCors(),
   withBody(),
   airdrops,

@@ -162,7 +162,7 @@ export class UpdateService {
       }
     const update = await UpdateModel.createUpdate(data)
     try {
-      await FinancialService.createRecords(update.id, financial_records || [])
+      if (financial_records) await FinancialService.createRecords(update.id, financial_records)
       await DiscourseService.createUpdate(update, proposal.title)
       await EventsService.updateCreated(update.id, proposal.id, proposal.title, user)
       DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
@@ -190,7 +190,8 @@ export class UpdateService {
     const { author, health, introduction, highlights, blockers, next_steps, additional_notes, financial_records } =
       newUpdate
 
-    await FinancialService.createRecords(update.id, financial_records || update.financial_records!)
+    const records = financial_records || update.financial_records
+    if (records && records.length > 0) await FinancialService.createRecords(update.id, records)
 
     await UpdateModel.update<UpdateAttributes>(
       {

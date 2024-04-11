@@ -108,9 +108,6 @@ export default function ProposalsPage() {
 
   return (
     <>
-      <Mobile>
-        <RandomBanner isVisible={!searching} />
-      </Mobile>
       <Head title={title} description={description} links={[{ rel: 'canonical', href: locations.proposals() }]} />
       <Navigation activeTab={NavigationTab.Proposals} />
       <WiderContainer>
@@ -122,6 +119,7 @@ export default function ProposalsPage() {
                 <SearchTitle />
               </NotMobile>
             )}
+            <RandomBanner isVisible={!searching} />
             <div className="ProposalsPage__Container">
               <div className="ProposalsPage__Sidebar">
                 <NotMobile>
@@ -139,9 +137,7 @@ export default function ProposalsPage() {
                     <SearchTitle />
                   </Mobile>
                 )}
-                <div className="OnlyDesktop">
-                  <RandomBanner isVisible={!searching} />
-                </div>
+
                 {!filtering && <PriorityProposalsBox address={userAddress} collapsible />}
                 <ActionableLayout
                   leftAction={

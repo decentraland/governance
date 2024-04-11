@@ -34,4 +34,12 @@ export type Notification = {
   customType: NotificationCustomType
 }
 
+export type DclNotification = {
+  eventKey: string
+  type: string
+  address?: string
+  metadata: object
+  timestamp: number
+}
+
 export type Recipient = string | string[] | undefined

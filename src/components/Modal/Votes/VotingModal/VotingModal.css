@@ -4,8 +4,15 @@
   margin-right: 42px !important;
 }
 
-.VotingModal__Choice {
+.VotingModal__VoteVp {
   font-weight: var(--weight-semi-bold);
+}
+
+.VotingModal__Content {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding-bottom: 45px;
 }
 
 .VotingModal__Actions {
@@ -26,10 +33,6 @@
 
 .VotingModal__ErrorNotice--hidden {
   opacity: 0;
-}
-
-.VotingModal__CastVote {
-  max-width: 193px;
 }
 
 .VotingModal__SkipAndCast {

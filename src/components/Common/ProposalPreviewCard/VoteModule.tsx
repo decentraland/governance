@@ -7,6 +7,7 @@ import { VoteByAddress } from '../../../entities/Votes/types'
 import { calculateResult } from '../../../entities/Votes/utils'
 import { useAuthContext } from '../../../front/context/AuthProvider'
 import useFormatMessage from '../../../hooks/useFormatMessage'
+import useProposalChoices from '../../../hooks/useProposalChoices'
 import CategoryPill from '../../Category/CategoryPill'
 import ChevronRight from '../../Icon/ChevronRight'
 import Text from '../Typography/Text'
@@ -23,7 +24,7 @@ function VoteModule({ proposal, votes }: Props) {
   const t = useFormatMessage()
   const [account] = useAuthContext()
   const hasVote = !!account && !isEmpty(votes?.[account])
-  const choices = useMemo((): string[] => proposal?.snapshot_proposal?.choices || [], [proposal])
+  const choices = useProposalChoices(proposal)
   const vote = hasVote && !!votes?.[account].choice ? choices[votes?.[account].choice - 1] : undefined
   const results = useMemo(
     () => calculateResult(proposal?.snapshot_proposal?.choices || [], votes || {}),

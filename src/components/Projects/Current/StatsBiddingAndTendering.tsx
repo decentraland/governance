@@ -6,6 +6,7 @@ import { CURRENCY_FORMAT_OPTIONS } from '../../../helpers'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import useOpenPitchesTotal from '../../../hooks/useOpenPitchesTotal'
 import useOpenTendersTotal from '../../../hooks/useOpenTendersTotal'
+import useYearAndQuarterParams from '../../../hooks/useYearAndQuarterParams'
 import Time from '../../../utils/date/Time'
 import locations from '../../../utils/locations'
 import { isCurrentProject, isCurrentQuarterProject } from '../../../utils/projects'
@@ -22,11 +23,16 @@ export default function StatsBiddingAndTendering({ projects }: Props) {
   const t = useFormatMessage()
   const formatFundingValue = (value: number) => intl.formatNumber(value, CURRENCY_FORMAT_OPTIONS)
 
-  const currentQuarter = Time().quarter()
+  const { year: yearParam, quarter: quarterParam, areValidParams } = useYearAndQuarterParams()
+
+  const currentYear = areValidParams ? yearParam! : Time().year()
+  const currentQuarter = areValidParams ? quarterParam! : Time().quarter()
+
   const currentProjects = useMemo(() => projects.filter(({ status }) => isCurrentProject(status)), [projects])
   const currentProjectsThisQuarter = useMemo(
-    () => currentProjects.filter((item) => isCurrentQuarterProject(item.contract?.start_at)),
-    [currentProjects]
+    () =>
+      currentProjects.filter((item) => isCurrentQuarterProject(currentYear, currentQuarter, item.contract?.start_at)),
+    [currentProjects, currentQuarter, currentYear]
   )
   const currentBidProjects = useMemo(
     () => currentProjectsThisQuarter.filter((item) => item.type === ProposalType.Bid),
@@ -45,7 +51,16 @@ export default function StatsBiddingAndTendering({ projects }: Props) {
       <MetricsCard
         variant="dark"
         fullWidth
-        category={t('page.grants.bidding_and_tendering_stats.funding.category', { quarter: currentQuarter })}
+        category={
+          areValidParams
+            ? t('page.grants.bidding_and_tendering_stats.funding.category', {
+                year: currentYear,
+                quarter: currentQuarter,
+              })
+            : t('page.grants.bidding_and_tendering_stats.funding.category_all', {
+                year: yearParam ? `${yearParam} ` : '',
+              })
+        }
         title={formatFundingValue(totalBidFunding)}
       />
       <MetricsCard

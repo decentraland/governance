@@ -28,6 +28,7 @@ export type SnapshotVote = {
   vp_by_strategy?: number[]
   choice: number
   metadata?: Record<string, unknown>
+  reason?: string
   proposal?: {
     id: string
     title?: string
@@ -81,6 +82,7 @@ export type SnapshotProposal = {
   space: SnapshotSpace
   strategies?: SnapshotStrategy[]
   discussion: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   plugins: any
 }
 

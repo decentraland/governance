@@ -77,16 +77,6 @@ function parseStringsAsNumbers(bidRequest: BidRequest) {
   return { ...bidRequest, funding }
 }
 
-// TODO: This function is repeated in other files...
-function handleCancel() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  if ((window as any).routeUpdate) {
-    window.history.back()
-  } else {
-    navigate(locations.submit())
-  }
-}
-
 export default function SubmitBid() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
@@ -130,7 +120,15 @@ export default function SubmitBid() {
     }
   }, [linkedProposalId, patchBidRequest])
 
-  usePreventNavigation(!!preventNavigation)
+  usePreventNavigation(!!preventNavigation.current)
+
+  const handleCancel = () => {
+    if (preventNavigation.current) {
+      window.history.back()
+    } else {
+      navigate(locations.submit())
+    }
+  }
 
   const submit = useCallback(async () => {
     if (allSectionsValid) {

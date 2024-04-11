@@ -23,7 +23,10 @@
     /* List of folders to include type definitions from. */ "esModuleInterop": true,
     /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */ "removeComments": true,
     "preserveConstEnums": true,
-    "isolatedModules": false
+    "isolatedModules": false,
+    "paths": {
+      "react": ["./node_modules/@types/react"]
+    }
   },
   "include": ["src"],
   "exclude": ["node_modules", "**/node_modules/*"]

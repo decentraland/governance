@@ -79,7 +79,7 @@ export default class UserModel extends Model<UserAttributes> {
     const columnMap: Record<AccountType, string> = {
       [AccountType.Forum]: 'forum_id',
       [AccountType.Discord]: 'discord_id',
-      [AccountType.Twitter]: 'NOT_IMPLEMENTED',
+      [AccountType.Push]: 'NOT_IMPLEMENTED',
     }
 
     if (accounts.size === 0) {

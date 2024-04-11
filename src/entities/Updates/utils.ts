@@ -6,7 +6,7 @@ import { ContractVersion, TopicsByVersion } from '../../utils/contracts/vesting'
 import Time from '../../utils/date/Time'
 import { ProposalStatus } from '../Proposal/types'
 
-import { UpdateAttributes, UpdateStatus } from './types'
+import { FinancialRecord, UpdateAttributes, UpdateStatus } from './types'
 
 const TOPICS_V1 = TopicsByVersion[ContractVersion.V1]
 const TOPICS_V2 = TopicsByVersion[ContractVersion.V2]
@@ -101,11 +101,11 @@ export function getFundsReleasedSinceLatestUpdate(
   latestUpdate: Omit<UpdateAttributes, 'id' | 'proposal_id'> | undefined,
   releases: VestingLog[] | undefined,
   beforeDate?: Date
-): { value: number; txAmount: number; latestTimestamp?: string } {
-  if (!releases || releases.length === 0) return { value: 0, txAmount: 0 }
+): { releasedFunds: number; releasesTxCount: number; latestReleaseTimestamp?: string } {
+  if (!releases || releases.length === 0) return { releasedFunds: 0, releasesTxCount: 0 }
 
   if (!latestUpdate) {
-    return { value: sum(releases.map(({ amount }) => amount || 0)), txAmount: releases.length }
+    return { releasedFunds: sum(releases.map(({ amount }) => amount || 0)), releasesTxCount: releases.length }
   }
 
   const { completion_date } = latestUpdate
@@ -115,9 +115,9 @@ export function getFundsReleasedSinceLatestUpdate(
       Time(timestamp).isAfter(completion_date) && (beforeDate ? Time(timestamp).isBefore(beforeDate) : true)
   )
   return {
-    value: sum(releasesSinceLatestUpdate.map(({ amount }) => amount || 0)),
-    txAmount: releasesSinceLatestUpdate.length,
-    latestTimestamp: releasesSinceLatestUpdate[0]?.timestamp,
+    releasedFunds: sum(releasesSinceLatestUpdate.map(({ amount }) => amount || 0)),
+    releasesTxCount: releasesSinceLatestUpdate.length,
+    latestReleaseTimestamp: releasesSinceLatestUpdate[0]?.timestamp,
   }
 }
 
@@ -140,4 +140,13 @@ export function getLatestUpdate(publicUpdates: UpdateAttributes[], beforeDate?: 
   if (!beforeDate) return filteredUpdates[0]
 
   return filteredUpdates.find((update) => Time(update.completion_date).isBefore(beforeDate))
+}
+
+export function getDisclosedAndUndisclosedFunds(
+  releasedForThisUpdate: number,
+  financialRecords?: FinancialRecord[] | null
+) {
+  const disclosedFunds = financialRecords?.reduce((acc, financialRecord) => acc + financialRecord.amount, 0) || 0
+  const undisclosedFunds = disclosedFunds <= releasedForThisUpdate ? releasedForThisUpdate - disclosedFunds : 0
+  return { disclosedFunds, undisclosedFunds }
 }

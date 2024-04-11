@@ -1,0 +1,74 @@
+.ActivityTickerFilterItem {
+  width: 100%;
+  flex-shrink: 0;
+  display: flex;
+  justify-items: flex-start;
+  align-items: baseline;
+  gap: 6px;
+  padding-left: 8px;
+  height: 28px;
+}
+
+.ActivityTickerFilterItem:hover {
+  border-radius: 6px;
+  background: var(--alpha-black-200);
+}
+
+.ActivityTickerFilterItem .CheckboxField {
+  height: 28px;
+}
+
+.ActivityTickerFilterItem .CheckboxField:hover {
+  background: none;
+}
+
+/* Unchecked */
+.ActivityTickerFilterItem__Checkbox.ui.checkbox input[type='checkbox'].hidden ~ label:before,
+.ActivityTickerFilterItem__Checkbox.ui.toggle.checkbox input[type='checkbox'].hidden:focus ~ label:before {
+  border: 1px solid var(--black-300);
+  background: #fff;
+  border-radius: 2px;
+}
+
+/* Hover */
+.ActivityTickerFilterItem__Checkbox.ui.checkbox input[type='checkbox'].hidden ~ label:hover:before,
+.ActivityTickerFilterItem__Checkbox.ui.checkbox input[type='checkbox'].hidden:focus ~ label:hover:before {
+  border: 1px solid var(--black-400);
+  background: #fff;
+}
+
+/* Checked */
+.ActivityTickerFilterItem__Checkbox.ui.checkbox.checked input[type='checkbox'].hidden + label:before,
+.ActivityTickerFilterItem__Checkbox.ui.checkbox.checked input[type='checkbox'].hidden:focus + label:before {
+  border: 2px solid var(--green-800);
+  background: #44b600;
+  display: flex;
+}
+
+div.ui.fitted.checkbox.ActivityTickerFilterItem__Checkbox,
+.ActivityTickerFilterItem__Checkbox.ui.checkbox input[type='checkbox'],
+.ActivityTickerFilterItem__Checkbox.ui.checkbox input[type='checkbox'].hidden + label,
+.ActivityTickerFilterItem__Checkbox.ui.checkbox input[type='checkbox'].hidden ~ label:before,
+.ActivityTickerFilterItem__Checkbox.ui.checkbox.checked:not(.toggle) input[type='checkbox'].hidden + label:after {
+  width: 12px !important;
+  height: 12px !important;
+  min-width: 12px !important;
+  min-height: 12px !important;
+}
+
+.ActivityTickerFilterItem__Checkbox.ui.checkbox.checked:not(.toggle) input[type='checkbox'].hidden + label:after {
+  left: 1px !important;
+  top: 1px !important;
+}
+
+.ActivityTickerFilterItem__CheckboxLabel {
+  color: var(--black-600) !important;
+  font-size: 13px !important;
+  font-style: normal !important;
+  font-weight: var(--weight-normal) !important;
+  line-height: 32px !important;
+}
+
+.ActivityTickerFilterItem__CheckboxLabelChecked {
+  font-weight: var(--weight-semi-bold) !important;
+}

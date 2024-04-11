@@ -104,7 +104,9 @@ export default function AboutPitchProcess({ proposal }: Props) {
   const openForBidsConfig = getOpenForBidsConfig(!!winnerTenderProposal, !!bidsInfo?.publishAt, hasBidProposals)
   const projectAssignationConfig = getProjectAssignationConfig(
     hasBidProposals,
-    !!bidProposals?.data.find((item) => item.status === ProposalStatus.Passed),
+    !!bidProposals?.data.find(
+      (item) => item.status === ProposalStatus.Passed || item.status === ProposalStatus.Enacted
+    ),
     !!bidProposals?.data.find((item) => item.status === ProposalStatus.Rejected)
   )
   const formattedDate = Time(start_at).fromNow()

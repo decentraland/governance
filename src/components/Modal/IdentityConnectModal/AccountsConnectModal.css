@@ -13,3 +13,7 @@ svg.DiscordConnectStepIcon circle {
 svg.DiscordConnectStepIcon path {
   fill: #5d5fef;
 }
+
+.AccountsConnectModal__PushState {
+  padding: 32px 0;
+}

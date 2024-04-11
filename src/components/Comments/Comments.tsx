@@ -73,6 +73,7 @@ export default function Comments({ comments, topicId, topicSlug, isLoading, topi
                 createdAt={comment.created_at}
                 cooked={comment.cooked}
                 address={comment.address}
+                isValidated={!!comment.address}
               />
             ))}
         </div>

@@ -18,10 +18,10 @@ import FinancialSection from '../../components/Updates/FinancialSection'
 import GeneralSection from '../../components/Updates/GeneralSection'
 import UpdateMarkdownView from '../../components/Updates/UpdateMarkdownView'
 import {
-  FinancialUpdateSection,
-  GeneralUpdateSection,
   GeneralUpdateSectionSchema,
   UpdateAttributes,
+  UpdateFinancialSection,
+  UpdateGeneralSection,
   UpdateStatus,
   UpdateSubmissionDetails,
 } from '../../entities/Updates/types'
@@ -56,8 +56,8 @@ const intialValidationState: UpdateValidationState = {
   financialSectionValid: false,
 }
 
-const initialGeneralState: Partial<GeneralUpdateSection> | undefined = undefined
-const initialFinancialState: FinancialUpdateSection | undefined = undefined
+const initialGeneralState: Partial<UpdateGeneralSection> | undefined = undefined
+const initialFinancialState: UpdateFinancialSection | undefined = undefined
 
 function getInitialUpdateValues<T>(
   update: UpdateAttributes | null | undefined,
@@ -108,7 +108,7 @@ export default function Update({ isEdit }: Props) {
   const releases = useMemo(() => (vestingData ? getReleases(vestingData) : undefined), [vestingData])
 
   const handleGeneralSectionValidation = useCallback(
-    (data: GeneralUpdateSection, sectionValid: boolean) => {
+    (data: UpdateGeneralSection, sectionValid: boolean) => {
       patchGeneralSection((prevState) => ({ ...prevState, ...data }))
       patchValidationState((prevState) => ({ ...prevState, generalSectionValid: sectionValid }))
     },
@@ -116,7 +116,7 @@ export default function Update({ isEdit }: Props) {
   )
 
   const handleFinancialSectionValidation = useCallback(
-    (data: FinancialUpdateSection | undefined, sectionValid: boolean) => {
+    (data: UpdateFinancialSection | undefined, sectionValid: boolean) => {
       if (data) {
         patchFinancialSection((prevState) => ({ ...prevState, ...data }))
       }
@@ -136,14 +136,14 @@ export default function Update({ isEdit }: Props) {
     [financialSection, generalSection]
   )
 
-  const submitUpdate = async (data: GeneralUpdateSection & FinancialUpdateSection) => {
+  const submitUpdate = async (data: UpdateGeneralSection & UpdateFinancialSection) => {
     if (!proposalId) {
       return
     }
 
     setFormDisabled(true)
 
-    const newUpdate: UpdateSubmissionDetails & GeneralUpdateSection & FinancialUpdateSection = {
+    const newUpdate: UpdateSubmissionDetails & UpdateGeneralSection & UpdateFinancialSection = {
       author: account!,
       health: data.health,
       introduction: data.introduction,
@@ -151,12 +151,12 @@ export default function Update({ isEdit }: Props) {
       blockers: data.blockers,
       next_steps: data.next_steps,
       additional_notes: data.additional_notes,
-      financial_records: data.financial_records,
+      financial_records: data.financial_records?.length ? data.financial_records : null,
     }
 
     try {
       if (updateId) {
-        await Governance.get().updateProposalUpdate(proposalId, { id: updateId, ...newUpdate })
+        await Governance.get().updateProposalUpdate(updateId, newUpdate)
         if (isEdit) {
           setIsEditModalOpen(false)
         }
@@ -173,7 +173,7 @@ export default function Update({ isEdit }: Props) {
     }
   }
 
-  const onSubmit: SubmitHandler<GeneralUpdateSection & FinancialUpdateSection> = (data) => {
+  const onSubmit: SubmitHandler<UpdateGeneralSection & UpdateFinancialSection> = (data) => {
     if (isEdit) {
       setIsEditModalOpen(true)
     } else {
@@ -237,7 +237,7 @@ export default function Update({ isEdit }: Props) {
             isFormDisabled={formDisabled}
             intialValues={
               generalSection ||
-              getInitialUpdateValues<GeneralUpdateSection>(
+              getInitialUpdateValues<UpdateGeneralSection>(
                 update,
                 (key) => key in GeneralUpdateSectionSchema.properties
               )
@@ -251,9 +251,9 @@ export default function Update({ isEdit }: Props) {
             onValidation={handleFinancialSectionValidation}
             intialValues={
               financialSection ||
-              getInitialUpdateValues<FinancialUpdateSection>(
+              getInitialUpdateValues<UpdateFinancialSection>(
                 update,
-                (key) => key in ({ financial_records: [] } as FinancialUpdateSection)
+                (key) => key in ({ financial_records: [] } as UpdateFinancialSection)
               )
             }
             releases={releases}
@@ -275,7 +275,7 @@ export default function Update({ isEdit }: Props) {
             disabled={formDisabled || !isValidToSubmit}
             loading={formDisabled}
             onClick={() =>
-              onSubmit({ ...generalSection, ...financialSection } as GeneralUpdateSection & FinancialUpdateSection)
+              onSubmit({ ...generalSection, ...financialSection } as UpdateGeneralSection & UpdateFinancialSection)
             }
           >
             {t('page.proposal_update.publish_update')}
@@ -305,7 +305,7 @@ export default function Update({ isEdit }: Props) {
           open={isEditModalOpen}
           onClose={handleEditModalClose}
           onClickAccept={() =>
-            submitUpdate({ ...generalSection, ...financialSection } as GeneralUpdateSection & FinancialUpdateSection)
+            submitUpdate({ ...generalSection, ...financialSection } as UpdateGeneralSection & UpdateFinancialSection)
           }
         />
       )}

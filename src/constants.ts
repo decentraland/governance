@@ -36,6 +36,7 @@ export const TEST_ENV_VAR = clientEnv('GATSBY_TEST_ENV_VAR') || ''
 export const PROD_ENV_VAR = clientEnv('GATSBY_PROD_ENV_VAR') || ''
 export const DISCORD_SERVICE_ENABLED = getBooleanStringVar('DISCORD_SERVICE_ENABLED', true)
 export const NOTIFICATIONS_SERVICE_ENABLED = getBooleanStringVar('NOTIFICATIONS_SERVICE_ENABLED', true)
+export const DCL_NOTIFICATIONS_SERVICE_ENABLED = getBooleanStringVar('DCL_NOTIFICATIONS_SERVICE_ENABLED', true)
 export const VOTES_VP_THRESHOLD = 5
 export const SSO_URL = clientEnv('GATSBY_SSO_URL') ?? undefined
 export const RAFT_OWNER_PK = process.env.RAFT_OWNER_PK || ''
@@ -53,7 +54,6 @@ export const CORE_UNITS_BADGE_CID = [
   'bafyreidmzou4wiy2prxq4jdyg66z7s3wulpfq2a7ar6sdkrixrj3b5mgwe', // Governance Squad
   'bafyreih5t62qmeiugca6bp7dtubrd3ponqfndbim54e3vg4cfbroledohq', // Grant Support Squad
   'bafyreicsrpymlwm4hutebi2qio3e5hhzpqtyr6fv3ei6nsybb3vannhfgy', // Facilitation Squad
-  'bafyreigm5fqqryvoboszxbrzeks5jihsc4mwb4mq26csdmooaju5g7ksja', // Strategic Unit Squad
 ]
 export const DEBUG_ADDRESSES = (process.env.DEBUG_ADDRESSES || '')
   .split(',')
@@ -76,3 +76,4 @@ export const BUY_MANA_URL = process.env.GATSBY_BUY_MANA_URL || clientEnv('GATSBY
 export const DCL_META_IMAGE_URL = 'https://decentraland.org/images/decentraland.png'
 export const JOIN_DISCORD_URL = clientEnv('GATSBY_JOIN_DISCORD_URL') || 'https://dcl.gg/discord'
 export const BLOCKNATIVE_API_KEY = process.env.BLOCKNATIVE_API_KEY || ''
+export const REASON_THRESHOLD = Number(process.env.GATSBY_REASON_THRESHOLD || clientEnv('GATSBY_REASON_THRESHOLD'))

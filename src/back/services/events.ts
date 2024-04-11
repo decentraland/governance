@@ -21,6 +21,7 @@ import {
   AlchemyLog,
   DelegationClearEvent,
   DelegationSetEvent,
+  EventFilter,
   EventType,
   ProjectUpdateCommentedEvent,
   ProposalCommentedEvent,
@@ -33,15 +34,16 @@ import { DclProfile } from '../../utils/Catalyst/types'
 import { ErrorCategory } from '../../utils/errorCategories'
 import EventModel from '../models/Event'
 
+import { DclNotificationService } from './dcl-notification'
 import { NotificationService } from './notification'
 
 const CLEAR_DELEGATE_SIGNATURE_HASH = '0x9c4f00c4291262731946e308dc2979a56bd22cce8f95906b975065e96cd5a064'
 const SET_DELEGATE_SIGNATURE_HASH = '0xa9a7fd460f56bddb880a465a9c3e9730389c70bc53108148f16d55a87a6c468e'
 
 export class EventsService {
-  static async getLatest(): Promise<ActivityTickerEvent[]> {
+  static async getLatest(filters?: EventFilter): Promise<ActivityTickerEvent[]> {
     try {
-      const latestEvents = await EventModel.getLatest()
+      const latestEvents = await EventModel.getLatest(filters)
 
       const addresses: string[] = latestEvents
         .map((event) => event.address)
@@ -65,7 +67,7 @@ export class EventsService {
 
       return activityTickerEvents
     } catch (error) {
-      ErrorService.report('Error fetching events', { error, category: ErrorCategory.Events })
+      ErrorService.report('Error fetching events', { error: `${error}`, category: ErrorCategory.Events })
       return []
     }
   }
@@ -280,6 +282,7 @@ export class EventsService {
 
     const commentEvent = await EventModel.create(commentedEvent)
     NotificationService.newCommentOnProposal(commentEvent)
+    DclNotificationService.newCommentOnProposal(commentEvent)
     return commentEvent
   }
 

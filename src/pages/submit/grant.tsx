@@ -98,16 +98,6 @@ function parseStringsAsNumbers(grantRequest: GrantRequest) {
   }
 }
 
-function handleCancel() {
-  // TODO: Type window. Where is routeUpdate coming from?
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  if ((window as any).routeUpdate) {
-    window.history.back()
-  } else {
-    navigate(locations.submit())
-  }
-}
-
 export default function SubmitGrant() {
   const t = useFormatMessage()
   const [account, accountState] = useAuthContext()
@@ -129,7 +119,6 @@ export default function SubmitGrant() {
         navigate('/submit/grant')
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const [grantRequest, patchGrantRequest] = useState<GrantRequest>(initialState)
@@ -148,7 +137,15 @@ export default function SubmitGrant() {
     preventNavigation.current = userModifiedForm(grantRequest, initialState)
   }, [grantRequest])
 
-  usePreventNavigation(!!preventNavigation)
+  const handleCancel = () => {
+    if (preventNavigation.current) {
+      window.history.back()
+    } else {
+      navigate(locations.submit())
+    }
+  }
+
+  usePreventNavigation(!!preventNavigation.current)
 
   if (!isGrantProposalSubmitEnabled(Date.now())) {
     navigate('/submit')

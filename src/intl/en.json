@@ -48,6 +48,7 @@
       "status_filter_title": "Filter by Status",
       "timeframe_filter": {
         "title": "Filter by TimeFrame",
+        "placeholder": "Choose a timeframe",
         "all": "All",
         "week": "Last Week",
         "month": "Last Month",
@@ -65,15 +66,13 @@
         "discord_title": "Discord Notifications",
         "discord_description": "Get direct messages from Marvin when something relavant to you happens"
       },
-      "unsubscribed": {
-        "title": "Don't miss a beat",
-        "description": "We rely on a 3rd party service that you’ll have to opt-in to in order to proceed.",
-        "button": "In-app notifications",
-        "discord": "Discord notifications"
+      "error": {
+        "description": "Signature request failed",
+        "button": "Retry signature"
       },
       "subscribing": {
-        "title": "Setting up notifications",
-        "description": "Before we begin populating your inbox, we need you to sign a transaction...",
+        "title": "Subscribe to Push Notifications",
+        "description": "Sign the message request with your wallet to subscribe to the DCL DAO Push Notifications channel",
         "button": "Signature pending"
       },
       "discord": {
@@ -376,6 +375,10 @@
       },
       "submission_finished": "Submission period for this tender has finished",
       "user_has_placed_bid": "You have already placed a bid for this tender"
+    },
+    "rationale": {
+      "too_short": "Rationale is too short",
+      "too_large": "Rationale is too large"
     }
   },
   "category": {
@@ -667,16 +670,19 @@
       "reject": "I've changed my mind"
     },
     "voting_modal_survey": {
-      "title": "We'd appreciate some extra feedback",
-      "selected_choice": "You're about to vote "
+      "title": "Please explain the reasoning behind your vote",
+      "selected_choice": "You're about to vote \"{choice}\" with ",
+      "rationale": "Rationale",
+      "rationale_placeholder": "I'm voting \"{choice}\" because..."
     },
     "identity_setup": {
-      "title": "Choose accounts to link",
+      "title": "Link your Decentraland profile to external services",
+      "description": "By linking your Decentraland profile to your other social accounts you will be able to enhance your governance experience and never miss a beat of what’s going on in the DAO.",
       "timer": "Time sensitive task. {time} left to complete",
       "timer_expired": "Signature expired. You'll have to start over.",
       "forum": {
         "card_title": "Decentraland Forum",
-        "card_description": "Link your Decentraland profile to the comments you left on proposals.",
+        "card_description": "Publish comments on proposals using your Decentraland profile.",
         "title": "Decentraland Forum Account",
         "title_step_1": "1. Sign message",
         "description_step_1": "Use your web3 wallet to securely sign a message to start the linking process.",
@@ -710,7 +716,7 @@
       },
       "discord": {
         "card_title": "Discord",
-        "card_description": "Receive personalized notifications so you don't miss important events.",
+        "card_description": "Receive real-time notifications customized to your activity and never miss any important events.",
         "title": "Discord Account",
         "subtitle": "Follow these steps to link your account to your wallet and start getting notifications in Discord.",
         "action": "Confirm link",
@@ -742,9 +748,13 @@
         "error_subtext": "Maybe have a go at it one more time?",
         "error_button": "Retry"
       },
-      "twitter": {
-        "card_title": "Twitter",
-        "card_description": "Let the world know that you are behind those witty tweets about the Metaverse."
+      "push": {
+        "card_title": "Push Protocol Notifications",
+        "card_description": "Receive notifications in your wallet or on any platform using this native web3 messaging protocol.",
+        "success_text": "**Push Notifications enabled successfully!**",
+        "success_subtext": "Now you will receive Governance-related notifications in your Push account.",
+        "success_button": "Connect other accounts",
+        "helper": "TRIGGERS MESSAGE SIGN REQUEST"
       },
       "soon": "Soon",
       "verified": "Verified"
@@ -788,6 +798,11 @@
       "title": "Receive DAO Notifications in Discord!",
       "description": "Receive real-time, governance-related notifications directly in your Discord inbox.",
       "button_label": "Link Discord Account"
+    },
+    "connect_accounts": {
+      "title": "Stay Updated, Wherever You Are",
+      "description": "Connect your Discord and Push accounts to receive real-time notifications about the latest news in the Decentraland DAO",
+      "button_label": "Connect your accounts"
     }
   },
   "component": {
@@ -817,7 +832,9 @@
     "floating_bar": {
       "view_reactions_label": "View Reactions",
       "total_comments_label": "{count} {count, plural, one {Comment} other {Comments}}",
-      "forum_label": "Join Discussion"
+      "forum_label": "Join Discussion",
+      "vote": "Vote",
+      "view_results": "View results"
     },
     "action_box": {
       "show": "Show",
@@ -835,6 +852,10 @@
       "open_tender": "Open for Bids",
       "tender_with_submissions": "Bids submission ends {time}",
       "active_bids": "Bid proposals voting ends {time}"
+    },
+    "markdown_field": {
+      "preview_button": "Preview",
+      "edit_button": "Edit"
     }
   },
   "page": {
@@ -944,13 +965,23 @@
       "activity_ticker": {
         "title": "Latest activity",
         "voted": "**{author}** voted on **{title}**",
-        "no_activity": "No activity",
+        "no_activity": "No activity to display",
         "proposal_created": "**{author}** published a new Proposal **{title}**",
         "update_created": "**{author}** published an Update on the Project **{title}**",
         "proposal_commented": "New comment on **{title}**",
         "project_update_commented": "New comment on **{update_title}** for **{proposal_title}**",
         "delegation_set": "**{delegator}** delegated to **{new_delegate}**",
-        "delegation_clear": "**{delegator}** removed delegation from **{removed_delegate}**"
+        "delegation_clear": "**{delegator}** removed delegation from **{removed_delegate}**",
+        "filter": {
+          "proposals_created": "Proposals Created",
+          "votes": "Votes",
+          "delegation": "Delegation",
+          "comments": "Comments",
+          "project_updates": "Project Updates",
+          "label": "Filter",
+          "apply": "Apply",
+          "clear": "Clear"
+        }
       }
     },
     "proposal_view": {
@@ -1365,9 +1396,10 @@
         "collapsed_description_button": "in here",
         "expand_button": "EXPAND"
       },
+      "quarter_and_year": "Q{quarter} {year}",
       "projects_category_title": "{status}{category} Projects",
       "budget_banner": {
-        "budget_label": "Quarterly budget",
+        "budget_label": "Budget",
         "progress_label": "Initiatives",
         "spent_label": "Quarterly spend: "
       },
@@ -1378,7 +1410,8 @@
           "ending_this_week": "{total} ending this week"
         },
         "funding": {
-          "category": "Project funding for Q{quarter}",
+          "category_all": "{year}Project funding",
+          "category": "Project funding for Q{quarter} {year}",
           "total": "Grants: {grants}; B&T: {bids}"
         },
         "opportunities": {
@@ -1388,7 +1421,8 @@
       },
       "bidding_and_tendering_stats": {
         "funding": {
-          "category": "Project funding for Q{quarter}",
+          "category_all": "{year}Project funding",
+          "category": "Project funding for Q{quarter} {year}",
           "total": "B&T: {bids}"
         },
         "tender_opportunities": {
@@ -1441,6 +1475,10 @@
       "empty_update": "When the team publishes their first update, it will appear here.",
       "cliff_notice": "No funds vested until"
     },
+    "rationale": {
+      "title": "Voting rationale",
+      "vote_info": "voted \"{choice}\" with "
+    },
     "comments": {
       "title": "{count} {count, plural, one {Comment} other {Comments}}",
       "join_discussion_label": "Join the discussion",
@@ -1455,6 +1493,7 @@
       "description": "Your profile within the DAO",
       "show_badges": "{amount} More",
       "view_past_badges": "View past badges",
+      "linked_profiles": "Linked profiles",
       "badges_sidebar": {
         "title": "Your Badges",
         "current": "{amount} Current {amount, plural, one {Badge} other {Badges}}",
@@ -1469,6 +1508,11 @@
         "delegated_vp": "Delegated Voting Power",
         "delegated_vp_info": "Voting Power that results from the delegation of VP by other users onto this account",
         "vp_distribution": "Voting Power Distribution"
+      },
+      "bio": {
+        "title": "Bio",
+        "show_more": "Show more",
+        "show_less": "Show less"
       },
       "user_voting_stats": {
         "participation_label": "30-Day Participation",
@@ -2166,5 +2210,10 @@
   "maintenance": {
     "title": "Site under maintenance",
     "description": "We will be back soon, sorry for the inconvenience..."
+  },
+  "account_toast": {
+    "title": "Stay updated, wherever you are",
+    "description": "Connect your Discord and Push accounts to receive real-time notifications about the latest developments in the Decentraland DAO.",
+    "button": "Connect accounts"
   }
 }

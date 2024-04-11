@@ -34,15 +34,15 @@ import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { SubscriptionAttributes } from '../entities/Subscription/types'
 import { Topic } from '../entities/SurveyTopic/types'
 import {
-  FinancialUpdateSection,
-  GeneralUpdateSection,
   UpdateAttributes,
+  UpdateFinancialSection,
+  UpdateGeneralSection,
   UpdateResponse,
   UpdateSubmissionDetails,
 } from '../entities/Updates/types'
 import { AccountType } from '../entities/User/types'
 import { Participation, VoteByAddress, VotedProposal, Voter, VotesForProposals } from '../entities/Votes/types'
-import { ActivityTickerEvent } from '../shared/types/events'
+import { ActivityTickerEvent, EventType } from '../shared/types/events'
 import { NewsletterSubscriptionResult } from '../shared/types/newsletter'
 import { PushNotification } from '../shared/types/notifications'
 import Time from '../utils/date/Time'
@@ -83,7 +83,7 @@ export type GetProposalsFilter = ProposalListFilter & {
 
 const getGovernanceApiUrl = () => {
   if (process.env.GATSBY_HEROKU_APP_NAME) {
-    return `https://governance.decentraland.vote/api/`
+    return `https://governance.decentraland.vote/api`
   }
 
   return GOVERNANCE_API
@@ -134,11 +134,7 @@ export class Governance extends API {
   }
 
   async getProposals(filters: Partial<GetProposalsFilter> = {}) {
-    const params = new URLSearchParams(filters as never)
-    let query = params.toString()
-    if (query) {
-      query = '?' + query
-    }
+    const query = this.toQueryString(filters)
 
     const proposals = await this.fetch<ApiResponse<ProposalAttributes[]> & { total: number }>(`/proposals${query}`, {
       method: 'GET',
@@ -151,8 +147,18 @@ export class Governance extends API {
     }
   }
 
-  async getProjects() {
-    return await this.fetchApiResponse<ProjectWithUpdate[]>(`/projects`)
+  async getProjects(from?: Date, to?: Date) {
+    const params = new URLSearchParams()
+    if (from) {
+      params.append('from', from.toISOString().split('T')[0])
+    }
+    if (to) {
+      params.append('to', to.toISOString().split('T')[0])
+    }
+    const paramsStr = params.toString()
+    const proposals = await this.fetchApiResponse<ProjectWithUpdate[]>(`/projects${paramsStr ? `?${paramsStr}` : ''}`)
+
+    return proposals
   }
 
   async getOpenPitchesTotal() {
@@ -244,7 +250,7 @@ export class Governance extends API {
   }
 
   async getProposalUpdate(update_id: string) {
-    return await this.fetchApiResponse<UpdateAttributes>(`/proposals/${update_id}/update`)
+    return await this.fetchApiResponse<UpdateAttributes>(`/updates/${update_id}`)
   }
 
   async getProposalUpdates(proposal_id: string) {
@@ -253,7 +259,7 @@ export class Governance extends API {
 
   async createProposalUpdate(
     proposal_id: string,
-    update: UpdateSubmissionDetails & GeneralUpdateSection & FinancialUpdateSection
+    update: UpdateSubmissionDetails & UpdateGeneralSection & UpdateFinancialSection
   ) {
     return await this.fetchApiResponse<UpdateAttributes>(`/proposals/${proposal_id}/update`, {
       method: 'POST',
@@ -263,21 +269,20 @@ export class Governance extends API {
   }
 
   async updateProposalUpdate(
-    proposal_id: string,
-    update: UpdateSubmissionDetails & GeneralUpdateSection & FinancialUpdateSection
+    update_id: string,
+    update: UpdateSubmissionDetails & UpdateGeneralSection & UpdateFinancialSection
   ) {
-    return await this.fetchApiResponse<UpdateAttributes>(`/proposals/${proposal_id}/update`, {
+    return await this.fetchApiResponse<UpdateAttributes>(`/updates/${update_id}`, {
       method: 'PATCH',
       sign: true,
       json: update,
     })
   }
 
-  async deleteProposalUpdate(update: { id: string; proposal_id: string }) {
-    return await this.fetchApiResponse<UpdateAttributes>(`/proposals/${update.proposal_id}/update`, {
+  async deleteProposalUpdate(update_id: UpdateAttributes['id']) {
+    return await this.fetchApiResponse<UpdateAttributes>(`/updates/${update_id}`, {
       method: 'DELETE',
       sign: true,
-      json: update,
     })
   }
 
@@ -379,6 +384,10 @@ export class Governance extends API {
 
   async getCurrentBudget() {
     return await this.fetchApiResponse<Budget>(`/budget/current`)
+  }
+
+  async getAllBudgets() {
+    return await this.fetchApiResponse<Budget[]>(`/budget/all`)
   }
 
   async getBudgetWithContestants(proposalId: string) {
@@ -550,7 +559,7 @@ export class Governance extends API {
   }
 
   async getUpdateComments(update_id: string) {
-    return await this.fetchApiResponse<ProposalCommentsInDiscourse>(`/proposals/${update_id}/update/comments`)
+    return await this.fetchApiResponse<ProposalCommentsInDiscourse>(`/updates/${update_id}/comments`)
   }
 
   async airdropBadge(badgeSpecCid: string, recipients: string[]) {
@@ -638,8 +647,9 @@ export class Governance extends API {
     })
   }
 
-  async getLatestEvents() {
-    return await this.fetchApiResponse<ActivityTickerEvent[]>(`/events`)
+  async getLatestEvents(eventTypes: EventType[]) {
+    const query = this.toQueryString({ event_type: eventTypes })
+    return await this.fetchApiResponse<ActivityTickerEvent[]>(`/events${query}`)
   }
 
   async createVoteEvent(proposalId: string, proposalTitle: string, choice: string) {

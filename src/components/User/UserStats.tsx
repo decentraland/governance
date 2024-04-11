@@ -12,6 +12,7 @@ import useIsProfileValidated from '../../hooks/useIsProfileValidated'
 import { ActionBox } from '../Common/ActionBox'
 import Username from '../Common/Username'
 import VotingPowerDistribution from '../Modal/VotingPowerDelegationDetail/VotingPowerDistribution'
+import Bio from '../Profile/Bio'
 import ProfileSettings from '../Profile/ProfileSettings'
 
 import Badges from './Badges/Badges'
@@ -26,11 +27,12 @@ interface Props {
   address: string
   vpDistribution: VpDistribution | null
   isLoadingVpDistribution: boolean
+  bio?: string
 }
 
 const UserAvatar = lazy(() => import('./UserAvatar'))
 
-export default function UserStats({ address, vpDistribution, isLoadingVpDistribution }: Props) {
+export default function UserStats({ address, vpDistribution, isLoadingVpDistribution, bio }: Props) {
   const t = useFormatMessage()
   const isMobile = useMobileMediaQuery()
   const { profile, isLoadingGovernanceProfile } = useGovernanceProfile(address)
@@ -60,6 +62,7 @@ export default function UserStats({ address, vpDistribution, isLoadingVpDistribu
       </div>
       <div className="UserStats__UserInfoContainer">
         <div className="UserStats__UserInfo">
+          {bio && bio.length > 0 && <Bio text={bio} />}
           <UserVpStats vpDistribution={vpDistribution} isLoadingVpDistribution={isLoadingVpDistribution} />
           {total > 0 && (
             <ActionBox title={t('page.profile.user_vp_stats.vp_distribution')} className="UserStats__VpDistributionBox">

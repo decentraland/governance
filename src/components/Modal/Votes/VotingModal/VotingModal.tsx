@@ -15,10 +15,13 @@ interface VotingModalProps {
   proposal: Pick<ProposalAttributes, 'snapshot_id' | 'snapshot_space'>
   surveyTopics: Topic[] | null
   isLoadingSurveyTopics: boolean
-  onCastVote: (selectedChoice: SelectedVoteChoice, survey?: Survey) => void
+  onCastVote: (selectedChoice: SelectedVoteChoice, survey?: Survey, reason?: string) => void
   onClose: () => void
   castingVote: boolean
   proposalPageState: ProposalPageState
+  totalVpOnProposal: number
+  shouldGiveReason?: boolean
+  voteWithSurvey?: boolean
 }
 
 export function VotingModal({
@@ -29,6 +32,9 @@ export function VotingModal({
   onCastVote,
   castingVote,
   proposalPageState,
+  totalVpOnProposal,
+  shouldGiveReason,
+  voteWithSurvey,
 }: VotingModalProps) {
   const { selectedChoice, showSnapshotRedirect } = proposalPageState
 
@@ -51,6 +57,9 @@ export function VotingModal({
           castingVote={castingVote}
           onCastVote={onCastVote}
           proposalPageState={proposalPageState}
+          totalVpOnProposal={totalVpOnProposal}
+          shouldGiveReason={shouldGiveReason}
+          voteWithSurvey={voteWithSurvey}
         />
       )}
       {showSnapshotRedirect && <SnapshotRedirect proposal={proposal} />}

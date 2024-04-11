@@ -1,8 +1,11 @@
-import useIsDiscordLinked from '../../hooks/useIsDiscordLinked'
-import useNewsletterSubscription from '../../hooks/useNewsletterSubscription'
+import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 
+import useIsProfileValidated from '../../hooks/useIsProfileValidated'
+import useNewsletterSubscription from '../../hooks/useNewsletterSubscription'
+import usePushSubscriptions from '../../hooks/usePushSubscriptions'
+
+import ConnectAccountsBanner, { shouldShowConnectAccountsBanner } from './ConnectAccountsBanner'
 import DelegationBanner, { shouldShowDelegationBanner } from './DelegationBanner'
-import LinkDiscordBanner, { shouldShowLinkDiscordBanner } from './LinkDiscordBanner'
 import SubscriptionBanner from './SubscriptionBanner'
 
 interface Props {
@@ -13,14 +16,17 @@ const randomNumber = new Date().valueOf()
 
 function RandomBanner({ isVisible }: Props) {
   const { showSubscriptionBanner } = useNewsletterSubscription()
-  const { isDiscordLinked, isLoadingIsDiscordLinked } = useIsDiscordLinked()
+  const [user] = useAuthContext()
+  const { isProfileValidated, validationChecked } = useIsProfileValidated(user)
 
-  if (!isVisible || isLoadingIsDiscordLinked) {
+  const { isSubscribedToDaoChannel, isLoadingPushSubscriptions } = usePushSubscriptions()
+
+  if (!isVisible || !validationChecked || isLoadingPushSubscriptions) {
     return null
   }
 
-  if (shouldShowLinkDiscordBanner() && !isDiscordLinked && !isLoadingIsDiscordLinked) {
-    return <LinkDiscordBanner />
+  if (shouldShowConnectAccountsBanner() && (!isProfileValidated || !isSubscribedToDaoChannel)) {
+    return <ConnectAccountsBanner />
   }
 
   const delegationBanner = <DelegationBanner />

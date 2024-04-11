@@ -38,6 +38,8 @@ type DismissState = {
   isPopUpDismissed: boolean
 }
 
+const NOTIFICATIONS_ENABLED = false
+
 const Navigation = ({ activeTab }: NavigationProps) => {
   const t = useFormatMessage()
   const [user] = useAuthContext()
@@ -65,68 +67,82 @@ const Navigation = ({ activeTab }: NavigationProps) => {
   const showDot = validationChecked && !isProfileValidated
 
   return (
-    <div className="Navigation">
+    <nav className="Navigation">
       <Tabs>
-        <Tabs.Left>
-          <Link href={locations.home()}>
-            <Tabs.Tab active={activeTab === NavigationTab.Home}>{t('navigation.home')}</Tabs.Tab>
-          </Link>
-          <Link href={locations.proposals()}>
-            <Tabs.Tab active={activeTab === NavigationTab.Proposals}>{t('navigation.proposals')}</Tabs.Tab>
-          </Link>
-          <Link href={locations.projects()}>
-            <Tabs.Tab active={activeTab === NavigationTab.Grants}>{t('navigation.projects')}</Tabs.Tab>
-          </Link>
-          {user && (
-            <Link href={locations.profile({ address: user })}>
-              <Popup
-                style={{ zIndex: 1000 }}
-                className="Navigation__ProfilePopUp"
-                content={
-                  <div>
-                    <p>{t('navigation.profile_pop_up.label')}</p>
-                    <Button
-                      basic
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleDismissClick()
-                      }}
-                    >
-                      {t('navigation.profile_pop_up.button')}
-                    </Button>
-                  </div>
-                }
-                position="bottom center"
-                trigger={
-                  <Tabs.Tab active={activeTab === NavigationTab.Profile}>
-                    {t('navigation.profile')}
-                    {showDot && <Dot />}
-                  </Tabs.Tab>
-                }
-                open={!isMobile && showDot && !dismissState.isPopUpDismissed}
-              />
-            </Link>
-          )}
-          <Link href={locations.transparency()}>
-            <Tabs.Tab active={activeTab === NavigationTab.Transparency}>{t('navigation.transparency')}</Tabs.Tab>
-          </Link>
-          {user && isDebugAddress && (
-            <Link href={locations.debug()}>
-              <Tabs.Tab active={activeTab === NavigationTab.Debug}>{t('navigation.debug')}</Tabs.Tab>
-            </Link>
-          )}
-        </Tabs.Left>
+        <ul>
+          <Tabs.Left>
+            <li>
+              <Link href={locations.home()}>
+                <Tabs.Tab active={activeTab === NavigationTab.Home}>{t('navigation.home')}</Tabs.Tab>
+              </Link>
+            </li>
+            <li>
+              <Link href={locations.proposals()}>
+                <Tabs.Tab active={activeTab === NavigationTab.Proposals}>{t('navigation.proposals')}</Tabs.Tab>
+              </Link>
+            </li>
+            <li>
+              <Link href={locations.projects()}>
+                <Tabs.Tab active={activeTab === NavigationTab.Grants}>{t('navigation.projects')}</Tabs.Tab>
+              </Link>
+            </li>
+            {user && (
+              <li>
+                <Link href={locations.profile({ address: user })}>
+                  <Popup
+                    style={{ zIndex: 1000 }}
+                    className="Navigation__ProfilePopUp"
+                    content={
+                      <div>
+                        <p>{t('navigation.profile_pop_up.label')}</p>
+                        <Button
+                          basic
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleDismissClick()
+                          }}
+                        >
+                          {t('navigation.profile_pop_up.button')}
+                        </Button>
+                      </div>
+                    }
+                    position="bottom center"
+                    trigger={
+                      <Tabs.Tab active={activeTab === NavigationTab.Profile}>
+                        {t('navigation.profile')}
+                        {showDot && <Dot />}
+                      </Tabs.Tab>
+                    }
+                    open={!isMobile && showDot && !dismissState.isPopUpDismissed}
+                  />
+                </Link>
+              </li>
+            )}
+            <li>
+              <Link href={locations.transparency()}>
+                <Tabs.Tab active={activeTab === NavigationTab.Transparency}>{t('navigation.transparency')}</Tabs.Tab>
+              </Link>
+            </li>
+            {user && isDebugAddress && (
+              <li>
+                <Link href={locations.debug()}>
+                  <Tabs.Tab active={activeTab === NavigationTab.Debug}>{t('navigation.debug')}</Tabs.Tab>
+                </Link>
+              </li>
+            )}
+          </Tabs.Left>
+        </ul>
         <NotMobile>
           <Tabs.Right>
             <SearchInput />
-            {user && <Notifications />}
+            {NOTIFICATIONS_ENABLED && <Notifications />}
           </Tabs.Right>
         </NotMobile>
       </Tabs>
       <Mobile>
         <SearchInputMobile />
       </Mobile>
-    </div>
+    </nav>
   )
 }
 

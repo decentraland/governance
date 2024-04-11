@@ -12,6 +12,7 @@ import {
 } from '../../../entities/Grant/types'
 import { ProjectWithUpdate } from '../../../entities/Proposal/types'
 import useFormatMessage from '../../../hooks/useFormatMessage'
+import useYearAndQuarterParams from '../../../hooks/useYearAndQuarterParams'
 import locations from '../../../utils/locations'
 import Empty, { ActionType } from '../../Common/Empty'
 import FullWidthButton from '../../Common/FullWidthButton'
@@ -34,6 +35,7 @@ interface Props {
   status?: ProjectStatus
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CATEGORY_KEYS: Record<any, string> = {
   [ProjectTypeFilter.BiddingAndTendering]: 'page.grants.category_filters.bidding_and_tendering',
   [ProjectTypeFilter.Grants]: 'page.grants.category_filters.grants',
@@ -68,6 +70,7 @@ export default function CurrentProjectsList({ projects, selectedSubtype, selecte
   const [sortingKey, setSortingKey] = useState<SortingKey>(SortingKey.UpdateTimestamp)
   const sortedCurrentGrants = useMemo(() => orderBy(projects, [sortingKey], ['desc']), [projects, sortingKey])
   const [filteredCurrentGrants, setFilteredCurrentGrants] = useState<ProjectWithUpdate[]>([])
+  const { year, quarter, areValidParams } = useYearAndQuarterParams()
 
   useEffect(() => {
     if (!isEmpty(projects)) {
@@ -86,11 +89,22 @@ export default function CurrentProjectsList({ projects, selectedSubtype, selecte
 
   const showLoadMoreCurrentGrantsButton = filteredCurrentGrants?.length !== projects?.length
 
+  const getTimeframeLabel = () => {
+    if (areValidParams) {
+      return t('page.grants.quarter_and_year', { quarter, year }) + ' '
+    }
+    if (year) {
+      return `${year} `
+    }
+    return ''
+  }
+
   return (
     <div className="CurrentProjectsList">
       <div className="CurrentProjectsList__TitleContainer">
         <div>
           <h2 className="CurrentProjectsList__Title">
+            {getTimeframeLabel()}
             {t('page.grants.projects_category_title', {
               status: status ? `${t(GRANTS_STATUS_KEYS[status])} ` : '',
               category: t(getCategoryKey(selectedSubtype || selectedType)),

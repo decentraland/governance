@@ -92,12 +92,8 @@ export default class BidService {
         tendersWithBidsToReject.push(tenderId)
         continue
       }
-
-      const totalBids = await ProposalModel.getProposalTotal({
-        type: ProposalType.Bid,
-      })
-      let bid_number = totalBids + 1
       for (const bid of bids) {
+        const bid_number = await this.getCurrentBidNumber()
         const { author_address, bid_proposal_data, linked_proposal_id, publish_at, created_at } = bid
         const finish_at = Time.utc(publish_at).add(Number(process.env.DURATION_BID), 'seconds').toDate()
         try {
@@ -119,7 +115,6 @@ export default class BidService {
             required_to_pass,
             finish_at,
           })
-          bid_number++
           await UnpublishedBidModel.removePendingBid(author_address, linked_proposal_id)
           context.log(`Bid from ${author_address} for tender ${linked_proposal_id} published`)
         } catch (error) {
@@ -146,6 +141,13 @@ export default class BidService {
         context.log(msg + ` tenders: ${tenderIds}`)
       }
     }
+  }
+
+  private static async getCurrentBidNumber() {
+    const totalBids = await ProposalModel.getProposalTotal({
+      type: ProposalType.Bid,
+    })
+    return totalBids + 1
   }
 
   static async getUserBidOnTender(user: string, tenderId: string) {

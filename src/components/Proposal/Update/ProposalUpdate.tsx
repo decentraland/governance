@@ -68,7 +68,7 @@ const ProposalUpdate = ({
   const handleDeleteUpdateClick = async () => {
     try {
       setIsDeletingUpdate(true)
-      await Governance.get().deleteProposalUpdate(update)
+      await Governance.get().deleteProposalUpdate(update.id)
       setIsDeleteUpdateModalOpen(false)
       if (onUpdateDeleted) {
         onUpdateDeleted()

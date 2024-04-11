@@ -47,4 +47,5 @@ export type DclProfile = {
   avatarUrl: string
   hasCustomAvatar: boolean
   address: string
+  description?: string
 }

@@ -11,7 +11,6 @@ import SubLabel from '../../components/Common/SubLabel'
 import Label from '../../components/Common/Typography/Label'
 import Text from '../../components/Common/Typography/Text'
 import ErrorMessage from '../../components/Error/ErrorMessage'
-import MarkdownNotice from '../../components/Form/MarkdownNotice'
 import ContentLayout, { ContentSection } from '../../components/Layout/ContentLayout'
 import Head from '../../components/Layout/Head'
 import LoadingView from '../../components/Layout/LoadingView'
@@ -126,11 +125,9 @@ export default function SubmitBanName() {
           />
         </ContentSection>
         <ContentSection>
-          <Label>
-            {t('page.submit_ban_name.description_label')}
-            <MarkdownNotice />
-          </Label>
+          <Label>{t('page.submit_ban_name.description_label')}</Label>
           <SubLabel>{t('page.submit_ban_name.description_detail')}</SubLabel>
+
           <MarkdownField
             control={control}
             name="description"

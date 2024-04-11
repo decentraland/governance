@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ErrorCode } from '@ethersproject/logger'
 import { Web3Provider } from '@ethersproject/providers'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { NotMobile, useMobileMediaQuery } from 'decentraland-ui/dist/components/Media/Media'
+import { Desktop, NotMobile, TabletAndBelow } from 'decentraland-ui/dist/components/Media/Media'
 
 import { ErrorClient } from '../clients/ErrorClient'
 import { Governance } from '../clients/Governance'
@@ -30,6 +30,7 @@ import ProposalFooterPoi from '../components/Proposal/ProposalFooterPoi'
 import ProposalHeaderPoi from '../components/Proposal/ProposalHeaderPoi'
 import ProposalHero from '../components/Proposal/ProposalHero'
 import ProposalSidebar from '../components/Proposal/ProposalSidebar'
+import VotingRationaleSection from '../components/Proposal/Rationale/VotingRationaleSection'
 import SurveyResults from '../components/Proposal/SentimentSurvey/SurveyResults'
 import ProposalUpdates from '../components/Proposal/Update/ProposalUpdates'
 import AuthorDetails from '../components/Proposal/View/AuthorDetails'
@@ -61,11 +62,13 @@ import useFormatMessage from '../hooks/useFormatMessage'
 import useIsProposalCoAuthor from '../hooks/useIsProposalCoAuthor'
 import useIsProposalOwner from '../hooks/useIsProposalOwner'
 import useProposal from '../hooks/useProposal'
+import useProposalChoices from '../hooks/useProposalChoices'
 import useProposalUpdates from '../hooks/useProposalUpdates'
 import useProposalVotes from '../hooks/useProposalVotes'
 import { PROPOSAL_CACHED_VOTES_QUERY_KEY } from '../hooks/useProposalsCachedVotes'
 import useSurvey from '../hooks/useSurvey'
 import useURLSearchParams from '../hooks/useURLSearchParams'
+import useVoteReason from '../hooks/useVoteReason'
 import { ErrorCategory } from '../utils/errorCategories'
 import locations, { navigate } from '../utils/locations'
 import { isUnderMaintenance } from '../utils/maintenance'
@@ -119,7 +122,6 @@ function getProposalView(proposal: ProposalAttributes | null) {
 export default function ProposalPage() {
   const t = useFormatMessage()
   const params = useURLSearchParams()
-  const isMobile = useMobileMediaQuery()
   const [proposalPageState, updatePageState] = useState<ProposalPageState>({
     changingVote: false,
     confirmSubscription: false,
@@ -144,6 +146,7 @@ export default function ProposalPage() {
   const { isOwner } = useIsProposalOwner(proposal)
   const { votes, segmentedVotes, isLoadingVotes, reloadVotes } = useProposalVotes(proposal?.id)
   const { highQualityVotes } = segmentedVotes || {}
+  const choices = useProposalChoices(proposal)
 
   const subscriptionsQueryKey = `proposalSubscriptions#${proposal?.id || ''}`
   const { data: subscriptions, isLoading: isSubscriptionsLoading } = useQuery({
@@ -165,37 +168,22 @@ export default function ProposalPage() {
   const { surveyTopics, isLoadingSurveyTopics, voteWithSurvey, showSurveyResults } = useSurvey(
     proposal,
     votes,
-    isLoadingVotes,
-    isMobile
+    isLoadingVotes
   )
 
+  const { shouldGiveReason, totalVpOnProposal } = useVoteReason(proposal)
+
   const [isFloatingHeaderVisible, setIsFloatingHeaderVisible] = useState<boolean>(true)
-  const [isBarVisible, setIsBarVisible] = useState<boolean>(true)
+
   const commentsSectionRef = useRef<HTMLDivElement | null>(null)
   const reactionsSectionRef = useRef<HTMLDivElement | null>(null)
   const heroSectionRef = useRef<HTMLDivElement | null>(null)
-  const scrollToReactions = () => {
-    if (reactionsSectionRef.current) {
-      reactionsSectionRef.current.scrollIntoView({ behavior: 'smooth' })
-    }
-  }
-  const scrollToComments = () => {
-    if (commentsSectionRef.current) {
-      commentsSectionRef.current.scrollIntoView({ behavior: 'smooth' })
-    }
-  }
+  const votingSectionRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
-    setIsBarVisible(true)
     setIsFloatingHeaderVisible(false)
     if (!isLoadingProposal && typeof window !== 'undefined') {
       const handleScroll = () => {
-        const hideBarSectionRef = reactionsSectionRef.current || commentsSectionRef.current
-        if (!!hideBarSectionRef && !!window) {
-          const hideBarSectionTop = hideBarSectionRef.getBoundingClientRect().top
-          setIsBarVisible(hideBarSectionTop > window.innerHeight)
-        }
-
         if (!!heroSectionRef.current && !!window) {
           const { top: heroSectionTop, height: heroSectionHeight } = heroSectionRef.current.getBoundingClientRect()
           setIsFloatingHeaderVisible(heroSectionTop + heroSectionHeight / 2 < 0)
@@ -210,18 +198,19 @@ export default function ProposalPage() {
   }, [isLoadingProposal])
 
   const [castingVote, castVote] = useAsyncTask(
-    async (selectedChoice: SelectedVoteChoice, survey?: Survey) => {
+    async (selectedChoice: SelectedVoteChoice, survey?: Survey, reason?: string) => {
       if (proposal && account && provider && votes && selectedChoice.choiceIndex) {
         const web3Provider = new Web3Provider(provider)
         const [listedAccount] = await web3Provider.listAccounts()
         try {
-          await SnapshotApi.get().castVote(
-            web3Provider,
-            listedAccount,
-            proposal.snapshot_id,
-            selectedChoice.choiceIndex!,
-            SurveyEncoder.encode(survey)
-          )
+          await SnapshotApi.get().castVote({
+            account: web3Provider,
+            address: listedAccount,
+            proposalSnapshotId: proposal.snapshot_id,
+            choiceNumber: selectedChoice.choiceIndex!,
+            metadata: SurveyEncoder.encode(survey),
+            reason,
+          })
           try {
             await Governance.get().createVoteEvent(proposal.id, proposal.title, selectedChoice.choice!)
           } catch (e) {
@@ -379,12 +368,12 @@ export default function ProposalPage() {
       />
       <Navigation activeTab={NavigationTab.Proposals} />
       <NotMobile>{proposal && <FloatingHeader isVisible={isFloatingHeaderVisible} proposal={proposal} />}</NotMobile>
-      <WiderContainer className={'ProposalDetailPage'}>
+      <WiderContainer className="ProposalDetailPage">
         <ProposalHero proposal={proposal} ref={heroSectionRef} />
         {proposal && (
           <Desktop1200>
-            <div className={'ProposalDetail__Left'}>
-              <ProposalDetailSection proposal={proposal} className={'DetailsSection__StickyTop'} />
+            <div className="ProposalDetail__Left">
+              <ProposalDetailSection proposal={proposal} className="DetailsSection__StickyTop" />
             </div>
           </Desktop1200>
         )}
@@ -396,7 +385,7 @@ export default function ProposalPage() {
           <div className="ProposalDetailPage__Body">{getProposalView(proposal)}</div>
           {proposal?.type === ProposalType.POI && <ProposalFooterPoi configuration={proposal.configuration} />}
           {proposal && isBiddingAndTenderingProposal(proposal?.type) && <BiddingAndTendering proposal={proposal} />}
-          {proposal && isGovernanceProcessProposal(proposal.type) && <GovernanceProcess proposalType={proposal.type} />}
+          {showAuthorDetails && <AuthorDetails address={proposal?.user} />}
           {showProposalUpdates && (
             <ProposalUpdates
               proposal={proposal}
@@ -405,33 +394,45 @@ export default function ProposalPage() {
               isCoauthor={isCoauthor}
             />
           )}
-          {showSurveyResults && (
-            <SurveyResults
-              votes={highQualityVotes ?? null}
-              surveyTopics={surveyTopics}
-              isLoadingSurveyTopics={isLoadingSurveyTopics}
-              ref={reactionsSectionRef}
-            />
-          )}
-          {showAuthorDetails && <AuthorDetails address={proposal?.user} />}
-          {showVotesChart && (
-            <ProposalVPChart
-              requiredToPass={proposal?.required_to_pass}
-              voteMap={highQualityVotes}
-              startTimestamp={proposal?.start_at.getTime()}
-              endTimestamp={proposal?.finish_at.getTime()}
-            />
-          )}
-          <ProposalComments proposal={proposal} ref={commentsSectionRef} />
+          <Desktop>
+            {showVotesChart && (
+              <ProposalVPChart
+                requiredToPass={proposal?.required_to_pass}
+                voteMap={highQualityVotes}
+                startTimestamp={proposal?.start_at.getTime()}
+                endTimestamp={proposal?.finish_at.getTime()}
+              />
+            )}
+            {proposal && isGovernanceProcessProposal(proposal.type) && (
+              <GovernanceProcess proposalType={proposal.type} />
+            )}
+            {showSurveyResults && (
+              <SurveyResults
+                votes={highQualityVotes ?? null}
+                surveyTopics={surveyTopics}
+                isLoadingSurveyTopics={isLoadingSurveyTopics}
+                ref={reactionsSectionRef}
+              />
+            )}
+            <VotingRationaleSection votes={highQualityVotes} choices={choices} />
+            <ProposalComments proposal={proposal} ref={commentsSectionRef} />
+          </Desktop>
+          <TabletAndBelow>
+            {proposal && isGovernanceProcessProposal(proposal.type) && (
+              <GovernanceProcess proposalType={proposal.type} />
+            )}
+          </TabletAndBelow>
           {proposal && (
             <FloatingBar
-              isVisible={isBarVisible}
+              isActiveProposal={proposal?.status === ProposalStatus.Active}
+              isLoadingProposal={isLoadingProposal}
               proposalHasReactions={!!showSurveyResults}
-              scrollToReactions={scrollToReactions}
-              scrollToComments={scrollToComments}
               proposalId={proposal?.id}
               discourseTopicId={proposal?.discourse_topic_id}
               discourseTopicSlug={proposal?.discourse_topic_slug}
+              reactionsSectionRef={reactionsSectionRef}
+              commentsSectionRef={commentsSectionRef}
+              votingSectionRef={votingSectionRef}
             />
           )}
         </div>
@@ -454,11 +455,33 @@ export default function ProposalPage() {
             subscriptionsLoading={isSubscriptionsLoading}
             isCoauthor={isCoauthor}
             isOwner={isOwner}
+            shouldGiveReason={shouldGiveReason}
+            votingSectionRef={votingSectionRef}
           />
         </div>
+        <TabletAndBelow>
+          {showVotesChart && (
+            <ProposalVPChart
+              requiredToPass={proposal?.required_to_pass}
+              voteMap={highQualityVotes}
+              startTimestamp={proposal?.start_at.getTime()}
+              endTimestamp={proposal?.finish_at.getTime()}
+            />
+          )}
+          {showSurveyResults && (
+            <SurveyResults
+              votes={highQualityVotes ?? null}
+              surveyTopics={surveyTopics}
+              isLoadingSurveyTopics={isLoadingSurveyTopics}
+              ref={reactionsSectionRef}
+            />
+          )}
+          <VotingRationaleSection votes={highQualityVotes} choices={choices} />
+          <ProposalComments proposal={proposal} ref={commentsSectionRef} />
+        </TabletAndBelow>
       </WiderContainer>
 
-      {proposal && voteWithSurvey && (
+      {proposal && (voteWithSurvey || shouldGiveReason) && (
         <VotingModal
           proposal={proposal}
           surveyTopics={surveyTopics}
@@ -470,6 +493,9 @@ export default function ProposalPage() {
           onCastVote={castVote}
           castingVote={castingVote}
           proposalPageState={proposalPageState}
+          totalVpOnProposal={totalVpOnProposal}
+          shouldGiveReason={shouldGiveReason}
+          voteWithSurvey={voteWithSurvey}
         />
       )}
       {proposal && proposal.type === ProposalType.Bid && (
