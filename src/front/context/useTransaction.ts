@@ -5,6 +5,7 @@ import { getTransaction } from 'decentraland-dapps/dist/modules/transaction/txUt
 import { AnyTransaction } from 'decentraland-dapps/dist/modules/transaction/types'
 import { isPending } from 'decentraland-dapps/dist/modules/transaction/utils'
 
+import { ErrorClient } from '../../clients/ErrorClient'
 import Time from '../../utils/date/Time'
 
 import { PersistedKeys } from './auth/storage'
@@ -175,15 +176,7 @@ export default function useTransaction(address?: string | null, chainId?: ChainI
           })
           .catch((err) => {
             console.error(err)
-            // TODO: Report to Rollbar
-            // TODO: Report to segment
-            // segment((analytics) =>
-            //   analytics.track('error', {
-            //     ...err,
-            //     message: err.message,
-            //     stack: err.stack,
-            //   })
-            // )
+            ErrorClient.report('Error setting transactions', err)
           })
       }
     },

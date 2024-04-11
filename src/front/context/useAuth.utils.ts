@@ -6,6 +6,8 @@ import { Provider, connection } from 'decentraland-connect'
 import { getChainConfiguration } from 'decentraland-dapps/dist/lib/chainConfiguration'
 import { AddEthereumChainParameters } from 'decentraland-dapps/dist/modules/wallet/types'
 
+import { ErrorClient } from '../../clients/ErrorClient'
+
 import identify from './auth/identify'
 import { setCurrentIdentity } from './auth/storage'
 
@@ -111,15 +113,7 @@ export async function restoreConnection(): Promise<AuthState> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     console.error(err)
-    // TODO: Track error
-    // rollbar((rollbar) => rollbar.error(err))
-    // segment((analytics) =>
-    //   analytics.track('error', {
-    //     ...err,
-    //     message: err.message,
-    //     stack: err.stack,
-    //   })
-    // )
+    ErrorClient.report('Error restoring connection', err)
 
     return {
       ...initialState,
@@ -162,15 +156,7 @@ export async function createConnection(providerType: ProviderType, chainId: Chai
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     console.error(err)
-    // TODO: Track eerror
-    // rollbar((rollbar) => rollbar.error(err))
-    // segment((analytics) =>
-    //   analytics.track('error', {
-    //     ...err,
-    //     message: err.message,
-    //     stack: err.stack,
-    //   })
-    // )
+    ErrorClient.report('Error creating connection', err)
 
     await setCurrentIdentity(null)
     return {
@@ -260,6 +246,7 @@ export function getAddEthereumChainParameters(chainId: ChainId): AddEthereumChai
     case ChainId.ETHEREUM_KOVAN:
     case ChainId.ETHEREUM_GOERLI:
     case ChainId.ETHEREUM_SEPOLIA:
+    default:
       return {
         chainId: hexChainId,
         chainName,

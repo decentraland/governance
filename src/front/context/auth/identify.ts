@@ -5,12 +5,6 @@ import { Wallet } from '@ethersproject/wallet'
 import type { ConnectionResponse } from 'decentraland-connect'
 import { once } from 'lodash'
 
-// if (typeof window !== 'undefined') {
-//   if (!window.Buffer) {
-//     window.Buffer = Buffer
-//   }
-// }
-
 class EmptyAccountsError extends Error {
   code = 'EMPTY_ACCOUNTS_ERROR'
   constructor(message = 'Could not get address') {
@@ -43,17 +37,9 @@ export default async function identify(connection: ConnectionResponse) {
     )
 
     return identity
-  } catch (err) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
     console.error(err)
-    // TODO: Track error
-    // rollbar((rollbar) => rollbar.error(err))
-    // segment((analytics) =>
-    //   analytics.track('error', {
-    //     ...err,
-    //     message: err.message,
-    //     stack: err.stack,
-    //   })
-    // )
     return null
   }
 }

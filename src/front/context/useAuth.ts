@@ -4,6 +4,7 @@ import type { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 import { ProviderType } from '@dcl/schemas/dist/dapps/provider-type'
 import { connection } from 'decentraland-connect'
 
+import { ErrorClient } from '../../clients/ErrorClient'
 import logger from '../../utils/logger'
 
 import { clearIdentity, setCurrentIdentity } from './auth/storage'
@@ -61,16 +62,13 @@ export default function useAuth(
         console.warn(`Already connected as "${state.account}"`)
         return
       }
-      const conn = { providerType: providerType, chainId: chainId }
+      const conn = { providerType, chainId }
       if (!providerType || !chainId) {
         const message = `Invalid connection params: ${JSON.stringify(conn)}`
         console.error(message)
-        // TODO: Track error to rollbar
-        // TODO: Track error to segment
+        ErrorClient.report('Error connecting user', { ...conn, account: state.account })
         return
       }
-      // TODO: Track event to segment.
-      // segment((analytics, context) => analytics.track(AuthEvent.Connect, { ...context, ...conn }))
       setState({
         account: null,
         identity: null,
@@ -179,19 +177,6 @@ export default function useAuth(
               //   chainId: state.chainId,
               // }
               // TODO: Track user
-              // segment((analytics, context) => {
-              //   analytics.identify(conn)
-              //   analytics.track(AuthEvent.Connected, { ...context, ...conn })
-              // })
-              // rollbar((rollbar) => {
-              //   rollbar.configure({
-              //     payload: {
-              //       person: {
-              //         id: conn.account!,
-              //       },
-              //     },
-              //   })
-              // })
             } else {
               result.selecting = state.selecting
             }
@@ -214,19 +199,8 @@ export default function useAuth(
         .then(() => setCurrentIdentity(null))
         .catch((err) => {
           console.error(err)
-          // TODO: Track error
-          // rollbar((rollbar) => rollbar.error(err))
-          // segment((analytics) =>
-          //   analytics.track('error', {
-          //     ...err,
-          //     message: err.message,
-          //     stack: err.stack,
-          //   })
-          // )
+          ErrorClient.report('Error disconnecting user', err)
         })
-      // TODO: Track error
-      // segment((analytics, context) => analytics.track(AuthEvent.Disconnected, context))
-      // rollbar((rollbar) => rollbar.configure({ payload: { person: { id: null } } }))
       setState({
         ...initialState,
         status: AuthStatus.Disconnected,
