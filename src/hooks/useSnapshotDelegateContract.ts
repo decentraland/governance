@@ -4,9 +4,9 @@ import { useCallback, useEffect, useState } from 'react'
 import { hexlify } from '@ethersproject/bytes'
 import { Contract } from '@ethersproject/contracts'
 import { Web3Provider } from '@ethersproject/providers'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 
 import { SNAPSHOT_DELEGATE_CONTRACT_ADDRESS, SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
+import { useAuthContext } from '../front/context/AuthProvider'
 import DelegateABI from '../utils/contracts/abi/Delegate.abi.json'
 
 export enum DelegateContractStatusCode {

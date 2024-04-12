@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 
 import { useLocation } from '@reach/router'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import WiderContainer from '../components/Common/WiderContainer'
@@ -16,6 +15,7 @@ import VotedProposalsBox from '../components/Profile/VotedProposalsBox'
 import VpDelegationBox from '../components/Profile/VpDelegationBox'
 import VpDelegatorsBox from '../components/Profile/VpDelegatorsBox'
 import UserStats from '../components/User/UserStats'
+import { useAuthContext } from '../front/context/AuthProvider'
 import useDclProfile from '../hooks/useDclProfile'
 import useFormatMessage from '../hooks/useFormatMessage'
 import useVotingPowerInformation from '../hooks/useVotingPowerInformation'

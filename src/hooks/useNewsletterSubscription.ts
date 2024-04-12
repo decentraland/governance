@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-
+import { useAuthContext } from '../front/context/AuthProvider'
 import {
   ANONYMOUS_USR_SUBSCRIPTION,
   HIDE_NEWSLETTER_SUBSCRIPTION_KEY,

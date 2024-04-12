@@ -1,7 +1,5 @@
 import { useMemo, useState } from 'react'
 
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
-
 import { SegmentEvent } from '../../entities/Events/types'
 import { ProposalAttributes, ProposalStatus } from '../../entities/Proposal/types'
 import { isProjectProposal } from '../../entities/Proposal/utils'
@@ -11,6 +9,7 @@ import { UpdateAttributes } from '../../entities/Updates/types'
 import { isProposalStatusWithUpdates } from '../../entities/Updates/utils'
 import { SelectedVoteChoice, VoteByAddress } from '../../entities/Votes/types'
 import { calculateResult } from '../../entities/Votes/utils'
+import { useAuthContext } from '../../front/context/AuthProvider'
 import useAnalyticsTrack from '../../hooks/useAnalyticsTrack'
 import useProposalChoices from '../../hooks/useProposalChoices'
 import useProposalVotes from '../../hooks/useProposalVotes'

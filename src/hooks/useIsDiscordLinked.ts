@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 
 import { Governance } from '../clients/Governance'
+import { useAuthContext } from '../front/context/AuthProvider'
 
 import { DEFAULT_QUERY_STALE_TIME } from './constants'
 

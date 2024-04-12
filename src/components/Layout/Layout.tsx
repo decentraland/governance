@@ -12,13 +12,13 @@ import {
   DROPDOWN_MENU_SIGN_OUT_EVENT,
 } from 'decentraland-dapps/dist/containers/Navbar/constants'
 import useNotifications from 'decentraland-dapps/dist/hooks/useNotifications'
-import useAuthContext from 'decentraland-gatsby/dist/context/Auth/useAuthContext'
 import { Footer } from 'decentraland-ui/dist/components/Footer/Footer'
 import { Navbar } from 'decentraland-ui/dist/components/Navbar/Navbar'
 import { ManaBalancesProps } from 'decentraland-ui/dist/components/UserMenu/ManaBalances/ManaBalances.types'
 import { config } from 'decentraland-ui/dist/config'
 import { isEmpty } from 'lodash'
 
+import { useAuthContext } from '../../front/context/AuthProvider'
 import { addressShortener, getSupportedChainIds } from '../../helpers'
 import useAnalyticsTrack from '../../hooks/useAnalyticsTrack'
 import useAnalyticsTrackLink from '../../hooks/useAnalyticsTrackLink'
