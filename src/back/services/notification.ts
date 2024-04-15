@@ -5,10 +5,11 @@ import { NOTIFICATIONS_SERVICE_ENABLED, PUSH_CHANNEL_ID } from '../../constants'
 import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { proposalUrl } from '../../entities/Proposal/utils'
+import { getUpdateUrl } from '../../entities/Updates/utils'
 import UserModel from '../../entities/User/model'
 import { inBackground } from '../../helpers'
 import { ErrorService } from '../../services/ErrorService'
-import { ProposalCommentedEvent } from '../../shared/types/events'
+import { ProjectUpdateCommentedEvent, ProposalCommentedEvent } from '../../shared/types/events'
 import { Notification, NotificationCustomType, Recipient } from '../../shared/types/notifications'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
@@ -321,6 +322,43 @@ export class NotificationService {
           error: `${error}`,
           category: ErrorCategory.Notifications,
           proposal_id: proposalId,
+          event: commentEvent,
+        })
+      }
+    })
+  }
+
+  static newCommentOnProjectUpdate(commentEvent: ProjectUpdateCommentedEvent) {
+    inBackground(async () => {
+      const proposalId = commentEvent.event_data.proposal_id
+      const updateId = commentEvent.event_data.update_id
+      try {
+        const proposal = await ProposalModel.getProposal(proposalId)
+        const coauthors = await CoauthorService.getAllFromProposalId(proposalId)
+        const coauthorsAddresses = coauthors.length > 0 ? coauthors.map((coauthor) => coauthor.address) : []
+        const addresses = [proposal.user, ...coauthorsAddresses]
+        const activeDiscordUsers = await UserModel.getActiveDiscordIds(addresses)
+        for (const user of activeDiscordUsers) {
+          DiscordService.sendDirectMessage(user.discord_id, {
+            title: Notifications.ProjectUpdateCommented.title(proposal),
+            action: Notifications.ProjectUpdateCommented.body,
+            url: getUpdateUrl(updateId, proposal.id),
+            fields: [],
+          })
+        }
+        return await this.sendNotification({
+          title: Notifications.ProjectUpdateCommented.title(proposal),
+          body: Notifications.ProjectUpdateCommented.body,
+          recipient: addresses,
+          url: getUpdateUrl(updateId, proposal.id),
+          customType: NotificationCustomType.ProjectUpdateComment,
+        })
+      } catch (error) {
+        ErrorService.report('Error sending notifications for new comment on project update', {
+          error,
+          category: ErrorCategory.Notifications,
+          proposal_id: proposalId,
+          update_id: updateId,
           event: commentEvent,
         })
       }

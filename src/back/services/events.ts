@@ -336,7 +336,10 @@ export class EventsService {
       created_at: new Date(discoursePost.created_at),
     }
 
-    return await EventModel.create(commentedEvent)
+    await EventModel.create(commentedEvent)
+    NotificationService.newCommentOnProjectUpdate(commentedEvent)
+    DclNotificationService.newCommentOnProjectUpdate(commentedEvent)
+    return commentedEvent
   }
 
   static async delegationUpdate(block: AlchemyBlock) {

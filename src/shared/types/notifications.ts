@@ -22,6 +22,7 @@ export enum NotificationCustomType {
   Announcement = 'announcement',
   Proposal = 'proposal',
   ProposalComment = 'proposal_comment',
+  ProjectUpdateComment = 'project_update_comment',
   Grant = 'grant',
 }
 
