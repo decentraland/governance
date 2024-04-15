@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { REASON_THRESHOLD } from '../../../constants'
 import { isSameAddress } from '../../../entities/Snapshot/utils'
 import { VoteByAddress } from '../../../entities/Votes/types'
+import { addressShortener } from '../../../helpers'
 import useDclProfiles from '../../../hooks/useDclProfiles'
 import useFormatMessage from '../../../hooks/useFormatMessage'
 import { formatChoice } from '../../../utils/votes/utils'
@@ -37,7 +38,7 @@ function VotingRationaleSection({ votes, isLoadingVotes, choices }: Props) {
               <Comment
                 key={address}
                 cooked={vote.reason}
-                forumUsername={profile.username || address}
+                forumUsername={profile.username || addressShortener(address)}
                 createdAt={new Date(vote.timestamp * 1000).toISOString()}
                 avatarUrl={profile.avatarUrl}
                 address={address}
