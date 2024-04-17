@@ -34,7 +34,6 @@ import { DclProfile } from '../../utils/Catalyst/types'
 import { ErrorCategory } from '../../utils/errorCategories'
 import EventModel from '../models/Event'
 
-import { DclNotificationService } from './dcl-notification'
 import { NotificationService } from './notification'
 
 const CLEAR_DELEGATE_SIGNATURE_HASH = '0x9c4f00c4291262731946e308dc2979a56bd22cce8f95906b975065e96cd5a064'
@@ -282,7 +281,6 @@ export class EventsService {
 
     const commentEvent = await EventModel.create(commentedEvent)
     NotificationService.newCommentOnProposal(commentEvent)
-    DclNotificationService.newCommentOnProposal(commentEvent)
     return commentEvent
   }
 
@@ -338,7 +336,6 @@ export class EventsService {
 
     await EventModel.create(commentedEvent)
     NotificationService.newCommentOnProjectUpdate(commentedEvent)
-    DclNotificationService.newCommentOnProjectUpdate(commentedEvent)
     return commentedEvent
   }
 

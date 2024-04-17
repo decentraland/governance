@@ -2,7 +2,6 @@ import crypto from 'crypto'
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 
-import { DclNotificationService } from '../back/services/dcl-notification'
 import { DiscordService } from '../back/services/discord'
 import { EventsService } from '../back/services/events'
 import { NotificationService } from '../back/services/notification'
@@ -200,7 +199,6 @@ export class ProposalService {
       if (coAuthors) {
         await CoauthorModel.createMultiple(id, coAuthors)
         NotificationService.coAuthorRequested(newProposal, coAuthors)
-        DclNotificationService.coAuthorRequested(newProposal, coAuthors)
       }
     } catch (err: any) {
       DiscourseService.dropDiscourseTopic(discourseProposal.topic_id)

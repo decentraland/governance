@@ -109,7 +109,6 @@ import Time from '../../utils/date/Time'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
 import logger from '../../utils/logger'
-import { DclNotificationService } from '../services/dcl-notification'
 import { NotificationService } from '../services/notification'
 import { UpdateService } from '../services/update'
 import { validateAddress, validateProposalId } from '../utils/validations'
@@ -594,7 +593,6 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
   await ProposalModel.update<ProposalAttributes>(update, { id })
   if (isEnactedStatus && isProject) {
     NotificationService.projectProposalEnacted(proposal)
-    DclNotificationService.projectProposalEnacted(proposal)
   }
 
   const updatedProposal = await ProposalModel.findOne<ProposalAttributes>({

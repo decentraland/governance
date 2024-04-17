@@ -7,12 +7,9 @@ import { Request } from 'express'
 import isArray from 'lodash/isArray'
 
 import UserModel from '../../entities/User/model'
-import { ErrorService } from '../../services/ErrorService'
 import { NotificationCustomType } from '../../shared/types/notifications'
-import { ErrorCategory } from '../../utils/errorCategories'
 import { NotificationType } from '../../utils/notifications'
 import UserNotificationConfigModel, { UserNotificationConfigAttributes } from '../models/UserNotificationConfig'
-import { DclNotificationService } from '../services/dcl-notification'
 import { DiscordService } from '../services/discord'
 import { NotificationService } from '../services/notification'
 import { validateDebugAddress } from '../utils/validations'
@@ -63,36 +60,17 @@ async function sendNotification(req: WithAuth) {
     },
     timestamp: Date.now(),
   }))
-  try {
-    await DclNotificationService.sendNotifications(notifications)
-  } catch (error) {
-    ErrorService.report('Failed to send notification to DCL', {
-      notifications,
-      error: `${error}`,
-      category: ErrorCategory.Notifications,
-    })
-  }
-
-  try {
-    await NotificationService.sendNotification({
+  await Promise.all([
+    NotificationService.sendDCLNotifications(notifications),
+    NotificationService.sendPushNotification({
       type,
       title,
       body,
       recipient,
       url,
       customType: NotificationCustomType.Announcement,
-    })
-  } catch (error) {
-    ErrorService.report('Failed to send notification to Push', {
-      type,
-      title,
-      body,
-      recipient,
-      url,
-      error: `${error}`,
-      category: ErrorCategory.Notifications,
-    })
-  }
+    }),
+  ])
 }
 
 async function getUserFeed(req: Request) {
