@@ -3,7 +3,7 @@
   "GATSBY_BUY_WEARABLES_URL": "https://decentraland.zone/marketplace/browse?assetType=item&section=wearables&vendor=decentraland&page=1&sortBy=newest&status=on_sale",
   "GATSBY_BUY_MANA_URL": "https://decentraland.zone/account",
   "GATSBY_BUY_NAME_URL": "https://decentraland.zone/builder/names",
-  "GATSBY_VESTING_DASHBOARD_URL": "https://vesting.decentraland.org/%23/",
+  "GATSBY_VESTING_DASHBOARD_URL": "https://decentraland.org/vesting/%23/",
   "GATSBY_DCL_DATA_API": "https://data.decentraland.vote/",
   "GATSBY_DEFAULT_CHAIN_ID": "11155111",
   "GATSBY_DISCOURSE_API": "https://forum.decentraland.vote",
