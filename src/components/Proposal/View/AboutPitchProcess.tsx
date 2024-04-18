@@ -119,7 +119,7 @@ export default function AboutPitchProcess({ proposal }: Props) {
         description: t('page.proposal_bidding_tendering.pitch_proposal_description'),
         status: pitchConfig.status,
         statusText: t(pitchConfig.statusText, {
-          title: proposal.title,
+          title: proposal.title.trim(),
           date: formattedDate,
           proposalEndDate: formattedProposalEndDate,
         }),
@@ -129,7 +129,7 @@ export default function AboutPitchProcess({ proposal }: Props) {
         description: t('page.proposal_bidding_tendering.tender_proposal_description'),
         status: tenderConfig.status,
         statusText: t(tenderConfig.statusText, {
-          title: winnerTenderProposal?.title,
+          title: winnerTenderProposal?.title.trim(),
           date: formattedDate,
           proposalEndDate: formattedProposalEndDate,
           total: tenderProposals?.total,
