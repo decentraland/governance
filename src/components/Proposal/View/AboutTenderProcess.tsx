@@ -115,7 +115,7 @@ export default function AboutTenderProcess({ proposal }: Props) {
         description: t('page.proposal_bidding_tendering.pitch_proposal_description'),
         status: pitchConfig.status,
         statusText: t(pitchConfig.statusText, {
-          title: pitchProposal?.title,
+          title: pitchProposal?.title.trim(),
           date: Time(pitchProposal?.start_at).fromNow(),
           proposalEndDate: Time(pitchProposal?.finish_at).fromNow(),
         }),
@@ -125,7 +125,7 @@ export default function AboutTenderProcess({ proposal }: Props) {
         description: t('page.proposal_bidding_tendering.tender_proposal_description'),
         status: tenderConfig.status,
         statusText: t(tenderConfig.statusText, {
-          title: proposal.title,
+          title: proposal.title.trim(),
           date: Time(start_at).fromNow(),
           proposalEndDate: Time(finish_at).fromNow(),
           total: tenderProposals?.total,
