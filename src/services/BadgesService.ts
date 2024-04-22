@@ -340,7 +340,9 @@ export class BadgesService {
   }
 
   private static getGithubImagePermalink(badgeName: string, ipfsLink: string): string {
-    const badge = UPLOADED_BADGES.find((uploadedBadge) => badgeName.includes(uploadedBadge.name))
+    const badge = UPLOADED_BADGES.find(
+      (uploadedBadge) => badgeName.includes(uploadedBadge.name) || uploadedBadge.name.includes(badgeName)
+    )
     if (!badge) {
       ErrorService.report('Could not find image for badge.', { badgeName, ipfsLink, category: ErrorCategory.Badges })
       return getIpfsHttpsLink(ipfsLink)
