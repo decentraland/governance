@@ -6,8 +6,7 @@ import { Request } from 'express'
 import BidService from '../../services/BidService'
 
 export default routes((route) => {
-  const withAuth = auth()
-  route.get('/bids/:tenderId/get-user-bid', withAuth, handleAPI(getUserBid))
+  route.get('/bids/:tenderId/get-user-bid', auth({ optional: true }), handleAPI(getUserBid))
   route.get('/bids/:tenderId', handleAPI(getBidsInfoByTender))
 })
 
