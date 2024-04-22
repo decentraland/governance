@@ -1,7 +1,7 @@
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 import { ethers } from 'ethers'
 
-import { NOTIFICATIONS_SERVICE_ENABLED, PUSH_CHANNEL_ID } from '../../constants'
+import { DCL_NOTIFICATIONS_SERVICE_ENABLED, NOTIFICATIONS_SERVICE_ENABLED, PUSH_CHANNEL_ID } from '../../constants'
 import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import { proposalUrl } from '../../entities/Proposal/utils'
@@ -10,7 +10,7 @@ import UserModel from '../../entities/User/model'
 import { inBackground } from '../../helpers'
 import { ErrorService } from '../../services/ErrorService'
 import { ProjectUpdateCommentedEvent, ProposalCommentedEvent } from '../../shared/types/events'
-import { Notification, NotificationCustomType, Recipient } from '../../shared/types/notifications'
+import { DclNotification, Notification, NotificationCustomType, Recipient } from '../../shared/types/notifications'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
 import logger from '../../utils/logger'
@@ -26,6 +26,8 @@ import PushAPI = require('@pushprotocol/restapi')
 const chainId = isProdEnv() ? ChainId.ETHEREUM_MAINNET : ChainId.ETHEREUM_SEPOLIA
 const PUSH_CHANNEL_OWNER_PK = process.env.PUSH_CHANNEL_OWNER_PK
 const PUSH_API_URL = process.env.PUSH_API_URL
+const DCL_NOTIFICATIONS_SERVICE_API_URL = process.env.DCL_NOTIFICATIONS_SERVICE_API_URL
+const DCL_NOTIFICATIONS_SERVICE_API_TOKEN = process.env.DCL_NOTIFICATIONS_SERVICE_API_TOKEN
 
 function getSigner() {
   if (!NOTIFICATIONS_SERVICE_ENABLED) {
@@ -49,38 +51,75 @@ const ADDITIONAL_META_CUSTOM_TYPE_VERSION = 1
 export class NotificationService {
   static signer = getSigner()
 
-  static async sendNotification({ type, title, body, recipient, url, customType }: Notification) {
+  static async sendPushNotification({ type, title, body, recipient, url, customType }: Notification) {
     if (!NOTIFICATIONS_SERVICE_ENABLED || !this.signer) {
+      logger.warn('Push notification service is disabled')
       return
     }
 
-    const response = await PushAPI.payloads.sendNotification({
-      signer: this.signer,
-      type: this.getType(type, recipient),
-      identityType: NotificationIdentityType.DIRECT_PAYLOAD,
-      notification: {
-        title,
-        body,
-      },
-      payload: {
-        title,
-        body,
-        cta: url,
-        img: '',
-        additionalMeta: {
-          type: `${ADDITIONAL_META_CUSTOM_TYPE}+${ADDITIONAL_META_CUSTOM_TYPE_VERSION}`,
-          data: JSON.stringify({
-            customType,
-          }),
+    try {
+      const response = await PushAPI.payloads.sendNotification({
+        signer: this.signer,
+        type: this.getType(type, recipient),
+        identityType: NotificationIdentityType.DIRECT_PAYLOAD,
+        notification: {
+          title,
+          body,
         },
-      },
+        payload: {
+          title,
+          body,
+          cta: url,
+          img: '',
+          additionalMeta: {
+            type: `${ADDITIONAL_META_CUSTOM_TYPE}+${ADDITIONAL_META_CUSTOM_TYPE_VERSION}`,
+            data: JSON.stringify({
+              customType,
+            }),
+          },
+        },
 
-      recipients: this.getRecipients(recipient),
-      channel: getCaipAddress(PUSH_CHANNEL_ID, chainId),
-      env: getPushNotificationsEnv(chainId),
-    })
+        recipients: this.getRecipients(recipient),
+        channel: getCaipAddress(PUSH_CHANNEL_ID, chainId),
+        env: getPushNotificationsEnv(chainId),
+      })
 
-    return response.data
+      return response.data
+    } catch (error) {
+      ErrorService.report('Error sending push notification', {
+        error: `${error}`,
+        category: ErrorCategory.Notifications,
+        type,
+        title,
+        body,
+        recipient,
+        url,
+      })
+    }
+  }
+
+  static async sendDCLNotifications(notifications: DclNotification[]) {
+    if (!DCL_NOTIFICATIONS_SERVICE_ENABLED) {
+      logger.warn('DCL notification service is disabled')
+      return
+    }
+
+    try {
+      await fetch(`${DCL_NOTIFICATIONS_SERVICE_API_URL}/notifications`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${DCL_NOTIFICATIONS_SERVICE_API_TOKEN}`,
+        },
+        body: JSON.stringify(notifications),
+      })
+    } catch (error) {
+      ErrorService.report('Failed to send notification to DCL', {
+        error: `${error}`,
+        category: ErrorCategory.Notifications,
+        notifications,
+      })
+    }
   }
 
   private static getType(type: number | undefined, recipient: Recipient) {
@@ -150,13 +189,30 @@ export class NotificationService {
           })
         }
 
-        return await this.sendNotification({
-          title,
-          body,
-          recipient: addresses,
-          url: proposalUrl(proposal.id),
-          customType: NotificationCustomType.Grant,
-        })
+        const dclNotifications = addresses.map((address) => ({
+          type: 'governance_proposal_enacted',
+          address,
+          eventKey: proposal.id,
+          metadata: {
+            proposalId: proposal.id,
+            proposalTitle: proposal.title,
+            title: Notifications.ProjectEnacted.title,
+            description: Notifications.ProjectEnacted.body,
+            link: proposalUrl(proposal.id),
+          },
+          timestamp: Date.now(),
+        }))
+
+        await Promise.all([
+          this.sendPushNotification({
+            title,
+            body,
+            recipient: addresses,
+            url: proposalUrl(proposal.id),
+            customType: NotificationCustomType.Grant,
+          }),
+          this.sendDCLNotifications(dclNotifications),
+        ])
       } catch (error) {
         ErrorService.report('Error sending proposal enacted notification', {
           error: `${error}`,
@@ -167,113 +223,170 @@ export class NotificationService {
     })
   }
 
-  static async coAuthorRequested(proposal: ProposalAttributes, coAuthors: string[]) {
-    try {
-      if (!areValidAddresses(coAuthors)) {
-        throw new Error('Invalid addresses')
-      }
+  static coAuthorRequested(proposal: ProposalAttributes, coAuthors: string[]) {
+    inBackground(async () => {
+      try {
+        if (!areValidAddresses(coAuthors)) {
+          throw new Error('Invalid addresses')
+        }
 
-      const title = Notifications.CoAuthorRequestReceived.title
-      const body = Notifications.CoAuthorRequestReceived.body
+        const title = Notifications.CoAuthorRequestReceived.title
+        const body = Notifications.CoAuthorRequestReceived.body
 
-      const validatedUsers = await UserModel.getActiveDiscordIds(coAuthors)
-      for (const user of validatedUsers) {
-        DiscordService.sendDirectMessage(user.discord_id, {
-          title,
-          action: body,
-          url: proposalUrl(proposal.id),
-          fields: [],
+        const validatedUsers = await UserModel.getActiveDiscordIds(coAuthors)
+        for (const user of validatedUsers) {
+          DiscordService.sendDirectMessage(user.discord_id, {
+            title,
+            action: body,
+            url: proposalUrl(proposal.id),
+            fields: [],
+          })
+        }
+
+        const dclNotifications = coAuthors.map((address) => ({
+          type: 'governance_coauthor_requested',
+          address,
+          eventKey: proposal.id,
+          metadata: {
+            proposalId: proposal.id,
+            proposalTitle: proposal.title,
+            title: Notifications.CoAuthorRequestReceived.title,
+            description: Notifications.CoAuthorRequestReceived.body,
+            link: proposalUrl(proposal.id),
+          },
+          timestamp: Date.now(),
+        }))
+
+        await Promise.all([
+          this.sendPushNotification({
+            title,
+            body,
+            recipient: coAuthors,
+            url: proposalUrl(proposal.id),
+            customType: NotificationCustomType.Proposal,
+          }),
+          this.sendDCLNotifications(dclNotifications),
+        ])
+      } catch (error) {
+        ErrorService.report('Error sending co-author request notification', {
+          error: `${error}`,
+          category: ErrorCategory.Notifications,
+          proposal,
         })
       }
-
-      return await this.sendNotification({
-        title,
-        body,
-        recipient: coAuthors,
-        url: proposalUrl(proposal.id),
-        customType: NotificationCustomType.Proposal,
-      })
-    } catch (error) {
-      ErrorService.report('Error sending co-author request notification', {
-        error: `${error}`,
-        category: ErrorCategory.Notifications,
-        proposal,
-      })
-    }
+    })
   }
 
-  static async authoredProposalFinished(proposal: ProposalAttributes) {
-    try {
-      const coauthors = await CoauthorService.getAllFromProposalId(proposal.id)
-      const coauthorsAddresses = coauthors.length > 0 ? coauthors.map((coauthor) => coauthor.address) : []
-      const addresses = [proposal.user, ...coauthorsAddresses]
+  static authoredProposalFinished(proposal: ProposalAttributes) {
+    inBackground(async () => {
+      try {
+        const coauthors = await CoauthorService.getAllFromProposalId(proposal.id)
+        const coauthorsAddresses = coauthors.length > 0 ? coauthors.map((coauthor) => coauthor.address) : []
+        const addresses = [proposal.user, ...coauthorsAddresses]
 
-      if (!areValidAddresses(addresses)) {
-        throw new Error('Invalid addresses')
-      }
+        if (!areValidAddresses(addresses)) {
+          throw new Error('Invalid addresses')
+        }
 
-      const title = Notifications.ProposalAuthoredFinished.title(proposal)
-      const body = Notifications.ProposalAuthoredFinished.body
+        const title = Notifications.ProposalAuthoredFinished.title(proposal)
+        const body = Notifications.ProposalAuthoredFinished.body
 
-      const validatedUsers = await UserModel.getActiveDiscordIds(addresses)
-      for (const user of validatedUsers) {
-        DiscordService.sendDirectMessage(user.discord_id, {
-          title,
-          action: body,
-          url: proposalUrl(proposal.id),
-          fields: [],
+        const validatedUsers = await UserModel.getActiveDiscordIds(addresses)
+        for (const user of validatedUsers) {
+          DiscordService.sendDirectMessage(user.discord_id, {
+            title,
+            action: body,
+            url: proposalUrl(proposal.id),
+            fields: [],
+          })
+        }
+
+        const dclNotifications = addresses.map((address) => ({
+          type: 'governance_authored_proposal_finished',
+          address,
+          eventKey: proposal.id,
+          metadata: {
+            proposalId: proposal.id,
+            proposalTitle: proposal.title,
+            title: Notifications.ProposalAuthoredFinished.title(proposal),
+            description: Notifications.ProposalAuthoredFinished.body,
+            link: proposalUrl(proposal.id),
+          },
+          timestamp: Date.now(),
+        }))
+
+        await Promise.all([
+          this.sendPushNotification({
+            title,
+            body,
+            recipient: addresses,
+            url: proposalUrl(proposal.id),
+            customType: NotificationCustomType.Proposal,
+          }),
+          this.sendDCLNotifications(dclNotifications),
+        ])
+      } catch (error) {
+        ErrorService.report('Error sending voting ended notification to authors', {
+          error: `${error}`,
+          category: ErrorCategory.Notifications,
+          proposal,
         })
       }
-
-      return await this.sendNotification({
-        title,
-        body,
-        recipient: addresses,
-        url: proposalUrl(proposal.id),
-        customType: NotificationCustomType.Proposal,
-      })
-    } catch (error) {
-      ErrorService.report('Error sending voting ended notification to authors', {
-        error: `${error}`,
-        category: ErrorCategory.Notifications,
-        proposal,
-      })
-    }
+    })
   }
 
-  static async votingEndedVoters(proposal: ProposalAttributes, addresses: string[]) {
-    try {
-      if (!areValidAddresses(addresses)) {
-        throw new Error('Invalid addresses')
-      }
+  static votingEndedVoters(proposal: ProposalAttributes, addresses: string[]) {
+    inBackground(async () => {
+      try {
+        if (!areValidAddresses(addresses)) {
+          throw new Error('Invalid addresses')
+        }
 
-      const title = Notifications.ProposalVotedFinished.title(proposal)
-      const body = Notifications.ProposalVotedFinished.body
+        const title = Notifications.ProposalVotedFinished.title(proposal)
+        const body = Notifications.ProposalVotedFinished.body
 
-      const validatedUsers = await UserModel.getActiveDiscordIds(addresses)
-      for (const user of validatedUsers) {
-        DiscordService.sendDirectMessage(user.discord_id, {
-          title,
-          action: body,
-          url: proposalUrl(proposal.id),
-          fields: [],
+        const validatedUsers = await UserModel.getActiveDiscordIds(addresses)
+        for (const user of validatedUsers) {
+          DiscordService.sendDirectMessage(user.discord_id, {
+            title,
+            action: body,
+            url: proposalUrl(proposal.id),
+            fields: [],
+          })
+        }
+
+        const dclNotifications = addresses.map((address) => ({
+          type: 'governance_voting_ended_voter',
+          address,
+          eventKey: proposal.id,
+          metadata: {
+            proposalId: proposal.id,
+            proposalTitle: proposal.title,
+            title: Notifications.ProposalVotedFinished.title(proposal),
+            description: Notifications.ProposalVotedFinished.body,
+            link: proposalUrl(proposal.id),
+          },
+          timestamp: Date.now(),
+        }))
+
+        await Promise.all([
+          this.sendPushNotification({
+            title,
+            body,
+            recipient: addresses,
+            url: proposalUrl(proposal.id),
+            customType: NotificationCustomType.Proposal,
+          }),
+          this.sendDCLNotifications(dclNotifications),
+        ])
+      } catch (error) {
+        ErrorService.report('Error sending voting ended notification to voters', {
+          error: `${error}`,
+          category: ErrorCategory.Notifications,
+          proposal,
         })
       }
-
-      return await this.sendNotification({
-        title,
-        body,
-        recipient: addresses,
-        url: proposalUrl(proposal.id),
-        customType: NotificationCustomType.Proposal,
-      })
-    } catch (error) {
-      ErrorService.report('Error sending voting ended notification to voters', {
-        error: `${error}`,
-        category: ErrorCategory.Notifications,
-        proposal,
-      })
-    }
+    })
   }
 
   static sendFinishProposalNotifications(proposals: ProposalAttributes[]) {
@@ -281,10 +394,10 @@ export class NotificationService {
       inBackground(async () => {
         for (const proposal of proposals) {
           try {
-            await this.authoredProposalFinished(proposal)
+            this.authoredProposalFinished(proposal)
             const votes = await VoteService.getVotes(proposal.id)
             const voters = Object.keys(votes)
-            await this.votingEndedVoters(proposal, voters)
+            this.votingEndedVoters(proposal, voters)
           } catch (error) {
             logger.log('Error sending notifications on proposal finish', { proposalId: proposal.id })
           }
@@ -310,13 +423,31 @@ export class NotificationService {
             fields: [],
           })
         }
-        return await this.sendNotification({
-          title: Notifications.ProposalCommented.title(proposal),
-          body: Notifications.ProposalCommented.body,
-          recipient: addresses,
-          url: proposalUrl(proposal.id),
-          customType: NotificationCustomType.ProposalComment,
-        })
+
+        const dclNotifications = addresses.map((address) => ({
+          type: 'governance_new_comment_on_proposal',
+          address,
+          eventKey: proposal.id,
+          metadata: {
+            proposalId: proposal.id,
+            proposalTitle: proposal.title,
+            title: Notifications.ProposalCommented.title(proposal),
+            description: Notifications.ProposalCommented.body,
+            link: proposalUrl(proposal.id),
+          },
+          timestamp: Date.now(),
+        }))
+
+        await Promise.all([
+          this.sendPushNotification({
+            title: Notifications.ProposalCommented.title(proposal),
+            body: Notifications.ProposalCommented.body,
+            recipient: addresses,
+            url: proposalUrl(proposal.id),
+            customType: NotificationCustomType.ProposalComment,
+          }),
+          this.sendDCLNotifications(dclNotifications),
+        ])
       } catch (error) {
         ErrorService.report('Error sending notifications for new comment on proposal', {
           error: `${error}`,
@@ -346,16 +477,34 @@ export class NotificationService {
             fields: [],
           })
         }
-        return await this.sendNotification({
-          title: Notifications.ProjectUpdateCommented.title(proposal),
-          body: Notifications.ProjectUpdateCommented.body,
-          recipient: addresses,
-          url: getUpdateUrl(updateId, proposal.id),
-          customType: NotificationCustomType.ProjectUpdateComment,
-        })
+
+        const dclNotifications = addresses.map((address) => ({
+          type: 'governance_new_comment_on_project_update',
+          address,
+          eventKey: updateId,
+          metadata: {
+            proposalId: proposal.id,
+            proposalTitle: proposal.title,
+            title: Notifications.ProjectUpdateCommented.title(proposal),
+            description: Notifications.ProjectUpdateCommented.body,
+            link: getUpdateUrl(updateId, proposal.id),
+          },
+          timestamp: Date.now(),
+        }))
+
+        await Promise.all([
+          this.sendPushNotification({
+            title: Notifications.ProjectUpdateCommented.title(proposal),
+            body: Notifications.ProjectUpdateCommented.body,
+            recipient: addresses,
+            url: getUpdateUrl(updateId, proposal.id),
+            customType: NotificationCustomType.ProjectUpdateComment,
+          }),
+          this.sendDCLNotifications(dclNotifications),
+        ])
       } catch (error) {
         ErrorService.report('Error sending notifications for new comment on project update', {
-          error,
+          error: `${error}`,
           category: ErrorCategory.Notifications,
           proposal_id: proposalId,
           update_id: updateId,

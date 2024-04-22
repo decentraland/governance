@@ -2,7 +2,6 @@ import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 import snakeCase from 'lodash/snakeCase'
 import { Pool } from 'pg'
 
-import { DclNotificationService } from '../../back/services/dcl-notification'
 import { DiscordService } from '../../back/services/discord'
 import { NotificationService } from '../../back/services/notification'
 import { BadgesService } from '../../services/BadgesService'
@@ -203,7 +202,6 @@ export async function finishProposal() {
     await updateProposalsAndBudgets(proposalsWithOutcome, budgetsWithUpdates)
 
     NotificationService.sendFinishProposalNotifications(proposalsWithOutcome)
-    DclNotificationService.sendFinishProposalNotifications(proposalsWithOutcome)
     BadgesService.giveFinishProposalBadges(proposalsWithOutcome)
     DiscourseService.commentFinishedProposals(proposalsWithOutcome)
     DiscordService.notifyFinishedProposals(proposalsWithOutcome)
