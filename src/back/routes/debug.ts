@@ -20,7 +20,7 @@ export default routes((router) => {
     '/debug',
     handleAPI(async () => DEBUG_ADDRESSES)
   )
-  router.post('/debug/report-error', withAuth, handleAPI(reportClientError))
+  router.post('/debug/report-error', auth({ optional: true }), handleAPI(reportClientError))
   router.post('/debug/trigger', withAuth, handleAPI(triggerFunction))
   router.delete('/debug/invalidate-cache', withAuth, handleAPI(invalidateCache))
 })
