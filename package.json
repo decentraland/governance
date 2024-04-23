@@ -74,7 +74,7 @@
     "cssnano": "^6.0.1",
     "dayjs": "^1.11.9",
     "dayjs-precise-range": "^1.0.1",
-    "dcl-catalyst-client": "^21.5.5",
+    "dcl-catalyst-client": "^21.7.0",
     "decentraland-dapps": "^19.6.0",
     "decentraland-gatsby": "^5.111.0",
     "decentraland-ui": "^5.14.0",
