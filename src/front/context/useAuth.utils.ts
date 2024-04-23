@@ -11,16 +11,7 @@ import { ErrorClient } from '../../clients/ErrorClient'
 import identify from './auth/identify'
 import { setCurrentIdentity } from './auth/storage'
 
-export const chains = [
-  ChainId.ETHEREUM_MAINNET,
-  ChainId.ETHEREUM_ROPSTEN,
-  ChainId.ETHEREUM_GOERLI,
-  ChainId.ETHEREUM_KOVAN,
-  ChainId.ETHEREUM_RINKEBY,
-  ChainId.ETHEREUM_SEPOLIA,
-  ChainId.MATIC_MAINNET,
-  ChainId.MATIC_MUMBAI,
-]
+export const chains = [ChainId.ETHEREUM_MAINNET, ChainId.ETHEREUM_SEPOLIA, ChainId.MATIC_MAINNET, ChainId.MATIC_AMOY]
 
 export enum AuthEvent {
   Connect = 'Connect',
@@ -228,7 +219,7 @@ export function getAddEthereumChainParameters(chainId: ChainId): AddEthereumChai
         rpcUrls: ['https://rpc-mainnet.maticvigil.com/'],
         blockExplorerUrls: ['https://polygonscan.com/'],
       }
-    case ChainId.MATIC_MUMBAI:
+    case ChainId.MATIC_AMOY:
       return {
         chainId: hexChainId,
         chainName,
@@ -237,14 +228,10 @@ export function getAddEthereumChainParameters(chainId: ChainId): AddEthereumChai
           symbol: 'MATIC',
           decimals: 18,
         },
-        rpcUrls: ['https://rpc-mumbai.maticvigil.com/'],
-        blockExplorerUrls: ['https://mumbai.polygonscan.com/'],
+        rpcUrls: ['https://rpc.decentraland.org/amoy'],
+        blockExplorerUrls: ['https://oklink.com/amoy'],
       }
     case ChainId.ETHEREUM_MAINNET:
-    case ChainId.ETHEREUM_ROPSTEN:
-    case ChainId.ETHEREUM_RINKEBY:
-    case ChainId.ETHEREUM_KOVAN:
-    case ChainId.ETHEREUM_GOERLI:
     case ChainId.ETHEREUM_SEPOLIA:
     default:
       return {
