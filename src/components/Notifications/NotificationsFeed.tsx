@@ -79,7 +79,7 @@ export default function NotificationsFeed({
   }
 
   useClickOutside('.NotificationsFeed', isOpen, handleOnClose)
-  const chainId = userState.chainId || ChainId.ETHEREUM_GOERLI
+  const chainId = userState.chainId || ChainId.ETHEREUM_SEPOLIA
   const env = getPushNotificationsEnv(chainId)
 
   const handleSubscribeUserToChannel = async () => {

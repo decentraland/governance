@@ -7,8 +7,7 @@ export { default as RegisterABI } from './abi/Register.abi.json'
 // MANA
 export const MANA: Record<number, string | null | undefined> = {
   [ChainId.ETHEREUM_MAINNET]: '0x0f5d2fb29fb7d3cfee444a200298f468908cc942',
-  [ChainId.ETHEREUM_RINKEBY]: '0x28BcE5263f5d7F4EB7e8C6d5d78275CA455BAc63',
-  [ChainId.ETHEREUM_GOERLI]: '0xe7fDae84ACaba2A5Ba817B6E6D8A2d415DBFEdbe',
+  [ChainId.ETHEREUM_SEPOLIA]: '0xfa04d2e2ba9aec166c93dfeeba7427b2303befa9',
 }
 
 export const wMANA: Record<number, string | null | undefined> = {
@@ -18,10 +17,10 @@ export const wMANA: Record<number, string | null | undefined> = {
 
 export const LAND: Record<number, string | null | undefined> = {
   [ChainId.ETHEREUM_MAINNET]: '0xf87e31492faf9a91b02ee0deaad50d51d56d5d4d',
-  [ChainId.ETHEREUM_GOERLI]: '0x25b6B4bac4aDB582a0ABd475439dA6730777Fbf7',
+  [ChainId.ETHEREUM_SEPOLIA]: '0x42f4ba48791e2de32f5fbf553441c2672864bb33',
 }
 
 export const ESTATE: Record<number, string | null | undefined> = {
   [ChainId.ETHEREUM_MAINNET]: '0x959e104e1a4db6317fa58f8295f586e1a978c297',
-  [ChainId.ETHEREUM_GOERLI]: '0xC9A46712E6913c24d15b46fF12221a79c4e251DC',
+  [ChainId.ETHEREUM_SEPOLIA]: '0x369a7fbe718c870c79f99fb423882e8dd8b20486',
 }

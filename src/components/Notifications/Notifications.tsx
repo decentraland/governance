@@ -23,7 +23,7 @@ export default function Notifications() {
   const t = useFormatMessage()
   const [user, userState] = useAuthContext()
   const [isOpen, setOpen] = useState(false)
-  const chainId = userState.chainId || ChainId.ETHEREUM_GOERLI
+  const chainId = userState.chainId || ChainId.ETHEREUM_SEPOLIA
   const queryClient = useQueryClient()
   const lastNotificationQueryKey = `lastNotificationId#${user}`
   const [isNewFeatureDismissed, setIsNewFeatureDismissed] = useState(

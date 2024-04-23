@@ -12,7 +12,7 @@ import { FIVE_MINUTES_MS } from './constants'
 
 export default function usePushSubscriptions() {
   const [user, userState] = useAuthContext()
-  const chainId = userState.chainId || ChainId.ETHEREUM_GOERLI
+  const chainId = userState.chainId || ChainId.ETHEREUM_SEPOLIA
   const env = getPushNotificationsEnv(chainId)
 
   const { data: subscriptions, isLoading: isLoadingPushSubscriptions } = useQuery({

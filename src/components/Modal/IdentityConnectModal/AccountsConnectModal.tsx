@@ -351,7 +351,7 @@ function AccountsConnectModal({ open, onClose, account }: Props) {
   }, [openDiscordChannel])
 
   const [user, userState] = useAuthContext()
-  const chainId = userState.chainId || ChainId.ETHEREUM_GOERLI
+  const chainId = userState.chainId || ChainId.ETHEREUM_SEPOLIA
   const env = getPushNotificationsEnv(chainId)
   const [pushState, setPushState] = useState<'subscribing' | 'success' | 'error' | null>(null)
 
