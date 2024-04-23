@@ -2,7 +2,6 @@ import snakeCase from 'lodash/snakeCase'
 
 import { AirdropJobAttributes } from '../back/models/AirdropJob'
 import { AirdropOutcome } from '../back/types/AirdropJob'
-import { SpecState } from '../components/Debug/UploadBadgeSpec'
 import env from '../config'
 import { GOVERNANCE_API } from '../constants'
 import { BadgeCreationResult, GovernanceBadgeSpec, RevokeOrReinstateResult, UserBadges } from '../entities/Badges/types'
@@ -60,6 +59,13 @@ import {
 } from './SnapshotTypes'
 import { TransparencyBudget, TransparencyVesting } from './Transparency'
 import { VestingInfo } from './VestingData'
+
+type SpecState = {
+  title: string
+  description: string
+  expiresAt?: string
+  imgUrl: string
+}
 
 type NewProposalMap = {
   [`/proposals/poll`]: NewProposalPoll

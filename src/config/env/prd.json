@@ -1,9 +1,4 @@
 {
-  "GATSBY_BUY_LAND_URL": "https://decentraland.org/marketplace/lands?assetType=nft&section=land&vendor=decentraland&page=1&sortBy=newest&onlyOnSale=true",
-  "GATSBY_BUY_WEARABLES_URL": "https://decentraland.org/marketplace/browse?assetType=item&section=wearables&vendor=decentraland&page=1&sortBy=newest&status=on_sale&network=ETHEREUM",
-  "GATSBY_BUY_MANA_URL": "https://decentraland.org/account",
-  "GATSBY_BUY_NAME_URL": "https://decentraland.org/builder/claim-name",
-  "GATSBY_VESTING_DASHBOARD_URL": "https://decentraland.org/vesting/%23/",
   "GATSBY_DCL_DATA_API": "https://data.decentraland.vote/",
   "GATSBY_DEFAULT_CHAIN_ID": "1",
   "GATSBY_DISCOURSE_API": "https://forum.decentraland.org",
@@ -40,7 +35,6 @@
   "GATSBY_VOTING_POWER_TO_PASS_PITCH": "2000000",
   "GATSBY_VOTING_POWER_TO_PASS_TENDER": "4000000",
   "GATSBY_VOTING_POWER_TO_PASS_HIRING": "6000000",
-  "GATSBY_SSO_URL": "https://id.decentraland.org",
   "GATSBY_PUSH_CHANNEL_ID": "0x4BaaC83d0A68C079550142B9d792328b7C239844",
   "GATSBY_DISCORD_PROFILE_VERIFICATION_URL": "https://discord.gg/nquz9JbCCx",
   "GATSBY_REASON_THRESHOLD": "50000"

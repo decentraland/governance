@@ -6,8 +6,8 @@ import {
   AUTH_TIMESTAMP_HEADER,
 } from 'decentraland-crypto-middleware/lib/types'
 
-import { signPayload } from '../front/context/auth/identify'
-import { getCurrentIdentity } from '../front/context/auth/storage'
+import { signPayload } from '../utils/auth/identify'
+import { getCurrentIdentity } from '../utils/auth/storage'
 
 import { toBase64 } from './base64'
 

@@ -1,9 +1,0 @@
-.CoAuthors__LabelContainer {
-  display: flex;
-  align-items: center;
-  line-height: 18px;
-}
-
-.CoAuthors__LabelContainer > :not(:first-child) {
-  margin-left: 5px;
-}

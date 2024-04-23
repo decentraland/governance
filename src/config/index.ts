@@ -2,11 +2,9 @@ import { Env, createConfig } from '@dcl/ui-env'
 import * as UILocation from '@dcl/ui-env/dist/location'
 
 import dev from './env/dev.json'
-import local from './env/local.json'
 import prod from './env/prd.json'
 
 export const config = createConfig({
-  [Env.LOCAL]: local,
   [Env.DEVELOPMENT]: dev,
   [Env.PRODUCTION]: prod,
 })
@@ -15,7 +13,6 @@ export const config = createConfig({
 
 export function isEnv(value: Env | string) {
   switch (value) {
-    case Env.LOCAL:
     case Env.DEVELOPMENT:
     case Env.STAGING:
     case Env.PRODUCTION:
@@ -55,13 +52,6 @@ function getEnv(): Env {
     if (envFromTLD) {
       return envFromTLD
     }
-
-    if (
-      window.location.host.match(/^localhost:\d{4,4}$/) ||
-      window.location.host.match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{4,4}$/)
-    ) {
-      return Env.LOCAL
-    }
   }
 
   if (isEnv(process.env.DCL_DEFAULT_ENV || '')) {
@@ -76,7 +66,7 @@ function getEnv(): Env {
     return Env.PRODUCTION
   }
 
-  return Env.LOCAL
+  return Env.PRODUCTION
 }
 
 function getEnvs() {
