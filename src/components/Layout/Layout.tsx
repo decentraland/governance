@@ -103,20 +103,17 @@ export default function Layout({ children }: LayoutProps) {
           return { ETHEREUM, MATIC }
         }
 
-        case ChainId.ETHEREUM_SEPOLIA:
-        case ChainId.ETHEREUM_GOERLI:
-        case ChainId.ETHEREUM_RINKEBY:
-        case ChainId.ETHEREUM_ROPSTEN: {
+        case ChainId.ETHEREUM_SEPOLIA: {
           const [ETHEREUM, MATIC] = await Promise.all([
             fetchManaBalance(user, chainId),
-            fetchManaBalance(user, ChainId.MATIC_MUMBAI),
+            fetchManaBalance(user, ChainId.MATIC_AMOY),
           ])
 
           return { ETHEREUM, MATIC }
         }
 
         case ChainId.MATIC_MAINNET:
-        case ChainId.MATIC_MUMBAI: {
+        case ChainId.MATIC_AMOY: {
           const MATIC = await fetchManaBalance(user, chainId)
           return { MATIC }
         }

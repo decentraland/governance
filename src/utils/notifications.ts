@@ -17,7 +17,7 @@ export function getPushNotificationsEnv(chainId: ChainId) {
   switch (chainId) {
     case ChainId.ETHEREUM_MAINNET:
       return ENV.PROD
-    case ChainId.ETHEREUM_GOERLI:
+    case ChainId.ETHEREUM_SEPOLIA:
     default:
       return ENV.STAGING
   }
