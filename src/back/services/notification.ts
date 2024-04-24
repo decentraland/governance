@@ -51,6 +51,18 @@ const ADDITIONAL_META_CUSTOM_TYPE_VERSION = 1
 export class NotificationService {
   static signer = getSigner()
 
+  private static async getAuthorAndCoauthors(proposal: ProposalAttributes) {
+    const coauthors = await CoauthorService.getAllFromProposalId(proposal.id)
+    const coauthorsAddresses = coauthors.length > 0 ? coauthors.map((coauthor) => coauthor.address.toLowerCase()) : []
+    const addresses = [proposal.user.toLowerCase(), ...coauthorsAddresses]
+
+    if (!areValidAddresses(addresses)) {
+      throw new Error('Invalid addresses')
+    }
+
+    return addresses
+  }
+
   static async sendPushNotification({ type, title, body, recipient, url, customType }: Notification) {
     if (!NOTIFICATIONS_SERVICE_ENABLED || !this.signer) {
       logger.warn('Push notification service is disabled')
@@ -168,13 +180,7 @@ export class NotificationService {
   static projectProposalEnacted(proposal: ProposalAttributes) {
     inBackground(async () => {
       try {
-        const coauthors = await CoauthorService.getAllFromProposalId(proposal.id)
-        const coauthorsAddresses = coauthors.length > 0 ? coauthors.map((coauthor) => coauthor.address) : []
-        const addresses = [proposal.user, ...coauthorsAddresses]
-
-        if (!areValidAddresses(addresses)) {
-          throw new Error('Invalid addresses')
-        }
+        const addresses = await this.getAuthorAndCoauthors(proposal)
 
         const title = Notifications.ProjectEnacted.title
         const body = Notifications.ProjectEnacted.body
@@ -277,17 +283,9 @@ export class NotificationService {
     })
   }
 
-  static authoredProposalFinished(proposal: ProposalAttributes) {
+  static async authoredProposalFinished(proposal: ProposalAttributes, addresses: string[]) {
     inBackground(async () => {
       try {
-        const coauthors = await CoauthorService.getAllFromProposalId(proposal.id)
-        const coauthorsAddresses = coauthors.length > 0 ? coauthors.map((coauthor) => coauthor.address) : []
-        const addresses = [proposal.user, ...coauthorsAddresses]
-
-        if (!areValidAddresses(addresses)) {
-          throw new Error('Invalid addresses')
-        }
-
         const title = Notifications.ProposalAuthoredFinished.title(proposal)
         const body = Notifications.ProposalAuthoredFinished.body
 
@@ -394,12 +392,20 @@ export class NotificationService {
       inBackground(async () => {
         for (const proposal of proposals) {
           try {
-            this.authoredProposalFinished(proposal)
+            const authorAndCoauthors = new Set(await this.getAuthorAndCoauthors(proposal))
             const votes = await VoteService.getVotes(proposal.id)
-            const voters = Object.keys(votes)
+            const voters = Object.keys(votes).filter((voter) => !authorAndCoauthors.has(voter.toLowerCase()))
+
+            // TODO: B&T cases
+
+            this.authoredProposalFinished(proposal, Array.from(authorAndCoauthors))
             this.votingEndedVoters(proposal, voters)
           } catch (error) {
-            logger.log('Error sending notifications on proposal finish', { proposalId: proposal.id })
+            ErrorService.report('Error sending notifications on proposal finish', {
+              error: `${error}`,
+              category: ErrorCategory.Notifications,
+              proposalId: proposal.id,
+            })
           }
         }
       })
@@ -411,9 +417,7 @@ export class NotificationService {
       const proposalId = commentEvent.event_data.proposal_id
       try {
         const proposal = await ProposalModel.getProposal(proposalId)
-        const coauthors = await CoauthorService.getAllFromProposalId(proposalId)
-        const coauthorsAddresses = coauthors.length > 0 ? coauthors.map((coauthor) => coauthor.address) : []
-        const addresses = [proposal.user, ...coauthorsAddresses]
+        const addresses = await this.getAuthorAndCoauthors(proposal)
         const activeDiscordUsers = await UserModel.getActiveDiscordIds(addresses)
         for (const user of activeDiscordUsers) {
           DiscordService.sendDirectMessage(user.discord_id, {
@@ -465,9 +469,7 @@ export class NotificationService {
       const updateId = commentEvent.event_data.update_id
       try {
         const proposal = await ProposalModel.getProposal(proposalId)
-        const coauthors = await CoauthorService.getAllFromProposalId(proposalId)
-        const coauthorsAddresses = coauthors.length > 0 ? coauthors.map((coauthor) => coauthor.address) : []
-        const addresses = [proposal.user, ...coauthorsAddresses]
+        const addresses = await this.getAuthorAndCoauthors(proposal)
         const activeDiscordUsers = await UserModel.getActiveDiscordIds(addresses)
         for (const user of activeDiscordUsers) {
           DiscordService.sendDirectMessage(user.discord_id, {
