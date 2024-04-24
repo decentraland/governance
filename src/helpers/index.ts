@@ -46,8 +46,6 @@ export function getEnvironmentChainId() {
   switch (chainId) {
     case ChainId.ETHEREUM_MAINNET.valueOf():
       return ChainId.ETHEREUM_MAINNET
-    case ChainId.ETHEREUM_GOERLI:
-      return ChainId.ETHEREUM_GOERLI
     case ChainId.ETHEREUM_SEPOLIA:
       return ChainId.ETHEREUM_SEPOLIA
     default:
