@@ -33,7 +33,6 @@ import project from './back/routes/project'
 import proposal from './back/routes/proposal'
 import sitemap from './back/routes/sitemap'
 import snapshot from './back/routes/snapshot'
-import social from './back/routes/social'
 import subscription from './back/routes/subscription'
 import proposalSurveyTopics from './back/routes/surveyTopics'
 import update from './back/routes/update'
@@ -45,18 +44,6 @@ import { DiscordService } from './back/services/discord'
 import { EventsService } from './back/services/events'
 import { updateGovernanceBudgets } from './entities/Budget/jobs'
 import { activateProposals, finishProposal, publishBids } from './entities/Proposal/jobs'
-import filesystem, {
-  cpsScriptSrc,
-  cpsWorkerSrc,
-  cspChildSrc,
-  cspConnectSrc,
-  cspFontSrc,
-  cspFormAction,
-  cspImageSrc,
-  cspManifestSrc,
-  cspMediaSrc,
-  cspStyleSrc,
-} from './utils/filesystem'
 
 import { GOVERNANCE_URL } from './constants'
 
@@ -114,17 +101,6 @@ app.use('/api', [
 app.use(metrics([gatsbyRegister, register]))
 
 app.use(sitemap)
-app.use(`${routePrefix}/`, social)
-
-// Balance to profile redirect to preserve previous URL
-app.get(
-  `${routePrefix}/balance`,
-  handleRaw(async (req, res) => {
-    const address = req.query.address
-    const addressParam = address ? `?address=${address}` : ''
-    return res.redirect(`${GOVERNANCE_URL}/profile/${addressParam}`)
-  })
-)
 
 // Grants to project redirect to preserve previous URL
 app.get(
@@ -135,26 +111,6 @@ app.get(
 )
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
-
-app.use(
-  `${routePrefix}/`,
-  withCors({
-    cors: '*',
-    corsOrigin: '*',
-    allowedHeaders: '*',
-  }),
-  filesystem('public', '404.html', {
-    defaultHeaders: {
-      'Content-Security-Policy': `base-uri 'self'; child-src ${cspChildSrc}; connect-src ${cspConnectSrc}; default-src 'none'; font-src ${cspFontSrc}; form-action ${cspFormAction}; frame-ancestors 'none'; frame-src https:; img-src ${cspImageSrc}; manifest-src ${cspManifestSrc}; media-src ${cspMediaSrc}; object-src 'none'; style-src ${cspStyleSrc}; worker-src ${cpsWorkerSrc}; script-src ${cpsScriptSrc}`,
-      'X-Content-Type-Options': 'nosniff',
-      'X-Frame-Options': 'DENY',
-      'strict-transport-security': 'max-age=15552000; includeSubDomains; preload',
-      'referrer-policy': 'strict-origin-when-cross-origin',
-      'x-xss-protection': '1; mode=block',
-      ...(process.env.HEROKU === 'true' && { 'X-Robots-Tag': 'noindex' }),
-    },
-  })
-)
 
 void initializeServices([
   process.env.DATABASE !== 'false' && databaseInitializer(),
