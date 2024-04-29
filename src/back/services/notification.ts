@@ -3,7 +3,8 @@ import { ethers } from 'ethers'
 
 import { DCL_NOTIFICATIONS_SERVICE_ENABLED, NOTIFICATIONS_SERVICE_ENABLED, PUSH_CHANNEL_ID } from '../../constants'
 import ProposalModel from '../../entities/Proposal/model'
-import { ProposalAttributes } from '../../entities/Proposal/types'
+import { ProposalWithOutcome } from '../../entities/Proposal/outcome'
+import { ProposalAttributes, ProposalStatus, ProposalType } from '../../entities/Proposal/types'
 import { proposalUrl } from '../../entities/Proposal/utils'
 import { getUpdateUrl } from '../../entities/Updates/utils'
 import UserModel from '../../entities/User/model'
@@ -283,6 +284,114 @@ export class NotificationService {
     })
   }
 
+  static async pitchPassed(proposal: ProposalAttributes, addresses: string[]) {
+    inBackground(async () => {
+      try {
+        if (!areValidAddresses(addresses)) {
+          throw new Error('Invalid addresses')
+        }
+
+        const title = Notifications.PitchPassed.title(proposal)
+        const body = Notifications.PitchPassed.body
+
+        const validatedUsers = await UserModel.getActiveDiscordIds(addresses)
+        for (const user of validatedUsers) {
+          DiscordService.sendDirectMessage(user.discord_id, {
+            title,
+            action: body,
+            url: proposalUrl(proposal.id),
+            fields: [],
+          })
+        }
+
+        const dclNotifications = addresses.map((address) => ({
+          type: 'governance_pitch_passed',
+          address,
+          eventKey: proposal.id,
+          metadata: {
+            proposalId: proposal.id,
+            proposalTitle: proposal.title,
+            title: Notifications.PitchPassed.title(proposal),
+            description: Notifications.PitchPassed.body,
+            link: proposalUrl(proposal.id),
+          },
+          timestamp: Date.now(),
+        }))
+
+        await Promise.all([
+          this.sendPushNotification({
+            title,
+            body,
+            recipient: addresses,
+            url: proposalUrl(proposal.id),
+            customType: NotificationCustomType.Proposal,
+          }),
+          this.sendDCLNotifications(dclNotifications),
+        ])
+      } catch (error) {
+        ErrorService.report('Error sending pitch passed notification', {
+          error: `${error}`,
+          category: ErrorCategory.Notifications,
+          proposal,
+        })
+      }
+    })
+  }
+
+  static async tenderPassed(proposal: ProposalAttributes, addresses: string[]) {
+    inBackground(async () => {
+      try {
+        if (!areValidAddresses(addresses)) {
+          throw new Error('Invalid addresses')
+        }
+
+        const title = Notifications.TenderPassed.title(proposal)
+        const body = Notifications.TenderPassed.body
+
+        const validatedUsers = await UserModel.getActiveDiscordIds(addresses)
+        for (const user of validatedUsers) {
+          DiscordService.sendDirectMessage(user.discord_id, {
+            title,
+            action: body,
+            url: proposalUrl(proposal.id),
+            fields: [],
+          })
+        }
+
+        const dclNotifications = addresses.map((address) => ({
+          type: 'governance_tender_passed',
+          address,
+          eventKey: proposal.id,
+          metadata: {
+            proposalId: proposal.id,
+            proposalTitle: proposal.title,
+            title: Notifications.TenderPassed.title(proposal),
+            description: Notifications.TenderPassed.body,
+            link: proposalUrl(proposal.id),
+          },
+          timestamp: Date.now(),
+        }))
+
+        await Promise.all([
+          this.sendPushNotification({
+            title,
+            body,
+            recipient: addresses,
+            url: proposalUrl(proposal.id),
+            customType: NotificationCustomType.Proposal,
+          }),
+          this.sendDCLNotifications(dclNotifications),
+        ])
+      } catch (error) {
+        ErrorService.report('Error sending tender passed notification', {
+          error: `${error}`,
+          category: ErrorCategory.Notifications,
+          proposal,
+        })
+      }
+    })
+  }
+
   static async authoredProposalFinished(proposal: ProposalAttributes, addresses: string[]) {
     inBackground(async () => {
       try {
@@ -387,7 +496,7 @@ export class NotificationService {
     })
   }
 
-  static sendFinishProposalNotifications(proposals: ProposalAttributes[]) {
+  static sendFinishProposalNotifications(proposals: ProposalWithOutcome[]) {
     if (NOTIFICATIONS_SERVICE_ENABLED) {
       inBackground(async () => {
         for (const proposal of proposals) {
@@ -396,10 +505,14 @@ export class NotificationService {
             const votes = await VoteService.getVotes(proposal.id)
             const voters = Object.keys(votes).filter((voter) => !authorAndCoauthors.has(voter.toLowerCase()))
 
-            // TODO: B&T cases
-
-            this.authoredProposalFinished(proposal, Array.from(authorAndCoauthors))
-            this.votingEndedVoters(proposal, voters)
+            if (proposal.type === ProposalType.Pitch && proposal.newStatus === ProposalStatus.Passed) {
+              this.pitchPassed(proposal, [...voters, ...Array.from(authorAndCoauthors)])
+            } else if (proposal.type === ProposalType.Tender && proposal.newStatus === ProposalStatus.Passed) {
+              this.tenderPassed(proposal, [...voters, ...Array.from(authorAndCoauthors)])
+            } else {
+              this.authoredProposalFinished(proposal, Array.from(authorAndCoauthors))
+              this.votingEndedVoters(proposal, voters)
+            }
           } catch (error) {
             ErrorService.report('Error sending notifications on proposal finish', {
               error: `${error}`,
