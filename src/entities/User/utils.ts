@@ -3,15 +3,14 @@ import capitalize from 'lodash/capitalize'
 
 import { FORUM_URL } from '../../constants'
 import { DiscoursePostInTopic } from '../../shared/types/discourse'
-import { clientEnv } from '../../utils/clientEnv'
 import { ProposalComment, ProposalCommentsInDiscourse } from '../Proposal/types'
 import { isSameAddress } from '../Snapshot/utils'
 
 import { MESSAGE_TIMEOUT_TIME } from './constants'
 import { AccountType, ValidatedForumAccount, ValidationComment } from './types'
 
-export const DISCOURSE_USER = process.env.GATSBY_DISCOURSE_USER || clientEnv('GATSBY_DISCOURSE_USER') || ''
-export const DISCOURSE_API = process.env.GATSBY_DISCOURSE_API || clientEnv('GATSBY_DISCOURSE_API') || ''
+export const DISCOURSE_USER = process.env.GATSBY_DISCOURSE_USER || 'dao'
+export const DISCOURSE_API = process.env.GATSBY_DISCOURSE_API || ''
 const DEFAULT_AVATAR_SIZE = '45'
 
 function getDefaultAvatarSizeUrl(avatar_url: string) {

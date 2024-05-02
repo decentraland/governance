@@ -40,8 +40,6 @@ Create a copy of `.env.example` and name it as `.env.development`
   cp .env.example .env.development
 ```
 
-> to know more about this file see [the documentation](https://www.gatsbyjs.com/docs/how-to/local-development/environment-variables/#defining-environment-variables)
-
 If you are running this project locally you only need to check the following environment variables:
 
 - `CONNECTION_STRING`: make sure it points to a valid database (see how to create one in the 'Database Setup' section)
@@ -287,15 +285,7 @@ rm -r .cache
 
 You can find a full documentation about the project's structure in the [`decentraland-gatsby` repository](https://github.com/decentraland/decentraland-gatsby#project-structure)
 
-### Back and Front ends
-
-this project runs gatsby as front-end and a nodejs server as back-end both connected through a proxy
-
-- locally this proxy is defined in [`gatsby-config.js` (`proxy` prop)](https://www.gatsbyjs.com/docs/api-proxy/#gatsby-skip-here)
-
 ### Routes
-
-**front-end** routes are defined using [gatsby routes](https://www.gatsbyjs.com/docs/reference/routing/creating-routes/#define-routes-in-srcpages) + [gatsby-plugin-intl](https://www.gatsbyjs.com/plugins/gatsby-plugin-intl/?=gatsby-plugin-intl), you can find each page in the `src/pages` directory
 
 **back-end** routes are defined using `express` you can find each route in `src/back/routes` and those are imported at `src/server.ts`
 

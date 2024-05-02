@@ -1,9 +1,0 @@
-.MediaQuery__NotMobile {
-  display: none;
-}
-
-@media (min-width: 768px) {
-  .MediaQuery__NotMobile {
-    display: block;
-  }
-}

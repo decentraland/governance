@@ -6,7 +6,7 @@ import { Tile } from './types'
 
 const LAND_URL = 'https://api.decentraland.org'
 
-export async function getTiles(
+async function getTiles(
   position1: [number, number],
   position2: [number, number],
   options: { include?: (keyof Tile)[]; exclude?: (keyof Tile)[] } = {}

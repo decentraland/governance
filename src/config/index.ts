@@ -1,21 +1,9 @@
-import { Env, createConfig } from '@dcl/ui-env'
-import * as UILocation from '@dcl/ui-env/dist/location'
+import { Env } from '@dcl/ui-env'
 
-import dev from './env/dev.json'
-import local from './env/local.json'
-import prod from './env/prd.json'
+// TODO: Review this. It is only used by getBooleanStringVar
 
-export const config = createConfig({
-  [Env.LOCAL]: local,
-  [Env.DEVELOPMENT]: dev,
-  [Env.PRODUCTION]: prod,
-})
-
-// TODO: Review if all this next code is necessary. Or if we can drop config() and just use env().
-
-export function isEnv(value: Env | string) {
+function isEnv(value: Env | string) {
   switch (value) {
-    case Env.LOCAL:
     case Env.DEVELOPMENT:
     case Env.STAGING:
     case Env.PRODUCTION:
@@ -24,9 +12,6 @@ export function isEnv(value: Env | string) {
       return false
   }
 }
-
-const getEnvFromTLD = UILocation.getEnvFromTLD
-const getEnvFromQueryParam = UILocation.getEnvFromQueryParam
 
 type EnvRecord = Record<string, string | undefined>
 
@@ -45,25 +30,6 @@ function createEnvs(data: EnvRecord = {}) {
 }
 
 function getEnv(): Env {
-  if (typeof window !== 'undefined') {
-    const envFromQueryParam = getEnvFromQueryParam(window.location)
-    if (envFromQueryParam) {
-      return envFromQueryParam
-    }
-
-    const envFromTLD = getEnvFromTLD(window.location)
-    if (envFromTLD) {
-      return envFromTLD
-    }
-
-    if (
-      window.location.host.match(/^localhost:\d{4,4}$/) ||
-      window.location.host.match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{4,4}$/)
-    ) {
-      return Env.LOCAL
-    }
-  }
-
   if (isEnv(process.env.DCL_DEFAULT_ENV || '')) {
     return process.env.DCL_DEFAULT_ENV as Env
   }
@@ -76,7 +42,7 @@ function getEnv(): Env {
     return Env.PRODUCTION
   }
 
-  return Env.LOCAL
+  return Env.PRODUCTION
 }
 
 function getEnvs() {

@@ -126,30 +126,3 @@ export async function getProfiles(addresses: string[]): Promise<DclProfile[]> {
 
   return profiles
 }
-
-export function getContentUrl(hash: string) {
-  return `${CATALYST_URL}/content/contents/${hash}`
-}
-
-type ContentEntityScene = {
-  content: { file: string; hash: string }[]
-  metadata: {
-    display?: {
-      navmapThumbnail?: string // "scene-thumbnail.png" | "https://decentraland.org/images/thumbnail.png"
-    }
-  }
-}
-
-export async function getEntityScenes(pointers: (string | [number, number])[]): Promise<ContentEntityScene[]> {
-  if (!pointers || pointers.length === 0) {
-    return []
-  }
-
-  const params = pointers
-    .map((point) => {
-      return 'pointer=' + (Array.isArray(point) ? point.slice(0, 2).join(',') : point)
-    })
-    .join('&')
-
-  return await (await fetch(`${CATALYST_URL}/content/entities/scene?` + params)).json()
-}
