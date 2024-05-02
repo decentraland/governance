@@ -1,17 +1,8 @@
-import { Env, createConfig } from '@dcl/ui-env'
-import * as UILocation from '@dcl/ui-env/dist/location'
+import { Env } from '@dcl/ui-env'
 
-import dev from './env/dev.json'
-import prod from './env/prd.json'
+// TODO: Review this. It is only used by getBooleanStringVar
 
-export const config = createConfig({
-  [Env.DEVELOPMENT]: dev,
-  [Env.PRODUCTION]: prod,
-})
-
-// TODO: Review if all this next code is necessary. Or if we can drop config() and just use env().
-
-export function isEnv(value: Env | string) {
+function isEnv(value: Env | string) {
   switch (value) {
     case Env.DEVELOPMENT:
     case Env.STAGING:
@@ -21,9 +12,6 @@ export function isEnv(value: Env | string) {
       return false
   }
 }
-
-const getEnvFromTLD = UILocation.getEnvFromTLD
-const getEnvFromQueryParam = UILocation.getEnvFromQueryParam
 
 type EnvRecord = Record<string, string | undefined>
 
@@ -42,18 +30,6 @@ function createEnvs(data: EnvRecord = {}) {
 }
 
 function getEnv(): Env {
-  if (typeof window !== 'undefined') {
-    const envFromQueryParam = getEnvFromQueryParam(window.location)
-    if (envFromQueryParam) {
-      return envFromQueryParam
-    }
-
-    const envFromTLD = getEnvFromTLD(window.location)
-    if (envFromTLD) {
-      return envFromTLD
-    }
-  }
-
   if (isEnv(process.env.DCL_DEFAULT_ENV || '')) {
     return process.env.DCL_DEFAULT_ENV as Env
   }
