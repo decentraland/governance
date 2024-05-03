@@ -324,7 +324,7 @@ export class NotificationService {
             body,
             recipient: addresses,
             url: proposalUrl(proposal.id),
-            customType: NotificationCustomType.Proposal,
+            customType: NotificationCustomType.PitchPassed,
           }),
           this.sendDCLNotifications(dclNotifications),
         ])
@@ -378,7 +378,7 @@ export class NotificationService {
             body,
             recipient: addresses,
             url: proposalUrl(proposal.id),
-            customType: NotificationCustomType.Proposal,
+            customType: NotificationCustomType.TenderPassed,
           }),
           this.sendDCLNotifications(dclNotifications),
         ])
