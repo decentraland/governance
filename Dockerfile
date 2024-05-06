@@ -28,7 +28,6 @@ RUN apk add --no-cache tini
 WORKDIR /app
 COPY ./package-lock.json                      /app/package-lock.json
 COPY ./package.json                           /app/package.json
-COPY ./patches/@dcl+ui-env+1.3.0.patch        /app/patches/@dcl+ui-env+1.3.0.patch
 
 RUN git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
 
@@ -37,15 +36,10 @@ RUN npm ci
 COPY ./src                                    /app/src
 COPY ./static                                 /app/static
 COPY ./entrypoint.sh                          /app/entrypoint.sh
-COPY ./gatsby-browser.js                      /app/gatsby-browser.js
-COPY ./gatsby-config.js                       /app/gatsby-config.js
-COPY ./gatsby-node.js                         /app/gatsby-node.js
-COPY ./gatsby-ssr.js                          /app/gatsby-ssr.js
 COPY ./tsconfig.json                          /app/tsconfig.json
 COPY ./.babelrc.json                          /app/.babelrc.json
 
 RUN NODE_OPTIONS="--max-old-space-size=4096" npm run build:server
-RUN NODE_OPTIONS=$FRONT_BUILD_NODE_OPTIONS VERSION_NUMBER=$version_number HEROKU_APP_NAME=$heroku_app_name npm run build:front
 RUN npm prune --production --ignore-scripts
 
 FROM node:18.8-alpine
@@ -65,7 +59,6 @@ COPY --from=compiler /app/package.json         /app/package.json
 COPY --from=compiler /app/package-lock.json    /app/package-lock.json
 COPY --from=compiler /app/node_modules         /app/node_modules
 COPY --from=compiler /app/lib                  /app/lib
-COPY --from=compiler /app/public               /app/public
 COPY --from=compiler /app/static               /app/static
 COPY --from=compiler /app/entrypoint.sh        /app/entrypoint.sh
 

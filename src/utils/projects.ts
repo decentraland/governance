@@ -1,9 +1,39 @@
 import { TransparencyVesting } from '../clients/Transparency'
 import { ProjectStatus } from '../entities/Grant/types'
 import { Project, ProposalAttributes } from '../entities/Proposal/types'
-import { getQuarterDates } from '../helpers'
 
 import Time from './date/Time'
+
+function getQuarterDates(quarter?: number, year?: number) {
+  if (!quarter && !year) {
+    return { startDate: undefined, endDate: undefined }
+  }
+
+  if (!year) {
+    console.error('Year is required')
+    return { startDate: undefined, endDate: undefined }
+  }
+
+  if (!quarter) {
+    const startDate = Time(`${year}-01-01`).format('YYYY-MM-DD')
+    const endDate = Time(`${year}-12-31`).format('YYYY-MM-DD')
+    return { startDate, endDate }
+  }
+
+  if (quarter < 1 || quarter > 4) {
+    console.error('Quarter should be between 1 and 4')
+    return { startDate: undefined, endDate: undefined }
+  }
+
+  const startMonth = (quarter - 1) * 3 + 1
+
+  const endMonth = startMonth + 2
+
+  const startDate = Time(`${year}-${startMonth}-01`).startOf('month').format('YYYY-MM-DD')
+  const endDate = Time(`${year}-${endMonth}-01`).endOf('month').add(1, 'day').format('YYYY-MM-DD')
+
+  return { startDate, endDate }
+}
 
 export function getHighBudgetVpThreshold(budget: number) {
   return 1200000 + budget * 40

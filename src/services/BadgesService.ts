@@ -6,7 +6,6 @@ import { AirdropJobStatus, AirdropOutcome } from '../back/types/AirdropJob'
 import { airdropWithRetry, createSpecWithRetry, reinstateBadge, revokeBadge } from '../back/utils/contractInteractions'
 import { OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgraph'
 import {
-  CORE_UNITS_BADGE_CID as CORE_UNITS_BADGE_SPEC_CID,
   LAND_OWNER_BADGE_SPEC_CID,
   LEGISLATOR_BADGE_SPEC_CID,
   TOP_VOTERS_PER_MONTH,
@@ -43,11 +42,23 @@ import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { getChecksumAddress } from '../entities/Snapshot/utils'
-import { inBackground, splitArray } from '../helpers'
+import { inBackground } from '../helpers'
 import { ErrorCategory } from '../utils/errorCategories'
 import logger from '../utils/logger'
 
 import { ErrorService } from './ErrorService'
+
+const CORE_UNITS_BADGE_SPEC_CID = [
+  'bafyreidmzou4wiy2prxq4jdyg66z7s3wulpfq2a7ar6sdkrixrj3b5mgwe', // Governance Squad
+  'bafyreih5t62qmeiugca6bp7dtubrd3ponqfndbim54e3vg4cfbroledohq', // Grant Support Squad
+  'bafyreicsrpymlwm4hutebi2qio3e5hhzpqtyr6fv3ei6nsybb3vannhfgy', // Facilitation Squad
+]
+
+function splitArray<Type>(array: Type[], chunkSize: number): Type[][] {
+  return Array.from({ length: Math.ceil(array.length / chunkSize) }, (_, index) =>
+    array.slice(index * chunkSize, (index + 1) * chunkSize)
+  )
+}
 
 export class BadgesService {
   public static async getBadges(address: string): Promise<UserBadges> {

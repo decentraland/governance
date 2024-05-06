@@ -146,20 +146,25 @@ async function isValidated(req: Request) {
 
 async function getProfile(req: Request) {
   const address = validateAddress(req.params.address)
-  const user = await UserService.getProfile(address)
-
-  if (!user) {
-    throw new RequestError('User not found', RequestError.NotFound)
-  }
-
   try {
+    const user = await UserService.getProfile(address)
+    if (!user) {
+      throw new RequestError('User not found', RequestError.NotFound)
+    }
     const { forum_id } = user
 
     return {
       forum_id,
       forum_username: forum_id ? (await DiscourseService.getUserById(forum_id))?.username : null,
     }
-  } catch (error) {
-    throw new Error(`Error while fetching profile data. ${error}`)
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new RequestError(
+        `Error while fetching profile data: ${error.message}. Stack: ${error.stack}`,
+        RequestError.InternalServerError
+      )
+    } else {
+      throw new RequestError(`An unexpected error occurred ${error}`, RequestError.InternalServerError)
+    }
   }
 }

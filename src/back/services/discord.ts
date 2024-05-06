@@ -9,7 +9,7 @@ import UpdateModel from '../../entities/Updates/model'
 import { UpdateAttributes } from '../../entities/Updates/types'
 import { getPublicUpdates, getUpdateNumber, getUpdateUrl } from '../../entities/Updates/utils'
 import UserModel from '../../entities/User/model'
-import { capitalizeFirstLetter, getEnumDisplayName, inBackground, shortenText } from '../../helpers'
+import { getEnumDisplayName, inBackground } from '../../helpers'
 import { ErrorService } from '../../services/ErrorService'
 import { getProfile } from '../../utils/Catalyst'
 import { ErrorCategory } from '../../utils/errorCategories'
@@ -47,6 +47,17 @@ type EmbedMessageProps = {
   action?: string
   color: MessageColors
   url?: string
+}
+
+function shortenText(text: string, maxLength: number) {
+  if (text.length > maxLength) {
+    return text.substring(0, maxLength) + '...'
+  }
+  return text
+}
+
+function capitalizeFirstLetter(string: string) {
+  return string.length > 0 ? `${string[0].toUpperCase()}${string.slice(1)}` : ''
 }
 
 function getChoices(choices: string[]): Field[] {
