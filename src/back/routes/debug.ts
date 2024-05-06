@@ -51,7 +51,7 @@ function invalidateCache(req: WithAuth) {
   const user = req.auth!
   validateDebugAddress(user)
 
-  const { key } = req.body
+  const { key } = req.query
   if (!key || typeof key !== 'string') {
     throw new Error(`Invalid cache key: ${key}`)
   }
