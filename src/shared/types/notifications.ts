@@ -24,6 +24,8 @@ export enum NotificationCustomType {
   ProposalComment = 'proposal_comment',
   ProjectUpdateComment = 'project_update_comment',
   Grant = 'grant',
+  TenderPassed = 'tender_passed',
+  PitchPassed = 'pitch_passed',
 }
 
 export type Notification = {
