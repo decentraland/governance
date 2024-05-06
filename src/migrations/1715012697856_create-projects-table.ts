@@ -6,12 +6,11 @@ import ProposalModel from "../entities/Proposal/model"
 
 const STATUS_TYPE = 'project_status_type'
 
-
 export async function up(pgm: MigrationBuilder): Promise<void> {
   pgm.createType(STATUS_TYPE, Object.values(ProjectStatus))
   pgm.createTable(Model.tableName, {
     id: {
-      type: 'SERIAL',
+      type: 'TEXT',
       primaryKey: true,
       notNull: true,
     },
@@ -52,6 +51,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
     },
   })
 
+  pgm.createIndex(Model.tableName, 'proposal_id')
   pgm.addConstraint(Model.tableName, 'proposal_id_fk', `FOREIGN KEY(proposal_id) REFERENCES ${ProposalModel.tableName}(id)`)
 }
 

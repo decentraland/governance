@@ -8,9 +8,9 @@ export type ProjectAttributes = {
   title: string
   status: ProjectStatus
   links: string[]
-  about: string
-  about_updated_by: string
-  about_updated_date: Date
+  about?: string
+  about_updated_by?: string
+  about_updated_date?: Date
   created_at: Date
   updated_at: Date
 }
