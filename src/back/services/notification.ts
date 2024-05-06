@@ -7,7 +7,6 @@ import { ProposalWithOutcome } from '../../entities/Proposal/outcome'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../entities/Proposal/types'
 import { proposalUrl } from '../../entities/Proposal/utils'
 import { getUpdateUrl } from '../../entities/Updates/utils'
-import UserModel from '../../entities/User/model'
 import { inBackground } from '../../helpers'
 import { ErrorService } from '../../services/ErrorService'
 import { ProjectUpdateCommentedEvent, ProposalCommentedEvent } from '../../shared/types/events'
@@ -186,15 +185,12 @@ export class NotificationService {
         const title = Notifications.ProjectEnacted.title
         const body = Notifications.ProjectEnacted.body
 
-        const validatedUsers = await UserModel.getActiveDiscordIds(addresses)
-        for (const user of validatedUsers) {
-          DiscordService.sendDirectMessage(user.discord_id, {
-            title,
-            action: body,
-            url: proposalUrl(proposal.id),
-            fields: [],
-          })
-        }
+        DiscordService.sendDirectMessages(addresses, {
+          title,
+          action: body,
+          url: proposalUrl(proposal.id),
+          fields: [],
+        })
 
         const dclNotifications = addresses.map((address) => ({
           type: 'governance_proposal_enacted',
@@ -240,15 +236,12 @@ export class NotificationService {
         const title = Notifications.CoAuthorRequestReceived.title
         const body = Notifications.CoAuthorRequestReceived.body
 
-        const validatedUsers = await UserModel.getActiveDiscordIds(coAuthors)
-        for (const user of validatedUsers) {
-          DiscordService.sendDirectMessage(user.discord_id, {
-            title,
-            action: body,
-            url: proposalUrl(proposal.id),
-            fields: [],
-          })
-        }
+        DiscordService.sendDirectMessages(coAuthors, {
+          title,
+          action: body,
+          url: proposalUrl(proposal.id),
+          fields: [],
+        })
 
         const dclNotifications = coAuthors.map((address) => ({
           type: 'governance_coauthor_requested',
@@ -294,15 +287,12 @@ export class NotificationService {
         const title = Notifications.PitchPassed.title(proposal)
         const body = Notifications.PitchPassed.body
 
-        const validatedUsers = await UserModel.getActiveDiscordIds(addresses)
-        for (const user of validatedUsers) {
-          DiscordService.sendDirectMessage(user.discord_id, {
-            title,
-            action: body,
-            url: proposalUrl(proposal.id),
-            fields: [],
-          })
-        }
+        DiscordService.sendDirectMessages(addresses, {
+          title,
+          action: body,
+          url: proposalUrl(proposal.id),
+          fields: [],
+        })
 
         const dclNotifications = addresses.map((address) => ({
           type: 'governance_pitch_passed',
@@ -348,15 +338,12 @@ export class NotificationService {
         const title = Notifications.TenderPassed.title(proposal)
         const body = Notifications.TenderPassed.body
 
-        const validatedUsers = await UserModel.getActiveDiscordIds(addresses)
-        for (const user of validatedUsers) {
-          DiscordService.sendDirectMessage(user.discord_id, {
-            title,
-            action: body,
-            url: proposalUrl(proposal.id),
-            fields: [],
-          })
-        }
+        DiscordService.sendDirectMessages(addresses, {
+          title,
+          action: body,
+          url: proposalUrl(proposal.id),
+          fields: [],
+        })
 
         const dclNotifications = addresses.map((address) => ({
           type: 'governance_tender_passed',
@@ -398,15 +385,12 @@ export class NotificationService {
         const title = Notifications.ProposalAuthoredFinished.title(proposal)
         const body = Notifications.ProposalAuthoredFinished.body
 
-        const validatedUsers = await UserModel.getActiveDiscordIds(addresses)
-        for (const user of validatedUsers) {
-          DiscordService.sendDirectMessage(user.discord_id, {
-            title,
-            action: body,
-            url: proposalUrl(proposal.id),
-            fields: [],
-          })
-        }
+        DiscordService.sendDirectMessages(addresses, {
+          title,
+          action: body,
+          url: proposalUrl(proposal.id),
+          fields: [],
+        })
 
         const dclNotifications = addresses.map((address) => ({
           type: 'governance_authored_proposal_finished',
@@ -452,15 +436,12 @@ export class NotificationService {
         const title = Notifications.ProposalVotedFinished.title(proposal)
         const body = Notifications.ProposalVotedFinished.body
 
-        const validatedUsers = await UserModel.getActiveDiscordIds(addresses)
-        for (const user of validatedUsers) {
-          DiscordService.sendDirectMessage(user.discord_id, {
-            title,
-            action: body,
-            url: proposalUrl(proposal.id),
-            fields: [],
-          })
-        }
+        DiscordService.sendDirectMessages(addresses, {
+          title,
+          action: body,
+          url: proposalUrl(proposal.id),
+          fields: [],
+        })
 
         const dclNotifications = addresses.map((address) => ({
           type: 'governance_voting_ended_voter',
@@ -531,15 +512,13 @@ export class NotificationService {
       try {
         const proposal = await ProposalModel.getProposal(proposalId)
         const addresses = await this.getAuthorAndCoauthors(proposal)
-        const activeDiscordUsers = await UserModel.getActiveDiscordIds(addresses)
-        for (const user of activeDiscordUsers) {
-          DiscordService.sendDirectMessage(user.discord_id, {
-            title: Notifications.ProposalCommented.title(proposal),
-            action: Notifications.ProposalCommented.body,
-            url: proposalUrl(proposal.id),
-            fields: [],
-          })
-        }
+
+        DiscordService.sendDirectMessages(addresses, {
+          title: Notifications.ProposalCommented.title(proposal),
+          action: Notifications.ProposalCommented.body,
+          url: proposalUrl(proposal.id),
+          fields: [],
+        })
 
         const dclNotifications = addresses.map((address) => ({
           type: 'governance_new_comment_on_proposal',
@@ -583,15 +562,13 @@ export class NotificationService {
       try {
         const proposal = await ProposalModel.getProposal(proposalId)
         const addresses = await this.getAuthorAndCoauthors(proposal)
-        const activeDiscordUsers = await UserModel.getActiveDiscordIds(addresses)
-        for (const user of activeDiscordUsers) {
-          DiscordService.sendDirectMessage(user.discord_id, {
-            title: Notifications.ProjectUpdateCommented.title(proposal),
-            action: Notifications.ProjectUpdateCommented.body,
-            url: getUpdateUrl(updateId, proposal.id),
-            fields: [],
-          })
-        }
+
+        DiscordService.sendDirectMessages(addresses, {
+          title: Notifications.ProjectUpdateCommented.title(proposal),
+          action: Notifications.ProjectUpdateCommented.body,
+          url: getUpdateUrl(updateId, proposal.id),
+          fields: [],
+        })
 
         const dclNotifications = addresses.map((address) => ({
           type: 'governance_new_comment_on_project_update',

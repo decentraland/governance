@@ -135,7 +135,6 @@ export default class BidService {
       try {
         await UnpublishedBidModel.rejectBidsFromTenders(tendersWithBidsToReject)
         context.log(`Rejected bids from tenders ${tenderIds}`)
-        // TODO: discuss how to send notifications to users
       } catch (error) {
         const msg = `Error rejecting bids`
         ErrorService.report(msg, { error, tenderIds, category: ErrorCategory.Bid })
