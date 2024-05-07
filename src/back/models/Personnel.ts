@@ -1,6 +1,7 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 
 export type PersonnelAttributes = {
+  id: string
   project_id: string
   address?: string
   name: string
