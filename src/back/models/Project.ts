@@ -2,7 +2,7 @@ import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 
 import { ProjectStatus } from '../../entities/Grant/types'
 
-export type ProjectAttributes = {
+export type Project = {
   id: string
   proposal_id: string
   title: string
@@ -15,7 +15,7 @@ export type ProjectAttributes = {
   created_at: Date
 }
 
-export default class ProjectModel extends Model<ProjectAttributes> {
+export default class ProjectModel extends Model<Project> {
   static tableName = 'projects'
   static withTimestamps = false
   static primaryKey = 'id'

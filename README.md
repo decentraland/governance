@@ -281,7 +281,7 @@ rm -r .cache
 
 # About
 
-### Project's structure
+### ProposalProject's structure
 
 You can find a full documentation about the project's structure in the [`decentraland-gatsby` repository](https://github.com/decentraland/decentraland-gatsby#project-structure)
 

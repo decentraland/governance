@@ -6,8 +6,8 @@ import { GrantRequest, ProjectStatus } from '../entities/Grant/types'
 import ProposalModel from '../entities/Proposal/model'
 import {
   GrantProposalConfiguration,
-  ProjectWithUpdate,
   ProposalAttributes,
+  ProposalProjectWithUpdate,
   ProposalType,
 } from '../entities/Proposal/types'
 import { DEFAULT_CHOICES, asNumber, getProposalEndDate } from '../entities/Proposal/utils'
@@ -35,7 +35,7 @@ export class ProjectService {
   public static async getProjects() {
     const data = await ProposalModel.getProjectList()
     const vestings = await VestingService.getAllVestings()
-    const projects: ProjectWithUpdate[] = []
+    const projects: ProposalProjectWithUpdate[] = []
 
     await Promise.all(
       data.map(async (proposal: ProposalAttributes) => {
@@ -50,7 +50,7 @@ export class ProjectService {
 
           try {
             const update = await this.getProjectLatestUpdate(project.id)
-            const projectWithUpdate: ProjectWithUpdate = {
+            const projectWithUpdate: ProposalProjectWithUpdate = {
               ...project,
               ...this.getUpdateData(update),
             }
