@@ -48,7 +48,7 @@ function getProjectVestingData(proposal: ProposalAttributes, vesting: Transparen
   }
 }
 
-export function createProject(proposal: ProposalAttributes, vesting?: TransparencyVesting): ProposalProject {
+export function createProposalProject(proposal: ProposalAttributes, vesting?: TransparencyVesting): ProposalProject {
   const vestingData = vesting ? getProjectVestingData(proposal, vesting) : {}
 
   return {

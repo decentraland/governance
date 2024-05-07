@@ -1,24 +1,29 @@
+import crypto from 'crypto'
+
+import ProjectModel, { ProjectAttributes } from '../back/models/Project'
 import { TransparencyVesting } from '../clients/Transparency'
 import UnpublishedBidModel from '../entities/Bid/model'
 import { GrantTier } from '../entities/Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../entities/Grant/constants'
 import { GrantRequest, ProjectStatus } from '../entities/Grant/types'
 import ProposalModel from '../entities/Proposal/model'
+import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import {
   GrantProposalConfiguration,
   ProposalAttributes,
   ProposalProjectWithUpdate,
+  ProposalStatus,
   ProposalType,
 } from '../entities/Proposal/types'
-import { DEFAULT_CHOICES, asNumber, getProposalEndDate } from '../entities/Proposal/utils'
+import { DEFAULT_CHOICES, asNumber, getProposalEndDate, isProjectProposal } from '../entities/Proposal/utils'
 import UpdateModel from '../entities/Updates/model'
 import { IndexedUpdate, UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates } from '../entities/Updates/utils'
-import { formatError } from '../helpers'
+import { formatError, inBackground } from '../helpers'
 import Time from '../utils/date/Time'
 import { isProdEnv } from '../utils/governanceEnvs'
 import logger from '../utils/logger'
-import { createProject } from '../utils/projects'
+import { createProposalProject } from '../utils/projects'
 
 import { BudgetService } from './BudgetService'
 import { ProposalInCreation } from './ProposalService'
@@ -46,7 +51,7 @@ export class ProjectService {
               (vesting) =>
                 vesting.vesting_status === ProjectStatus.InProgress || vesting.vesting_status === ProjectStatus.Finished
             ) || proposalVestings[0]
-          const project = createProject(proposal, prioritizedVesting)
+          const project = createProposalProject(proposal, prioritizedVesting)
 
           try {
             const update = await this.getProjectLatestUpdate(project.id)
@@ -146,5 +151,27 @@ export class ProjectService {
     return {
       total: Number(data.total),
     }
+  }
+
+  static async createProjects(proposalsWithOutcome: ProposalWithOutcome[]) {
+    inBackground(async () => {
+      const proposalsToCreateProjectFor = proposalsWithOutcome.filter(
+        (proposal) => isProjectProposal(proposal.type) && proposal.newStatus === ProposalStatus.Passed
+      )
+      proposalsToCreateProjectFor.forEach((proposal) => ProjectService.createProject(proposal))
+    })
+  }
+
+  private static async createProject(proposal: ProposalWithOutcome) {
+    const newProject: ProjectAttributes = {
+      id: crypto.randomUUID(),
+      proposal_id: proposal.id,
+      title: proposal.title,
+      status: ProjectStatus.Pending,
+      links: [],
+      created_at: new Date(),
+    }
+
+    return await ProjectModel.create(newProject)
   }
 }
