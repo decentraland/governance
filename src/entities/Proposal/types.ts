@@ -813,7 +813,7 @@ export type VestingContractData = {
   vesting_total_amount: number
 }
 
-export type Project = {
+export type ProposalProject = {
   id: string
   title: string
   user: string
@@ -833,7 +833,7 @@ export type Project = {
   tx_date?: number
 }
 
-export type ProjectWithUpdate = Project & {
+export type ProposalProjectWithUpdate = ProposalProject & {
   update?: IndexedUpdate | null
   update_timestamp?: number
 }

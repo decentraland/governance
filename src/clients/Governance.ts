@@ -22,11 +22,11 @@ import {
   NewProposalTender,
   PendingProposalsQuery,
   PriorityProposal,
-  Project,
-  ProjectWithUpdate,
   ProposalAttributes,
   ProposalCommentsInDiscourse,
   ProposalListFilter,
+  ProposalProject,
+  ProposalProjectWithUpdate,
   ProposalStatus,
 } from '../entities/Proposal/types'
 import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
@@ -162,7 +162,9 @@ export class Governance extends API {
       params.append('to', to.toISOString().split('T')[0])
     }
     const paramsStr = params.toString()
-    const proposals = await this.fetchApiResponse<ProjectWithUpdate[]>(`/projects${paramsStr ? `?${paramsStr}` : ''}`)
+    const proposals = await this.fetchApiResponse<ProposalProjectWithUpdate[]>(
+      `/projects${paramsStr ? `?${paramsStr}` : ''}`
+    )
 
     return proposals
   }
@@ -182,7 +184,7 @@ export class Governance extends API {
   }
 
   async getGrantsByUser(user: string) {
-    return await this.fetchApiResponse<{ total: number; data: Project[] }>(`/proposals/grants/${user}`)
+    return await this.fetchApiResponse<{ total: number; data: ProposalProject[] }>(`/proposals/grants/${user}`)
   }
 
   async createProposal<P extends keyof NewProposalMap>(path: P, proposal: NewProposalMap[P]) {
