@@ -10,9 +10,9 @@ export type ProjectAttributes = {
   links: string[]
   about?: string
   about_updated_by?: string
-  about_updated_date?: Date
+  about_updated_at?: Date
+  updated_at?: Date
   created_at: Date
-  updated_at: Date
 }
 
 export default class ProjectModel extends Model<ProjectAttributes> {

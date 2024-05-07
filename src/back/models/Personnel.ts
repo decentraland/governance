@@ -10,13 +10,13 @@ export type PersonnelAttributes = {
   status: PersonnelStatus
   updated_by?: string
   updated_at?: Date
-  created_at?: Date
+  created_at: Date
 }
 
 export enum PersonnelStatus {
-  Deleted = 'deleted',
-  Unassigned = 'unassigned',
-  Assigned = 'assigned',
+  Deleted = 'Deleted',
+  Unassigned = 'Unassigned',
+  Assigned = 'Assigned',
 }
 
 export default class PersonnelModel extends Model<PersonnelAttributes> {

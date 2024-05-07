@@ -29,6 +29,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
     links: {
       type: 'TEXT[]',
       notNull: true,
+      default: '{}'
     },
     about: {
       type: 'TEXT',
@@ -39,12 +40,10 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
     about_updated_at: {
       type: 'TIMESTAMPTZ',
     },
-    created_at: {
-      type: 'TIMESTAMPTZ',
-      notNull: true,
-      default: pgm.func('CURRENT_TIMESTAMP')
-    },
     updated_at: {
+      type: 'TIMESTAMPTZ',
+    },
+    created_at: {
       type: 'TIMESTAMPTZ',
       notNull: true,
       default: pgm.func('CURRENT_TIMESTAMP')

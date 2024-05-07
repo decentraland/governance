@@ -1,12 +1,12 @@
 import { MigrationBuilder } from "node-pg-migrate"
-
-import Model, { PersonnelStatus } from "../back/models/Personnel"
 import ProjectModel from "../back/models/Project"
+import Model, { MilestoneStatus } from "../back/models/ProjectMilestone"
 
-const STATUS_TYPE = 'personnel_status_type'
+const STATUS_TYPE = 'project_milestone_status_type'
+
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
-  pgm.createType(STATUS_TYPE, Object.values(PersonnelStatus))
+  pgm.createType(STATUS_TYPE, Object.values(MilestoneStatus))
   pgm.createTable(Model.tableName, {
     id: {
       type: 'TEXT',
@@ -17,14 +17,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       type: 'TEXT',
       notNull: true
     },
-    address: {
-      type: 'TEXT',
-    },
-    name: {
-      type: 'TEXT',
-      notNull: true
-    },
-    role: {
+    title: {
       type: 'TEXT',
       notNull: true
     },
@@ -32,18 +25,19 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       type: 'TEXT',
       notNull: true
     },
-    link: {
-      type: 'TEXT',
-    },
     status: {
       type: STATUS_TYPE,
       notNull: true,
     },
+    updated_by: {
+      type: 'TEXT',
+    },
     updated_at: {
       type: 'TIMESTAMPTZ',
     },
-    updated_by: {
+    created_by: {
       type: 'TEXT',
+      notNull: true,
     },
     created_at: {
       type: 'TIMESTAMPTZ',
@@ -53,7 +47,6 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
   })
 
   pgm.createIndex(Model.tableName, 'project_id')
-  pgm.addConstraint(Model.tableName, 'address_check', 'CHECK(address ~* \'^(0x)?[0-9a-f]{40}$\')')
   pgm.addConstraint(Model.tableName, 'project_id_fk', `FOREIGN KEY(project_id) REFERENCES ${ProjectModel.tableName}(id)`)
 }
 
