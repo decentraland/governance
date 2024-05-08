@@ -5,7 +5,7 @@ import { TransparencyVesting } from '../clients/Transparency'
 import UnpublishedBidModel from '../entities/Bid/model'
 import { GrantTier } from '../entities/Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../entities/Grant/constants'
-import { GrantRequest, ProjectStatus } from '../entities/Grant/types'
+import { GrantRequest, ProjectStatus, TransparencyProjectStatus } from '../entities/Grant/types'
 import ProposalModel from '../entities/Proposal/model'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import {
@@ -49,7 +49,8 @@ export class ProjectService {
           const prioritizedVesting: TransparencyVesting | undefined =
             proposalVestings.find(
               (vesting) =>
-                vesting.vesting_status === ProjectStatus.InProgress || vesting.vesting_status === ProjectStatus.Finished
+                vesting.vesting_status === TransparencyProjectStatus.InProgress ||
+                vesting.vesting_status === TransparencyProjectStatus.Finished
             ) || proposalVestings[0]
           const project = createProposalProject(proposal, prioritizedVesting)
 
