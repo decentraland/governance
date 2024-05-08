@@ -131,7 +131,7 @@ export default routes((route) => {
   route.post('/proposals/hiring', withAuth, handleAPI(createProposalHiring))
   route.get('/proposals/priority/:address?', handleJSON(getPriorityProposals))
   route.get('/proposals/grants/:address', handleAPI(getGrantsByUser))
-  route.get('/proposals/:proposal', handleAPI(getProposal))
+  route.get('/proposals/:proposal', handleAPI(getProposalWithProject))
   route.patch('/proposals/:proposal', withAuth, handleAPI(updateProposalStatus))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
   route.get('/proposals/:proposal/comments', handleAPI(getProposalComments))
@@ -528,6 +528,15 @@ export async function getProposal(req: Request<{ proposal: string }>) {
   const id = validateProposalId(req.params.proposal)
   try {
     return await ProposalService.getProposal(id)
+  } catch (e) {
+    throw new RequestError(`Proposal "${id}" not found`, RequestError.NotFound)
+  }
+}
+
+export async function getProposalWithProject(req: Request<{ proposal: string }>) {
+  const id = validateProposalId(req.params.proposal)
+  try {
+    return await ProposalService.getProposalWithProject(id)
   } catch (e) {
     throw new RequestError(`Proposal "${id}" not found`, RequestError.NotFound)
   }

@@ -217,6 +217,15 @@ export class ProposalService {
     return ProposalModel.parse(proposal)
   }
 
+  static async getProposalWithProject(id: string) {
+    const proposal = await ProposalModel.getProposalWithProject(id)
+    if (!proposal) {
+      throw new Error(`Proposal not found: "${id}"`)
+    }
+    console.log('proposal', proposal)
+    return proposal
+  }
+
   static getFinishProposalQueries(proposalsWithOutcome: ProposalWithOutcome[]) {
     const proposalUpdateQueriesByStatus: SQLStatement[] = []
     Object.values(ProposalStatus).forEach((proposalStatus) => {
