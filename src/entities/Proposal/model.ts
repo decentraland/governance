@@ -15,6 +15,7 @@ import { toLower } from 'lodash'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
+import ProjectModel from '../../back/models/Project'
 import Time from '../../utils/date/Time'
 import { UnpublishedBidStatus } from '../Bid/types'
 import CoauthorModel from '../Coauthor/model'
@@ -31,6 +32,7 @@ import {
   ProposalListFilter,
   ProposalStatus,
   ProposalType,
+  ProposalWithProject,
   SortingOrder,
   isProposalType,
 } from './types'
@@ -66,6 +68,31 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return {
       ...proposal,
       snapshot_proposal: JSON.parse(proposal.snapshot_proposal),
+    }
+  }
+
+  static async getProposalWithProject(id: string): Promise<ProposalWithProject> {
+    if (!isUUID(id || '')) {
+      throw new Error(`Not found proposal: "${id}"`)
+    }
+
+    const query = SQL`
+      SELECT p.*, pr.id as "project_id", pr.status as "project_status"
+      FROM ${table(ProposalModel)} p
+      LEFT JOIN ${table(ProjectModel)} pr ON p.id = pr.proposal_id
+      WHERE p.id = ${id} AND p.deleted = false
+  `
+
+    console.log('query', query)
+
+    const result = await this.namedQuery('get_proposal_with_project', query)
+    if (!result.length) {
+      throw new Error(`Not found proposal: "${id}"`)
+    }
+
+    return {
+      ...this.parse(result[0]),
+      project_id: result[0].project_id,
     }
   }
 

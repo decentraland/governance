@@ -70,6 +70,11 @@ export type ProposalAttributes<C extends Record<string, unknown> = any> = {
   textsearch: SQLStatement | string | null | undefined
 }
 
+export interface ProposalWithProject extends ProposalAttributes {
+  project_id?: string | null
+  project_status?: ProjectStatus | null
+}
+
 export type ProposalListFilter = {
   user: string
   type: ProposalType
