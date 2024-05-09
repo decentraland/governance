@@ -15,9 +15,9 @@ export type PersonnelAttributes = {
 }
 
 export enum PersonnelStatus {
-  Deleted = 'Deleted',
-  Unassigned = 'Unassigned',
-  Assigned = 'Assigned',
+  Deleted = 'deleted',
+  Unassigned = 'unassigned',
+  Assigned = 'assigned',
 }
 
 export default class PersonnelModel extends Model<PersonnelAttributes> {

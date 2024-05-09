@@ -60,14 +60,21 @@ export enum PaymentToken {
 export type ProposalGrantCategory = OldGrantCategory | NewGrantCategory
 
 export const VALID_CATEGORIES = [NewGrantCategory.CoreUnit, NewGrantCategory.Platform]
-export const INVALID_CATEGORIES = Object.values(NewGrantCategory).filter((item) => !VALID_CATEGORIES.includes(item))
 
-export enum ProjectStatus {
+export enum TransparencyProjectStatus {
   Pending = 'Pending',
   InProgress = 'In Progress',
   Finished = 'Finished',
   Paused = 'Paused',
   Revoked = 'Revoked',
+}
+
+export enum ProjectStatus {
+  Pending = 'pending',
+  InProgress = 'in_progress',
+  Finished = 'finished',
+  Paused = 'paused',
+  Revoked = 'revoked',
 }
 
 export function isGrantSubtype(value: string | null | undefined) {

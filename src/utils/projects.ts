@@ -1,11 +1,26 @@
 import { TransparencyVesting } from '../clients/Transparency'
-import { ProjectStatus } from '../entities/Grant/types'
+import { ProjectStatus, TransparencyProjectStatus } from '../entities/Grant/types'
 import { ProposalAttributes, ProposalProject } from '../entities/Proposal/types'
 
 import Time from './date/Time'
 
 export function getHighBudgetVpThreshold(budget: number) {
   return 1200000 + budget * 40
+}
+
+function toGovernanceProjectStatus(status: TransparencyProjectStatus) {
+  switch (status) {
+    case TransparencyProjectStatus.Pending:
+      return ProjectStatus.Pending
+    case TransparencyProjectStatus.InProgress:
+      return ProjectStatus.InProgress
+    case TransparencyProjectStatus.Finished:
+      return ProjectStatus.Finished
+    case TransparencyProjectStatus.Paused:
+      return ProjectStatus.Paused
+    case TransparencyProjectStatus.Revoked:
+      return ProjectStatus.Revoked
+  }
 }
 
 function getProjectVestingData(proposal: ProposalAttributes, vesting: TransparencyVesting) {
@@ -34,7 +49,7 @@ function getProjectVestingData(proposal: ProposalAttributes, vesting: Transparen
   } = vesting
 
   return {
-    status,
+    status: toGovernanceProjectStatus(status),
     token,
     enacted_at: Time(vesting_start_at).unix(),
     contract: {

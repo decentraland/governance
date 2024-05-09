@@ -13,9 +13,9 @@ export type ProjectMilestone = {
 }
 
 export enum MilestoneStatus {
-  Pending = 'Pending',
-  InProgress = 'In Progress',
-  Done = 'Done',
+  Pending = 'pending',
+  InProgress = 'in_progress',
+  Done = 'done',
 }
 
 export default class ProjectMilestoneModel extends Model<ProjectMilestone> {
