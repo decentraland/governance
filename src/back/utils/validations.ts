@@ -65,9 +65,9 @@ export function validateProposalFields(fields: unknown) {
   }
 }
 
-export function validateProposalId(id?: string) {
+export function validateId(id?: string) {
   if (!(id && isUUID(id))) {
-    throw new RequestError('Invalid proposal id', RequestError.BadRequest)
+    throw new RequestError('Invalid id', RequestError.BadRequest)
   }
   return id
 }

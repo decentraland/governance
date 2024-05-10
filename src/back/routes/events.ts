@@ -7,7 +7,7 @@ import { EventsService } from '../services/events'
 import {
   validateDebugAddress,
   validateEventTypesFilters,
-  validateProposalId,
+  validateId,
   validateRequiredString,
 } from '../utils/validations'
 
@@ -26,7 +26,7 @@ async function getLatestEvents(req: Request) {
 async function voted(req: WithAuth) {
   const user = req.auth!
 
-  validateProposalId(req.body.proposalId)
+  validateId(req.body.proposalId)
   validateRequiredString('proposalTitle', req.body.proposalTitle)
   validateRequiredString('choice', req.body.choice)
   return await EventsService.voted(req.body.proposalId, req.body.proposalTitle, req.body.choice, user)

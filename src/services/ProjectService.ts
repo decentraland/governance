@@ -175,4 +175,14 @@ export class ProjectService {
 
     return await ProjectModel.create(newProject)
   }
+
+  static async getProject(id: string) {
+    //TODO: add all data to project from other tables (updates, personnel, milestones, etc) & return Project type, instead of ProjectAttributes
+    const project = ProjectModel.findOne<ProjectAttributes>({ id })
+    if (!project) {
+      throw new Error(`Project not found: "${id}"`)
+    }
+
+    return project
+  }
 }
