@@ -15,7 +15,7 @@ import { ProposalService } from '../../services/ProposalService'
 import { SnapshotService } from '../../services/SnapshotService'
 import Time from '../../utils/date/Time'
 import { VoteService } from '../services/vote'
-import { validateAddress, validateProposalId } from '../utils/validations'
+import { validateAddress, validateId } from '../utils/validations'
 
 export default routes((route) => {
   route.get('/proposals/:proposal/votes', handleAPI(getVotesByProposal))
@@ -27,7 +27,7 @@ export default routes((route) => {
 
 export async function getVotesByProposal(req: Request<{ proposal: string }>) {
   const refresh = req.query.refresh === 'true'
-  const id = validateProposalId(req.params.proposal)
+  const id = validateId(req.params.proposal)
 
   const proposal = await ProposalService.getProposal(id)
   const latestVotes = await VoteService.getVotes(proposal.id)

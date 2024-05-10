@@ -1,14 +1,15 @@
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
-import { handleJSON } from 'decentraland-gatsby/dist/entities/Route/handle'
+import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
 import CacheService, { TTL_1_HS } from '../../services/CacheService'
 import { ProjectService } from '../../services/ProjectService'
-import { isValidDate } from '../utils/validations'
+import { isValidDate, validateId } from '../utils/validations'
 
 export default routes((route) => {
   route.get('/projects', handleJSON(getProjects))
+  route.get('/projects/:project', handleAPI(getProject))
   route.get('/projects/pitches-total', handleJSON(getOpenPitchesTotal))
   route.get('/projects/tenders-total', handleJSON(getOpenTendersTotal))
 })
@@ -40,6 +41,15 @@ async function getProjects(req: Request) {
   const projects = await ProjectService.getProjects()
   CacheService.set(cacheKey, projects, TTL_1_HS)
   return filterProjectsByDate(projects, from, to)
+}
+
+async function getProject(req: Request<{ project: string }>) {
+  const id = validateId(req.params.project)
+  try {
+    return await ProjectService.getProject(id)
+  } catch (e) {
+    throw new RequestError(`Project "${id}" not found`, RequestError.NotFound)
+  }
 }
 
 async function getOpenPitchesTotal() {

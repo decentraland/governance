@@ -8,7 +8,7 @@ import { Budget, BudgetWithContestants, CategoryBudget } from '../../entities/Bu
 import { QuarterBudgetAttributes } from '../../entities/QuarterBudget/types'
 import { toNewGrantCategory } from '../../entities/QuarterCategoryBudget/utils'
 import { BudgetService } from '../../services/BudgetService'
-import { validateProposalId } from '../utils/validations'
+import { validateId } from '../utils/validations'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -48,6 +48,6 @@ async function getCurrentContestedBudget(): Promise<BudgetWithContestants> {
 }
 
 async function getBudgetWithContestants(req: Request<{ proposal: string }>): Promise<BudgetWithContestants> {
-  const id = validateProposalId(req.params.proposal)
+  const id = validateId(req.params.proposal)
   return await BudgetService.getBudgetWithContestants(id)
 }

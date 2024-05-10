@@ -111,7 +111,7 @@ import { isProdEnv } from '../../utils/governanceEnvs'
 import logger from '../../utils/logger'
 import { NotificationService } from '../services/notification'
 import { UpdateService } from '../services/update'
-import { validateAddress, validateProposalId } from '../utils/validations'
+import { validateAddress, validateId } from '../utils/validations'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -525,7 +525,7 @@ async function getPriorityProposals(req: Request) {
 }
 
 export async function getProposal(req: Request<{ proposal: string }>) {
-  const id = validateProposalId(req.params.proposal)
+  const id = validateId(req.params.proposal)
   try {
     return await ProposalService.getProposal(id)
   } catch (e) {
@@ -534,7 +534,7 @@ export async function getProposal(req: Request<{ proposal: string }>) {
 }
 
 export async function getProposalWithProject(req: Request<{ proposal: string }>) {
-  const id = validateProposalId(req.params.proposal)
+  const id = validateId(req.params.proposal)
   try {
     return await ProposalService.getProposalWithProject(id)
   } catch (e) {
