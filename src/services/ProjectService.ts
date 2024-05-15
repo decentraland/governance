@@ -1,8 +1,10 @@
 import crypto from 'crypto'
 
+import PersonnelModel, { PersonnelAttributes, PersonnelStatus } from '../back/models/Personnel'
 import ProjectModel, { ProjectAttributes } from '../back/models/Project'
 import { TransparencyVesting } from '../clients/Transparency'
 import UnpublishedBidModel from '../entities/Bid/model'
+import { BidProposalConfiguration } from '../entities/Bid/types'
 import { GrantTier } from '../entities/Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../entities/Grant/constants'
 import { GrantRequest, ProjectStatus, TransparencyProjectStatus } from '../entities/Grant/types'
@@ -164,21 +166,51 @@ export class ProjectService {
   }
 
   private static async createProject(proposal: ProposalWithOutcome) {
-    const newProject: ProjectAttributes = {
+    const creationDate = new Date()
+    const newProject = await ProjectModel.create({
       id: crypto.randomUUID(),
       proposal_id: proposal.id,
       title: proposal.title,
       status: ProjectStatus.Pending,
       links: [],
-      created_at: new Date(),
-    }
+      created_at: creationDate,
+    })
 
-    return await ProjectModel.create(newProject)
+    await ProjectService.createPersonnel(proposal, newProject, creationDate)
+
+    return newProject
+  }
+
+  private static async createPersonnel(
+    proposal: ProposalWithOutcome,
+    newProject: ProjectAttributes,
+    creationDate: Date
+  ) {
+    const newPersonnel: PersonnelAttributes[] = []
+    const config =
+      proposal.type === ProposalType.Grant
+        ? (proposal.configuration as GrantProposalConfiguration)
+        : (proposal.configuration as BidProposalConfiguration)
+    config.members?.forEach((member) => {
+      if (member) {
+        const { role, about, relevantLink, name } = member
+        newPersonnel.push({
+          id: crypto.randomUUID(),
+          description: about,
+          link: relevantLink,
+          name: name,
+          project_id: newProject.id,
+          role: role,
+          status: PersonnelStatus.Assigned,
+          created_at: creationDate,
+        })
+      }
+    })
+    await PersonnelModel.createMany(newPersonnel)
   }
 
   static async getProject(id: string) {
-    //TODO: add all data to project from other tables (updates, personnel, milestones, etc) & return Project type, instead of ProjectAttributes
-    const project = ProjectModel.findOne<ProjectAttributes>({ id })
+    const project = await ProjectModel.getProject(id)
     if (!project) {
       throw new Error(`Project not found: "${id}"`)
     }

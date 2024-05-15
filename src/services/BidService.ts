@@ -1,7 +1,7 @@
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 
 import UnpublishedBidModel from '../entities/Bid/model'
-import { UnpublishedBidAttributes, UnpublishedBidStatus } from '../entities/Bid/types'
+import { BidProposalConfiguration, UnpublishedBidAttributes, UnpublishedBidStatus } from '../entities/Bid/types'
 import { GATSBY_GRANT_VP_THRESHOLD } from '../entities/Grant/constants'
 import ProposalModel from '../entities/Proposal/model'
 import { ProposalType } from '../entities/Proposal/types'
@@ -15,6 +15,7 @@ import { ErrorService } from './ErrorService'
 import { ProposalService } from './ProposalService'
 
 const MINIMUM_BIDS_TO_PUBLISH = Number(process.env.MINIMUM_BIDS_TO_PUBLISH || 0)
+
 export default class BidService {
   static async createBid(
     linked_proposal_id: string,
@@ -102,16 +103,18 @@ export default class BidService {
               ? Number(GATSBY_GRANT_VP_THRESHOLD)
               : getHighBudgetVpThreshold(Number(bid_proposal_data.funding))
 
+          const bidProposalConfiguration: BidProposalConfiguration = {
+            bid_number,
+            linked_proposal_id,
+            created_at,
+            ...bid_proposal_data,
+            choices: DEFAULT_CHOICES,
+          }
+
           await ProposalService.createProposal({
             type: ProposalType.Bid,
             user: author_address,
-            configuration: {
-              bid_number,
-              linked_proposal_id,
-              created_at,
-              ...bid_proposal_data,
-              choices: DEFAULT_CHOICES,
-            },
+            configuration: bidProposalConfiguration,
             required_to_pass,
             finish_at,
           })

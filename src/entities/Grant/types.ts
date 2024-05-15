@@ -372,7 +372,7 @@ export type GrantRequest = {
   category: NewGrantCategory | null
 } & GrantRequestFunding &
   GrantRequestGeneralInfo &
-  GrantRequestTeam &
+  ProposalRequestTeam &
   GrantRequestCategoryAssessment &
   GrantRequestDueDiligence
 
@@ -414,7 +414,7 @@ export type TeamMember = {
   relevantLink?: string
 }
 
-export type GrantRequestTeam = {
+export type ProposalRequestTeam = {
   members: TeamMember[]
 }
 
