@@ -28,11 +28,11 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       type: 'TEXT',
       notNull: true
     },
-    description: {
+    about: {
       type: 'TEXT',
       notNull: true
     },
-    link: {
+    relevantLink: {
       type: 'TEXT',
     },
     status: {

@@ -193,14 +193,10 @@ export class ProjectService {
         : (proposal.configuration as BidProposalConfiguration)
     config.members?.forEach((member) => {
       if (member) {
-        const { role, about, relevantLink, name } = member
         newPersonnel.push({
+          ...member,
           id: crypto.randomUUID(),
-          description: about,
-          link: relevantLink,
-          name: name,
           project_id: newProject.id,
-          role: role,
           status: PersonnelStatus.Assigned,
           created_at: creationDate,
         })

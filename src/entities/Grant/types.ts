@@ -409,6 +409,7 @@ export type GrantRequestDueDiligence = {
 
 export type TeamMember = {
   name: string
+  address?: string
   role: string
   about: string
   relevantLink?: string
