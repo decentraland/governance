@@ -31,21 +31,20 @@ export default class ProjectModel extends Model<ProjectAttributes> {
     const query = SQL`
         SELECT
             p.*,
-            json_agg(
-                    json_build_object(
-                            'id', pe.id,
-                            'project_id', pe.project_id,
-                            'address', pe.address,
-                            'name', pe.name,
-                            'role', pe.role,
-                            'about', pe.about,
-                            'relevantLink', pe.relevantLink,
-                            'status', pe.status,
-                            'updated_by', pe.updated_by,
-                            'updated_at', pe.updated_at,
-                            'created_at', pe.created_at
-                    )
-            ) AS personnel         
+            COALESCE(json_agg(
+                     json_build_object(
+                             'id', pe.id,
+                             'project_id', pe.project_id,
+                             'address', pe.address,
+                             'name', pe.name,
+                             'role', pe.role,
+                             'about', pe.about,
+                             'relevantLink', pe.relevantLink,
+                             'status', pe.status,
+                             'updated_by', pe.updated_by,
+                             'updated_at', pe.updated_at,
+                             'created_at', pe.created_at
+                     ) ORDER BY pe.id) FILTER (WHERE pe.id IS NOT NULL), '[]') AS personnel
         FROM ${table(ProjectModel)}  p
         LEFT JOIN ${table(PersonnelModel)} pe ON p.id = pe.project_id
         WHERE p.id = ${id}
