@@ -1,7 +1,9 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import { SQL, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 
+import CoauthorModel from '../../entities/Coauthor/model'
 import { ProjectStatus } from '../../entities/Grant/types'
+import ProposalModel from '../../entities/Proposal/model'
 
 import PersonnelModel, { PersonnelAttributes } from './Personnel'
 
@@ -18,8 +20,11 @@ export type ProjectAttributes = {
   created_at: Date
 }
 
+// TODO: add here all data from other tables (updates, personnel, milestones, etc)
 export type Project = ProjectAttributes & {
   personnel: PersonnelAttributes[]
+  author: string
+  coauthors: string[] | null
 }
 
 export default class ProjectModel extends Model<ProjectAttributes> {
@@ -27,31 +32,34 @@ export default class ProjectModel extends Model<ProjectAttributes> {
   static withTimestamps = false
   static primaryKey = 'id'
 
-  public static async getProject(id: string) {
+  static async getProject(id: string) {
     const query = SQL`
-        SELECT
-            p.*,
-            COALESCE(json_agg(
-                     json_build_object(
-                             'id', pe.id,
-                             'project_id', pe.project_id,
-                             'address', pe.address,
-                             'name', pe.name,
-                             'role', pe.role,
-                             'about', pe.about,
-                             'relevantLink', pe.relevantLink,
-                             'status', pe.status,
-                             'updated_by', pe.updated_by,
-                             'updated_at', pe.updated_at,
-                             'created_at', pe.created_at
-                     ) ORDER BY pe.id) FILTER (WHERE pe.id IS NOT NULL), '[]') AS personnel
-        FROM ${table(ProjectModel)}  p
-        LEFT JOIN ${table(PersonnelModel)} pe ON p.id = pe.project_id
-        WHERE p.id = ${id}
-        GROUP BY p.id;
+      SELECT 
+          pr.*, 
+          p.user as author, 
+          array_agg(co.address) as coauthors,
+          COALESCE(json_agg(
+                   json_build_object(
+                           'id', pe.id,
+                           'project_id', pe.project_id,
+                           'address', pe.address,
+                           'name', pe.name,
+                           'role', pe.role,
+                           'about', pe.about,
+                           'relevantLink', pe.relevantLink,
+                           'status', pe.status,
+                           'updated_by', pe.updated_by,
+                           'updated_at', pe.updated_at,
+                           'created_at', pe.created_at
+                   ) ORDER BY pe.id) FILTER (WHERE pe.id IS NOT NULL), '[]') AS personnel
+      FROM ${table(ProjectModel)}  pr
+      JOIN  ${table(ProposalModel)} p on pr.proposal_id = p.id
+      LEFT JOIN ${table(CoauthorModel)}  co on pr.proposal_id = co.proposal_id AND co.status = 'APPROVED'
+      LEFT JOIN ${table(PersonnelModel)} pe ON pr.id = pe.project_id
+      WHERE pr.id = ${id}
+      GROUP BY pr.id, p.user;
     `
-
-    const result = await this.namedQuery('get_project', query)
+    const result = await this.namedQuery<Project>(`get_project`, query)
     if (!result || result.length === 0) {
       throw new Error(`Project not found: "${id}"`)
     }
