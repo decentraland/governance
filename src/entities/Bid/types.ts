@@ -43,6 +43,7 @@ export type TeamMember = {
   name: string
   role: string
   about: string
+  address?: string
   relevantLink?: string
 }
 
