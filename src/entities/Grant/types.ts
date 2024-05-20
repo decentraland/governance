@@ -94,7 +94,7 @@ const MilestoneItemSchema = {
     minLength: 1,
     maxLength: 80,
   },
-  description: {
+  tasks: {
     type: 'string',
     minLength: 1,
     maxLength: 750,
@@ -443,7 +443,7 @@ export type TeamMember = {
 
 type Milestone = {
   title: string
-  description: string
+  tasks: string
   delivery_date: string
 }
 
