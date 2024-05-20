@@ -1,6 +1,6 @@
 import crypto from 'crypto'
 
-import PersonnelModel, { PersonnelAttributes, PersonnelStatus } from '../back/models/Personnel'
+import PersonnelModel, { PersonnelAttributes } from '../back/models/Personnel'
 import ProjectModel, { ProjectAttributes } from '../back/models/Project'
 import { TransparencyVesting } from '../clients/Transparency'
 import UnpublishedBidModel from '../entities/Bid/model'
@@ -197,8 +197,8 @@ export class ProjectService {
           ...member,
           id: crypto.randomUUID(),
           project_id: newProject.id,
-          status: PersonnelStatus.Assigned,
           created_at: creationDate,
+          deleted: false,
         })
       }
     })

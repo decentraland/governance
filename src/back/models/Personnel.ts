@@ -5,16 +5,10 @@ import { TeamMember } from '../../entities/Grant/types'
 export type PersonnelAttributes = TeamMember & {
   id: string
   project_id: string
-  status: PersonnelStatus
+  deleted: boolean
   updated_by?: string
   updated_at?: Date
   created_at: Date
-}
-
-export enum PersonnelStatus {
-  Deleted = 'deleted',
-  Unassigned = 'unassigned',
-  Assigned = 'assigned',
 }
 
 export default class PersonnelModel extends Model<PersonnelAttributes> {
