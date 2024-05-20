@@ -56,4 +56,5 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
 
 export async function down(pgm: MigrationBuilder): Promise<void> {
   pgm.dropTable(Model.tableName)
+  pgm.dropType(STATUS_TYPE, { cascade: true })
 }
