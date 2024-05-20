@@ -41,5 +41,5 @@ ${formatMarkdown(proposal.description)}
 
 ## Milestones
 
-${formatMarkdown(proposal.milestones.map((milestone) => `${milestone.date} - ${milestone.title}`).join('\n'))}
+${formatMarkdown(proposal.milestones.map((milestone) => `${milestone.delivery_date} - ${milestone.title}`).join('\n'))}
 `
