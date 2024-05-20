@@ -181,11 +181,7 @@ export class ProjectService {
     return newProject
   }
 
-  private static async createPersonnel(
-    proposal: ProposalWithOutcome,
-    newProject: ProjectAttributes,
-    creationDate: Date
-  ) {
+  private static async createPersonnel(proposal: ProposalWithOutcome, project: ProjectAttributes, creationDate: Date) {
     const newPersonnel: PersonnelAttributes[] = []
     const config =
       proposal.type === ProposalType.Grant
@@ -196,7 +192,7 @@ export class ProjectService {
         newPersonnel.push({
           ...member,
           id: crypto.randomUUID(),
-          project_id: newProject.id,
+          project_id: project.id,
           created_at: creationDate,
           deleted: false,
         })

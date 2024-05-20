@@ -1,5 +1,6 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import { SQL, table } from 'decentraland-gatsby/dist/entities/Database/utils'
+import isUUID from 'validator/lib/isUUID'
 
 import CoauthorModel from '../../entities/Coauthor/model'
 import { CoauthorStatus } from '../../entities/Coauthor/types'
@@ -34,6 +35,10 @@ export default class ProjectModel extends Model<ProjectAttributes> {
   static primaryKey = 'id'
 
   static async getProject(id: string) {
+    if (!isUUID(id || '')) {
+      throw new Error(`Invalid project id: "${id}"`)
+    }
+
     const query = SQL`
         SELECT
             pr.*,
