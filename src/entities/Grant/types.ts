@@ -88,7 +88,7 @@ export function toGrantSubtype<OrElse>(value: string | null | undefined, orElse:
   return isGrantSubtype(value) ? (value as SubtypeOptions) : orElse()
 }
 
-const MilestoneItemSchema = {
+export const MilestoneItemSchema = {
   title: {
     type: 'string',
     minLength: 1,
@@ -441,7 +441,7 @@ export type TeamMember = {
   relevantLink?: string
 }
 
-type Milestone = {
+export type Milestone = {
   title: string
   tasks: string
   delivery_date: string
