@@ -83,8 +83,6 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       WHERE p.id = ${id} AND p.deleted = false
   `
 
-    console.log('query', query)
-
     const result = await this.namedQuery('get_proposal_with_project', query)
     if (!result.length) {
       throw new Error(`Not found proposal: "${id}"`)
