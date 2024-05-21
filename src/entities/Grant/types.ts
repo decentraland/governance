@@ -117,7 +117,11 @@ export const GrantRequestGeneralInfoSchema = {
     minLength: 1,
     maxLength: 500,
   },
-  description: { type: 'string', minLength: 20, maxLength: 3250 },
+  description: {
+    type: 'string',
+    minLength: 20,
+    maxLength: 3250,
+  },
   beneficiary: {
     type: 'string',
     format: 'address',
@@ -354,7 +358,7 @@ export const GrantRequestTeamSchema = {
     items: {
       type: 'object',
       additionalProperties: false,
-      required: [...Object.keys(TeamMemberItemSchema)],
+      required: [...Object.keys(TeamMemberItemSchema).filter((key) => key !== 'address')],
       properties: TeamMemberItemSchema,
     },
   },
