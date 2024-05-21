@@ -52,7 +52,6 @@ export default class ProjectModel extends Model<ProjectAttributes> {
                              'role', pe.role,
                              'about', pe.about,
                              'relevantLink', pe."relevantLink",
-                             'status', pe.status,
                              'updated_by', pe.updated_by,
                              'updated_at', pe.updated_at,
                              'created_at', pe.created_at
