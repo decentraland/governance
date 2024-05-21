@@ -171,6 +171,7 @@ export class ProjectService {
       id: crypto.randomUUID(),
       proposal_id: proposal.id,
       title: proposal.title,
+      about: proposal.configuration.abstract,
       status: ProjectStatus.Pending,
       links: [],
       created_at: creationDate,
