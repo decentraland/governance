@@ -10,11 +10,11 @@ import {
   CategoryAssessmentQuestions,
   GrantRequestDueDiligence,
   GrantRequestGeneralInfo,
-  GrantRequestTeam,
   GrantTierType,
   PaymentToken,
   ProjectStatus,
   ProposalGrantCategory,
+  ProposalRequestTeam,
   SubtypeOptions,
   VestingStartDate,
 } from '../Grant/types'
@@ -680,7 +680,7 @@ export const ProposalRequiredVP = {
 
 export type GrantProposalConfiguration = GrantRequestGeneralInfo &
   GrantRequestDueDiligence &
-  GrantRequestTeam & {
+  ProposalRequestTeam & {
     category: ProposalGrantCategory | null
     size: number
     paymentToken?: PaymentToken

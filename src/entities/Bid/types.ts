@@ -1,4 +1,9 @@
-import { BudgetBreakdownConcept, GrantRequestDueDiligenceSchema, GrantRequestTeamSchema } from '../Grant/types'
+import {
+  BudgetBreakdownConcept,
+  GrantRequestDueDiligenceSchema,
+  GrantRequestTeamSchema,
+  ProposalRequestTeam,
+} from '../Grant/types'
 
 import { BID_MIN_PROJECT_DURATION } from './constants'
 
@@ -39,29 +44,21 @@ export type BidRequestGeneralInfo = {
   coAuthors?: string[]
 }
 
-export type TeamMember = {
-  name: string
-  role: string
-  about: string
-  address?: string
-  relevantLink?: string
-}
-
-export type BidRequestTeam = {
-  members: TeamMember[]
-}
-
 export type BidRequestDueDiligence = {
   budgetBreakdown: BudgetBreakdownConcept[]
 }
 
 export type BidRequest = BidRequestFunding &
   BidRequestGeneralInfo &
-  BidRequestTeam &
+  ProposalRequestTeam &
   BidRequestDueDiligence & {
     linked_proposal_id: string
     coAuthors?: string[]
   }
+
+export type BidProposalConfiguration = BidRequest & { bid_number: number } & { created_at: string } & {
+  choices: string[]
+}
 
 export const BidRequestFundingSchema = {
   funding: {

@@ -398,7 +398,7 @@ export type GrantRequest = {
   category: NewGrantCategory | null
 } & GrantRequestFunding &
   GrantRequestGeneralInfo &
-  GrantRequestTeam &
+  ProposalRequestTeam &
   GrantRequestCategoryAssessment &
   GrantRequestDueDiligence
 
@@ -435,9 +435,9 @@ export type GrantRequestDueDiligence = {
 
 export type TeamMember = {
   name: string
+  address?: string
   role: string
   about: string
-  address?: string
   relevantLink?: string
 }
 
@@ -447,7 +447,7 @@ type Milestone = {
   delivery_date: string
 }
 
-export type GrantRequestTeam = {
+export type ProposalRequestTeam = {
   members: TeamMember[]
 }
 
