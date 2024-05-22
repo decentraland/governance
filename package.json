@@ -11,7 +11,7 @@
     "build": "npm run build:server",
     "build:server": "tsc -p .",
     "format": "prettier --write \"**/*.{js,jsx,json,md,ts,tsx}\"",
-    "start": "concurrently -c blue,green -n SERVER,FRONT 'npm run serve' 'npm run develop'",
+    "start": "concurrently -c blue -n SERVER 'npm run serve'",
     "serve": "DOTENV_CONFIG_PATH=.env.development nodemon --watch src/entities --watch src/back --watch src/clients --watch src/services --watch src/server.ts --watch static/api.yaml -e ts,json --exec 'ts-node -r dotenv/config' src/server",
     "version": "tsc -p .",
     "migrate": "DOTENV_CONFIG_PATH=.env.development ts-node -r dotenv/config.js ./node_modules/node-pg-migrate/bin/node-pg-migrate -j ts -m src/migrations -d CONNECTION_STRING",
