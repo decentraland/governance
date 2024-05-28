@@ -57,7 +57,7 @@ export default class ProjectModel extends Model<ProjectAttributes> {
                              'updated_by', pe.updated_by,
                              'updated_at', pe.updated_at,
                              'created_at', pe.created_at
-                     ) ORDER BY pe.id) FILTER (WHERE pe.id IS NOT NULL), '[]') AS personnel,
+                     ) ORDER BY pe.created_at ASC) FILTER (WHERE pe.id IS NOT NULL), '[]') AS personnel,
             COALESCE(array_agg(co.address) FILTER (WHERE co.address IS NOT NULL), '{}') AS coauthors,
             COALESCE(json_agg(
                     json_build_object(
@@ -71,7 +71,7 @@ export default class ProjectModel extends Model<ProjectAttributes> {
                              'updated_at', mi.updated_at,
                              'created_by', mi.created_by,
                              'created_at', mi.created_at
-                    ) ORDER BY mi.id) FILTER (WHERE mi.id IS NOT NULL), '[]') AS milestones
+                    ) ORDER BY mi.created_at ASC) FILTER (WHERE mi.id IS NOT NULL), '[]') AS milestones
         FROM ${table(ProjectModel)} pr
                  JOIN ${table(ProposalModel)} p ON pr.proposal_id = p.id
                  LEFT JOIN ${table(PersonnelModel)} pe ON pr.id = pe.project_id AND pe.deleted = false
