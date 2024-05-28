@@ -12,7 +12,6 @@ import ProposalModel from '../entities/Proposal/model'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import {
   GrantProposalConfiguration,
-  ProposalAttributes,
   ProposalProjectWithUpdate,
   ProposalStatus,
   ProposalType,
@@ -45,7 +44,7 @@ export class ProjectService {
     const projects: ProposalProjectWithUpdate[] = []
 
     await Promise.all(
-      data.map(async (proposal: ProposalAttributes) => {
+      data.map(async (proposal) => {
         try {
           const proposalVestings = vestings.filter((item) => item.proposal_id === proposal.id).sort(newestVestingFirst)
           const prioritizedVesting: TransparencyVesting | undefined =

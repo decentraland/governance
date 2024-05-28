@@ -1,6 +1,6 @@
 import { TransparencyVesting } from '../clients/Transparency'
 import { ProjectStatus, TransparencyProjectStatus } from '../entities/Grant/types'
-import { ProposalAttributes, ProposalProject } from '../entities/Proposal/types'
+import { ProposalAttributes, ProposalProject, ProposalWithProject } from '../entities/Proposal/types'
 
 import Time from './date/Time'
 
@@ -63,11 +63,12 @@ function getProjectVestingData(proposal: ProposalAttributes, vesting: Transparen
   }
 }
 
-export function createProposalProject(proposal: ProposalAttributes, vesting?: TransparencyVesting): ProposalProject {
+export function createProposalProject(proposal: ProposalWithProject, vesting?: TransparencyVesting): ProposalProject {
   const vestingData = vesting ? getProjectVestingData(proposal, vesting) : {}
 
   return {
     id: proposal.id,
+    project_id: proposal.project_id,
     title: proposal.title,
     user: proposal.user,
     type: proposal.type,

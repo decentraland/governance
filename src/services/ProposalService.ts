@@ -222,7 +222,6 @@ export class ProposalService {
     if (!proposal) {
       throw new Error(`Proposal not found: "${id}"`)
     }
-    console.log('proposal', proposal)
     return proposal
   }
 
