@@ -246,4 +246,12 @@ export class ProjectService {
       deleted: false,
     })
   }
+
+  static async deletePersonnel(personnel_id: PersonnelAttributes['id'], user: string) {
+    const result = await PersonnelModel.update(
+      { deleted: true, updated_by: user, updated_at: new Date() },
+      { id: personnel_id }
+    )
+    return !!result && result.rowCount === 1 ? personnel_id : null
+  }
 }
