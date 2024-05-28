@@ -7,7 +7,7 @@ import { Request } from 'express'
 import CacheService, { TTL_1_HS } from '../../services/CacheService'
 import { ProjectService } from '../../services/ProjectService'
 import { isProjectAuthorOrCoauthor } from '../../utils/projects'
-import { PERSONNEL_IN_CREATION_SCHEMA, PersonnelAttributes } from '../models/Personnel'
+import { PersonnelAttributes, PersonnelInCreationSchema } from '../models/Personnel'
 import { isValidDate, validateId } from '../utils/validations'
 
 export default routes((route) => {
@@ -77,7 +77,7 @@ async function addPersonnel(req: WithAuth): Promise<PersonnelAttributes> {
   if (!isProjectAuthorOrCoauthor(user, project)) {
     throw new RequestError("Only the project's authors and coauthors can create personnel", RequestError.Unauthorized)
   }
-  const parsedPersonnel = PERSONNEL_IN_CREATION_SCHEMA.safeParse(personnel)
+  const parsedPersonnel = PersonnelInCreationSchema.safeParse(personnel)
   if (!parsedPersonnel.success) {
     throw new RequestError(`Invalid personnel: ${parsedPersonnel.error.message}`, RequestError.BadRequest)
   }

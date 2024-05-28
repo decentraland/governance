@@ -19,7 +19,7 @@ export type PersonnelInCreation = Pick<
   PersonnelAttributes,
   'name' | 'address' | 'role' | 'about' | 'relevantLink' | 'project_id'
 >
-export const PERSONNEL_IN_CREATION_SCHEMA: ZodSchema<PersonnelInCreation> = z.object({
+export const PersonnelInCreationSchema: ZodSchema<PersonnelInCreation> = z.object({
   name: z.string().min(1).max(80),
   address: z.string().refine(addressCheck).optional().or(z.null()),
   role: z.string().min(1).max(80),
