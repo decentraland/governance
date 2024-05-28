@@ -175,7 +175,6 @@ export class ProjectService {
       title: proposal.title,
       about: proposal.configuration.abstract,
       status: ProjectStatus.Pending,
-      links: [],
       created_at: creationDate,
     })
 
