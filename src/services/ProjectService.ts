@@ -1,6 +1,6 @@
 import crypto from 'crypto'
 
-import PersonnelModel, { PersonnelAttributes } from '../back/models/Personnel'
+import PersonnelModel, { PersonnelAttributes, PersonnelInCreation } from '../back/models/Personnel'
 import ProjectModel, { ProjectAttributes } from '../back/models/Project'
 import { TransparencyVesting } from '../clients/Transparency'
 import UnpublishedBidModel from '../entities/Bid/model'
@@ -208,5 +208,17 @@ export class ProjectService {
     }
 
     return project
+  }
+
+  static async addPersonnel(newPersonnel: PersonnelInCreation, user?: string) {
+    const { address } = newPersonnel
+    return await PersonnelModel.create({
+      ...newPersonnel,
+      address: address && address?.length > 0 ? address : null,
+      id: crypto.randomUUID(),
+      updated_by: user,
+      created_at: new Date(),
+      deleted: false,
+    })
   }
 }
