@@ -5,14 +5,15 @@ export type ProjectMilestone = {
   project_id: string
   title: string
   description: string
-  status: MilestoneStatus
+  delivery_date: Date
+  status: ProjectMilestoneStatus
   updated_by?: string
   updated_at?: Date
   created_by: string
   created_at: Date
 }
 
-export enum MilestoneStatus {
+export enum ProjectMilestoneStatus {
   Pending = 'pending',
   InProgress = 'in_progress',
   Done = 'done',

@@ -2,6 +2,7 @@ import crypto from 'crypto'
 
 import PersonnelModel, { PersonnelAttributes, PersonnelInCreation } from '../back/models/Personnel'
 import ProjectModel, { ProjectAttributes } from '../back/models/Project'
+import ProjectMilestoneModel, { ProjectMilestone, ProjectMilestoneStatus } from '../back/models/ProjectMilestone'
 import { TransparencyVesting } from '../clients/Transparency'
 import UnpublishedBidModel from '../entities/Bid/model'
 import { BidProposalConfiguration } from '../entities/Bid/types'
@@ -171,12 +172,14 @@ export class ProjectService {
       id: crypto.randomUUID(),
       proposal_id: proposal.id,
       title: proposal.title,
+      about: proposal.configuration.abstract,
       status: ProjectStatus.Pending,
       links: [],
       created_at: creationDate,
     })
 
     await ProjectService.createPersonnel(proposal, newProject, creationDate)
+    await ProjectService.createMilestones(proposal, newProject, creationDate)
 
     return newProject
   }
@@ -199,6 +202,28 @@ export class ProjectService {
       }
     })
     await PersonnelModel.createMany(newPersonnel)
+  }
+
+  private static async createMilestones(proposal: ProposalWithOutcome, project: ProjectAttributes, creationDate: Date) {
+    const newMilestones: ProjectMilestone[] = []
+    const config =
+      proposal.type === ProposalType.Grant
+        ? (proposal.configuration as GrantProposalConfiguration)
+        : (proposal.configuration as BidProposalConfiguration)
+
+    config.milestones?.forEach((milestone) => {
+      newMilestones.push({
+        id: crypto.randomUUID(),
+        project_id: project.id,
+        created_at: creationDate,
+        title: milestone.title,
+        description: milestone.tasks,
+        delivery_date: new Date(milestone.delivery_date),
+        status: ProjectMilestoneStatus.Pending,
+        created_by: proposal.user,
+      })
+    })
+    await ProjectMilestoneModel.createMany(newMilestones)
   }
 
   static async getProject(id: string) {

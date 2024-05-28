@@ -1,12 +1,12 @@
 import { MigrationBuilder } from "node-pg-migrate"
 import ProjectModel from "../back/models/Project"
-import Model, { MilestoneStatus } from "../back/models/ProjectMilestone"
+import Model, { ProjectMilestoneStatus } from "../back/models/ProjectMilestone"
 
 const STATUS_TYPE = 'project_milestone_status_type'
 
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
-  pgm.createType(STATUS_TYPE, Object.values(MilestoneStatus))
+  pgm.createType(STATUS_TYPE, Object.values(ProjectMilestoneStatus))
   pgm.createTable(Model.tableName, {
     id: {
       type: 'TEXT',

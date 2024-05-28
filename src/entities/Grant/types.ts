@@ -88,7 +88,7 @@ export function toGrantSubtype<OrElse>(value: string | null | undefined, orElse:
   return isGrantSubtype(value) ? (value as SubtypeOptions) : orElse()
 }
 
-const MilestoneItemSchema = {
+export const MilestoneItemSchema = {
   title: {
     type: 'string',
     minLength: 1,
@@ -117,7 +117,11 @@ export const GrantRequestGeneralInfoSchema = {
     minLength: 1,
     maxLength: 500,
   },
-  description: { type: 'string', minLength: 20, maxLength: 3250 },
+  description: {
+    type: 'string',
+    minLength: 20,
+    maxLength: 3250,
+  },
   beneficiary: {
     type: 'string',
     format: 'address',
@@ -354,7 +358,7 @@ export const GrantRequestTeamSchema = {
     items: {
       type: 'object',
       additionalProperties: false,
-      required: [...Object.keys(TeamMemberItemSchema)],
+      required: [...Object.keys(TeamMemberItemSchema).filter((key) => key !== 'address')],
       properties: TeamMemberItemSchema,
     },
   },
@@ -441,7 +445,7 @@ export type TeamMember = {
   relevantLink?: string
 }
 
-type Milestone = {
+export type Milestone = {
   title: string
   tasks: string
   delivery_date: string
