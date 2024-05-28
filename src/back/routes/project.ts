@@ -4,16 +4,18 @@ import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/h
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
+import { PersonnelInCreationSchema } from '../../entities/Project/types'
 import CacheService, { TTL_1_HS } from '../../services/CacheService'
 import { ProjectService } from '../../services/ProjectService'
 import { isProjectAuthorOrCoauthor } from '../../utils/projects'
-import { PersonnelAttributes, PersonnelInCreationSchema } from '../models/Personnel'
+import PersonnelModel, { PersonnelAttributes } from '../models/Personnel'
 import { isValidDate, validateId } from '../utils/validations'
 
 export default routes((route) => {
   const withAuth = auth()
   route.get('/projects', handleJSON(getProjects))
   route.post('/projects/personnel/', withAuth, handleAPI(addPersonnel))
+  route.delete('/projects/personnel/:personnel_id', withAuth, handleAPI(deletePersonnel))
   route.get('/projects/:project', handleAPI(getProject))
   route.get('/projects/pitches-total', handleJSON(getOpenPitchesTotal))
   route.get('/projects/tenders-total', handleJSON(getOpenTendersTotal))
@@ -82,4 +84,22 @@ async function addPersonnel(req: WithAuth): Promise<PersonnelAttributes> {
     throw new RequestError(`Invalid personnel: ${parsedPersonnel.error.message}`, RequestError.BadRequest)
   }
   return await ProjectService.addPersonnel(parsedPersonnel.data, user)
+}
+
+async function deletePersonnel(req: WithAuth<Request<{ personnel_id: string }>>): Promise<string | null> {
+  const user = req.auth!
+  const personnel_id = req.params.personnel_id
+  validateId(personnel_id)
+  const personnel = await PersonnelModel.findOne<PersonnelAttributes>(personnel_id)
+  if (!personnel) {
+    throw new RequestError(`Personnel "${personnel_id}" not found`, RequestError.NotFound)
+  }
+  const project = await ProjectService.getProject(personnel.project_id)
+  if (!project) {
+    throw new RequestError(`Project "${personnel.project_id}" not found`, RequestError.NotFound)
+  }
+  if (!isProjectAuthorOrCoauthor(user, project)) {
+    throw new RequestError("Only the project's authors and coauthors can delete personnel", RequestError.Unauthorized)
+  }
+  return await ProjectService.deletePersonnel(personnel_id, user)
 }
