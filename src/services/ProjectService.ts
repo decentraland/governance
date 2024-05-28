@@ -1,6 +1,6 @@
 import crypto from 'crypto'
 
-import PersonnelModel, { PersonnelAttributes, PersonnelInCreation } from '../back/models/Personnel'
+import PersonnelModel, { PersonnelAttributes } from '../back/models/Personnel'
 import ProjectModel, { ProjectAttributes } from '../back/models/Project'
 import ProjectMilestoneModel, { ProjectMilestone, ProjectMilestoneStatus } from '../back/models/ProjectMilestone'
 import { TransparencyVesting } from '../clients/Transparency'
@@ -9,6 +9,7 @@ import { BidProposalConfiguration } from '../entities/Bid/types'
 import { GrantTier } from '../entities/Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../entities/Grant/constants'
 import { GrantRequest, ProjectStatus, TransparencyProjectStatus } from '../entities/Grant/types'
+import { PersonnelInCreation } from '../entities/Project/types'
 import ProposalModel from '../entities/Proposal/model'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import {

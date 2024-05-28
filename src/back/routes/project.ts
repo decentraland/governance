@@ -4,10 +4,11 @@ import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/h
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
+import { PersonnelInCreationSchema } from '../../entities/Project/types'
 import CacheService, { TTL_1_HS } from '../../services/CacheService'
 import { ProjectService } from '../../services/ProjectService'
 import { isProjectAuthorOrCoauthor } from '../../utils/projects'
-import PersonnelModel, { PersonnelAttributes, PersonnelInCreationSchema } from '../models/Personnel'
+import PersonnelModel, { PersonnelAttributes } from '../models/Personnel'
 import { isValidDate, validateId } from '../utils/validations'
 
 export default routes((route) => {
