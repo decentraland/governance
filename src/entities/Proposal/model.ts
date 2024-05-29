@@ -454,18 +454,19 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return proposals.map(this.parse)
   }
 
-  static async getProjectList(): Promise<ProposalAttributes[]> {
+  static async getProjectList(): Promise<ProposalWithProject[]> {
     const status = [ProposalStatus.Passed, ProposalStatus.Enacted].map((status) => SQL`${status}`)
     const types = [ProposalType.Bid, ProposalType.Grant].map((type) => SQL`${type}`)
 
     const proposals = await this.namedQuery(
       'get_project_list',
       SQL`
-        SELECT *
-        FROM ${table(ProposalModel)}
+        SELECT prop.*, proj.id as project_id
+        FROM ${table(ProposalModel)} prop
+        LEFT OUTER JOIN ${table(ProjectModel)} proj on prop.id = proj.proposal_id
         WHERE "deleted" = FALSE
-          AND "type" IN (${join(types)})
-          AND "status" IN (${join(status)})
+          AND prop."type" IN (${join(types)})
+          AND prop."status" IN (${join(status)})
           ORDER BY "created_at" DESC 
     `
     )
