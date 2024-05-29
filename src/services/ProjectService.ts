@@ -2,12 +2,14 @@ import crypto from 'crypto'
 
 import PersonnelModel, { PersonnelAttributes } from '../back/models/Personnel'
 import ProjectModel, { ProjectAttributes } from '../back/models/Project'
+import ProjectMilestoneModel, { ProjectMilestone, ProjectMilestoneStatus } from '../back/models/ProjectMilestone'
 import { TransparencyVesting } from '../clients/Transparency'
 import UnpublishedBidModel from '../entities/Bid/model'
 import { BidProposalConfiguration } from '../entities/Bid/types'
 import { GrantTier } from '../entities/Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../entities/Grant/constants'
 import { GrantRequest, ProjectStatus, TransparencyProjectStatus } from '../entities/Grant/types'
+import { PersonnelInCreation } from '../entities/Project/types'
 import ProposalModel from '../entities/Proposal/model'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import {
@@ -172,11 +174,11 @@ export class ProjectService {
       title: proposal.title,
       about: proposal.configuration.abstract,
       status: ProjectStatus.Pending,
-      links: [],
       created_at: creationDate,
     })
 
     await ProjectService.createPersonnel(proposal, newProject, creationDate)
+    await ProjectService.createMilestones(proposal, newProject, creationDate)
 
     return newProject
   }
@@ -201,6 +203,28 @@ export class ProjectService {
     await PersonnelModel.createMany(newPersonnel)
   }
 
+  private static async createMilestones(proposal: ProposalWithOutcome, project: ProjectAttributes, creationDate: Date) {
+    const newMilestones: ProjectMilestone[] = []
+    const config =
+      proposal.type === ProposalType.Grant
+        ? (proposal.configuration as GrantProposalConfiguration)
+        : (proposal.configuration as BidProposalConfiguration)
+
+    config.milestones?.forEach((milestone) => {
+      newMilestones.push({
+        id: crypto.randomUUID(),
+        project_id: project.id,
+        created_at: creationDate,
+        title: milestone.title,
+        description: milestone.tasks,
+        delivery_date: new Date(milestone.delivery_date),
+        status: ProjectMilestoneStatus.Pending,
+        created_by: proposal.user,
+      })
+    })
+    await ProjectMilestoneModel.createMany(newMilestones)
+  }
+
   static async getProject(id: string) {
     const project = await ProjectModel.getProject(id)
     if (!project) {
@@ -208,5 +232,25 @@ export class ProjectService {
     }
 
     return project
+  }
+
+  static async addPersonnel(newPersonnel: PersonnelInCreation, user?: string) {
+    const { address } = newPersonnel
+    return await PersonnelModel.create({
+      ...newPersonnel,
+      address: address && address?.length > 0 ? address : null,
+      id: crypto.randomUUID(),
+      updated_by: user,
+      created_at: new Date(),
+      deleted: false,
+    })
+  }
+
+  static async deletePersonnel(personnel_id: PersonnelAttributes['id'], user: string) {
+    const result = await PersonnelModel.update(
+      { deleted: true, updated_by: user, updated_at: new Date() },
+      { id: personnel_id }
+    )
+    return !!result && result.rowCount === 1 ? personnel_id : null
   }
 }

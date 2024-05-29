@@ -1,12 +1,8 @@
 import { MigrationBuilder } from "node-pg-migrate"
 import ProjectModel from "../back/models/Project"
-import Model, { ProjectMilestoneStatus } from "../back/models/ProjectMilestone"
-
-const STATUS_TYPE = 'project_milestone_status_type'
-
+import Model from "../back/models/ProjectLink"
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
-  pgm.createType(STATUS_TYPE, Object.values(ProjectMilestoneStatus))
   pgm.createTable(Model.tableName, {
     id: {
       type: 'TEXT',
@@ -17,17 +13,13 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       type: 'TEXT',
       notNull: true
     },
-    title: {
+    label: {
       type: 'TEXT',
       notNull: true
     },
-    description: {
+    url: {
       type: 'TEXT',
       notNull: true
-    },
-    status: {
-      type: STATUS_TYPE,
-      notNull: true,
     },
     updated_by: {
       type: 'TEXT',
@@ -52,5 +44,4 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
 
 export async function down(pgm: MigrationBuilder): Promise<void> {
   pgm.dropTable(Model.tableName)
-  pgm.dropType(STATUS_TYPE, { cascade: true })
 }
