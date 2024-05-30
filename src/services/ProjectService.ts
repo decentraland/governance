@@ -268,4 +268,8 @@ export class ProjectService {
     const result = await ProjectLinkModel.delete({ id: linkId })
     return !!result && result.rowCount === 1 ? linkId : null
   }
+
+  static async isAuthorOrCoauthor(user: string, projectId: string) {
+    return await ProjectModel.isAuthorOrCoauthor(user, projectId)
+  }
 }
