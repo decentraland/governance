@@ -8,7 +8,7 @@ import { getMonthsBetweenDates } from '../../utils/date/getMonthsBetweenDates'
 import { UpdateAttributes, UpdateStatus } from './types'
 
 export default class UpdateModel extends Model<UpdateAttributes> {
-  static tableName = 'proposal_updates'
+  static tableName = 'project_updates'
   static withTimestamps = false
   static primaryKey = 'id'
 
