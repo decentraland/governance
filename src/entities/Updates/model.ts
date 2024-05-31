@@ -1,6 +1,8 @@
 import crypto from 'crypto'
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
+import { SQL, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 
+import ProjectModel from '../../back/models/Project'
 import { type VestingInfo } from '../../clients/VestingData'
 import Time from '../../utils/date/Time'
 import { getMonthsBetweenDates } from '../../utils/date/getMonthsBetweenDates'
@@ -62,5 +64,16 @@ export default class UpdateModel extends Model<UpdateAttributes> {
       updated_at: now,
       ...update,
     })
+  }
+
+  static async setProjectIds() {
+    const query = SQL`
+    UPDATE ${table(this)} pu
+    SET project_id = p.id
+    FROM ${table(ProjectModel)} p
+    WHERE pu.proposal_id = p.proposal_id
+    `
+
+    return await this.namedQuery('set_project_ids', query)
   }
 }

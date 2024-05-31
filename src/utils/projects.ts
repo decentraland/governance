@@ -1,7 +1,12 @@
 import { Project } from '../back/models/Project'
 import { TransparencyVesting } from '../clients/Transparency'
 import { ProjectStatus, TransparencyProjectStatus } from '../entities/Grant/types'
-import { ProposalAttributes, ProposalProject, ProposalWithProject } from '../entities/Proposal/types'
+import {
+  ProjectVestingData,
+  ProposalAttributes,
+  ProposalProject,
+  ProposalWithProject,
+} from '../entities/Proposal/types'
 import { isSameAddress } from '../entities/Snapshot/utils'
 
 import Time from './date/Time'
@@ -25,7 +30,7 @@ function toGovernanceProjectStatus(status: TransparencyProjectStatus) {
   }
 }
 
-function getProjectVestingData(proposal: ProposalAttributes, vesting: TransparencyVesting) {
+function getProjectVestingData(proposal: ProposalAttributes, vesting?: TransparencyVesting): ProjectVestingData {
   if (proposal.enacting_tx) {
     return {
       status: ProjectStatus.Finished,
@@ -56,7 +61,7 @@ function getProjectVestingData(proposal: ProposalAttributes, vesting: Transparen
     enacted_at: Time(vesting_start_at).unix(),
     contract: {
       vesting_total_amount: Math.round(vesting_total_amount),
-      vestedAmount: Math.round(vesting_released + vesting_releasable),
+      vested_amount: Math.round(vesting_released + vesting_releasable),
       releasable: Math.round(vesting_releasable),
       released: Math.round(vesting_released),
       start_at: Time(vesting_start_at).unix(),
@@ -66,13 +71,14 @@ function getProjectVestingData(proposal: ProposalAttributes, vesting: Transparen
 }
 
 export function createProposalProject(proposal: ProposalWithProject, vesting?: TransparencyVesting): ProposalProject {
-  const vestingData = vesting ? getProjectVestingData(proposal, vesting) : {}
+  const vestingData = getProjectVestingData(proposal, vesting)
 
   return {
     id: proposal.id,
     project_id: proposal.project_id,
     title: proposal.title,
     user: proposal.user,
+    about: proposal.configuration.abstract,
     type: proposal.type,
     size: proposal.configuration.size || proposal.configuration.funding,
     created_at: proposal.created_at.getTime(),

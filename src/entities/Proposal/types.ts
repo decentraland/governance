@@ -810,12 +810,22 @@ export type ProposalCommentsInDiscourse = {
 }
 
 export type VestingContractData = {
-  vestedAmount: number
+  vested_amount: number
   releasable: number
   released: number
   start_at: number
   finish_at: number
   vesting_total_amount: number
+}
+
+export type ProjectVestingData = {
+  status: ProjectStatus
+  contract?: VestingContractData
+  enacting_tx?: string
+  token?: string
+  enacted_at?: number
+  tx_amount?: number
+  tx_date?: number
 }
 
 export type ProposalProject = {
@@ -825,19 +835,13 @@ export type ProposalProject = {
   user: string
   size: number
   type: ProposalType
+  about: string
   created_at: number
   configuration: {
     category: ProposalGrantCategory
     tier: string
   }
-  status?: ProjectStatus
-  contract?: VestingContractData
-  enacting_tx?: string
-  token?: string
-  enacted_at?: number
-  tx_amount?: number
-  tx_date?: number
-}
+} & ProjectVestingData
 
 export type ProposalProjectWithUpdate = ProposalProject & {
   update?: IndexedUpdate | null
