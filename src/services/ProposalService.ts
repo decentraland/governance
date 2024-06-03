@@ -30,6 +30,7 @@ import { getProfile } from '../utils/Catalyst'
 import Time from '../utils/date/Time'
 
 import { DiscourseService } from './DiscourseService'
+import { ProjectService } from './ProjectService'
 import { SnapshotService } from './SnapshotService'
 
 export type ProposalInCreation = {
@@ -277,10 +278,10 @@ export class ProposalService {
     const { id } = proposal
     const isProject = isProjectProposal(proposal.type)
     const isEnactedStatus = newStatus === ProposalStatus.Enacted
-
+    const updated_at = new Date()
     let update: Partial<ProposalAttributes> = {
       status: newStatus,
-      updated_at: new Date(),
+      updated_at,
     }
 
     if (isEnactedStatus) {
@@ -296,6 +297,7 @@ export class ProposalService {
       const latestVesting = vesting_addresses![vesting_addresses!.length - 1]
       const vestingContractData = await getVestingContractData(latestVesting, proposal.id)
       await UpdateModel.createPendingUpdates(proposal.id, vestingContractData)
+      await ProjectService.startProject(proposal.id, updated_at)
       NotificationService.projectProposalEnacted(proposal)
     }
 

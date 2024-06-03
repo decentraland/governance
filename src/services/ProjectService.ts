@@ -272,4 +272,8 @@ export class ProjectService {
   static async isAuthorOrCoauthor(user: string, projectId: string) {
     return await ProjectModel.isAuthorOrCoauthor(user, projectId)
   }
+
+  static async startProject(id: string, updated_at: Date) {
+    await ProjectModel.update({ status: ProjectStatus.InProgress, updated_at }, { proposal_id: id })
+  }
 }
