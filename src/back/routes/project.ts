@@ -4,11 +4,16 @@ import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/h
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
-import { PersonnelInCreationSchema, ProjectLinkInCreationSchema } from '../../entities/Project/types'
+import {
+  PersonnelInCreationSchema,
+  ProjectLinkInCreationSchema,
+  ProjectMilestoneInCreationSchema,
+} from '../../entities/Project/types'
 import CacheService, { TTL_1_HS } from '../../services/CacheService'
 import { ProjectService } from '../../services/ProjectService'
 import PersonnelModel, { PersonnelAttributes } from '../models/Personnel'
 import ProjectLinkModel, { ProjectLink } from '../models/ProjectLink'
+import ProjectMilestoneModel, { ProjectMilestone } from '../models/ProjectMilestone'
 import { isValidDate, validateAddress, validateId } from '../utils/validations'
 
 export default routes((route) => {
@@ -18,6 +23,8 @@ export default routes((route) => {
   route.delete('/projects/personnel/:personnel_id', withAuth, handleAPI(deletePersonnel))
   route.post('/projects/links/', withAuth, handleAPI(addLink))
   route.delete('/projects/links/:link_id', withAuth, handleAPI(deleteLink))
+  route.post('/projects/milestones/', withAuth, handleAPI(addMilestone))
+  route.delete('/projects/milestones/:milestone_id', withAuth, handleAPI(deleteMilestone))
   route.get('/projects/:project', handleAPI(getProject))
   route.get('/projects/pitches-total', handleJSON(getOpenPitchesTotal))
   route.get('/projects/tenders-total', handleJSON(getOpenTendersTotal))
@@ -128,4 +135,42 @@ async function deleteLink(req: WithAuth<Request<{ link_id: string }>>): Promise<
   await validateCanEditProject(user, projectLink.project_id)
 
   return await ProjectService.deleteLink(link_id)
+}
+async function addMilestone(req: WithAuth): Promise<ProjectMilestone> {
+  const user = req.auth!
+  const { milestone } = req.body
+  validateId(milestone.project_id)
+  const project = await ProjectService.getProject(milestone.project_id)
+  if (!project) {
+    throw new RequestError(`Project "${milestone.project_id}" not found`, RequestError.NotFound)
+  }
+
+  const formattedMilestone = {
+    ...milestone,
+    delivery_date: new Date(milestone.delivery_date),
+  }
+  const parsedMilestone = ProjectMilestoneInCreationSchema.safeParse(formattedMilestone)
+  if (!parsedMilestone.success) {
+    throw new RequestError(`Invalid milestone: ${parsedMilestone.error.message}`, RequestError.BadRequest)
+  }
+
+  return await ProjectService.addMilestone(parsedMilestone.data, user)
+}
+
+async function deleteMilestone(req: WithAuth<Request<{ milestone_id: string }>>): Promise<string | null> {
+  const user = req.auth!
+  const milestone_id = req.params.milestone_id
+  validateId(milestone_id)
+  const milestone = await ProjectMilestoneModel.findOne<ProjectMilestone>(milestone_id)
+  if (!milestone) {
+    throw new RequestError(`Milestone "${milestone_id}" not found`, RequestError.NotFound)
+  }
+  const project = await ProjectService.getProject(milestone.project_id)
+  if (!project) {
+    throw new RequestError(`Project "${milestone.project_id}" not found`, RequestError.NotFound)
+  }
+
+  await validateCanEditProject(user, project.id)
+
+  return await ProjectService.deleteMilestone(milestone_id)
 }
