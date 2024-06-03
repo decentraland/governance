@@ -9,11 +9,9 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
-import { getVestingContractData } from '../../clients/VestingData'
 import { BidRequest, BidRequestSchema } from '../../entities/Bid/types'
 import CoauthorModel from '../../entities/Coauthor/model'
 import { CoauthorStatus } from '../../entities/Coauthor/types'
-import isDAOCommittee from '../../entities/Committee/isDAOCommittee'
 import { hasOpenSlots } from '../../entities/Committee/utils'
 import { GrantRequest, getGrantRequestSchema, toGrantSubtype } from '../../entities/Grant/types'
 import {
@@ -44,10 +42,10 @@ import {
   ProposalAttributes,
   ProposalCommentsInDiscourse,
   ProposalRequiredVP,
-  ProposalStatus,
+  ProposalStatusUpdate,
+  ProposalStatusUpdateScheme,
   ProposalType,
   SortingOrder,
-  UpdateProposalStatusProposal,
   newProposalBanNameScheme,
   newProposalCatalystScheme,
   newProposalDraftScheme,
@@ -58,7 +56,6 @@ import {
   newProposalPitchScheme,
   newProposalPollScheme,
   newProposalTenderScheme,
-  updateProposalStatusScheme,
 } from '../../entities/Proposal/types'
 import {
   DEFAULT_CHOICES,
@@ -71,18 +68,14 @@ import {
   isAlreadyACatalyst,
   isAlreadyBannedName,
   isAlreadyPointOfInterest,
-  isProjectProposal,
   isValidName,
   isValidPointOfInterest,
-  isValidUpdateProposalStatus,
   toProposalStatus,
   toProposalType,
   toSortingOrder,
 } from '../../entities/Proposal/utils'
 import { SNAPSHOT_DURATION } from '../../entities/Snapshot/constants'
 import { isSameAddress } from '../../entities/Snapshot/utils'
-import { validateUniqueAddresses } from '../../entities/Transparency/utils'
-import UpdateModel from '../../entities/Updates/model'
 import {
   FinancialRecord,
   FinancialUpdateSectionSchema,
@@ -109,9 +102,8 @@ import Time from '../../utils/date/Time'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
 import logger from '../../utils/logger'
-import { NotificationService } from '../services/notification'
 import { UpdateService } from '../services/update'
-import { validateAddress, validateId } from '../utils/validations'
+import { validateAddress, validateId, validateIsDaoCommittee, validateStatusUpdate } from '../utils/validations'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -542,76 +534,20 @@ export async function getProposalWithProject(req: Request<{ proposal: string }>)
   }
 }
 
-const updateProposalStatusValidator = schema.compile(updateProposalStatusScheme)
+const ProposalStatusUpdateValidator = schema.compile(ProposalStatusUpdateScheme)
 
 export async function updateProposalStatus(req: WithAuth<Request<{ proposal: string }>>) {
   const user = req.auth!
-  const id = req.params.proposal
-  if (!isDAOCommittee(user)) {
-    throw new RequestError('Only DAO committee members can enact a proposal', RequestError.Forbidden)
-  }
+  validateIsDaoCommittee(user)
 
   const proposal = await getProposal(req)
-  const configuration = validate<UpdateProposalStatusProposal>(updateProposalStatusValidator, req.body || {})
-  const newStatus = configuration.status
-  if (!isValidUpdateProposalStatus(proposal.status, newStatus)) {
-    throw new RequestError(
-      `${proposal.status} can't be updated to ${newStatus}`,
-      RequestError.BadRequest,
-      configuration
-    )
-  }
+  const statusUpdate = validate<ProposalStatusUpdate>(ProposalStatusUpdateValidator, req.body || {})
+  validateStatusUpdate(proposal, statusUpdate)
 
-  const update: Partial<ProposalAttributes> = {
-    status: newStatus,
-    updated_at: new Date(),
-  }
-
-  const isProject = isProjectProposal(proposal.type)
-  const isEnactedStatus = update.status === ProposalStatus.Enacted
-  if (isEnactedStatus) {
-    update.enacted = true
-    update.enacted_by = user
-    if (isProject) {
-      const { vesting_addresses } = configuration
-      if (!vesting_addresses || vesting_addresses.length === 0) {
-        throw new RequestError('Vesting addresses are required for grant or bid proposals', RequestError.BadRequest)
-      }
-      if (vesting_addresses.some((address) => !isEthereumAddress(address))) {
-        throw new RequestError('Some vesting address is invalid', RequestError.BadRequest)
-      }
-      if (!validateUniqueAddresses(vesting_addresses)) {
-        throw new RequestError('Vesting addresses must be unique', RequestError.BadRequest)
-      }
-      update.vesting_addresses = vesting_addresses
-      update.textsearch = ProposalModel.textsearch(
-        proposal.title,
-        proposal.description,
-        proposal.user,
-        update.vesting_addresses
-      )
-      const vestingContractData = await getVestingContractData(vesting_addresses[vesting_addresses.length - 1], id)
-      await UpdateModel.createPendingUpdates(id, vestingContractData)
-    }
-  } else if (update.status === ProposalStatus.Passed) {
-    update.passed_by = user
-  } else if (update.status === ProposalStatus.Rejected) {
-    update.rejected_by = user
-  }
-
-  await ProposalModel.update<ProposalAttributes>(update, { id })
-  if (isEnactedStatus && isProject) {
-    NotificationService.projectProposalEnacted(proposal)
-  }
-
-  const updatedProposal = await ProposalModel.findOne<ProposalAttributes>({
-    id,
-  })
-  updatedProposal && DiscourseService.commentUpdatedProposal(updatedProposal)
-
-  return {
-    ...proposal,
-    ...update,
+  try {
+    await ProposalService.updateProposalStatus(proposal, statusUpdate, user)
+  } catch (error: any) {
+    throw new RequestError(`Unable to update proposal: ${error.message}`, RequestError.Forbidden)
   }
 }
 

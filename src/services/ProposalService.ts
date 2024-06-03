@@ -6,15 +6,23 @@ import { DiscordService } from '../back/services/discord'
 import { EventsService } from '../back/services/events'
 import { NotificationService } from '../back/services/notification'
 import { SnapshotProposalContent } from '../clients/SnapshotTypes'
+import { getVestingContractData } from '../clients/VestingData'
 import UnpublishedBidModel from '../entities/Bid/model'
 import CoauthorModel from '../entities/Coauthor/model'
 import isDAOCommittee from '../entities/Committee/isDAOCommittee'
 import ProposalModel from '../entities/Proposal/model'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import * as templates from '../entities/Proposal/templates'
-import { PriorityProposalType, ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
-import { isGrantProposalSubmitEnabled } from '../entities/Proposal/utils'
+import {
+  PriorityProposalType,
+  ProposalAttributes,
+  ProposalStatus,
+  ProposalStatusUpdate,
+  ProposalType,
+} from '../entities/Proposal/types'
+import { isGrantProposalSubmitEnabled, isProjectProposal } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
+import UpdateModel from '../entities/Updates/model'
 import VotesModel from '../entities/Votes/model'
 import { getEnvironmentChainId } from '../helpers'
 import { DiscoursePost } from '../shared/types/discourse'
@@ -190,7 +198,7 @@ export class ProposalService {
       rejected_description: null,
       created_at: proposalLifespan.created.toJSON() as any,
       updated_at: proposalLifespan.created.toJSON() as any,
-      textsearch: ProposalModel.textsearch(title, description, data.user, []),
+      textsearch: ProposalModel.generateTextSearchVector(title, description, data.user, []),
     }
 
     try {
@@ -262,5 +270,63 @@ export class ProposalService {
     })
 
     return priorityProposalsWithBidsInfo
+  }
+
+  static async updateProposalStatus(proposal: ProposalAttributes, statusUpdate: ProposalStatusUpdate, user: string) {
+    const { status: newStatus, vesting_addresses } = statusUpdate
+    const { id } = proposal
+    const isProject = isProjectProposal(proposal.type)
+    const isEnactedStatus = newStatus === ProposalStatus.Enacted
+
+    let update: Partial<ProposalAttributes> = {
+      status: newStatus,
+      updated_at: new Date(),
+    }
+
+    if (isEnactedStatus) {
+      update = { ...update, ...this.getEnactedStatusData(proposal, vesting_addresses, user) }
+    } else if (newStatus === ProposalStatus.Passed) {
+      update.passed_by = user
+    } else if (newStatus === ProposalStatus.Rejected) {
+      update.rejected_by = user
+    }
+    await ProposalModel.update<ProposalAttributes>(update, { id })
+
+    if (isEnactedStatus && isProject) {
+      const latestVesting = vesting_addresses![vesting_addresses!.length - 1]
+      const vestingContractData = await getVestingContractData(latestVesting, proposal.id)
+      await UpdateModel.createPendingUpdates(proposal.id, vestingContractData)
+      NotificationService.projectProposalEnacted(proposal)
+    }
+
+    const updatedProposal = {
+      ...proposal,
+      ...update,
+    }
+    DiscourseService.commentUpdatedProposal(updatedProposal)
+
+    return updatedProposal
+  }
+
+  private static getEnactedStatusData(
+    proposal: ProposalAttributes,
+    vesting_addresses: string[] | undefined,
+    user: string
+  ) {
+    const update: Partial<ProposalAttributes> = {
+      enacted: true,
+      enacted_by: user,
+    }
+
+    if (isProjectProposal(proposal.type)) {
+      update.vesting_addresses = vesting_addresses || []
+      update.textsearch = ProposalModel.generateTextSearchVector(
+        proposal.title,
+        proposal.description,
+        proposal.user,
+        update.vesting_addresses
+      )
+    }
+    return update
   }
 }
