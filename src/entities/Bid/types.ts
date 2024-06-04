@@ -6,6 +6,7 @@ import {
   MilestoneItemSchema,
   ProposalRequestTeam,
 } from '../Grant/types'
+import { MILESTONE_SUBMIT_LIMIT } from '../Proposal/constants'
 
 import { BID_MIN_PROJECT_DURATION } from './constants'
 
@@ -104,6 +105,7 @@ export const BidRequestGeneralInfoSchema = {
       additionalProperties: false,
       required: [...Object.keys(MilestoneItemSchema)],
       properties: MilestoneItemSchema,
+      maxItems: MILESTONE_SUBMIT_LIMIT,
     },
   },
   coAuthors: {
