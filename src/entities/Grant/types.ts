@@ -62,7 +62,7 @@ export type ProposalGrantCategory = OldGrantCategory | NewGrantCategory
 
 export const VALID_CATEGORIES = [NewGrantCategory.CoreUnit, NewGrantCategory.Platform]
 
-export enum TransparencyProjectStatus {
+export enum VestingStatus {
   Pending = 'Pending',
   InProgress = 'In Progress',
   Finished = 'Finished',
@@ -138,8 +138,8 @@ export const GrantRequestGeneralInfoSchema = {
       additionalProperties: false,
       required: [...Object.keys(MilestoneItemSchema)],
       properties: MilestoneItemSchema,
-      maxItems: MILESTONE_SUBMIT_LIMIT,
     },
+    maxItems: MILESTONE_SUBMIT_LIMIT,
   },
   coAuthors: {
     type: 'array',

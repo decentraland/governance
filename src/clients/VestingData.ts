@@ -2,6 +2,7 @@ import { ChainId } from '@dcl/schemas'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { BigNumber, ethers } from 'ethers'
 
+import { VestingStatus } from '../entities/Grant/types'
 import RpcService from '../services/RpcService'
 import ERC20_ABI from '../utils/contracts/abi/ERC20.abi.json'
 import VESTING_ABI from '../utils/contracts/abi/vesting/vesting.json'
@@ -32,6 +33,7 @@ export type VestingInfo = VestingDates &
   VestingValues & {
     address: string
     logs: VestingLog[]
+    status: VestingStatus
   }
 
 function toISOString(seconds: number) {
@@ -87,14 +89,33 @@ async function getVestingContractLogs(vestingAddress: string, provider: JsonRpcP
   return logsData
 }
 
+function getInitialVestingStatus(startAt: string, finishAt: string) {
+  const now = new Date()
+  if (now < new Date(startAt)) {
+    return VestingStatus.Pending
+  }
+  if (now < new Date(finishAt)) {
+    return VestingStatus.InProgress
+  }
+  return VestingStatus.Finished
+}
+
 async function getVestingContractDataV1(
   vestingAddress: string,
   provider: ethers.providers.JsonRpcProvider
-): Promise<VestingDates & VestingValues> {
+): Promise<Omit<VestingInfo, 'logs' | 'address'>> {
   const vestingContract = new ethers.Contract(vestingAddress, VESTING_ABI, provider)
   const contractStart = Number(await vestingContract.start())
   const contractDuration = Number(await vestingContract.duration())
   const contractEndsTimestamp = contractStart + contractDuration
+  const vesting_start_at = toISOString(contractStart)
+  const vesting_finish_at = toISOString(contractEndsTimestamp)
+
+  let status = getInitialVestingStatus(vesting_start_at, vesting_finish_at)
+  const isRevoked = await vestingContract.methods.revoked().call()
+  if (isRevoked) {
+    status = VestingStatus.Revoked
+  }
 
   const released = parseContractValue(await vestingContract.released())
   const releasable = parseContractValue(await vestingContract.releasableAmount())
@@ -103,23 +124,27 @@ async function getVestingContractDataV1(
   const tokenContract = new ethers.Contract(tokenContractAddress, ERC20_ABI, provider)
   const total = parseContractValue(await tokenContract.balanceOf(vestingAddress)) + released
 
-  return { ...getVestingDates(contractStart, contractEndsTimestamp), released, releasable, total }
+  return { ...getVestingDates(contractStart, contractEndsTimestamp), released, releasable, total, status }
 }
 
 async function getVestingContractDataV2(
   vestingAddress: string,
   provider: ethers.providers.JsonRpcProvider
-): Promise<VestingDates & VestingValues> {
+): Promise<Omit<VestingInfo, 'logs' | 'address'>> {
   const vestingContract = new ethers.Contract(vestingAddress, VESTING_V2_ABI, provider)
   const contractStart = Number(await vestingContract.getStart())
   const contractDuration = Number(await vestingContract.getPeriod())
   let contractEndsTimestamp = 0
+  const vesting_start_at = toISOString(contractStart)
+  let vesting_finish_at = ''
 
   if (await vestingContract.getIsLinear()) {
     contractEndsTimestamp = contractStart + contractDuration
+    vesting_finish_at = toISOString(contractEndsTimestamp)
   } else {
     const periods = (await vestingContract.getVestedPerPeriod()).length || 0
     contractEndsTimestamp = contractStart + contractDuration * periods
+    vesting_finish_at = toISOString(contractEndsTimestamp)
   }
 
   const released = parseContractValue(await vestingContract.getReleased())
@@ -128,7 +153,18 @@ async function getVestingContractDataV2(
 
   const total = vestedPerPeriod.map(parseContractValue).reduce((acc, curr) => acc + curr, 0)
 
-  return { ...getVestingDates(contractStart, contractEndsTimestamp), released, releasable, total }
+  let status = getInitialVestingStatus(vesting_start_at, vesting_finish_at)
+  const isRevoked = await vestingContract.getIsRevoked()
+  if (isRevoked) {
+    status = VestingStatus.Revoked
+  } else {
+    const isPaused = await vestingContract.paused()
+    if (isPaused) {
+      status = VestingStatus.Paused
+    }
+  }
+
+  return { ...getVestingDates(contractStart, contractEndsTimestamp), released, releasable, total, status }
 }
 
 export async function getVestingContractData(
