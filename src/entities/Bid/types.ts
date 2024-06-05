@@ -43,6 +43,7 @@ export type BidRequestFunding = {
 export type BidRequestGeneralInfo = {
   teamName: string
   deliverables: string
+  roadmap: string
   milestones: Milestone[]
   coAuthors?: string[]
 }
@@ -94,6 +95,11 @@ export const BidRequestGeneralInfoSchema = {
     maxLength: 80,
   },
   deliverables: {
+    type: 'string',
+    minLength: 20,
+    maxLength: 1500,
+  },
+  roadmap: {
     type: 'string',
     minLength: 20,
     maxLength: 1500,
