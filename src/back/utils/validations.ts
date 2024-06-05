@@ -10,7 +10,7 @@ import { ALCHEMY_DELEGATIONS_WEBHOOK_SECRET, DISCOURSE_WEBHOOK_SECRET } from '..
 import isDAOCommittee from '../../entities/Committee/isDAOCommittee'
 import isDebugAddress from '../../entities/Debug/isDebugAddress'
 import { ProposalAttributes, ProposalStatus, ProposalStatusUpdate } from '../../entities/Proposal/types'
-import { isProjectProposal, isValidUpdateProposalStatus } from '../../entities/Proposal/utils'
+import { isProjectProposal, isValidProposalStatusUpdate } from '../../entities/Proposal/utils'
 import { validateUniqueAddresses } from '../../entities/Transparency/utils'
 import { ErrorService } from '../../services/ErrorService'
 import { EventFilterSchema } from '../../shared/types/events'
@@ -167,7 +167,7 @@ export function validateIsDaoCommittee(user: string) {
 
 export function validateStatusUpdate(proposal: ProposalAttributes, statusUpdate: ProposalStatusUpdate) {
   const { status: newStatus, vesting_addresses } = statusUpdate
-  if (!isValidUpdateProposalStatus(proposal.status, newStatus)) {
+  if (!isValidProposalStatusUpdate(proposal.status, newStatus)) {
     throw new RequestError(`${proposal.status} can't be updated to ${newStatus}`, RequestError.BadRequest, statusUpdate)
   }
   if (newStatus === ProposalStatus.Enacted && isProjectProposal(proposal.type)) {
