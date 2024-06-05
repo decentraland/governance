@@ -1,5 +1,6 @@
+import crypto from 'crypto'
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
-import { SQL, table } from 'decentraland-gatsby/dist/entities/Database/utils'
+import { SQL, join, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
@@ -7,6 +8,7 @@ import CoauthorModel from '../../entities/Coauthor/model'
 import { CoauthorStatus } from '../../entities/Coauthor/types'
 import { ProjectStatus } from '../../entities/Grant/types'
 import ProposalModel from '../../entities/Proposal/model'
+import { ProposalProject } from '../../entities/Proposal/types'
 
 import PersonnelModel, { PersonnelAttributes } from './Personnel'
 import ProjectLinkModel, { ProjectLink } from './ProjectLink'
@@ -68,6 +70,21 @@ export default class ProjectModel extends Model<ProjectAttributes> {
     }
 
     return result[0]
+  }
+
+  static async migrate(proposals: ProposalProject[]) {
+    const values = proposals.map(
+      ({ id, title, about, status, created_at }) =>
+        SQL`(${crypto.randomUUID()}, ${id}, ${title}, ${about}, ${status}, ${new Date(created_at)})`
+    )
+
+    const query = SQL`
+      INSERT INTO ${table(ProjectModel)} (id, proposal_id, title, about, status, created_at)
+      VALUES ${join(values, SQL`, `)}
+      RETURNING *;
+    `
+
+    return this.namedQuery<ProjectAttributes>(`create_multiple_projects`, query)
   }
 
   static async isAuthorOrCoauthor(user: string, projectId: string): Promise<boolean> {

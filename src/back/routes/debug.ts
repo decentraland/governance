@@ -6,12 +6,14 @@ import { DEBUG_ADDRESSES } from '../../constants'
 import CacheService from '../../services/CacheService'
 import { ErrorService } from '../../services/ErrorService'
 import { giveAndRevokeLandOwnerBadges, giveTopVoterBadges, runQueuedAirdropJobs } from '../jobs/BadgeAirdrop'
+import { migrateProjects } from '../jobs/ProjectsMigration'
 import { validateDebugAddress } from '../utils/validations'
 
 const FUNCTIONS_MAP: { [key: string]: () => Promise<unknown> } = {
   runQueuedAirdropJobs,
   giveAndRevokeLandOwnerBadges,
   giveTopVoterBadges,
+  migrateProjects,
 }
 
 export default routes((router) => {

@@ -15,6 +15,7 @@ import ProposalModel from '../entities/Proposal/model'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import {
   GrantProposalConfiguration,
+  ProposalAttributes,
   ProposalProjectWithUpdate,
   ProposalStatus,
   ProposalType,
@@ -30,7 +31,7 @@ import logger from '../utils/logger'
 import { createProposalProject } from '../utils/projects'
 
 import { BudgetService } from './BudgetService'
-import { ProposalInCreation } from './ProposalService'
+import { ProposalInCreation, ProposalService } from './ProposalService'
 import { VestingService } from './VestingService'
 
 function newestVestingFirst(a: TransparencyVesting, b: TransparencyVesting): number {
@@ -167,6 +168,34 @@ export class ProjectService {
     })
   }
 
+  static async migrateProjects() {
+    const migrationResult = { migratedProjects: 0, migrationsFinished: 0, migrationErrors: [] as string[], error: '' }
+    try {
+      const { data: projects } = await this.getProjects()
+      const migratedProjects = await ProjectModel.migrate(projects)
+      migrationResult.migratedProjects = migratedProjects.length
+
+      for (const project of migratedProjects) {
+        try {
+          const proposal = await ProposalService.getProposal(project.proposal_id)
+          await ProjectService.createMilestones(proposal, project, new Date(project.created_at))
+          await ProjectService.createPersonnel(proposal, project, new Date(project.created_at))
+          migrationResult.migrationsFinished++
+        } catch (e) {
+          migrationResult.migrationErrors.push(`Project ${project.id} failed with: ${e}`)
+        }
+      }
+
+      await UpdateModel.setProjectIds()
+      return migrationResult
+    } catch (e) {
+      const message = `Migration failed: ${e}`
+      console.error(message)
+      migrationResult.error = message
+      return migrationResult
+    }
+  }
+
   private static async createProject(proposal: ProposalWithOutcome) {
     const creationDate = new Date()
     const newProject = await ProjectModel.create({
@@ -184,7 +213,7 @@ export class ProjectService {
     return newProject
   }
 
-  private static async createPersonnel(proposal: ProposalWithOutcome, project: ProjectAttributes, creationDate: Date) {
+  private static async createPersonnel(proposal: ProposalAttributes, project: ProjectAttributes, creationDate: Date) {
     const newPersonnel: PersonnelAttributes[] = []
     const config =
       proposal.type === ProposalType.Grant
@@ -204,7 +233,7 @@ export class ProjectService {
     await PersonnelModel.createMany(newPersonnel)
   }
 
-  private static async createMilestones(proposal: ProposalWithOutcome, project: ProjectAttributes, creationDate: Date) {
+  private static async createMilestones(proposal: ProposalAttributes, project: ProjectAttributes, creationDate: Date) {
     const newMilestones: ProjectMilestone[] = []
     const config =
       proposal.type === ProposalType.Grant
