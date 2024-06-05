@@ -105,8 +105,8 @@ export const BidRequestGeneralInfoSchema = {
       additionalProperties: false,
       required: [...Object.keys(MilestoneItemSchema)],
       properties: MilestoneItemSchema,
-      maxItems: MILESTONE_SUBMIT_LIMIT,
     },
+    maxItems: MILESTONE_SUBMIT_LIMIT,
   },
   coAuthors: {
     type: 'array',
