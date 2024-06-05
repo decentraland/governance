@@ -183,7 +183,9 @@ function logFinishableProposals(finishableProposals: ProposalAttributes[]) {
 }
 
 export async function finishProposal() {
-  logger.log(`Running finish proposal job...`)
+  if (isProdEnv()) {
+    logger.log(`Running finish proposal job...`)
+  }
 
   try {
     const finishableProposals = await ProposalModel.getFinishableProposals()

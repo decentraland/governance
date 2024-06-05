@@ -87,7 +87,7 @@ export function isAlreadyACatalyst(domain: string) {
   return !!getCatalystServersFromCache('mainnet').find((server) => server.address === 'https://' + domain)
 }
 
-export function isValidUpdateProposalStatus(current: ProposalStatus, next: ProposalStatus) {
+export function isValidProposalStatusUpdate(current: ProposalStatus, next: ProposalStatus) {
   switch (current) {
     case ProposalStatus.Finished:
       return (

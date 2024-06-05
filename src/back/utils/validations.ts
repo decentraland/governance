@@ -7,7 +7,11 @@ import isUUID from 'validator/lib/isUUID'
 
 import { SnapshotProposal } from '../../clients/SnapshotTypes'
 import { ALCHEMY_DELEGATIONS_WEBHOOK_SECRET, DISCOURSE_WEBHOOK_SECRET } from '../../constants'
+import isDAOCommittee from '../../entities/Committee/isDAOCommittee'
 import isDebugAddress from '../../entities/Debug/isDebugAddress'
+import { ProposalAttributes, ProposalStatus, ProposalStatusUpdate } from '../../entities/Proposal/types'
+import { isProjectProposal, isValidProposalStatusUpdate } from '../../entities/Proposal/utils'
+import { validateUniqueAddresses } from '../../entities/Transparency/utils'
 import { ErrorService } from '../../services/ErrorService'
 import { EventFilterSchema } from '../../shared/types/events'
 import { ErrorCategory } from '../../utils/errorCategories'
@@ -153,4 +157,28 @@ export function validateEventTypesFilters(req: Request) {
   }
 
   return parsedEventTypes.data
+}
+
+export function validateIsDaoCommittee(user: string) {
+  if (!isDAOCommittee(user)) {
+    throw new RequestError('Only DAO committee members can update a proposal status', RequestError.Forbidden)
+  }
+}
+
+export function validateStatusUpdate(proposal: ProposalAttributes, statusUpdate: ProposalStatusUpdate) {
+  const { status: newStatus, vesting_addresses } = statusUpdate
+  if (!isValidProposalStatusUpdate(proposal.status, newStatus)) {
+    throw new RequestError(`${proposal.status} can't be updated to ${newStatus}`, RequestError.BadRequest, statusUpdate)
+  }
+  if (newStatus === ProposalStatus.Enacted && isProjectProposal(proposal.type)) {
+    if (!vesting_addresses || vesting_addresses.length === 0) {
+      throw new RequestError('Vesting addresses are required for grant or bid proposals', RequestError.BadRequest)
+    }
+    if (vesting_addresses.some((address) => !isEthereumAddress(address))) {
+      throw new RequestError('Some vesting address is invalid', RequestError.BadRequest)
+    }
+    if (!validateUniqueAddresses(vesting_addresses)) {
+      throw new RequestError('Vesting addresses must be unique', RequestError.BadRequest)
+    }
+  }
 }
