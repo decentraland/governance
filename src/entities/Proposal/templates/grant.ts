@@ -39,6 +39,10 @@ ${proposal.email}
 
 ${formatMarkdown(proposal.description)}
 
+## Roadmap
+
+${formatMarkdown(proposal.roadmap)}
+
 ## Milestones
 
 ${formatMarkdown(proposal.milestones.map((milestone) => `${milestone.delivery_date} - ${milestone.title}`).join('\n'))}
