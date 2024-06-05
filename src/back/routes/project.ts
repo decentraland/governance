@@ -139,12 +139,7 @@ async function deleteLink(req: WithAuth<Request<{ link_id: string }>>): Promise<
 async function addMilestone(req: WithAuth): Promise<ProjectMilestone> {
   const user = req.auth!
   const { milestone } = req.body
-  validateId(milestone.project_id)
-  const project = await ProjectService.getProject(milestone.project_id)
-  if (!project) {
-    throw new RequestError(`Project "${milestone.project_id}" not found`, RequestError.NotFound)
-  }
-
+  await validateCanEditProject(user, milestone.project_id)
   const formattedMilestone = {
     ...milestone,
     delivery_date: new Date(milestone.delivery_date),
@@ -165,12 +160,7 @@ async function deleteMilestone(req: WithAuth<Request<{ milestone_id: string }>>)
   if (!milestone) {
     throw new RequestError(`Milestone "${milestone_id}" not found`, RequestError.NotFound)
   }
-  const project = await ProjectService.getProject(milestone.project_id)
-  if (!project) {
-    throw new RequestError(`Project "${milestone.project_id}" not found`, RequestError.NotFound)
-  }
-
-  await validateCanEditProject(user, project.id)
+  await validateCanEditProject(user, milestone.project_id)
 
   return await ProjectService.deleteMilestone(milestone_id)
 }
