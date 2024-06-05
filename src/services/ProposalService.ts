@@ -5,6 +5,7 @@ import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import { DiscordService } from '../back/services/discord'
 import { EventsService } from '../back/services/events'
 import { NotificationService } from '../back/services/notification'
+import { UpdateService } from '../back/services/update'
 import { SnapshotProposalContent } from '../clients/SnapshotTypes'
 import UnpublishedBidModel from '../entities/Bid/model'
 import CoauthorModel from '../entities/Coauthor/model'
@@ -12,8 +13,15 @@ import isDAOCommittee from '../entities/Committee/isDAOCommittee'
 import ProposalModel from '../entities/Proposal/model'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import * as templates from '../entities/Proposal/templates'
-import { PriorityProposalType, ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
-import { isGrantProposalSubmitEnabled } from '../entities/Proposal/utils'
+import {
+  PriorityProposalType,
+  ProposalAttributes,
+  ProposalStatus,
+  ProposalStatusUpdate,
+  ProposalType,
+  ProposalWithProject,
+} from '../entities/Proposal/types'
+import { isGrantProposalSubmitEnabled, isProjectProposal } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import VotesModel from '../entities/Votes/model'
 import { getEnvironmentChainId } from '../helpers'
@@ -22,6 +30,7 @@ import { getProfile } from '../utils/Catalyst'
 import Time from '../utils/date/Time'
 
 import { DiscourseService } from './DiscourseService'
+import { ProjectService } from './ProjectService'
 import { SnapshotService } from './SnapshotService'
 
 export type ProposalInCreation = {
@@ -190,7 +199,7 @@ export class ProposalService {
       rejected_description: null,
       created_at: proposalLifespan.created.toJSON() as any,
       updated_at: proposalLifespan.created.toJSON() as any,
-      textsearch: ProposalModel.textsearch(title, description, data.user, []),
+      textsearch: ProposalModel.generateTextSearchVector(title, description, data.user, []),
     }
 
     try {
@@ -262,5 +271,59 @@ export class ProposalService {
     })
 
     return priorityProposalsWithBidsInfo
+  }
+
+  static async updateProposalStatus(proposal: ProposalWithProject, statusUpdate: ProposalStatusUpdate, user: string) {
+    const { status: newStatus, vesting_addresses } = statusUpdate
+    const { id } = proposal
+    const isProject = isProjectProposal(proposal.type)
+    const isEnactedStatus = newStatus === ProposalStatus.Enacted
+    const updated_at = new Date()
+    let update: Partial<ProposalAttributes> = {
+      status: newStatus,
+      updated_at,
+    }
+
+    if (isEnactedStatus) {
+      update = { ...update, ...this.getEnactedStatusData(proposal, vesting_addresses, user) }
+    } else if (newStatus === ProposalStatus.Passed) {
+      update.passed_by = user
+    } else if (newStatus === ProposalStatus.Rejected) {
+      update.rejected_by = user
+    }
+    await ProposalModel.update<ProposalAttributes>(update, { id })
+
+    if (isEnactedStatus && isProject) {
+      await UpdateService.initialize(proposal.project_id!, vesting_addresses)
+      await ProjectService.startOrResumeProject(proposal, updated_at)
+      NotificationService.projectProposalEnacted(proposal)
+    }
+
+    const updatedProposal = await this.getProposalWithProject(id)
+    DiscourseService.commentUpdatedProposal(updatedProposal)
+
+    return updatedProposal
+  }
+
+  private static getEnactedStatusData(
+    proposal: ProposalAttributes,
+    vesting_addresses: string[] | undefined,
+    user: string
+  ) {
+    const update: Partial<ProposalAttributes> = {
+      enacted: true,
+      enacted_by: user,
+    }
+
+    if (isProjectProposal(proposal.type)) {
+      update.vesting_addresses = vesting_addresses || []
+      update.textsearch = ProposalModel.generateTextSearchVector(
+        proposal.title,
+        proposal.description,
+        proposal.user,
+        update.vesting_addresses
+      )
+    }
+    return update
   }
 }

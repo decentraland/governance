@@ -131,6 +131,11 @@ export const GrantRequestGeneralInfoSchema = {
     type: 'string',
     format: 'email',
   },
+  roadmap: {
+    type: 'string',
+    minLength: 20,
+    maxLength: 1500,
+  },
   milestones: {
     type: 'array',
     items: {
@@ -423,6 +428,7 @@ export type GrantRequestGeneralInfo = {
   email: string
   specification?: string
   personnel?: string
+  roadmap: string
   milestones: Milestone[]
   coAuthors?: string[]
 }

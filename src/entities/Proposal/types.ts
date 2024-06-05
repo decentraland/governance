@@ -208,12 +208,12 @@ function requiredVotingPower(value: string | undefined | null, defaultValue: num
   return defaultValue
 }
 
-export type UpdateProposalStatusProposal = {
+export type ProposalStatusUpdate = {
   status: ProposalStatus.Rejected | ProposalStatus.Passed | ProposalStatus.Enacted
   vesting_addresses?: string[]
 }
 
-export const updateProposalStatusScheme = {
+export const ProposalStatusUpdateScheme = {
   type: 'object',
   additionalProperties: false,
   required: ['status'],
