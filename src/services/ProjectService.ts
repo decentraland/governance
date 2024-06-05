@@ -10,7 +10,7 @@ import { BidProposalConfiguration } from '../entities/Bid/types'
 import { GrantTier } from '../entities/Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../entities/Grant/constants'
 import { GrantRequest, ProjectStatus, TransparencyProjectStatus } from '../entities/Grant/types'
-import { PersonnelInCreation, ProjectLinkInCreation } from '../entities/Project/types'
+import { PersonnelInCreation, ProjectLinkInCreation, ProjectMilestoneInCreation } from '../entities/Project/types'
 import ProposalModel from '../entities/Proposal/model'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import {
@@ -267,6 +267,22 @@ export class ProjectService {
   static async deleteLink(linkId: ProjectLink['id']) {
     const result = await ProjectLinkModel.delete({ id: linkId })
     return !!result && result.rowCount === 1 ? linkId : null
+  }
+
+  static async addMilestone(newMilestone: ProjectMilestoneInCreation, user: string) {
+    return await ProjectMilestoneModel.create({
+      ...newMilestone,
+      status: ProjectMilestoneStatus.Pending,
+      id: crypto.randomUUID(),
+      created_by: user,
+      created_at: new Date(),
+    })
+  }
+
+  static async deleteMilestone(milestone_id: ProjectMilestone['id']) {
+    const result = await ProjectMilestoneModel.delete({ id: milestone_id })
+
+    return !!result && result.rowCount === 1 ? milestone_id : null
   }
 
   static async isAuthorOrCoauthor(user: string, projectId: string) {
