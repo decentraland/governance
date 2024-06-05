@@ -1,4 +1,4 @@
-import { TransparencyProjectStatus } from '../entities/Grant/types'
+import { VestingStatus } from '../entities/Grant/types'
 import { TokenInWallet } from '../entities/Transparency/types'
 import { ErrorCategory } from '../utils/errorCategories'
 
@@ -63,7 +63,7 @@ export type TransparencyVesting = {
   vesting_finish_at: string
   vesting_contract_token_balance: number
   vesting_total_amount: number
-  vesting_status: TransparencyProjectStatus
+  vesting_status: VestingStatus
   duration_in_months: number
 }
 

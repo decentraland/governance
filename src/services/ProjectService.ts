@@ -1,15 +1,16 @@
 import crypto from 'crypto'
 
 import PersonnelModel, { PersonnelAttributes } from '../back/models/Personnel'
-import ProjectModel, { ProjectAttributes } from '../back/models/Project'
+import ProjectModel, { Project, ProjectAttributes } from '../back/models/Project'
 import ProjectLinkModel, { ProjectLink } from '../back/models/ProjectLink'
 import ProjectMilestoneModel, { ProjectMilestone, ProjectMilestoneStatus } from '../back/models/ProjectMilestone'
 import { TransparencyVesting } from '../clients/Transparency'
+import { getVestingContractData } from '../clients/VestingData'
 import UnpublishedBidModel from '../entities/Bid/model'
 import { BidProposalConfiguration } from '../entities/Bid/types'
 import { GrantTier } from '../entities/Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../entities/Grant/constants'
-import { GrantRequest, ProjectStatus, TransparencyProjectStatus } from '../entities/Grant/types'
+import { GrantRequest, ProjectStatus, VestingStatus } from '../entities/Grant/types'
 import { PersonnelInCreation, ProjectLinkInCreation, ProjectMilestoneInCreation } from '../entities/Project/types'
 import ProposalModel from '../entities/Proposal/model'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
@@ -27,11 +28,13 @@ import { IndexedUpdate, UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates } from '../entities/Updates/utils'
 import { formatError, inBackground } from '../helpers'
 import Time from '../utils/date/Time'
+import { ErrorCategory } from '../utils/errorCategories'
 import { isProdEnv } from '../utils/governanceEnvs'
 import logger from '../utils/logger'
-import { createProposalProject } from '../utils/projects'
+import { createProposalProject, toGovernanceProjectStatus } from '../utils/projects'
 
 import { BudgetService } from './BudgetService'
+import { ErrorService } from './ErrorService'
 import { ProposalInCreation, ProposalService } from './ProposalService'
 import { VestingService } from './VestingService'
 
@@ -55,8 +58,7 @@ export class ProjectService {
           const prioritizedVesting: TransparencyVesting | undefined =
             proposalVestings.find(
               (vesting) =>
-                vesting.vesting_status === TransparencyProjectStatus.InProgress ||
-                vesting.vesting_status === TransparencyProjectStatus.Finished
+                vesting.vesting_status === VestingStatus.InProgress || vesting.vesting_status === VestingStatus.Finished
             ) || proposalVestings[0]
           const project = createProposalProject(proposal, prioritizedVesting)
 
@@ -258,11 +260,24 @@ export class ProjectService {
 
   static async getProject(id: string) {
     const project = await ProjectModel.getProject(id)
+    project.status = await ProjectService.updateStatus(project)
     if (!project) {
       throw new Error(`Project not found: "${id}"`)
     }
-
     return project
+  }
+
+  private static async updateStatus(project: Project) {
+    try {
+      const latestVesting = project.vesting_addresses[project.vesting_addresses.length - 1]
+      const vestingContractData = await getVestingContractData(latestVesting)
+      const updatedProjectStatus = toGovernanceProjectStatus(vestingContractData.status)
+      await ProjectModel.update({ status: updatedProjectStatus, updated_at: new Date() }, { id: project.id })
+      return updatedProjectStatus
+    } catch (error) {
+      ErrorService.report('Unable to update project status', { error, id: project.id, category: ErrorCategory.Project })
+      return project.status
+    }
   }
 
   static async addPersonnel(newPersonnel: PersonnelInCreation, user?: string) {
