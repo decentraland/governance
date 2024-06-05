@@ -18,6 +18,7 @@ import {
   ProposalProjectWithUpdate,
   ProposalStatus,
   ProposalType,
+  ProposalWithProject,
 } from '../entities/Proposal/types'
 import { DEFAULT_CHOICES, asNumber, getProposalEndDate, isProjectProposal } from '../entities/Proposal/utils'
 import UpdateModel from '../entities/Updates/model'
@@ -273,7 +274,12 @@ export class ProjectService {
     return await ProjectModel.isAuthorOrCoauthor(user, projectId)
   }
 
-  static async startProject(id: string, updated_at: Date) {
-    await ProjectModel.update({ status: ProjectStatus.InProgress, updated_at }, { proposal_id: id })
+  static async startOrResumeProject(proposal: ProposalWithProject, updated_at: Date) {
+    if (!proposal.project_id) throw new Error(`Project not found for proposal: "${proposal.id}"`)
+    if (proposal.project_status === ProjectStatus.Pending || proposal.project_status === ProjectStatus.Paused) {
+      await ProjectModel.update({ status: ProjectStatus.InProgress, updated_at }, { id: proposal.project_id })
+    } else {
+      throw new Error(`Cannot update ${proposal.project_status} Project to In Progress for proposal: "${proposal.id}"`)
+    }
   }
 }

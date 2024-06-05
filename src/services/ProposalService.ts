@@ -19,6 +19,7 @@ import {
   ProposalStatus,
   ProposalStatusUpdate,
   ProposalType,
+  ProposalWithProject,
 } from '../entities/Proposal/types'
 import { isGrantProposalSubmitEnabled, isProjectProposal } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
@@ -273,7 +274,7 @@ export class ProposalService {
     return priorityProposalsWithBidsInfo
   }
 
-  static async updateProposalStatus(proposal: ProposalAttributes, statusUpdate: ProposalStatusUpdate, user: string) {
+  static async updateProposalStatus(proposal: ProposalWithProject, statusUpdate: ProposalStatusUpdate, user: string) {
     const { status: newStatus, vesting_addresses } = statusUpdate
     const { id } = proposal
     const isProject = isProjectProposal(proposal.type)
@@ -297,14 +298,11 @@ export class ProposalService {
       const latestVesting = vesting_addresses![vesting_addresses!.length - 1]
       const vestingContractData = await getVestingContractData(latestVesting, proposal.id)
       await UpdateModel.createPendingUpdates(proposal.id, vestingContractData)
-      await ProjectService.startProject(proposal.id, updated_at)
+      await ProjectService.startOrResumeProject(proposal, updated_at)
       NotificationService.projectProposalEnacted(proposal)
     }
 
-    const updatedProposal = {
-      ...proposal,
-      ...update,
-    }
+    const updatedProposal = await this.getProposalWithProject(id)
     DiscourseService.commentUpdatedProposal(updatedProposal)
 
     return updatedProposal

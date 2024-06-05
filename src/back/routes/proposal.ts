@@ -540,12 +540,12 @@ export async function updateProposalStatus(req: WithAuth<Request<{ proposal: str
   const user = req.auth!
   validateIsDaoCommittee(user)
 
-  const proposal = await getProposal(req)
+  const proposal = await getProposalWithProject(req)
   const statusUpdate = validate<ProposalStatusUpdate>(ProposalStatusUpdateValidator, req.body || {})
   validateStatusUpdate(proposal, statusUpdate)
 
   try {
-    await ProposalService.updateProposalStatus(proposal, statusUpdate, user)
+    return await ProposalService.updateProposalStatus(proposal, statusUpdate, user)
   } catch (error: any) {
     throw new RequestError(`Unable to update proposal: ${error.message}`, RequestError.Forbidden)
   }
