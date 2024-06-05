@@ -169,19 +169,31 @@ export class ProjectService {
   }
 
   static async migrateProjects() {
-    const { data: projects } = await this.getProjects()
-    const migratedProjects = await ProjectModel.migrate(projects)
+    const migrationResult = { migratedProjects: 0, migrationsFinished: 0, migrationErrors: [] as string[], error: '' }
+    try {
+      const { data: projects } = await this.getProjects()
+      const migratedProjects = await ProjectModel.migrate(projects)
+      migrationResult.migratedProjects = migratedProjects.length
 
-    inBackground(async () => {
       for (const project of migratedProjects) {
-        const proposal = await ProposalService.getProposal(project.proposal_id)
-        await ProjectService.createPersonnel(proposal, project, new Date(project.created_at))
-        await ProjectService.createMilestones(proposal, project, new Date(project.created_at))
+        try {
+          const proposal = await ProposalService.getProposal(project.proposal_id)
+          await ProjectService.createMilestones(proposal, project, new Date(project.created_at))
+          await ProjectService.createPersonnel(proposal, project, new Date(project.created_at))
+          migrationResult.migrationsFinished++
+        } catch (e) {
+          migrationResult.migrationErrors.push(`Project ${project.id} failed with: ${e}`)
+        }
       }
-      await UpdateModel.setProjectIds()
-    })
 
-    return migratedProjects
+      await UpdateModel.setProjectIds()
+      return migrationResult
+    } catch (e) {
+      const message = `Migration failed: ${e}`
+      console.error(message)
+      migrationResult.error = message
+      return migrationResult
+    }
   }
 
   private static async createProject(proposal: ProposalWithOutcome) {
