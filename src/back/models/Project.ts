@@ -1,6 +1,7 @@
 import crypto from 'crypto'
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import { SQL, join, table } from 'decentraland-gatsby/dist/entities/Database/utils'
+import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
 import CoauthorModel from '../../entities/Coauthor/model'
@@ -93,5 +94,29 @@ export default class ProjectModel extends Model<ProjectAttributes> {
     `
 
     return this.namedQuery<ProjectAttributes>(`create_multiple_projects`, query)
+  }
+
+  static async isAuthorOrCoauthor(user: string, projectId: string): Promise<boolean> {
+    if (!isUUID(projectId || '')) {
+      throw new Error(`Invalid project id: "${projectId}"`)
+    }
+    if (!isEthereumAddress(user)) {
+      throw new Error(`Invalid user: "${user}"`)
+    }
+
+    const query = SQL`
+      SELECT EXISTS (
+        SELECT 1
+        FROM ${table(ProjectModel)} pr
+        JOIN ${table(ProposalModel)} p ON pr.proposal_id = p.id
+        LEFT JOIN ${table(CoauthorModel)} co ON pr.proposal_id = co.proposal_id 
+              AND co.status = ${CoauthorStatus.APPROVED}
+        WHERE pr.id = ${projectId}
+          AND (p.user = ${user} OR co.address = ${user})
+      ) AS "exists"
+    `
+
+    const result = await this.namedQuery<{ exists: boolean }>(`is_author_or_coauthor`, query)
+    return result[0]?.exists || false
   }
 }

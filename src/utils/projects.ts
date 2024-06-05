@@ -1,4 +1,3 @@
-import { Project } from '../back/models/Project'
 import { TransparencyVesting } from '../clients/Transparency'
 import { ProjectStatus, TransparencyProjectStatus } from '../entities/Grant/types'
 import {
@@ -7,7 +6,6 @@ import {
   ProposalProject,
   ProposalWithProject,
 } from '../entities/Proposal/types'
-import { isSameAddress } from '../entities/Snapshot/utils'
 
 import Time from './date/Time'
 
@@ -88,8 +86,4 @@ export function createProposalProject(proposal: ProposalWithProject, vesting?: T
     },
     ...vestingData,
   }
-}
-
-export function isProjectAuthorOrCoauthor(user: string, project: Project) {
-  return isSameAddress(user, project.author) || !!project.coauthors?.some((coauthor) => isSameAddress(user, coauthor))
 }

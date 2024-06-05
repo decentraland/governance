@@ -4,18 +4,27 @@ import handleAPI, { handleJSON } from 'decentraland-gatsby/dist/entities/Route/h
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
-import { PersonnelInCreationSchema } from '../../entities/Project/types'
+import {
+  PersonnelInCreationSchema,
+  ProjectLinkInCreationSchema,
+  ProjectMilestoneInCreationSchema,
+} from '../../entities/Project/types'
 import CacheService, { TTL_1_HS } from '../../services/CacheService'
 import { ProjectService } from '../../services/ProjectService'
-import { isProjectAuthorOrCoauthor } from '../../utils/projects'
 import PersonnelModel, { PersonnelAttributes } from '../models/Personnel'
-import { isValidDate, validateId } from '../utils/validations'
+import ProjectLinkModel, { ProjectLink } from '../models/ProjectLink'
+import ProjectMilestoneModel, { ProjectMilestone } from '../models/ProjectMilestone'
+import { isValidDate, validateAddress, validateId } from '../utils/validations'
 
 export default routes((route) => {
   const withAuth = auth()
   route.get('/projects', handleJSON(getProjects))
   route.post('/projects/personnel/', withAuth, handleAPI(addPersonnel))
   route.delete('/projects/personnel/:personnel_id', withAuth, handleAPI(deletePersonnel))
+  route.post('/projects/links/', withAuth, handleAPI(addLink))
+  route.delete('/projects/links/:link_id', withAuth, handleAPI(deleteLink))
+  route.post('/projects/milestones/', withAuth, handleAPI(addMilestone))
+  route.delete('/projects/milestones/:milestone_id', withAuth, handleAPI(deleteMilestone))
   route.get('/projects/:project', handleAPI(getProject))
   route.get('/projects/pitches-total', handleJSON(getOpenPitchesTotal))
   route.get('/projects/tenders-total', handleJSON(getOpenTendersTotal))
@@ -68,21 +77,25 @@ async function getOpenTendersTotal() {
   return await ProjectService.getOpenTendersTotal()
 }
 
+async function validateCanEditProject(user: string, projectId: string) {
+  validateId(projectId)
+  validateAddress(user)
+  const isValidEditor = await ProjectService.isAuthorOrCoauthor(user, projectId)
+  if (!isValidEditor) {
+    throw new RequestError("Only the project's authors and coauthors can edit the project", RequestError.Unauthorized)
+  }
+}
+
 async function addPersonnel(req: WithAuth): Promise<PersonnelAttributes> {
   const user = req.auth!
   const { personnel } = req.body
-  validateId(personnel.project_id)
-  const project = await ProjectService.getProject(personnel.project_id)
-  if (!project) {
-    throw new RequestError(`Project "${personnel.project_id}" not found`, RequestError.NotFound)
-  }
-  if (!isProjectAuthorOrCoauthor(user, project)) {
-    throw new RequestError("Only the project's authors and coauthors can create personnel", RequestError.Unauthorized)
-  }
+  const projectId = personnel.project_id
+  await validateCanEditProject(user, projectId)
   const parsedPersonnel = PersonnelInCreationSchema.safeParse(personnel)
   if (!parsedPersonnel.success) {
     throw new RequestError(`Invalid personnel: ${parsedPersonnel.error.message}`, RequestError.BadRequest)
   }
+
   return await ProjectService.addPersonnel(parsedPersonnel.data, user)
 }
 
@@ -94,12 +107,60 @@ async function deletePersonnel(req: WithAuth<Request<{ personnel_id: string }>>)
   if (!personnel) {
     throw new RequestError(`Personnel "${personnel_id}" not found`, RequestError.NotFound)
   }
-  const project = await ProjectService.getProject(personnel.project_id)
-  if (!project) {
-    throw new RequestError(`Project "${personnel.project_id}" not found`, RequestError.NotFound)
-  }
-  if (!isProjectAuthorOrCoauthor(user, project)) {
-    throw new RequestError("Only the project's authors and coauthors can delete personnel", RequestError.Unauthorized)
-  }
+  await validateCanEditProject(user, personnel.project_id)
+
   return await ProjectService.deletePersonnel(personnel_id, user)
+}
+
+async function addLink(req: WithAuth): Promise<ProjectLink> {
+  const user = req.auth!
+  const { project_link } = req.body
+  await validateCanEditProject(user, project_link.project_id)
+  const parsedLink = ProjectLinkInCreationSchema.safeParse(project_link)
+  if (!parsedLink.success) {
+    throw new RequestError(`Invalid link: ${parsedLink.error.message}`, RequestError.BadRequest)
+  }
+
+  return await ProjectService.addLink(parsedLink.data, user)
+}
+
+async function deleteLink(req: WithAuth<Request<{ link_id: string }>>): Promise<string | null> {
+  const user = req.auth!
+  const link_id = req.params.link_id
+  validateId(link_id)
+  const projectLink = await ProjectLinkModel.findOne<ProjectLink>(link_id)
+  if (!projectLink) {
+    throw new RequestError(`Link "${link_id}" not found`, RequestError.NotFound)
+  }
+  await validateCanEditProject(user, projectLink.project_id)
+
+  return await ProjectService.deleteLink(link_id)
+}
+async function addMilestone(req: WithAuth): Promise<ProjectMilestone> {
+  const user = req.auth!
+  const { milestone } = req.body
+  await validateCanEditProject(user, milestone.project_id)
+  const formattedMilestone = {
+    ...milestone,
+    delivery_date: new Date(milestone.delivery_date),
+  }
+  const parsedMilestone = ProjectMilestoneInCreationSchema.safeParse(formattedMilestone)
+  if (!parsedMilestone.success) {
+    throw new RequestError(`Invalid milestone: ${parsedMilestone.error.message}`, RequestError.BadRequest)
+  }
+
+  return await ProjectService.addMilestone(parsedMilestone.data, user)
+}
+
+async function deleteMilestone(req: WithAuth<Request<{ milestone_id: string }>>): Promise<string | null> {
+  const user = req.auth!
+  const milestone_id = req.params.milestone_id
+  validateId(milestone_id)
+  const milestone = await ProjectMilestoneModel.findOne<ProjectMilestone>(milestone_id)
+  if (!milestone) {
+    throw new RequestError(`Milestone "${milestone_id}" not found`, RequestError.NotFound)
+  }
+  await validateCanEditProject(user, milestone.project_id)
+
+  return await ProjectService.deleteMilestone(milestone_id)
 }

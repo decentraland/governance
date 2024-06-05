@@ -1,6 +1,7 @@
 import camelCase from 'lodash/camelCase'
 import cloneDeep from 'lodash/cloneDeep'
 
+import { MILESTONE_SUBMIT_LIMIT } from '../Proposal/constants'
 import { toNewGrantCategory } from '../QuarterCategoryBudget/utils'
 
 export const GRANT_PROPOSAL_MIN_BUDGET = 100
@@ -137,6 +138,7 @@ export const GrantRequestGeneralInfoSchema = {
       additionalProperties: false,
       required: [...Object.keys(MilestoneItemSchema)],
       properties: MilestoneItemSchema,
+      maxItems: MILESTONE_SUBMIT_LIMIT,
     },
   },
   coAuthors: {
