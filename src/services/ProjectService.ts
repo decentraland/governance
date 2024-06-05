@@ -20,7 +20,6 @@ import {
   ProposalProjectWithUpdate,
   ProposalStatus,
   ProposalType,
-  ProposalWithProject,
 } from '../entities/Proposal/types'
 import { DEFAULT_CHOICES, asNumber, getProposalEndDate, isProjectProposal } from '../entities/Proposal/utils'
 import UpdateModel from '../entities/Updates/model'
@@ -258,7 +257,7 @@ export class ProjectService {
     await ProjectMilestoneModel.createMany(newMilestones)
   }
 
-  static async getProject(id: string) {
+  static async getUpdatedProject(id: string) {
     const project = await ProjectModel.getProject(id)
     project.status = await ProjectService.updateStatus(project)
     if (!project) {
@@ -332,14 +331,5 @@ export class ProjectService {
 
   static async isAuthorOrCoauthor(user: string, projectId: string) {
     return await ProjectModel.isAuthorOrCoauthor(user, projectId)
-  }
-
-  static async startOrResumeProject(proposal: ProposalWithProject, updated_at: Date) {
-    if (!proposal.project_id) throw new Error(`Project not found for proposal: "${proposal.id}"`)
-    if (proposal.project_status === ProjectStatus.Pending || proposal.project_status === ProjectStatus.Paused) {
-      await ProjectModel.update({ status: ProjectStatus.InProgress, updated_at }, { id: proposal.project_id })
-    } else {
-      throw new Error(`Cannot update ${proposal.project_status} Project to In Progress for proposal: "${proposal.id}"`)
-    }
   }
 }
