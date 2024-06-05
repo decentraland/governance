@@ -301,7 +301,6 @@ export class ProposalService {
       const vestingContractData = await getVestingContractData(latestVesting, proposal.id)
       await UpdateModel.createPendingUpdates(proposal.id, vestingContractData)
       const project = await ProjectService.getUpdatedProject(proposal.project_id!)
-      updatedProposal.project_id = project.id
       updatedProposal.project_status = project.status
       NotificationService.projectProposalEnacted(proposal)
     }
