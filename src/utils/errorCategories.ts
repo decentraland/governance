@@ -8,6 +8,7 @@ export enum ErrorCategory {
   Job = 'Job',
   Profile = 'Profile',
   Proposal = 'Proposal',
+  Project = 'Project',
   Snapshot = 'Snapshot',
   Transparency = 'Transparency',
   Vesting = 'Vesting',

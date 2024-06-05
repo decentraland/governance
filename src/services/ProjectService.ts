@@ -26,11 +26,13 @@ import { IndexedUpdate, UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates } from '../entities/Updates/utils'
 import { formatError, inBackground } from '../helpers'
 import Time from '../utils/date/Time'
+import { ErrorCategory } from '../utils/errorCategories'
 import { isProdEnv } from '../utils/governanceEnvs'
 import logger from '../utils/logger'
 import { createProposalProject } from '../utils/projects'
 
 import { BudgetService } from './BudgetService'
+import { ErrorService } from './ErrorService'
 import { ProposalInCreation, ProposalService } from './ProposalService'
 import { VestingService } from './VestingService'
 
@@ -196,21 +198,29 @@ export class ProjectService {
     }
   }
 
-  private static async createProject(proposal: ProposalWithOutcome) {
-    const creationDate = new Date()
-    const newProject = await ProjectModel.create({
-      id: crypto.randomUUID(),
-      proposal_id: proposal.id,
-      title: proposal.title,
-      about: proposal.configuration.abstract,
-      status: ProjectStatus.Pending,
-      created_at: creationDate,
-    })
+  private static async createProject(proposal: ProposalWithOutcome): Promise<ProjectAttributes | null> {
+    try {
+      const creationDate = new Date()
+      const newProject = await ProjectModel.create({
+        id: crypto.randomUUID(),
+        proposal_id: proposal.id,
+        title: proposal.title,
+        about: proposal.configuration.abstract,
+        status: ProjectStatus.Pending,
+        created_at: creationDate,
+      })
 
-    await ProjectService.createPersonnel(proposal, newProject, creationDate)
-    await ProjectService.createMilestones(proposal, newProject, creationDate)
+      await ProjectService.createPersonnel(proposal, newProject, creationDate)
+      await ProjectService.createMilestones(proposal, newProject, creationDate)
 
-    return newProject
+      return newProject
+    } catch (error) {
+      ErrorService.report('Error creating project', {
+        error: formatError(error as Error),
+        category: ErrorCategory.Project,
+      })
+      return null
+    }
   }
 
   private static async createPersonnel(proposal: ProposalAttributes, project: ProjectAttributes, creationDate: Date) {
@@ -316,5 +326,10 @@ export class ProjectService {
 
   static async isAuthorOrCoauthor(user: string, projectId: string) {
     return await ProjectModel.isAuthorOrCoauthor(user, projectId)
+  }
+
+  static async findProjectByProposalId(proposal_id: string) {
+    const result = await ProjectModel.find<ProjectAttributes>({ proposal_id })
+    return result.length > 0 ? result[0] : null
   }
 }

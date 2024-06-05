@@ -28,6 +28,7 @@ export type ProjectAttributes = {
 
 // TODO: add here all data from other tables (updates, personnel, milestones, etc)
 export type Project = ProjectAttributes & {
+  vesting_addresses: string[]
   personnel: PersonnelAttributes[]
   links: ProjectLink[]
   milestones: ProjectMilestone[]
@@ -49,6 +50,7 @@ export default class ProjectModel extends Model<ProjectAttributes> {
         SELECT
             pr.*,
             p.user as author,
+            p.vesting_addresses as vesting_addresses,
             COALESCE(json_agg(DISTINCT to_jsonb(pe.*)) FILTER (WHERE pe.id IS NOT NULL), '[]')  as personnel,
             COALESCE(json_agg(DISTINCT to_jsonb(mi.*)) FILTER (WHERE mi.id IS NOT NULL), '[]')  as milestones,
             COALESCE(json_agg(DISTINCT to_jsonb(li.*)) FILTER (WHERE li.id IS NOT NULL), '[]')  as links,
@@ -61,7 +63,7 @@ export default class ProjectModel extends Model<ProjectAttributes> {
                  LEFT JOIN ${table(CoauthorModel)} co ON pr.proposal_id = co.proposal_id 
                         AND co.status = ${CoauthorStatus.APPROVED}
         WHERE pr.id = ${id}
-        GROUP BY pr.id, p.user;
+        GROUP BY pr.id, p.user, p.vesting_addresses;
     `
 
     const result = await this.namedQuery<Project>(`get_project`, query)

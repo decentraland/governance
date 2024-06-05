@@ -11,26 +11,39 @@ import toNumber from 'lodash/toNumber'
 import ProposalModel from '../../entities/Proposal/model'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import {
+  FinancialRecord,
   FinancialUpdateSectionSchema,
   GeneralUpdateSectionSchema,
   UpdateGeneralSection,
 } from '../../entities/Updates/types'
-import { isBetweenLateThresholdDate } from '../../entities/Updates/utils'
+import {
+  getCurrentUpdate,
+  getFundsReleasedSinceLatestUpdate,
+  getLatestUpdate,
+  getNextPendingUpdate,
+  getPendingUpdates,
+  getPublicUpdates,
+  getReleases,
+} from '../../entities/Updates/utils'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
 import { FinancialService } from '../../services/FinancialService'
-import Time from '../../utils/date/Time'
+import { ProjectService } from '../../services/ProjectService'
+import { VestingService } from '../../services/VestingService'
 import { ErrorCategory } from '../../utils/errorCategories'
+import type { Project } from '../models/Project'
 import { CoauthorService } from '../services/coauthor'
 import { UpdateService } from '../services/update'
 
 export default routes((route) => {
   const withAuth = auth()
+  route.get('/updates', handleAPI(getProjectUpdates))
+  route.post('/updates', withAuth, handleAPI(createProjectUpdate))
   route.get('/updates/financials', handleAPI(getAllFinancialRecords))
-  route.get('/updates/:update_id', handleAPI(getProposalUpdate))
-  route.patch('/updates/:update_id', withAuth, handleAPI(updateProposalUpdate))
-  route.delete('/updates/:update_id', withAuth, handleAPI(deleteProposalUpdate))
-  route.get('/updates/:update_id/comments', handleAPI(getProposalUpdateComments))
+  route.get('/updates/:update_id', handleAPI(getProjectUpdate))
+  route.patch('/updates/:update_id', withAuth, handleAPI(updateProjectUpdate))
+  route.delete('/updates/:update_id', withAuth, handleAPI(deleteProjectUpdate))
+  route.get('/updates/:update_id/comments', handleAPI(getProjectUpdateComments))
 })
 
 async function getAllFinancialRecords(req: Request<{ page_number: string; page_size: string }>) {
@@ -48,7 +61,7 @@ async function getAllFinancialRecords(req: Request<{ page_number: string; page_s
   return await FinancialService.getAll(pageNumber, pageSize)
 }
 
-async function getProposalUpdate(req: Request<{ update_id: string }>) {
+async function getProjectUpdate(req: Request<{ update_id: string }>) {
   const id = req.params.update_id
 
   if (!id) {
@@ -64,7 +77,7 @@ async function getProposalUpdate(req: Request<{ update_id: string }>) {
   return update
 }
 
-async function getProposalUpdateComments(req: Request<{ update_id: string }>) {
+async function getProjectUpdateComments(req: Request<{ update_id: string }>) {
   const update = await UpdateService.getById(req.params.update_id)
   if (!update) {
     throw new RequestError('Update not found', RequestError.NotFound)
@@ -92,7 +105,7 @@ async function getProposalUpdateComments(req: Request<{ update_id: string }>) {
 }
 
 const generalSectionValidator = schema.compile(GeneralUpdateSectionSchema)
-async function updateProposalUpdate(req: WithAuth<Request<{ update_id: string }>>) {
+async function updateProjectUpdate(req: WithAuth<Request<{ update_id: string }>>) {
   const id = req.params.update_id
   const { author, financial_records, ...body } = req.body
   const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<UpdateGeneralSection>(
@@ -112,23 +125,16 @@ async function updateProposalUpdate(req: WithAuth<Request<{ update_id: string }>
 
   const user = req.auth
 
-  const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: update.proposal_id })
-  const isAuthorOrCoauthor =
-    user && (proposal?.user === user || (await CoauthorService.isCoauthor(update.proposal_id, user))) && author === user
+  const project = await ProjectService.getProject(update.project_id)
+  const isAuthorOrCoauthor = ProjectService.isAuthorOrCoauthor(user!, project.id)
 
-  if (!proposal || !isAuthorOrCoauthor) {
+  if (!isAuthorOrCoauthor) {
     throw new RequestError(`Unauthorized`, RequestError.Forbidden)
   }
 
-  const now = new Date()
-  const isOnTime = Time(now).isBefore(update.due_date)
-
-  if (!isOnTime && !isBetweenLateThresholdDate(update.due_date)) {
-    throw new RequestError(`Update is not on time: "${update.id}"`, RequestError.BadRequest)
-  }
-
-  return await UpdateService.updateProposalUpdate(
+  return await UpdateService.updateProjectUpdate(
     update,
+    project,
     {
       author,
       health,
@@ -139,15 +145,11 @@ async function updateProposalUpdate(req: WithAuth<Request<{ update_id: string }>
       additional_notes,
       financial_records: parsedRecords,
     },
-    id,
-    proposal,
-    user!,
-    now,
-    isOnTime
+    user!
   )
 }
 
-async function deleteProposalUpdate(req: WithAuth<Request<{ update_id: string }>>) {
+async function deleteProjectUpdate(req: WithAuth<Request<{ update_id: string }>>) {
   const id = req.params.update_id
   if (!id || typeof id !== 'string') {
     throw new RequestError(`Missing or invalid id`, RequestError.BadRequest)
@@ -178,4 +180,90 @@ async function deleteProposalUpdate(req: WithAuth<Request<{ update_id: string }>
   UpdateService.commentUpdateDeleteInDiscourse(update)
 
   return true
+}
+
+function parseFinancialRecords(financial_records: unknown) {
+  const parsedResult = FinancialUpdateSectionSchema.safeParse({ financial_records })
+  if (!parsedResult.success) {
+    ErrorService.report('Submission of invalid financial records', {
+      error: parsedResult.error,
+      category: ErrorCategory.Financial,
+    })
+    throw new RequestError(`Invalid financial records`, RequestError.BadRequest)
+  }
+  return parsedResult.data.financial_records
+}
+
+async function validateFinancialRecords(
+  project: Project,
+  financial_records: unknown
+): Promise<FinancialRecord[] | null> {
+  const { proposal_id, vesting_addresses } = project
+  const [vestingData, updates] = await Promise.all([
+    VestingService.getVestingInfo(vesting_addresses),
+    UpdateService.getAllByProposalId(proposal_id),
+  ])
+
+  const releases = vestingData ? getReleases(vestingData) : undefined
+  const publicUpdates = getPublicUpdates(updates)
+  const latestUpdate = getLatestUpdate(publicUpdates || [])
+  const { releasedFunds } = getFundsReleasedSinceLatestUpdate(latestUpdate, releases)
+  return releasedFunds > 0 ? parseFinancialRecords(financial_records) : null
+}
+
+async function createProjectUpdate(req: WithAuth) {
+  const user = req.auth!
+  const { project_id, author, financial_records, ...body } = req.body
+  const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<UpdateGeneralSection>(
+    schema.compile(GeneralUpdateSectionSchema),
+    body
+  )
+  try {
+    const project = await ProjectService.getProject(project_id)
+    const isAuthorOrCoauthor = ProjectService.isAuthorOrCoauthor(user!, project.id)
+    if (!isAuthorOrCoauthor) {
+      throw new RequestError(`Unauthorized`, RequestError.Forbidden)
+    }
+    const financialRecords = await validateFinancialRecords(project, financial_records)
+    return await UpdateService.create(
+      {
+        author,
+        health,
+        introduction,
+        highlights,
+        blockers,
+        next_steps,
+        additional_notes,
+        financial_records: financialRecords,
+      },
+      project,
+      user
+    )
+  } catch (error) {
+    ErrorService.report('Error creating update', {
+      error,
+      category: ErrorCategory.Update,
+    })
+    throw new RequestError(`Something went wrong: ${error}`, RequestError.InternalServerError)
+  }
+}
+
+async function getProjectUpdates(req: Request) {
+  const project_id = req.query.project_id as string
+  if (!project_id) {
+    throw new RequestError(`Project not found: "${project_id}"`, RequestError.NotFound)
+  }
+
+  const updates = await UpdateService.getAllByProjectId(project_id)
+  const publicUpdates = getPublicUpdates(updates)
+  const nextUpdate = getNextPendingUpdate(updates)
+  const currentUpdate = getCurrentUpdate(updates)
+  const pendingUpdates = getPendingUpdates(updates)
+
+  return {
+    publicUpdates,
+    pendingUpdates,
+    nextUpdate,
+    currentUpdate,
+  }
 }
