@@ -8,8 +8,6 @@ import { Request } from 'express'
 import isNaN from 'lodash/isNaN'
 import toNumber from 'lodash/toNumber'
 
-import ProposalModel from '../../entities/Proposal/model'
-import { ProposalAttributes } from '../../entities/Proposal/types'
 import {
   FinancialRecord,
   FinancialUpdateSectionSchema,
@@ -32,8 +30,8 @@ import { ProjectService } from '../../services/ProjectService'
 import { VestingService } from '../../services/VestingService'
 import { ErrorCategory } from '../../utils/errorCategories'
 import type { Project } from '../models/Project'
-import { CoauthorService } from '../services/coauthor'
 import { UpdateService } from '../services/update'
+import { validateCanEditProject } from '../utils/validations'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -123,14 +121,10 @@ async function updateProjectUpdate(req: WithAuth<Request<{ update_id: string }>>
     throw new RequestError(`Update not found: "${id}"`, RequestError.NotFound)
   }
 
-  const user = req.auth
+  const user = req.auth!
 
   const project = await ProjectService.getProject(update.project_id)
-  const isAuthorOrCoauthor = ProjectService.isAuthorOrCoauthor(user!, project.id)
-
-  if (!isAuthorOrCoauthor) {
-    throw new RequestError(`Unauthorized`, RequestError.Forbidden)
-  }
+  await validateCanEditProject(user, project.id)
 
   return await UpdateService.updateProjectUpdate(
     update,
@@ -161,18 +155,11 @@ async function deleteProjectUpdate(req: WithAuth<Request<{ update_id: string }>>
     throw new RequestError(`Update not found: "${id}"`, RequestError.NotFound)
   }
 
+  const user = req.auth!
+  validateCanEditProject(user, update.project_id)
+
   if (!update.completion_date) {
     throw new RequestError(`Update is not completed: "${update.id}"`, RequestError.BadRequest)
-  }
-
-  const user = req.auth
-  const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: update.proposal_id })
-
-  const isAuthorOrCoauthor =
-    user && (proposal?.user === user || (await CoauthorService.isCoauthor(update.proposal_id, user)))
-
-  if (!proposal || !isAuthorOrCoauthor) {
-    throw new RequestError(`Unauthorized`, RequestError.Forbidden)
   }
 
   await FinancialService.deleteRecordsByUpdateId(update.id)
@@ -198,10 +185,10 @@ async function validateFinancialRecords(
   project: Project,
   financial_records: unknown
 ): Promise<FinancialRecord[] | null> {
-  const { proposal_id, vesting_addresses } = project
+  const { id, vesting_addresses } = project
   const [vestingData, updates] = await Promise.all([
     VestingService.getVestingInfo(vesting_addresses),
-    UpdateService.getAllByProposalId(proposal_id),
+    UpdateService.getAllByProjectId(id),
   ])
 
   const releases = vestingData ? getReleases(vestingData) : undefined
@@ -220,10 +207,8 @@ async function createProjectUpdate(req: WithAuth) {
   )
   try {
     const project = await ProjectService.getProject(project_id)
-    const isAuthorOrCoauthor = ProjectService.isAuthorOrCoauthor(user!, project.id)
-    if (!isAuthorOrCoauthor) {
-      throw new RequestError(`Unauthorized`, RequestError.Forbidden)
-    }
+    await validateCanEditProject(user, project.id)
+
     const financialRecords = await validateFinancialRecords(project, financial_records)
     return await UpdateService.create(
       {

@@ -6,6 +6,7 @@ import { DiscordService } from '../back/services/discord'
 import { EventsService } from '../back/services/events'
 import { NotificationService } from '../back/services/notification'
 import { UpdateService } from '../back/services/update'
+import { validateId } from '../back/utils/validations'
 import { SnapshotProposalContent } from '../clients/SnapshotTypes'
 import UnpublishedBidModel from '../entities/Bid/model'
 import CoauthorModel from '../entities/Coauthor/model'
@@ -294,7 +295,8 @@ export class ProposalService {
     await ProposalModel.update<ProposalAttributes>(update, { id })
 
     if (isEnactedStatus && isProject) {
-      await UpdateService.initialize(proposal.project_id!, vesting_addresses)
+      const validatedProjectId = validateId(proposal.project_id)
+      await UpdateService.initialize(validatedProjectId, vesting_addresses)
       await ProjectService.startOrResumeProject(proposal, updated_at)
       NotificationService.projectProposalEnacted(proposal)
     }

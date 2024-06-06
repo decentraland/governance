@@ -14,7 +14,7 @@ import { ProjectService } from '../../services/ProjectService'
 import PersonnelModel, { PersonnelAttributes } from '../models/Personnel'
 import ProjectLinkModel, { ProjectLink } from '../models/ProjectLink'
 import ProjectMilestoneModel, { ProjectMilestone } from '../models/ProjectMilestone'
-import { isValidDate, validateAddress, validateId } from '../utils/validations'
+import { isValidDate, validateCanEditProject, validateId } from '../utils/validations'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -75,15 +75,6 @@ async function getOpenPitchesTotal() {
 
 async function getOpenTendersTotal() {
   return await ProjectService.getOpenTendersTotal()
-}
-
-async function validateCanEditProject(user: string, projectId: string) {
-  validateId(projectId)
-  validateAddress(user)
-  const isValidEditor = await ProjectService.isAuthorOrCoauthor(user, projectId)
-  if (!isValidEditor) {
-    throw new RequestError("Only the project's authors and coauthors can edit the project", RequestError.Unauthorized)
-  }
 }
 
 async function addPersonnel(req: WithAuth): Promise<PersonnelAttributes> {

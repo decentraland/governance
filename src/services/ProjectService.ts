@@ -329,11 +329,6 @@ export class ProjectService {
     return await ProjectModel.isAuthorOrCoauthor(user, projectId)
   }
 
-  static async findProjectByProposalId(proposal_id: string) {
-    const result = await ProjectModel.find<ProjectAttributes>({ proposal_id })
-    return result.length > 0 ? result[0] : null
-  }
-
   static async startOrResumeProject(proposal: ProposalWithProject, updated_at: Date) {
     if (!proposal.project_id) throw new Error(`Project not found for proposal: "${proposal.id}"`)
     if (proposal.project_status === ProjectStatus.Pending || proposal.project_status === ProjectStatus.Paused) {
