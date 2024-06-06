@@ -5,8 +5,9 @@ import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import { DiscordService } from '../back/services/discord'
 import { EventsService } from '../back/services/events'
 import { NotificationService } from '../back/services/notification'
+import { UpdateService } from '../back/services/update'
+import { validateId } from '../back/utils/validations'
 import { SnapshotProposalContent } from '../clients/SnapshotTypes'
-import { getVestingContractData } from '../clients/VestingData'
 import UnpublishedBidModel from '../entities/Bid/model'
 import CoauthorModel from '../entities/Coauthor/model'
 import isDAOCommittee from '../entities/Committee/isDAOCommittee'
@@ -23,7 +24,6 @@ import {
 } from '../entities/Proposal/types'
 import { isGrantProposalSubmitEnabled, isProjectProposal } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
-import UpdateModel from '../entities/Updates/model'
 import VotesModel from '../entities/Votes/model'
 import { getEnvironmentChainId } from '../helpers'
 import { DiscoursePost } from '../shared/types/discourse'
@@ -274,7 +274,11 @@ export class ProposalService {
     return priorityProposalsWithBidsInfo
   }
 
-  static async updateProposalStatus(proposal: ProposalWithProject, statusUpdate: ProposalStatusUpdate, user: string) {
+  static async updateProposalStatus(
+    proposal: ProposalWithProject,
+    statusUpdate: ProposalStatusUpdate,
+    user: string
+  ): Promise<ProposalWithProject> {
     const { status: newStatus, vesting_addresses } = statusUpdate
     const { id } = proposal
     const isProject = isProjectProposal(proposal.type)
@@ -297,9 +301,8 @@ export class ProposalService {
     const updatedProposal = { ...proposal, ...update }
 
     if (isEnactedStatus && isProject) {
-      const latestVesting = vesting_addresses![vesting_addresses!.length - 1]
-      const vestingContractData = await getVestingContractData(latestVesting, proposal.id)
-      await UpdateModel.createPendingUpdates(proposal.id, vestingContractData)
+      const validatedProjectId = validateId(proposal.project_id)
+      await UpdateService.initialize(validatedProjectId, vesting_addresses)
       const project = await ProjectService.getUpdatedProject(proposal.project_id!)
       updatedProposal.project_status = project.status
       NotificationService.projectProposalEnacted(proposal)

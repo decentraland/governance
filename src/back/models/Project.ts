@@ -27,12 +27,12 @@ export type ProjectAttributes = {
 }
 
 export type Project = ProjectAttributes & {
+  vesting_addresses: string[]
   personnel: PersonnelAttributes[]
   links: ProjectLink[]
   milestones: ProjectMilestone[]
   author: string
   coauthors: string[] | null
-  vesting_addresses: string[]
 }
 
 export default class ProjectModel extends Model<ProjectAttributes> {

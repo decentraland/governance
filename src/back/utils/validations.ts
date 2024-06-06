@@ -13,6 +13,7 @@ import { ProposalAttributes, ProposalStatus, ProposalStatusUpdate } from '../../
 import { isProjectProposal, isValidProposalStatusUpdate } from '../../entities/Proposal/utils'
 import { validateUniqueAddresses } from '../../entities/Transparency/utils'
 import { ErrorService } from '../../services/ErrorService'
+import { ProjectService } from '../../services/ProjectService'
 import { EventFilterSchema } from '../../shared/types/events'
 import { ErrorCategory } from '../../utils/errorCategories'
 
@@ -69,7 +70,7 @@ export function validateProposalFields(fields: unknown) {
   }
 }
 
-export function validateId(id?: string) {
+export function validateId(id?: string | null) {
   if (!(id && isUUID(id))) {
     throw new RequestError('Invalid id', RequestError.BadRequest)
   }
@@ -180,5 +181,14 @@ export function validateStatusUpdate(proposal: ProposalAttributes, statusUpdate:
     if (!validateUniqueAddresses(vesting_addresses)) {
       throw new RequestError('Vesting addresses must be unique', RequestError.BadRequest)
     }
+  }
+}
+
+export async function validateCanEditProject(user: string, projectId: string) {
+  validateId(projectId)
+  validateAddress(user)
+  const canEdit = await ProjectService.isAuthorOrCoauthor(user, projectId)
+  if (!canEdit) {
+    throw new RequestError("Only the project's authors and coauthors can edit the project", RequestError.Unauthorized)
   }
 }

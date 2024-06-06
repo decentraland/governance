@@ -23,6 +23,7 @@ export type UpdateAttributes = Partial<UpdateGeneralSection> &
   Partial<UpdateFinancialSection> & {
     id: string
     proposal_id: string
+    project_id: string
     author?: string
     status: UpdateStatus
     due_date?: Date

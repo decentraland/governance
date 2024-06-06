@@ -198,21 +198,29 @@ export class ProjectService {
     }
   }
 
-  private static async createProject(proposal: ProposalWithOutcome) {
-    const creationDate = new Date()
-    const newProject = await ProjectModel.create({
-      id: crypto.randomUUID(),
-      proposal_id: proposal.id,
-      title: proposal.title,
-      about: proposal.configuration.abstract,
-      status: ProjectStatus.Pending,
-      created_at: creationDate,
-    })
+  private static async createProject(proposal: ProposalWithOutcome): Promise<ProjectAttributes | null> {
+    try {
+      const creationDate = new Date()
+      const newProject = await ProjectModel.create({
+        id: crypto.randomUUID(),
+        proposal_id: proposal.id,
+        title: proposal.title,
+        about: proposal.configuration.abstract,
+        status: ProjectStatus.Pending,
+        created_at: creationDate,
+      })
 
-    await ProjectService.createPersonnel(proposal, newProject, creationDate)
-    await ProjectService.createMilestones(proposal, newProject, creationDate)
+      await ProjectService.createPersonnel(proposal, newProject, creationDate)
+      await ProjectService.createMilestones(proposal, newProject, creationDate)
 
-    return newProject
+      return newProject
+    } catch (error) {
+      ErrorService.report('Error creating project', {
+        error: formatError(error as Error),
+        category: ErrorCategory.Project,
+      })
+      return null
+    }
   }
 
   private static async createPersonnel(proposal: ProposalAttributes, project: ProjectAttributes, creationDate: Date) {

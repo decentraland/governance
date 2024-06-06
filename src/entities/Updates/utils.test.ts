@@ -22,6 +22,7 @@ type GenerateUpdate = Pick<
 const generateUpdate = (update: GenerateUpdate): UpdateAttributes => ({
   id: crypto.randomUUID(),
   proposal_id: crypto.randomUUID(),
+  project_id: crypto.randomUUID(),
   health: update.health,
   introduction: update.introduction,
   highlights: update.highlights,
