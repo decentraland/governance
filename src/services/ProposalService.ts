@@ -274,7 +274,11 @@ export class ProposalService {
     return priorityProposalsWithBidsInfo
   }
 
-  static async updateProposalStatus(proposal: ProposalWithProject, statusUpdate: ProposalStatusUpdate, user: string) {
+  static async updateProposalStatus(
+    proposal: ProposalWithProject,
+    statusUpdate: ProposalStatusUpdate,
+    user: string
+  ): Promise<ProposalWithProject> {
     const { status: newStatus, vesting_addresses } = statusUpdate
     const { id } = proposal
     const isProject = isProjectProposal(proposal.type)
