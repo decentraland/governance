@@ -90,7 +90,6 @@ export default class ProposalModel extends Model<ProposalAttributes> {
 
     return {
       ...this.parse(result[0]),
-      project_id: result[0].project_id,
     }
   }
 

@@ -191,7 +191,7 @@ export class UpdateService {
   static async initialize(projectId: string, initialVestingAddresses?: string[]) {
     if (projectId.length < 0) throw new Error('Unable to create updates for empty project id')
 
-    const project = await ProjectService.getProject(projectId)
+    const project = await ProjectService.getUpdatedProject(projectId)
     const { vesting_addresses, proposal_id } = project
     const vestingAddresses = initialVestingAddresses || vesting_addresses
     const vestingContractData = await getVestingContractData(vestingAddresses[vestingAddresses.length - 1], proposal_id)

@@ -123,7 +123,7 @@ async function updateProjectUpdate(req: WithAuth<Request<{ update_id: string }>>
 
   const user = req.auth!
 
-  const project = await ProjectService.getProject(update.project_id)
+  const project = await ProjectService.getUpdatedProject(update.project_id)
   await validateCanEditProject(user, project.id)
 
   return await UpdateService.updateProjectUpdate(
@@ -206,7 +206,7 @@ async function createProjectUpdate(req: WithAuth) {
     body
   )
   try {
-    const project = await ProjectService.getProject(project_id)
+    const project = await ProjectService.getUpdatedProject(project_id)
     await validateCanEditProject(user, project.id)
 
     const financialRecords = await validateFinancialRecords(project, financial_records)

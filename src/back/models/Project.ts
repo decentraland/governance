@@ -26,7 +26,6 @@ export type ProjectAttributes = {
   created_at: Date
 }
 
-// TODO: add here all data from other tables (updates, personnel, milestones, etc)
 export type Project = ProjectAttributes & {
   vesting_addresses: string[]
   personnel: PersonnelAttributes[]
