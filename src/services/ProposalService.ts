@@ -294,15 +294,17 @@ export class ProposalService {
     }
     await ProposalModel.update<ProposalAttributes>(update, { id })
 
+    const updatedProposal = { ...proposal, ...update }
+
     if (isEnactedStatus && isProject) {
       const latestVesting = vesting_addresses![vesting_addresses!.length - 1]
       const vestingContractData = await getVestingContractData(latestVesting, proposal.id)
       await UpdateModel.createPendingUpdates(proposal.id, vestingContractData)
-      await ProjectService.startOrResumeProject(proposal, updated_at)
+      const project = await ProjectService.getUpdatedProject(proposal.project_id!)
+      updatedProposal.project_status = project.status
       NotificationService.projectProposalEnacted(proposal)
     }
 
-    const updatedProposal = await this.getProposalWithProject(id)
     DiscourseService.commentUpdatedProposal(updatedProposal)
 
     return updatedProposal
