@@ -46,7 +46,7 @@ describe('UpdateModel', () => {
     jest.spyOn(crypto, 'randomUUID').mockReturnValue(UUID)
     jest.useFakeTimers()
     jest.setSystemTime(FAKE_NOW)
-    jest.spyOn(ProjectService, 'getProject').mockResolvedValue(MOCK_PROJECT)
+    jest.spyOn(ProjectService, 'getUpdatedProject').mockResolvedValue(MOCK_PROJECT)
   })
 
   describe('createPendingUpdates', () => {
