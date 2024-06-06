@@ -6,7 +6,7 @@ import { DiscordService } from '../back/services/discord'
 import { EventsService } from '../back/services/events'
 import { NotificationService } from '../back/services/notification'
 import { SnapshotProposalContent } from '../clients/SnapshotTypes'
-import { getVestingContractData } from '../clients/VestingData'
+import { getVestingWithLogs } from '../clients/VestingData'
 import UnpublishedBidModel from '../entities/Bid/model'
 import CoauthorModel from '../entities/Coauthor/model'
 import isDAOCommittee from '../entities/Committee/isDAOCommittee'
@@ -298,8 +298,8 @@ export class ProposalService {
 
     if (isEnactedStatus && isProject) {
       const latestVesting = vesting_addresses![vesting_addresses!.length - 1]
-      const vestingContractData = await getVestingContractData(latestVesting, proposal.id)
-      await UpdateModel.createPendingUpdates(proposal.id, vestingContractData)
+      const vestingWithLogs = await getVestingWithLogs(latestVesting, proposal.id)
+      await UpdateModel.createPendingUpdates(proposal.id, vestingWithLogs)
       const project = await ProjectService.getUpdatedProject(proposal.project_id!)
       updatedProposal.project_status = project.status
       NotificationService.projectProposalEnacted(proposal)

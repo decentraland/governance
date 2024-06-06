@@ -5,7 +5,7 @@ import ProjectModel, { Project, ProjectAttributes } from '../back/models/Project
 import ProjectLinkModel, { ProjectLink } from '../back/models/ProjectLink'
 import ProjectMilestoneModel, { ProjectMilestone, ProjectMilestoneStatus } from '../back/models/ProjectMilestone'
 import { TransparencyVesting } from '../clients/Transparency'
-import { getVestingContractData } from '../clients/VestingData'
+import { getVestingWithLogs } from '../clients/VestingData'
 import UnpublishedBidModel from '../entities/Bid/model'
 import { BidProposalConfiguration } from '../entities/Bid/types'
 import { GrantTier } from '../entities/Grant/GrantTier'
@@ -45,7 +45,7 @@ function newestVestingFirst(a: TransparencyVesting, b: TransparencyVesting): num
 }
 
 export class ProjectService {
-  public static async getProjects() {
+  public static async getProposalProjects() {
     const data = await ProposalModel.getProjectList()
     const vestings = await VestingService.getAllVestings()
     const projects: ProposalProjectWithUpdate[] = []
@@ -173,7 +173,7 @@ export class ProjectService {
   static async migrateProjects() {
     const migrationResult = { migratedProjects: 0, migrationsFinished: 0, migrationErrors: [] as string[], error: '' }
     try {
-      const { data: projects } = await this.getProjects()
+      const { data: projects } = await this.getProposalProjects()
       const migratedProjects = await ProjectModel.migrate(projects)
       migrationResult.migratedProjects = migratedProjects.length
 
@@ -259,23 +259,22 @@ export class ProjectService {
 
   static async getUpdatedProject(id: string) {
     const project = await ProjectModel.getProject(id)
-    project.status = await ProjectService.updateStatus(project)
     if (!project) {
       throw new Error(`Project not found: "${id}"`)
     }
-    return project
+    return await ProjectService.updateStatusFromVesting(project)
   }
 
-  private static async updateStatus(project: Project) {
+  private static async updateStatusFromVesting(project: Project) {
     try {
       const latestVesting = project.vesting_addresses[project.vesting_addresses.length - 1]
-      const vestingContractData = await getVestingContractData(latestVesting)
-      const updatedProjectStatus = toGovernanceProjectStatus(vestingContractData.status)
+      const vestingWithLogs = await getVestingWithLogs(latestVesting)
+      const updatedProjectStatus = toGovernanceProjectStatus(vestingWithLogs.status)
       await ProjectModel.update({ status: updatedProjectStatus, updated_at: new Date() }, { id: project.id })
-      return updatedProjectStatus
+      return { ...project, status: updatedProjectStatus, vesting: vestingWithLogs }
     } catch (error) {
       ErrorService.report('Unable to update project status', { error, id: project.id, category: ErrorCategory.Project })
-      return project.status
+      return project
     }
   }
 

@@ -1,6 +1,6 @@
 import crypto from 'crypto'
 
-import { VestingInfo } from '../../clients/VestingData'
+import { Vesting } from '../../clients/VestingData'
 import Time from '../../utils/date/Time'
 import { getMonthsBetweenDates } from '../../utils/date/getMonthsBetweenDates'
 
@@ -28,14 +28,15 @@ describe('UpdateModel', () => {
     describe('for a vesting with a duration of almost 3 months', () => {
       describe('when vesting start date is on the 1st of the month', () => {
         const vestingDates = {
-          vestingStartAt: '2020-01-01 00:00:00z',
-          vestingFinishAt: '2020-03-31 00:00:00z',
-        } as VestingInfo
+          start_at: '2020-01-01 00:00:00z',
+          finish_at: '2020-03-31 00:00:00z',
+        } as Vesting
 
         it('calculates the correct amount of pending updates', () => {
-          expect(
-            getMonthsBetweenDates(new Date(vestingDates.vestingStartAt), new Date(vestingDates.vestingFinishAt))
-          ).toEqual({ months: 2, extraDays: 30 })
+          expect(getMonthsBetweenDates(new Date(vestingDates.start_at), new Date(vestingDates.finish_at))).toEqual({
+            months: 2,
+            extraDays: 30,
+          })
           expect(UpdateModel.getAmountOfUpdates(vestingDates)).toEqual(3)
         })
 
@@ -77,14 +78,15 @@ describe('UpdateModel', () => {
 
       describe('when vesting start date is on the 15st of the month', () => {
         const vestingDates = {
-          vestingStartAt: '2020-01-15 00:00:00z',
-          vestingFinishAt: '2020-04-14 00:00:00z',
-        } as VestingInfo
+          start_at: '2020-01-15 00:00:00z',
+          finish_at: '2020-04-14 00:00:00z',
+        } as Vesting
 
         it('calculates the correct amount of pending updates', () => {
-          expect(
-            getMonthsBetweenDates(new Date(vestingDates.vestingStartAt), new Date(vestingDates.vestingFinishAt))
-          ).toEqual({ months: 2, extraDays: 30 })
+          expect(getMonthsBetweenDates(new Date(vestingDates.start_at), new Date(vestingDates.finish_at))).toEqual({
+            months: 2,
+            extraDays: 30,
+          })
           expect(UpdateModel.getAmountOfUpdates(vestingDates)).toEqual(3)
         })
 
@@ -127,15 +129,16 @@ describe('UpdateModel', () => {
 
     describe('for a vesting with a duration of 6 months and some extra days, with a starting date different than the preferred', () => {
       const vestingDates = {
-        vestingStartAt: '2020-11-15 00:00:00z',
-        vestingFinishAt: '2021-05-31 00:00:00z',
-      } as VestingInfo
+        start_at: '2020-11-15 00:00:00z',
+        finish_at: '2021-05-31 00:00:00z',
+      } as Vesting
 
       describe('when vesting start date is on the 15th of the month', () => {
         it('calculates the correct amount of pending updates', () => {
-          expect(
-            getMonthsBetweenDates(new Date(vestingDates.vestingStartAt), new Date(vestingDates.vestingFinishAt))
-          ).toEqual({ months: 6, extraDays: 16 })
+          expect(getMonthsBetweenDates(new Date(vestingDates.start_at), new Date(vestingDates.finish_at))).toEqual({
+            months: 6,
+            extraDays: 16,
+          })
           expect(UpdateModel.getAmountOfUpdates(vestingDates)).toEqual(7)
         })
 
@@ -218,15 +221,16 @@ describe('UpdateModel', () => {
 
     describe('for a vesting with a duration of exactly 6 months', () => {
       const vestingDates = {
-        vestingStartAt: '2020-07-01 00:00:00z',
-        vestingFinishAt: '2021-01-01 00:00:00z',
-      } as VestingInfo
+        start_at: '2020-07-01 00:00:00z',
+        finish_at: '2021-01-01 00:00:00z',
+      } as Vesting
 
       describe('when the vesting contract start date is the first day of the month', () => {
         it('calculates the correct amount of pending updates', () => {
-          expect(
-            getMonthsBetweenDates(new Date(vestingDates.vestingStartAt), new Date(vestingDates.vestingFinishAt))
-          ).toEqual({ months: 6, extraDays: 0 })
+          expect(getMonthsBetweenDates(new Date(vestingDates.start_at), new Date(vestingDates.finish_at))).toEqual({
+            months: 6,
+            extraDays: 0,
+          })
           expect(UpdateModel.getAmountOfUpdates(vestingDates)).toEqual(6)
         })
 

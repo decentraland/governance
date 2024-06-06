@@ -4,6 +4,7 @@ import { SQL, join, table } from 'decentraland-gatsby/dist/entities/Database/uti
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
+import { VestingWithLogs } from '../../clients/VestingData'
 import CoauthorModel from '../../entities/Coauthor/model'
 import { CoauthorStatus } from '../../entities/Coauthor/types'
 import { ProjectStatus } from '../../entities/Grant/types'
@@ -33,6 +34,7 @@ export type Project = ProjectAttributes & {
   author: string
   coauthors: string[] | null
   vesting_addresses: string[]
+  vesting?: VestingWithLogs
 }
 
 export default class ProjectModel extends Model<ProjectAttributes> {

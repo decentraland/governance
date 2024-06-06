@@ -58,7 +58,7 @@ import {
   VpDistribution,
 } from './SnapshotTypes'
 import { TransparencyBudget, TransparencyVesting } from './Transparency'
-import { VestingInfo } from './VestingData'
+import { Vesting } from './VestingData'
 
 type SpecState = {
   title: string
@@ -563,7 +563,7 @@ export class Governance extends API {
   }
 
   async getVestingContractData(addresses: string[]) {
-    return await this.fetchApiResponse<VestingInfo[]>(`/vesting`, { method: 'POST', json: { addresses } })
+    return await this.fetchApiResponse<Vesting[]>(`/vesting`, { method: 'POST', json: { addresses } })
   }
 
   async getUpdateComments(update_id: string) {

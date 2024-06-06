@@ -3,7 +3,7 @@ import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
 import { SQL, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 
 import ProjectModel from '../../back/models/Project'
-import { type VestingInfo } from '../../clients/VestingData'
+import { type Vesting } from '../../clients/VestingData'
 import Time from '../../utils/date/Time'
 import { getMonthsBetweenDates } from '../../utils/date/getMonthsBetweenDates'
 
@@ -14,12 +14,12 @@ export default class UpdateModel extends Model<UpdateAttributes> {
   static withTimestamps = false
   static primaryKey = 'id'
 
-  static async createPendingUpdates(proposalId: string, vestingContractData: VestingInfo) {
+  static async createPendingUpdates(proposalId: string, vestingContractData: Vesting) {
     if (proposalId.length < 0) throw new Error('Unable to create updates for empty proposal id')
 
     const now = new Date()
     const updatesQuantity = this.getAmountOfUpdates(vestingContractData)
-    const firstUpdateStartingDate = Time.utc(vestingContractData.vestingStartAt).startOf('day')
+    const firstUpdateStartingDate = Time.utc(vestingContractData.start_at).startOf('day')
 
     await UpdateModel.delete<UpdateAttributes>({ proposal_id: proposalId, status: UpdateStatus.Pending })
 
@@ -38,11 +38,8 @@ export default class UpdateModel extends Model<UpdateAttributes> {
     return await this.createMany(updates)
   }
 
-  public static getAmountOfUpdates(vestingDates: VestingInfo) {
-    const exactDuration = getMonthsBetweenDates(
-      new Date(vestingDates.vestingStartAt),
-      new Date(vestingDates.vestingFinishAt)
-    )
+  public static getAmountOfUpdates(vestingDates: Vesting) {
+    const exactDuration = getMonthsBetweenDates(new Date(vestingDates.start_at), new Date(vestingDates.finish_at))
     return exactDuration.months + (exactDuration.extraDays > 0 ? 1 : 0)
   }
 

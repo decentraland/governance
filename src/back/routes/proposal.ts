@@ -616,7 +616,7 @@ async function getGrantsByUser(req: Request) {
   const coauthoring = await CoauthorModel.findProposals(address, CoauthorStatus.APPROVED)
   const coauthoringProposalIds = new Set(coauthoring.map((coauthoringAttributes) => coauthoringAttributes.proposal_id))
 
-  const projects = await ProjectService.getProjects()
+  const projects = await ProjectService.getProposalProjects()
   const filteredGrants = projects.data.filter(
     (project) =>
       project.type === ProposalType.Grant &&
@@ -683,12 +683,12 @@ async function validateFinancialRecords(
   proposal: ProposalAttributes,
   financial_records: unknown
 ): Promise<FinancialRecord[] | null> {
-  const [vestingData, updates] = await Promise.all([
-    VestingService.getVestingInfo(proposal.vesting_addresses),
+  const [vestings, updates] = await Promise.all([
+    VestingService.getVestings(proposal.vesting_addresses),
     UpdateService.getAllByProposalId(proposal.id),
   ])
 
-  const releases = vestingData ? getReleases(vestingData) : undefined
+  const releases = vestings ? getReleases(vestings) : undefined
   const publicUpdates = getPublicUpdates(updates)
   const latestUpdate = getLatestUpdate(publicUpdates || [])
   const { releasedFunds } = getFundsReleasedSinceLatestUpdate(latestUpdate, releases)

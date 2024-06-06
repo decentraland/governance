@@ -1,13 +1,7 @@
 import { TransparencyVesting } from '../clients/Transparency'
+import { Vesting } from '../clients/VestingData'
 import { ProjectStatus, VestingStatus } from '../entities/Grant/types'
-import {
-  ProjectVestingData,
-  ProposalAttributes,
-  ProposalProject,
-  ProposalWithProject,
-} from '../entities/Proposal/types'
-
-import Time from './date/Time'
+import { ProjectFunding, ProposalAttributes, ProposalProject, ProposalWithProject } from '../entities/Proposal/types'
 
 export function getHighBudgetVpThreshold(budget: number) {
   return 1200000 + budget * 40
@@ -28,32 +22,24 @@ export function toGovernanceProjectStatus(status: VestingStatus) {
   }
 }
 
-function getProjectVestingData(proposal: ProposalAttributes, vesting?: TransparencyVesting): ProjectVestingData {
+function getFunding(proposal: ProposalAttributes, transparencyVesting?: TransparencyVesting): ProjectFunding {
   if (proposal.enacting_tx) {
+    // one time payment
     return {
-      enacting_tx: proposal.enacting_tx,
-      enacted_at: Time(proposal.updated_at).unix(),
+      enacted_at: proposal.updated_at.toISOString(),
+      one_time_payment: {
+        enacting_tx: proposal.enacting_tx,
+      },
     }
   }
 
-  if (!vesting) {
+  if (!transparencyVesting) {
     return {}
   }
 
-  const { token, vesting_start_at, vesting_finish_at, vesting_total_amount, vesting_released, vesting_releasable } =
-    vesting
-
   return {
-    token,
-    enacted_at: Time(vesting_start_at).unix(),
-    contract: {
-      vesting_total_amount: Math.round(vesting_total_amount),
-      vested_amount: Math.round(vesting_released + vesting_releasable),
-      releasable: Math.round(vesting_releasable),
-      released: Math.round(vesting_released),
-      start_at: Time(vesting_start_at).unix(),
-      finish_at: Time(vesting_finish_at).unix(),
-    },
+    enacted_at: transparencyVesting.vesting_start_at,
+    vesting: toVesting(transparencyVesting),
   }
 }
 
@@ -72,7 +58,7 @@ function getProjectStatus(proposal: ProposalAttributes, vesting?: TransparencyVe
 }
 
 export function createProposalProject(proposal: ProposalWithProject, vesting?: TransparencyVesting): ProposalProject {
-  const vestingData = getProjectVestingData(proposal, vesting)
+  const funding = getFunding(proposal, vesting)
   const status = getProjectStatus(proposal, vesting)
 
   return {
@@ -89,6 +75,33 @@ export function createProposalProject(proposal: ProposalWithProject, vesting?: T
       category: proposal.configuration.category || proposal.type,
       tier: proposal.configuration.tier,
     },
-    ...vestingData,
+    funding,
   }
+}
+
+export function toVesting(transparencyVesting: TransparencyVesting): Vesting {
+  const {
+    token,
+    vesting_start_at,
+    vesting_finish_at,
+    vesting_total_amount,
+    vesting_released,
+    vesting_releasable,
+    vesting_status,
+    vesting_address,
+  } = transparencyVesting
+
+  const vesting: Vesting = {
+    token,
+    address: vesting_address,
+    start_at: vesting_start_at,
+    finish_at: vesting_finish_at,
+    releasable: Math.round(vesting_releasable),
+    released: Math.round(vesting_released),
+    total: Math.round(vesting_total_amount),
+    vested: Math.round(vesting_released + vesting_releasable),
+    status: vesting_status,
+  }
+
+  return vesting
 }
