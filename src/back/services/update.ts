@@ -1,48 +1,75 @@
+import crypto from 'crypto'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 
 import { Discourse } from '../../clients/Discourse'
-import ProposalModel from '../../entities/Proposal/model'
+import { VestingWithLogs, getVestingWithLogs } from '../../clients/VestingData'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import UpdateModel from '../../entities/Updates/model'
 import { UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
-import { getCurrentUpdate, getNextPendingUpdate, getUpdateUrl } from '../../entities/Updates/utils'
+import {
+  getCurrentUpdate,
+  getNextPendingUpdate,
+  getUpdateUrl,
+  isBetweenLateThresholdDate,
+} from '../../entities/Updates/utils'
 import { inBackground } from '../../helpers'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
 import { FinancialService } from '../../services/FinancialService'
+import { ProjectService } from '../../services/ProjectService'
 import { DiscoursePost } from '../../shared/types/discourse'
+import Time from '../../utils/date/Time'
+import { getMonthsBetweenDates } from '../../utils/date/getMonthsBetweenDates'
 import { ErrorCategory } from '../../utils/errorCategories'
+import { Project } from '../models/Project'
 
-import { CoauthorService } from './coauthor'
 import { DiscordService } from './discord'
 import { EventsService } from './events'
 
+interface Ids {
+  id: UpdateAttributes['id']
+  proposal_id: ProposalAttributes['id']
+  project_id: Project['id']
+}
+
 export class UpdateService {
-  static async getById(id: UpdateAttributes['id']): Promise<UpdateAttributes | undefined | null> {
+  public static getDueDate(startingDate: Time.Dayjs, index: number) {
+    return startingDate.add(1 + index, 'months').toDate()
+  }
+
+  private static async getAllById(ids: Partial<Ids>, status?: UpdateStatus) {
     try {
-      const update = await UpdateModel.findOne<UpdateAttributes>({ id })
-      if (update) {
-        const financial_records = await FinancialService.getRecordsByUpdateId(update.id)
-        if (financial_records) {
-          return { ...update, financial_records }
-        }
-      }
-      return update
+      return await UpdateModel.find<UpdateAttributes>(status ? { ...ids, status } : ids)
     } catch (error) {
-      ErrorService.report('Error fetching update', { id, error, category: ErrorCategory.Update })
-      return null
+      ErrorService.report('Error fetching updates', { ids, error, category: ErrorCategory.Update })
+      return []
     }
   }
 
-  static async getAllByProposalId(proposal_id: ProposalAttributes['id'], status?: UpdateStatus) {
-    try {
-      const parameters = { proposal_id }
-      return await UpdateModel.find<UpdateAttributes>(status ? { ...parameters, status } : parameters)
-    } catch (error) {
-      ErrorService.report('Error fetching updates', { proposal_id, error, category: ErrorCategory.Update })
-      return []
+  static async getById(id: UpdateAttributes['id']): Promise<UpdateAttributes | undefined | null> {
+    const updates = await this.getAllById({ id })
+    const update = updates[0]
+    if (update) {
+      try {
+        const financial_records = await FinancialService.getRecordsByUpdateId(update.id)
+        return { ...update, financial_records }
+      } catch (error) {
+        ErrorService.report('Error fetching financial records', { id, error, category: ErrorCategory.Update })
+        return update
+      }
     }
+    return update
+  }
+
+  static async getAllByProposalId(proposal_id: ProposalAttributes['id'], status?: UpdateStatus) {
+    const updates = await this.getAllById({ proposal_id }, status)
+    return updates
+  }
+
+  static async getAllByProjectId(project_id: Project['id'], status?: UpdateStatus) {
+    const updates = await this.getAllById({ project_id }, status)
+    return updates
   }
 
   static async updateWithDiscoursePost(id: UpdateAttributes['id'], discoursePost: DiscoursePost) {
@@ -117,30 +144,16 @@ export class UpdateService {
     })
   }
 
-  static async create(newUpdate: Omit<UpdateAttributes, 'id' | 'created_at' | 'updated_at' | 'status'>, user: string) {
-    const {
-      proposal_id,
-      author,
-      health,
-      introduction,
-      highlights,
-      blockers,
-      next_steps,
-      additional_notes,
-      financial_records,
-    } = newUpdate
-    const proposal = await ProposalModel.findOne<ProposalAttributes>({ id: proposal_id })
-    const isAuthorOrCoauthor =
-      user && (proposal?.user === user || (await CoauthorService.isCoauthor(proposal_id, user))) && author === user
+  static async create(
+    newUpdate: Omit<UpdateAttributes, 'id' | 'proposal_id' | 'project_id' | 'created_at' | 'updated_at' | 'status'>,
+    project: Project,
+    user: string
+  ) {
+    const { author, health, introduction, highlights, blockers, next_steps, additional_notes, financial_records } =
+      newUpdate
 
-    if (!proposal || !isAuthorOrCoauthor) {
-      throw new RequestError(`Unauthorized`, RequestError.Forbidden)
-    }
-
-    const updates = await UpdateModel.find<UpdateAttributes>({
-      proposal_id,
-      status: UpdateStatus.Pending,
-    })
+    const { proposal_id, title } = project
+    const updates = await this.getAllByProposalId(proposal_id, UpdateStatus.Pending)
 
     const currentUpdate = getCurrentUpdate(updates)
     const nextPendingUpdate = getNextPendingUpdate(updates)
@@ -151,7 +164,8 @@ export class UpdateService {
 
     const data: Omit<UpdateAttributes, 'id' | 'status' | 'due_date' | 'completion_date' | 'created_at' | 'updated_at'> =
       {
-        proposal_id: proposal.id,
+        proposal_id,
+        project_id: project.id,
         author,
         health,
         introduction,
@@ -163,9 +177,9 @@ export class UpdateService {
     const update = await UpdateModel.createUpdate(data)
     try {
       if (financial_records) await FinancialService.createRecords(update.id, financial_records)
-      await DiscourseService.createUpdate(update, proposal.title)
-      await EventsService.updateCreated(update.id, proposal.id, proposal.title, user)
-      DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
+      await DiscourseService.createUpdate(update, title)
+      await EventsService.updateCreated(update.id, proposal_id, title, user)
+      DiscordService.newUpdate(proposal_id, title, update.id, user)
     } catch (error) {
       await this.delete(update)
       throw new RequestError(`Error creating update`, RequestError.InternalServerError)
@@ -174,18 +188,54 @@ export class UpdateService {
     return update
   }
 
-  static async updateProposalUpdate(
+  static async initialize(projectId: string, initialVestingAddresses?: string[]) {
+    if (projectId.length < 0) throw new Error('Unable to create updates for empty project id')
+
+    const project = await ProjectService.getUpdatedProject(projectId)
+    const { vesting_addresses, proposal_id } = project
+    const vestingAddresses = initialVestingAddresses || vesting_addresses
+    const vesting = await getVestingWithLogs(vestingAddresses[vestingAddresses.length - 1], proposal_id)
+
+    const now = new Date()
+    const updatesQuantity = this.getAmountOfUpdates(vesting)
+    const firstUpdateStartingDate = Time.utc(vesting.start_at).startOf('day')
+
+    await UpdateModel.delete<UpdateAttributes>({ project_id: projectId, status: UpdateStatus.Pending })
+
+    const updates = Array.from(Array(updatesQuantity), (_, index) => {
+      const update: UpdateAttributes = {
+        id: crypto.randomUUID(),
+        proposal_id,
+        project_id: projectId,
+        status: UpdateStatus.Pending,
+        due_date: this.getDueDate(firstUpdateStartingDate, index),
+        created_at: now,
+        updated_at: now,
+      }
+
+      return update
+    })
+    return await UpdateModel.createMany(updates)
+  }
+
+  static async updateProjectUpdate(
     update: UpdateAttributes,
+    project: Project,
     newUpdate: Omit<
       UpdateAttributes,
-      'id' | 'proposal_id' | 'status' | 'completion_date' | 'updated_at' | 'created_at'
+      'id' | 'proposal_id' | 'project_id' | 'status' | 'completion_date' | 'updated_at' | 'created_at'
     >,
-    id: string,
-    proposal: ProposalAttributes,
-    user: string,
-    now: Date,
-    isOnTime: boolean
+    user: string
   ) {
+    const id = update.id
+
+    const now = new Date()
+    const isOnTime = Time(now).isBefore(update.due_date)
+
+    if (!isOnTime && !isBetweenLateThresholdDate(update.due_date)) {
+      throw new Error(`Update is not on time: "${update.id}"`)
+    }
+
     const status = !update.due_date || isOnTime ? UpdateStatus.Done : UpdateStatus.Late
     const { author, health, introduction, highlights, blockers, next_steps, additional_notes, financial_records } =
       newUpdate
@@ -210,18 +260,24 @@ export class UpdateService {
     )
 
     const updatedUpdate = await UpdateService.getById(id)
+    const { proposal_id, title } = project
     if (updatedUpdate) {
       if (!update.completion_date) {
         await Promise.all([
-          DiscourseService.createUpdate(updatedUpdate, proposal.title),
-          EventsService.updateCreated(update.id, proposal.id, proposal.title, user),
+          DiscourseService.createUpdate(updatedUpdate, title),
+          EventsService.updateCreated(update.id, proposal_id, title, user),
         ])
-        DiscordService.newUpdate(proposal.id, proposal.title, update.id, user)
+        DiscordService.newUpdate(proposal_id, title, update.id, user)
       } else {
         UpdateService.commentUpdateEditInDiscourse(updatedUpdate)
       }
     }
 
     return true
+  }
+
+  static getAmountOfUpdates(vesting: VestingWithLogs) {
+    const exactDuration = getMonthsBetweenDates(new Date(vesting.start_at), new Date(vesting.finish_at))
+    return exactDuration.months + (exactDuration.extraDays > 0 ? 1 : 0)
   }
 }
