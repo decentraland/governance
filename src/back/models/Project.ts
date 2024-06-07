@@ -75,8 +75,8 @@ export default class ProjectModel extends Model<ProjectAttributes> {
 
   static async migrate(proposals: ProposalProject[]) {
     const values = proposals.map(
-      ({ id, title, about, status, created_at }) =>
-        SQL`(${crypto.randomUUID()}, ${id}, ${title}, ${about}, ${status}, ${new Date(created_at)})`
+      ({ id, title, about, status, updated_at }) =>
+        SQL`(${crypto.randomUUID()}, ${id}, ${title}, ${about}, ${status}, ${new Date(updated_at)})`
     )
 
     const query = SQL`

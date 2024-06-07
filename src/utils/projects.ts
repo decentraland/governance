@@ -85,6 +85,7 @@ export function createProposalProject(proposal: ProposalWithProject, vesting?: T
     type: proposal.type,
     size: proposal.configuration.size || proposal.configuration.funding,
     created_at: proposal.created_at.getTime(),
+    updated_at: proposal.updated_at.getTime(),
     configuration: {
       category: proposal.configuration.category || proposal.type,
       tier: proposal.configuration.tier,

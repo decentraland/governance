@@ -837,6 +837,7 @@ export type ProposalProject = {
   type: ProposalType
   about: string
   created_at: number
+  updated_at: number
   configuration: {
     category: ProposalGrantCategory
     tier: string
