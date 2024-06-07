@@ -271,7 +271,12 @@ export class ProjectService {
       const vestingWithLogs = await getVestingWithLogs(latestVesting)
       const updatedProjectStatus = toGovernanceProjectStatus(vestingWithLogs.status)
       await ProjectModel.update({ status: updatedProjectStatus, updated_at: new Date() }, { id: project.id })
-      return { ...project, status: updatedProjectStatus, vesting: vestingWithLogs }
+
+      return {
+        ...project,
+        status: updatedProjectStatus,
+        funding: { vesting: vestingWithLogs, enacted_at: vestingWithLogs.start_at },
+      }
     } catch (error) {
       ErrorService.report('Unable to update project status', { error, id: project.id, category: ErrorCategory.Project })
       return project

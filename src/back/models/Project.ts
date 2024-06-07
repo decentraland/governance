@@ -4,12 +4,11 @@ import { SQL, join, table } from 'decentraland-gatsby/dist/entities/Database/uti
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
-import { VestingWithLogs } from '../../clients/VestingData'
 import CoauthorModel from '../../entities/Coauthor/model'
 import { CoauthorStatus } from '../../entities/Coauthor/types'
 import { ProjectStatus } from '../../entities/Grant/types'
 import ProposalModel from '../../entities/Proposal/model'
-import { ProposalProject } from '../../entities/Proposal/types'
+import { ProjectFunding, ProposalProject } from '../../entities/Proposal/types'
 
 import PersonnelModel, { PersonnelAttributes } from './Personnel'
 import ProjectLinkModel, { ProjectLink } from './ProjectLink'
@@ -34,7 +33,7 @@ export type Project = ProjectAttributes & {
   author: string
   coauthors: string[] | null
   vesting_addresses: string[]
-  vesting?: VestingWithLogs
+  funding?: ProjectFunding
 }
 
 export default class ProjectModel extends Model<ProjectAttributes> {
