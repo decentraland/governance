@@ -813,6 +813,7 @@ export type ProposalCommentsInDiscourse = {
 export type OneTimePayment = {
   enacting_tx: string
   token?: string
+  tx_amount?: number
 }
 
 export type ProjectFunding = {
