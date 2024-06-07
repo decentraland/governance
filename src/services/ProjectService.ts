@@ -21,7 +21,13 @@ import {
   ProposalStatus,
   ProposalType,
 } from '../entities/Proposal/types'
-import { DEFAULT_CHOICES, asNumber, getProposalEndDate, isProjectProposal } from '../entities/Proposal/utils'
+import {
+  DEFAULT_CHOICES,
+  asNumber,
+  getProposalEndDate,
+  isProjectProposal,
+  proposalUrl,
+} from '../entities/Proposal/utils'
 import UpdateModel from '../entities/Updates/model'
 import { IndexedUpdate, UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates } from '../entities/Updates/utils'
@@ -212,6 +218,14 @@ export class ProjectService {
 
       await ProjectService.createPersonnel(proposal, newProject, creationDate)
       await ProjectService.createMilestones(proposal, newProject, creationDate)
+      await ProjectService.addLink(
+        {
+          label: 'Proposal',
+          url: proposalUrl(proposal.id),
+          project_id: newProject.id,
+        },
+        proposal.user
+      )
 
       return newProject
     } catch (error) {
