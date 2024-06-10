@@ -1,5 +1,6 @@
 import crypto from 'crypto'
 
+import { Project } from '../../back/models/Project'
 import { UpdateService } from '../../back/services/update'
 import * as VestingUtils from '../../clients/VestingData'
 import { VestingWithLogs } from '../../clients/VestingData'
@@ -7,8 +8,6 @@ import { ProjectService } from '../../services/ProjectService'
 import Time from '../../utils/date/Time'
 import { getMonthsBetweenDates } from '../../utils/date/getMonthsBetweenDates'
 import { ProjectStatus } from '../Grant/types'
-
-import { Project } from './../../back/models/Project'
 
 import UpdateModel from './model'
 import { UpdateStatus } from './types'
@@ -68,13 +67,13 @@ describe('UpdateModel', () => {
 
         it('deletes any pending updates for the proposal', async () => {
           mockVestingData(vestingDates)
-          await UpdateService.initialize(PROJECT_ID)
+          await UpdateService.createPendingUpdatesForVesting(PROJECT_ID)
           expect(UpdateModel.delete).toHaveBeenCalledWith({ project_id: PROJECT_ID, status: UpdateStatus.Pending })
         })
 
         it('creates expected pending updates with the correct attributes', async () => {
           mockVestingData(vestingDates)
-          await UpdateService.initialize(PROJECT_ID)
+          await UpdateService.createPendingUpdatesForVesting(PROJECT_ID)
           expect(UpdateModel.createMany).toHaveBeenCalledWith([
             {
               id: UUID,
@@ -122,13 +121,13 @@ describe('UpdateModel', () => {
         })
 
         it('deletes any pending updates for the proposal', async () => {
-          await UpdateService.initialize(PROJECT_ID)
+          await UpdateService.createPendingUpdatesForVesting(PROJECT_ID)
           expect(UpdateModel.delete).toHaveBeenCalledWith({ project_id: PROJECT_ID, status: UpdateStatus.Pending })
         })
 
         it('creates expected pending updates with the correct attributes', async () => {
           mockVestingData(vestingDates)
-          await UpdateService.initialize(PROJECT_ID)
+          await UpdateService.createPendingUpdatesForVesting(PROJECT_ID)
           expect(UpdateModel.createMany).toHaveBeenCalledWith([
             {
               id: UUID,
@@ -179,7 +178,7 @@ describe('UpdateModel', () => {
 
         it('creates expected pending updates with the correct attributes', async () => {
           mockVestingData(vestingDates)
-          await UpdateService.initialize(PROJECT_ID)
+          await UpdateService.createPendingUpdatesForVesting(PROJECT_ID)
           expect(UpdateModel.createMany).toHaveBeenCalledWith([
             {
               id: UUID,
@@ -279,7 +278,7 @@ describe('UpdateModel', () => {
 
         it('creates expected pending updates with the correct attributes', async () => {
           mockVestingData(vestingDates)
-          await UpdateService.initialize(PROJECT_ID)
+          await UpdateService.createPendingUpdatesForVesting(PROJECT_ID)
           expect(UpdateModel.createMany).toHaveBeenCalledWith([
             {
               id: UUID,

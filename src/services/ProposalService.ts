@@ -302,7 +302,7 @@ export class ProposalService {
 
     if (isEnactedStatus && isProject) {
       const validatedProjectId = validateId(proposal.project_id)
-      await UpdateService.initialize(validatedProjectId, vesting_addresses)
+      await UpdateService.createPendingUpdatesForVesting(validatedProjectId, vesting_addresses)
       const project = await ProjectService.getUpdatedProject(proposal.project_id!)
       updatedProposal.project_status = project.status
       NotificationService.projectProposalEnacted(proposal)
