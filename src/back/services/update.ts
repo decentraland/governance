@@ -188,7 +188,7 @@ export class UpdateService {
     return update
   }
 
-  static async initialize(projectId: string, initialVestingAddresses?: string[]) {
+  static async createPendingUpdatesForVesting(projectId: string, initialVestingAddresses?: string[]) {
     if (projectId.length < 0) throw new Error('Unable to create updates for empty project id')
 
     const project = await ProjectService.getUpdatedProject(projectId)
