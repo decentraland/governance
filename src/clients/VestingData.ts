@@ -118,9 +118,7 @@ async function getVestingContractDataV1(
   const tokenContractAddress = await vestingContract.token()
   const tokenContract = new ethers.Contract(tokenContractAddress, ERC20_ABI, provider)
   const total = parseContractValue(await tokenContract.balanceOf(vestingAddress)) + released
-
-  const contract_token_address: string = (await vestingContract.getToken()).toLowerCase()
-  const token = parseToken(contract_token_address)
+  const token = getTokenSymbolFromAddress(tokenContractAddress.toLowerCase())
 
   return {
     ...getVestingDates(contractStart, contractEndsTimestamp),
@@ -172,8 +170,8 @@ async function getVestingContractDataV2(
     }
   }
 
-  const contract_token_address: string = (await vestingContract.getToken()).toLowerCase()
-  const token = parseToken(contract_token_address)
+  const tokenContractAddress: string = (await vestingContract.getToken()).toLowerCase()
+  const token = getTokenSymbolFromAddress(tokenContractAddress)
 
   return {
     ...getVestingDates(contractStart, contractEndsTimestamp),
@@ -228,7 +226,7 @@ export async function getVestingWithLogs(
   }
 }
 
-function parseToken(tokenAddress: string) {
+function getTokenSymbolFromAddress(tokenAddress: string) {
   switch (tokenAddress) {
     case '0x0f5d2fb29fb7d3cfee444a200298f468908cc942':
       return 'MANA'
