@@ -11,29 +11,25 @@ import VESTING_V2_ABI from '../utils/contracts/abi/vesting/vesting_v2.json'
 import { ContractVersion, TopicsByVersion } from '../utils/contracts/vesting'
 import { ErrorCategory } from '../utils/errorCategories'
 
-export type VestingDates = {
-  vestingStartAt: string
-  vestingFinishAt: string
-}
-
-export type VestingValues = {
-  released: number
-  releasable: number
-  total: number
-}
-
 export type VestingLog = {
   topic: string
   timestamp: string
   amount?: number
 }
 
-export type VestingInfo = VestingDates &
-  VestingValues & {
-    address: string
-    logs: VestingLog[]
-    status: VestingStatus
-  }
+export type Vesting = {
+  start_at: string
+  finish_at: string
+  released: number
+  releasable: number
+  vested: number
+  total: number
+  address: string
+  status: VestingStatus
+  token: string
+}
+
+export type VestingWithLogs = Vesting & { logs: VestingLog[] }
 
 function toISOString(seconds: number) {
   return new Date(seconds * 1000).toISOString()
@@ -102,15 +98,15 @@ function getInitialVestingStatus(startAt: string, finishAt: string) {
 async function getVestingContractDataV1(
   vestingAddress: string,
   provider: ethers.providers.JsonRpcProvider
-): Promise<Omit<VestingInfo, 'logs' | 'address'>> {
+): Promise<Omit<Vesting, 'logs' | 'address'>> {
   const vestingContract = new ethers.Contract(vestingAddress, VESTING_ABI, provider)
   const contractStart = Number(await vestingContract.start())
   const contractDuration = Number(await vestingContract.duration())
   const contractEndsTimestamp = contractStart + contractDuration
-  const vesting_start_at = toISOString(contractStart)
-  const vesting_finish_at = toISOString(contractEndsTimestamp)
+  const start_at = toISOString(contractStart)
+  const finish_at = toISOString(contractEndsTimestamp)
 
-  let status = getInitialVestingStatus(vesting_start_at, vesting_finish_at)
+  let status = getInitialVestingStatus(start_at, finish_at)
   const isRevoked = await vestingContract.methods.revoked().call()
   if (isRevoked) {
     status = VestingStatus.Revoked
@@ -122,28 +118,39 @@ async function getVestingContractDataV1(
   const tokenContractAddress = await vestingContract.token()
   const tokenContract = new ethers.Contract(tokenContractAddress, ERC20_ABI, provider)
   const total = parseContractValue(await tokenContract.balanceOf(vestingAddress)) + released
+  const token = getTokenSymbolFromAddress(tokenContractAddress.toLowerCase())
 
-  return { ...getVestingDates(contractStart, contractEndsTimestamp), released, releasable, total, status }
+  return {
+    ...getVestingDates(contractStart, contractEndsTimestamp),
+    released,
+    releasable,
+    total,
+    status,
+    start_at,
+    finish_at,
+    token,
+    vested: released + releasable,
+  }
 }
 
 async function getVestingContractDataV2(
   vestingAddress: string,
   provider: ethers.providers.JsonRpcProvider
-): Promise<Omit<VestingInfo, 'logs' | 'address'>> {
+): Promise<Omit<Vesting, 'logs' | 'address'>> {
   const vestingContract = new ethers.Contract(vestingAddress, VESTING_V2_ABI, provider)
   const contractStart = Number(await vestingContract.getStart())
   const contractDuration = Number(await vestingContract.getPeriod())
-  let contractEndsTimestamp = 0
-  const vesting_start_at = toISOString(contractStart)
-  let vesting_finish_at = ''
 
+  let contractEndsTimestamp = 0
+  const start_at = toISOString(contractStart)
+  let finish_at = ''
   if (await vestingContract.getIsLinear()) {
     contractEndsTimestamp = contractStart + contractDuration
-    vesting_finish_at = toISOString(contractEndsTimestamp)
+    finish_at = toISOString(contractEndsTimestamp)
   } else {
     const periods = (await vestingContract.getVestedPerPeriod()).length || 0
     contractEndsTimestamp = contractStart + contractDuration * periods
-    vesting_finish_at = toISOString(contractEndsTimestamp)
+    finish_at = toISOString(contractEndsTimestamp)
   }
 
   const released = parseContractValue(await vestingContract.getReleased())
@@ -152,7 +159,7 @@ async function getVestingContractDataV2(
 
   const total = vestedPerPeriod.map(parseContractValue).reduce((acc, curr) => acc + curr, 0)
 
-  let status = getInitialVestingStatus(vesting_start_at, vesting_finish_at)
+  let status = getInitialVestingStatus(start_at, finish_at)
   const isRevoked = await vestingContract.getIsRevoked()
   if (isRevoked) {
     status = VestingStatus.Revoked
@@ -163,13 +170,26 @@ async function getVestingContractDataV2(
     }
   }
 
-  return { ...getVestingDates(contractStart, contractEndsTimestamp), released, releasable, total, status }
+  const tokenContractAddress: string = (await vestingContract.getToken()).toLowerCase()
+  const token = getTokenSymbolFromAddress(tokenContractAddress)
+
+  return {
+    ...getVestingDates(contractStart, contractEndsTimestamp),
+    released,
+    releasable,
+    total,
+    status,
+    start_at,
+    finish_at,
+    token,
+    vested: released + releasable,
+  }
 }
 
-export async function getVestingContractData(
+export async function getVestingWithLogs(
   vestingAddress: string | null | undefined,
   proposalId?: string
-): Promise<VestingInfo> {
+): Promise<VestingWithLogs> {
   if (!vestingAddress || vestingAddress.length === 0) {
     throw new Error('Unable to fetch vesting data for empty contract address')
   }
@@ -204,4 +224,22 @@ export async function getVestingContractData(
       throw errorV1
     }
   }
+}
+
+function getTokenSymbolFromAddress(tokenAddress: string) {
+  switch (tokenAddress) {
+    case '0x0f5d2fb29fb7d3cfee444a200298f468908cc942':
+      return 'MANA'
+    case '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0':
+      return 'MATIC'
+    case '0x6b175474e89094c44da98b954eedeac495271d0f':
+      return 'DAI'
+    case '0xdac17f958d2ee523a2206206994597c13d831ec7':
+      return 'USDT'
+    case '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48':
+      return 'USDC'
+    case '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2':
+      return 'WETH'
+  }
+  throw new Error(`Unable to parse token contract address: ${tokenAddress}`)
 }

@@ -156,7 +156,7 @@ async function deleteProjectUpdate(req: WithAuth<Request<{ update_id: string }>>
   }
 
   const user = req.auth!
-  validateCanEditProject(user, update.project_id)
+  await validateCanEditProject(user, update.project_id)
 
   if (!update.completion_date) {
     throw new RequestError(`Update is not completed: "${update.id}"`, RequestError.BadRequest)
@@ -187,7 +187,7 @@ async function validateFinancialRecords(
 ): Promise<FinancialRecord[] | null> {
   const { id, vesting_addresses } = project
   const [vestingData, updates] = await Promise.all([
-    VestingService.getVestingInfo(vesting_addresses),
+    VestingService.getVestings(vesting_addresses),
     UpdateService.getAllByProjectId(id),
   ])
 

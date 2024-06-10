@@ -5,6 +5,7 @@ import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
 import { SnapshotProposal } from '../../clients/SnapshotTypes'
 import { CommitteeName } from '../../clients/Transparency'
+import { Vesting } from '../../clients/VestingData'
 import { UnpublishedBidInfo } from '../Bid/types'
 import {
   CategoryAssessmentQuestions,
@@ -809,22 +810,16 @@ export type ProposalCommentsInDiscourse = {
   comments: ProposalComment[]
 }
 
-export type VestingContractData = {
-  vested_amount: number
-  releasable: number
-  released: number
-  start_at: number
-  finish_at: number
-  vesting_total_amount: number
+export type OneTimePayment = {
+  enacting_tx: string
+  token?: string
+  tx_amount?: number
 }
 
-export type ProjectVestingData = {
-  contract?: VestingContractData
-  enacting_tx?: string
-  token?: string
-  enacted_at?: number
-  tx_amount?: number
-  tx_date?: number
+export type ProjectFunding = {
+  enacted_at?: string
+  one_time_payment?: OneTimePayment
+  vesting?: Vesting
 }
 
 export type ProposalProject = {
@@ -842,7 +837,8 @@ export type ProposalProject = {
     category: ProposalGrantCategory
     tier: string
   }
-} & ProjectVestingData
+  funding?: ProjectFunding
+}
 
 export type ProposalProjectWithUpdate = ProposalProject & {
   update?: IndexedUpdate | null

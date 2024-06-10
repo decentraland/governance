@@ -30,7 +30,7 @@ export default routes((route) => {
   route.get('/projects/tenders-total', handleJSON(getOpenTendersTotal))
 })
 
-type ProjectsReturnType = Awaited<ReturnType<typeof ProjectService.getProjects>>
+type ProjectsReturnType = Awaited<ReturnType<typeof ProjectService.getProposalProjects>>
 
 function filterProjectsByDate(projects: ProjectsReturnType, from?: Date, to?: Date): ProjectsReturnType {
   return {
@@ -54,7 +54,7 @@ async function getProjects(req: Request) {
   if (cachedProjects) {
     return filterProjectsByDate(cachedProjects, from, to)
   }
-  const projects = await ProjectService.getProjects()
+  const projects = await ProjectService.getProposalProjects()
   CacheService.set(cacheKey, projects, TTL_1_HS)
   return filterProjectsByDate(projects, from, to)
 }

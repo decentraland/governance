@@ -8,7 +8,7 @@ import CoauthorModel from '../../entities/Coauthor/model'
 import { CoauthorStatus } from '../../entities/Coauthor/types'
 import { ProjectStatus } from '../../entities/Grant/types'
 import ProposalModel from '../../entities/Proposal/model'
-import { ProposalProject } from '../../entities/Proposal/types'
+import { ProjectFunding, ProposalProject } from '../../entities/Proposal/types'
 
 import PersonnelModel, { PersonnelAttributes } from './Personnel'
 import ProjectLinkModel, { ProjectLink } from './ProjectLink'
@@ -27,12 +27,13 @@ export type ProjectAttributes = {
 }
 
 export type Project = ProjectAttributes & {
-  vesting_addresses: string[]
   personnel: PersonnelAttributes[]
   links: ProjectLink[]
   milestones: ProjectMilestone[]
   author: string
   coauthors: string[] | null
+  vesting_addresses: string[]
+  funding?: ProjectFunding
 }
 
 export default class ProjectModel extends Model<ProjectAttributes> {

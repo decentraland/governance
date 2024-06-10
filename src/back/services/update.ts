@@ -3,7 +3,7 @@ import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 
 import { Discourse } from '../../clients/Discourse'
-import { VestingInfo, getVestingContractData } from '../../clients/VestingData'
+import { VestingWithLogs, getVestingWithLogs } from '../../clients/VestingData'
 import { ProposalAttributes } from '../../entities/Proposal/types'
 import UpdateModel from '../../entities/Updates/model'
 import { UpdateAttributes, UpdateStatus } from '../../entities/Updates/types'
@@ -194,11 +194,11 @@ export class UpdateService {
     const project = await ProjectService.getUpdatedProject(projectId)
     const { vesting_addresses, proposal_id } = project
     const vestingAddresses = initialVestingAddresses || vesting_addresses
-    const vestingContractData = await getVestingContractData(vestingAddresses[vestingAddresses.length - 1], proposal_id)
+    const vesting = await getVestingWithLogs(vestingAddresses[vestingAddresses.length - 1], proposal_id)
 
     const now = new Date()
-    const updatesQuantity = this.getAmountOfUpdates(vestingContractData)
-    const firstUpdateStartingDate = Time.utc(vestingContractData.vestingStartAt).startOf('day')
+    const updatesQuantity = this.getAmountOfUpdates(vesting)
+    const firstUpdateStartingDate = Time.utc(vesting.start_at).startOf('day')
 
     await UpdateModel.delete<UpdateAttributes>({ project_id: projectId, status: UpdateStatus.Pending })
 
@@ -276,11 +276,8 @@ export class UpdateService {
     return true
   }
 
-  static getAmountOfUpdates(vestingDates: VestingInfo) {
-    const exactDuration = getMonthsBetweenDates(
-      new Date(vestingDates.vestingStartAt),
-      new Date(vestingDates.vestingFinishAt)
-    )
+  static getAmountOfUpdates(vesting: VestingWithLogs) {
+    const exactDuration = getMonthsBetweenDates(new Date(vesting.start_at), new Date(vesting.finish_at))
     return exactDuration.months + (exactDuration.extraDays > 0 ? 1 : 0)
   }
 }

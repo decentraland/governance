@@ -597,7 +597,7 @@ async function getGrantsByUser(req: Request) {
   const coauthoring = await CoauthorModel.findProposals(address, CoauthorStatus.APPROVED)
   const coauthoringProposalIds = new Set(coauthoring.map((coauthoringAttributes) => coauthoringAttributes.proposal_id))
 
-  const projects = await ProjectService.getProjects()
+  const projects = await ProjectService.getProposalProjects()
   const filteredGrants = projects.data.filter(
     (project) =>
       project.type === ProposalType.Grant &&
