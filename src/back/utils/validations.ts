@@ -79,6 +79,15 @@ export function validateAddress(address?: string) {
   return address
 }
 
+export function validateAddresses(addresses?: string[]) {
+  if (!Array.isArray(addresses)) {
+    throw new RequestError(`Invalid addresses ${addresses}`, RequestError.BadRequest)
+  }
+  addresses.forEach((address) => {
+    validateAddress(address)
+  })
+}
+
 export const areValidAddresses = (addresses: string[]) =>
   Array.isArray(addresses) && addresses.every((item) => isEthereumAddress(item))
 
@@ -153,4 +162,10 @@ export function validateEventTypesFilters(req: Request) {
   }
 
   return parsedEventTypes.data
+}
+
+export function validateBlockNumber(blockNumber?: unknown | null) {
+  if (blockNumber !== null && blockNumber !== undefined && typeof blockNumber !== 'number') {
+    throw new Error('Invalid blockNumber: must be null, undefined, or a number')
+  }
 }

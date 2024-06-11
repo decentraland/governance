@@ -3,10 +3,14 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
+import { SnapshotSubgraph } from '../../clients/SnapshotSubgraph'
+import { getDelegations as getSnapshotDelegations } from '../../entities/Snapshot/utils'
 import { SnapshotService } from '../../services/SnapshotService'
 import { SnapshotStatusService } from '../../services/SnapshotStatusService'
 import {
   validateAddress,
+  validateAddresses,
+  validateBlockNumber,
   validateDates,
   validateProposalFields,
   validateProposalSnapshotId,
@@ -22,6 +26,8 @@ export default routes((router) => {
   router.get('/snapshot/vp-distribution/:address/:proposalSnapshotId?', handleAPI(getVpDistribution))
   router.post('/snapshot/scores', handleAPI(getScores))
   router.get('/snapshot/proposal-scores/:proposalSnapshotId', handleAPI(getProposalScores))
+  router.post('/snapshot/delegations', handleAPI(getDelegations))
+  router.post('/snapshot/picked-by', handleAPI(getPickedBy))
 })
 
 async function getStatus() {
@@ -76,4 +82,21 @@ async function getScores(req: Request) {
 async function getProposalScores(req: Request<{ proposalSnapshotId?: string }>) {
   const proposalSnapshotId = validateProposalSnapshotId(req.params.proposalSnapshotId)
   return await SnapshotService.getProposalScores(proposalSnapshotId)
+}
+
+async function getDelegations(req: Request) {
+  const { address, blockNumber } = req.body
+  validateAddress(address)
+  validateBlockNumber(blockNumber)
+  return getSnapshotDelegations(address, blockNumber)
+}
+
+async function getPickedBy(req: Request) {
+  const { addresses, space } = req.body
+  validateAddresses(addresses)
+  if (!space || typeof space !== 'string' || space.length === 0) {
+    throw new RequestError('Invalid snapshot space', RequestError.BadRequest)
+  }
+
+  return await SnapshotSubgraph.get().getPickedBy(addresses, space)
 }

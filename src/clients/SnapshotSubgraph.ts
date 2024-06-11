@@ -72,10 +72,8 @@ export class SnapshotSubgraph {
     return delegations
   }
 
-  async getPickedBy(variables: { address: string[]; space: string }) {
-    const { address, space } = variables
-
-    if (!address || !space) {
+  async getPickedBy(addresses: string[], space: string) {
+    if (!addresses || !space) {
       return []
     }
 
@@ -93,13 +91,13 @@ export class SnapshotSubgraph {
         const body = await response.json()
         return body?.data?.delegatedFrom || []
       },
-      { address, space },
+      { address: addresses, space },
       500
     )
 
     const pickedBy = new Map<string, Set<string>>()
 
-    for (const addr of address) {
+    for (const addr of addresses) {
       const filteredDelegations = delegations.filter((deleg) => deleg.delegate === addr)
       pickedBy.set(addr, new Set())
 
