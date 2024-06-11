@@ -84,6 +84,15 @@ export function validateAddress(address?: string) {
   return address
 }
 
+export function validateAddresses(addresses?: string[]) {
+  if (!Array.isArray(addresses)) {
+    throw new RequestError(`Invalid addresses ${addresses}`, RequestError.BadRequest)
+  }
+  addresses.forEach((address) => {
+    validateAddress(address)
+  })
+}
+
 export const areValidAddresses = (addresses: string[]) =>
   Array.isArray(addresses) && addresses.every((item) => isEthereumAddress(item))
 
@@ -190,5 +199,11 @@ export async function validateCanEditProject(user: string, projectId: string) {
   const canEdit = await ProjectService.isAuthorOrCoauthor(user, projectId)
   if (!canEdit) {
     throw new RequestError("Only the project's authors and coauthors can edit the project", RequestError.Unauthorized)
+  }
+}
+
+export function validateBlockNumber(blockNumber?: unknown | null) {
+  if (blockNumber !== null && blockNumber !== undefined && typeof blockNumber !== 'number') {
+    throw new Error('Invalid blockNumber: must be null, undefined, or a number')
   }
 }

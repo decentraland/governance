@@ -6,6 +6,7 @@ import { ProposalWithOutcome } from '../../entities/Proposal/outcome'
 import { ProposalStatus, ProposalType } from '../../entities/Proposal/types'
 import { isGovernanceProcessProposal, proposalUrl } from '../../entities/Proposal/utils'
 import { getPublicUpdates, getUpdateNumber, getUpdateUrl } from '../../entities/Updates/utils'
+import UserModel from '../../entities/User/model'
 import { getEnumDisplayName, inBackground } from '../../helpers'
 import { ErrorService } from '../../services/ErrorService'
 import { getProfile } from '../../utils/Catalyst'
@@ -296,11 +297,34 @@ export class DiscordService {
           if (isProdEnv()) {
             ErrorService.report(`Error sending direct message to user`, {
               userId,
-              error,
+              error: `${error}`,
               category: ErrorCategory.Discord,
             })
           } else {
             console.error(`Error sending direct message to user with ID ${userId}`, error)
+          }
+        }
+      })
+    }
+  }
+
+  static sendDirectMessages(addresses: string[], message: Omit<EmbedMessageProps, 'color'>) {
+    if (DISCORD_SERVICE_ENABLED) {
+      inBackground(async () => {
+        try {
+          const validatedUsers = await UserModel.getActiveDiscordIds(addresses)
+          for (const user of validatedUsers) {
+            this.sendDirectMessage(user.discord_id, message)
+          }
+        } catch (error) {
+          if (isProdEnv()) {
+            ErrorService.report(`Error sending direct messages to users`, {
+              addresses,
+              error: `${error}`,
+              category: ErrorCategory.Discord,
+            })
+          } else {
+            console.error(`Error sending direct messages to users`, error)
           }
         }
       })
