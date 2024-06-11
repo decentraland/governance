@@ -4,6 +4,7 @@ import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
 import { SnapshotSubgraph } from '../../clients/SnapshotSubgraph'
+import { SNAPSHOT_SPACE } from '../../entities/Snapshot/constants'
 import { getDelegations as getSnapshotDelegations } from '../../entities/Snapshot/utils'
 import { SnapshotService } from '../../services/SnapshotService'
 import { SnapshotStatusService } from '../../services/SnapshotStatusService'
@@ -92,11 +93,7 @@ async function getDelegations(req: Request) {
 }
 
 async function getPickedBy(req: Request) {
-  const { addresses, space } = req.body
+  const { addresses } = req.body
   validateAddresses(addresses)
-  if (!space || typeof space !== 'string' || space.length === 0) {
-    throw new RequestError('Invalid snapshot space', RequestError.BadRequest)
-  }
-
-  return await SnapshotSubgraph.get().getPickedBy(addresses, space)
+  return await SnapshotSubgraph.get().getPickedBy(addresses, SNAPSHOT_SPACE)
 }
