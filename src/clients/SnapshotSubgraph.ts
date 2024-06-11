@@ -79,7 +79,7 @@ export class SnapshotSubgraph {
 
     const delegations: Delegation[] = await inBatches(
       async (vars, skip, batchSize) => {
-        const response = await fetch(SNAPSHOT_QUERY_ENDPOINT, {
+        const response = await fetch(this.queryEndpoint, {
           method: 'post',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
