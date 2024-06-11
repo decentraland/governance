@@ -52,4 +52,12 @@ export const Notifications = {
     title: (proposal: ProposalAttributes) => `New comment on your update for your project ${proposal.title}`,
     body: 'Engage in a productive conversation by replying to this comment.',
   },
+  PitchPassed: {
+    title: (proposal: ProposalAttributes) => `The Pitch "${proposal.title}" can now receive Tenders`,
+    body: 'Help to advance this idea by proposing potential solutions',
+  },
+  TenderPassed: {
+    title: (proposal: ProposalAttributes) => `The Tender "${proposal.title}" can now receive Bid Projects`,
+    body: 'If think you can tackle this solution, propose a Project and get funding from the DAO',
+  },
 }
