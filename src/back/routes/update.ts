@@ -31,7 +31,7 @@ import { VestingService } from '../../services/VestingService'
 import { ErrorCategory } from '../../utils/errorCategories'
 import type { Project } from '../models/Project'
 import { UpdateService } from '../services/update'
-import { validateCanEditProject } from '../utils/validations'
+import { validateIsAuthorOrCoauthor } from '../utils/validations'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -124,7 +124,7 @@ async function updateProjectUpdate(req: WithAuth<Request<{ update_id: string }>>
   const user = req.auth!
 
   const project = await ProjectService.getUpdatedProject(update.project_id)
-  await validateCanEditProject(user, project.id)
+  await validateIsAuthorOrCoauthor(user, project.id)
 
   return await UpdateService.updateProjectUpdate(
     update,
@@ -156,7 +156,7 @@ async function deleteProjectUpdate(req: WithAuth<Request<{ update_id: string }>>
   }
 
   const user = req.auth!
-  await validateCanEditProject(user, update.project_id)
+  await validateIsAuthorOrCoauthor(user, update.project_id)
 
   if (!update.completion_date) {
     throw new RequestError(`Update is not completed: "${update.id}"`, RequestError.BadRequest)
@@ -207,7 +207,7 @@ async function createProjectUpdate(req: WithAuth) {
   )
   try {
     const project = await ProjectService.getUpdatedProject(project_id)
-    await validateCanEditProject(user, project.id)
+    await validateIsAuthorOrCoauthor(user, project.id)
 
     const financialRecords = await validateFinancialRecords(project, financial_records)
     return await UpdateService.create(
