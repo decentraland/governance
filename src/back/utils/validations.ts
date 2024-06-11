@@ -9,6 +9,7 @@ import { SnapshotProposal } from '../../clients/SnapshotTypes'
 import { ALCHEMY_DELEGATIONS_WEBHOOK_SECRET, DISCOURSE_WEBHOOK_SECRET } from '../../constants'
 import isDAOCommittee from '../../entities/Committee/isDAOCommittee'
 import isDebugAddress from '../../entities/Debug/isDebugAddress'
+import { ProjectStatus } from '../../entities/Grant/types'
 import { ProposalAttributes, ProposalStatus, ProposalStatusUpdate } from '../../entities/Proposal/types'
 import { isProjectProposal, isValidProposalStatusUpdate } from '../../entities/Proposal/utils'
 import { validateUniqueAddresses } from '../../entities/Transparency/utils'
@@ -184,11 +185,20 @@ export function validateStatusUpdate(proposal: ProposalAttributes, statusUpdate:
   }
 }
 
-export async function validateCanEditProject(user: string, projectId: string) {
+export async function validateIsAuthorOrCoauthor(user: string, projectId: string) {
   validateId(projectId)
   validateAddress(user)
-  const canEdit = await ProjectService.isAuthorOrCoauthor(user, projectId)
-  if (!canEdit) {
-    throw new RequestError("Only the project's authors and coauthors can edit the project", RequestError.Unauthorized)
+  const isAuthorOrCoauthor = await ProjectService.isAuthorOrCoauthor(user, projectId)
+  if (!isAuthorOrCoauthor) {
+    throw new RequestError("User is not the project's author or coauthor", RequestError.Unauthorized)
+  }
+}
+
+export async function validateCanEditProject(user: string, projectId: string) {
+  await validateIsAuthorOrCoauthor(user, projectId)
+  const project = await ProjectService.getUpdatedProject(projectId)
+  const notEditableStatus = new Set([ProjectStatus.Finished, ProjectStatus.Revoked])
+  if (notEditableStatus.has(project.status)) {
+    throw new RequestError('Project cannot be edited after it is finished or revoked', RequestError.BadRequest)
   }
 }
