@@ -194,11 +194,11 @@ export async function validateIsAuthorOrCoauthor(user: string, projectId: string
   }
 }
 
+const NOT_EDITABLE_STATUS = new Set([ProjectStatus.Finished, ProjectStatus.Revoked])
 export async function validateCanEditProject(user: string, projectId: string) {
   await validateIsAuthorOrCoauthor(user, projectId)
   const project = await ProjectService.getUpdatedProject(projectId)
-  const notEditableStatus = new Set([ProjectStatus.Finished, ProjectStatus.Revoked])
-  if (notEditableStatus.has(project.status)) {
+  if (NOT_EDITABLE_STATUS.has(project.status)) {
     throw new RequestError('Project cannot be edited after it is finished or revoked', RequestError.BadRequest)
   }
 }
