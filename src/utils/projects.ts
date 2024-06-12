@@ -44,7 +44,8 @@ function getFunding(proposal: ProposalAttributes, transparencyVesting?: Transpar
 }
 
 function getProjectStatus(proposal: ProposalAttributes, vesting?: TransparencyVesting) {
-  if (proposal.enacting_tx) {
+  const legacyCondition = !vesting && proposal.enacted_description
+  if (proposal.enacting_tx || legacyCondition) {
     return ProjectStatus.Finished
   }
 
