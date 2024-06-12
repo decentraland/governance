@@ -21,13 +21,7 @@ import {
   ProposalStatus,
   ProposalType,
 } from '../entities/Proposal/types'
-import {
-  DEFAULT_CHOICES,
-  asNumber,
-  getProposalEndDate,
-  isProjectProposal,
-  proposalUrl,
-} from '../entities/Proposal/utils'
+import { DEFAULT_CHOICES, asNumber, getProposalEndDate, isProjectProposal } from '../entities/Proposal/utils'
 import UpdateModel from '../entities/Updates/model'
 import { IndexedUpdate, UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates } from '../entities/Updates/utils'
@@ -186,8 +180,8 @@ export class ProjectService {
       for (const project of migratedProjects) {
         try {
           const proposal = await ProposalService.getProposal(project.proposal_id)
-          await ProjectService.createMilestones(proposal, project, new Date(project.created_at))
           await ProjectService.createPersonnel(proposal, project, new Date(project.created_at))
+          await ProjectService.createMilestones(proposal, project, new Date(project.created_at))
           migrationResult.migrationsFinished++
         } catch (e) {
           migrationResult.migrationErrors.push(`Project ${project.id} failed with: ${e}`)
@@ -218,14 +212,6 @@ export class ProjectService {
 
       await ProjectService.createPersonnel(proposal, newProject, creationDate)
       await ProjectService.createMilestones(proposal, newProject, creationDate)
-      await ProjectService.addLink(
-        {
-          label: 'Proposal',
-          url: proposalUrl(proposal.id),
-          project_id: newProject.id,
-        },
-        proposal.user
-      )
 
       return newProject
     } catch (error) {
