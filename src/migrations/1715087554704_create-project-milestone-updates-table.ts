@@ -2,7 +2,8 @@
 import { MigrationBuilder } from "node-pg-migrate"
 import Model from "../back/models/ProjectMilestoneUpdate"
 import ProjectMilestoneModel from "../back/models/ProjectMilestone"
-import UpdateModel from "../entities/Updates/model"
+
+const LEGACY_TABLE_NAME = 'proposal_updates'
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
   pgm.createTable(Model.tableName, {
@@ -36,7 +37,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
   })
 
   pgm.createIndex(Model.tableName, 'update_id')
-  pgm.addConstraint(Model.tableName, 'update_id_fk', `FOREIGN KEY(update_id) REFERENCES ${UpdateModel.tableName}(id)`)
+  pgm.addConstraint(Model.tableName, 'update_id_fk', `FOREIGN KEY(update_id) REFERENCES ${LEGACY_TABLE_NAME}(id)`)
   pgm.createIndex(Model.tableName, 'milestone_id')
   pgm.addConstraint(Model.tableName, 'milestone_id_fk', `FOREIGN KEY(milestone_id) REFERENCES ${ProjectMilestoneModel.tableName}(id)`)
 }
