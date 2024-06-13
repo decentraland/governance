@@ -14,14 +14,28 @@ import { getPublicUpdates, getUpdateUrl } from '../entities/Updates/utils'
 import UserModel from '../entities/User/model'
 import { filterComments } from '../entities/User/utils'
 import { inBackground } from '../helpers'
-import { DiscourseComment, DiscoursePost, DiscoursePostInTopic } from '../shared/types/discourse'
+import { DiscourseComment, DiscourseNewPost, DiscoursePost, DiscoursePostInTopic } from '../shared/types/discourse'
 import { DclProfile } from '../utils/Catalyst/types'
+import { ErrorCategory } from '../utils/errorCategories'
 import logger from '../utils/logger'
 
+import { ErrorService } from './ErrorService'
 import { ProposalInCreation } from './ProposalService'
 import { SnapshotService } from './SnapshotService'
 
 export class DiscourseService {
+  private static async createPostWithRetry(post: DiscourseNewPost, retries = 3): Promise<DiscoursePost> {
+    try {
+      return await Discourse.get().createPost(post)
+    } catch (error) {
+      if (retries > 0) {
+        return this.createPostWithRetry(post, retries - 1)
+      } else {
+        throw error
+      }
+    }
+  }
+
   static async createProposal(
     data: ProposalInCreation,
     proposalId: string,
@@ -31,12 +45,17 @@ export class DiscourseService {
   ) {
     try {
       const discoursePost = await this.getPost(data, profile, proposalId, snapshotUrl, snapshotId)
-      const discourseProposal = await Discourse.get().createPost(discoursePost)
+      const discourseProposal = await this.createPostWithRetry(discoursePost)
       this.logPostCreation(discourseProposal)
       return discourseProposal
       /* eslint-disable @typescript-eslint/no-explicit-any */
     } catch (error: any) {
       SnapshotService.dropSnapshotProposal(snapshotId)
+      ErrorService.report('Error creating discourse post', {
+        proposalId,
+        error: `${error}`,
+        category: ErrorCategory.Discourse,
+      })
       throw new Error(`Forum error: ${error.body?.errors.join(', ')}`, error)
     }
   }
@@ -47,11 +66,17 @@ export class DiscourseService {
       const publicUpdates = getPublicUpdates(updates)
       const updateIndex = publicUpdates.length
       const discoursePost = this.getUpdatePost(data, data.id, updateIndex, proposalTitle)
-      const discourseUpdate = await Discourse.get().createPost(discoursePost)
+      const discourseUpdate = await this.createPostWithRetry(discoursePost)
       await UpdateService.updateWithDiscoursePost(data.id, discourseUpdate)
       this.logPostCreation(discourseUpdate)
       return discourseUpdate
     } catch (error: any) {
+      ErrorService.report('Error creating discourse post for update', {
+        update_id: data.id,
+        proposal_id: data.proposal_id,
+        error: `${error}`,
+        category: ErrorCategory.Discourse,
+      })
       throw new Error(`Forum error: ${error.body?.errors.join(', ')}`, error)
     }
   }
