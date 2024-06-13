@@ -1,5 +1,3 @@
-import env from 'decentraland-gatsby/dist/utils/env'
-
 import Time from '../../utils/date/Time'
 
 export const GRANT_PROPOSAL_DURATION_IN_SECONDS = process.env.DURATION_GRANT || '1209600'

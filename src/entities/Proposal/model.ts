@@ -15,6 +15,7 @@ import { toLower } from 'lodash'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
+import ProjectModel from '../../back/models/Project'
 import Time from '../../utils/date/Time'
 import { UnpublishedBidStatus } from '../Bid/types'
 import CoauthorModel from '../Coauthor/model'
@@ -31,6 +32,7 @@ import {
   ProposalListFilter,
   ProposalStatus,
   ProposalType,
+  ProposalWithProject,
   SortingOrder,
   isProposalType,
 } from './types'
@@ -66,6 +68,28 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return {
       ...proposal,
       snapshot_proposal: JSON.parse(proposal.snapshot_proposal),
+    }
+  }
+
+  static async getProposalWithProject(id: string): Promise<ProposalWithProject> {
+    if (!isUUID(id || '')) {
+      throw new Error(`Not found proposal: "${id}"`)
+    }
+
+    const query = SQL`
+      SELECT p.*, pr.id as "project_id", pr.status as "project_status"
+      FROM ${table(ProposalModel)} p
+      LEFT JOIN ${table(ProjectModel)} pr ON p.id = pr.proposal_id
+      WHERE p.id = ${id} AND p.deleted = false
+  `
+
+    const result = await this.namedQuery('get_proposal_with_project', query)
+    if (!result.length) {
+      throw new Error(`Not found proposal: "${id}"`)
+    }
+
+    return {
+      ...this.parse(result[0]),
     }
   }
 
@@ -429,18 +453,19 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return proposals.map(this.parse)
   }
 
-  static async getProjectList(): Promise<ProposalAttributes[]> {
+  static async getProjectList(): Promise<ProposalWithProject[]> {
     const status = [ProposalStatus.Passed, ProposalStatus.Enacted].map((status) => SQL`${status}`)
     const types = [ProposalType.Bid, ProposalType.Grant].map((type) => SQL`${type}`)
 
     const proposals = await this.namedQuery(
       'get_project_list',
       SQL`
-        SELECT *
-        FROM ${table(ProposalModel)}
+        SELECT prop.*, proj.id as project_id
+        FROM ${table(ProposalModel)} prop
+        LEFT OUTER JOIN ${table(ProjectModel)} proj on prop.id = proj.proposal_id
         WHERE "deleted" = FALSE
-          AND "type" IN (${join(types)})
-          AND "status" IN (${join(status)})
+          AND prop."type" IN (${join(types)})
+          AND prop."status" IN (${join(status)})
           ORDER BY "created_at" DESC 
     `
     )
@@ -464,7 +489,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     }
   }
 
-  static textsearch(title: string, description: string, user: string, vesting_addresses: string[]) {
+  static generateTextSearchVector(title: string, description: string, user: string, vesting_addresses: string[]) {
     const addressExpressions = vesting_addresses.map((address) => SQL`setweight(to_tsvector(${address}), 'B')`)
 
     return SQL`(${join(

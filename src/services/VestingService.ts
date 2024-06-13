@@ -1,5 +1,5 @@
 import { Transparency, TransparencyVesting } from '../clients/Transparency'
-import { VestingInfo, getVestingContractData } from '../clients/VestingData'
+import { VestingWithLogs, getVestingWithLogs } from '../clients/VestingData'
 
 import CacheService, { TTL_24_HS } from './CacheService'
 
@@ -17,16 +17,16 @@ export class VestingService {
     return transparencyVestings
   }
 
-  static async getVestingInfo(addresses: string[]): Promise<VestingInfo[]> {
-    const vestings = await Promise.all(addresses.map((address) => getVestingContractData(address)))
+  static async getVestings(addresses: string[]): Promise<VestingWithLogs[]> {
+    const vestings = await Promise.all(addresses.map((address) => getVestingWithLogs(address)))
 
     return vestings.sort(compareVestingInfo)
   }
 }
 
-function compareVestingInfo(a: VestingInfo, b: VestingInfo): number {
+function compareVestingInfo(a: VestingWithLogs, b: VestingWithLogs): number {
   if (a.logs.length === 0 && b.logs.length === 0) {
-    return new Date(b.vestingStartAt).getTime() - new Date(a.vestingStartAt).getTime()
+    return new Date(b.start_at).getTime() - new Date(a.start_at).getTime()
   }
 
   if (a.logs.length === 0) {

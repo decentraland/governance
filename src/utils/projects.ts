@@ -1,138 +1,109 @@
 import { TransparencyVesting } from '../clients/Transparency'
-import { ProjectStatus } from '../entities/Grant/types'
-import { Project, ProposalAttributes } from '../entities/Proposal/types'
-
-import Time from './date/Time'
-
-function getQuarterDates(quarter?: number, year?: number) {
-  if (!quarter && !year) {
-    return { startDate: undefined, endDate: undefined }
-  }
-
-  if (!year) {
-    console.error('Year is required')
-    return { startDate: undefined, endDate: undefined }
-  }
-
-  if (!quarter) {
-    const startDate = Time(`${year}-01-01`).format('YYYY-MM-DD')
-    const endDate = Time(`${year}-12-31`).format('YYYY-MM-DD')
-    return { startDate, endDate }
-  }
-
-  if (quarter < 1 || quarter > 4) {
-    console.error('Quarter should be between 1 and 4')
-    return { startDate: undefined, endDate: undefined }
-  }
-
-  const startMonth = (quarter - 1) * 3 + 1
-
-  const endMonth = startMonth + 2
-
-  const startDate = Time(`${year}-${startMonth}-01`).startOf('month').format('YYYY-MM-DD')
-  const endDate = Time(`${year}-${endMonth}-01`).endOf('month').add(1, 'day').format('YYYY-MM-DD')
-
-  return { startDate, endDate }
-}
+import { Vesting } from '../clients/VestingData'
+import { ProjectStatus, VestingStatus } from '../entities/Grant/types'
+import { ProjectFunding, ProposalAttributes, ProposalProject, ProposalWithProject } from '../entities/Proposal/types'
 
 export function getHighBudgetVpThreshold(budget: number) {
   return 1200000 + budget * 40
 }
 
-export function getGoogleCalendarUrl({
-  title,
-  details,
-  startAt,
-}: {
-  title: string
-  details: string
-  startAt: string | Date
-}) {
-  const params = new URLSearchParams()
-  params.set('text', title)
-  params.set('details', details)
-  const startAtDate = Time.from(startAt, { utc: true })
-  const dates = [
-    startAtDate.format(Time.Formats.GoogleCalendar),
-    Time.from(startAt, { utc: true }).add(15, 'minutes').format(Time.Formats.GoogleCalendar),
-  ]
-  params.set('dates', dates.join('/'))
-
-  return `https://calendar.google.com/calendar/r/eventedit?${params.toString()}`
-}
-
-export function isCurrentProject(status?: ProjectStatus) {
-  return status === ProjectStatus.InProgress || status === ProjectStatus.Paused || status === ProjectStatus.Pending
-}
-
-export function isCurrentQuarterProject(year: number, quarter: number, startAt?: number) {
-  if (!startAt) {
-    return false
+export function toGovernanceProjectStatus(status: VestingStatus) {
+  switch (status) {
+    case VestingStatus.Pending:
+      return ProjectStatus.Pending
+    case VestingStatus.InProgress:
+      return ProjectStatus.InProgress
+    case VestingStatus.Finished:
+      return ProjectStatus.Finished
+    case VestingStatus.Paused:
+      return ProjectStatus.Paused
+    case VestingStatus.Revoked:
+      return ProjectStatus.Revoked
   }
-
-  const { startDate, endDate } = getQuarterDates(quarter, year)
-
-  if (!startDate || !endDate) {
-    return false
-  }
-
-  return Time.unix(startAt || 0).isAfter(startDate) && Time.unix(startAt || 0).isBefore(endDate)
 }
 
-function getProjectVestingData(proposal: ProposalAttributes, vesting: TransparencyVesting) {
+function getFunding(proposal: ProposalAttributes, transparencyVesting?: TransparencyVesting): ProjectFunding {
   if (proposal.enacting_tx) {
+    // one time payment
     return {
-      status: ProjectStatus.Finished,
-      enacting_tx: proposal.enacting_tx,
-      enacted_at: Time(proposal.updated_at).unix(),
+      enacted_at: proposal.updated_at.toISOString(),
+      one_time_payment: {
+        enacting_tx: proposal.enacting_tx,
+      },
     }
+  }
+
+  if (!transparencyVesting) {
+    return {}
+  }
+
+  return {
+    enacted_at: transparencyVesting.vesting_start_at,
+    vesting: toVesting(transparencyVesting),
+  }
+}
+
+function getProjectStatus(proposal: ProposalAttributes, vesting?: TransparencyVesting) {
+  const legacyCondition = !vesting && proposal.enacted_description
+  if (proposal.enacting_tx || legacyCondition) {
+    return ProjectStatus.Finished
   }
 
   if (!vesting) {
-    return {
-      status: ProjectStatus.Pending,
-    }
+    return ProjectStatus.Pending
   }
 
+  const { vesting_status } = vesting
+
+  return toGovernanceProjectStatus(vesting_status)
+}
+
+export function createProposalProject(proposal: ProposalWithProject, vesting?: TransparencyVesting): ProposalProject {
+  const funding = getFunding(proposal, vesting)
+  const status = getProjectStatus(proposal, vesting)
+
+  return {
+    id: proposal.id,
+    project_id: proposal.project_id,
+    status,
+    title: proposal.title,
+    user: proposal.user,
+    about: proposal.configuration.abstract,
+    type: proposal.type,
+    size: proposal.configuration.size || proposal.configuration.funding,
+    created_at: proposal.created_at.getTime(),
+    updated_at: proposal.updated_at.getTime(),
+    configuration: {
+      category: proposal.configuration.category || proposal.type,
+      tier: proposal.configuration.tier,
+    },
+    funding,
+  }
+}
+
+export function toVesting(transparencyVesting: TransparencyVesting): Vesting {
   const {
-    vesting_status: status,
     token,
     vesting_start_at,
     vesting_finish_at,
     vesting_total_amount,
     vesting_released,
     vesting_releasable,
-  } = vesting
+    vesting_status,
+    vesting_address,
+  } = transparencyVesting
 
-  return {
-    status,
+  const vesting: Vesting = {
     token,
-    enacted_at: Time(vesting_start_at).unix(),
-    contract: {
-      vesting_total_amount: Math.round(vesting_total_amount),
-      vestedAmount: Math.round(vesting_released + vesting_releasable),
-      releasable: Math.round(vesting_releasable),
-      released: Math.round(vesting_released),
-      start_at: Time(vesting_start_at).unix(),
-      finish_at: Time(vesting_finish_at).unix(),
-    },
+    address: vesting_address,
+    start_at: vesting_start_at,
+    finish_at: vesting_finish_at,
+    releasable: Math.round(vesting_releasable),
+    released: Math.round(vesting_released),
+    total: Math.round(vesting_total_amount),
+    vested: Math.round(vesting_released + vesting_releasable),
+    status: vesting_status,
   }
-}
 
-export function createProject(proposal: ProposalAttributes, vesting?: TransparencyVesting): Project {
-  const vestingData = vesting ? getProjectVestingData(proposal, vesting) : {}
-
-  return {
-    id: proposal.id,
-    title: proposal.title,
-    user: proposal.user,
-    type: proposal.type,
-    size: proposal.configuration.size || proposal.configuration.funding,
-    created_at: proposal.created_at.getTime(),
-    configuration: {
-      category: proposal.configuration.category || proposal.type,
-      tier: proposal.configuration.tier,
-    },
-    ...vestingData,
-  }
+  return vesting
 }

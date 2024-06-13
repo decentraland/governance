@@ -5,16 +5,17 @@ import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
 import { SnapshotProposal } from '../../clients/SnapshotTypes'
 import { CommitteeName } from '../../clients/Transparency'
+import { Vesting } from '../../clients/VestingData'
 import { UnpublishedBidInfo } from '../Bid/types'
 import {
   CategoryAssessmentQuestions,
   GrantRequestDueDiligence,
   GrantRequestGeneralInfo,
-  GrantRequestTeam,
   GrantTierType,
   PaymentToken,
   ProjectStatus,
   ProposalGrantCategory,
+  ProposalRequestTeam,
   SubtypeOptions,
   VestingStartDate,
 } from '../Grant/types'
@@ -68,6 +69,11 @@ export type ProposalAttributes<C extends Record<string, unknown> = any> = {
   created_at: Date
   updated_at: Date
   textsearch: SQLStatement | string | null | undefined
+}
+
+export interface ProposalWithProject extends ProposalAttributes {
+  project_id?: string | null
+  project_status?: ProjectStatus | null
 }
 
 export type ProposalListFilter = {
@@ -203,12 +209,12 @@ function requiredVotingPower(value: string | undefined | null, defaultValue: num
   return defaultValue
 }
 
-export type UpdateProposalStatusProposal = {
+export type ProposalStatusUpdate = {
   status: ProposalStatus.Rejected | ProposalStatus.Passed | ProposalStatus.Enacted
   vesting_addresses?: string[]
 }
 
-export const updateProposalStatusScheme = {
+export const ProposalStatusUpdateScheme = {
   type: 'object',
   additionalProperties: false,
   required: ['status'],
@@ -675,7 +681,7 @@ export const ProposalRequiredVP = {
 
 export type GrantProposalConfiguration = GrantRequestGeneralInfo &
   GrantRequestDueDiligence &
-  GrantRequestTeam & {
+  ProposalRequestTeam & {
     category: ProposalGrantCategory | null
     size: number
     paymentToken?: PaymentToken
@@ -804,36 +810,37 @@ export type ProposalCommentsInDiscourse = {
   comments: ProposalComment[]
 }
 
-export type VestingContractData = {
-  vestedAmount: number
-  releasable: number
-  released: number
-  start_at: number
-  finish_at: number
-  vesting_total_amount: number
+export type OneTimePayment = {
+  enacting_tx: string
+  token?: string
+  tx_amount?: number
 }
 
-export type Project = {
+export type ProjectFunding = {
+  enacted_at?: string
+  one_time_payment?: OneTimePayment
+  vesting?: Vesting
+}
+
+export type ProposalProject = {
   id: string
+  project_id?: string | null
+  status: ProjectStatus
   title: string
   user: string
   size: number
   type: ProposalType
+  about: string
   created_at: number
+  updated_at: number
   configuration: {
     category: ProposalGrantCategory
     tier: string
   }
-  status?: ProjectStatus
-  contract?: VestingContractData
-  enacting_tx?: string
-  token?: string
-  enacted_at?: number
-  tx_amount?: number
-  tx_date?: number
+  funding?: ProjectFunding
 }
 
-export type ProjectWithUpdate = Project & {
+export type ProposalProjectWithUpdate = ProposalProject & {
   update?: IndexedUpdate | null
   update_timestamp?: number
 }

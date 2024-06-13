@@ -7,7 +7,7 @@ import 'isomorphic-fetch'
 import numeral from 'numeral'
 
 import { Governance } from '../../clients/Governance'
-import { GOVERNANCE_API, GOVERNANCE_URL } from '../../constants'
+import { GOVERNANCE_URL } from '../../constants'
 import { getEnumDisplayName } from '../../helpers'
 import { getTile } from '../../utils/Land'
 import Time from '../../utils/date/Time'
@@ -87,7 +87,7 @@ export function isAlreadyACatalyst(domain: string) {
   return !!getCatalystServersFromCache('mainnet').find((server) => server.address === 'https://' + domain)
 }
 
-export function isValidUpdateProposalStatus(current: ProposalStatus, next: ProposalStatus) {
+export function isValidProposalStatusUpdate(current: ProposalStatus, next: ProposalStatus) {
   switch (current) {
     case ProposalStatus.Finished:
       return (
@@ -151,7 +151,7 @@ export function governanceUrl(pathname = '') {
 
 export function proposalUrl(id: ProposalAttributes['id']) {
   const params = new URLSearchParams({ id })
-  const target = new URL(GOVERNANCE_API)
+  const target = new URL(GOVERNANCE_URL)
   target.pathname = '/proposal/'
   target.search = '?' + params.toString()
   return target.toString()

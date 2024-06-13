@@ -5,8 +5,6 @@ import { getProfileUrl } from '../../entities/Profile/utils'
 import { ProposalWithOutcome } from '../../entities/Proposal/outcome'
 import { ProposalStatus, ProposalType } from '../../entities/Proposal/types'
 import { isGovernanceProcessProposal, proposalUrl } from '../../entities/Proposal/utils'
-import UpdateModel from '../../entities/Updates/model'
-import { UpdateAttributes } from '../../entities/Updates/types'
 import { getPublicUpdates, getUpdateNumber, getUpdateUrl } from '../../entities/Updates/utils'
 import UserModel from '../../entities/User/model'
 import { getEnumDisplayName, inBackground } from '../../helpers'
@@ -14,6 +12,8 @@ import { ErrorService } from '../../services/ErrorService'
 import { getProfile } from '../../utils/Catalyst'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
+
+import { UpdateService } from './update'
 
 const CHANNEL_ID = process.env.DISCORD_CHANNEL_ID
 const PROFILE_VERIFICATION_CHANNEL_ID = process.env.DISCORD_PROFILE_VERIFICATION_CHANNEL_ID || ''
@@ -219,7 +219,7 @@ export class DiscordService {
     if (DISCORD_SERVICE_ENABLED) {
       inBackground(async () => {
         try {
-          const publicUpdates = getPublicUpdates(await UpdateModel.find<UpdateAttributes>({ proposal_id: proposalId }))
+          const publicUpdates = getPublicUpdates(await UpdateService.getAllByProposalId(proposalId))
           const updateNumber = getUpdateNumber(publicUpdates, updateId)
           const updateIdx = publicUpdates.length - updateNumber
 

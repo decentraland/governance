@@ -1,6 +1,7 @@
 import camelCase from 'lodash/camelCase'
 import cloneDeep from 'lodash/cloneDeep'
 
+import { MILESTONE_SUBMIT_LIMIT } from '../Proposal/constants'
 import { toNewGrantCategory } from '../QuarterCategoryBudget/utils'
 
 export const GRANT_PROPOSAL_MIN_BUDGET = 100
@@ -60,14 +61,21 @@ export enum PaymentToken {
 export type ProposalGrantCategory = OldGrantCategory | NewGrantCategory
 
 export const VALID_CATEGORIES = [NewGrantCategory.CoreUnit, NewGrantCategory.Platform]
-export const INVALID_CATEGORIES = Object.values(NewGrantCategory).filter((item) => !VALID_CATEGORIES.includes(item))
 
-export enum ProjectStatus {
+export enum VestingStatus {
   Pending = 'Pending',
   InProgress = 'In Progress',
   Finished = 'Finished',
   Paused = 'Paused',
   Revoked = 'Revoked',
+}
+
+export enum ProjectStatus {
+  Pending = 'pending',
+  InProgress = 'in_progress',
+  Finished = 'finished',
+  Paused = 'paused',
+  Revoked = 'revoked',
 }
 
 export function isGrantSubtype(value: string | null | undefined) {
@@ -81,6 +89,24 @@ export function toGrantSubtype<OrElse>(value: string | null | undefined, orElse:
   return isGrantSubtype(value) ? (value as SubtypeOptions) : orElse()
 }
 
+export const MilestoneItemSchema = {
+  title: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 80,
+  },
+  tasks: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 750,
+  },
+  delivery_date: {
+    type: 'string',
+    minLength: 1,
+    maxLength: 10,
+  },
+}
+
 export const GrantRequestGeneralInfoSchema = {
   title: {
     type: 'string',
@@ -92,7 +118,11 @@ export const GrantRequestGeneralInfoSchema = {
     minLength: 1,
     maxLength: 500,
   },
-  description: { type: 'string', minLength: 20, maxLength: 3250 },
+  description: {
+    type: 'string',
+    minLength: 20,
+    maxLength: 3250,
+  },
   beneficiary: {
     type: 'string',
     format: 'address',
@@ -104,7 +134,17 @@ export const GrantRequestGeneralInfoSchema = {
   roadmap: {
     type: 'string',
     minLength: 20,
-    maxLength: 2000,
+    maxLength: 1500,
+  },
+  milestones: {
+    type: 'array',
+    items: {
+      type: 'object',
+      additionalProperties: false,
+      required: [...Object.keys(MilestoneItemSchema)],
+      properties: MilestoneItemSchema,
+    },
+    maxItems: MILESTONE_SUBMIT_LIMIT,
   },
   coAuthors: {
     type: 'array',
@@ -308,6 +348,10 @@ export const TeamMemberItemSchema = {
     minLength: 1,
     maxLength: 750,
   },
+  address: {
+    type: 'string',
+    format: 'address',
+  },
   relevantLink: {
     type: 'string',
     minLength: 0,
@@ -321,7 +365,7 @@ export const GrantRequestTeamSchema = {
     items: {
       type: 'object',
       additionalProperties: false,
-      required: [...Object.keys(TeamMemberItemSchema)],
+      required: [...Object.keys(TeamMemberItemSchema).filter((key) => key !== 'address')],
       properties: TeamMemberItemSchema,
     },
   },
@@ -365,7 +409,7 @@ export type GrantRequest = {
   category: NewGrantCategory | null
 } & GrantRequestFunding &
   GrantRequestGeneralInfo &
-  GrantRequestTeam &
+  ProposalRequestTeam &
   GrantRequestCategoryAssessment &
   GrantRequestDueDiligence
 
@@ -385,6 +429,7 @@ export type GrantRequestGeneralInfo = {
   specification?: string
   personnel?: string
   roadmap: string
+  milestones: Milestone[]
   coAuthors?: string[]
 }
 
@@ -402,12 +447,19 @@ export type GrantRequestDueDiligence = {
 
 export type TeamMember = {
   name: string
+  address?: string | null
   role: string
   about: string
   relevantLink?: string
 }
 
-export type GrantRequestTeam = {
+export type Milestone = {
+  title: string
+  tasks: string
+  delivery_date: string
+}
+
+export type ProposalRequestTeam = {
   members: TeamMember[]
 }
 

@@ -7,8 +7,14 @@ import isUUID from 'validator/lib/isUUID'
 
 import { SnapshotProposal } from '../../clients/SnapshotTypes'
 import { ALCHEMY_DELEGATIONS_WEBHOOK_SECRET, DISCOURSE_WEBHOOK_SECRET } from '../../constants'
+import isDAOCommittee from '../../entities/Committee/isDAOCommittee'
 import isDebugAddress from '../../entities/Debug/isDebugAddress'
+import { ProjectStatus } from '../../entities/Grant/types'
+import { ProposalAttributes, ProposalStatus, ProposalStatusUpdate } from '../../entities/Proposal/types'
+import { isProjectProposal, isValidProposalStatusUpdate } from '../../entities/Proposal/utils'
+import { validateUniqueAddresses } from '../../entities/Transparency/utils'
 import { ErrorService } from '../../services/ErrorService'
+import { ProjectService } from '../../services/ProjectService'
 import { EventFilterSchema } from '../../shared/types/events'
 import { ErrorCategory } from '../../utils/errorCategories'
 
@@ -65,9 +71,9 @@ export function validateProposalFields(fields: unknown) {
   }
 }
 
-export function validateProposalId(id?: string) {
+export function validateId(id?: string | null) {
   if (!(id && isUUID(id))) {
-    throw new RequestError('Invalid proposal id', RequestError.BadRequest)
+    throw new RequestError('Invalid id', RequestError.BadRequest)
   }
   return id
 }
@@ -162,6 +168,48 @@ export function validateEventTypesFilters(req: Request) {
   }
 
   return parsedEventTypes.data
+}
+
+export function validateIsDaoCommittee(user: string) {
+  if (!isDAOCommittee(user)) {
+    throw new RequestError('Only DAO committee members can update a proposal status', RequestError.Forbidden)
+  }
+}
+
+export function validateStatusUpdate(proposal: ProposalAttributes, statusUpdate: ProposalStatusUpdate) {
+  const { status: newStatus, vesting_addresses } = statusUpdate
+  if (!isValidProposalStatusUpdate(proposal.status, newStatus)) {
+    throw new RequestError(`${proposal.status} can't be updated to ${newStatus}`, RequestError.BadRequest, statusUpdate)
+  }
+  if (newStatus === ProposalStatus.Enacted && isProjectProposal(proposal.type)) {
+    if (!vesting_addresses || vesting_addresses.length === 0) {
+      throw new RequestError('Vesting addresses are required for grant or bid proposals', RequestError.BadRequest)
+    }
+    if (vesting_addresses.some((address) => !isEthereumAddress(address))) {
+      throw new RequestError('Some vesting address is invalid', RequestError.BadRequest)
+    }
+    if (!validateUniqueAddresses(vesting_addresses)) {
+      throw new RequestError('Vesting addresses must be unique', RequestError.BadRequest)
+    }
+  }
+}
+
+export async function validateIsAuthorOrCoauthor(user: string, projectId: string) {
+  validateId(projectId)
+  validateAddress(user)
+  const isAuthorOrCoauthor = await ProjectService.isAuthorOrCoauthor(user, projectId)
+  if (!isAuthorOrCoauthor) {
+    throw new RequestError("User is not the project's author or coauthor", RequestError.Unauthorized)
+  }
+}
+
+const NOT_EDITABLE_STATUS = new Set([ProjectStatus.Finished, ProjectStatus.Revoked])
+export async function validateCanEditProject(user: string, projectId: string) {
+  await validateIsAuthorOrCoauthor(user, projectId)
+  const project = await ProjectService.getUpdatedProject(projectId)
+  if (NOT_EDITABLE_STATUS.has(project.status)) {
+    throw new RequestError('Project cannot be edited after it is finished or revoked', RequestError.BadRequest)
+  }
 }
 
 export function validateBlockNumber(blockNumber?: unknown | null) {

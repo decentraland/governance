@@ -5,7 +5,8 @@ import { resetEventType } from "./1706037450493_events-delegation-types"
 export const shorthands: ColumnDefinitions | undefined = undefined
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
-  pgm.renameTypeValue('event_type', 'commented', 'proposal_commented')
+  // Migration run in production
+  // pgm.renameTypeValue('event_type', 'commented', 'proposal_commented')
   pgm.addTypeValue('event_type', 'project_update_commented', { ifNotExists: true })
 }
 

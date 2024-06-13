@@ -9,6 +9,7 @@ import BidService from '../../services/BidService'
 import { BudgetService } from '../../services/BudgetService'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
+import { ProjectService } from '../../services/ProjectService'
 import { ProposalService } from '../../services/ProposalService'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
@@ -182,7 +183,9 @@ function logFinishableProposals(finishableProposals: ProposalAttributes[]) {
 }
 
 export async function finishProposal() {
-  logger.log(`Running finish proposal job...`)
+  if (isProdEnv()) {
+    logger.log(`Running finish proposal job...`)
+  }
 
   try {
     const finishableProposals = await ProposalModel.getFinishableProposals()
@@ -201,6 +204,7 @@ export async function finishProposal() {
 
     await updateProposalsAndBudgets(proposalsWithOutcome, budgetsWithUpdates)
 
+    await ProjectService.createProjects(proposalsWithOutcome)
     NotificationService.sendFinishProposalNotifications(proposalsWithOutcome)
     BadgesService.giveFinishProposalBadges(proposalsWithOutcome)
     DiscourseService.commentFinishedProposals(proposalsWithOutcome)

@@ -9,11 +9,9 @@ import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
-import { getVestingContractData } from '../../clients/VestingData'
 import { BidRequest, BidRequestSchema } from '../../entities/Bid/types'
 import CoauthorModel from '../../entities/Coauthor/model'
 import { CoauthorStatus } from '../../entities/Coauthor/types'
-import isDAOCommittee from '../../entities/Committee/isDAOCommittee'
 import { hasOpenSlots } from '../../entities/Committee/utils'
 import { GrantRequest, getGrantRequestSchema, toGrantSubtype } from '../../entities/Grant/types'
 import {
@@ -44,10 +42,10 @@ import {
   ProposalAttributes,
   ProposalCommentsInDiscourse,
   ProposalRequiredVP,
-  ProposalStatus,
+  ProposalStatusUpdate,
+  ProposalStatusUpdateScheme,
   ProposalType,
   SortingOrder,
-  UpdateProposalStatusProposal,
   newProposalBanNameScheme,
   newProposalCatalystScheme,
   newProposalDraftScheme,
@@ -58,7 +56,6 @@ import {
   newProposalPitchScheme,
   newProposalPollScheme,
   newProposalTenderScheme,
-  updateProposalStatusScheme,
 } from '../../entities/Proposal/types'
 import {
   DEFAULT_CHOICES,
@@ -71,47 +68,25 @@ import {
   isAlreadyACatalyst,
   isAlreadyBannedName,
   isAlreadyPointOfInterest,
-  isProjectProposal,
   isValidName,
   isValidPointOfInterest,
-  isValidUpdateProposalStatus,
   toProposalStatus,
   toProposalType,
   toSortingOrder,
 } from '../../entities/Proposal/utils'
 import { SNAPSHOT_DURATION } from '../../entities/Snapshot/constants'
 import { isSameAddress } from '../../entities/Snapshot/utils'
-import { validateUniqueAddresses } from '../../entities/Transparency/utils'
-import UpdateModel from '../../entities/Updates/model'
-import {
-  FinancialRecord,
-  FinancialUpdateSectionSchema,
-  GeneralUpdateSectionSchema,
-  UpdateGeneralSection,
-} from '../../entities/Updates/types'
-import {
-  getCurrentUpdate,
-  getFundsReleasedSinceLatestUpdate,
-  getLatestUpdate,
-  getNextPendingUpdate,
-  getPendingUpdates,
-  getPublicUpdates,
-  getReleases,
-} from '../../entities/Updates/utils'
 import BidService from '../../services/BidService'
 import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
 import { ProjectService } from '../../services/ProjectService'
 import { ProposalInCreation, ProposalService } from '../../services/ProposalService'
-import { VestingService } from '../../services/VestingService'
 import { getProfile } from '../../utils/Catalyst'
 import Time from '../../utils/date/Time'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
 import logger from '../../utils/logger'
-import { NotificationService } from '../services/notification'
-import { UpdateService } from '../services/update'
-import { validateAddress, validateProposalId } from '../utils/validations'
+import { validateAddress, validateId, validateIsDaoCommittee, validateStatusUpdate } from '../utils/validations'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -131,12 +106,10 @@ export default routes((route) => {
   route.post('/proposals/hiring', withAuth, handleAPI(createProposalHiring))
   route.get('/proposals/priority/:address?', handleJSON(getPriorityProposals))
   route.get('/proposals/grants/:address', handleAPI(getGrantsByUser))
-  route.get('/proposals/:proposal', handleAPI(getProposal))
+  route.get('/proposals/:proposal', handleAPI(getProposalWithProject))
   route.patch('/proposals/:proposal', withAuth, handleAPI(updateProposalStatus))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
   route.get('/proposals/:proposal/comments', handleAPI(getProposalComments))
-  route.get('/proposals/:proposal/updates', handleAPI(getProposalUpdates))
-  route.post('/proposals/:proposal/update', withAuth, handleAPI(createProposalUpdate))
   route.get('/proposals/linked-wearables/image', handleAPI(checkImage))
 })
 
@@ -525,7 +498,7 @@ async function getPriorityProposals(req: Request) {
 }
 
 export async function getProposal(req: Request<{ proposal: string }>) {
-  const id = validateProposalId(req.params.proposal)
+  const id = validateId(req.params.proposal)
   try {
     return await ProposalService.getProposal(id)
   } catch (e) {
@@ -533,76 +506,29 @@ export async function getProposal(req: Request<{ proposal: string }>) {
   }
 }
 
-const updateProposalStatusValidator = schema.compile(updateProposalStatusScheme)
+export async function getProposalWithProject(req: Request<{ proposal: string }>) {
+  const id = validateId(req.params.proposal)
+  try {
+    return await ProposalService.getProposalWithProject(id)
+  } catch (e) {
+    throw new RequestError(`Proposal "${id}" not found`, RequestError.NotFound)
+  }
+}
+
+const ProposalStatusUpdateValidator = schema.compile(ProposalStatusUpdateScheme)
 
 export async function updateProposalStatus(req: WithAuth<Request<{ proposal: string }>>) {
   const user = req.auth!
-  const id = req.params.proposal
-  if (!isDAOCommittee(user)) {
-    throw new RequestError('Only DAO committee members can enact a proposal', RequestError.Forbidden)
-  }
+  validateIsDaoCommittee(user)
 
-  const proposal = await getProposal(req)
-  const configuration = validate<UpdateProposalStatusProposal>(updateProposalStatusValidator, req.body || {})
-  const newStatus = configuration.status
-  if (!isValidUpdateProposalStatus(proposal.status, newStatus)) {
-    throw new RequestError(
-      `${proposal.status} can't be updated to ${newStatus}`,
-      RequestError.BadRequest,
-      configuration
-    )
-  }
+  const proposal = await getProposalWithProject(req)
+  const statusUpdate = validate<ProposalStatusUpdate>(ProposalStatusUpdateValidator, req.body || {})
+  validateStatusUpdate(proposal, statusUpdate)
 
-  const update: Partial<ProposalAttributes> = {
-    status: newStatus,
-    updated_at: new Date(),
-  }
-
-  const isProject = isProjectProposal(proposal.type)
-  const isEnactedStatus = update.status === ProposalStatus.Enacted
-  if (isEnactedStatus) {
-    update.enacted = true
-    update.enacted_by = user
-    if (isProject) {
-      const { vesting_addresses } = configuration
-      if (!vesting_addresses || vesting_addresses.length === 0) {
-        throw new RequestError('Vesting addresses are required for grant or bid proposals', RequestError.BadRequest)
-      }
-      if (vesting_addresses.some((address) => !isEthereumAddress(address))) {
-        throw new RequestError('Some vesting address is invalid', RequestError.BadRequest)
-      }
-      if (!validateUniqueAddresses(vesting_addresses)) {
-        throw new RequestError('Vesting addresses must be unique', RequestError.BadRequest)
-      }
-      update.vesting_addresses = vesting_addresses
-      update.textsearch = ProposalModel.textsearch(
-        proposal.title,
-        proposal.description,
-        proposal.user,
-        update.vesting_addresses
-      )
-      const vestingContractData = await getVestingContractData(vesting_addresses[vesting_addresses.length - 1], id)
-      await UpdateModel.createPendingUpdates(id, vestingContractData)
-    }
-  } else if (update.status === ProposalStatus.Passed) {
-    update.passed_by = user
-  } else if (update.status === ProposalStatus.Rejected) {
-    update.rejected_by = user
-  }
-
-  await ProposalModel.update<ProposalAttributes>(update, { id })
-  if (isEnactedStatus && isProject) {
-    NotificationService.projectProposalEnacted(proposal)
-  }
-
-  const updatedProposal = await ProposalModel.findOne<ProposalAttributes>({
-    id,
-  })
-  updatedProposal && DiscourseService.commentUpdatedProposal(updatedProposal)
-
-  return {
-    ...proposal,
-    ...update,
+  try {
+    return await ProposalService.updateProposalStatus(proposal, statusUpdate, user)
+  } catch (error: any) {
+    throw new RequestError(`Unable to update proposal: ${error.message}`, RequestError.Forbidden)
   }
 }
 
@@ -671,7 +597,7 @@ async function getGrantsByUser(req: Request) {
   const coauthoring = await CoauthorModel.findProposals(address, CoauthorStatus.APPROVED)
   const coauthoringProposalIds = new Set(coauthoring.map((coauthoringAttributes) => coauthoringAttributes.proposal_id))
 
-  const projects = await ProjectService.getProjects()
+  const projects = await ProjectService.getProposalProjects()
   const filteredGrants = projects.data.filter(
     (project) =>
       project.type === ProposalType.Grant &&
@@ -699,85 +625,4 @@ async function checkImage(req: Request) {
         resolve(false)
       })
   })
-}
-
-async function getProposalUpdates(req: Request<{ proposal: string }>) {
-  const proposal_id = req.params.proposal
-
-  if (!proposal_id) {
-    throw new RequestError(`Proposal not found: "${proposal_id}"`, RequestError.NotFound)
-  }
-
-  const updates = await UpdateService.getAllByProposalId(proposal_id)
-  const publicUpdates = getPublicUpdates(updates)
-  const nextUpdate = getNextPendingUpdate(updates)
-  const currentUpdate = getCurrentUpdate(updates)
-  const pendingUpdates = getPendingUpdates(updates)
-
-  return {
-    publicUpdates,
-    pendingUpdates,
-    nextUpdate,
-    currentUpdate,
-  }
-}
-
-function parseFinancialRecords(financial_records: unknown) {
-  const parsedResult = FinancialUpdateSectionSchema.safeParse({ financial_records })
-  if (!parsedResult.success) {
-    ErrorService.report('Submission of invalid financial records', {
-      error: parsedResult.error,
-      category: ErrorCategory.Financial,
-    })
-    throw new RequestError(`Invalid financial records`, RequestError.BadRequest)
-  }
-  return parsedResult.data.financial_records
-}
-
-async function validateFinancialRecords(
-  proposal: ProposalAttributes,
-  financial_records: unknown
-): Promise<FinancialRecord[] | null> {
-  const [vestingData, updates] = await Promise.all([
-    VestingService.getVestingInfo(proposal.vesting_addresses),
-    UpdateService.getAllByProposalId(proposal.id),
-  ])
-
-  const releases = vestingData ? getReleases(vestingData) : undefined
-  const publicUpdates = getPublicUpdates(updates)
-  const latestUpdate = getLatestUpdate(publicUpdates || [])
-  const { releasedFunds } = getFundsReleasedSinceLatestUpdate(latestUpdate, releases)
-  return releasedFunds > 0 ? parseFinancialRecords(financial_records) : null
-}
-
-async function createProposalUpdate(req: WithAuth<Request<{ proposal: string }>>) {
-  const { author, financial_records, ...body } = req.body
-  const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<UpdateGeneralSection>(
-    schema.compile(GeneralUpdateSectionSchema),
-    body
-  )
-  try {
-    const proposal = await getProposal(req)
-    const financialRecords = await validateFinancialRecords(proposal, financial_records)
-    return await UpdateService.create(
-      {
-        proposal_id: req.params.proposal,
-        author,
-        health,
-        introduction,
-        highlights,
-        blockers,
-        next_steps,
-        additional_notes,
-        financial_records: financialRecords,
-      },
-      req.auth!
-    )
-  } catch (error) {
-    ErrorService.report('Error creating update', {
-      error,
-      category: ErrorCategory.Update,
-    })
-    throw new RequestError(`Something went wrong: ${error}`, RequestError.InternalServerError)
-  }
 }
