@@ -7,10 +7,6 @@ import logger from '../../utils/logger'
 import AirdropJobModel, { AirdropJobAttributes } from '../models/AirdropJob'
 import { AirdropJobStatus } from '../types/AirdropJob'
 
-export async function runAirdropJobs() {
-  await Promise.all([runQueuedAirdropJobs(), giveAndRevokeLandOwnerBadges()])
-}
-
 export async function runQueuedAirdropJobs() {
   const pendingJobs = await AirdropJobModel.getPending()
   if (pendingJobs.length === 0) {

@@ -15,7 +15,7 @@ import { register } from 'prom-client'
 import swaggerUi from 'swagger-ui-express'
 import YAML from 'yaml'
 
-import { giveTopVoterBadges, runAirdropJobs } from './back/jobs/BadgeAirdrop'
+import { giveAndRevokeLandOwnerBadges, giveTopVoterBadges, runQueuedAirdropJobs } from './back/jobs/BadgeAirdrop'
 import { pingSnapshot } from './back/jobs/PingSnapshot'
 import { withLock } from './back/jobs/jobLocks'
 import airdrops from './back/routes/airdrop'
@@ -50,10 +50,11 @@ jobs.cron('@eachMinute', finishProposal)
 jobs.cron('@eachMinute', activateProposals)
 jobs.cron('@each5Minute', withLock('publishBids', publishBids))
 jobs.cron('@each10Second', pingSnapshot)
-jobs.cron('@daily', updateGovernanceBudgets)
-jobs.cron('@daily', runAirdropJobs)
-jobs.cron('@monthly', giveTopVoterBadges)
-jobs.cron('@daily', EventsService.deleteOldEvents)
+jobs.cron('30 0 * * *', updateGovernanceBudgets) // Runs at 00:30 daily
+jobs.cron('0 1 * * *', EventsService.deleteOldEvents) // Runs at 01:00 daily
+jobs.cron('30 1 * * *', runQueuedAirdropJobs) // Runs at 01:30 daily
+jobs.cron('30 2 * * *', giveAndRevokeLandOwnerBadges) // Runs at 02:30 daily
+jobs.cron('30 3 1 * *', giveTopVoterBadges) // Runs at 03:30 on the first day of the month
 
 const file = readFileSync('static/api.yaml', 'utf8')
 const swaggerDocument = YAML.parse(file)
