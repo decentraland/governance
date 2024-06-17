@@ -65,7 +65,7 @@
     "dayjs-precise-range": "^1.0.1",
     "dcl-catalyst-client": "^21.7.0",
     "decentraland-dapps": "^19.6.0",
-    "decentraland-gatsby": "^5.113.0",
+    "decentraland-gatsby": "^6.3.0",
     "decentraland-ui": "^5.14.0",
     "discord.js": "^14.7.1",
     "dompurify": "^2.3.3",
