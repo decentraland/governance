@@ -226,7 +226,7 @@ export class UpdateService {
       'id' | 'proposal_id' | 'project_id' | 'status' | 'completion_date' | 'updated_at' | 'created_at'
     >,
     user: string
-  ) {
+  ): Promise<boolean> {
     const id = update.id
 
     const now = new Date()
