@@ -107,7 +107,7 @@ async function getVestingContractDataV1(
   const finish_at = toISOString(contractEndsTimestamp)
 
   let status = getInitialVestingStatus(start_at, finish_at)
-  const isRevoked = await vestingContract.methods.revoked().call()
+  const isRevoked = await vestingContract.revoked()
   if (isRevoked) {
     status = VestingStatus.Revoked
   }
@@ -218,7 +218,8 @@ export async function getVestingWithLogs(
     } catch (errorV1) {
       ErrorService.report('Unable to fetch vesting contract data', {
         proposalId,
-        error: errorV1,
+        errorV2: `${errorV2}`,
+        errorV1: `${errorV1}`,
         category: ErrorCategory.Vesting,
       })
       throw errorV1
