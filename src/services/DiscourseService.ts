@@ -64,8 +64,13 @@ export class DiscourseService {
     try {
       const updates = await UpdateService.getAllByProposalId(data.proposal_id)
       const publicUpdates = getPublicUpdates(updates)
-      const updateIndex = publicUpdates.length
-      const discoursePost = this.getUpdatePost(data, data.id, updateIndex, proposalTitle)
+      const updateIndex = publicUpdates.findIndex((update) => update.id === data.id)
+      const discoursePost = this.getUpdatePost(
+        data,
+        data.id,
+        updateIndex < 0 ? publicUpdates.length : publicUpdates.length - updateIndex,
+        proposalTitle
+      )
       const discourseUpdate = await this.createPostWithRetry(discoursePost)
       await UpdateService.updateWithDiscoursePost(data.id, discourseUpdate)
       this.logPostCreation(discourseUpdate)
@@ -109,7 +114,7 @@ export class DiscourseService {
     const { author, proposal_id } = data
     const template: updateTemplates.ForumTemplate = {
       author: author || '',
-      title: `Update #${updateIndex} for proposal "${proposalTitle}"`,
+      title: `Update #${updateIndex} for project "${proposalTitle}"`,
       update_url: getUpdateUrl(update_id, proposal_id),
       ...data,
     }
