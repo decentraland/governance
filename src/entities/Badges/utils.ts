@@ -6,57 +6,90 @@ import { TOP_VOTER_BADGE_IMG_URL } from '../../constants'
 import Time from '../../utils/date/Time'
 import { getPreviousMonthStartAndEnd } from '../../utils/date/getPreviousMonthStartAndEnd'
 import { ErrorCategory } from '../../utils/errorCategories'
-import { getUsersWhoVoted, isSameAddress } from '../Snapshot/utils'
+import { getUsersWhoVoted } from '../Snapshot/utils'
 
-import { BadgeStatus, BadgeStatusReason, ErrorReason } from './types'
+import { BadgeStatus } from './types'
 
 const TOP_VOTER_TITLE_PREFIX = `Top Voter`
 
-export async function getUsersWithoutBadge(badgeCid: string, users: string[]) {
+export async function getClassifiedUsersForBadge(badgeCid: string, users: string[]) {
   const badges = await OtterspaceSubgraph.get().getBadges(badgeCid)
-  const usersWithBadgesToReinstate: string[] = []
-  const usersWithoutBadge: string[] = []
+  const listedUsers = new Set(users)
 
-  for (const user of users) {
-    const userBadge = badges.find((badge) => isSameAddress(user, badge.owner?.id))
-    if (!userBadge) {
-      usersWithoutBadge.push(user)
-      continue
-    }
-    if (userBadge.status === BadgeStatus.Revoked && userBadge.statusReason === BadgeStatusReason.TenureEnded) {
-      usersWithBadgesToReinstate.push(user)
+  const listedUsersWithoutBadge: Set<string> = new Set(users)
+  const listedUsersWithRevokedBadge: Set<string> = new Set()
+  const listedUsersWithBurnedBadge: Set<string> = new Set()
+  const listedUsersWithMintedOrReinstatedBadge: Set<string> = new Set()
+  const unlistedUsersWithRevokedOrBurnedBadge: Set<string> = new Set()
+  const unlistedUsersWithMintedOrReinstatedBadge: Set<string> = new Set()
+
+  for (const badge of badges) {
+    const owner = badge.owner?.id.toLowerCase()
+    if (owner) {
+      if (listedUsers.has(owner)) {
+        listedUsersWithoutBadge.delete(owner)
+        if (badge.status === BadgeStatus.Revoked) {
+          listedUsersWithRevokedBadge.add(owner)
+        } else if (badge.status === BadgeStatus.Burned) {
+          listedUsersWithBurnedBadge.add(owner)
+        } else if (badge.status === BadgeStatus.Minted || badge.status === BadgeStatus.Reinstated) {
+          listedUsersWithMintedOrReinstatedBadge.add(owner)
+        }
+      } else {
+        if (badge.status === BadgeStatus.Revoked || badge.status === BadgeStatus.Burned) {
+          unlistedUsersWithRevokedOrBurnedBadge.add(owner)
+        } else if (badge.status === BadgeStatus.Minted || badge.status === BadgeStatus.Reinstated) {
+          unlistedUsersWithMintedOrReinstatedBadge.add(owner)
+        }
+      }
     }
   }
 
   return {
-    usersWithoutBadge,
-    usersWithBadgesToReinstate,
+    listedUsersWithoutBadge: Array.from(listedUsersWithoutBadge),
+    listedUsersWithRevokedBadge: Array.from(listedUsersWithRevokedBadge),
+    listedUsersWithBurnedBadge: Array.from(listedUsersWithBurnedBadge),
+    listedUsersWithMintedOrReinstatedBadge: Array.from(listedUsersWithMintedOrReinstatedBadge),
+    unlistedUsersWithRevokedOrBurnedBadge: Array.from(unlistedUsersWithRevokedOrBurnedBadge),
+    unlistedUsersWithMintedOrReinstatedBadge: Array.from(unlistedUsersWithMintedOrReinstatedBadge),
   }
 }
 
-type ValidatedUsers = {
-  eligibleUsers: string[]
+type ClassifiedUsersForBadgeAction = {
+  eligibleUsersForBadge: string[]
   usersWithBadgesToReinstate: string[]
+  usersWithBadgesToRevoke: string[]
   error?: string
 }
 
-export async function getValidatedUsersForBadge(badgeCid: string, addresses: string[]): Promise<ValidatedUsers> {
+export async function getEligibleUsersForBadge(
+  badgeCid: string,
+  addresses: string[]
+): Promise<ClassifiedUsersForBadgeAction> {
   try {
-    const { usersWithoutBadge, usersWithBadgesToReinstate } = await getUsersWithoutBadge(badgeCid, addresses)
-    const usersWhoVoted = usersWithoutBadge.length > 0 ? await getUsersWhoVoted(usersWithoutBadge) : []
-    const result = {
-      eligibleUsers: usersWhoVoted,
-      usersWithBadgesToReinstate,
+    const { listedUsersWithoutBadge, listedUsersWithRevokedBadge, unlistedUsersWithMintedOrReinstatedBadge } =
+      await getClassifiedUsersForBadge(badgeCid, addresses)
+
+    const usersToCheck = [...listedUsersWithoutBadge, ...listedUsersWithRevokedBadge]
+    const usersWhoVoted = usersToCheck.length > 0 ? await getUsersWhoVoted(usersToCheck) : new Set()
+
+    const listedUsersWithoutBadgeWhoVoted = Array.from(listedUsersWithoutBadge).filter((user) =>
+      usersWhoVoted.has(user)
+    )
+    const usersWithBadgesToReinstate = Array.from(listedUsersWithRevokedBadge).filter((user) => usersWhoVoted.has(user))
+
+    return {
+      eligibleUsersForBadge: listedUsersWithoutBadgeWhoVoted,
+      usersWithBadgesToReinstate: usersWithBadgesToReinstate,
+      usersWithBadgesToRevoke: unlistedUsersWithMintedOrReinstatedBadge,
     }
-    if (usersWithoutBadge.length === 0) {
-      return { ...result, error: ErrorReason.NoUserWithoutBadge }
-    }
-    if (usersWhoVoted.length === 0) {
-      return { ...result, error: ErrorReason.NoUserHasVoted }
-    }
-    return result
   } catch (error) {
-    return { eligibleUsers: [], usersWithBadgesToReinstate: [], error: JSON.stringify(error) }
+    return {
+      eligibleUsersForBadge: [],
+      usersWithBadgesToReinstate: [],
+      usersWithBadgesToRevoke: [],
+      error: JSON.stringify(error),
+    }
   }
 }
 
