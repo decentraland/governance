@@ -34,7 +34,7 @@ import { createProposalProject, toGovernanceProjectStatus } from '../utils/proje
 
 import { BudgetService } from './BudgetService'
 import { ErrorService } from './ErrorService'
-import { ProposalInCreation, ProposalService } from './ProposalService'
+import { ProposalInCreation } from './ProposalService'
 import { VestingService } from './VestingService'
 
 function newestVestingFirst(a: TransparencyVesting, b: TransparencyVesting): number {
@@ -168,34 +168,6 @@ export class ProjectService {
       )
       proposalsToCreateProjectFor.forEach((proposal) => ProjectService.createProject(proposal))
     })
-  }
-
-  static async migrateProjects() {
-    const migrationResult = { migratedProjects: 0, migrationsFinished: 0, migrationErrors: [] as string[], error: '' }
-    try {
-      const { data: projects } = await this.getProposalProjects()
-      const migratedProjects = await ProjectModel.migrate(projects)
-      migrationResult.migratedProjects = migratedProjects.length
-
-      for (const project of migratedProjects) {
-        try {
-          const proposal = await ProposalService.getProposal(project.proposal_id)
-          await ProjectService.createPersonnel(proposal, project, new Date(project.created_at))
-          await ProjectService.createMilestones(proposal, project, new Date(project.created_at))
-          migrationResult.migrationsFinished++
-        } catch (e) {
-          migrationResult.migrationErrors.push(`Project ${project.id} failed with: ${e}`)
-        }
-      }
-
-      await UpdateModel.setProjectIds()
-      return migrationResult
-    } catch (e) {
-      const message = `Migration failed: ${e}`
-      console.error(message)
-      migrationResult.error = message
-      return migrationResult
-    }
   }
 
   private static async createProject(proposal: ProposalWithOutcome): Promise<ProjectAttributes | null> {
