@@ -8,12 +8,8 @@
   },
   "scripts": {
     "test": "jest --no-cache --runInBand",
-    "build": "npm run build:server",
-    "build:server": "tsc -p .",
-    "format": "prettier --write \"**/*.{js,jsx,json,md,ts,tsx}\"",
-    "start": "concurrently -c blue -n SERVER 'npm run serve'",
-    "serve": "DOTENV_CONFIG_PATH=.env.development nodemon --watch src/entities --watch src/back --watch src/clients --watch src/services --watch src/server.ts --watch static/api.yaml -e ts,json --exec 'ts-node -r dotenv/config' src/server",
-    "version": "tsc -p .",
+    "build": "tsc -p .",
+    "start": "DOTENV_CONFIG_PATH=.env.development nodemon --watch src/entities --watch src/back --watch src/clients --watch src/services --watch src/server.ts --watch static/api.yaml -e ts,json --exec 'ts-node -r dotenv/config' src/server",
     "migrate": "DOTENV_CONFIG_PATH=.env.development ts-node -r dotenv/config.js ./node_modules/node-pg-migrate/bin/node-pg-migrate -j ts -m src/migrations -d CONNECTION_STRING",
     "heroku": "./node_modules/node-pg-migrate/bin/node-pg-migrate -m lib/migrations -d CONNECTION_STRING up && NODE_ENV=production node lib/server.js",
     "prepare": "node -e \"try { require('husky').install() } catch (e) {if (e.code !== 'MODULE_NOT_FOUND') throw e}\""
