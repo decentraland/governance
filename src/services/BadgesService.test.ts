@@ -16,8 +16,15 @@ describe('giveLegislatorBadges', () => {
   it('should call queueAirdropJob with correct arguments for governance proposals', async () => {
     jest.spyOn(AirdropJobModel, 'create').mockResolvedValue(async () => {})
     jest.spyOn(CoauthorModel, 'findAllByProposals').mockResolvedValue(COAUTHORS)
-    jest.spyOn(BadgesUtils, 'getUsersWithoutBadge').mockImplementation((badgeCid: string, users: string[]) => {
-      return Promise.resolve({ usersWithoutBadge: users, usersWithBadgesToReinstate: [] })
+    jest.spyOn(BadgesUtils, 'getClassifiedUsersForBadge').mockImplementation((badgeCid: string, users: string[]) => {
+      return Promise.resolve({
+        listedUsersWithoutBadge: users,
+        listedUsersWithMintedOrReinstatedBadge: [],
+        listedUsersWithRevokedBadge: [],
+        listedUsersWithBurnedBadge: [],
+        unlistedUsersWithMintedOrReinstatedBadge: [],
+        unlistedUsersWithRevokedOrBurnedBadge: [],
+      })
     })
     const proposal = createTestProposal(ProposalType.Governance, ProposalStatus.Passed)
     const expectedAuthorsAndCoauthors = [proposal.user, ...COAUTHORS].map(getChecksumAddress)

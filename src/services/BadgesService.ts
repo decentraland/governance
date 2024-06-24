@@ -3,12 +3,20 @@ import crypto from 'crypto'
 import AirdropJobModel from '../back/models/AirdropJob'
 import { VoteService } from '../back/services/vote'
 import { AirdropJobStatus, AirdropOutcome } from '../back/types/AirdropJob'
-import { airdropWithRetry, createSpecWithRetry, reinstateBadge, revokeBadge } from '../back/utils/contractInteractions'
+import {
+  airdropWithRetry,
+  createSpecWithRetry,
+  estimateGas,
+  getBadgesSignerAndContract,
+  reinstateBadge,
+  revokeBadge,
+} from '../back/utils/contractInteractions'
 import { OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgraph'
 import {
   LAND_OWNER_BADGE_SPEC_CID,
   LEGISLATOR_BADGE_SPEC_CID,
   TOP_VOTERS_PER_MONTH,
+  TRIMMED_OTTERSPACE_RAFT_ID,
   trimOtterspaceId,
 } from '../constants'
 import { UPLOADED_BADGES } from '../entities/Badges/constants'
@@ -17,7 +25,6 @@ import {
   ActionStatus,
   Badge,
   BadgeCreationResult,
-  BadgeStatus,
   ErrorReason,
   GovernanceBadgeSpec,
   OtterspaceRevokeReason,
@@ -29,12 +36,12 @@ import {
   toBadgeStatusReason,
 } from '../entities/Badges/types'
 import {
+  getClassifiedUsersForBadge,
+  getEligibleUsersForBadge,
   getGithubBadgeImageUrl,
   getIpfsHttpsLink,
   getLandOwnerAddresses,
   getTopVotersBadgeSpec,
-  getUsersWithoutBadge,
-  getValidatedUsersForBadge,
   isSpecAlreadyCreated,
 } from '../entities/Badges/utils'
 import CoauthorModel from '../entities/Coauthor/model'
@@ -97,18 +104,28 @@ export class BadgesService {
 
   public static async giveBadgeToUsers(badgeCid: string, users: string[]): Promise<AirdropOutcome> {
     try {
-      const { eligibleUsers, usersWithBadgesToReinstate, error } = await getValidatedUsersForBadge(badgeCid, users)
+      const { eligibleUsersForBadge, usersWithBadgesToReinstate, error } = await getEligibleUsersForBadge(
+        badgeCid,
+        users
+      )
+      if (error) {
+        return { status: AirdropJobStatus.FAILED, error, recipients: users, badge_spec: badgeCid }
+      }
       if (usersWithBadgesToReinstate.length > 0) {
         inBackground(async () => {
           return await this.reinstateBadge(badgeCid, usersWithBadgesToReinstate)
         })
       }
-
-      if (error) {
-        return { status: AirdropJobStatus.FAILED, error, recipients: users, badge_spec: badgeCid }
+      if (eligibleUsersForBadge.length > 0) {
+        return await airdropWithRetry(badgeCid, eligibleUsersForBadge)
       }
 
-      return await airdropWithRetry(badgeCid, eligibleUsers)
+      return {
+        status: AirdropJobStatus.FINISHED,
+        error: 'No eligible recipients',
+        recipients: users,
+        badge_spec: badgeCid,
+      }
     } catch (e) {
       return { status: AirdropJobStatus.FAILED, error: JSON.stringify(e), recipients: users, badge_spec: badgeCid }
     }
@@ -130,34 +147,34 @@ export class BadgesService {
       })
       return
     }
-    const { usersWithoutBadge } = await getUsersWithoutBadge(LEGISLATOR_BADGE_SPEC_CID, recipients)
-    await this.queueAirdropJob(LEGISLATOR_BADGE_SPEC_CID, usersWithoutBadge)
+    const { listedUsersWithoutBadge } = await getClassifiedUsersForBadge(LEGISLATOR_BADGE_SPEC_CID, recipients)
+    await this.queueAirdropJob(LEGISLATOR_BADGE_SPEC_CID, listedUsersWithoutBadge)
   }
 
   static async giveAndRevokeLandOwnerBadges() {
     const landOwnerAddresses = await getLandOwnerAddresses()
-    const { eligibleUsers, usersWithBadgesToReinstate } = await getValidatedUsersForBadge(
-      LAND_OWNER_BADGE_SPEC_CID,
-      landOwnerAddresses
-    )
-
-    await this.giveLandOwnerBadges(eligibleUsers)
-    await this.reinstateLandOwnerBadges(usersWithBadgesToReinstate)
-    await this.revokeLandOwnerBadges(landOwnerAddresses)
+    const { eligibleUsersForBadge, usersWithBadgesToReinstate, usersWithBadgesToRevoke, error } =
+      await getEligibleUsersForBadge(LAND_OWNER_BADGE_SPEC_CID, landOwnerAddresses)
+    if (error) {
+      ErrorService.report('Unable to get eligible users for LandOwner badge', {
+        category: ErrorCategory.Badges,
+        error,
+      })
+      return
+    }
+    if (eligibleUsersForBadge.length > 0) {
+      await this.giveLandOwnerBadges(eligibleUsersForBadge)
+    }
+    if (usersWithBadgesToReinstate.length > 0) {
+      await this.reinstateLandOwnerBadges(usersWithBadgesToReinstate)
+    }
+    if (usersWithBadgesToRevoke.length > 0) {
+      await this.revokeLandOwnerBadges(usersWithBadgesToRevoke)
+    }
   }
 
-  private static async revokeLandOwnerBadges(landOwnerAddresses: string[]) {
-    const badges = await OtterspaceSubgraph.get().getBadges(LAND_OWNER_BADGE_SPEC_CID)
-    const landOwnerAddressesSet = new Set(landOwnerAddresses)
-    const addressesToRevoke = badges
-      .filter(
-        (badge) =>
-          (badge.status === BadgeStatus.Minted || badge.status === BadgeStatus.Reinstated) &&
-          !landOwnerAddressesSet.has(badge.owner?.id?.toLowerCase() || '')
-      )
-      .map((badge) => badge.owner!.id)
-
-    const revocationResults = await BadgesService.revokeBadge(LAND_OWNER_BADGE_SPEC_CID, addressesToRevoke)
+  private static async revokeLandOwnerBadges(addressesToRevoke: string[]) {
+    const revocationResults = await BadgesService.revokeBadges(LAND_OWNER_BADGE_SPEC_CID, addressesToRevoke)
     const failedRevocations = revocationResults.filter((result) => result.status === ActionStatus.Failed)
     if (failedRevocations.length > 0) {
       console.error('Unable to revoke LandOwner badges', failedRevocations)
@@ -169,7 +186,7 @@ export class BadgesService {
   }
 
   private static async reinstateLandOwnerBadges(usersWithBadgesToReinstate: string[]) {
-    const reinstateResults = await BadgesService.reinstateBadge(LAND_OWNER_BADGE_SPEC_CID, usersWithBadgesToReinstate)
+    const reinstateResults = await BadgesService.reinstateBadges(LAND_OWNER_BADGE_SPEC_CID, usersWithBadgesToReinstate)
     const failedReinstatements = reinstateResults.filter((result) => result.status === ActionStatus.Failed)
     if (failedReinstatements.length > 0) {
       console.error('Unable to reinstate LandOwner badges', failedReinstatements)
@@ -270,6 +287,97 @@ export class BadgesService {
     return await this.performBadgeAction(badgeCid, addresses, async (badgeId) => {
       await revokeBadge(badgeId, Number(reason))
     })
+  }
+
+  static async revokeBadges(
+    badgeCid: string,
+    addresses: string[],
+    reason = OtterspaceRevokeReason.TenureEnded
+  ): Promise<RevokeOrReinstateResult[]> {
+    const badgeOwnerships = await OtterspaceSubgraph.get().getRecipientsBadgeIds(badgeCid, addresses)
+    if (!badgeOwnerships || badgeOwnerships.length === 0) {
+      return []
+    }
+    const { signer, contract } = getBadgesSignerAndContract()
+    const gasConfig = await estimateGas(async () => {
+      return contract.estimateGas.revokeBadge(
+        TRIMMED_OTTERSPACE_RAFT_ID,
+        trimOtterspaceId(badgeOwnerships[0].id),
+        reason
+      )
+    })
+
+    const actionResults: RevokeOrReinstateResult[] = []
+    for (const badgeOwnership of badgeOwnerships) {
+      const trimmedId = trimOtterspaceId(badgeOwnership.id)
+      try {
+        if (trimmedId === '') {
+          actionResults.push({
+            status: ActionStatus.Failed,
+            address: badgeOwnership.address,
+            badgeId: badgeOwnership.id,
+            error: ErrorReason.InvalidBadgeId,
+          })
+        }
+        const txn = await contract.connect(signer).revokeBadge(TRIMMED_OTTERSPACE_RAFT_ID, trimmedId, reason, gasConfig)
+        await txn.wait()
+        logger.log('Revoked badge with txn hash:', txn.hash)
+        actionResults.push({ status: ActionStatus.Success, address: badgeOwnership.address, badgeId: trimmedId })
+        /* eslint-disable @typescript-eslint/no-explicit-any */
+      } catch (error: any) {
+        logger.error('Failed to revoke badge:', error)
+        actionResults.push({
+          status: ActionStatus.Failed,
+          address: badgeOwnership.address,
+          badgeId: trimmedId,
+          error: JSON.stringify(error?.message || error?.reason || error),
+        })
+      }
+    }
+
+    return actionResults
+  }
+
+  static async reinstateBadges(badgeCid: string, addresses: string[]): Promise<RevokeOrReinstateResult[]> {
+    const badgeOwnerships = await OtterspaceSubgraph.get().getRecipientsBadgeIds(badgeCid, addresses)
+    if (!badgeOwnerships || badgeOwnerships.length === 0) {
+      return []
+    }
+    const { signer, contract } = getBadgesSignerAndContract()
+    const gasConfig = await estimateGas(async () => {
+      return contract.estimateGas.reinstateBadge(TRIMMED_OTTERSPACE_RAFT_ID, trimOtterspaceId(badgeOwnerships[0].id))
+    })
+
+    const actionResults: RevokeOrReinstateResult[] = []
+
+    for (const badgeOwnership of badgeOwnerships) {
+      const trimmedId = trimOtterspaceId(badgeOwnership.id)
+      try {
+        if (trimmedId === '') {
+          actionResults.push({
+            status: ActionStatus.Failed,
+            address: badgeOwnership.address,
+            badgeId: badgeOwnership.id,
+            error: ErrorReason.InvalidBadgeId,
+          })
+        }
+        const txn = await contract.connect(signer).reinstateBadge(TRIMMED_OTTERSPACE_RAFT_ID, trimmedId, gasConfig)
+        await txn.wait()
+        logger.log('Reinstated badge with txn hash:', txn.hash)
+        actionResults.push({ status: ActionStatus.Success, address: badgeOwnership.address, badgeId: trimmedId })
+        /* eslint-disable @typescript-eslint/no-explicit-any */
+      } catch (error: any) {
+        logger.error('Failed to reinstate badge:', error)
+        actionResults.push({
+          status: ActionStatus.Failed,
+          address: badgeOwnership.address,
+          badgeId: trimmedId,
+          error: JSON.stringify(error?.message || error?.reason || error),
+        })
+      }
+    }
+
+    return actionResults
   }
 
   static async reinstateBadge(badgeCid: string, addresses: string[]) {

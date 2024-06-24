@@ -17,7 +17,7 @@ function checksumAddresses(addresses: string[]): string[] {
   return addresses.map((address) => ethers.utils.getAddress(address))
 }
 
-function getBadgesSignerAndContract() {
+export function getBadgesSignerAndContract() {
   const provider = RpcService.getPolygonProvider()
   const signer = new ethers.Wallet(RAFT_OWNER_PK, provider)
   const contract = new ethers.Contract(POLYGON_BADGES_CONTRACT_ADDRESS, BadgesAbi, signer)

@@ -207,5 +207,5 @@ export function isSameAddress(userAddress?: string | null, address?: string | nu
 
 export async function getUsersWhoVoted(users: string[]) {
   const votesFromUsers = await SnapshotGraphql.get().getVotesByAddresses(users)
-  return Array.from(new Set(votesFromUsers.map((vote) => vote.voter.toLowerCase())))
+  return new Set(votesFromUsers.map((vote) => vote.voter.toLowerCase()))
 }
