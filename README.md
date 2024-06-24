@@ -20,11 +20,11 @@ Before you start make sure you have installed:
 
 ### Node version
 
-use node >= `16`
+use node >= `18`
 
 If you are starting from scratch and you don't have Node installed in your computer, we recommend using a Node version manager like [nvm](https://github.com/nvm-sh/nvm) to install Node.js and npm instead of the Node installer.
 
-`nvm install v16.14.2` will install node version 16 and the corresponding npm version.
+`nvm install v18.8.0` will install node version 18 and the corresponding npm version.
 
 **NOTE**
 
@@ -48,8 +48,6 @@ If you are running this project locally you only need to check the following env
 - `RPC_PROVIDER_URL`: the rpc provider to get the latest block
 - `BLOCKNATIVE_API_KEY`: api key for [blocknative](https://www.blocknative.com/), a polygon tx gas estimation service we use for calculating airdrops gas fees accurately
 - Snapshot env vars: see snapshot setup
-
-These environment variables are used by the application backend. The environment variables for the frontend are located in `src/config/env`.
 
 ### Setup the required voting power to pass
 
@@ -120,12 +118,7 @@ npm run migrate up
 
 ### Creating a Snapshot space
 
-You are going to need to register an ENS name in the network you'll create the space in.
-For this purpose, you are going to need ETH / Goerli ETH. Use the faucet to get it:
-
-[Goerli Faucet](https://goerlifaucet.com/)
-
-Then follow instructions on [Snapshot](https://docs.snapshot.org/spaces/create)
+You are going to need to register an ENS name in the network you'll create the space in. Follow instructions on [Snapshot](https://docs.snapshot.org/spaces/create).
 
 #### Strategy
 
@@ -214,11 +207,11 @@ Then follow instructions on [Snapshot](https://docs.snapshot.org/spaces/create)
 
 If you need MANA for testing you can get it by interacting with the contract on etherscan
 
-[Rinkeby FakeMana](https://rinkeby.etherscan.io/address/0x28bce5263f5d7f4eb7e8c6d5d78275ca455bac63#writeContract)
+[Sepolia Faucet](https://www.alchemy.com/faucets/ethereum-sepolia)
 
-[Goerli FakeMana](https://goerli.etherscan.io/address/0xe7fdae84acaba2a5ba817b6e6d8a2d415dbfedbe)
+[Sepolia FakeMana](https://sepolia.etherscan.io/address/0xfa04d2e2ba9aec166c93dfeeba7427b2303befa9#writeContract)
 
-Connect your wallet and use the `setBalance` method on the `Contract -> Write Contract` section
+Connect your wallet and use the `mint` method on the `Contract -> Write Contract` section
 
 - `to (address)` is your address
 - `amount (uint256)` is whatever you want. Take into account that `1000000000000000000 = 1 MANA`
@@ -263,37 +256,17 @@ Once you setup this project you can start it using the following command
 
 > Note 2: you can disabled `https` removing the `--https` flag in the `develop` script of your `package.json`
 
-the app should be running at https://localhost:8000/
+the app should be running at https://localhost:4000/
 
-# Clear
-
-To clear cache and update localization and internationalization renders, run
-
-```bash
-npm run clean
-```
-
-or
-
-```bash
-rm -r .cache
-```
 
 # About
-
-### Project's structure
-
-You can find a full documentation about the project's structure in the [`decentraland-gatsby` repository](https://github.com/decentraland/decentraland-gatsby#project-structure)
-
 ### Routes
 
-**back-end** routes are defined using `express` you can find each route in `src/back/routes` and those are imported at `src/server.ts`
+The routes are defined using `express` you can find each route in `src/routes` and those are imported at `src/server.ts`
 
 ### Types and Utils
 
-Types and Utils contain functions and types that will be accessible to both the backend and the frontend.
-
-Be careful with what goes in here, because when webpack tries to compile everything for the frontend it won't have all the backend dependencies, which could result in an error (e.g. `ERROR #98123 WEBPACK`)
+Types and Utils contain functions and types that will be useful across the whole project.
 
 ### Proposals statuses
 
@@ -305,7 +278,7 @@ Be careful with what goes in here, because when webpack tries to compile everyth
 ### Voting results
 
 - Voting results are calculated in two different ways, for different purposes:
-  - `Votes/utils.ts` calculates the results in a user-friendly way, so they can be displayed in the frontend. These results are rounded up for clarity.
+  - `Votes/utils.ts` calculates the results in a user-friendly way. These results are rounded up for clarity.
   - `Proposal/jobs.ts` has a more exact calculation, and is used to evaluate the real result of the voting
 
 ## Copyright & License
