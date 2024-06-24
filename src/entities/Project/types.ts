@@ -1,9 +1,9 @@
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import { ZodSchema, z } from 'zod'
 
-import { PersonnelAttributes } from '../../back/models/Personnel'
-import { ProjectLink } from '../../back/models/ProjectLink'
-import { ProjectMilestone } from '../../back/models/ProjectMilestone'
+import { PersonnelAttributes } from '../../models/Personnel'
+import { ProjectLink } from '../../models/ProjectLink'
+import { ProjectMilestone } from '../../models/ProjectMilestone'
 
 const addressCheck = (data: string) => !data || (!!data && isEthereumAddress(data))
 

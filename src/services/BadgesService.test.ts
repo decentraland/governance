@@ -1,9 +1,9 @@
-import AirdropJobModel from '../back/models/AirdropJob'
 import * as BadgesUtils from '../entities/Badges/utils'
 import CoauthorModel from '../entities/Coauthor/model'
 import { createTestProposal } from '../entities/Proposal/testHelpers'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { getChecksumAddress } from '../entities/Snapshot/utils'
+import AirdropJobModel from '../models/AirdropJob'
 
 import { BadgesService } from './BadgesService'
 

@@ -15,7 +15,7 @@ import { toLower } from 'lodash'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
-import ProjectModel from '../../back/models/Project'
+import ProjectModel from '../../models/Project'
 import Time from '../../utils/date/Time'
 import { UnpublishedBidStatus } from '../Bid/types'
 import CoauthorModel from '../Coauthor/model'

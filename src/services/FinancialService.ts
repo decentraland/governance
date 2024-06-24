@@ -1,8 +1,8 @@
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 
-import { FinancialAttributes, FinancialAttributesExtended } from '../back/models/Financial'
-import FinancialModel from '../back/models/Financial'
 import { FinancialRecord } from '../entities/Updates/types'
+import { FinancialAttributes, FinancialAttributesExtended } from '../models/Financial'
+import FinancialModel from '../models/Financial'
 import { ErrorCategory } from '../utils/errorCategories'
 
 import { ErrorService } from './ErrorService'

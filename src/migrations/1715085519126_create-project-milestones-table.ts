@@ -1,6 +1,6 @@
 import { MigrationBuilder } from "node-pg-migrate"
-import ProjectModel from "../back/models/Project"
-import Model, { ProjectMilestoneStatus } from "../back/models/ProjectMilestone"
+import ProjectModel from "../models/Project"
+import Model, { ProjectMilestoneStatus } from "../models/ProjectMilestone"
 
 const STATUS_TYPE = 'project_milestone_status_type'
 

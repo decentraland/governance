@@ -1,6 +1,6 @@
 import { ColumnDefinitions, MigrationBuilder } from 'node-pg-migrate'
 
-import Model from '../back/models/ProjectMilestone'
+import Model from '../models/ProjectMilestone'
 
 export const shorthands: ColumnDefinitions | undefined = undefined
 
