@@ -152,7 +152,7 @@ export function governanceUrl(pathname = '') {
 export function proposalUrl(id: ProposalAttributes['id']) {
   const params = new URLSearchParams({ id })
   const target = new URL(GOVERNANCE_URL)
-  target.pathname = '/proposal/'
+  target.pathname = (target.pathname.endsWith('/') ? '' : target.pathname) + '/proposal/'
   target.search = '?' + params.toString()
   return target.toString()
 }
