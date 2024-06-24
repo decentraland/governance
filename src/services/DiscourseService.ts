@@ -60,20 +60,21 @@ export class DiscourseService {
     }
   }
 
-  static async createUpdate(data: UpdateAttributes, proposalTitle: string) {
+  static async createUpdate(newUpdate: UpdateAttributes, proposalTitle: string) {
     try {
-      const updates = await UpdateService.getAllByProposalId(data.proposal_id)
+      const updates = await UpdateService.getAllByProposalId(newUpdate.proposal_id)
       const publicUpdates = getPublicUpdates(updates)
-      const updateIndex = publicUpdates.length
-      const discoursePost = this.getUpdatePost(data, data.id, updateIndex, proposalTitle)
+      const updateIndex = publicUpdates.findIndex((update) => update.id === newUpdate.id)
+      const latestUpdateIndex = updateIndex < 0 ? publicUpdates.length : publicUpdates.length - updateIndex
+      const discoursePost = this.getUpdatePost(newUpdate, latestUpdateIndex, proposalTitle)
       const discourseUpdate = await this.createPostWithRetry(discoursePost)
-      await UpdateService.updateWithDiscoursePost(data.id, discourseUpdate)
+      await UpdateService.updateWithDiscoursePost(newUpdate.id, discourseUpdate)
       this.logPostCreation(discourseUpdate)
       return discourseUpdate
     } catch (error: any) {
       ErrorService.report('Error creating discourse post for update', {
-        update_id: data.id,
-        proposal_id: data.proposal_id,
+        update_id: newUpdate.id,
+        proposal_id: newUpdate.proposal_id,
         error: `${error}`,
         category: ErrorCategory.Discourse,
       })
@@ -105,13 +106,13 @@ export class DiscourseService {
     }
   }
 
-  private static getUpdatePost(data: UpdateAttributes, update_id: string, updateIndex: number, proposalTitle: string) {
-    const { author, proposal_id } = data
+  private static getUpdatePost(update: UpdateAttributes, updateIndex: number, proposalTitle: string) {
+    const { id, author, proposal_id } = update
     const template: updateTemplates.ForumTemplate = {
       author: author || '',
-      title: `Update #${updateIndex} for proposal "${proposalTitle}"`,
-      update_url: getUpdateUrl(update_id, proposal_id),
-      ...data,
+      title: `Update #${updateIndex} for project "${proposalTitle}"`,
+      update_url: getUpdateUrl(id, proposal_id),
+      ...update,
     }
 
     return {
