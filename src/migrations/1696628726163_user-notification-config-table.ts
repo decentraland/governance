@@ -1,6 +1,6 @@
 import { MigrationBuilder } from 'node-pg-migrate'
 
-import Model from '../back/models/UserNotificationConfig'
+import Model from '../models/UserNotificationConfig'
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
   pgm.createTable(Model.tableName, {

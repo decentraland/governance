@@ -1,13 +1,13 @@
 import { ethers } from 'ethers'
 import { NFTStorage } from 'nft.storage'
 
-import { getIpfsAddress } from '../../back/utils/contractInteractions'
 import {
   NFT_STORAGE_API_KEY,
   POLYGON_RAFTS_CONTRACT_ADDRESS,
   RAFT_OWNER_PK,
   TRIMMED_OTTERSPACE_RAFT_ID,
 } from '../../constants'
+import { getIpfsAddress } from '../../utils/contractInteractions'
 import { toIsoStringDate } from '../../utils/date/toIsoString'
 import logger from '../../utils/logger'
 

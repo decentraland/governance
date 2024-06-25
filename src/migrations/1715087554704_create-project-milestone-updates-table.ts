@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { MigrationBuilder } from "node-pg-migrate"
-import Model from "../back/models/ProjectMilestoneUpdate"
-import ProjectMilestoneModel from "../back/models/ProjectMilestone"
+import Model from "../models/ProjectMilestoneUpdate"
+import ProjectMilestoneModel from "../models/ProjectMilestone"
 
 const LEGACY_TABLE_NAME = 'proposal_updates'
 

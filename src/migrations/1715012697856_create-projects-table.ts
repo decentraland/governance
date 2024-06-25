@@ -1,6 +1,6 @@
 import { MigrationBuilder } from 'node-pg-migrate'
 
-import Model from '../back/models/Project'
+import Model from '../models/Project'
 import { ProjectStatus } from "../entities/Grant/types"
 import ProposalModel from "../entities/Proposal/model"
 

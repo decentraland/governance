@@ -1,5 +1,5 @@
 import type { MigrationBuilder } from "node-pg-migrate"
-import ProjectModel from "../back/models/Project"
+import ProjectModel from "../models/Project"
 
 const constraintName = 'unique_proposal_id'
 

@@ -1,5 +1,5 @@
 import { ColumnDefinitions, MigrationBuilder } from "node-pg-migrate"
-import EventModel from "../back/models/Event"
+import EventModel from "../models/Event"
 import { EventType } from "../shared/types/events"
 import { EVENT_TYPE } from "./1702322343224_create-events-table"
 

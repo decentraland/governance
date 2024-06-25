@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { cloneDeep } from 'lodash'
 
-import { DiscordService } from '../../back/services/discord'
-import { NotificationService } from '../../back/services/notification'
 import { BudgetService } from '../../services/BudgetService'
 import { DiscourseService } from '../../services/DiscourseService'
+import { DiscordService } from '../../services/discord'
+import { NotificationService } from '../../services/notification'
 import Time from '../../utils/date/Time'
 import logger from '../../utils/logger'
 import CoauthorModel from '../Coauthor/model'
