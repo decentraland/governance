@@ -39,7 +39,7 @@ COPY ./entrypoint.sh                          /app/entrypoint.sh
 COPY ./tsconfig.json                          /app/tsconfig.json
 COPY ./.babelrc.json                          /app/.babelrc.json
 
-RUN NODE_OPTIONS="--max-old-space-size=4096" npm run build:server
+RUN NODE_OPTIONS="--max-old-space-size=4096" npm run build
 RUN npm prune --production --ignore-scripts
 
 FROM node:18.8-alpine
