@@ -185,14 +185,6 @@ export class EventsService {
     })
   }
 
-  static async deleteOldEvents() {
-    try {
-      await EventModel.deleteOldEvents()
-    } catch (error) {
-      ErrorService.report('Error deleting old events', { error, category: ErrorCategory.Events })
-    }
-  }
-
   private static getProfileCacheKey(address: string) {
     const cacheKey = `profile-${address.toLowerCase()}`
     return cacheKey

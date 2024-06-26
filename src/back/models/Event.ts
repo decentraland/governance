@@ -37,15 +37,6 @@ export default class EventModel extends Model<Event> {
     return result
   }
 
-  static async deleteOldEvents() {
-    const query = SQL`
-      DELETE
-      FROM ${table(EventModel)}
-      WHERE created_at < NOW() - INTERVAL '7 day'
-    `
-    await this.namedQuery('delete_old_events', query)
-  }
-
   static async isDiscourseEventRegistered(discourseEventId: string) {
     const query = SQL`
       SELECT count(*)

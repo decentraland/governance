@@ -41,7 +41,6 @@ import vestings from './back/routes/vestings'
 import score from './back/routes/votes'
 import webhooks from './back/routes/webhooks'
 import { DiscordService } from './back/services/discord'
-import { EventsService } from './back/services/events'
 import { updateGovernanceBudgets } from './entities/Budget/jobs'
 import { activateProposals, finishProposal, publishBids } from './entities/Proposal/jobs'
 
@@ -51,7 +50,6 @@ jobs.cron('@eachMinute', activateProposals)
 jobs.cron('@each5Minute', withLock('publishBids', publishBids))
 jobs.cron('@each10Second', pingSnapshot)
 jobs.cron('30 0 * * *', updateGovernanceBudgets) // Runs at 00:30 daily
-jobs.cron('0 1 * * *', EventsService.deleteOldEvents) // Runs at 01:00 daily
 jobs.cron('30 1 * * *', runQueuedAirdropJobs) // Runs at 01:30 daily
 jobs.cron('30 2 * * *', giveAndRevokeLandOwnerBadges) // Runs at 02:30 daily
 jobs.cron('30 3 1 * *', giveTopVoterBadges) // Runs at 03:30 on the first day of the month
