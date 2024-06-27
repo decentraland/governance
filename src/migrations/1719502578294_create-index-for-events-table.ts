@@ -1,6 +1,5 @@
 import type { MigrationBuilder } from "node-pg-migrate"
-import EventModel from "../back/models/Event"
-
+import EventModel from "../models/Event"
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
   pgm.createIndex(EventModel.tableName, [`(event_data->>'proposal_id')`])
