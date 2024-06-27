@@ -4,12 +4,7 @@ import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
 import { EventsService } from '../services/events'
-import {
-  validateDebugAddress,
-  validateEventTypesFilters,
-  validateId,
-  validateRequiredString,
-} from '../utils/validations'
+import { validateDebugAddress, validateEventFilters, validateId, validateRequiredString } from '../utils/validations'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -19,8 +14,8 @@ export default routes((route) => {
 })
 
 async function getLatestEvents(req: Request) {
-  const eventTypes = validateEventTypesFilters(req)
-  return await EventsService.getLatest(eventTypes)
+  const filters = validateEventFilters(req)
+  return await EventsService.getLatest(filters)
 }
 
 async function voted(req: WithAuth) {

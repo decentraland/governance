@@ -40,7 +40,7 @@ const CLEAR_DELEGATE_SIGNATURE_HASH = '0x9c4f00c4291262731946e308dc2979a56bd22cc
 const SET_DELEGATE_SIGNATURE_HASH = '0xa9a7fd460f56bddb880a465a9c3e9730389c70bc53108148f16d55a87a6c468e'
 
 export class EventsService {
-  static async getLatest(filters?: EventFilter): Promise<ActivityTickerEvent[]> {
+  static async getLatest(filters: EventFilter): Promise<ActivityTickerEvent[]> {
     try {
       const latestEvents = await EventModel.getLatest(filters)
 

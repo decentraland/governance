@@ -156,12 +156,16 @@ export function validateAlchemyWebhookSignature(req: Request) {
   }
 }
 
-export function validateEventTypesFilters(req: Request) {
-  const { event_type } = req.query
+export function validateEventFilters(req: Request) {
+  const { event_type, proposal_id, withInterval } = req.query
   const filters: Record<string, unknown> = {}
   if (event_type) {
     filters.event_type = isArray(event_type) ? event_type : [event_type]
   }
+  if (proposal_id) {
+    filters.proposal_id = proposal_id.toString()
+  }
+  filters.withInterval = withInterval ? stringToBoolean(withInterval.toString()) : undefined
   const parsedEventTypes = EventFilterSchema.safeParse(filters)
   if (!parsedEventTypes.success) {
     throw new Error('Invalid event types: ' + parsedEventTypes.error.message)
@@ -215,5 +219,20 @@ export async function validateCanEditProject(user: string, projectId: string) {
 export function validateBlockNumber(blockNumber?: unknown | null) {
   if (blockNumber !== null && blockNumber !== undefined && typeof blockNumber !== 'number') {
     throw new Error('Invalid blockNumber: must be null, undefined, or a number')
+  }
+}
+
+export function stringToBoolean(str: string) {
+  switch (str.toLowerCase().trim()) {
+    case 'true':
+    case '1':
+    case 'yes':
+      return true
+    case 'false':
+    case '0':
+    case 'no':
+      return false
+    default:
+      throw new Error('Invalid boolean value')
   }
 }
