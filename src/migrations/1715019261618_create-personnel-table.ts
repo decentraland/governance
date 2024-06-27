@@ -1,7 +1,7 @@
 import { MigrationBuilder } from "node-pg-migrate"
 
-import Model from "../back/models/Personnel"
-import ProjectModel from "../back/models/Project"
+import Model from "../models/Personnel"
+import ProjectModel from "../models/Project"
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
   pgm.createTable(Model.tableName, {

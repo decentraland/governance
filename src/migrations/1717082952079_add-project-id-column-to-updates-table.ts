@@ -1,6 +1,6 @@
 import type { MigrationBuilder } from "node-pg-migrate"
 import UpdateModel from "../entities/Updates/model"
-import ProjectModel from "../back/models/Project"
+import ProjectModel from "../models/Project"
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
   pgm.addColumn(UpdateModel.tableName, {

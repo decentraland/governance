@@ -1,16 +1,5 @@
 import crypto from 'crypto'
 
-import AirdropJobModel from '../back/models/AirdropJob'
-import { VoteService } from '../back/services/vote'
-import { AirdropJobStatus, AirdropOutcome } from '../back/types/AirdropJob'
-import {
-  airdropWithRetry,
-  createSpecWithRetry,
-  estimateGas,
-  getBadgesSignerAndContract,
-  reinstateBadge,
-  revokeBadge,
-} from '../back/utils/contractInteractions'
 import { OtterspaceBadge, OtterspaceSubgraph } from '../clients/OtterspaceSubgraph'
 import {
   LAND_OWNER_BADGE_SPEC_CID,
@@ -50,6 +39,17 @@ import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { getChecksumAddress } from '../entities/Snapshot/utils'
 import { inBackground } from '../helpers'
+import AirdropJobModel from '../models/AirdropJob'
+import { VoteService } from '../services/vote'
+import { AirdropJobStatus, AirdropOutcome } from '../types/AirdropJob'
+import {
+  airdropWithRetry,
+  createSpecWithRetry,
+  estimateGas,
+  getBadgesSignerAndContract,
+  reinstateBadge,
+  revokeBadge,
+} from '../utils/contractInteractions'
 import { ErrorCategory } from '../utils/errorCategories'
 import logger from '../utils/logger'
 

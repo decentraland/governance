@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { ColumnDefinitions, MigrationBuilder } from "node-pg-migrate"
-import AirdropJobModel from "../back/models/AirdropJob"
-import { AirdropJobStatus } from "../back/types/AirdropJob"
+import AirdropJobModel from "../models/AirdropJob"
+import { AirdropJobStatus } from "../types/AirdropJob"
 
 export const shorthands: ColumnDefinitions | undefined = undefined
 

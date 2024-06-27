@@ -1,10 +1,10 @@
 import crypto from 'crypto'
 
-import { Project } from '../../back/models/Project'
-import { UpdateService } from '../../back/services/update'
 import * as VestingUtils from '../../clients/VestingData'
 import { VestingWithLogs } from '../../clients/VestingData'
+import { Project } from '../../models/Project'
 import { ProjectService } from '../../services/ProjectService'
+import { UpdateService } from '../../services/update'
 import Time from '../../utils/date/Time'
 import { getMonthsBetweenDates } from '../../utils/date/getMonthsBetweenDates'
 import { ProjectStatus } from '../Grant/types'

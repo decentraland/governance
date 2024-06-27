@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { ColumnDefinitions, MigrationBuilder } from "node-pg-migrate"
-import EventModel from "../back/models/Event"
+import EventModel from "../models/Event"
 import { EventType } from "../shared/types/events"
 
 export const shorthands: ColumnDefinitions | undefined = undefined

@@ -1,5 +1,5 @@
 import { ColumnDefinitions, MigrationBuilder } from "node-pg-migrate"
-import Model from "../back/models/Financial"
+import Model from "../models/Financial"
 import UpdateModel from "../entities/Updates/model"
 import { FinancialRecordCateogry } from "../entities/Updates/types"
 
