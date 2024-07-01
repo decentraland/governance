@@ -21,12 +21,15 @@ export default class EventModel extends Model<Event> {
   }
 
   static async getLatest(filters: EventFilter): Promise<Event[]> {
-    const { withInterval, event_type, proposal_id } = filters
+    const { with_interval, event_type, proposal_id } = filters
     const query = SQL`
       SELECT *
       FROM ${table(EventModel)}
       WHERE 1=1
-      ${conditional(withInterval !== undefined ? withInterval : true, SQL`AND created_at >= NOW() - INTERVAL '7 day'`)}
+      ${conditional(
+        with_interval !== undefined ? with_interval : true,
+        SQL`AND created_at >= NOW() - INTERVAL '7 day'`
+      )}
       ${conditional(
         !!event_type,
         SQL`AND event_type IN (${join(event_type?.map((type) => SQL`${type}`) || [], SQL`, `)})`

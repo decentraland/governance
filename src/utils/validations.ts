@@ -158,7 +158,7 @@ export function validateAlchemyWebhookSignature(req: Request) {
 }
 
 export function validateEventFilters(req: Request) {
-  const { event_type, proposal_id, withInterval } = req.query
+  const { event_type, proposal_id, with_interval } = req.query
   const filters: Record<string, unknown> = {}
   if (event_type) {
     filters.event_type = isArray(event_type) ? event_type : [event_type]
@@ -166,7 +166,7 @@ export function validateEventFilters(req: Request) {
   if (proposal_id) {
     filters.proposal_id = proposal_id.toString()
   }
-  filters.withInterval = withInterval ? stringToBoolean(withInterval.toString()) : undefined
+  filters.with_interval = with_interval ? stringToBoolean(with_interval.toString()) : undefined
   const parsedEventTypes = EventFilterSchema.safeParse(filters)
   if (!parsedEventTypes.success) {
     throw new Error('Invalid event types: ' + parsedEventTypes.error.message)
