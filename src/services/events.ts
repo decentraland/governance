@@ -3,6 +3,7 @@ import { ethers } from 'ethers'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import ProposalModel from '../entities/Proposal/model'
+import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import { ProposalAttributes } from '../entities/Proposal/types'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import UpdateModel from '../entities/Updates/model'
@@ -27,6 +28,7 @@ import {
   ProjectUpdateCommentedEvent,
   ProposalCommentedEvent,
   ProposalCreatedEvent,
+  ProposalFinishedEvent,
   UpdateCreatedEvent,
   VotedEvent,
 } from '../shared/types/events'
@@ -351,6 +353,20 @@ export class EventsService {
           await this.delegationSet(delegate, delegator, txHash, creationDate)
         }
       }
+    }
+  }
+
+  static async proposalFinished(proposalsWithOutcome: ProposalWithOutcome[]) {
+    for (const proposal of proposalsWithOutcome) {
+      const { id, title, newStatus, finish_at, user } = proposal
+      const finishEvent: ProposalFinishedEvent = {
+        id: crypto.randomUUID(),
+        address: user,
+        event_type: EventType.ProposalFinished,
+        event_data: { proposal_id: id, proposal_title: title, new_status: newStatus },
+        created_at: new Date(finish_at),
+      }
+      await EventModel.create(finishEvent)
     }
   }
 
