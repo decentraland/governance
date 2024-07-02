@@ -48,6 +48,8 @@ export enum EventType {
 
 export const EventFilterSchema = z.object({
   event_type: z.nativeEnum(EventType).array().optional(),
+  proposal_id: z.string().uuid().optional(),
+  with_interval: z.boolean().optional(),
 })
 
 export type EventFilter = z.infer<typeof EventFilterSchema>

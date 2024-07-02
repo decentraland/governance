@@ -20,30 +20,26 @@ export default class EventModel extends Model<Event> {
     return result
   }
 
-  static async getLatest(filters?: EventFilter): Promise<Event[]> {
-    const { event_type } = filters || {}
+  static async getLatest(filters: EventFilter): Promise<Event[]> {
+    const { with_interval, event_type, proposal_id } = filters
     const query = SQL`
       SELECT *
       FROM ${table(EventModel)}
-      WHERE created_at >= NOW() - INTERVAL '7 day'
+      WHERE 1=1
+      ${conditional(
+        with_interval !== undefined ? with_interval : true,
+        SQL`AND created_at >= NOW() - INTERVAL '7 day'`
+      )}
       ${conditional(
         !!event_type,
         SQL`AND event_type IN (${join(event_type?.map((type) => SQL`${type}`) || [], SQL`, `)})`
       )}
+      ${conditional(!!proposal_id, SQL`AND (event_data ->>'proposal_id') = ${proposal_id}`)}
       ORDER BY created_at DESC
       LIMIT ${LATEST_EVENTS_LIMIT}
     `
     const result = await this.namedQuery<Event>('get_latest_events', query)
     return result
-  }
-
-  static async deleteOldEvents() {
-    const query = SQL`
-      DELETE
-      FROM ${table(EventModel)}
-      WHERE created_at < NOW() - INTERVAL '7 day'
-    `
-    await this.namedQuery('delete_old_events', query)
   }
 
   static async isDiscourseEventRegistered(discourseEventId: string) {

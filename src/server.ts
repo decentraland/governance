@@ -43,7 +43,6 @@ import vestings from './routes/vestings'
 import score from './routes/votes'
 import webhooks from './routes/webhooks'
 import { DiscordService } from './services/discord'
-import { EventsService } from './services/events'
 
 const jobs = manager()
 jobs.cron('@eachMinute', finishProposal)
@@ -51,7 +50,6 @@ jobs.cron('@eachMinute', activateProposals)
 jobs.cron('@each5Minute', withLock('publishBids', publishBids))
 jobs.cron('@each10Second', pingSnapshot)
 jobs.cron('30 0 * * *', updateGovernanceBudgets) // Runs at 00:30 daily
-jobs.cron('0 1 * * *', EventsService.deleteOldEvents) // Runs at 01:00 daily
 jobs.cron('30 1 * * *', runQueuedAirdropJobs) // Runs at 01:30 daily
 jobs.cron('30 2 * * *', giveAndRevokeLandOwnerBadges) // Runs at 02:30 daily
 jobs.cron('30 3 1 * *', giveTopVoterBadges) // Runs at 03:30 on the first day of the month
