@@ -32,6 +32,12 @@ export type ProposalFinishedEventData = ProposalEventData & {
   new_status: ProposalStatus
 }
 
+export type VestingCreatedEventData = ProposalEventData & {
+  vesting_address: string
+  amount: number
+  duration_in_months: number
+}
+
 type DelegationSetData = {
   new_delegate: string | null
   transaction_hash: string
@@ -75,6 +81,11 @@ export type ProposalCreatedEvent = {
 export type ProposalFinishedEvent = {
   event_type: EventType.ProposalFinished
   event_data: ProposalFinishedEventData
+} & CommonEventAttributes
+
+export type VestingCreatedEvent = {
+  event_type: EventType.VestingCreated
+  event_data: VestingCreatedEventData
 } & CommonEventAttributes
 
 export type UpdateCreatedEvent = {

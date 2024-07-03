@@ -13,6 +13,7 @@ import { UserAttributes } from '../entities/User/types'
 import { DISCOURSE_USER } from '../entities/User/utils'
 import { addressShortener } from '../helpers'
 import EventModel from '../models/Event'
+import type { Project } from '../models/Project'
 import CacheService, { TTL_1_HS } from '../services/CacheService'
 import { DiscourseService } from '../services/DiscourseService'
 import { ErrorService } from '../services/ErrorService'
@@ -30,10 +31,12 @@ import {
   ProposalCreatedEvent,
   ProposalFinishedEvent,
   UpdateCreatedEvent,
+  VestingCreatedEvent,
   VotedEvent,
 } from '../shared/types/events'
 import { DEFAULT_AVATAR_IMAGE, getProfiles } from '../utils/Catalyst'
 import { DclProfile } from '../utils/Catalyst/types'
+import Time from '../utils/date/Time'
 import { ErrorCategory } from '../utils/errorCategories'
 
 import { NotificationService } from './notification'
@@ -368,6 +371,29 @@ export class EventsService {
       }
       await EventModel.create(finishEvent)
     }
+  }
+
+  static async projectEnacted(project: Project) {
+    const { author, id, proposal_id, funding } = project
+    if (!funding || !funding.vesting) {
+      ErrorService.report('Project enacted without vesting', { project_id: id, category: ErrorCategory.Events })
+      return
+    }
+    const { years, months, days } = Time(funding.vesting.finish_at).preciseDiff(Time(funding.vesting.start_at), true)
+    const vestingEvent: VestingCreatedEvent = {
+      id: crypto.randomUUID(),
+      address: author,
+      event_type: EventType.VestingCreated,
+      event_data: {
+        proposal_id,
+        proposal_title: project.title,
+        vesting_address: funding.vesting.address,
+        amount: funding.vesting.total,
+        duration_in_months: years * 12 + months + (days > 0 ? 1 : 0),
+      },
+      created_at: funding.enacted_at ? new Date(funding.enacted_at) : new Date(),
+    }
+    await EventModel.create(vestingEvent)
   }
 
   private static decodeLogTopics(topics: string[]) {

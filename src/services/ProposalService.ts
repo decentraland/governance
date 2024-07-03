@@ -306,6 +306,7 @@ export class ProposalService {
       const project = await ProjectService.getUpdatedProject(proposal.project_id!)
       updatedProposal.project_status = project.status
       NotificationService.projectProposalEnacted(proposal)
+      await EventsService.projectEnacted(project)
     }
 
     DiscourseService.commentUpdatedProposal(updatedProposal)
