@@ -10,6 +10,7 @@ import { ErrorService } from '../../services/ErrorService'
 import { ProjectService } from '../../services/ProjectService'
 import { ProposalService } from '../../services/ProposalService'
 import { DiscordService } from '../../services/discord'
+import { EventsService } from '../../services/events'
 import { NotificationService } from '../../services/notification'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
@@ -209,6 +210,7 @@ export async function finishProposal() {
     BadgesService.giveFinishProposalBadges(proposalsWithOutcome)
     DiscourseService.commentFinishedProposals(proposalsWithOutcome)
     DiscordService.notifyFinishedProposals(proposalsWithOutcome)
+    await EventsService.proposalFinished(proposalsWithOutcome)
   } catch (error) {
     ErrorService.report('Error finishing proposals', { error, category: ErrorCategory.Job })
   }
