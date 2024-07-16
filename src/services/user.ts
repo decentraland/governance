@@ -219,11 +219,13 @@ export class UserService {
         const emptyProfile: UserAttributes = { address }
         return emptyProfile
       }
-      const { forum_id } = user
+      const { forum_id, forum_verification_date, discord_verification_date } = user
 
       return {
         forum_id,
         forum_username: forum_id ? (await DiscourseService.getUserById(forum_id))?.username : null,
+        forum_verification_date,
+        discord_verification_date,
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -232,5 +234,9 @@ export class UserService {
         throw new Error(`Unexpected error while fetching profile data ${error}`)
       }
     }
+  }
+
+  static async unlinkAccount(address: string, accountType: AccountType) {
+    return await UserModel.unlinkAccount(address, accountType)
   }
 }

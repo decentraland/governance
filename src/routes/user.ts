@@ -17,6 +17,7 @@ export default routes((route) => {
   route.get('/user/discord-linked', withAuth, handleAPI(isDiscordLinked))
   route.get('/user/:address/is-validated', handleAPI(isValidated))
   route.get('/user/:address', handleAPI(getProfile))
+  route.post('/user/unlink', withAuth, handleAPI(unlinkAccount))
 })
 
 async function getValidationMessage(req: WithAuth) {
@@ -64,4 +65,11 @@ async function isValidated(req: Request) {
 async function getProfile(req: Request) {
   const address = validateAddress(req.params.address)
   return await UserService.getProfile(address)
+}
+
+async function unlinkAccount(req: WithAuth) {
+  const address = req.auth!
+  const { accountType } = req.body
+  const accounts = validateAccountTypes(accountType)
+  return await UserService.unlinkAccount(address, accounts[0])
 }
