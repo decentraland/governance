@@ -99,4 +99,28 @@ export default class UserModel extends Model<UserAttributes> {
     const result = await this.namedQuery('get_user_validated', query)
     return result[0]?.total_no_null_columns === String(accounts.size)
   }
+
+  static async unlinkAccount(address: string, accountType: AccountType) {
+    const query = UserModel.getUnlinkQuery(address, accountType)
+    return await this.namedQuery('unlink_account', query)
+  }
+
+  private static getUnlinkQuery(address: string, accountType: AccountType) {
+    switch (accountType) {
+      case AccountType.Forum:
+        return SQL`
+        UPDATE ${table(this)}
+        SET forum_id = NULL, forum_verification_date = NULL
+        WHERE address = ${address.toLowerCase()}
+      `
+      case AccountType.Discord:
+        return SQL`
+        UPDATE ${table(this)}
+        SET discord_id = NULL, discord_verification_date = NULL, is_discord_notifications_active = NULL
+        WHERE address = ${address.toLowerCase()}
+      `
+      default:
+        throw new Error(`Unlinking account type ${accountType} is not supported`)
+    }
+  }
 }
