@@ -3,6 +3,7 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
+import { UserProfile } from '../entities/User/types'
 import { validateAccountTypes } from '../entities/User/utils'
 import { UserService } from '../services/user'
 import { validateAddress } from '../utils/validations'
@@ -62,7 +63,7 @@ async function isValidated(req: Request) {
   return await UserService.isValidated(address, new Set(accounts))
 }
 
-async function getProfile(req: Request) {
+async function getProfile(req: Request): Promise<UserProfile> {
   const address = validateAddress(req.params.address)
   return await UserService.getProfile(address)
 }
