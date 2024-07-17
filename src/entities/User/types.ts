@@ -9,6 +9,13 @@ export type UserAttributes = {
   is_discord_notifications_active?: boolean
 }
 
+export type UserProfile = Pick<
+  UserAttributes,
+  'address' | 'forum_id' | 'forum_verification_date' | 'discord_verification_date'
+> & {
+  forum_username?: string | null
+}
+
 export type ValidationMessage = {
   address: string
   timestamp: string

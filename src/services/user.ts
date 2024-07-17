@@ -4,13 +4,13 @@ import { PUSH_CHANNEL_ID } from '../constants'
 import { isSameAddress } from '../entities/Snapshot/utils'
 import { GATSBY_DISCOURSE_CONNECT_THREAD, MESSAGE_TIMEOUT_TIME } from '../entities/User/constants'
 import UserModel from '../entities/User/model'
-import { AccountType, UserAttributes, ValidationComment, ValidationMessage } from '../entities/User/types'
+import { AccountType, UserAttributes, UserProfile, ValidationComment, ValidationMessage } from '../entities/User/types'
 import { formatValidationMessage, getValidationComment, toAccountType, validateComment } from '../entities/User/utils'
-import { DiscourseService } from '../services/DiscourseService'
-import { ErrorService } from '../services/ErrorService'
 import { isProdEnv } from '../utils/governanceEnvs'
 import { getCaipAddress, getPushNotificationsEnv } from '../utils/notifications'
 
+import { DiscourseService } from './DiscourseService'
+import { ErrorService } from './ErrorService'
 import { DiscordService } from './discord'
 
 import PushAPI = require('@pushprotocol/restapi')
@@ -212,7 +212,7 @@ export class UserService {
     }
   }
 
-  static async getProfile(address: string) {
+  static async getProfile(address: string): Promise<UserProfile> {
     try {
       const user = await UserModel.findOne<UserAttributes>({ address: address.toLowerCase() })
       if (!user) {
@@ -222,6 +222,7 @@ export class UserService {
       const { forum_id, forum_verification_date, discord_verification_date } = user
 
       return {
+        address,
         forum_id,
         forum_username: forum_id ? (await DiscourseService.getUserById(forum_id))?.username : null,
         forum_verification_date,
