@@ -6,6 +6,7 @@ import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 import { SnapshotProposal } from '../../clients/SnapshotTypes'
 import { CommitteeName } from '../../clients/Transparency'
 import { Vesting } from '../../clients/VestingData'
+import { PersonnelAttributes } from '../../models/Personnel'
 import { UnpublishedBidInfo } from '../Bid/types'
 import {
   CategoryAssessmentQuestions,
@@ -74,6 +75,8 @@ export type ProposalAttributes<C extends Record<string, unknown> = any> = {
 export interface ProposalWithProject extends ProposalAttributes {
   project_id?: string | null
   project_status?: ProjectStatus | null
+  personnel: PersonnelAttributes[]
+  coAuthors?: string[]
 }
 
 export type ProposalListFilter = {
@@ -828,6 +831,8 @@ export type ProposalProject = {
   status: ProjectStatus
   title: string
   user: string
+  coAuthors?: string[]
+  personnel: PersonnelAttributes[]
   size: number
   type: ProposalType
   about: string

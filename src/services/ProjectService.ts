@@ -46,12 +46,12 @@ function newestVestingFirst(a: TransparencyVesting, b: TransparencyVesting): num
 
 export class ProjectService {
   public static async getProposalProjects() {
-    const data = await ProposalModel.getProjectList()
+    const proposalWithProjects = await ProposalModel.getProjectList()
     const vestings = await VestingService.getAllVestings()
     const projects: ProposalProjectWithUpdate[] = []
 
     await Promise.all(
-      data.map(async (proposal) => {
+      proposalWithProjects.map(async (proposal) => {
         try {
           const proposalVestings = vestings.filter((item) => item.proposal_id === proposal.id).sort(newestVestingFirst)
           const prioritizedVesting: TransparencyVesting | undefined =
@@ -80,9 +80,7 @@ export class ProjectService {
       })
     )
 
-    return {
-      data: projects,
-    }
+    return projects
   }
 
   private static getUpdateData(update: (UpdateAttributes & { index: number }) | null) {

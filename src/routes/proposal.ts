@@ -105,7 +105,7 @@ export default routes((route) => {
   route.post('/proposals/bid', withAuth, handleAPI(createProposalBid))
   route.post('/proposals/hiring', withAuth, handleAPI(createProposalHiring))
   route.get('/proposals/priority/:address?', handleJSON(getPriorityProposals))
-  route.get('/proposals/grants/:address', handleAPI(getGrantsByUser))
+  route.get('/proposals/grants/:address', handleAPI(getProjectsByUser)) //TODO: move to project routes
   route.get('/proposals/:proposal', handleAPI(getProposalWithProject))
   route.patch('/proposals/:proposal', withAuth, handleAPI(updateProposalStatus))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
@@ -591,22 +591,24 @@ async function validateSubmissionThreshold(user: string, submissionThreshold?: s
   }
 }
 
-async function getGrantsByUser(req: Request) {
+async function getProjectsByUser(req: Request) {
   const address = validateAddress(req.params.address)
 
   const coauthoring = await CoauthorModel.findProposals(address, CoauthorStatus.APPROVED)
   const coauthoringProposalIds = new Set(coauthoring.map((coauthoringAttributes) => coauthoringAttributes.proposal_id))
 
   const projects = await ProjectService.getProposalProjects()
-  const filteredGrants = projects.data.filter(
+  const filteredProposalProjectsWithUpdates = projects.filter(
     (project) =>
       project.type === ProposalType.Grant &&
-      (isSameAddress(project.user, address) || coauthoringProposalIds.has(project.id))
+      (isSameAddress(project.user, address) ||
+        coauthoringProposalIds.has(project.id) ||
+        project.personnel.some((person) => isSameAddress(person.address, address)))
   )
 
   return {
-    data: filteredGrants,
-    total: filteredGrants.length,
+    data: filteredProposalProjectsWithUpdates,
+    total: filteredProposalProjectsWithUpdates.length,
   }
 }
 

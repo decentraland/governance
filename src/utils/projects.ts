@@ -68,6 +68,8 @@ export function createProposalProject(proposal: ProposalWithProject, vesting?: T
     status,
     title: proposal.title,
     user: proposal.user,
+    personnel: proposal.personnel,
+    coAuthors: proposal.coAuthors,
     about: proposal.configuration.abstract,
     type: proposal.type,
     size: proposal.configuration.size || proposal.configuration.funding,

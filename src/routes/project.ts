@@ -9,6 +9,7 @@ import {
   ProjectLinkInCreationSchema,
   ProjectMilestoneInCreationSchema,
 } from '../entities/Project/types'
+import { ProposalProjectWithUpdate } from '../entities/Proposal/types'
 import PersonnelModel, { PersonnelAttributes } from '../models/Personnel'
 import ProjectLinkModel, { ProjectLink } from '../models/ProjectLink'
 import ProjectMilestoneModel, { ProjectMilestone } from '../models/ProjectMilestone'
@@ -30,15 +31,15 @@ export default routes((route) => {
   route.get('/projects/tenders-total', handleJSON(getOpenTendersTotal))
 })
 
-type ProjectsReturnType = Awaited<ReturnType<typeof ProjectService.getProposalProjects>>
-
-function filterProjectsByDate(projects: ProjectsReturnType, from?: Date, to?: Date): ProjectsReturnType {
-  return {
-    data: projects.data.filter((project) => {
-      const createdAt = new Date(project.created_at)
-      return (!from || createdAt >= from) && (!to || createdAt < to)
-    }),
-  }
+function filterProjectsByDate(
+  projects: ProposalProjectWithUpdate[],
+  from?: Date,
+  to?: Date
+): ProposalProjectWithUpdate[] {
+  return projects.filter((project) => {
+    const createdAt = new Date(project.created_at)
+    return (!from || createdAt >= from) && (!to || createdAt < to)
+  })
 }
 
 async function getProjects(req: Request) {
@@ -50,13 +51,13 @@ async function getProjects(req: Request) {
   }
 
   const cacheKey = `projects`
-  const cachedProjects = CacheService.get<ProjectsReturnType>(cacheKey)
+  const cachedProjects = CacheService.get<ProposalProjectWithUpdate[]>(cacheKey)
   if (cachedProjects) {
-    return filterProjectsByDate(cachedProjects, from, to)
+    return { data: filterProjectsByDate(cachedProjects, from, to) }
   }
   const projects = await ProjectService.getProposalProjects()
   CacheService.set(cacheKey, projects, TTL_1_HS)
-  return filterProjectsByDate(projects, from, to)
+  return { data: filterProjectsByDate(projects, from, to) }
 }
 
 async function getProject(req: Request<{ project: string }>) {
