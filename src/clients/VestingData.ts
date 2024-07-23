@@ -1,6 +1,6 @@
 import { ChainId } from '@dcl/schemas'
 import { JsonRpcProvider } from '@ethersproject/providers'
-import { BigNumber, ethers } from 'ethers'
+import { ethers } from 'ethers'
 
 import { VestingStatus } from '../entities/Grant/types'
 import { ErrorService } from '../services/ErrorService'
@@ -155,9 +155,7 @@ async function getVestingContractDataV2(
 
   const released = parseContractValue(await vestingContract.getReleased())
   const releasable = parseContractValue(await vestingContract.getReleasable())
-  const vestedPerPeriod: BigNumber[] = await vestingContract.getVestedPerPeriod()
-
-  const total = vestedPerPeriod.map(parseContractValue).reduce((acc, curr) => acc + curr, 0)
+  const total = parseContractValue(await vestingContract.getTotal())
 
   let status = getInitialVestingStatus(start_at, finish_at)
   const isRevoked = await vestingContract.getIsRevoked()
