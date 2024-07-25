@@ -15,6 +15,7 @@ import { toLower } from 'lodash'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
+import PersonnelModel from '../../models/Personnel'
 import ProjectModel from '../../models/Project'
 import Time from '../../utils/date/Time'
 import { UnpublishedBidStatus } from '../Bid/types'
@@ -71,16 +72,31 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     }
   }
 
+  static parseProposalWithProject(proposal: any): ProposalWithProject {
+    return {
+      ...proposal,
+      coAuthors: proposal.coauthors,
+      snapshot_proposal: JSON.parse(proposal.snapshot_proposal),
+    }
+  }
+
   static async getProposalWithProject(id: string): Promise<ProposalWithProject> {
     if (!isUUID(id || '')) {
       throw new Error(`Not found proposal: "${id}"`)
     }
 
     const query = SQL`
-      SELECT p.*, pr.id as "project_id", pr.status as "project_status"
+      SELECT p.*, 
+             pr.id as "project_id", 
+             pr.status as "project_status",
+             COALESCE(json_agg(DISTINCT to_jsonb(pe.*)) FILTER (WHERE pe.id IS NOT NULL), '[]')  as personnel,
+             COALESCE(array_agg(co.address) FILTER (WHERE co.address IS NOT NULL), '{}') AS coauthors
       FROM ${table(ProposalModel)} p
       LEFT JOIN ${table(ProjectModel)} pr ON p.id = pr.proposal_id
+      LEFT JOIN ${table(PersonnelModel)} pe ON pr.id = pe.project_id AND pe.deleted = false
+      LEFT JOIN ${table(CoauthorModel)} co ON p.id = co.proposal_id AND co.status = ${CoauthorStatus.APPROVED}
       WHERE p.id = ${id} AND p.deleted = false
+      GROUP BY p.id, pr.id
   `
 
     const result = await this.namedQuery('get_proposal_with_project', query)
@@ -89,7 +105,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     }
 
     return {
-      ...this.parse(result[0]),
+      ...this.parseProposalWithProject(result[0]),
     }
   }
 
@@ -460,17 +476,23 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     const proposals = await this.namedQuery(
       'get_project_list',
       SQL`
-        SELECT prop.*, proj.id as project_id
+        SELECT prop.*, 
+               proj.id as project_id,
+               COALESCE(json_agg(DISTINCT to_jsonb(pe.*)) FILTER (WHERE pe.id IS NOT NULL), '[]')  as personnel,
+               COALESCE(array_agg(co.address) FILTER (WHERE co.address IS NOT NULL), '{}') AS coauthors
         FROM ${table(ProposalModel)} prop
         LEFT OUTER JOIN ${table(ProjectModel)} proj on prop.id = proj.proposal_id
-        WHERE "deleted" = FALSE
+        LEFT JOIN ${table(PersonnelModel)} pe ON proj.id = pe.project_id AND pe.deleted = false
+        LEFT JOIN ${table(CoauthorModel)} co ON prop.id = co.proposal_id AND co.status = ${CoauthorStatus.APPROVED}
+        WHERE prop."deleted" = FALSE
           AND prop."type" IN (${join(types)})
           AND prop."status" IN (${join(status)})
-          ORDER BY "created_at" DESC 
+        GROUP BY prop.id, proj.id
+        ORDER BY prop."created_at" DESC 
     `
     )
 
-    return proposals.map(this.parse)
+    return proposals.map(this.parseProposalWithProject)
   }
 
   private static parseTimeframe(timeFrame?: string | null) {

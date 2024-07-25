@@ -3,9 +3,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { SQLStatement } from 'decentraland-gatsby/dist/entities/Database/utils'
 
-import { SnapshotProposal } from '../../clients/SnapshotTypes'
 import { CommitteeName } from '../../clients/Transparency'
 import { Vesting } from '../../clients/VestingData'
+import { PersonnelAttributes } from '../../models/Personnel'
 import { UnpublishedBidInfo } from '../Bid/types'
 import {
   CategoryAssessmentQuestions,
@@ -74,6 +74,8 @@ export type ProposalAttributes<C extends Record<string, unknown> = any> = {
 export interface ProposalWithProject extends ProposalAttributes {
   project_id?: string | null
   project_status?: ProjectStatus | null
+  personnel: PersonnelAttributes[]
+  coAuthors?: string[]
 }
 
 export type ProposalListFilter = {
@@ -121,9 +123,6 @@ export enum SortingOrder {
   ASC = 'ASC',
   DESC = 'DESC',
 }
-
-export type GovernanceProcessType = ProposalType.Poll | ProposalType.Draft | ProposalType.Governance
-export type BiddingProcessType = ProposalType.Pitch | ProposalType.Tender | ProposalType.Bid
 
 export enum PoiType {
   AddPOI = 'add_poi',
@@ -176,24 +175,6 @@ export function isSortingOrder(value: string | null | undefined): boolean {
     default:
       return false
   }
-}
-
-export function getPoiTypeAction(poiType: PoiType) {
-  return poiType.split('_')[0] // "add" | "remove"
-}
-
-export function isHiringType(value: string | null | undefined): boolean {
-  switch (value) {
-    case HiringType.Add:
-    case HiringType.Remove:
-      return true
-    default:
-      return false
-  }
-}
-
-export function toHiringType<T>(value: string | null | undefined, orElse: () => T): HiringType | T {
-  return isHiringType(value) ? (value as HiringType) : orElse()
 }
 
 function requiredVotingPower(value: string | undefined | null, defaultValue: number) {
@@ -828,6 +809,8 @@ export type ProposalProject = {
   status: ProjectStatus
   title: string
   user: string
+  coAuthors?: string[]
+  personnel: PersonnelAttributes[]
   size: number
   type: ProposalType
   about: string
@@ -844,8 +827,6 @@ export type ProposalProjectWithUpdate = ProposalProject & {
   update?: IndexedUpdate | null
   update_timestamp?: number
 }
-
-export type PendingProposalsQuery = { start: Date; end: Date; fields: (keyof SnapshotProposal)[]; limit: number }
 
 export enum PriorityProposalType {
   ActiveGovernance = 'active_governance',
