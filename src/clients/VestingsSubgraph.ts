@@ -2,6 +2,7 @@ import fetch from 'isomorphic-fetch'
 
 import { VESTINGS_QUERY_ENDPOINT } from '../entities/Snapshot/constants'
 
+import { SubgraphVesting } from './VestingSubgraphTypes'
 import { trimLastForwardSlash } from './utils'
 
 export class VestingsSubgraph {
@@ -34,42 +35,44 @@ export class VestingsSubgraph {
     return VESTINGS_QUERY_ENDPOINT
   }
 
-  async getVesting(address: string, blockNumber?: string | number) {
+  async getVesting(address: string): Promise<SubgraphVesting> {
     const query = `
-    query getVesting($address: String!, $block: Int) {
-        vestings(where: { id: $address }) {
-          id
-          token
-          owner
-          beneficiary
-          revoked
-          revocable
-          released
-          start
-          cliff
-          periodDuration
-          vestedPerPeriod
-          duration
-          paused
-          pausable
-          stop
-          linear
-          total
-        }
-        releaseLogs(where: {vesting: $address}, block: $block){
+    query getVesting($address: String!) {
+      vestings(where: { id: $address }){
+        id
+        version
+        duration
+        cliff
+        beneficiary
+        revoked
+        revocable
+        released
+        start
+        periodDuration
+        vestedPerPeriod
+        paused
+        pausable
+        stop
+        linear
+        token
+        owner
+        total
+        revokeTimestamp
+        releaseLogs{
           id
           timestamp
           amount
         }
-        pausedLogs(where: {vesting: $address}, block: $block){
+        pausedLogs{
           id
           timestamp
           eventType
         }
+      }
     }
     `
 
-    const variables = { address, block: blockNumber }
+    const variables = { address }
     const response = await fetch(this.queryEndpoint, {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
@@ -80,6 +83,6 @@ export class VestingsSubgraph {
     })
 
     const body = await response.json()
-    return body?.data
+    return body?.data?.vestings[0] || {}
   }
 }

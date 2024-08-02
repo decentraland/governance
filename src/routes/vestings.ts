@@ -2,7 +2,7 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
-import { VestingWithLogs } from '../clients/VestingData'
+import { VestingWithLogs, getVestingWithLogsFromAlchemy, getVestingWithLogsFromSubgraph } from '../clients/VestingData'
 import { VestingsSubgraph } from '../clients/VestingsSubgraph'
 import { VestingService } from '../services/VestingService'
 import { validateAddress } from '../utils/validations'
@@ -26,5 +26,9 @@ async function getVestings(req: Request<unknown, unknown, { addresses: string[] 
 
 async function getVesting(req: Request<{ address: string }>) {
   const address = validateAddress(req.params.address)
-  return await VestingsSubgraph.get().getVesting(address)
+  const subgraphVesting = await VestingsSubgraph.get().getVesting(address)
+  const subVesting = await getVestingWithLogsFromSubgraph(address)
+  const alchVesting = await getVestingWithLogsFromAlchemy(address)
+
+  return { subgraphVesting, subVesting, alchVesting }
 }

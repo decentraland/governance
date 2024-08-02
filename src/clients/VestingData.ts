@@ -3,14 +3,12 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { ethers } from 'ethers'
 
 import { VestingStatus } from '../entities/Grant/types'
-import { CLIFF_PERIOD_IN_DAYS } from '../entities/Proposal/utils'
 import { ErrorService } from '../services/ErrorService'
 import RpcService from '../services/RpcService'
 import ERC20_ABI from '../utils/contracts/abi/ERC20.abi.json'
 import VESTING_ABI from '../utils/contracts/abi/vesting/vesting.json'
 import VESTING_V2_ABI from '../utils/contracts/abi/vesting/vesting_v2.json'
 import { ContractVersion, TopicsByVersion } from '../utils/contracts/vesting'
-import Time from '../utils/date/Time'
 import { ErrorCategory } from '../utils/errorCategories'
 
 import { SubgraphVesting } from './VestingSubgraphTypes'
@@ -109,6 +107,8 @@ async function getVestingContractDataV1(
   const vestingContract = new ethers.Contract(vestingAddress, VESTING_ABI, provider)
   const contractStart = Number(await vestingContract.start())
   const contractDuration = Number(await vestingContract.duration())
+  const contractCliff = Number(await vestingContract.cliff())
+  console.log('contractCliff', contractCliff)
   const contractEndsTimestamp = contractStart + contractDuration
   const start_at = toISOString(contractStart)
   const finish_at = toISOString(contractEndsTimestamp)
@@ -128,7 +128,7 @@ async function getVestingContractDataV1(
   const token = getTokenSymbolFromAddress(tokenContractAddress.toLowerCase())
 
   return {
-    cliff: Time(start_at).add(CLIFF_PERIOD_IN_DAYS, 'day').getTime().toString(),
+    cliff: toISOString(contractCliff),
     vestedPerPeriod: [],
     ...getVestingDates(contractStart, contractEndsTimestamp),
     vested: released + releasable,
@@ -149,6 +149,8 @@ async function getVestingContractDataV2(
   const vestingContract = new ethers.Contract(vestingAddress, VESTING_V2_ABI, provider)
   const contractStart = Number(await vestingContract.getStart())
   const contractDuration = Number(await vestingContract.getPeriod())
+  const contractCliff = Number(await vestingContract.getCliff()) + contractStart
+  console.log('contractCliff V2', contractCliff)
 
   let contractEndsTimestamp = 0
   const start_at = toISOString(contractStart)
@@ -183,7 +185,7 @@ async function getVestingContractDataV2(
   const token = getTokenSymbolFromAddress(tokenContractAddress)
 
   return {
-    cliff: Time(start_at).add(CLIFF_PERIOD_IN_DAYS, 'day').getTime().toString(),
+    cliff: toISOString(contractCliff),
     vestedPerPeriod: vestedPerPeriod,
     ...getVestingDates(contractStart, contractEndsTimestamp),
     vested: released + releasable,
@@ -200,21 +202,17 @@ async function getVestingContractDataV2(
 function parseVestingData(vestingData: SubgraphVesting): Vesting {
   const contractStart = Number(vestingData.start)
   const contractDuration = Number(vestingData.duration)
+  const cliffEnd = Number(vestingData.cliff)
+  const currentTime = Math.floor(Date.now() / 1000)
 
   const start_at = toISOString(contractStart)
   const contractEndsTimestamp = contractStart + contractDuration
   const finish_at = toISOString(contractEndsTimestamp)
 
   const released = Number(vestingData.released)
-  //TODO: how do we know the releasable for each contract type?
   const total = Number(vestingData.total)
-
-  const cliffEnd = Number(vestingData.cliff)
-  const currentTime = Math.floor(Date.now() / 1000)
   let vested = 0
 
-  console.log('currentTime', currentTime)
-  console.log('cliffEnd', cliffEnd)
   if (currentTime < cliffEnd) {
     // If we're before the cliff end, nothing is vested
     vested = 0
@@ -229,13 +227,20 @@ function parseVestingData(vestingData: SubgraphVesting): Vesting {
   } else {
     // Periodic vesting after the cliff
     const periodDuration = Number(vestingData.periodDuration)
-    console.log('currentTime', currentTime)
-    console.log('contractStart', contractStart)
+    let timeVested = currentTime - contractStart
 
-    const x = (currentTime - contractStart) / periodDuration
-    console.log('x', x)
-    const periodsCompleted = Math.floor(x)
-    console.log('periodsCompleted', periodsCompleted)
+    // Adjust for pauses
+    if (vestingData.pausedLogs && vestingData.pausedLogs.length > 0) {
+      for (const pausedLog of vestingData.pausedLogs) {
+        const pauseTimestamp = Number(pausedLog.timestamp)
+        if (currentTime >= pauseTimestamp) {
+          timeVested = pauseTimestamp - contractStart
+          break
+        }
+      }
+    }
+
+    const periodsCompleted = Math.floor(timeVested / periodDuration)
 
     // Sum vested tokens for completed periods
     for (let i = 0; i < periodsCompleted && i < vestingData.vestedPerPeriod.length; i++) {
@@ -248,17 +253,15 @@ function parseVestingData(vestingData: SubgraphVesting): Vesting {
   let status = getInitialVestingStatus(start_at, finish_at)
   if (vestingData.revoked) {
     status = VestingStatus.Revoked
-  } else {
-    if (vestingData.paused) {
-      status = VestingStatus.Paused
-    }
+  } else if (vestingData.paused) {
+    status = VestingStatus.Paused
   }
 
   const token = getTokenSymbolFromAddress(vestingData.token)
 
   return {
     address: vestingData.id,
-    cliff: toISOString(Number(vestingData.cliff)),
+    cliff: toISOString(cliffEnd),
     vestedPerPeriod: vestingData.vestedPerPeriod.map(Number),
     ...getVestingDates(contractStart, contractEndsTimestamp),
     vested,

@@ -58,7 +58,7 @@ export class ProjectService {
             proposalVestings.find(
               (vesting) =>
                 vesting.vesting_status === VestingStatus.InProgress || vesting.vesting_status === VestingStatus.Finished
-            ) || proposalVestings[0]
+            ) || proposalVestings[0] //TODO: replace transparency vestings for vestings subgraph
           const project = createProposalProject(proposal, prioritizedVesting)
 
           try {
