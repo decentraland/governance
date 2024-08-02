@@ -3,13 +3,18 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { ethers } from 'ethers'
 
 import { VestingStatus } from '../entities/Grant/types'
+import { CLIFF_PERIOD_IN_DAYS } from '../entities/Proposal/utils'
 import { ErrorService } from '../services/ErrorService'
 import RpcService from '../services/RpcService'
 import ERC20_ABI from '../utils/contracts/abi/ERC20.abi.json'
 import VESTING_ABI from '../utils/contracts/abi/vesting/vesting.json'
 import VESTING_V2_ABI from '../utils/contracts/abi/vesting/vesting_v2.json'
 import { ContractVersion, TopicsByVersion } from '../utils/contracts/vesting'
+import Time from '../utils/date/Time'
 import { ErrorCategory } from '../utils/errorCategories'
+
+import { SubgraphVesting } from './VestingSubgraphTypes'
+import { VestingsSubgraph } from './VestingsSubgraph'
 
 export type VestingLog = {
   topic: string
@@ -27,6 +32,8 @@ export type Vesting = {
   address: string
   status: VestingStatus
   token: string
+  cliff: string
+  vestedPerPeriod: number[]
 }
 
 export type VestingWithLogs = Vesting & { logs: VestingLog[] }
@@ -121,15 +128,17 @@ async function getVestingContractDataV1(
   const token = getTokenSymbolFromAddress(tokenContractAddress.toLowerCase())
 
   return {
+    cliff: Time(start_at).add(CLIFF_PERIOD_IN_DAYS, 'day').getTime().toString(),
+    vestedPerPeriod: [],
     ...getVestingDates(contractStart, contractEndsTimestamp),
+    vested: released + releasable,
     released,
     releasable,
     total,
+    token,
     status,
     start_at,
     finish_at,
-    token,
-    vested: released + releasable,
   }
 }
 
@@ -153,6 +162,8 @@ async function getVestingContractDataV2(
     finish_at = toISOString(contractEndsTimestamp)
   }
 
+  const vestedPerPeriod = ((await vestingContract.getVestedPerPeriod()) ?? []).map(parseContractValue)
+
   const released = parseContractValue(await vestingContract.getReleased())
   const releasable = parseContractValue(await vestingContract.getReleasable())
   const total = parseContractValue(await vestingContract.getTotal())
@@ -172,26 +183,139 @@ async function getVestingContractDataV2(
   const token = getTokenSymbolFromAddress(tokenContractAddress)
 
   return {
+    cliff: Time(start_at).add(CLIFF_PERIOD_IN_DAYS, 'day').getTime().toString(),
+    vestedPerPeriod: vestedPerPeriod,
     ...getVestingDates(contractStart, contractEndsTimestamp),
+    vested: released + releasable,
     released,
     releasable,
     total,
+    token,
     status,
     start_at,
     finish_at,
-    token,
-    vested: released + releasable,
   }
 }
 
-export async function getVestingWithLogs(
-  vestingAddress: string | null | undefined,
-  proposalId?: string
-): Promise<VestingWithLogs> {
-  if (!vestingAddress || vestingAddress.length === 0) {
-    throw new Error('Unable to fetch vesting data for empty contract address')
+function parseVestingData(vestingData: SubgraphVesting): Vesting {
+  const contractStart = Number(vestingData.start)
+  const contractDuration = Number(vestingData.duration)
+
+  const start_at = toISOString(contractStart)
+  const contractEndsTimestamp = contractStart + contractDuration
+  const finish_at = toISOString(contractEndsTimestamp)
+
+  const released = Number(vestingData.released)
+  //TODO: how do we know the releasable for each contract type?
+  const total = Number(vestingData.total)
+
+  const cliffEnd = Number(vestingData.cliff)
+  const currentTime = Math.floor(Date.now() / 1000)
+  let vested = 0
+
+  console.log('currentTime', currentTime)
+  console.log('cliffEnd', cliffEnd)
+  if (currentTime < cliffEnd) {
+    // If we're before the cliff end, nothing is vested
+    vested = 0
+  } else if (vestingData.linear) {
+    // Linear vesting after the cliff
+    if (currentTime >= contractEndsTimestamp) {
+      vested = total
+    } else {
+      const timeElapsed = currentTime - contractStart
+      vested = (timeElapsed / contractDuration) * total
+    }
+  } else {
+    // Periodic vesting after the cliff
+    const periodDuration = Number(vestingData.periodDuration)
+    console.log('currentTime', currentTime)
+    console.log('contractStart', contractStart)
+
+    const x = (currentTime - contractStart) / periodDuration
+    console.log('x', x)
+    const periodsCompleted = Math.floor(x)
+    console.log('periodsCompleted', periodsCompleted)
+
+    // Sum vested tokens for completed periods
+    for (let i = 0; i < periodsCompleted && i < vestingData.vestedPerPeriod.length; i++) {
+      vested += Number(vestingData.vestedPerPeriod[i])
+    }
   }
 
+  const releasable = vested - released
+
+  let status = getInitialVestingStatus(start_at, finish_at)
+  if (vestingData.revoked) {
+    status = VestingStatus.Revoked
+  } else {
+    if (vestingData.paused) {
+      status = VestingStatus.Paused
+    }
+  }
+
+  const token = getTokenSymbolFromAddress(vestingData.token)
+
+  return {
+    address: vestingData.id,
+    cliff: toISOString(Number(vestingData.cliff)),
+    vestedPerPeriod: vestingData.vestedPerPeriod.map(Number),
+    ...getVestingDates(contractStart, contractEndsTimestamp),
+    vested,
+    released,
+    releasable,
+    total,
+    token,
+    status,
+    start_at,
+    finish_at,
+  }
+}
+
+function parseVestingLogs(vestingData: SubgraphVesting) {
+  const version = vestingData.linear ? ContractVersion.V1 : ContractVersion.V2
+  const topics = TopicsByVersion[version]
+  const logs: VestingLog[] = []
+  const parsedReleases: VestingLog[] = vestingData.releaseLogs.map((releaseLog) => {
+    return {
+      topic: topics.RELEASE,
+      timestamp: toISOString(Number(releaseLog.timestamp)),
+      amount: Number(releaseLog.amount),
+    }
+  })
+  logs.push(...parsedReleases)
+  const parsedPauseEvents: VestingLog[] = vestingData.pausedLogs.map((pausedLog) => {
+    return {
+      topic: pausedLog.eventType === 'Paused' ? topics.PAUSED : topics.UNPAUSED,
+      timestamp: toISOString(Number(pausedLog.timestamp)),
+    }
+  })
+  logs.push(...parsedPauseEvents)
+  return logs.sort(sortByTimestamp)
+}
+
+export async function getVestingWithLogsFromSubgraph(vestingAddress: string, proposalId?: string) {
+  try {
+    const vestingData = await VestingsSubgraph.get().getVesting(vestingAddress)
+    const vestingContract = parseVestingData(vestingData)
+    const logs = parseVestingLogs(vestingData)
+    return { ...vestingContract, logs }
+  } catch (error) {
+    console.log('error', error)
+    ErrorService.report('Unable to fetch vestings subgraph data', {
+      error,
+      vestingAddress,
+      proposalId,
+      category: ErrorCategory.Vesting,
+    })
+  }
+}
+
+function sortByTimestamp(a: VestingLog, b: VestingLog) {
+  return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+}
+
+export async function getVestingWithLogsFromAlchemy(vestingAddress: string, proposalId?: string | undefined) {
   const provider = new ethers.providers.JsonRpcProvider(RpcService.getRpcUrl(ChainId.ETHEREUM_MAINNET))
 
   try {
@@ -200,7 +324,7 @@ export async function getVestingWithLogs(
     const [data, logs] = await Promise.all([dataPromise, logsPromise])
     return {
       ...data,
-      logs: logs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()),
+      logs: logs.sort(sortByTimestamp),
       address: vestingAddress,
     }
   } catch (errorV2) {
@@ -223,6 +347,19 @@ export async function getVestingWithLogs(
       throw errorV1
     }
   }
+}
+
+export async function getVestingWithLogs(
+  vestingAddress: string | null | undefined,
+  proposalId?: string
+): Promise<VestingWithLogs> {
+  if (!vestingAddress || vestingAddress.length === 0) {
+    throw new Error('Unable to fetch vesting data for empty contract address')
+  }
+
+  // return await getVestingWithLogsFromSubgraph(vestingAddress, proposalId)
+
+  return await getVestingWithLogsFromAlchemy(vestingAddress, proposalId)
 }
 
 function getTokenSymbolFromAddress(tokenAddress: string) {
