@@ -229,13 +229,15 @@ function parseVestingData(vestingData: SubgraphVesting): Vesting {
     const periodDuration = Number(vestingData.periodDuration)
     let timeVested = currentTime - contractStart
 
-    // Adjust for pauses
-    if (vestingData.pausedLogs && vestingData.pausedLogs.length > 0) {
-      for (const pausedLog of vestingData.pausedLogs) {
-        const pauseTimestamp = Number(pausedLog.timestamp)
+    // Adjust for pauses (we only use the latest pause log. If unpaused, it resumes as if it'd have never been paused)
+    if (vestingData.paused) {
+      if (vestingData.pausedLogs && vestingData.pausedLogs.length > 0) {
+        const latestPauseLog = vestingData.pausedLogs.reduce((latestLog, currentLog) => {
+          return Number(currentLog.timestamp) > Number(latestLog.timestamp) ? currentLog : latestLog
+        }, vestingData.pausedLogs[0])
+        const pauseTimestamp = Number(latestPauseLog.timestamp)
         if (currentTime >= pauseTimestamp) {
           timeVested = pauseTimestamp - contractStart
-          break
         }
       }
     }
