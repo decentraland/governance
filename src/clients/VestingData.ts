@@ -107,7 +107,6 @@ async function getVestingContractDataV1(
   const contractStart = Number(await vestingContract.start())
   const contractDuration = Number(await vestingContract.duration())
   const contractCliff = Number(await vestingContract.cliff())
-  console.log('contractCliff', contractCliff)
   const contractEndsTimestamp = contractStart + contractDuration
   const start_at = toISOString(contractStart)
   const finish_at = toISOString(contractEndsTimestamp)
@@ -149,7 +148,6 @@ async function getVestingContractDataV2(
   const contractStart = Number(await vestingContract.getStart())
   const contractDuration = Number(await vestingContract.getPeriod())
   const contractCliff = Number(await vestingContract.getCliff()) + contractStart
-  console.log('contractCliff V2', contractCliff)
 
   let contractEndsTimestamp = 0
   const start_at = toISOString(contractStart)
