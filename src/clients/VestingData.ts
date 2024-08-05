@@ -12,7 +12,6 @@ import { ContractVersion, TopicsByVersion } from '../utils/contracts/vesting'
 import { ErrorCategory } from '../utils/errorCategories'
 
 import { SubgraphVesting } from './VestingSubgraphTypes'
-import { VestingsSubgraph } from './VestingsSubgraph'
 
 export type VestingLog = {
   topic: string
@@ -199,7 +198,7 @@ async function getVestingContractDataV2(
   }
 }
 
-function parseVestingData(vestingData: SubgraphVesting): Vesting {
+export function parseVestingData(vestingData: SubgraphVesting): Vesting {
   const contractStart = Number(vestingData.start)
   const contractDuration = Number(vestingData.duration)
   const cliffEnd = Number(vestingData.cliff)
@@ -277,7 +276,7 @@ function parseVestingData(vestingData: SubgraphVesting): Vesting {
   }
 }
 
-function parseVestingLogs(vestingData: SubgraphVesting) {
+export function parseVestingLogs(vestingData: SubgraphVesting) {
   const version = vestingData.linear ? ContractVersion.V1 : ContractVersion.V2
   const topics = TopicsByVersion[version]
   const logs: VestingLog[] = []
@@ -297,23 +296,6 @@ function parseVestingLogs(vestingData: SubgraphVesting) {
   })
   logs.push(...parsedPauseEvents)
   return logs.sort(sortByTimestamp)
-}
-
-export async function getVestingWithLogsFromSubgraph(vestingAddress: string, proposalId?: string) {
-  try {
-    const vestingData = await VestingsSubgraph.get().getVesting(vestingAddress)
-    const vestingContract = parseVestingData(vestingData)
-    const logs = parseVestingLogs(vestingData)
-    return { ...vestingContract, logs }
-  } catch (error) {
-    console.log('error', error)
-    ErrorService.report('Unable to fetch vestings subgraph data', {
-      error,
-      vestingAddress,
-      proposalId,
-      category: ErrorCategory.Vesting,
-    })
-  }
 }
 
 function sortByTimestamp(a: VestingLog, b: VestingLog) {
@@ -352,19 +334,6 @@ export async function getVestingWithLogsFromAlchemy(vestingAddress: string, prop
       throw errorV1
     }
   }
-}
-
-export async function getVestingWithLogs(
-  vestingAddress: string | null | undefined,
-  proposalId?: string
-): Promise<VestingWithLogs> {
-  if (!vestingAddress || vestingAddress.length === 0) {
-    throw new Error('Unable to fetch vesting data for empty contract address')
-  }
-
-  // return await getVestingWithLogsFromSubgraph(vestingAddress, proposalId)
-
-  return await getVestingWithLogsFromAlchemy(vestingAddress, proposalId)
 }
 
 function getTokenSymbolFromAddress(tokenAddress: string) {

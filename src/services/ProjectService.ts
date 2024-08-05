@@ -1,7 +1,6 @@
 import crypto from 'crypto'
 
 import { TransparencyVesting } from '../clients/Transparency'
-import { getVestingWithLogs } from '../clients/VestingData'
 import UnpublishedBidModel from '../entities/Bid/model'
 import { BidProposalConfiguration } from '../entities/Bid/types'
 import { GrantTier } from '../entities/Grant/GrantTier'
@@ -246,7 +245,7 @@ export class ProjectService {
   private static async updateStatusFromVesting(project: Project) {
     try {
       const latestVesting = project.vesting_addresses[project.vesting_addresses.length - 1]
-      const vestingWithLogs = await getVestingWithLogs(latestVesting)
+      const vestingWithLogs = await VestingService.getVestingWithLogs(latestVesting)
       const updatedProjectStatus = toGovernanceProjectStatus(vestingWithLogs.status)
       await ProjectModel.update({ status: updatedProjectStatus, updated_at: new Date() }, { id: project.id })
 

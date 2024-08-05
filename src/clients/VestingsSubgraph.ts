@@ -85,4 +85,55 @@ export class VestingsSubgraph {
     const body = await response.json()
     return body?.data?.vestings[0] || {}
   }
+
+  async getVestings(addresses: string[]): Promise<SubgraphVesting[]> {
+    const query = `
+    query getVestings($addresses: [String]!) {
+      vestings(where: { id_in: $addresses }){
+        id
+        version
+        duration
+        cliff
+        beneficiary
+        revoked
+        revocable
+        released
+        start
+        periodDuration
+        vestedPerPeriod
+        paused
+        pausable
+        stop
+        linear
+        token
+        owner
+        total
+        revokeTimestamp
+        releaseLogs{
+          id
+          timestamp
+          amount
+        }
+        pausedLogs{
+          id
+          timestamp
+          eventType
+        }
+      }
+    }
+    `
+
+    const variables = { addresses }
+    const response = await fetch(this.queryEndpoint, {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query,
+        variables: variables,
+      }),
+    })
+
+    const body = await response.json()
+    return body?.data?.vestings || []
+  }
 }
