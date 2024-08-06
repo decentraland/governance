@@ -3,7 +3,7 @@ import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 
 import { Discourse } from '../clients/Discourse'
-import { VestingWithLogs, getVestingWithLogs } from '../clients/VestingData'
+import { VestingWithLogs } from '../clients/VestingData'
 import { ProposalAttributes } from '../entities/Proposal/types'
 import UpdateModel from '../entities/Updates/model'
 import { UpdateAttributes, UpdateStatus } from '../entities/Updates/types'
@@ -24,6 +24,7 @@ import Time from '../utils/date/Time'
 import { getMonthsBetweenDates } from '../utils/date/getMonthsBetweenDates'
 import { ErrorCategory } from '../utils/errorCategories'
 
+import { VestingService } from './VestingService'
 import { DiscordService } from './discord'
 import { EventsService } from './events'
 
@@ -194,7 +195,7 @@ export class UpdateService {
     const project = await ProjectService.getUpdatedProject(projectId)
     const { vesting_addresses, proposal_id } = project
     const vestingAddresses = initialVestingAddresses || vesting_addresses
-    const vesting = await getVestingWithLogs(vestingAddresses[vestingAddresses.length - 1], proposal_id)
+    const vesting = await VestingService.getVestingWithLogs(vestingAddresses[vestingAddresses.length - 1], proposal_id)
 
     const now = new Date()
     const updatesQuantity = this.getAmountOfUpdates(vesting)

@@ -1,9 +1,9 @@
 import crypto from 'crypto'
 
-import * as VestingUtils from '../../clients/VestingData'
 import { VestingWithLogs } from '../../clients/VestingData'
 import { Project } from '../../models/Project'
 import { ProjectService } from '../../services/ProjectService'
+import { VestingService } from '../../services/VestingService'
 import { UpdateService } from '../../services/update'
 import Time from '../../utils/date/Time'
 import { getMonthsBetweenDates } from '../../utils/date/getMonthsBetweenDates'
@@ -31,7 +31,7 @@ const MOCK_PROJECT: Project = {
 }
 
 function mockVestingData(vestingDates: VestingWithLogs) {
-  jest.spyOn(VestingUtils, 'getVestingWithLogs').mockResolvedValue(vestingDates)
+  jest.spyOn(VestingService, 'getVestingWithLogs').mockResolvedValue(vestingDates)
 }
 
 describe('UpdateModel', () => {

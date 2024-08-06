@@ -3,7 +3,7 @@ export enum ContractVersion {
   V2 = 'v2',
 }
 
-type Topics = {
+export type Topics = {
   RELEASE: string
   REVOKE: string
   TRANSFER_OWNERSHIP: string

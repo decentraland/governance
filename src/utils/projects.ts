@@ -2,6 +2,9 @@ import { TransparencyVesting } from '../clients/Transparency'
 import { Vesting } from '../clients/VestingData'
 import { ProjectStatus, VestingStatus } from '../entities/Grant/types'
 import { ProjectFunding, ProposalAttributes, ProposalProject, ProposalWithProject } from '../entities/Proposal/types'
+import { CLIFF_PERIOD_IN_DAYS } from '../entities/Proposal/utils'
+
+import Time from './date/Time'
 
 export function getHighBudgetVpThreshold(budget: number) {
   return 1200000 + budget * 40
@@ -83,6 +86,7 @@ export function createProposalProject(proposal: ProposalWithProject, vesting?: T
   }
 }
 
+//TODO: stop using transparency vestings
 export function toVesting(transparencyVesting: TransparencyVesting): Vesting {
   const {
     token,
@@ -105,6 +109,8 @@ export function toVesting(transparencyVesting: TransparencyVesting): Vesting {
     total: Math.round(vesting_total_amount),
     vested: Math.round(vesting_released + vesting_releasable),
     status: vesting_status,
+    cliff: Time.unix(Number(vesting_start_at)).add(CLIFF_PERIOD_IN_DAYS, 'day').getTime().toString(),
+    vestedPerPeriod: [],
   }
 
   return vesting

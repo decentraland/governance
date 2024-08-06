@@ -40,6 +40,7 @@ export const SITEMAP_ITEMS_PER_PAGE = 100
 export const DEFAULT_CHOICES = ['yes', 'no', 'abstain']
 export const REGEX_NAME = new RegExp(`^([a-zA-Z0-9]){${MIN_NAME_SIZE},${MAX_NAME_SIZE}}$`)
 
+//TODO: avoid manually calculating cliff, use subgraph or contract method instead
 export const CLIFF_PERIOD_IN_DAYS = 29
 
 export function formatBalance(value: number | bigint) {

@@ -27,15 +27,17 @@ export type Vesting = {
   address: string
   status: VestingStatus
   token: string
+  cliff: string
+  vestedPerPeriod: number[]
 }
 
 export type VestingWithLogs = Vesting & { logs: VestingLog[] }
 
-function toISOString(seconds: number) {
+export function toISOString(seconds: number) {
   return new Date(seconds * 1000).toISOString()
 }
 
-function getVestingDates(contractStart: number, contractEndsTimestamp: number) {
+export function getVestingDates(contractStart: number, contractEndsTimestamp: number) {
   const vestingStartAt = toISOString(contractStart)
   const vestingFinishAt = toISOString(contractEndsTimestamp)
   return {
@@ -84,7 +86,7 @@ async function getVestingContractLogs(vestingAddress: string, provider: JsonRpcP
   return logsData
 }
 
-function getInitialVestingStatus(startAt: string, finishAt: string) {
+export function getInitialVestingStatus(startAt: string, finishAt: string) {
   const now = new Date()
   if (now < new Date(startAt)) {
     return VestingStatus.Pending
@@ -102,6 +104,7 @@ async function getVestingContractDataV1(
   const vestingContract = new ethers.Contract(vestingAddress, VESTING_ABI, provider)
   const contractStart = Number(await vestingContract.start())
   const contractDuration = Number(await vestingContract.duration())
+  const contractCliff = Number(await vestingContract.cliff())
   const contractEndsTimestamp = contractStart + contractDuration
   const start_at = toISOString(contractStart)
   const finish_at = toISOString(contractEndsTimestamp)
@@ -121,15 +124,17 @@ async function getVestingContractDataV1(
   const token = getTokenSymbolFromAddress(tokenContractAddress.toLowerCase())
 
   return {
+    cliff: toISOString(contractCliff),
+    vestedPerPeriod: [],
     ...getVestingDates(contractStart, contractEndsTimestamp),
+    vested: released + releasable,
     released,
     releasable,
     total,
+    token,
     status,
     start_at,
     finish_at,
-    token,
-    vested: released + releasable,
   }
 }
 
@@ -140,6 +145,7 @@ async function getVestingContractDataV2(
   const vestingContract = new ethers.Contract(vestingAddress, VESTING_V2_ABI, provider)
   const contractStart = Number(await vestingContract.getStart())
   const contractDuration = Number(await vestingContract.getPeriod())
+  const contractCliff = Number(await vestingContract.getCliff()) + contractStart
 
   let contractEndsTimestamp = 0
   const start_at = toISOString(contractStart)
@@ -152,6 +158,8 @@ async function getVestingContractDataV2(
     contractEndsTimestamp = contractStart + contractDuration * periods
     finish_at = toISOString(contractEndsTimestamp)
   }
+
+  const vestedPerPeriod = ((await vestingContract.getVestedPerPeriod()) ?? []).map(parseContractValue)
 
   const released = parseContractValue(await vestingContract.getReleased())
   const releasable = parseContractValue(await vestingContract.getReleasable())
@@ -172,26 +180,25 @@ async function getVestingContractDataV2(
   const token = getTokenSymbolFromAddress(tokenContractAddress)
 
   return {
+    cliff: toISOString(contractCliff),
+    vestedPerPeriod: vestedPerPeriod,
     ...getVestingDates(contractStart, contractEndsTimestamp),
+    vested: released + releasable,
     released,
     releasable,
     total,
+    token,
     status,
     start_at,
     finish_at,
-    token,
-    vested: released + releasable,
   }
 }
 
-export async function getVestingWithLogs(
-  vestingAddress: string | null | undefined,
-  proposalId?: string
-): Promise<VestingWithLogs> {
-  if (!vestingAddress || vestingAddress.length === 0) {
-    throw new Error('Unable to fetch vesting data for empty contract address')
-  }
+export function sortByTimestamp(a: VestingLog, b: VestingLog) {
+  return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+}
 
+export async function getVestingWithLogsFromAlchemy(vestingAddress: string, proposalId?: string | undefined) {
   const provider = new ethers.providers.JsonRpcProvider(RpcService.getRpcUrl(ChainId.ETHEREUM_MAINNET))
 
   try {
@@ -200,7 +207,7 @@ export async function getVestingWithLogs(
     const [data, logs] = await Promise.all([dataPromise, logsPromise])
     return {
       ...data,
-      logs: logs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()),
+      logs: logs.sort(sortByTimestamp),
       address: vestingAddress,
     }
   } catch (errorV2) {
@@ -214,7 +221,7 @@ export async function getVestingWithLogs(
         address: vestingAddress,
       }
     } catch (errorV1) {
-      ErrorService.report('Unable to fetch vesting contract data', {
+      ErrorService.report('Unable to fetch vesting contract data from alchemy', {
         proposalId,
         errorV2: `${errorV2}`,
         errorV1: `${errorV1}`,
@@ -225,7 +232,7 @@ export async function getVestingWithLogs(
   }
 }
 
-function getTokenSymbolFromAddress(tokenAddress: string) {
+export function getTokenSymbolFromAddress(tokenAddress: string) {
   switch (tokenAddress) {
     case '0x0f5d2fb29fb7d3cfee444a200298f468908cc942':
       return 'MANA'
