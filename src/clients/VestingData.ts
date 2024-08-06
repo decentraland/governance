@@ -11,8 +11,6 @@ import VESTING_V2_ABI from '../utils/contracts/abi/vesting/vesting_v2.json'
 import { ContractVersion, TopicsByVersion } from '../utils/contracts/vesting'
 import { ErrorCategory } from '../utils/errorCategories'
 
-import { SubgraphVesting } from './VestingSubgraphTypes'
-
 export type VestingLog = {
   topic: string
   timestamp: string
@@ -35,11 +33,11 @@ export type Vesting = {
 
 export type VestingWithLogs = Vesting & { logs: VestingLog[] }
 
-function toISOString(seconds: number) {
+export function toISOString(seconds: number) {
   return new Date(seconds * 1000).toISOString()
 }
 
-function getVestingDates(contractStart: number, contractEndsTimestamp: number) {
+export function getVestingDates(contractStart: number, contractEndsTimestamp: number) {
   const vestingStartAt = toISOString(contractStart)
   const vestingFinishAt = toISOString(contractEndsTimestamp)
   return {
@@ -88,7 +86,7 @@ async function getVestingContractLogs(vestingAddress: string, provider: JsonRpcP
   return logsData
 }
 
-function getInitialVestingStatus(startAt: string, finishAt: string) {
+export function getInitialVestingStatus(startAt: string, finishAt: string) {
   const now = new Date()
   if (now < new Date(startAt)) {
     return VestingStatus.Pending
@@ -196,107 +194,7 @@ async function getVestingContractDataV2(
   }
 }
 
-export function parseVestingData(vestingData: SubgraphVesting): Vesting {
-  const contractStart = Number(vestingData.start)
-  const contractDuration = Number(vestingData.duration)
-  const cliffEnd = Number(vestingData.cliff)
-  const currentTime = Math.floor(Date.now() / 1000)
-
-  const start_at = toISOString(contractStart)
-  const contractEndsTimestamp = contractStart + contractDuration
-  const finish_at = toISOString(contractEndsTimestamp)
-
-  const released = Number(vestingData.released)
-  const total = Number(vestingData.total)
-  let vested = 0
-
-  if (currentTime < cliffEnd) {
-    // If we're before the cliff end, nothing is vested
-    vested = 0
-  } else if (vestingData.linear) {
-    // Linear vesting after the cliff
-    if (currentTime >= contractEndsTimestamp) {
-      vested = total
-    } else {
-      const timeElapsed = currentTime - contractStart
-      vested = (timeElapsed / contractDuration) * total
-    }
-  } else {
-    // Periodic vesting after the cliff
-    const periodDuration = Number(vestingData.periodDuration)
-    let timeVested = currentTime - contractStart
-
-    // Adjust for pauses (we only use the latest pause log. If unpaused, it resumes as if it'd have never been paused)
-    if (vestingData.paused) {
-      if (vestingData.pausedLogs && vestingData.pausedLogs.length > 0) {
-        const latestPauseLog = vestingData.pausedLogs.reduce((latestLog, currentLog) => {
-          return Number(currentLog.timestamp) > Number(latestLog.timestamp) ? currentLog : latestLog
-        }, vestingData.pausedLogs[0])
-        const pauseTimestamp = Number(latestPauseLog.timestamp)
-        if (currentTime >= pauseTimestamp) {
-          timeVested = pauseTimestamp - contractStart
-        }
-      }
-    }
-
-    const periodsCompleted = Math.floor(timeVested / periodDuration)
-
-    // Sum vested tokens for completed periods
-    for (let i = 0; i < periodsCompleted && i < vestingData.vestedPerPeriod.length; i++) {
-      vested += Number(vestingData.vestedPerPeriod[i])
-    }
-  }
-
-  const releasable = vested - released
-
-  let status = getInitialVestingStatus(start_at, finish_at)
-  if (vestingData.revoked) {
-    status = VestingStatus.Revoked
-  } else if (vestingData.paused) {
-    status = VestingStatus.Paused
-  }
-
-  const token = getTokenSymbolFromAddress(vestingData.token)
-
-  return {
-    address: vestingData.id,
-    cliff: toISOString(cliffEnd),
-    vestedPerPeriod: vestingData.vestedPerPeriod.map(Number),
-    ...getVestingDates(contractStart, contractEndsTimestamp),
-    vested,
-    released,
-    releasable,
-    total,
-    token,
-    status,
-    start_at,
-    finish_at,
-  }
-}
-
-export function parseVestingLogs(vestingData: SubgraphVesting) {
-  const version = vestingData.linear ? ContractVersion.V1 : ContractVersion.V2
-  const topics = TopicsByVersion[version]
-  const logs: VestingLog[] = []
-  const parsedReleases: VestingLog[] = vestingData.releaseLogs.map((releaseLog) => {
-    return {
-      topic: topics.RELEASE,
-      timestamp: toISOString(Number(releaseLog.timestamp)),
-      amount: Number(releaseLog.amount),
-    }
-  })
-  logs.push(...parsedReleases)
-  const parsedPauseEvents: VestingLog[] = vestingData.pausedLogs.map((pausedLog) => {
-    return {
-      topic: pausedLog.eventType === 'Paused' ? topics.PAUSED : topics.UNPAUSED,
-      timestamp: toISOString(Number(pausedLog.timestamp)),
-    }
-  })
-  logs.push(...parsedPauseEvents)
-  return logs.sort(sortByTimestamp)
-}
-
-function sortByTimestamp(a: VestingLog, b: VestingLog) {
+export function sortByTimestamp(a: VestingLog, b: VestingLog) {
   return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
 }
 
@@ -323,7 +221,7 @@ export async function getVestingWithLogsFromAlchemy(vestingAddress: string, prop
         address: vestingAddress,
       }
     } catch (errorV1) {
-      ErrorService.report('Unable to fetch vesting contract data', {
+      ErrorService.report('Unable to fetch vesting contract data from alchemy', {
         proposalId,
         errorV2: `${errorV2}`,
         errorV1: `${errorV1}`,
@@ -334,7 +232,7 @@ export async function getVestingWithLogsFromAlchemy(vestingAddress: string, prop
   }
 }
 
-function getTokenSymbolFromAddress(tokenAddress: string) {
+export function getTokenSymbolFromAddress(tokenAddress: string) {
   switch (tokenAddress) {
     case '0x0f5d2fb29fb7d3cfee444a200298f468908cc942':
       return 'MANA'
