@@ -1,6 +1,7 @@
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 import { ethers } from 'ethers'
 
+import { SnapshotSubgraph } from '../clients/SnapshotSubgraph'
 import { DCL_NOTIFICATIONS_SERVICE_ENABLED, NOTIFICATIONS_SERVICE_ENABLED, PUSH_CHANNEL_ID } from '../constants'
 import ProposalModel from '../entities/Proposal/model'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
@@ -17,6 +18,8 @@ import logger from '../utils/logger'
 import { NotificationType, Notifications, getCaipAddress, getPushNotificationsEnv } from '../utils/notifications'
 import { areValidAddresses } from '../utils/validations'
 
+import { ProposalService } from './ProposalService'
+import { SnapshotService } from './SnapshotService'
 import { CoauthorService } from './coauthor'
 import { DiscordService } from './discord'
 import { VoteService } from './vote'
@@ -601,6 +604,131 @@ export class NotificationService {
           proposal_id: proposalId,
           update_id: updateId,
           event: commentEvent,
+        })
+      }
+    })
+  }
+
+  static async newVote(proposalId: ProposalAttributes['id'], voterAddress: string) {
+    inBackground(async () => {
+      const proposal = await ProposalService.getProposal(proposalId)
+      const votes = await SnapshotService.getVotesByProposal(proposal.snapshot_id) // Consider fetching proposal votes directly from db
+      const addressVote = votes.find((vote) => vote.voter === voterAddress)
+
+      const WHALE_THRESHOLD = 250000
+      if ((addressVote?.vp || 0) >= WHALE_THRESHOLD) {
+        this.whaleVote(proposal)
+      }
+
+      const delegators = await SnapshotSubgraph.get().getDelegates('delegatedFrom', {
+        address: voterAddress,
+        space: proposal.snapshot_space,
+        blockNumber: proposal.snapshot_proposal.snapshot,
+      })
+      if (delegators.length === 0) {
+        return
+      }
+
+      const votesAddresses = votes.map((vote) => vote.voter)
+      const delegatorsWhoVoted = votesAddresses.filter((vote) =>
+        delegators.some((delegator) => delegator.delegator === vote)
+      )
+      if (delegatorsWhoVoted.length > 0) {
+        this.votedOnBehalf(proposal, delegatorsWhoVoted)
+      }
+    })
+  }
+
+  private static whaleVote(proposal: ProposalAttributes) {
+    inBackground(async () => {
+      try {
+        const addresses = await this.getAuthorAndCoauthors(proposal)
+        const title = Notifications.WhaleVote.title(proposal)
+        const body = Notifications.WhaleVote.body
+
+        DiscordService.sendDirectMessages(addresses, {
+          title,
+          action: body,
+          url: proposalUrl(proposal.id),
+          fields: [],
+        })
+
+        const dclNotifications = addresses.map((address) => ({
+          type: 'governance_whale_vote',
+          address,
+          eventKey: proposal.id,
+          metadata: {
+            proposalId: proposal.id,
+            proposalTitle: proposal.title,
+            title,
+            description: body,
+            link: proposalUrl(proposal.id),
+          },
+          timestamp: Date.now(),
+        }))
+
+        await Promise.all([
+          this.sendPushNotification({
+            title,
+            body,
+            recipient: addresses,
+            url: proposalUrl(proposal.id),
+            customType: NotificationCustomType.WhaleVote,
+          }),
+          this.sendDCLNotifications(dclNotifications),
+        ])
+      } catch (error) {
+        ErrorService.report('Error sending notifications for new comment on proposal', {
+          error: `${error}`,
+          category: ErrorCategory.Notifications,
+          proposal_id: proposal.id,
+        })
+      }
+    })
+  }
+
+  private static votedOnBehalf(proposal: ProposalAttributes, addresses: string[]) {
+    inBackground(async () => {
+      try {
+        const title = Notifications.VotedOnYourBehalf.title(proposal)
+        const body = Notifications.VotedOnYourBehalf.body
+
+        DiscordService.sendDirectMessages(addresses, {
+          title,
+          action: body,
+          url: proposalUrl(proposal.id),
+          fields: [],
+        })
+
+        const dclNotifications = addresses.map((address) => ({
+          type: 'governance_voted_on_behalf',
+          address,
+          eventKey: proposal.id,
+          metadata: {
+            proposalId: proposal.id,
+            proposalTitle: proposal.title,
+            title,
+            description: body,
+            link: proposalUrl(proposal.id),
+          },
+          timestamp: Date.now(),
+        }))
+
+        await Promise.all([
+          this.sendPushNotification({
+            title,
+            body,
+            recipient: addresses,
+            url: proposalUrl(proposal.id),
+            customType: NotificationCustomType.VotedOnBehalf,
+          }),
+          this.sendDCLNotifications(dclNotifications),
+        ])
+      } catch (error) {
+        ErrorService.report('Error sending notifications for new comment on proposal', {
+          error: `${error}`,
+          category: ErrorCategory.Notifications,
+          proposal_id: proposal.id,
         })
       }
     })

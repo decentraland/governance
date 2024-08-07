@@ -60,4 +60,12 @@ export const Notifications = {
     title: (proposal: ProposalAttributes) => `The Tender "${proposal.title}" can now receive Bid Projects`,
     body: 'If think you can tackle this solution, propose a Project and get funding from the DAO',
   },
+  WhaleVote: {
+    title: (proposal: ProposalAttributes) => `A whale voted on your proposal "${proposal.title}"`,
+    body: 'A wallet holding over 250k VP has just cast a vote. Stay informed and see how this significant vote impacts the outcome.',
+  },
+  VotedOnYourBehalf: {
+    title: (proposal: ProposalAttributes) => `Your delegate voted on the proposal "${proposal.title}"`,
+    body: 'See if their vote is aligned with your vision. You can always override their decision by voting on your own.',
+  },
 }

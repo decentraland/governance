@@ -64,7 +64,6 @@ async function getProject(req: Request<{ project: string }>) {
   try {
     return await ProjectService.getUpdatedProject(id)
   } catch (e) {
-    console.log(`Error getting project: ${e}`) //TODO: remove before merging projects to main
     throw new RequestError(`Project "${id}" not found`, RequestError.NotFound)
   }
 }
