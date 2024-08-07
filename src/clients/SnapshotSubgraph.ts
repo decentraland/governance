@@ -1,7 +1,7 @@
 import fetch from 'isomorphic-fetch'
 
 import { SNAPSHOT_QUERY_ENDPOINT } from '../entities/Snapshot/constants'
-import { PICKED_BY_QUERY } from '../entities/Snapshot/queries'
+import { PICKED_BY_QUERY, getDelegatedQuery } from '../entities/Snapshot/queries'
 
 import { Delegation } from './SnapshotTypes'
 import { inBatches, trimLastForwardSlash } from './utils'
@@ -48,7 +48,6 @@ export class SnapshotSubgraph {
 
   async getDelegates(
     key: 'delegatedTo' | 'delegatedFrom',
-    query: string,
     variables: { address: string; space: string; blockNumber?: string | number }
   ) {
     const delegations: Delegation[] = await inBatches(
@@ -57,7 +56,7 @@ export class SnapshotSubgraph {
           method: 'post',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            query,
+            query: getDelegatedQuery(key, variables.blockNumber),
             variables: { ...vars, skip, first },
           }),
         })
