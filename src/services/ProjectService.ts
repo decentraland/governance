@@ -1,6 +1,7 @@
 import crypto from 'crypto'
 
 import { TransparencyVesting } from '../clients/Transparency'
+import { VestingWithLogs } from '../clients/VestingData'
 import UnpublishedBidModel from '../entities/Bid/model'
 import { BidProposalConfiguration } from '../entities/Bid/types'
 import { GrantTier } from '../entities/Grant/GrantTier'
@@ -22,14 +23,19 @@ import { IndexedUpdate, UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates } from '../entities/Updates/utils'
 import { formatError, inBackground } from '../helpers'
 import PersonnelModel, { PersonnelAttributes } from '../models/Personnel'
-import ProjectModel, { Project, ProjectAttributes } from '../models/Project'
+import ProjectModel, { Project, ProjectAttributes, ProjectQueryResult } from '../models/Project'
 import ProjectLinkModel, { ProjectLink } from '../models/ProjectLink'
 import ProjectMilestoneModel, { ProjectMilestone, ProjectMilestoneStatus } from '../models/ProjectMilestone'
 import Time from '../utils/date/Time'
 import { ErrorCategory } from '../utils/errorCategories'
 import { isProdEnv } from '../utils/governanceEnvs'
 import logger from '../utils/logger'
-import { createProposalProject, toGovernanceProjectStatus } from '../utils/projects'
+import {
+  createProposalProject,
+  getProjectFunding,
+  getProjectStatus,
+  toGovernanceProjectStatus,
+} from '../utils/projects'
 
 import { BudgetService } from './BudgetService'
 import { ErrorService } from './ErrorService'
@@ -47,7 +53,7 @@ export class ProjectService {
   public static async getProposalProjects() {
     const proposalWithProjects = await ProposalModel.getProjectList()
     const vestings = await VestingService.getAllVestings()
-    const projects: ProposalProjectWithUpdate[] = []
+    const proposalProjects: ProposalProjectWithUpdate[] = []
 
     await Promise.all(
       proposalWithProjects.map(async (proposal) => {
@@ -57,7 +63,7 @@ export class ProjectService {
             proposalVestings.find(
               (vesting) =>
                 vesting.vesting_status === VestingStatus.InProgress || vesting.vesting_status === VestingStatus.Finished
-            ) || proposalVestings[0] //TODO: replace transparency vestings for vestings subgraph
+            ) || proposalVestings[0]
           const project = createProposalProject(proposal, prioritizedVesting)
 
           try {
@@ -67,7 +73,7 @@ export class ProjectService {
               ...this.getUpdateData(update),
             }
 
-            return projects.push(projectWithUpdate)
+            return proposalProjects.push(projectWithUpdate)
           } catch (error) {
             logger.error(`Failed to fetch grant update data from proposal ${project.id}`, formatError(error as Error))
           }
@@ -78,8 +84,36 @@ export class ProjectService {
         }
       })
     )
+    return proposalProjects
+  }
 
-    return projects
+  public static async getUpdatedProjects() {
+    const projectsQueryResults = await ProjectModel.getProjectsWithUpdates()
+    const latestVestingAddresses = projectsQueryResults.map(
+      (project) => project.vesting_addresses[project.vesting_addresses.length - 1]
+    )
+    const latestVestings = await VestingService.getVestings(latestVestingAddresses)
+    const updatedProjects = this.mergeProjectsWithVestings(projectsQueryResults, latestVestings)
+    return updatedProjects
+  }
+
+  private static mergeProjectsWithVestings(
+    projects: ProjectQueryResult[],
+    latestVestings: VestingWithLogs[]
+  ): Project[] {
+    return (
+      projects.map((project) => {
+        const latestVestingAddress = project.vesting_addresses[project.vesting_addresses.length - 1]
+        const vestingWithLogs = latestVestings.find((vesting) => vesting.address === latestVestingAddress)
+        const funding = getProjectFunding(project, vestingWithLogs)
+        const status = getProjectStatus(project, vestingWithLogs)
+        return {
+          ...project,
+          status,
+          funding,
+        }
+      }) || []
+    )
   }
 
   private static getUpdateData(update: (UpdateAttributes & { index: number }) | null) {
