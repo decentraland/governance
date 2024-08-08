@@ -11,15 +11,19 @@ import {
 } from '../entities/Project/types'
 import { ProposalProjectWithUpdate } from '../entities/Proposal/types'
 import PersonnelModel, { PersonnelAttributes } from '../models/Personnel'
+import { Project } from '../models/Project'
 import ProjectLinkModel, { ProjectLink } from '../models/ProjectLink'
 import ProjectMilestoneModel, { ProjectMilestone } from '../models/ProjectMilestone'
 import CacheService, { TTL_1_HS } from '../services/CacheService'
+import { ErrorService } from '../services/ErrorService'
 import { ProjectService } from '../services/ProjectService'
+import { ErrorCategory } from '../utils/errorCategories'
 import { isValidDate, validateCanEditProject, validateId } from '../utils/validations'
 
 export default routes((route) => {
   const withAuth = auth()
   route.get('/projects', handleJSON(getProjects))
+  route.get('/projects/updated/', handleJSON(getUpdatedProjects))
   route.post('/projects/personnel/', withAuth, handleAPI(addPersonnel))
   route.delete('/projects/personnel/:personnel_id', withAuth, handleAPI(deletePersonnel))
   route.post('/projects/links/', withAuth, handleAPI(addLink))
@@ -58,6 +62,15 @@ async function getProjects(req: Request) {
   const projects = await ProjectService.getProposalProjects()
   CacheService.set(cacheKey, projects, TTL_1_HS)
   return { data: filterProjectsByDate(projects, from, to) }
+}
+
+async function getUpdatedProjects(): Promise<Project[]> {
+  try {
+    return await ProjectService.getUpdatedProjects()
+  } catch (error) {
+    ErrorService.report('Error fetching projets', { error, category: ErrorCategory.Project })
+    throw new RequestError(`Unable to load projects`, RequestError.InternalServerError)
+  }
 }
 
 async function getProject(req: Request<{ project: string }>) {

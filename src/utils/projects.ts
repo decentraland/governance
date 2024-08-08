@@ -1,8 +1,9 @@
 import { TransparencyVesting } from '../clients/Transparency'
-import { Vesting } from '../clients/VestingData'
+import { Vesting, VestingWithLogs } from '../clients/VestingData'
 import { ProjectStatus, VestingStatus } from '../entities/Grant/types'
 import { ProjectFunding, ProposalAttributes, ProposalProject, ProposalWithProject } from '../entities/Proposal/types'
 import { CLIFF_PERIOD_IN_DAYS } from '../entities/Proposal/utils'
+import { ProjectQueryResult } from '../models/Project'
 
 import Time from './date/Time'
 
@@ -46,7 +47,43 @@ function getFunding(proposal: ProposalAttributes, transparencyVesting?: Transpar
   }
 }
 
-function getProjectStatus(proposal: ProposalAttributes, vesting?: TransparencyVesting) {
+export function getProjectFunding(project: ProjectQueryResult, vesting: VestingWithLogs | undefined): ProjectFunding {
+  if (project.enacting_tx) {
+    // one time payment
+    return {
+      enacted_at: project.proposal_updated_at,
+      one_time_payment: {
+        enacting_tx: project.enacting_tx,
+      },
+    }
+  }
+
+  if (!vesting) {
+    return {}
+  }
+
+  return {
+    enacted_at: vesting.start_at,
+    vesting,
+  }
+}
+
+export function getProjectStatus(project: ProjectQueryResult, vesting: VestingWithLogs | undefined) {
+  const legacyCondition = !vesting && project.enacted_description
+  if (project.enacting_tx || legacyCondition) {
+    return ProjectStatus.Finished
+  }
+
+  if (!vesting) {
+    return ProjectStatus.Pending
+  }
+
+  const { status } = vesting
+
+  return toGovernanceProjectStatus(status)
+}
+
+function getProposalProjectStatus(proposal: ProposalAttributes, vesting?: TransparencyVesting) {
   const legacyCondition = !vesting && proposal.enacted_description
   if (proposal.enacting_tx || legacyCondition) {
     return ProjectStatus.Finished
@@ -63,7 +100,7 @@ function getProjectStatus(proposal: ProposalAttributes, vesting?: TransparencyVe
 
 export function createProposalProject(proposal: ProposalWithProject, vesting?: TransparencyVesting): ProposalProject {
   const funding = getFunding(proposal, vesting)
-  const status = getProjectStatus(proposal, vesting)
+  const status = getProposalProjectStatus(proposal, vesting)
 
   return {
     id: proposal.id,
