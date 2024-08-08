@@ -6,12 +6,10 @@ import {
 import 'isomorphic-fetch'
 import numeral from 'numeral'
 
-import { Governance } from '../../clients/Governance'
 import { GOVERNANCE_URL } from '../../constants'
-import { getEnumDisplayName } from '../../helpers'
 import { getTile } from '../../utils/Land'
 import Time from '../../utils/date/Time'
-import { SNAPSHOT_SPACE, SNAPSHOT_URL } from '../Snapshot/constants'
+import { SNAPSHOT_URL } from '../Snapshot/constants'
 import { isSameAddress } from '../Snapshot/utils'
 import { UpdateAttributes } from '../Updates/types'
 import { DISCOURSE_API } from '../User/utils'
@@ -19,16 +17,12 @@ import { VotesForProposals } from '../Votes/types'
 
 import { MAX_NAME_SIZE, MIN_NAME_SIZE } from './constants'
 import {
-  CatalystType,
-  PoiType,
   PriorityProposal,
   PriorityProposalType,
   ProposalAttributes,
   ProposalStatus,
   ProposalType,
   SortingOrder,
-  isCatalystType,
-  isPoiType,
   isProposalType,
   isSortingOrder,
 } from './types'
@@ -49,14 +43,6 @@ export function formatBalance(value: number | bigint) {
 
 export function isValidName(name: string) {
   return REGEX_NAME.test(name)
-}
-
-export function isValidDomainName(domain: string) {
-  return new RegExp('^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$').test(domain)
-}
-
-export async function isValidImage(imageUrl: string) {
-  return await Governance.get().checkImage(imageUrl)
 }
 
 export function isAlreadyBannedName(name: string) {
@@ -136,12 +122,6 @@ export function forumUrl(
   return target.toString()
 }
 
-export function forumUserUrl(username: string) {
-  const target = new URL(DISCOURSE_API || '')
-  target.pathname = `/u/${username}`
-  return target.toString()
-}
-
 export function governanceUrl(pathname = '') {
   const target = new URL(GOVERNANCE_URL)
   target.pathname = `/governance${pathname}`
@@ -158,27 +138,8 @@ export function proposalUrl(id: ProposalAttributes['id']) {
   return target.toString()
 }
 
-export const EDIT_DELEGATE_SNAPSHOT_URL = snapshotUrl(`#/delegate/${SNAPSHOT_SPACE}`)
-
-export function userModifiedForm(stateValue?: Record<string, unknown>, initialState?: Record<string, unknown>) {
-  if (!stateValue || !initialState) {
-    return false
-  }
-  const isInitialState = JSON.stringify(stateValue) === JSON.stringify(initialState)
-  return !isInitialState && Object.values(stateValue).some((value) => !!value)
-}
-
-export function isProposalInCliffPeriod(enactedDate: number) {
-  const now = Time.utc()
-  return Time.unix(enactedDate).add(CLIFF_PERIOD_IN_DAYS, 'day').isAfter(now)
-}
-
 export function isGovernanceProcessProposal(type: ProposalType) {
   return type === ProposalType.Poll || type === ProposalType.Draft || type === ProposalType.Governance
-}
-
-export function isBiddingAndTenderingProposal(type: ProposalType) {
-  return type === ProposalType.Pitch || type === ProposalType.Tender || type === ProposalType.Bid
 }
 
 export function isProposalStatus(value: string | null | undefined): boolean {
@@ -209,16 +170,8 @@ export function toProposalStatus<OrElse>(value: string | null | undefined, orEls
   return toCustomType<ProposalStatus, OrElse, typeof value>(value, isProposalStatus, orElse)
 }
 
-export function toCatalystType<OrElse>(value: string | null | undefined, orElse: () => OrElse) {
-  return toCustomType<CatalystType, OrElse, typeof value>(value, isCatalystType, orElse)
-}
-
 export function toProposalType<OrElse>(value: string | null | undefined, orElse: () => OrElse) {
   return toCustomType<ProposalType, OrElse, typeof value>(value, isProposalType, orElse)
-}
-
-export function toPoiType<OrElse>(value: string | null | undefined, orElse: () => OrElse) {
-  return toCustomType<PoiType, OrElse, typeof value>(value, isPoiType, orElse)
 }
 
 export function toSortingOrder<OrElse>(value: string | null | undefined, orElse: () => OrElse) {
@@ -245,10 +198,6 @@ export function getProposalEndDate(duration: number) {
   return Time.utc().set('seconds', 0).add(duration, 'seconds').toDate()
 }
 
-export function getProposalStatusShortName(status: ProposalStatus) {
-  return status === ProposalStatus.OutOfBudget ? 'OOB' : getEnumDisplayName(status)
-}
-
 export function isGrantProposalSubmitEnabled(now: number) {
   const ENABLE_START_DATE = Time.utc('2023-03-01').add(8, 'hour')
   return !Time(now).isBefore(ENABLE_START_DATE)
@@ -270,18 +219,6 @@ export function hasTenderProcessFinished(tenderProposals: ProposalAttributes[]) 
 
 export function hasTenderProcessStarted(tenderProposals?: ProposalAttributes[]) {
   return !!tenderProposals && tenderProposals.length > 0 && Time(tenderProposals[0].start_at).isBefore(Time())
-}
-
-export function getBudget(proposal: ProposalAttributes) {
-  const { type, configuration } = proposal
-  switch (type) {
-    case ProposalType.Grant:
-      return Number(configuration.size)
-    case ProposalType.Bid:
-      return Number(configuration.funding)
-    default:
-      return null
-  }
 }
 
 export function getDisplayedPriorityProposals(
