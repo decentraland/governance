@@ -612,7 +612,7 @@ export class NotificationService {
   static async newVote(proposalId: ProposalAttributes['id'], voterAddress: string) {
     inBackground(async () => {
       const proposal = await ProposalService.getProposal(proposalId)
-      const votes = await SnapshotService.getVotesByProposal(proposal.snapshot_id) // Consider fetching proposal votes directly from db
+      const votes = await SnapshotService.getVotesByProposal(proposal.snapshot_id)
       const addressVote = votes.find((vote) => vote.voter === voterAddress)
 
       const WHALE_THRESHOLD = 250000
@@ -678,7 +678,7 @@ export class NotificationService {
           this.sendDCLNotifications(dclNotifications),
         ])
       } catch (error) {
-        ErrorService.report('Error sending notifications for new comment on proposal', {
+        ErrorService.report('Error sending notifications for whale vote', {
           error: `${error}`,
           category: ErrorCategory.Notifications,
           proposal_id: proposal.id,
@@ -725,7 +725,7 @@ export class NotificationService {
           this.sendDCLNotifications(dclNotifications),
         ])
       } catch (error) {
-        ErrorService.report('Error sending notifications for new comment on proposal', {
+        ErrorService.report('Error sending notifications for delegated vote', {
           error: `${error}`,
           category: ErrorCategory.Notifications,
           proposal_id: proposal.id,
