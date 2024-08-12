@@ -11,7 +11,7 @@ import {
 } from '../entities/Project/types'
 import { ProposalProjectWithUpdate } from '../entities/Proposal/types'
 import PersonnelModel, { PersonnelAttributes } from '../models/Personnel'
-import { Project } from '../models/Project'
+import { ProjectInList } from '../models/Project'
 import ProjectLinkModel, { ProjectLink } from '../models/ProjectLink'
 import ProjectMilestoneModel, { ProjectMilestone } from '../models/ProjectMilestone'
 import CacheService, { TTL_1_HS } from '../services/CacheService'
@@ -22,20 +22,20 @@ import { isValidDate, validateCanEditProject, validateId } from '../utils/valida
 
 export default routes((route) => {
   const withAuth = auth()
-  route.get('/projects', handleJSON(getProjects))
-  route.get('/projects/updated/', handleJSON(getUpdatedProjects))
-  route.post('/projects/personnel/', withAuth, handleAPI(addPersonnel))
-  route.delete('/projects/personnel/:personnel_id', withAuth, handleAPI(deletePersonnel))
-  route.post('/projects/links/', withAuth, handleAPI(addLink))
-  route.delete('/projects/links/:link_id', withAuth, handleAPI(deleteLink))
-  route.post('/projects/milestones/', withAuth, handleAPI(addMilestone))
-  route.delete('/projects/milestones/:milestone_id', withAuth, handleAPI(deleteMilestone))
-  route.get('/projects/:project', handleAPI(getProject))
+  route.get('/projects', handleJSON(getProposalProjects))
+  route.get('/projects/updated', handleJSON(getProjectsList))
   route.get('/projects/pitches-total', handleJSON(getOpenPitchesTotal))
   route.get('/projects/tenders-total', handleJSON(getOpenTendersTotal))
+  route.post('/projects/personnel/', withAuth, handleAPI(addPersonnel))
+  route.post('/projects/links/', withAuth, handleAPI(addLink))
+  route.post('/projects/milestones/', withAuth, handleAPI(addMilestone))
+  route.get('/projects/:project', handleAPI(getProject))
+  route.delete('/projects/links/:link_id', withAuth, handleAPI(deleteLink))
+  route.delete('/projects/personnel/:personnel_id', withAuth, handleAPI(deletePersonnel))
+  route.delete('/projects/milestones/:milestone_id', withAuth, handleAPI(deleteMilestone))
 })
 
-function filterProjectsByDate(
+function filterProposalProjectsByDate(
   projects: ProposalProjectWithUpdate[],
   from?: Date,
   to?: Date
@@ -46,7 +46,14 @@ function filterProjectsByDate(
   })
 }
 
-async function getProjects(req: Request) {
+function filterProjectsByDate(projects: ProjectInList[], from?: Date, to?: Date): ProjectInList[] {
+  return projects.filter((project) => {
+    const createdAt = new Date(project.created_at)
+    return (!from || createdAt >= from) && (!to || createdAt < to)
+  })
+}
+
+async function getProposalProjects(req: Request) {
   const from = isValidDate(req.query.from as string) ? new Date(req.query.from as string) : undefined
   const to = isValidDate(req.query.to as string) ? new Date(req.query.to as string) : undefined
 
@@ -54,21 +61,35 @@ async function getProjects(req: Request) {
     throw new RequestError('Invalid date range', RequestError.BadRequest)
   }
 
-  const cacheKey = `projects`
+  const cacheKey = `proposal-projects`
   const cachedProjects = CacheService.get<ProposalProjectWithUpdate[]>(cacheKey)
   if (cachedProjects) {
-    return { data: filterProjectsByDate(cachedProjects, from, to) }
+    return { data: filterProposalProjectsByDate(cachedProjects, from, to) }
   }
   const projects = await ProjectService.getProposalProjects()
   CacheService.set(cacheKey, projects, TTL_1_HS)
-  return { data: filterProjectsByDate(projects, from, to) }
+  return { data: filterProposalProjectsByDate(projects, from, to) }
 }
 
-async function getUpdatedProjects(): Promise<Project[]> {
+async function getProjectsList(req: Request) {
   try {
-    return await ProjectService.getUpdatedProjects()
+    const from = isValidDate(req.query.from as string) ? new Date(req.query.from as string) : undefined
+    const to = isValidDate(req.query.to as string) ? new Date(req.query.to as string) : undefined
+
+    if (from && to && from > to) {
+      throw new RequestError('Invalid date range', RequestError.BadRequest)
+    }
+
+    const cacheKey = `projects`
+    const cachedProjects = CacheService.get<ProjectInList[]>(cacheKey)
+    if (cachedProjects) {
+      return { data: filterProjectsByDate(cachedProjects, from, to) }
+    }
+    const projects = await ProjectService.getProjects()
+    CacheService.set(cacheKey, projects, TTL_1_HS)
+    return { data: filterProjectsByDate(projects, from, to) }
   } catch (error) {
-    ErrorService.report('Error fetching projets', { error, category: ErrorCategory.Project })
+    ErrorService.report('Error fetching projects', { error, category: ErrorCategory.Project })
     throw new RequestError(`Unable to load projects`, RequestError.InternalServerError)
   }
 }

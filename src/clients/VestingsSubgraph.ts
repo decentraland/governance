@@ -5,6 +5,8 @@ import { VESTINGS_QUERY_ENDPOINT } from '../entities/Snapshot/constants'
 import { SubgraphVesting } from './VestingSubgraphTypes'
 import { trimLastForwardSlash } from './utils'
 
+const OLDEST_INDEXED_BLOCK = 20463272
+
 export class VestingsSubgraph {
   static Cache = new Map<string, VestingsSubgraph>()
   private readonly queryEndpoint: string
@@ -86,10 +88,15 @@ export class VestingsSubgraph {
     return body?.data?.vestings[0] || {}
   }
 
-  async getVestings(addresses: string[]): Promise<SubgraphVesting[]> {
+  async getVestings(addresses?: string[]): Promise<SubgraphVesting[]> {
+    const queryAddresses = addresses && addresses.length > 0
+    const addressesQuery = queryAddresses
+      ? `where: { id_in: $addresses }`
+      : 'block: {number_gte: $blockNumber}, first: 1000'
+    const addressesParam = queryAddresses ? `$addresses: [String]!` : '$blockNumber: Int!'
     const query = `
-    query getVestings($addresses: [String]!) {
-      vestings(where: { id_in: $addresses }){
+    query getVestings(${addressesParam}) {
+      vestings(${addressesQuery}){
         id
         version
         duration
@@ -122,14 +129,13 @@ export class VestingsSubgraph {
       }
     }
     `
-
-    const variables = { addresses }
+    const variables = queryAddresses ? { addresses } : { blockNumber: OLDEST_INDEXED_BLOCK }
     const response = await fetch(this.queryEndpoint, {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         query,
-        variables: variables,
+        variables,
       }),
     })
 

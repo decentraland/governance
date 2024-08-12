@@ -1,5 +1,5 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
-import { SQL, table } from 'decentraland-gatsby/dist/entities/Database/utils'
+import { SQL, conditional, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
@@ -7,7 +7,7 @@ import CoauthorModel from '../entities/Coauthor/model'
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProjectStatus } from '../entities/Grant/types'
 import ProposalModel from '../entities/Proposal/model'
-import { ProjectFunding, ProposalAttributes } from '../entities/Proposal/types'
+import { LatestUpdate, ProjectFunding, ProposalAttributes } from '../entities/Proposal/types'
 import UpdateModel from '../entities/Updates/model'
 import { UpdateAttributes } from '../entities/Updates/types'
 
@@ -35,13 +35,24 @@ export type Project = ProjectAttributes & {
   coauthors: string[] | null
   vesting_addresses: string[]
   funding?: ProjectFunding
-  updates?: UpdateAttributes
 }
 
-export type ProjectQueryResult = Project &
-  Pick<ProposalAttributes, 'enacting_tx' | 'enacted_description'> & {
+export type ProjectQueryResult = Pick<
+  ProjectAttributes,
+  'id' | 'proposal_id' | 'status' | 'title' | 'created_at' | 'updated_at'
+> &
+  Pick<
+    ProposalAttributes,
+    'type' | 'enacting_tx' | 'enacted_description' | 'configuration' | 'user' | 'vesting_addresses'
+  > & {
     proposal_updated_at: string
-  }
+  } & { updates?: UpdateAttributes[] }
+
+export type ProjectInList = Pick<
+  Project,
+  'id' | 'proposal_id' | 'status' | 'title' | 'author' | 'created_at' | 'updated_at' | 'funding'
+> &
+  Pick<ProposalAttributes, 'type' | 'configuration'> & { latest_update?: LatestUpdate }
 
 export default class ProjectModel extends Model<ProjectAttributes> {
   static tableName = 'projects'
@@ -105,33 +116,44 @@ export default class ProjectModel extends Model<ProjectAttributes> {
     return result[0]?.exists || false
   }
 
-  static async getProjectsWithUpdates(): Promise<ProjectQueryResult[]> {
+  static async getProjectsWithUpdates(from?: Date, to?: Date): Promise<ProjectQueryResult[]> {
     const query = SQL`
         SELECT
-            pr.*,
-            p.user as author,
-            p.vesting_addresses as vesting_addresses,
-            COALESCE(json_agg(DISTINCT to_jsonb(pe.*)) FILTER (WHERE pe.id IS NOT NULL), '[]') as personnel,
-            COALESCE(json_agg(DISTINCT to_jsonb(mi.*)) FILTER (WHERE mi.id IS NOT NULL), '[]') as milestones,
-            COALESCE(json_agg(DISTINCT to_jsonb(li.*)) FILTER (WHERE li.id IS NOT NULL), '[]') as links,
-            COALESCE(array_agg(DISTINCT co.address) FILTER (WHERE co.address IS NOT NULL), '{}') AS coauthors,
-            COALESCE(json_agg(DISTINCT to_jsonb(ordered_updates.*)) FILTER 
-                (WHERE ordered_updates.id IS NOT NULL), '[]')  as updates,
+            pr.id,
+            pr.proposal_id,
+            pr.status,
+            pr.title,
+            pr.created_at,
+            pr.updated_at,
+            p.type,
             p.enacting_tx,
             p.enacted_description,
-            p.updated_at as proposal_updated_at
+            p.configuration,
+            p.user,
+            p.vesting_addresses,
+            p.updated_at as proposal_updated_at,
+            COALESCE(json_agg(DISTINCT to_jsonb(ordered_updates.*)) FILTER (WHERE ordered_updates.id IS NOT NULL), '[]') as updates
         FROM ${table(ProjectModel)} pr
                  JOIN ${table(ProposalModel)} p ON pr.proposal_id = p.id
-                 LEFT JOIN ${table(PersonnelModel)} pe ON pr.id = pe.project_id AND pe.deleted = false
-                 LEFT JOIN ${table(ProjectMilestoneModel)} mi ON pr.id = mi.project_id
-                 LEFT JOIN ${table(ProjectLinkModel)} li ON pr.id = li.project_id
-                 LEFT JOIN ${table(CoauthorModel)} co ON pr.proposal_id = co.proposal_id 
-                                           AND co.status = ${CoauthorStatus.APPROVED}
-                 LEFT JOIN (SELECT * FROM ${table(
-                   UpdateModel
-                 )} up ORDER BY up.created_at DESC) ordered_updates ON pr.id = ordered_updates.project_id
-        GROUP BY pr.id, p.user, p.vesting_addresses, p.enacting_tx, p.enacted_description, proposal_updated_at;
-
+                 LEFT JOIN (SELECT * FROM ${table(UpdateModel)} up ORDER BY up.created_at DESC) ordered_updates
+                           ON pr.id = ordered_updates.project_id
+        WHERE 1=1
+            ${conditional(!!from, SQL`AND pr.created_at >= ${from}`)}
+            ${conditional(!!to, SQL`AND pr.created_at <= ${to}`)}
+        GROUP BY
+            pr.id,
+            pr.proposal_id,
+            pr.status,
+            pr.title,
+            pr.created_at,
+            pr.updated_at,
+            p.type,
+            p.enacting_tx,
+            p.enacted_description,
+            p.configuration,
+            p.user,
+            p.vesting_addresses,
+            p.updated_at;
     `
 
     const result = await this.namedQuery<ProjectQueryResult>(`get_projects`, query)

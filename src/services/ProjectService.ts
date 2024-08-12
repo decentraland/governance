@@ -12,18 +12,20 @@ import ProposalModel from '../entities/Proposal/model'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import {
   GrantProposalConfiguration,
+  LatestUpdate,
   ProposalAttributes,
   ProposalProjectWithUpdate,
   ProposalStatus,
   ProposalType,
 } from '../entities/Proposal/types'
 import { DEFAULT_CHOICES, asNumber, getProposalEndDate, isProjectProposal } from '../entities/Proposal/utils'
+import { isSameAddress } from '../entities/Snapshot/utils'
 import UpdateModel from '../entities/Updates/model'
-import { IndexedUpdate, UpdateAttributes } from '../entities/Updates/types'
+import { UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates } from '../entities/Updates/utils'
 import { formatError, inBackground } from '../helpers'
 import PersonnelModel, { PersonnelAttributes } from '../models/Personnel'
-import ProjectModel, { Project, ProjectAttributes, ProjectQueryResult } from '../models/Project'
+import ProjectModel, { Project, ProjectAttributes, ProjectInList, ProjectQueryResult } from '../models/Project'
 import ProjectLinkModel, { ProjectLink } from '../models/ProjectLink'
 import ProjectMilestoneModel, { ProjectMilestone, ProjectMilestoneStatus } from '../models/ProjectMilestone'
 import Time from '../utils/date/Time'
@@ -70,7 +72,7 @@ export class ProjectService {
             const update = await this.getProjectLatestUpdate(project.id)
             const projectWithUpdate: ProposalProjectWithUpdate = {
               ...project,
-              ...this.getUpdateData(update),
+              ...update,
             }
 
             return proposalProjects.push(projectWithUpdate)
@@ -87,57 +89,71 @@ export class ProjectService {
     return proposalProjects
   }
 
-  public static async getUpdatedProjects() {
+  public static async getProjects(): Promise<ProjectInList[]> {
     const projectsQueryResults = await ProjectModel.getProjectsWithUpdates()
-    const latestVestingAddresses = projectsQueryResults.map(
-      (project) => project.vesting_addresses[project.vesting_addresses.length - 1]
-    )
-    const latestVestings = await VestingService.getVestings(latestVestingAddresses)
-    const updatedProjects = this.mergeProjectsWithVestings(projectsQueryResults, latestVestings)
+    const vestings = await VestingService.getAllVestings2()
+    const updatedProjects = this.getProjectInList(projectsQueryResults, vestings)
     return updatedProjects
   }
 
-  private static mergeProjectsWithVestings(
-    projects: ProjectQueryResult[],
+  private static getProjectInList(
+    projectQueryResult: ProjectQueryResult[],
     latestVestings: VestingWithLogs[]
-  ): Project[] {
+  ): ProjectInList[] {
     return (
-      projects.map((project) => {
-        const latestVestingAddress = project.vesting_addresses[project.vesting_addresses.length - 1]
-        const vestingWithLogs = latestVestings.find((vesting) => vesting.address === latestVestingAddress)
-        const funding = getProjectFunding(project, vestingWithLogs)
-        const status = getProjectStatus(project, vestingWithLogs)
+      projectQueryResult.map((result) => {
+        const latestVestingAddress = result.vesting_addresses[result.vesting_addresses.length - 1]
+        const vestingWithLogs = latestVestings.find((vesting) => isSameAddress(vesting.address, latestVestingAddress))
+        const funding = getProjectFunding(result, vestingWithLogs)
+        const status = getProjectStatus(result, vestingWithLogs)
+        const { size, tier, category } = result.configuration
+        const { updates, user, ...rest } = result
         return {
-          ...project,
+          ...rest,
+          author: user,
+          configuration: { size, tier, category: category || result.type },
           status,
           funding,
+          latest_update: this.getProjectLatestUpdate2(updates ?? []),
         }
       }) || []
     )
   }
 
-  private static getUpdateData(update: (UpdateAttributes & { index: number }) | null) {
-    return {
-      update,
-      update_timestamp: update?.completion_date ? Time(update?.completion_date).unix() : 0,
-    }
-  }
-
-  private static async getProjectLatestUpdate(proposalId: string): Promise<IndexedUpdate | null> {
-    const updates = await UpdateModel.find<UpdateAttributes>({ proposal_id: proposalId }, {
-      created_at: 'desc',
-    } as never)
+  private static getProjectLatestUpdate2(updates: UpdateAttributes[]): LatestUpdate {
     if (!updates || updates.length === 0) {
-      return null
+      return { update_timestamp: 0 }
     }
 
     const publicUpdates = getPublicUpdates(updates)
     const currentUpdate = publicUpdates[0]
     if (!currentUpdate) {
-      return null
+      return { update_timestamp: 0 }
+    }
+    const { id, introduction, status, health, completion_date } = currentUpdate
+    return {
+      update: { id, introduction, status, health, completion_date, index: publicUpdates.length },
+      update_timestamp: currentUpdate?.completion_date ? Time(currentUpdate?.completion_date).unix() : 0,
+    }
+  }
+
+  private static async getProjectLatestUpdate(proposalId: string): Promise<LatestUpdate> {
+    const updates = await UpdateModel.find<UpdateAttributes>({ proposal_id: proposalId }, {
+      created_at: 'desc',
+    } as never)
+    if (!updates || updates.length === 0) {
+      return { update_timestamp: 0 }
     }
 
-    return { ...currentUpdate, index: publicUpdates.length }
+    const publicUpdates = getPublicUpdates(updates)
+    const currentUpdate = publicUpdates[0]
+    if (!currentUpdate) {
+      return { update_timestamp: 0 }
+    }
+    return {
+      update: { ...currentUpdate, index: publicUpdates.length },
+      update_timestamp: currentUpdate?.completion_date ? Time(currentUpdate?.completion_date).unix() : 0,
+    }
   }
 
   public static async getGrantInCreation(grantRequest: GrantRequest, user: string) {

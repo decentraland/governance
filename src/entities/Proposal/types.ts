@@ -823,10 +823,12 @@ export type ProposalProject = {
   funding?: ProjectFunding
 }
 
-export type ProposalProjectWithUpdate = ProposalProject & {
+export type LatestUpdate = {
   update?: IndexedUpdate | null
   update_timestamp?: number
 }
+
+export type ProposalProjectWithUpdate = ProposalProject & LatestUpdate
 
 export enum PriorityProposalType {
   ActiveGovernance = 'active_governance',

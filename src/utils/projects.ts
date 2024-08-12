@@ -47,7 +47,7 @@ function getFunding(proposal: ProposalAttributes, transparencyVesting?: Transpar
   }
 }
 
-export function getProjectFunding(project: ProjectQueryResult, vesting: VestingWithLogs | undefined): ProjectFunding {
+export function getProjectFunding(project: ProjectQueryResult, vesting: Vesting | undefined): ProjectFunding {
   if (project.enacting_tx) {
     // one time payment
     return {
@@ -61,14 +61,13 @@ export function getProjectFunding(project: ProjectQueryResult, vesting: VestingW
   if (!vesting) {
     return {}
   }
-
   return {
     enacted_at: vesting.start_at,
     vesting,
   }
 }
 
-export function getProjectStatus(project: ProjectQueryResult, vesting: VestingWithLogs | undefined) {
+export function getProjectStatus(project: ProjectQueryResult, vesting: VestingWithLogs | undefined): ProjectStatus {
   const legacyCondition = !vesting && project.enacted_description
   if (project.enacting_tx || legacyCondition) {
     return ProjectStatus.Finished
@@ -78,9 +77,7 @@ export function getProjectStatus(project: ProjectQueryResult, vesting: VestingWi
     return ProjectStatus.Pending
   }
 
-  const { status } = vesting
-
-  return toGovernanceProjectStatus(status)
+  return toGovernanceProjectStatus(vesting.status)
 }
 
 function getProposalProjectStatus(proposal: ProposalAttributes, vesting?: TransparencyVesting) {
