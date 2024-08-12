@@ -1,4 +1,3 @@
-import { Transparency, TransparencyVesting } from '../clients/Transparency'
 import {
   Vesting,
   VestingLog,
@@ -16,24 +15,11 @@ import { VestingStatus } from '../entities/Grant/types'
 import { ContractVersion, TopicsByVersion } from '../utils/contracts/vesting'
 import { ErrorCategory } from '../utils/errorCategories'
 
-import CacheService, { TTL_1_HS, TTL_24_HS } from './CacheService'
+import CacheService, { TTL_1_HS } from './CacheService'
 import { ErrorService } from './ErrorService'
 
 export class VestingService {
-  static async getAllVestings() {
-    const cacheKey = `vesting-data`
-
-    const cachedData = CacheService.get<TransparencyVesting[]>(cacheKey)
-    if (cachedData) {
-      return cachedData
-    }
-
-    const transparencyVestings = await Transparency.getVestings()
-    CacheService.set(cacheKey, transparencyVestings, TTL_24_HS)
-    return transparencyVestings
-  }
-
-  static async getAllVestings2(): Promise<VestingWithLogs[]> {
+  static async getAllVestings(): Promise<VestingWithLogs[]> {
     const cacheKey = `vesting-subgraph-data`
 
     const cachedData = CacheService.get<VestingWithLogs[]>(cacheKey)

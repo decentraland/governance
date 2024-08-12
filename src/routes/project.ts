@@ -9,7 +9,6 @@ import {
   ProjectLinkInCreationSchema,
   ProjectMilestoneInCreationSchema,
 } from '../entities/Project/types'
-import { ProposalProjectWithUpdate } from '../entities/Proposal/types'
 import PersonnelModel, { PersonnelAttributes } from '../models/Personnel'
 import { ProjectInList } from '../models/Project'
 import ProjectLinkModel, { ProjectLink } from '../models/ProjectLink'
@@ -22,8 +21,7 @@ import { isValidDate, validateCanEditProject, validateId } from '../utils/valida
 
 export default routes((route) => {
   const withAuth = auth()
-  route.get('/projects', handleJSON(getProposalProjects))
-  route.get('/projects/updated', handleJSON(getProjectsList))
+  route.get('/projects', handleJSON(getProjectsList))
   route.get('/projects/pitches-total', handleJSON(getOpenPitchesTotal))
   route.get('/projects/tenders-total', handleJSON(getOpenTendersTotal))
   route.post('/projects/personnel/', withAuth, handleAPI(addPersonnel))
@@ -35,40 +33,11 @@ export default routes((route) => {
   route.delete('/projects/milestones/:milestone_id', withAuth, handleAPI(deleteMilestone))
 })
 
-function filterProposalProjectsByDate(
-  projects: ProposalProjectWithUpdate[],
-  from?: Date,
-  to?: Date
-): ProposalProjectWithUpdate[] {
-  return projects.filter((project) => {
-    const createdAt = new Date(project.created_at)
-    return (!from || createdAt >= from) && (!to || createdAt < to)
-  })
-}
-
 function filterProjectsByDate(projects: ProjectInList[], from?: Date, to?: Date): ProjectInList[] {
   return projects.filter((project) => {
     const createdAt = new Date(project.created_at)
     return (!from || createdAt >= from) && (!to || createdAt < to)
   })
-}
-
-async function getProposalProjects(req: Request) {
-  const from = isValidDate(req.query.from as string) ? new Date(req.query.from as string) : undefined
-  const to = isValidDate(req.query.to as string) ? new Date(req.query.to as string) : undefined
-
-  if (from && to && from > to) {
-    throw new RequestError('Invalid date range', RequestError.BadRequest)
-  }
-
-  const cacheKey = `proposal-projects`
-  const cachedProjects = CacheService.get<ProposalProjectWithUpdate[]>(cacheKey)
-  if (cachedProjects) {
-    return { data: filterProposalProjectsByDate(cachedProjects, from, to) }
-  }
-  const projects = await ProjectService.getProposalProjects()
-  CacheService.set(cacheKey, projects, TTL_1_HS)
-  return { data: filterProposalProjectsByDate(projects, from, to) }
 }
 
 async function getProjectsList(req: Request) {

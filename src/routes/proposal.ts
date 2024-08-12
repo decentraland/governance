@@ -597,13 +597,13 @@ async function getProjectsByUser(req: Request) {
   const coauthoring = await CoauthorModel.findProposals(address, CoauthorStatus.APPROVED)
   const coauthoringProposalIds = new Set(coauthoring.map((coauthoringAttributes) => coauthoringAttributes.proposal_id))
 
-  const projects = await ProjectService.getProposalProjects()
+  //TODO: user projects query
+  const projects = await ProjectService.getProjects()
   const filteredProposalProjectsWithUpdates = projects.filter(
     (project) =>
       project.type === ProposalType.Grant &&
-      (isSameAddress(project.user, address) ||
-        coauthoringProposalIds.has(project.id) ||
-        project.personnel.some((person) => isSameAddress(person.address, address)))
+      (isSameAddress(project.author, address) || coauthoringProposalIds.has(project.id))
+    // || project.personnel.some((person) => isSameAddress(person.address, address))
   )
 
   return {

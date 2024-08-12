@@ -1,12 +1,11 @@
 import crypto from 'crypto'
 
-import { TransparencyVesting } from '../clients/Transparency'
 import { VestingWithLogs } from '../clients/VestingData'
 import UnpublishedBidModel from '../entities/Bid/model'
 import { BidProposalConfiguration } from '../entities/Bid/types'
 import { GrantTier } from '../entities/Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../entities/Grant/constants'
-import { GrantRequest, ProjectStatus, VestingStatus } from '../entities/Grant/types'
+import { GrantRequest, ProjectStatus } from '../entities/Grant/types'
 import { PersonnelInCreation, ProjectLinkInCreation, ProjectMilestoneInCreation } from '../entities/Project/types'
 import ProposalModel from '../entities/Proposal/model'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
@@ -14,13 +13,11 @@ import {
   GrantProposalConfiguration,
   LatestUpdate,
   ProposalAttributes,
-  ProposalProjectWithUpdate,
   ProposalStatus,
   ProposalType,
 } from '../entities/Proposal/types'
 import { DEFAULT_CHOICES, asNumber, getProposalEndDate, isProjectProposal } from '../entities/Proposal/utils'
 import { isSameAddress } from '../entities/Snapshot/utils'
-import UpdateModel from '../entities/Updates/model'
 import { UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates } from '../entities/Updates/utils'
 import { formatError, inBackground } from '../helpers'
@@ -30,26 +27,12 @@ import ProjectLinkModel, { ProjectLink } from '../models/ProjectLink'
 import ProjectMilestoneModel, { ProjectMilestone, ProjectMilestoneStatus } from '../models/ProjectMilestone'
 import Time from '../utils/date/Time'
 import { ErrorCategory } from '../utils/errorCategories'
-import { isProdEnv } from '../utils/governanceEnvs'
-import logger from '../utils/logger'
-import {
-  createProposalProject,
-  getProjectFunding,
-  getProjectStatus,
-  toGovernanceProjectStatus,
-} from '../utils/projects'
+import { getProjectFunding, getProjectStatus, toGovernanceProjectStatus } from '../utils/projects'
 
 import { BudgetService } from './BudgetService'
 import { ErrorService } from './ErrorService'
 import { ProposalInCreation } from './ProposalService'
 import { VestingService } from './VestingService'
-
-function newestVestingFirst(a: TransparencyVesting, b: TransparencyVesting): number {
-  const startDateSort = new Date(b.vesting_start_at).getTime() - new Date(a.vesting_start_at).getTime()
-  const finishDateSort = new Date(b.vesting_finish_at).getTime() - new Date(a.vesting_finish_at).getTime()
-
-  return startDateSort !== 0 ? startDateSort : finishDateSort
-}
 
 function newestVestingFirst2(a: ProjectInList, b: ProjectInList): number {
   const startDateSort =
@@ -63,46 +46,9 @@ function newestVestingFirst2(a: ProjectInList, b: ProjectInList): number {
 }
 
 export class ProjectService {
-  public static async getProposalProjects() {
-    const proposalWithProjects = await ProposalModel.getProjectList()
-    const vestings = await VestingService.getAllVestings()
-    const proposalProjects: ProposalProjectWithUpdate[] = []
-
-    await Promise.all(
-      proposalWithProjects.map(async (proposal) => {
-        try {
-          const proposalVestings = vestings.filter((item) => item.proposal_id === proposal.id).sort(newestVestingFirst)
-          const prioritizedVesting: TransparencyVesting | undefined =
-            proposalVestings.find(
-              (vesting) =>
-                vesting.vesting_status === VestingStatus.InProgress || vesting.vesting_status === VestingStatus.Finished
-            ) || proposalVestings[0]
-          const project = createProposalProject(proposal, prioritizedVesting)
-
-          try {
-            const update = await this.getProjectLatestUpdate(project.id)
-            const projectWithUpdate: ProposalProjectWithUpdate = {
-              ...project,
-              ...update,
-            }
-
-            return proposalProjects.push(projectWithUpdate)
-          } catch (error) {
-            logger.error(`Failed to fetch grant update data from proposal ${project.id}`, formatError(error as Error))
-          }
-        } catch (error) {
-          if (isProdEnv()) {
-            logger.error(`Failed to get data for ${proposal.id}`, formatError(error as Error))
-          }
-        }
-      })
-    )
-    return proposalProjects
-  }
-
   public static async getProjects(): Promise<ProjectInList[]> {
     const projectsQueryResults = await ProjectModel.getProjectsWithUpdates()
-    const vestings = await VestingService.getAllVestings2()
+    const vestings = await VestingService.getAllVestings()
     const updatedProjects = this.getProjectInList(projectsQueryResults, vestings)
     return updatedProjects.sort(newestVestingFirst2)
   }
@@ -150,25 +96,6 @@ export class ProjectService {
     const { id, introduction, status, health, completion_date } = currentUpdate
     return {
       update: { id, introduction, status, health, completion_date, index: publicUpdates.length },
-      update_timestamp: currentUpdate?.completion_date ? Time(currentUpdate?.completion_date).unix() : 0,
-    }
-  }
-
-  private static async getProjectLatestUpdate(proposalId: string): Promise<LatestUpdate> {
-    const updates = await UpdateModel.find<UpdateAttributes>({ proposal_id: proposalId }, {
-      created_at: 'desc',
-    } as never)
-    if (!updates || updates.length === 0) {
-      return { update_timestamp: 0 }
-    }
-
-    const publicUpdates = getPublicUpdates(updates)
-    const currentUpdate = publicUpdates[0]
-    if (!currentUpdate) {
-      return { update_timestamp: 0 }
-    }
-    return {
-      update: { ...currentUpdate, index: publicUpdates.length },
       update_timestamp: currentUpdate?.completion_date ? Time(currentUpdate?.completion_date).unix() : 0,
     }
   }

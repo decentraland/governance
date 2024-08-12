@@ -469,32 +469,6 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return proposals.map(this.parse)
   }
 
-  static async getProjectList(): Promise<ProposalWithProject[]> {
-    const status = [ProposalStatus.Passed, ProposalStatus.Enacted].map((status) => SQL`${status}`)
-    const types = [ProposalType.Bid, ProposalType.Grant].map((type) => SQL`${type}`)
-
-    const proposals = await this.namedQuery(
-      'get_project_list',
-      SQL`
-        SELECT prop.*, 
-               proj.id as project_id,
-               COALESCE(json_agg(DISTINCT to_jsonb(pe.*)) FILTER (WHERE pe.id IS NOT NULL), '[]')  as personnel,
-               COALESCE(array_agg(co.address) FILTER (WHERE co.address IS NOT NULL), '{}') AS coauthors
-        FROM ${table(ProposalModel)} prop
-        LEFT OUTER JOIN ${table(ProjectModel)} proj on prop.id = proj.proposal_id
-        LEFT JOIN ${table(PersonnelModel)} pe ON proj.id = pe.project_id AND pe.deleted = false
-        LEFT JOIN ${table(CoauthorModel)} co ON prop.id = co.proposal_id AND co.status = ${CoauthorStatus.APPROVED}
-        WHERE prop."deleted" = FALSE
-          AND prop."type" IN (${join(types)})
-          AND prop."status" IN (${join(status)})
-        GROUP BY prop.id, proj.id
-        ORDER BY prop."created_at" DESC 
-    `
-    )
-
-    return proposals.map(this.parseProposalWithProject)
-  }
-
   private static parseTimeframe(timeFrame?: string | null) {
     const date = Time.utc()
     switch (timeFrame) {
