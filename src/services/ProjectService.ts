@@ -106,12 +106,16 @@ export class ProjectService {
         const vestingWithLogs = latestVestings.find((vesting) => isSameAddress(vesting.address, latestVestingAddress))
         const funding = getProjectFunding(result, vestingWithLogs)
         const status = getProjectStatus(result, vestingWithLogs)
-        const { size, tier, category } = result.configuration
+        const { tier, category, size, funding: proposal_funding } = result.configuration
         const { updates, user, ...rest } = result
         return {
           ...rest,
           author: user,
-          configuration: { size, tier, category: category || result.type },
+          configuration: {
+            size: size || proposal_funding,
+            tier,
+            category: category || result.type,
+          },
           status,
           funding,
           latest_update: this.getProjectLatestUpdate2(updates ?? []),
