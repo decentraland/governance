@@ -68,15 +68,13 @@ export function getProjectFunding(project: ProjectQueryResult, vesting: Vesting 
 }
 
 export function getProjectStatus(project: ProjectQueryResult, vesting: VestingWithLogs | undefined): ProjectStatus {
-  const legacyCondition = !vesting && project.enacted_description
-  if (project.enacting_tx || legacyCondition) {
+  const legacyCondition = project.enacting_tx || (!vesting && project.enacted_description)
+  if (legacyCondition) {
     return ProjectStatus.Finished
   }
-
   if (!vesting) {
     return ProjectStatus.Pending
   }
-
   return toGovernanceProjectStatus(vesting.status)
 }
 
