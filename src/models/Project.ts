@@ -37,22 +37,21 @@ export type Project = ProjectAttributes & {
   funding?: ProjectFunding
 }
 
-export type ProjectQueryResult = Pick<
-  ProjectAttributes,
-  'id' | 'proposal_id' | 'status' | 'title' | 'created_at' | 'updated_at'
-> &
+export type ProjectQueryResult = Pick<ProjectAttributes, 'id' | 'proposal_id' | 'status' | 'title'> &
   Pick<
     ProposalAttributes,
     'type' | 'enacting_tx' | 'enacted_description' | 'configuration' | 'user' | 'vesting_addresses'
   > & {
-    proposal_updated_at: string
+    proposal_created_at: Date
+    proposal_updated_at: Date
   } & { updates?: UpdateAttributes[] }
 
-export type ProjectInList = Pick<
-  Project,
-  'id' | 'proposal_id' | 'status' | 'title' | 'author' | 'created_at' | 'updated_at' | 'funding'
-> &
-  Pick<ProposalAttributes, 'type' | 'configuration'> & { latest_update?: LatestUpdate }
+export type ProjectInList = Pick<Project, 'id' | 'proposal_id' | 'status' | 'title' | 'author' | 'funding'> &
+  Pick<ProposalAttributes, 'type' | 'configuration'> & {
+    latest_update?: LatestUpdate
+    created_at: number
+    updated_at: number
+  }
 
 export default class ProjectModel extends Model<ProjectAttributes> {
   static tableName = 'projects'
@@ -123,14 +122,13 @@ export default class ProjectModel extends Model<ProjectAttributes> {
             pr.proposal_id,
             pr.status,
             pr.title,
-            pr.created_at,
-            pr.updated_at,
             p.type,
             p.enacting_tx,
             p.enacted_description,
             p.configuration,
             p.user,
             p.vesting_addresses,
+            p.created_at as proposal_created_at,
             p.updated_at as proposal_updated_at,
             COALESCE(json_agg(DISTINCT to_jsonb(ordered_updates.*)) FILTER (WHERE ordered_updates.id IS NOT NULL), '[]') as updates
         FROM ${table(ProjectModel)} pr
@@ -145,15 +143,16 @@ export default class ProjectModel extends Model<ProjectAttributes> {
             pr.proposal_id,
             pr.status,
             pr.title,
-            pr.created_at,
-            pr.updated_at,
+            p.created_at,
+            p.updated_at,
             p.type,
             p.enacting_tx,
             p.enacted_description,
             p.configuration,
             p.user,
             p.vesting_addresses,
-            p.updated_at;
+            p.updated_at
+        ORDER BY p.created_at DESC;
     `
 
     const result = await this.namedQuery<ProjectQueryResult>(`get_projects`, query)

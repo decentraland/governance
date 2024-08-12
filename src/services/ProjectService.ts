@@ -51,6 +51,17 @@ function newestVestingFirst(a: TransparencyVesting, b: TransparencyVesting): num
   return startDateSort !== 0 ? startDateSort : finishDateSort
 }
 
+function newestVestingFirst2(a: ProjectInList, b: ProjectInList): number {
+  const startDateSort =
+    new Date(b.funding?.vesting?.start_at || b.updated_at).getTime() -
+    new Date(a.funding?.vesting?.start_at || a.updated_at).getTime()
+  const finishDateSort =
+    new Date(b.funding?.vesting?.finish_at || b.updated_at).getTime() -
+    new Date(a.funding?.vesting?.finish_at || a.updated_at).getTime()
+
+  return startDateSort !== 0 ? startDateSort : finishDateSort
+}
+
 export class ProjectService {
   public static async getProposalProjects() {
     const proposalWithProjects = await ProposalModel.getProjectList()
@@ -93,7 +104,7 @@ export class ProjectService {
     const projectsQueryResults = await ProjectModel.getProjectsWithUpdates()
     const vestings = await VestingService.getAllVestings2()
     const updatedProjects = this.getProjectInList(projectsQueryResults, vestings)
-    return updatedProjects
+    return updatedProjects.sort(newestVestingFirst2)
   }
 
   private static getProjectInList(
@@ -107,9 +118,11 @@ export class ProjectService {
         const funding = getProjectFunding(result, vestingWithLogs)
         const status = getProjectStatus(result, vestingWithLogs)
         const { tier, category, size, funding: proposal_funding } = result.configuration
-        const { updates, user, ...rest } = result
+        const { updates, user, proposal_updated_at, proposal_created_at, ...rest } = result
         return {
           ...rest,
+          created_at: proposal_created_at.getTime(),
+          updated_at: proposal_updated_at.getTime(),
           author: user,
           configuration: {
             size: size || proposal_funding,

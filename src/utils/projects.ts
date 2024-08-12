@@ -51,7 +51,7 @@ export function getProjectFunding(project: ProjectQueryResult, vesting: Vesting 
   if (project.enacting_tx) {
     // one time payment
     return {
-      enacted_at: project.proposal_updated_at,
+      enacted_at: project.proposal_updated_at.toISOString(),
       one_time_payment: {
         enacting_tx: project.enacting_tx,
       },
