@@ -7,6 +7,7 @@ import ProposalModel from '../entities/Proposal/model'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { proposalUrl } from '../entities/Proposal/utils'
+import { isSameAddress } from '../entities/Snapshot/utils'
 import { getUpdateUrl } from '../entities/Updates/utils'
 import { inBackground } from '../helpers'
 import { ErrorService } from '../services/ErrorService'
@@ -613,10 +614,9 @@ export class NotificationService {
     inBackground(async () => {
       const proposal = await ProposalService.getProposal(proposalId)
       const votes = await SnapshotService.getVotesByProposal(proposal.snapshot_id)
-      const addressVote = votes.find((vote) => vote.voter === voterAddress)
+      const addressVote = votes.find((vote) => isSameAddress(vote.voter, voterAddress))
 
-      const WHALE_THRESHOLD = 250000
-      if ((addressVote?.vp || 0) >= WHALE_THRESHOLD) {
+      if ((addressVote?.vp || 0) >= Number(process.env.WHALE_VOTE_THRESHOLD)) {
         this.whaleVote(proposal)
       }
 
