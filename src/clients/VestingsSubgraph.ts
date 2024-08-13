@@ -74,7 +74,7 @@ export class VestingsSubgraph {
     }
     `
 
-    const variables = { address }
+    const variables = { address: address.toLowerCase() }
     const response = await fetch(this.queryEndpoint, {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
@@ -129,7 +129,9 @@ export class VestingsSubgraph {
       }
     }
     `
-    const variables = queryAddresses ? { addresses } : { blockNumber: OLDEST_INDEXED_BLOCK }
+    const variables = queryAddresses
+      ? { addresses: addresses.map((address) => address.toLowerCase()) }
+      : { blockNumber: OLDEST_INDEXED_BLOCK }
     const response = await fetch(this.queryEndpoint, {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
