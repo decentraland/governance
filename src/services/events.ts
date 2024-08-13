@@ -141,6 +141,7 @@ export class EventsService {
         created_at: new Date(),
       }
       await EventModel.create(votedEvent)
+      NotificationService.newVote(proposal_id, address)
     } catch (error) {
       this.reportEventError(error as Error, EventType.Voted, { address, proposal_id, proposal_title, choice })
     }

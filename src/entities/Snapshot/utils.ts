@@ -12,7 +12,6 @@ import {
 import logger from '../../utils/logger'
 
 import { SNAPSHOT_SPACE } from './constants'
-import { getDelegatedQuery } from './queries'
 
 export type Match = {
   proposal_id: string
@@ -165,16 +164,8 @@ export async function getDelegations(
   }
   const variables = getDelegatesVariables(address, blockNumber)
   try {
-    const delegatedTo = await SnapshotSubgraph.get().getDelegates(
-      'delegatedTo',
-      getDelegatedQuery('delegatedTo', blockNumber),
-      variables
-    )
-    const delegatedFrom = await SnapshotSubgraph.get().getDelegates(
-      'delegatedFrom',
-      getDelegatedQuery('delegatedFrom', blockNumber),
-      variables
-    )
+    const delegatedTo = await SnapshotSubgraph.get().getDelegates('delegatedTo', variables)
+    const delegatedFrom = await SnapshotSubgraph.get().getDelegates('delegatedFrom', variables)
 
     if (!delegatedTo && !delegatedFrom) {
       return EMPTY_DELEGATION
