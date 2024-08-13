@@ -1,7 +1,7 @@
 import { Vesting, VestingWithLogs } from '../clients/VestingData'
 import { ProjectStatus, VestingStatus } from '../entities/Grant/types'
 import { ProjectFunding } from '../entities/Proposal/types'
-import { ProjectQueryResult } from '../models/Project'
+import { ProjectQueryResult, UserProject } from '../models/Project'
 
 export function getHighBudgetVpThreshold(budget: number) {
   return 1200000 + budget * 40
@@ -22,7 +22,10 @@ export function toGovernanceProjectStatus(status: VestingStatus) {
   }
 }
 
-export function getProjectFunding(project: ProjectQueryResult, vesting: Vesting | undefined): ProjectFunding {
+export function getProjectFunding(
+  project: ProjectQueryResult | UserProject,
+  vesting: Vesting | undefined
+): ProjectFunding {
   if (project.enacting_tx) {
     // one time payment
     return {
@@ -42,7 +45,10 @@ export function getProjectFunding(project: ProjectQueryResult, vesting: Vesting 
   }
 }
 
-export function getProjectStatus(project: ProjectQueryResult, vesting: VestingWithLogs | undefined): ProjectStatus {
+export function getProjectStatus(
+  project: ProjectQueryResult | UserProject,
+  vesting: VestingWithLogs | undefined
+): ProjectStatus {
   const legacyCondition = project.enacting_tx || (!vesting && project.enacted_description)
   if (legacyCondition) {
     return ProjectStatus.Finished

@@ -10,14 +10,14 @@ import {
   ProjectMilestoneInCreationSchema,
 } from '../entities/Project/types'
 import PersonnelModel, { PersonnelAttributes } from '../models/Personnel'
-import { ProjectInList } from '../models/Project'
+import { ProjectInList, UserProject } from '../models/Project'
 import ProjectLinkModel, { ProjectLink } from '../models/ProjectLink'
 import ProjectMilestoneModel, { ProjectMilestone } from '../models/ProjectMilestone'
 import CacheService, { TTL_1_HS } from '../services/CacheService'
 import { ErrorService } from '../services/ErrorService'
 import { ProjectService } from '../services/ProjectService'
 import { ErrorCategory } from '../utils/errorCategories'
-import { isValidDate, validateCanEditProject, validateId } from '../utils/validations'
+import { isValidDate, validateAddress, validateCanEditProject, validateId } from '../utils/validations'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -27,6 +27,7 @@ export default routes((route) => {
   route.post('/projects/personnel/', withAuth, handleAPI(addPersonnel))
   route.post('/projects/links/', withAuth, handleAPI(addLink))
   route.post('/projects/milestones/', withAuth, handleAPI(addMilestone))
+  route.get('/projects/user/:address', handleAPI(getProjectsByUser))
   route.get('/projects/:project', handleAPI(getProject))
   route.delete('/projects/links/:link_id', withAuth, handleAPI(deleteLink))
   route.delete('/projects/personnel/:personnel_id', withAuth, handleAPI(deletePersonnel))
@@ -69,6 +70,16 @@ async function getProject(req: Request<{ project: string }>) {
     return await ProjectService.getUpdatedProject(id)
   } catch (e) {
     throw new RequestError(`Project "${id}" not found`, RequestError.NotFound)
+  }
+}
+
+async function getProjectsByUser(req: Request): Promise<{ data: UserProject[]; total: number }> {
+  const address = validateAddress(req.params.address)
+
+  const projects = await ProjectService.getUserProjects(address)
+  return {
+    data: projects,
+    total: projects.length,
   }
 }
 

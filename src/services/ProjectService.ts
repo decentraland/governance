@@ -22,7 +22,13 @@ import { UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates } from '../entities/Updates/utils'
 import { formatError, inBackground } from '../helpers'
 import PersonnelModel, { PersonnelAttributes } from '../models/Personnel'
-import ProjectModel, { Project, ProjectAttributes, ProjectInList, ProjectQueryResult } from '../models/Project'
+import ProjectModel, {
+  Project,
+  ProjectAttributes,
+  ProjectInList,
+  ProjectQueryResult,
+  UserProject,
+} from '../models/Project'
 import ProjectLinkModel, { ProjectLink } from '../models/ProjectLink'
 import ProjectMilestoneModel, { ProjectMilestone, ProjectMilestoneStatus } from '../models/ProjectMilestone'
 import Time from '../utils/date/Time'
@@ -34,7 +40,7 @@ import { ErrorService } from './ErrorService'
 import { ProposalInCreation } from './ProposalService'
 import { VestingService } from './VestingService'
 
-function newestVestingFirst2(a: ProjectInList, b: ProjectInList): number {
+function newestVestingFirst(a: ProjectInList, b: ProjectInList): number {
   const startDateSort =
     new Date(b.funding?.vesting?.start_at || b.updated_at).getTime() -
     new Date(a.funding?.vesting?.start_at || a.updated_at).getTime()
@@ -50,40 +56,75 @@ export class ProjectService {
     const projectsQueryResults = await ProjectModel.getProjectsWithUpdates()
     const vestings = await VestingService.getAllVestings()
     const updatedProjects = this.getProjectInList(projectsQueryResults, vestings)
-    return updatedProjects.sort(newestVestingFirst2)
+    return updatedProjects.sort(newestVestingFirst)
   }
 
   private static getProjectInList(
-    projectQueryResult: ProjectQueryResult[],
+    projectQueryResults: ProjectQueryResult[],
     latestVestings: VestingWithLogs[]
   ): ProjectInList[] {
     return (
-      projectQueryResult.map((result) => {
-        const latestVestingAddress = result.vesting_addresses[result.vesting_addresses.length - 1]
-        const vestingWithLogs = latestVestings.find((vesting) => isSameAddress(vesting.address, latestVestingAddress))
-        const funding = getProjectFunding(result, vestingWithLogs)
-        const status = getProjectStatus(result, vestingWithLogs)
-        const { tier, category, size, funding: proposal_funding } = result.configuration
-        const { updates, user, proposal_updated_at, proposal_created_at, ...rest } = result
+      projectQueryResults.map((project) => {
+        const { funding, status } = this.getUpdatedFundingAndStatus(project, latestVestings)
+        const { tier, category, size, funding: proposal_funding } = project.configuration
+        const { updates, proposal_updated_at, proposal_created_at, ...rest } = project
         return {
           ...rest,
           created_at: proposal_created_at.getTime(),
           updated_at: proposal_updated_at.getTime(),
-          author: user,
           configuration: {
             size: size || proposal_funding,
             tier,
-            category: category || result.type,
+            category: category || project.type,
           },
           status,
           funding,
-          latest_update: this.getProjectLatestUpdate2(updates ?? []),
+          latest_update: this.getProjectLatestUpdate(updates ?? []),
         }
       }) || []
     )
   }
 
-  private static getProjectLatestUpdate2(updates: UpdateAttributes[]): LatestUpdate {
+  private static getUpdatedFundingAndStatus(
+    project: ProjectQueryResult | UserProject,
+    latestVestings: VestingWithLogs[]
+  ) {
+    const latestVestingAddress = project.vesting_addresses[project.vesting_addresses.length - 1]
+    const vestingWithLogs = latestVestings.find((vesting) => isSameAddress(vesting.address, latestVestingAddress))
+    const funding = getProjectFunding(project, vestingWithLogs)
+    const status = getProjectStatus(project, vestingWithLogs)
+    return { funding, status }
+  }
+
+  public static async getUserProjects(address: string): Promise<UserProject[]> {
+    const userProjects = await ProjectModel.getUserProjects(address)
+    const vestings = await VestingService.getAllVestings()
+    return this.getUserProjectsWithFunding(userProjects, vestings)
+  }
+
+  private static getUserProjectsWithFunding(
+    userProjects: UserProject[],
+    latestVestings: VestingWithLogs[]
+  ): UserProject[] {
+    return (
+      userProjects.map((project) => {
+        const { funding, status } = this.getUpdatedFundingAndStatus(project, latestVestings)
+        const { tier, category, size, funding: proposal_funding } = project.configuration
+        return {
+          ...project,
+          configuration: {
+            size: size || proposal_funding,
+            tier,
+            category: category || project.type,
+          },
+          status,
+          funding,
+        }
+      }) || []
+    )
+  }
+
+  private static getProjectLatestUpdate(updates: UpdateAttributes[]): LatestUpdate {
     if (!updates || updates.length === 0) {
       return { update_timestamp: 0 }
     }
