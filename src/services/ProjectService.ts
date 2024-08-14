@@ -40,7 +40,7 @@ import { ErrorService } from './ErrorService'
 import { ProposalInCreation } from './ProposalService'
 import { VestingService } from './VestingService'
 
-function newestVestingFirst(a: ProjectInList, b: ProjectInList): number {
+function sortByNewestVestingFirst(a: ProjectInList, b: ProjectInList): number {
   const startDateSort =
     new Date(b.funding?.vesting?.start_at || b.updated_at).getTime() -
     new Date(a.funding?.vesting?.start_at || a.updated_at).getTime()
@@ -56,7 +56,7 @@ export class ProjectService {
     const projectsQueryResults = await ProjectModel.getProjectsWithUpdates()
     const vestings = await VestingService.getAllVestings()
     const updatedProjects = this.getProjectInList(projectsQueryResults, vestings)
-    return updatedProjects.sort(newestVestingFirst)
+    return updatedProjects.sort(sortByNewestVestingFirst)
   }
 
   private static getProjectInList(
