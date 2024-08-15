@@ -68,4 +68,8 @@ export const Notifications = {
     title: (proposal: ProposalAttributes) => `Your delegate voted on the proposal "${proposal.title}"`,
     body: 'See if their vote is aligned with your vision. You can always override their decision by voting on your own.',
   },
+  CliffEnded: {
+    title: (title: string) => `Funds are ready to vest for your project "${title}"`,
+    body: 'The cliff period to vest funds has ended. Check the contract status now!',
+  },
 }

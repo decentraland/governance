@@ -9,6 +9,7 @@ import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
 import { ProjectService } from '../../services/ProjectService'
 import { ProposalService } from '../../services/ProposalService'
+import { VestingService } from '../../services/VestingService'
 import { DiscordService } from '../../services/discord'
 import { EventsService } from '../../services/events'
 import { NotificationService } from '../../services/notification'
@@ -250,4 +251,12 @@ async function updateProposalsAndBudgets(proposalsWithOutcome: ProposalWithOutco
   } finally {
     client.release()
   }
+}
+
+//TODO: add this to cron
+async function notifyCliffEndingSoon() {
+  const vestings = await VestingService.getVestingsWithEndingCliffs()
+  const vestingAddresses = vestings.map((vesting) => vesting.address)
+  const proposalContributors = await ProposalService.findContributorsForProposalsByVestings(vestingAddresses)
+  NotificationService.cliffEnded(proposalContributors)
 }

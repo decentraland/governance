@@ -1,9 +1,42 @@
 import fetch from 'isomorphic-fetch'
 
 import { VESTINGS_QUERY_ENDPOINT } from '../entities/Snapshot/constants'
+import Time from '../utils/date/Time'
 
 import { SubgraphVesting } from './VestingSubgraphTypes'
 import { trimLastForwardSlash } from './utils'
+
+const OLDEST_INDEXED_BLOCK = 20463272
+
+const VESTING_FIELDS = `id
+        version
+        duration
+        cliff
+        beneficiary
+        revoked
+        revocable
+        released
+        start
+        periodDuration
+        vestedPerPeriod
+        paused
+        pausable
+        stop
+        linear
+        token
+        owner
+        total
+        revokeTimestamp
+        releaseLogs{
+          id
+          timestamp
+          amount
+        }
+        pausedLogs{
+          id
+          timestamp
+          eventType
+        }`
 
 export class VestingsSubgraph {
   static Cache = new Map<string, VestingsSubgraph>()
@@ -39,40 +72,11 @@ export class VestingsSubgraph {
     const query = `
     query getVesting($address: String!) {
       vestings(where: { id: $address }){
-        id
-        version
-        duration
-        cliff
-        beneficiary
-        revoked
-        revocable
-        released
-        start
-        periodDuration
-        vestedPerPeriod
-        paused
-        pausable
-        stop
-        linear
-        token
-        owner
-        total
-        revokeTimestamp
-        releaseLogs{
-          id
-          timestamp
-          amount
-        }
-        pausedLogs{
-          id
-          timestamp
-          eventType
-        }
+        ${VESTING_FIELDS}
       }
     }
     `
-
-    const variables = { address }
+    const variables = { address: address.toLowerCase() }
     const response = await fetch(this.queryEndpoint, {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
@@ -86,50 +90,54 @@ export class VestingsSubgraph {
     return body?.data?.vestings[0] || {}
   }
 
-  async getVestings(addresses: string[]): Promise<SubgraphVesting[]> {
+  async getVestings(addresses?: string[]): Promise<SubgraphVesting[]> {
+    const queryAddresses = addresses && addresses.length > 0
+    const addressesQuery = queryAddresses
+      ? `where: { id_in: $addresses }`
+      : 'block: {number_gte: $blockNumber}, first: 1000'
+    const addressesParam = queryAddresses ? `$addresses: [String]!` : '$blockNumber: Int!'
+
     const query = `
-    query getVestings($addresses: [String]!) {
-      vestings(where: { id_in: $addresses }){
-        id
-        version
-        duration
-        cliff
-        beneficiary
-        revoked
-        revocable
-        released
-        start
-        periodDuration
-        vestedPerPeriod
-        paused
-        pausable
-        stop
-        linear
-        token
-        owner
-        total
-        revokeTimestamp
-        releaseLogs{
-          id
-          timestamp
-          amount
-        }
-        pausedLogs{
-          id
-          timestamp
-          eventType
-        }
+    query getVestings(${addressesParam}) {
+      vestings(${addressesQuery}){
+        ${VESTING_FIELDS}
       }
     }
     `
-
-    const variables = { addresses }
+    const variables = queryAddresses
+      ? { addresses: addresses.map((address) => address.toLowerCase()) }
+      : { blockNumber: OLDEST_INDEXED_BLOCK }
     const response = await fetch(this.queryEndpoint, {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         query,
-        variables: variables,
+        variables,
+      }),
+    })
+
+    const body = await response.json()
+    return body?.data?.vestings || []
+  }
+
+  async getVestingsWithEndingCliffs(): Promise<SubgraphVesting[]> {
+    const currentTimestamp = Time().getTime()
+    const inADayTimestamp = Time().add(1, 'day').getTime()
+    const query = `
+    query getVestings($currentTimestamp: Int!, $inADayTimestamp: Int!) {
+      vestings(where: { cliff_gt: $currentTimestamp, cliff_lt: $inADayTimestamp }) {
+        ${VESTING_FIELDS}
+      }
+    }
+    `
+
+    const variables = { currentTimestamp, inADayTimestamp }
+    const response = await fetch(this.queryEndpoint, {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query,
+        variables,
       }),
     })
 

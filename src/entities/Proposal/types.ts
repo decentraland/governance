@@ -848,3 +848,10 @@ export type PriorityProposal = Pick<
 }
 
 export type LinkedProposal = Pick<ProposalAttributes, 'id' | 'finish_at' | 'start_at' | 'created_at'>
+
+export type ProposalContributors = Pick<
+  ProposalAttributes,
+  'id' | 'title' | 'user' | 'vesting_addresses' | 'configuration'
+> & {
+  coAuthors?: string[]
+}

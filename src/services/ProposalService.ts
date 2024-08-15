@@ -335,4 +335,8 @@ export class ProposalService {
     }
     return update
   }
+
+  static async findContributorsForProposalsByVestings(vestingAddresses: string[]) {
+    return await ProposalModel.findContributorsForProposalsByVestings(vestingAddresses)
+  }
 }
