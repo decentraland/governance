@@ -1,4 +1,3 @@
-import { VestingStatus } from '../entities/Grant/types'
 import { TokenInWallet } from '../entities/Transparency/types'
 import { ErrorCategory } from '../utils/errorCategories'
 
@@ -53,20 +52,6 @@ export type TransparencyBudget = {
   category_percentages: Record<string, number>
 }
 
-export type TransparencyVesting = {
-  proposal_id: string
-  token: string
-  vesting_address: string
-  vesting_released: number
-  vesting_releasable: number
-  vesting_start_at: string
-  vesting_finish_at: string
-  vesting_contract_token_balance: number
-  vesting_total_amount: number
-  vesting_status: VestingStatus
-  duration_in_months: number
-}
-
 const EMPTY_API: TransparencyData = {
   balances: [],
   income: {
@@ -105,16 +90,6 @@ export class Transparency {
       return response
     } catch (error) {
       ErrorClient.report('Failed to fetch transparency budgets data', { error, category: ErrorCategory.Transparency })
-      return []
-    }
-  }
-
-  static async getVestings() {
-    try {
-      const response = (await (await fetch(`${API_URL}/vestings.json`)).json()) as TransparencyVesting[]
-      return response
-    } catch (error) {
-      ErrorClient.report('Failed to fetch transparency vestings data', { error, category: ErrorCategory.Transparency })
       return []
     }
   }

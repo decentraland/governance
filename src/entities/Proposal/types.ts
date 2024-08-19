@@ -803,27 +803,7 @@ export type ProjectFunding = {
   vesting?: Vesting
 }
 
-export type ProposalProject = {
-  id: string
-  project_id?: string | null
-  status: ProjectStatus
-  title: string
-  user: string
-  coAuthors?: string[]
-  personnel: PersonnelAttributes[]
-  size: number
-  type: ProposalType
-  about: string
-  created_at: number
-  updated_at: number
-  configuration: {
-    category: ProposalGrantCategory
-    tier: string
-  }
-  funding?: ProjectFunding
-}
-
-export type ProposalProjectWithUpdate = ProposalProject & {
+export type LatestUpdate = {
   update?: IndexedUpdate | null
   update_timestamp?: number
 }

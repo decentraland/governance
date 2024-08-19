@@ -246,6 +246,8 @@ export function getTokenSymbolFromAddress(tokenAddress: string) {
       return 'USDC'
     case '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2':
       return 'WETH'
+    default:
+      console.log(`Unable to parse token contract address: ${tokenAddress}`)
+      return 'ETH'
   }
-  throw new Error(`Unable to parse token contract address: ${tokenAddress}`)
 }
