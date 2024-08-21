@@ -23,9 +23,9 @@ import logger from '../utils/logger'
 import { NotificationType, Notifications, getCaipAddress, getPushNotificationsEnv } from '../utils/notifications'
 import { areValidAddresses } from '../utils/validations'
 
+import { ErrorService } from './ErrorService'
 import { ProposalService } from './ProposalService'
 import { SnapshotService } from './SnapshotService'
-import { ErrorService } from './ErrorService'
 import { CoauthorService } from './coauthor'
 import { DiscordService } from './discord'
 import { VoteService } from './vote'
@@ -753,15 +753,9 @@ export class NotificationService {
     inBackground(async () => {
       proposalsWithContributors.map(async (proposalWithContributors) => {
         try {
-          const { user, coAuthors, configuration, id: proposal_id } = proposalWithContributors
-          const addressesSet = new Set<string>()
-          if (user) addressesSet.add(user)
-          if (coAuthors) {
-            coAuthors.forEach((coAuthor) => addressesSet.add(coAuthor))
-          }
-          if (configuration.beneficiary) addressesSet.add(configuration.beneficiary)
+          const { id: proposal_id } = proposalWithContributors
+          const addresses = getUniqueContributors(proposalWithContributors)
 
-          const addresses = Array.from(addressesSet)
           const title = Notifications.CliffEnded.title(proposalWithContributors.title)
           const body = Notifications.CliffEnded.body
           const latestVestingAddress =
@@ -776,7 +770,7 @@ export class NotificationService {
           })
 
           const dclNotifications = addresses.map((address) => ({
-            type: 'governance_voting_ended_voter',
+            type: 'governance_cliff_ended',
             address,
             eventKey: proposal_id,
             metadata: {
@@ -809,4 +803,15 @@ export class NotificationService {
       })
     })
   }
+}
+
+function getUniqueContributors(proposalContributors: ProposalContributors) {
+  const { user, coAuthors, configuration } = proposalContributors
+  const addressesSet = new Set<string>()
+  addressesSet.add(user)
+  if (coAuthors) {
+    coAuthors.forEach((coAuthor) => addressesSet.add(coAuthor))
+  }
+  if (configuration.beneficiary) addressesSet.add(configuration.beneficiary)
+  return Array.from(addressesSet)
 }

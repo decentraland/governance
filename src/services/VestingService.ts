@@ -38,9 +38,8 @@ export class VestingService {
     return vestingsData.map(this.parseSubgraphVesting).sort(this.sortVestingsByDate)
   }
 
-  //TODO: should revoked/paused contracts be filtered from this?
-  static async getVestingsWithEndingCliffs(): Promise<VestingWithLogs[]> {
-    const vestingsData = await VestingsSubgraph.get().getVestingsWithEndingCliffs()
+  static async getVestingsWithRecentlyEndedCliffs(): Promise<VestingWithLogs[]> {
+    const vestingsData = await VestingsSubgraph.get().getVestingsWithRecentlyEndingCliffs()
     return vestingsData.map(this.parseSubgraphVesting)
   }
 

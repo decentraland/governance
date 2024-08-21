@@ -16,7 +16,7 @@ import swaggerUi from 'swagger-ui-express'
 import YAML from 'yaml'
 
 import { updateGovernanceBudgets } from './entities/Budget/jobs'
-import { activateProposals, finishProposal, publishBids } from './entities/Proposal/jobs'
+import { activateProposals, finishProposal, notifyCliffEndingSoon, publishBids } from './entities/Proposal/jobs'
 import { giveAndRevokeLandOwnerBadges, giveTopVoterBadges, runQueuedAirdropJobs } from './jobs/BadgeAirdrop'
 import { pingSnapshot } from './jobs/PingSnapshot'
 import { withLock } from './jobs/jobLocks'
@@ -50,6 +50,7 @@ jobs.cron('@eachMinute', activateProposals)
 jobs.cron('@each5Minute', withLock('publishBids', publishBids))
 jobs.cron('@each10Second', pingSnapshot)
 jobs.cron('30 0 * * *', updateGovernanceBudgets) // Runs at 00:30 daily
+jobs.cron('35 0 * * *', notifyCliffEndingSoon) // Runs at 00:35 daily
 jobs.cron('30 1 * * *', runQueuedAirdropJobs) // Runs at 01:30 daily
 jobs.cron('30 2 * * *', giveAndRevokeLandOwnerBadges) // Runs at 02:30 daily
 jobs.cron('30 3 1 * *', giveTopVoterBadges) // Runs at 03:30 on the first day of the month

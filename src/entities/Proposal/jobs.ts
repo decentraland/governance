@@ -253,10 +253,9 @@ async function updateProposalsAndBudgets(proposalsWithOutcome: ProposalWithOutco
   }
 }
 
-//TODO: add this to cron
-async function notifyCliffEndingSoon() {
-  const vestings = await VestingService.getVestingsWithEndingCliffs()
+export async function notifyCliffEndingSoon() {
+  const vestings = await VestingService.getVestingsWithRecentlyEndedCliffs()
   const vestingAddresses = vestings.map((vesting) => vesting.address)
   const proposalContributors = await ProposalService.findContributorsForProposalsByVestings(vestingAddresses)
-  NotificationService.cliffEnded(proposalContributors)
+  await NotificationService.cliffEnded(proposalContributors)
 }
