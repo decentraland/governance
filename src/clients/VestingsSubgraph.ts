@@ -96,7 +96,6 @@ export class VestingsSubgraph {
       ? `where: { id_in: $addresses }`
       : 'block: {number_gte: $blockNumber}, first: 1000'
     const addressesParam = queryAddresses ? `$addresses: [String]!` : '$blockNumber: Int!'
-
     const query = `
     query getVestings(${addressesParam}) {
       vestings(${addressesQuery}){

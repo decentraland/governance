@@ -10,8 +10,6 @@ import isUUID from 'validator/lib/isUUID'
 
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 import { BidRequest, BidRequestSchema } from '../entities/Bid/types'
-import CoauthorModel from '../entities/Coauthor/model'
-import { CoauthorStatus } from '../entities/Coauthor/types'
 import { hasOpenSlots } from '../entities/Committee/utils'
 import { GrantRequest, getGrantRequestSchema, toGrantSubtype } from '../entities/Grant/types'
 import {
@@ -75,7 +73,6 @@ import {
   toSortingOrder,
 } from '../entities/Proposal/utils'
 import { SNAPSHOT_DURATION } from '../entities/Snapshot/constants'
-import { isSameAddress } from '../entities/Snapshot/utils'
 import BidService from '../services/BidService'
 import { DiscourseService } from '../services/DiscourseService'
 import { ErrorService } from '../services/ErrorService'
@@ -105,7 +102,6 @@ export default routes((route) => {
   route.post('/proposals/bid', withAuth, handleAPI(createProposalBid))
   route.post('/proposals/hiring', withAuth, handleAPI(createProposalHiring))
   route.get('/proposals/priority/:address?', handleJSON(getPriorityProposals))
-  route.get('/proposals/grants/:address', handleAPI(getProjectsByUser)) //TODO: move to project routes
   route.get('/proposals/:proposal', handleAPI(getProposalWithProject))
   route.patch('/proposals/:proposal', withAuth, handleAPI(updateProposalStatus))
   route.delete('/proposals/:proposal', withAuth, handleAPI(removeProposal))
@@ -588,27 +584,6 @@ async function validateSubmissionThreshold(user: string, submissionThreshold?: s
   const vpDistribution = await SnapshotGraphql.get().getVpDistribution(user)
   if (vpDistribution.total < requiredVp) {
     throw new RequestError(`User does not meet the required "${requiredVp}" VP`, RequestError.Forbidden)
-  }
-}
-
-async function getProjectsByUser(req: Request) {
-  const address = validateAddress(req.params.address)
-
-  const coauthoring = await CoauthorModel.findProposals(address, CoauthorStatus.APPROVED)
-  const coauthoringProposalIds = new Set(coauthoring.map((coauthoringAttributes) => coauthoringAttributes.proposal_id))
-
-  const projects = await ProjectService.getProposalProjects()
-  const filteredProposalProjectsWithUpdates = projects.filter(
-    (project) =>
-      project.type === ProposalType.Grant &&
-      (isSameAddress(project.user, address) ||
-        coauthoringProposalIds.has(project.id) ||
-        project.personnel.some((person) => isSameAddress(person.address, address)))
-  )
-
-  return {
-    data: filteredProposalProjectsWithUpdates,
-    total: filteredProposalProjectsWithUpdates.length,
   }
 }
 

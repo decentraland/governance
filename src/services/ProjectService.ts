@@ -1,109 +1,144 @@
 import crypto from 'crypto'
 
-import { TransparencyVesting } from '../clients/Transparency'
+import { VestingWithLogs } from '../clients/VestingData'
 import UnpublishedBidModel from '../entities/Bid/model'
 import { BidProposalConfiguration } from '../entities/Bid/types'
 import { GrantTier } from '../entities/Grant/GrantTier'
 import { GRANT_PROPOSAL_DURATION_IN_SECONDS } from '../entities/Grant/constants'
-import { GrantRequest, ProjectStatus, VestingStatus } from '../entities/Grant/types'
+import { GrantRequest, ProjectStatus } from '../entities/Grant/types'
 import { PersonnelInCreation, ProjectLinkInCreation, ProjectMilestoneInCreation } from '../entities/Project/types'
 import ProposalModel from '../entities/Proposal/model'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import {
   GrantProposalConfiguration,
+  LatestUpdate,
   ProposalAttributes,
-  ProposalProjectWithUpdate,
   ProposalStatus,
   ProposalType,
 } from '../entities/Proposal/types'
 import { DEFAULT_CHOICES, asNumber, getProposalEndDate, isProjectProposal } from '../entities/Proposal/utils'
-import UpdateModel from '../entities/Updates/model'
-import { IndexedUpdate, UpdateAttributes } from '../entities/Updates/types'
+import { isSameAddress } from '../entities/Snapshot/utils'
+import { UpdateAttributes } from '../entities/Updates/types'
 import { getPublicUpdates } from '../entities/Updates/utils'
 import { formatError, inBackground } from '../helpers'
 import PersonnelModel, { PersonnelAttributes } from '../models/Personnel'
-import ProjectModel, { Project, ProjectAttributes } from '../models/Project'
+import ProjectModel, {
+  Project,
+  ProjectAttributes,
+  ProjectInList,
+  ProjectQueryResult,
+  UserProject,
+} from '../models/Project'
 import ProjectLinkModel, { ProjectLink } from '../models/ProjectLink'
 import ProjectMilestoneModel, { ProjectMilestone, ProjectMilestoneStatus } from '../models/ProjectMilestone'
 import Time from '../utils/date/Time'
 import { ErrorCategory } from '../utils/errorCategories'
-import { isProdEnv } from '../utils/governanceEnvs'
-import logger from '../utils/logger'
-import { createProposalProject, toGovernanceProjectStatus } from '../utils/projects'
+import { getProjectFunding, getProjectStatus, toGovernanceProjectStatus } from '../utils/projects'
 
 import { BudgetService } from './BudgetService'
 import { ErrorService } from './ErrorService'
 import { ProposalInCreation } from './ProposalService'
 import { VestingService } from './VestingService'
 
-function newestVestingFirst(a: TransparencyVesting, b: TransparencyVesting): number {
-  const startDateSort = new Date(b.vesting_start_at).getTime() - new Date(a.vesting_start_at).getTime()
-  const finishDateSort = new Date(b.vesting_finish_at).getTime() - new Date(a.vesting_finish_at).getTime()
+function sortByNewestVestingFirst(a: ProjectInList, b: ProjectInList): number {
+  const startDateSort =
+    new Date(b.funding?.vesting?.start_at || b.updated_at).getTime() -
+    new Date(a.funding?.vesting?.start_at || a.updated_at).getTime()
+  const finishDateSort =
+    new Date(b.funding?.vesting?.finish_at || b.updated_at).getTime() -
+    new Date(a.funding?.vesting?.finish_at || a.updated_at).getTime()
 
   return startDateSort !== 0 ? startDateSort : finishDateSort
 }
 
 export class ProjectService {
-  public static async getProposalProjects() {
-    const proposalWithProjects = await ProposalModel.getProjectList()
+  public static async getProjects(): Promise<ProjectInList[]> {
+    const projectsQueryResults = await ProjectModel.getProjectsWithUpdates()
     const vestings = await VestingService.getAllVestings()
-    const projects: ProposalProjectWithUpdate[] = []
+    const updatedProjects = this.getProjectInList(projectsQueryResults, vestings)
+    return updatedProjects.sort(sortByNewestVestingFirst)
+  }
 
-    await Promise.all(
-      proposalWithProjects.map(async (proposal) => {
-        try {
-          const proposalVestings = vestings.filter((item) => item.proposal_id === proposal.id).sort(newestVestingFirst)
-          const prioritizedVesting: TransparencyVesting | undefined =
-            proposalVestings.find(
-              (vesting) =>
-                vesting.vesting_status === VestingStatus.InProgress || vesting.vesting_status === VestingStatus.Finished
-            ) || proposalVestings[0] //TODO: replace transparency vestings for vestings subgraph
-          const project = createProposalProject(proposal, prioritizedVesting)
-
-          try {
-            const update = await this.getProjectLatestUpdate(project.id)
-            const projectWithUpdate: ProposalProjectWithUpdate = {
-              ...project,
-              ...this.getUpdateData(update),
-            }
-
-            return projects.push(projectWithUpdate)
-          } catch (error) {
-            logger.error(`Failed to fetch grant update data from proposal ${project.id}`, formatError(error as Error))
-          }
-        } catch (error) {
-          if (isProdEnv()) {
-            logger.error(`Failed to get data for ${proposal.id}`, formatError(error as Error))
-          }
+  private static getProjectInList(
+    projectQueryResults: ProjectQueryResult[],
+    latestVestings: VestingWithLogs[]
+  ): ProjectInList[] {
+    return (
+      projectQueryResults.map((project) => {
+        const { funding, status } = this.getUpdatedFundingAndStatus(project, latestVestings)
+        const { tier, category, size, funding: proposal_funding } = project.configuration
+        const { updates, proposal_updated_at, proposal_created_at, ...rest } = project
+        return {
+          ...rest,
+          created_at: proposal_created_at.getTime(),
+          updated_at: proposal_updated_at.getTime(),
+          configuration: {
+            size: size || proposal_funding,
+            tier,
+            category: category || project.type,
+          },
+          status,
+          funding,
+          latest_update: this.getProjectLatestUpdate(updates ?? []),
         }
-      })
+      }) || []
     )
-
-    return projects
   }
 
-  private static getUpdateData(update: (UpdateAttributes & { index: number }) | null) {
-    return {
-      update,
-      update_timestamp: update?.completion_date ? Time(update?.completion_date).unix() : 0,
-    }
+  private static getUpdatedFundingAndStatus(
+    project: ProjectQueryResult | UserProject,
+    latestVestings: VestingWithLogs[]
+  ) {
+    const latestVestingAddress = project.vesting_addresses[project.vesting_addresses.length - 1]
+    const vestingWithLogs = latestVestings.find((vesting) => isSameAddress(vesting.address, latestVestingAddress))
+    const funding = getProjectFunding(project, vestingWithLogs)
+    const status = getProjectStatus(project, vestingWithLogs)
+    return { funding, status }
   }
 
-  private static async getProjectLatestUpdate(proposalId: string): Promise<IndexedUpdate | null> {
-    const updates = await UpdateModel.find<UpdateAttributes>({ proposal_id: proposalId }, {
-      created_at: 'desc',
-    } as never)
+  public static async getUserProjects(address: string): Promise<UserProject[]> {
+    const userProjects = await ProjectModel.getUserProjects(address)
+    const vestings = await VestingService.getAllVestings()
+    return this.getUserProjectsWithFunding(userProjects, vestings)
+  }
+
+  private static getUserProjectsWithFunding(
+    userProjects: UserProject[],
+    latestVestings: VestingWithLogs[]
+  ): UserProject[] {
+    return (
+      userProjects.map((project) => {
+        const { funding, status } = this.getUpdatedFundingAndStatus(project, latestVestings)
+        const { tier, category, size, funding: proposal_funding } = project.configuration
+        return {
+          ...project,
+          configuration: {
+            size: size || proposal_funding,
+            tier,
+            category: category || project.type,
+          },
+          status,
+          funding,
+        }
+      }) || []
+    )
+  }
+
+  private static getProjectLatestUpdate(updates: UpdateAttributes[]): LatestUpdate {
     if (!updates || updates.length === 0) {
-      return null
+      return { update_timestamp: 0 }
     }
 
     const publicUpdates = getPublicUpdates(updates)
     const currentUpdate = publicUpdates[0]
     if (!currentUpdate) {
-      return null
+      return { update_timestamp: 0 }
     }
-
-    return { ...currentUpdate, index: publicUpdates.length }
+    const { id, introduction, status, health, completion_date } = currentUpdate
+    return {
+      update: { id, introduction, status, health, completion_date, index: publicUpdates.length },
+      update_timestamp: currentUpdate?.completion_date ? Time(currentUpdate?.completion_date).unix() : 0,
+    }
   }
 
   public static async getGrantInCreation(grantRequest: GrantRequest, user: string) {

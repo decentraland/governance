@@ -9,55 +9,59 @@ import {
   ProjectLinkInCreationSchema,
   ProjectMilestoneInCreationSchema,
 } from '../entities/Project/types'
-import { ProposalProjectWithUpdate } from '../entities/Proposal/types'
 import PersonnelModel, { PersonnelAttributes } from '../models/Personnel'
+import { ProjectInList, UserProject } from '../models/Project'
 import ProjectLinkModel, { ProjectLink } from '../models/ProjectLink'
 import ProjectMilestoneModel, { ProjectMilestone } from '../models/ProjectMilestone'
 import CacheService, { TTL_1_HS } from '../services/CacheService'
+import { ErrorService } from '../services/ErrorService'
 import { ProjectService } from '../services/ProjectService'
-import { isValidDate, validateCanEditProject, validateId } from '../utils/validations'
+import { ErrorCategory } from '../utils/errorCategories'
+import { isValidDate, validateAddress, validateCanEditProject, validateId } from '../utils/validations'
 
 export default routes((route) => {
   const withAuth = auth()
-  route.get('/projects', handleJSON(getProjects))
-  route.post('/projects/personnel/', withAuth, handleAPI(addPersonnel))
-  route.delete('/projects/personnel/:personnel_id', withAuth, handleAPI(deletePersonnel))
-  route.post('/projects/links/', withAuth, handleAPI(addLink))
-  route.delete('/projects/links/:link_id', withAuth, handleAPI(deleteLink))
-  route.post('/projects/milestones/', withAuth, handleAPI(addMilestone))
-  route.delete('/projects/milestones/:milestone_id', withAuth, handleAPI(deleteMilestone))
-  route.get('/projects/:project', handleAPI(getProject))
+  route.get('/projects', handleJSON(getProjectsList))
   route.get('/projects/pitches-total', handleJSON(getOpenPitchesTotal))
   route.get('/projects/tenders-total', handleJSON(getOpenTendersTotal))
+  route.post('/projects/personnel/', withAuth, handleAPI(addPersonnel))
+  route.post('/projects/links/', withAuth, handleAPI(addLink))
+  route.post('/projects/milestones/', withAuth, handleAPI(addMilestone))
+  route.get('/projects/user/:address', handleAPI(getProjectsByUser))
+  route.get('/projects/:project', handleAPI(getProject))
+  route.delete('/projects/links/:link_id', withAuth, handleAPI(deleteLink))
+  route.delete('/projects/personnel/:personnel_id', withAuth, handleAPI(deletePersonnel))
+  route.delete('/projects/milestones/:milestone_id', withAuth, handleAPI(deleteMilestone))
 })
 
-function filterProjectsByDate(
-  projects: ProposalProjectWithUpdate[],
-  from?: Date,
-  to?: Date
-): ProposalProjectWithUpdate[] {
+function filterProjectsByDate(projects: ProjectInList[], from?: Date, to?: Date): ProjectInList[] {
   return projects.filter((project) => {
     const createdAt = new Date(project.created_at)
     return (!from || createdAt >= from) && (!to || createdAt < to)
   })
 }
 
-async function getProjects(req: Request) {
-  const from = isValidDate(req.query.from as string) ? new Date(req.query.from as string) : undefined
-  const to = isValidDate(req.query.to as string) ? new Date(req.query.to as string) : undefined
+async function getProjectsList(req: Request) {
+  try {
+    const from = isValidDate(req.query.from as string) ? new Date(req.query.from as string) : undefined
+    const to = isValidDate(req.query.to as string) ? new Date(req.query.to as string) : undefined
 
-  if (from && to && from > to) {
-    throw new RequestError('Invalid date range', RequestError.BadRequest)
-  }
+    if (from && to && from > to) {
+      throw new RequestError('Invalid date range', RequestError.BadRequest)
+    }
 
-  const cacheKey = `projects`
-  const cachedProjects = CacheService.get<ProposalProjectWithUpdate[]>(cacheKey)
-  if (cachedProjects) {
-    return { data: filterProjectsByDate(cachedProjects, from, to) }
+    const cacheKey = `projects`
+    const cachedProjects = CacheService.get<ProjectInList[]>(cacheKey)
+    if (cachedProjects) {
+      return { data: filterProjectsByDate(cachedProjects, from, to) }
+    }
+    const projects = await ProjectService.getProjects()
+    CacheService.set(cacheKey, projects, TTL_1_HS)
+    return { data: filterProjectsByDate(projects, from, to) }
+  } catch (error) {
+    ErrorService.report('Error fetching projects', { error, category: ErrorCategory.Project })
+    throw new RequestError(`Unable to load projects`, RequestError.InternalServerError)
   }
-  const projects = await ProjectService.getProposalProjects()
-  CacheService.set(cacheKey, projects, TTL_1_HS)
-  return { data: filterProjectsByDate(projects, from, to) }
 }
 
 async function getProject(req: Request<{ project: string }>) {
@@ -66,6 +70,16 @@ async function getProject(req: Request<{ project: string }>) {
     return await ProjectService.getUpdatedProject(id)
   } catch (e) {
     throw new RequestError(`Project "${id}" not found`, RequestError.NotFound)
+  }
+}
+
+async function getProjectsByUser(req: Request): Promise<{ data: UserProject[]; total: number }> {
+  const address = validateAddress(req.params.address)
+
+  const projects = await ProjectService.getUserProjects(address)
+  return {
+    data: projects,
+    total: projects.length,
   }
 }
 

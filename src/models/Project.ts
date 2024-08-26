@@ -1,5 +1,5 @@
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
-import { SQL, table } from 'decentraland-gatsby/dist/entities/Database/utils'
+import { SQL, conditional, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 import isUUID from 'validator/lib/isUUID'
 
@@ -7,7 +7,9 @@ import CoauthorModel from '../entities/Coauthor/model'
 import { CoauthorStatus } from '../entities/Coauthor/types'
 import { ProjectStatus } from '../entities/Grant/types'
 import ProposalModel from '../entities/Proposal/model'
-import { ProjectFunding } from '../entities/Proposal/types'
+import { LatestUpdate, ProjectFunding, ProposalAttributes, ProposalType } from '../entities/Proposal/types'
+import UpdateModel from '../entities/Updates/model'
+import { UpdateAttributes } from '../entities/Updates/types'
 
 import PersonnelModel, { PersonnelAttributes } from './Personnel'
 import ProjectLinkModel, { ProjectLink } from './ProjectLink'
@@ -34,6 +36,30 @@ export type Project = ProjectAttributes & {
   vesting_addresses: string[]
   funding?: ProjectFunding
 }
+
+export type ProjectInList = Pick<Project, 'id' | 'proposal_id' | 'status' | 'title' | 'author' | 'funding'> &
+  Pick<ProposalAttributes, 'type' | 'configuration'> & {
+    latest_update?: LatestUpdate
+    created_at: number
+    updated_at: number
+  }
+
+type ProposalDataForProject = Pick<
+  ProposalAttributes,
+  'enacting_tx' | 'enacted_description' | 'vesting_addresses' | 'type' | 'configuration'
+> & {
+  proposal_created_at: Date
+  proposal_updated_at: Date
+}
+
+export type ProjectQueryResult = Pick<Project, 'id' | 'proposal_id' | 'status' | 'title' | 'author'> &
+  ProposalDataForProject & { updates?: UpdateAttributes[] }
+
+export type UserProject = Pick<
+  Project,
+  'id' | 'proposal_id' | 'status' | 'title' | 'author' | 'personnel' | 'coauthors' | 'funding'
+> &
+  ProposalDataForProject
 
 export default class ProjectModel extends Model<ProjectAttributes> {
   static tableName = 'projects'
@@ -95,5 +121,97 @@ export default class ProjectModel extends Model<ProjectAttributes> {
 
     const result = await this.namedQuery<{ exists: boolean }>(`is_author_or_coauthor`, query)
     return result[0]?.exists || false
+  }
+
+  static async getProjectsWithUpdates(from?: Date, to?: Date): Promise<ProjectQueryResult[]> {
+    const query = SQL`
+        SELECT
+            pr.id,
+            pr.proposal_id,
+            pr.status,
+            pr.title,
+            p.type,
+            p.enacting_tx,
+            p.enacted_description,
+            p.configuration,
+            p.user as author,
+            p.vesting_addresses,
+            p.created_at as proposal_created_at,
+            p.updated_at as proposal_updated_at,
+            COALESCE(json_agg(DISTINCT to_jsonb(ordered_updates.*)) FILTER (WHERE ordered_updates.id IS NOT NULL), '[]') as updates
+        FROM ${table(ProjectModel)} pr
+                 JOIN ${table(ProposalModel)} p ON pr.proposal_id = p.id
+                 LEFT JOIN (SELECT * FROM ${table(UpdateModel)} up ORDER BY up.created_at DESC) ordered_updates
+                           ON pr.id = ordered_updates.project_id
+        WHERE 1=1
+            ${conditional(!!from, SQL`AND pr.created_at >= ${from}`)}
+            ${conditional(!!to, SQL`AND pr.created_at <= ${to}`)}
+        GROUP BY
+            pr.id,
+            pr.proposal_id,
+            pr.status,
+            pr.title,
+            p.created_at,
+            p.updated_at,
+            p.type,
+            p.enacting_tx,
+            p.enacted_description,
+            p.configuration,
+            p.user,
+            p.vesting_addresses,
+            p.updated_at
+        ORDER BY p.created_at DESC;
+    `
+
+    const result = await this.namedQuery<ProjectQueryResult>(`get_projects`, query)
+    return result || []
+  }
+
+  static async getUserProjects(userAddress: string): Promise<UserProject[]> {
+    const query = SQL`
+        SELECT
+            pr.id,
+            pr.proposal_id,
+            pr.status,
+            pr.title,
+            COALESCE(json_agg(DISTINCT to_jsonb(pe.*)) FILTER (WHERE pe.id IS NOT NULL), '[]')  as personnel,
+            COALESCE(array_agg(co.address) FILTER (WHERE co.address IS NOT NULL), '{}') AS coauthors,
+            p.enacting_tx,
+            p.enacted_description,
+            p.vesting_addresses,
+            p.type,
+            p.configuration,
+            p.user as author,
+            p.created_at as proposal_created_at,
+            p.updated_at as proposal_updated_at
+        FROM ${table(ProjectModel)} pr
+            JOIN ${table(ProposalModel)} p ON pr.proposal_id = p.id 
+            LEFT JOIN ${table(PersonnelModel)} pe ON pr.id = pe.project_id AND pe.deleted = false
+            LEFT JOIN ${table(CoauthorModel)} co ON pr.proposal_id = co.proposal_id AND co.status = ${
+      CoauthorStatus.APPROVED
+    }
+        WHERE 
+            p.type = ${ProposalType.Grant} AND
+            (lower(p.user) = lower(${userAddress}) OR
+            lower(co.address) = lower(${userAddress}) OR
+            lower(pe.address) = lower(${userAddress}))
+        GROUP BY
+            pr.id,
+            pr.proposal_id,
+            pr.status,
+            pr.title,
+            p.enacting_tx,
+            p.enacted_description,
+            p.vesting_addresses,
+            p.type,
+            p.configuration,
+            p.user,
+            p.created_at,
+            p.updated_at
+        ORDER BY p.created_at DESC;
+    `
+
+    const result = await this.namedQuery<UserProject>(`get_user_projects`, query)
+    return result || []
   }
 }

@@ -34,7 +34,7 @@ export type UpdateAttributes = Partial<UpdateGeneralSection> &
     discourse_topic_slug?: string
   }
 
-export type IndexedUpdate = UpdateAttributes & {
+export type IndexedUpdate = Partial<UpdateAttributes> & {
   index: number
 }
 
