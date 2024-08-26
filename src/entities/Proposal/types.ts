@@ -833,5 +833,5 @@ export type ProposalContributors = Pick<
   ProposalAttributes,
   'id' | 'title' | 'user' | 'vesting_addresses' | 'configuration'
 > & {
-  coAuthors?: string[]
+  coauthors?: string[]
 }

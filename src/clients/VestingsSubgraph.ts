@@ -119,19 +119,19 @@ export class VestingsSubgraph {
     return body?.data?.vestings || []
   }
 
-  async getVestingsWithRecentlyEndingCliffs(): Promise<SubgraphVesting[]> {
+  async getVestingsWithRecentlyEndedCliffs(): Promise<SubgraphVesting[]> {
     const currentTimestamp = Time().getTime()
-    const inADayTimestamp = Time().subtract(1, 'day').getTime()
+    const aDayAgoTimestamp = Time().subtract(1, 'day').getTime()
     const query = `
-    query getVestings($currentTimestamp: Int!, $inADayTimestamp: Int!) {
-      vestings(where: { cliff_gt: $currentTimestamp, cliff_lt: $inADayTimestamp,
+    query getVestings($currentTimestamp: Int!, $aDayAgoTimestamp: Int!) {
+      vestings(where: { cliff_gt: $aDayAgoTimestamp, cliff_lt: $currentTimestamp,
        revoked:false, paused:false}) {
         ${VESTING_FIELDS}
       }
     }
     `
 
-    const variables = { currentTimestamp, inADayTimestamp }
+    const variables = { currentTimestamp, aDayAgoTimestamp }
     const response = await fetch(this.queryEndpoint, {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },

@@ -806,11 +806,11 @@ export class NotificationService {
 }
 
 function getUniqueContributors(proposalContributors: ProposalContributors) {
-  const { user, coAuthors, configuration } = proposalContributors
+  const { user, coauthors, configuration } = proposalContributors
   const addressesSet = new Set<string>()
   addressesSet.add(user)
-  if (coAuthors) {
-    coAuthors.forEach((coAuthor) => addressesSet.add(coAuthor))
+  if (!!coauthors && coauthors.length > 0) {
+    coauthors.forEach((coAuthor) => addressesSet.add(coAuthor))
   }
   if (configuration.beneficiary) addressesSet.add(configuration.beneficiary)
   return Array.from(addressesSet)

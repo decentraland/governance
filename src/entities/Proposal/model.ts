@@ -647,15 +647,15 @@ export default class ProposalModel extends Model<ProposalAttributes> {
             p.user,
             p.configuration
         FROM ${table(ProposalModel)} p
-                 LEFT JOIN ${table(CoauthorModel)} co ON p.id = co.proposal_id AND co.status = ${
-      CoauthorStatus.APPROVED
-    }
+        LEFT JOIN ${table(CoauthorModel)} co ON p.id = co.proposal_id 
+                                  AND co.status = ${CoauthorStatus.APPROVED}
         WHERE
-            p.type = ${ProposalType.Grant} AND
+            p.type IN (${ProposalType.Grant}, ${ProposalType.Bid})
+          AND
             EXISTS (
                 SELECT 1
                 FROM unnest(p.vesting_addresses) AS vesting_address
-                WHERE LOWER(vesting_address) = ANY(ARRAY(SELECT LOWER(unnest(${vestingAddresses}))))
+                WHERE LOWER(vesting_address) = ANY(${vestingAddresses})
             )
         GROUP BY
             p.id,

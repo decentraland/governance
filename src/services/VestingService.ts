@@ -41,7 +41,7 @@ export class VestingService {
   }
 
   static async getVestingsWithRecentlyEndedCliffs(): Promise<VestingWithLogs[]> {
-    const vestingsData = await VestingsSubgraph.get().getVestingsWithRecentlyEndingCliffs()
+    const vestingsData = await VestingsSubgraph.get().getVestingsWithRecentlyEndedCliffs()
     return vestingsData.map(this.parseSubgraphVesting)
   }
 
@@ -147,7 +147,7 @@ export class VestingService {
     const token = getTokenSymbolFromAddress(vestingData.token)
 
     return {
-      address: vestingData.id,
+      address: vestingData.id.toLowerCase(),
       cliff: toISOString(cliffEnd),
       vestedPerPeriod: vestingData.vestedPerPeriod.map(Number),
       ...getVestingDates(contractStart, contractEndsTimestamp),
