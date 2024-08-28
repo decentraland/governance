@@ -30,6 +30,7 @@ import {
   PriorityProposal,
   PriorityProposalType,
   ProposalAttributes,
+  ProposalContributors,
   ProposalListFilter,
   ProposalStatus,
   ProposalType,
@@ -634,5 +635,36 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     ;`
 
     return await this.namedQuery('get_priority_proposals', query)
+  }
+
+  static async findContributorsForProposalsByVestings(vestingAddresses: string[]): Promise<ProposalContributors[]> {
+    const query = SQL`
+        SELECT
+            p.id,
+            p.title,
+            COALESCE(array_agg(co.address) FILTER (WHERE co.address IS NOT NULL), '{}') AS coauthors,
+            p.vesting_addresses,
+            p.user,
+            p.configuration
+        FROM ${table(ProposalModel)} p
+        LEFT JOIN ${table(CoauthorModel)} co ON p.id = co.proposal_id 
+                                  AND co.status = ${CoauthorStatus.APPROVED}
+        WHERE
+            p.type IN (${ProposalType.Grant}, ${ProposalType.Bid})
+          AND
+            EXISTS (
+                SELECT 1
+                FROM unnest(p.vesting_addresses) AS vesting_address
+                WHERE LOWER(vesting_address) = ANY(${vestingAddresses})
+            )
+        GROUP BY
+            p.id,
+            p.title,
+            p.vesting_addresses,
+            p.user
+        ORDER BY p.created_at DESC;
+    `
+
+    return await this.namedQuery<ProposalContributors>('get_authors_and_coauthors_for_vestings', query)
   }
 }

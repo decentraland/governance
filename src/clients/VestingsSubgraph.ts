@@ -1,11 +1,42 @@
 import fetch from 'isomorphic-fetch'
 
 import { VESTINGS_QUERY_ENDPOINT } from '../entities/Snapshot/constants'
+import Time from '../utils/date/Time'
 
 import { SubgraphVesting } from './VestingSubgraphTypes'
 import { trimLastForwardSlash } from './utils'
 
 const OLDEST_INDEXED_BLOCK = 20463272
+
+const VESTING_FIELDS = `id
+        version
+        duration
+        cliff
+        beneficiary
+        revoked
+        revocable
+        released
+        start
+        periodDuration
+        vestedPerPeriod
+        paused
+        pausable
+        stop
+        linear
+        token
+        owner
+        total
+        revokeTimestamp
+        releaseLogs{
+          id
+          timestamp
+          amount
+        }
+        pausedLogs{
+          id
+          timestamp
+          eventType
+        }`
 
 export class VestingsSubgraph {
   static Cache = new Map<string, VestingsSubgraph>()
@@ -41,39 +72,10 @@ export class VestingsSubgraph {
     const query = `
     query getVesting($address: String!) {
       vestings(where: { id: $address }){
-        id
-        version
-        duration
-        cliff
-        beneficiary
-        revoked
-        revocable
-        released
-        start
-        periodDuration
-        vestedPerPeriod
-        paused
-        pausable
-        stop
-        linear
-        token
-        owner
-        total
-        revokeTimestamp
-        releaseLogs{
-          id
-          timestamp
-          amount
-        }
-        pausedLogs{
-          id
-          timestamp
-          eventType
-        }
+        ${VESTING_FIELDS}
       }
     }
     `
-
     const variables = { address: address.toLowerCase() }
     const response = await fetch(this.queryEndpoint, {
       method: 'post',
@@ -97,41 +99,39 @@ export class VestingsSubgraph {
     const query = `
     query getVestings(${addressesParam}) {
       vestings(${addressesQuery}){
-        id
-        version
-        duration
-        cliff
-        beneficiary
-        revoked
-        revocable
-        released
-        start
-        periodDuration
-        vestedPerPeriod
-        paused
-        pausable
-        stop
-        linear
-        token
-        owner
-        total
-        revokeTimestamp
-        releaseLogs{
-          id
-          timestamp
-          amount
-        }
-        pausedLogs{
-          id
-          timestamp
-          eventType
-        }
+        ${VESTING_FIELDS}
       }
     }
     `
     const variables = queryAddresses
       ? { addresses: addresses.map((address) => address.toLowerCase()) }
       : { blockNumber: OLDEST_INDEXED_BLOCK }
+    const response = await fetch(this.queryEndpoint, {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query,
+        variables,
+      }),
+    })
+
+    const body = await response.json()
+    return body?.data?.vestings || []
+  }
+
+  async getVestingsWithRecentlyEndedCliffs(): Promise<SubgraphVesting[]> {
+    const currentTimestamp = Time().getTime()
+    const aDayAgoTimestamp = Time().subtract(1, 'day').getTime()
+    const query = `
+    query getVestings($currentTimestamp: Int!, $aDayAgoTimestamp: Int!) {
+      vestings(where: { cliff_gt: $aDayAgoTimestamp, cliff_lt: $currentTimestamp,
+       revoked:false, paused:false}) {
+        ${VESTING_FIELDS}
+      }
+    }
+    `
+
+    const variables = { currentTimestamp, aDayAgoTimestamp }
     const response = await fetch(this.queryEndpoint, {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },

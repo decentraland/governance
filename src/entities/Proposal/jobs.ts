@@ -9,6 +9,7 @@ import { DiscourseService } from '../../services/DiscourseService'
 import { ErrorService } from '../../services/ErrorService'
 import { ProjectService } from '../../services/ProjectService'
 import { ProposalService } from '../../services/ProposalService'
+import { VestingService } from '../../services/VestingService'
 import { DiscordService } from '../../services/discord'
 import { EventsService } from '../../services/events'
 import { NotificationService } from '../../services/notification'
@@ -249,5 +250,16 @@ async function updateProposalsAndBudgets(proposalsWithOutcome: ProposalWithOutco
     throw err
   } finally {
     client.release()
+  }
+}
+
+export async function notifyCliffEndingSoon() {
+  try {
+    const vestings = await VestingService.getVestingsWithRecentlyEndedCliffs()
+    const vestingAddresses = vestings.map((vesting) => vesting.address)
+    const proposalContributors = await ProposalService.findContributorsForProposalsByVestings(vestingAddresses)
+    await NotificationService.cliffEnded(proposalContributors)
+  } catch (error) {
+    ErrorService.report('Error notifying cliff ending soon', { error, category: ErrorCategory.Job })
   }
 }

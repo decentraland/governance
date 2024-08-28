@@ -19,6 +19,10 @@ function getBooleanStringVar(variableName: string, defaultValue: boolean) {
   return defaultValue
 }
 
+export function getVestingContractUrl(address: string) {
+  return VESTING_DASHBOARD_URL.replace('%23', '#').concat(address.toLowerCase())
+}
+
 export const GOVERNANCE_URL = process.env.GATSBY_GOVERNANCE_URL || 'https://decentraland.zone/governance'
 export const GOVERNANCE_API = process.env.GATSBY_GOVERNANCE_API || ''
 export const FORUM_URL = process.env.GATSBY_DISCOURSE_API || ''
@@ -54,3 +58,5 @@ export const DCL_META_IMAGE_URL = 'https://decentraland.org/images/decentraland.
 export const JOIN_DISCORD_URL = 'https://dcl.gg/discord'
 export const BLOCKNATIVE_API_KEY = process.env.BLOCKNATIVE_API_KEY || ''
 export const REASON_THRESHOLD = Number(process.env.GATSBY_REASON_THRESHOLD)
+
+export const VESTING_DASHBOARD_URL = 'https://decentraland.org/vesting/%23/'

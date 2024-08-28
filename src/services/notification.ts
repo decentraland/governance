@@ -2,15 +2,19 @@ import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 import { ethers } from 'ethers'
 
 import { SnapshotSubgraph } from '../clients/SnapshotSubgraph'
-import { DCL_NOTIFICATIONS_SERVICE_ENABLED, NOTIFICATIONS_SERVICE_ENABLED, PUSH_CHANNEL_ID } from '../constants'
+import {
+  DCL_NOTIFICATIONS_SERVICE_ENABLED,
+  NOTIFICATIONS_SERVICE_ENABLED,
+  PUSH_CHANNEL_ID,
+  getVestingContractUrl,
+} from '../constants'
 import ProposalModel from '../entities/Proposal/model'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
-import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
+import { ProposalAttributes, ProposalContributors, ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { proposalUrl } from '../entities/Proposal/utils'
 import { isSameAddress } from '../entities/Snapshot/utils'
 import { getUpdateUrl } from '../entities/Updates/utils'
 import { inBackground } from '../helpers'
-import { ErrorService } from '../services/ErrorService'
 import { ProjectUpdateCommentedEvent, ProposalCommentedEvent } from '../shared/types/events'
 import { DclNotification, Notification, NotificationCustomType, Recipient } from '../shared/types/notifications'
 import { ErrorCategory } from '../utils/errorCategories'
@@ -19,6 +23,7 @@ import logger from '../utils/logger'
 import { NotificationType, Notifications, getCaipAddress, getPushNotificationsEnv } from '../utils/notifications'
 import { areValidAddresses } from '../utils/validations'
 
+import { ErrorService } from './ErrorService'
 import { ProposalService } from './ProposalService'
 import { SnapshotService } from './SnapshotService'
 import { CoauthorService } from './coauthor'
@@ -341,11 +346,12 @@ export class NotificationService {
 
         const title = Notifications.TenderPassed.title(proposal)
         const body = Notifications.TenderPassed.body
+        const url = proposalUrl(proposal.id)
 
         DiscordService.sendDirectMessages(addresses, {
           title,
           action: body,
-          url: proposalUrl(proposal.id),
+          url,
           fields: [],
         })
 
@@ -356,9 +362,9 @@ export class NotificationService {
           metadata: {
             proposalId: proposal.id,
             proposalTitle: proposal.title,
-            title: Notifications.TenderPassed.title(proposal),
-            description: Notifications.TenderPassed.body,
-            link: proposalUrl(proposal.id),
+            title: title,
+            description: body,
+            link: url,
           },
           timestamp: Date.now(),
         }))
@@ -368,7 +374,7 @@ export class NotificationService {
             title,
             body,
             recipient: addresses,
-            url: proposalUrl(proposal.id),
+            url,
             customType: NotificationCustomType.TenderPassed,
           }),
           this.sendDCLNotifications(dclNotifications),
@@ -388,11 +394,12 @@ export class NotificationService {
       try {
         const title = Notifications.ProposalAuthoredFinished.title(proposal)
         const body = Notifications.ProposalAuthoredFinished.body
+        const url = proposalUrl(proposal.id)
 
         DiscordService.sendDirectMessages(addresses, {
           title,
           action: body,
-          url: proposalUrl(proposal.id),
+          url: url,
           fields: [],
         })
 
@@ -403,9 +410,9 @@ export class NotificationService {
           metadata: {
             proposalId: proposal.id,
             proposalTitle: proposal.title,
-            title: Notifications.ProposalAuthoredFinished.title(proposal),
-            description: Notifications.ProposalAuthoredFinished.body,
-            link: proposalUrl(proposal.id),
+            title: title,
+            description: body,
+            link: url,
           },
           timestamp: Date.now(),
         }))
@@ -415,7 +422,7 @@ export class NotificationService {
             title,
             body,
             recipient: addresses,
-            url: proposalUrl(proposal.id),
+            url,
             customType: NotificationCustomType.Proposal,
           }),
           this.sendDCLNotifications(dclNotifications),
@@ -439,11 +446,12 @@ export class NotificationService {
 
         const title = Notifications.ProposalVotedFinished.title(proposal)
         const body = Notifications.ProposalVotedFinished.body
+        const url = proposalUrl(proposal.id)
 
         DiscordService.sendDirectMessages(addresses, {
           title,
           action: body,
-          url: proposalUrl(proposal.id),
+          url,
           fields: [],
         })
 
@@ -454,9 +462,9 @@ export class NotificationService {
           metadata: {
             proposalId: proposal.id,
             proposalTitle: proposal.title,
-            title: Notifications.ProposalVotedFinished.title(proposal),
-            description: Notifications.ProposalVotedFinished.body,
-            link: proposalUrl(proposal.id),
+            title,
+            description: body,
+            link: url,
           },
           timestamp: Date.now(),
         }))
@@ -466,7 +474,7 @@ export class NotificationService {
             title,
             body,
             recipient: addresses,
-            url: proposalUrl(proposal.id),
+            url,
             customType: NotificationCustomType.Proposal,
           }),
           this.sendDCLNotifications(dclNotifications),
@@ -517,10 +525,14 @@ export class NotificationService {
         const proposal = await ProposalModel.getProposal(proposalId)
         const addresses = await this.getAuthorAndCoauthors(proposal)
 
+        const title = Notifications.ProposalCommented.title(proposal)
+        const body = Notifications.ProposalCommented.body
+        const url = proposalUrl(proposal.id)
+
         DiscordService.sendDirectMessages(addresses, {
-          title: Notifications.ProposalCommented.title(proposal),
-          action: Notifications.ProposalCommented.body,
-          url: proposalUrl(proposal.id),
+          title: title,
+          action: body,
+          url,
           fields: [],
         })
 
@@ -531,19 +543,19 @@ export class NotificationService {
           metadata: {
             proposalId: proposal.id,
             proposalTitle: proposal.title,
-            title: Notifications.ProposalCommented.title(proposal),
-            description: Notifications.ProposalCommented.body,
-            link: proposalUrl(proposal.id),
+            title,
+            description: body,
+            link: url,
           },
           timestamp: Date.now(),
         }))
 
         await Promise.all([
           this.sendPushNotification({
-            title: Notifications.ProposalCommented.title(proposal),
-            body: Notifications.ProposalCommented.body,
+            title,
+            body,
             recipient: addresses,
-            url: proposalUrl(proposal.id),
+            url: url,
             customType: NotificationCustomType.ProposalComment,
           }),
           this.sendDCLNotifications(dclNotifications),
@@ -566,11 +578,14 @@ export class NotificationService {
       try {
         const proposal = await ProposalModel.getProposal(proposalId)
         const addresses = await this.getAuthorAndCoauthors(proposal)
+        const title = Notifications.ProjectUpdateCommented.title(proposal)
+        const body = Notifications.ProjectUpdateCommented.body
+        const updateUrl = getUpdateUrl(updateId, proposal.id)
 
         DiscordService.sendDirectMessages(addresses, {
-          title: Notifications.ProjectUpdateCommented.title(proposal),
-          action: Notifications.ProjectUpdateCommented.body,
-          url: getUpdateUrl(updateId, proposal.id),
+          title: title,
+          action: body,
+          url: updateUrl,
           fields: [],
         })
 
@@ -581,19 +596,19 @@ export class NotificationService {
           metadata: {
             proposalId: proposal.id,
             proposalTitle: proposal.title,
-            title: Notifications.ProjectUpdateCommented.title(proposal),
-            description: Notifications.ProjectUpdateCommented.body,
-            link: getUpdateUrl(updateId, proposal.id),
+            title,
+            description: body,
+            link: updateUrl,
           },
           timestamp: Date.now(),
         }))
 
         await Promise.all([
           this.sendPushNotification({
-            title: Notifications.ProjectUpdateCommented.title(proposal),
-            body: Notifications.ProjectUpdateCommented.body,
+            title,
+            body,
             recipient: addresses,
-            url: getUpdateUrl(updateId, proposal.id),
+            url: updateUrl,
             customType: NotificationCustomType.ProjectUpdateComment,
           }),
           this.sendDCLNotifications(dclNotifications),
@@ -733,4 +748,70 @@ export class NotificationService {
       }
     })
   }
+
+  static async cliffEnded(proposalsWithContributors: ProposalContributors[]) {
+    inBackground(async () => {
+      proposalsWithContributors.map(async (proposalWithContributors) => {
+        try {
+          const { id: proposal_id } = proposalWithContributors
+          const addresses = getUniqueContributors(proposalWithContributors)
+
+          const title = Notifications.CliffEnded.title(proposalWithContributors.title)
+          const body = Notifications.CliffEnded.body
+          const latestVestingAddress =
+            proposalWithContributors.vesting_addresses[proposalWithContributors.vesting_addresses.length - 1]
+          const url = getVestingContractUrl(latestVestingAddress)
+
+          DiscordService.sendDirectMessages(addresses, {
+            title,
+            action: body,
+            url,
+            fields: [],
+          })
+
+          const dclNotifications = addresses.map((address) => ({
+            type: 'governance_cliff_ended',
+            address,
+            eventKey: proposal_id,
+            metadata: {
+              proposalId: proposal_id,
+              proposalTitle: title,
+              title: title,
+              description: body,
+              link: url,
+            },
+            timestamp: Date.now(),
+          }))
+
+          await Promise.all([
+            this.sendPushNotification({
+              title,
+              body,
+              recipient: addresses,
+              url,
+              customType: NotificationCustomType.Proposal,
+            }),
+            this.sendDCLNotifications(dclNotifications),
+          ])
+        } catch (error) {
+          ErrorService.report('Error sending cliff ended notification to proposal contributors', {
+            error: `${error}`,
+            category: ErrorCategory.Notifications,
+            proposalsWithContributors,
+          })
+        }
+      })
+    })
+  }
+}
+
+function getUniqueContributors(proposalContributors: ProposalContributors) {
+  const { user, coauthors, configuration } = proposalContributors
+  const addressesSet = new Set<string>()
+  addressesSet.add(user)
+  if (!!coauthors && coauthors.length > 0) {
+    coauthors.forEach((coAuthor) => addressesSet.add(coAuthor))
+  }
+  if (configuration.beneficiary) addressesSet.add(configuration.beneficiary)
+  return Array.from(addressesSet)
 }
