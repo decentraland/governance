@@ -254,8 +254,12 @@ async function updateProposalsAndBudgets(proposalsWithOutcome: ProposalWithOutco
 }
 
 export async function notifyCliffEndingSoon() {
-  const vestings = await VestingService.getVestingsWithRecentlyEndedCliffs()
-  const vestingAddresses = vestings.map((vesting) => vesting.address)
-  const proposalContributors = await ProposalService.findContributorsForProposalsByVestings(vestingAddresses)
-  await NotificationService.cliffEnded(proposalContributors)
+  try {
+    const vestings = await VestingService.getVestingsWithRecentlyEndedCliffs()
+    const vestingAddresses = vestings.map((vesting) => vesting.address)
+    const proposalContributors = await ProposalService.findContributorsForProposalsByVestings(vestingAddresses)
+    await NotificationService.cliffEnded(proposalContributors)
+  } catch (error) {
+    ErrorService.report('Error notifying cliff ending soon', { error, category: ErrorCategory.Job })
+  }
 }
