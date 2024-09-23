@@ -79,8 +79,8 @@ export class VestingService {
   }
 
   private static parseSubgraphVesting(vestingData: SubgraphVesting) {
-    const vestingContract = this.parseVestingData(vestingData)
-    const logs = this.parseVestingLogs(vestingData)
+    const vestingContract = VestingService.parseVestingData(vestingData)
+    const logs = VestingService.parseVestingLogs(vestingData)
     return { ...vestingContract, logs }
   }
 
