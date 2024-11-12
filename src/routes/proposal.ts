@@ -85,6 +85,9 @@ import { isProdEnv } from '../utils/governanceEnvs'
 import logger from '../utils/logger'
 import { validateAddress, validateId, validateIsDaoCommittee, validateStatusUpdate } from '../utils/validations'
 
+const PITCH_PROPOSAL_SUBMIT_ENABLED = false
+const GRANT_PROPOSAL_SUBMIT_ENABLED = false
+
 export default routes((route) => {
   const withAuth = auth()
   const withOptionalAuth = auth({ optional: true })
@@ -371,6 +374,10 @@ export async function createProposalCatalyst(req: WithAuth) {
 }
 
 export async function createProposalGrant(req: WithAuth) {
+  if (!GRANT_PROPOSAL_SUBMIT_ENABLED) {
+    throw new RequestError('Grant proposal submission is not enabled', RequestError.Forbidden)
+  }
+
   const grantRequestSchema = getGrantRequestSchema(req.body.category)
   const newProposalGrantValidator = schema.compile(grantRequestSchema)
   const user = req.auth!
@@ -401,6 +408,10 @@ export async function createProposalLinkedWearables(req: WithAuth) {
 const newProposalPitchValidator = schema.compile(newProposalPitchScheme)
 
 export async function createProposalPitch(req: WithAuth) {
+  if (!PITCH_PROPOSAL_SUBMIT_ENABLED) {
+    throw new RequestError('Pitch proposal submission is not enabled', RequestError.Forbidden)
+  }
+
   const user = req.auth!
   const configuration = validate<NewProposalPitch>(newProposalPitchValidator, req.body || {})
 
