@@ -16,6 +16,7 @@ import { validateUniqueAddresses } from '../entities/Transparency/utils'
 import { ErrorService } from '../services/ErrorService'
 import { ProjectService } from '../services/ProjectService'
 import { EventFilterSchema } from '../shared/types/events'
+import logger from '../utils/logger'
 
 import { ErrorCategory } from './errorCategories'
 
@@ -235,5 +236,91 @@ export function stringToBoolean(str: string) {
       return false
     default:
       throw new Error('Invalid boolean value')
+  }
+}
+
+export async function isValidImage(imageUrl: string) {
+  const allowedImageTypes = new Set(['image/bmp', 'image/jpeg', 'image/png', 'image/webp'])
+
+  return new Promise<boolean>((resolve) => {
+    fetch(imageUrl)
+      .then((response) => {
+        const mime = response.headers.get('content-type')
+        resolve(!!mime && allowedImageTypes.has(mime))
+      })
+      .catch((error) => {
+        logger.error('Fetching image error', error)
+        resolve(false)
+      })
+  })
+}
+
+export async function valdidateImagesUrls(proposalSection: string) {
+  const imageUrls = extractImageUrls(proposalSection)
+
+  const errors: string[] = []
+  for (const imageUrl of imageUrls) {
+    const isValid = await isValidImage(imageUrl)
+    if (!isValid) {
+      errors.push(imageUrl)
+    }
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+  }
+}
+
+export function extractImageUrls(markdown: string): string[] {
+  const imageRegex = /!\[.*?\]\((.*?)\)|\[.*?\]:\s*(.*?)(?:\s|$)/g
+  const urls: string[] = []
+  let match
+
+  while ((match = imageRegex.exec(markdown)) !== null) {
+    const url = match[1] || match[2]
+    if (url) urls.push(url)
+  }
+
+  return urls
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function validateImagesOnValue(value: any, errors: string[]) {
+  if (typeof value === 'string') {
+    const imageUrls = extractImageUrls(value)
+    for (const imageUrl of imageUrls) {
+      const isValid = await isValidImage(imageUrl)
+      if (!isValid) {
+        errors.push(imageUrl)
+      }
+    }
+  } else if (value && typeof value === 'object') {
+    await validateImagesOnObject(value, errors)
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function validateImagesOnObject(obj: any, errors: string[]) {
+  if (Array.isArray(obj)) {
+    for (const item of obj) {
+      await validateImagesOnValue(item, errors)
+    }
+  } else {
+    for (const key in obj) {
+      await validateImagesOnValue(obj[key], errors)
+    }
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function validateObjectMarkdownImages(obj: any): Promise<{ isValid: boolean; errors: string[] }> {
+  const errors: string[] = []
+
+  await validateImagesOnObject(obj, errors)
+
+  return {
+    isValid: errors.length === 0,
+    errors,
   }
 }
