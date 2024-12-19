@@ -83,7 +83,14 @@ import Time from '../utils/date/Time'
 import { ErrorCategory } from '../utils/errorCategories'
 import { isProdEnv } from '../utils/governanceEnvs'
 import logger from '../utils/logger'
-import { validateAddress, validateId, validateIsDaoCommittee, validateStatusUpdate } from '../utils/validations'
+import {
+  isValidImage,
+  validateAddress,
+  validateId,
+  validateIsDaoCommittee,
+  validateObjectMarkdownImages,
+  validateStatusUpdate,
+} from '../utils/validations'
 
 const PITCH_PROPOSAL_SUBMIT_ENABLED = false
 const GRANT_PROPOSAL_SUBMIT_ENABLED = false
@@ -481,6 +488,10 @@ export async function createProposalBid(req: WithAuth) {
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export async function createProposal(proposalInCreation: ProposalInCreation) {
+  const { isValid, errors } = await validateObjectMarkdownImages(proposalInCreation)
+  if (!isValid) {
+    throw new RequestError(`One or more images are not valid: ${errors.join(', ')}`, RequestError.BadRequest)
+  }
   try {
     return await ProposalService.createProposal(proposalInCreation)
   } catch (error: any) {
@@ -600,17 +611,5 @@ async function validateSubmissionThreshold(user: string, submissionThreshold?: s
 
 async function checkImage(req: Request) {
   const imageUrl = req.query.url as string
-  const allowedImageTypes = new Set(['image/bmp', 'image/jpeg', 'image/png', 'image/webp'])
-
-  return new Promise<boolean>((resolve) => {
-    fetch(imageUrl)
-      .then((response) => {
-        const mime = response.headers.get('content-type')
-        resolve(!!mime && allowedImageTypes.has(mime))
-      })
-      .catch((error) => {
-        logger.error('Fetching image error', error)
-        resolve(false)
-      })
-  })
+  return await isValidImage(imageUrl)
 }
