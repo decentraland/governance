@@ -239,8 +239,54 @@ export function stringToBoolean(str: string) {
   }
 }
 
+const TRUSTED_IMAGE_DOMAINS = new Set([
+  // Decentraland domains
+  'decentraland.org',
+  'cdn.decentraland.org',
+  'peer.decentraland.org',
+  'market.decentraland.org',
+  'governance.decentraland.org',
+  'events.decentraland.org',
+
+  // Popular image hosting and CDNs
+  'ipfs.io', // IPFS gateway
+  'githubusercontent.com', // GitHub's image hosting
+  'imgur.com', // Imgur
+  'i.imgur.com',
+  'cloudinary.com', // Cloudinary CDN
+  'res.cloudinary.com',
+  'images.unsplash.com', // Unsplash
+  'i.ibb.co', // ImgBB
+  'postimg.cc', // PostImage
+  'i.postimg.cc',
+  's3.amazonaws.com', // AWS S3
+  'storage.googleapis.com', // Google Cloud Storage
+  'drive.google.com', // Google Drive
+  'dropboxusercontent.com', // Dropbox
+  'www.dropbox.com',
+  'media.discordapp.net', // Discord
+  'cdn.discordapp.com',
+  'discord.com',
+  'discord.gg',
+])
+
+function isFromTrustedDomain(url: string): boolean {
+  try {
+    const urlObject = new URL(url)
+    const hostname = urlObject.hostname
+    return TRUSTED_IMAGE_DOMAINS.has(hostname)
+  } catch {
+    return false
+  }
+}
+
 export async function isValidImage(imageUrl: string) {
   const allowedImageTypes = new Set(['image/bmp', 'image/jpeg', 'image/png', 'image/webp'])
+
+  if (!isFromTrustedDomain(imageUrl)) {
+    logger.error('Image not from trusted domain', { imageUrl })
+    return false
+  }
 
   return new Promise<boolean>((resolve) => {
     fetch(imageUrl)
