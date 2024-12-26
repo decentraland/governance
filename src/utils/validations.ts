@@ -281,7 +281,7 @@ function isFromTrustedDomain(url: string): boolean {
 }
 
 export async function isValidImage(imageUrl: string) {
-  const allowedImageTypes = new Set(['image/bmp', 'image/jpeg', 'image/png', 'image/webp'])
+  const allowedImageTypes = new Set(['image/bmp', 'image/jpeg', 'image/png', 'image/webp', 'image/gif'])
 
   if (!isFromTrustedDomain(imageUrl)) {
     logger.error('Image not from trusted domain', { imageUrl })
