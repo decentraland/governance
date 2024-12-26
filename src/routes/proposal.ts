@@ -94,6 +94,7 @@ import {
 
 const PITCH_PROPOSAL_SUBMIT_ENABLED = false
 const GRANT_PROPOSAL_SUBMIT_ENABLED = false
+const LINKED_WEARABLES_PROPOSAL_SUBMIT_ENABLED = false
 
 export default routes((route) => {
   const withAuth = auth()
@@ -397,6 +398,10 @@ export async function createProposalGrant(req: WithAuth) {
 const newProposalLinkedWearablesValidator = schema.compile(newProposalLinkedWearablesScheme)
 
 export async function createProposalLinkedWearables(req: WithAuth) {
+  if (!LINKED_WEARABLES_PROPOSAL_SUBMIT_ENABLED) {
+    throw new RequestError('Linked wearables proposal submission is not enabled', RequestError.Forbidden)
+  }
+
   const user = req.auth!
   const configuration = validate<NewProposalLinkedWearables>(newProposalLinkedWearablesValidator, req.body || {})
 
