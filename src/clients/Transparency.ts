@@ -52,6 +52,10 @@ export type TransparencyBudget = {
   category_percentages: Record<string, number>
 }
 
+export type TransparencyTeams = {
+  committees: Committee[]
+}
+
 const EMPTY_API: TransparencyData = {
   balances: [],
   income: {
@@ -91,6 +95,18 @@ export class Transparency {
     } catch (error) {
       ErrorClient.report('Failed to fetch transparency budgets data', { error, category: ErrorCategory.Transparency })
       return []
+    }
+  }
+
+  static async getTeams() {
+    try {
+      const response = (await (await fetch(`${API_URL}/teams.json`)).json()) as TransparencyTeams
+      return response
+    } catch (error) {
+      ErrorClient.report('Failed to fetch transparency data', { error, category: ErrorCategory.Transparency })
+      return {
+        committees: [],
+      }
     }
   }
 }
