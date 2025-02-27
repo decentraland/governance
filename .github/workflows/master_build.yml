@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-push:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     outputs:
       registry-path: ${{ steps.push-to-quay.outputs.registry-path }}
       registry-paths: ${{ steps.push-to-quay.outputs.registry-paths }}
