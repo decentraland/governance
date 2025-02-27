@@ -17,6 +17,7 @@ import * as linkedWearables from './LinkedWearables'
 import * as banName from './banName'
 import * as bid from './bid'
 import * as catalyst from './catalyst'
+import * as decisionVeto from './decisionVeto'
 import * as draft from './draft'
 import * as governance from './governance'
 import * as grant from './grant'
@@ -67,6 +68,8 @@ export const title = ({ type, configuration }: { type: ProposalType; configurati
       return bid.title(configuration as any)
     case ProposalType.Hiring:
       return hiring.title(configuration as any)
+    case ProposalType.CouncilDecisionVeto:
+      return decisionVeto.title(configuration as any)
   }
 }
 
@@ -96,6 +99,8 @@ export const description = async ({ type, configuration }: { type: ProposalType;
       return await bid.description(configuration as any)
     case ProposalType.Hiring:
       return hiring.description(configuration as any)
+    case ProposalType.CouncilDecisionVeto:
+      return decisionVeto.description(configuration as any)
   }
 }
 

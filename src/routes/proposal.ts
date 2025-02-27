@@ -13,6 +13,7 @@ import { BidRequest, BidRequestSchema } from '../entities/Bid/types'
 import { hasOpenSlots } from '../entities/Committee/utils'
 import { GrantRequest, getGrantRequestSchema, toGrantSubtype } from '../entities/Grant/types'
 import {
+  SUBMISSION_THRESHOLD_COUNCIL_DECISION_VETO,
   SUBMISSION_THRESHOLD_DRAFT,
   SUBMISSION_THRESHOLD_GOVERNANCE,
   SUBMISSION_THRESHOLD_GRANT,
@@ -72,7 +73,7 @@ import {
   toProposalType,
   toSortingOrder,
 } from '../entities/Proposal/utils'
-import { SNAPSHOT_DURATION } from '../entities/Snapshot/constants'
+import { SNAPSHOT_DURATION, SNAPSHOT_SPACE_COUNCIL } from '../entities/Snapshot/constants'
 import BidService from '../services/BidService'
 import { DiscourseService } from '../services/DiscourseService'
 import { ErrorService } from '../services/ErrorService'
@@ -91,6 +92,8 @@ import {
   validateObjectMarkdownImages,
   validateStatusUpdate,
 } from '../utils/validations'
+
+import { NewProposalCouncilDecisionVeto, newProposalCouncilDecisionVetoScheme } from './../entities/Proposal/types'
 
 const PITCH_PROPOSAL_SUBMIT_ENABLED = false
 const GRANT_PROPOSAL_SUBMIT_ENABLED = false
@@ -112,6 +115,7 @@ export default routes((route) => {
   route.post('/proposals/tender', withAuth, handleAPI(createProposalTender))
   route.post('/proposals/bid', withAuth, handleAPI(createProposalBid))
   route.post('/proposals/hiring', withAuth, handleAPI(createProposalHiring))
+  route.post('/proposals/council-decision-veto', withAuth, handleAPI(createProposalCouncilDecisionVeto))
   route.get('/proposals/priority/:address?', handleJSON(getPriorityProposals))
   route.get('/proposals/:proposal', handleAPI(getProposalWithProject))
   route.patch('/proposals/:proposal', withAuth, handleAPI(updateProposalStatus))
@@ -348,6 +352,38 @@ export async function createProposalHiring(req: WithAuth) {
     type: ProposalType.Hiring,
     required_to_pass: ProposalRequiredVP[ProposalType.Hiring],
     finish_at: getProposalEndDate(Number(process.env.GATSBY_DURATION_HIRING)),
+    configuration: {
+      ...configuration,
+      choices: DEFAULT_CHOICES,
+    },
+  })
+}
+
+const newProposalCouncilDecisionVetoValidator = schema.compile(newProposalCouncilDecisionVetoScheme)
+
+export async function createProposalCouncilDecisionVeto(req: WithAuth) {
+  const user = req.auth!
+  const configuration = validate<NewProposalCouncilDecisionVeto>(
+    newProposalCouncilDecisionVetoValidator,
+    req.body || {}
+  )
+  await validateSubmissionThreshold(user, SUBMISSION_THRESHOLD_COUNCIL_DECISION_VETO)
+  const snapshotProposal = await SnapshotGraphql.get().getProposalContent(configuration.decision_snapshot_id)
+
+  if (!snapshotProposal) {
+    throw new RequestError('Snapshot proposal not found', RequestError.NotFound)
+  }
+  if (snapshotProposal.space.id !== SNAPSHOT_SPACE_COUNCIL) {
+    throw new RequestError('Snapshot proposal is not from the Council space', RequestError.BadRequest)
+  }
+
+  configuration.title = snapshotProposal.title
+
+  return createProposal({
+    user,
+    type: ProposalType.CouncilDecisionVeto,
+    required_to_pass: ProposalRequiredVP[ProposalType.CouncilDecisionVeto],
+    finish_at: getProposalEndDate(Number(process.env.GATSBY_DURATION_COUNCIL_DECISION_VETO)),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES,
