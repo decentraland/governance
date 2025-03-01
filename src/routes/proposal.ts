@@ -13,6 +13,7 @@ import { BidRequest, BidRequestSchema } from '../entities/Bid/types'
 import { hasOpenSlots } from '../entities/Committee/utils'
 import { GrantRequest, getGrantRequestSchema, toGrantSubtype } from '../entities/Grant/types'
 import {
+  MAX_DURATION_COUNCIL_DECISION,
   SUBMISSION_THRESHOLD_COUNCIL_DECISION_VETO,
   SUBMISSION_THRESHOLD_DRAFT,
   SUBMISSION_THRESHOLD_GOVERNANCE,
@@ -374,7 +375,23 @@ export async function createProposalCouncilDecisionVeto(req: WithAuth) {
     throw new RequestError('Snapshot proposal not found', RequestError.NotFound)
   }
   if (snapshotProposal.space.id !== SNAPSHOT_SPACE_COUNCIL) {
-    throw new RequestError('Snapshot proposal is not from the Council space', RequestError.BadRequest)
+    throw new RequestError('Invalid URL. Please enter a valid Council Snapshot proposal link.', RequestError.BadRequest)
+  }
+
+  const proposalFinishAt = Time(snapshotProposal.end * 1000).utc()
+  const now = Time.utc()
+
+  if (proposalFinishAt > now) {
+    throw new RequestError('Snapshot proposal is not finished', RequestError.BadRequest)
+  }
+
+  const duration = now.diff(proposalFinishAt, 'days')
+
+  if (duration > MAX_DURATION_COUNCIL_DECISION) {
+    throw new RequestError(
+      `This proposal is too old to be vetoed. You can only challenge Council decisions made in the last ${MAX_DURATION_COUNCIL_DECISION} days.`,
+      RequestError.BadRequest
+    )
   }
 
   configuration.title = snapshotProposal.title
