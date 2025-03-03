@@ -19,7 +19,6 @@ ${snapshotProposalUrl({
 ## Reasons to Veto
 ${formatMarkdown(proposal.reasons)}
 
-## Suggestions to the Council
-${formatMarkdown(proposal.suggestions)}
+${proposal.suggestions ? `## Suggestions to the Council\n${formatMarkdown(proposal.suggestions)}` : ''}
 `
 }

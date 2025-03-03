@@ -784,14 +784,14 @@ export type NewProposalCouncilDecisionVeto = {
   title: string
   decision_snapshot_id: string
   reasons: string
-  suggestions: string
+  suggestions?: string
   coAuthors?: string[]
 }
 
 export const newProposalCouncilDecisionVetoScheme = {
   type: 'object',
   additionalProperties: false,
-  required: ['decision_snapshot_id', 'reasons', 'suggestions'],
+  required: ['decision_snapshot_id', 'reasons'],
   properties: {
     title: {
       type: 'string',
