@@ -400,7 +400,7 @@ export async function createProposalCouncilDecisionVeto(req: WithAuth) {
     user,
     type: ProposalType.CouncilDecisionVeto,
     required_to_pass: ProposalRequiredVP[ProposalType.CouncilDecisionVeto],
-    finish_at: getProposalEndDate(Number(process.env.GATSBY_DURATION_COUNCIL_DECISION_VETO)),
+    finish_at: getProposalEndDate(Number(process.env.DURATION_COUNCIL_DECISION_VETO)),
     configuration: {
       ...configuration,
       choices: DEFAULT_CHOICES,
