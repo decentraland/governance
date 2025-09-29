@@ -1,3 +1,4 @@
+import { Events } from '@dcl/schemas'
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
 import { ethers } from 'ethers'
 
@@ -21,6 +22,7 @@ import { ErrorCategory } from '../utils/errorCategories'
 import { isProdEnv } from '../utils/governanceEnvs'
 import logger from '../utils/logger'
 import { NotificationType, Notifications, getCaipAddress, getPushNotificationsEnv } from '../utils/notifications'
+import { PublishableEvent, createSnsPublisher } from '../utils/sns/sns'
 import { areValidAddresses } from '../utils/validations'
 
 import { ErrorService } from './ErrorService'
@@ -37,6 +39,20 @@ const PUSH_CHANNEL_OWNER_PK = process.env.PUSH_CHANNEL_OWNER_PK
 const PUSH_API_URL = process.env.PUSH_API_URL
 const DCL_NOTIFICATIONS_SERVICE_API_URL = process.env.DCL_NOTIFICATIONS_SERVICE_API_URL
 const DCL_NOTIFICATIONS_SERVICE_API_TOKEN = process.env.DCL_NOTIFICATIONS_SERVICE_API_TOKEN
+
+// Initialize SNS publisher
+let snsPublisher: ReturnType<typeof createSnsPublisher> | null = null
+function getSnsPublisher() {
+  if (!snsPublisher) {
+    try {
+      snsPublisher = createSnsPublisher()
+    } catch (error) {
+      logger.error('Failed to initialize SNS publisher', { error: `${error}` })
+      return null
+    }
+  }
+  return snsPublisher
+}
 
 function getSigner() {
   if (!NOTIFICATIONS_SERVICE_ENABLED) {
@@ -143,6 +159,202 @@ export class NotificationService {
     }
   }
 
+  private static convertToPublishableEvent(dclNotification: DclNotification): PublishableEvent {
+    const baseEvent = {
+      type: Events.Type.GOVERNANCE as const,
+      key: dclNotification.eventKey,
+      timestamp: dclNotification.timestamp,
+    }
+
+    // Type assertion for metadata to access properties
+    const metadata = dclNotification.metadata as {
+      proposalId: string
+      proposalTitle: string
+      title: string
+      description: string
+      link: string
+    }
+
+    // Map DCL notification types to proper event structures
+    switch (dclNotification.type) {
+      case Events.SubType.Governance.PROPOSAL_ENACTED:
+        return {
+          ...baseEvent,
+          subType: Events.SubType.Governance.PROPOSAL_ENACTED,
+          metadata: {
+            proposalId: metadata.proposalId,
+            proposalTitle: metadata.proposalTitle,
+            title: metadata.title,
+            description: metadata.description,
+            link: metadata.link,
+            address: dclNotification.address || '',
+          },
+        }
+      case Events.SubType.Governance.COAUTHOR_REQUESTED:
+        return {
+          ...baseEvent,
+          subType: Events.SubType.Governance.COAUTHOR_REQUESTED,
+          metadata: {
+            proposalId: metadata.proposalId,
+            proposalTitle: metadata.proposalTitle,
+            title: metadata.title,
+            description: metadata.description,
+            link: metadata.link,
+            address: dclNotification.address || '',
+          },
+        }
+      case Events.SubType.Governance.PITCH_PASSED:
+        return {
+          ...baseEvent,
+          subType: Events.SubType.Governance.PITCH_PASSED,
+          metadata: {
+            proposalId: metadata.proposalId,
+            proposalTitle: metadata.proposalTitle,
+            title: metadata.title,
+            description: metadata.description,
+            link: metadata.link,
+            address: dclNotification.address || '',
+          },
+        }
+      case Events.SubType.Governance.TENDER_PASSED:
+        return {
+          ...baseEvent,
+          subType: Events.SubType.Governance.TENDER_PASSED,
+          metadata: {
+            proposalId: metadata.proposalId,
+            proposalTitle: metadata.proposalTitle,
+            title: metadata.title,
+            description: metadata.description,
+            link: metadata.link,
+            address: dclNotification.address || '',
+          },
+        }
+      case Events.SubType.Governance.AUTHORED_PROPOSAL_FINISHED:
+        return {
+          ...baseEvent,
+          subType: Events.SubType.Governance.AUTHORED_PROPOSAL_FINISHED,
+          metadata: {
+            proposalId: metadata.proposalId,
+            proposalTitle: metadata.proposalTitle,
+            title: metadata.title,
+            description: metadata.description,
+            link: metadata.link,
+            address: dclNotification.address || '',
+          },
+        }
+      case Events.SubType.Governance.VOTING_ENDED_VOTER:
+        return {
+          ...baseEvent,
+          subType: Events.SubType.Governance.VOTING_ENDED_VOTER,
+          metadata: {
+            proposalId: metadata.proposalId,
+            proposalTitle: metadata.proposalTitle,
+            title: metadata.title,
+            description: metadata.description,
+            link: metadata.link,
+            address: dclNotification.address || '',
+          },
+        }
+      case Events.SubType.Governance.NEW_COMMENT_ON_PROPOSAL:
+        return {
+          ...baseEvent,
+          subType: Events.SubType.Governance.NEW_COMMENT_ON_PROPOSAL,
+          metadata: {
+            proposalId: metadata.proposalId,
+            proposalTitle: metadata.proposalTitle,
+            title: metadata.title,
+            description: metadata.description,
+            link: metadata.link,
+            address: dclNotification.address || '',
+          },
+        }
+      case Events.SubType.Governance.NEW_COMMENT_ON_PROJECT_UPDATED:
+        return {
+          ...baseEvent,
+          subType: Events.SubType.Governance.NEW_COMMENT_ON_PROJECT_UPDATED,
+          metadata: {
+            proposalId: metadata.proposalId,
+            proposalTitle: metadata.proposalTitle,
+            title: metadata.title,
+            description: metadata.description,
+            link: metadata.link,
+            address: dclNotification.address || '',
+          },
+        }
+      case Events.SubType.Governance.WHALE_VOTE:
+        return {
+          ...baseEvent,
+          subType: Events.SubType.Governance.WHALE_VOTE,
+          metadata: {
+            proposalId: metadata.proposalId,
+            proposalTitle: metadata.proposalTitle,
+            title: metadata.title,
+            description: metadata.description,
+            link: metadata.link,
+            address: dclNotification.address || '',
+          },
+        }
+      case Events.SubType.Governance.VOTED_ON_BEHALF:
+        return {
+          ...baseEvent,
+          subType: Events.SubType.Governance.VOTED_ON_BEHALF,
+          metadata: {
+            proposalId: metadata.proposalId,
+            proposalTitle: metadata.proposalTitle,
+            title: metadata.title,
+            description: metadata.description,
+            link: metadata.link,
+            address: dclNotification.address || '',
+          },
+        }
+      case Events.SubType.Governance.CLIFF_ENDED:
+        return {
+          ...baseEvent,
+          subType: Events.SubType.Governance.CLIFF_ENDED,
+          metadata: {
+            proposalId: metadata.proposalId,
+            proposalTitle: metadata.proposalTitle,
+            title: metadata.title,
+            description: metadata.description,
+            link: metadata.link,
+            address: dclNotification.address || '',
+          },
+        }
+      default:
+        throw new Error(`Unknown notification type: ${dclNotification.type}`)
+    }
+  }
+
+  static async sendDCLEvent(events: DclNotification[]) {
+    const publisher = getSnsPublisher()
+    if (!publisher) {
+      logger.warn('SNS publisher is not available')
+      return
+    }
+
+    try {
+      const publishableEvents = events.map((event) => this.convertToPublishableEvent(event))
+      const result = await publisher.publishMessages(publishableEvents)
+
+      if (result.failedEvents.length > 0) {
+        logger.warn('Some events failed to publish via SNS', {
+          failedCount: result.failedEvents.length,
+          successfulCount: result.successfulMessageIds.length,
+        })
+      } else {
+        logger.log('Successfully published events via SNS', {
+          count: result.successfulMessageIds.length,
+        })
+      }
+    } catch (error) {
+      ErrorService.report('Failed to send events via SNS', {
+        error: `${error}`,
+        category: ErrorCategory.Notifications,
+        eventsCount: events.length,
+      })
+    }
+  }
+
   private static getType(type: number | undefined, recipient: Recipient) {
     if (type) {
       return type
@@ -202,7 +414,7 @@ export class NotificationService {
         })
 
         const dclNotifications = addresses.map((address) => ({
-          type: 'governance_proposal_enacted',
+          type: Events.SubType.Governance.PROPOSAL_ENACTED,
           address,
           eventKey: proposal.id,
           metadata: {
@@ -223,7 +435,7 @@ export class NotificationService {
             url: proposalUrl(proposal.id),
             customType: NotificationCustomType.Grant,
           }),
-          this.sendDCLNotifications(dclNotifications),
+          this.sendDCLEvent(dclNotifications),
         ])
       } catch (error) {
         ErrorService.report('Error sending proposal enacted notification', {
@@ -253,7 +465,7 @@ export class NotificationService {
         })
 
         const dclNotifications = coAuthors.map((address) => ({
-          type: 'governance_coauthor_requested',
+          type: Events.SubType.Governance.COAUTHOR_REQUESTED,
           address,
           eventKey: proposal.id,
           metadata: {
@@ -274,7 +486,7 @@ export class NotificationService {
             url: proposalUrl(proposal.id),
             customType: NotificationCustomType.Proposal,
           }),
-          this.sendDCLNotifications(dclNotifications),
+          this.sendDCLEvent(dclNotifications),
         ])
       } catch (error) {
         ErrorService.report('Error sending co-author request notification', {
@@ -304,7 +516,7 @@ export class NotificationService {
         })
 
         const dclNotifications = addresses.map((address) => ({
-          type: 'governance_pitch_passed',
+          type: Events.SubType.Governance.PITCH_PASSED,
           address,
           eventKey: proposal.id,
           metadata: {
@@ -325,7 +537,7 @@ export class NotificationService {
             url: proposalUrl(proposal.id),
             customType: NotificationCustomType.PitchPassed,
           }),
-          this.sendDCLNotifications(dclNotifications),
+          this.sendDCLEvent(dclNotifications),
         ])
       } catch (error) {
         ErrorService.report('Error sending pitch passed notification', {
@@ -356,7 +568,7 @@ export class NotificationService {
         })
 
         const dclNotifications = addresses.map((address) => ({
-          type: 'governance_tender_passed',
+          type: Events.SubType.Governance.TENDER_PASSED,
           address,
           eventKey: proposal.id,
           metadata: {
@@ -377,7 +589,7 @@ export class NotificationService {
             url,
             customType: NotificationCustomType.TenderPassed,
           }),
-          this.sendDCLNotifications(dclNotifications),
+          this.sendDCLEvent(dclNotifications),
         ])
       } catch (error) {
         ErrorService.report('Error sending tender passed notification', {
@@ -404,7 +616,7 @@ export class NotificationService {
         })
 
         const dclNotifications = addresses.map((address) => ({
-          type: 'governance_authored_proposal_finished',
+          type: Events.SubType.Governance.AUTHORED_PROPOSAL_FINISHED,
           address,
           eventKey: proposal.id,
           metadata: {
@@ -425,7 +637,7 @@ export class NotificationService {
             url,
             customType: NotificationCustomType.Proposal,
           }),
-          this.sendDCLNotifications(dclNotifications),
+          this.sendDCLEvent(dclNotifications),
         ])
       } catch (error) {
         ErrorService.report('Error sending voting ended notification to authors', {
@@ -456,7 +668,7 @@ export class NotificationService {
         })
 
         const dclNotifications = addresses.map((address) => ({
-          type: 'governance_voting_ended_voter',
+          type: Events.SubType.Governance.VOTING_ENDED_VOTER,
           address,
           eventKey: proposal.id,
           metadata: {
@@ -477,7 +689,7 @@ export class NotificationService {
             url,
             customType: NotificationCustomType.Proposal,
           }),
-          this.sendDCLNotifications(dclNotifications),
+          this.sendDCLEvent(dclNotifications),
         ])
       } catch (error) {
         ErrorService.report('Error sending voting ended notification to voters', {
@@ -537,7 +749,7 @@ export class NotificationService {
         })
 
         const dclNotifications = addresses.map((address) => ({
-          type: 'governance_new_comment_on_proposal',
+          type: Events.SubType.Governance.NEW_COMMENT_ON_PROPOSAL,
           address,
           eventKey: proposal.id,
           metadata: {
@@ -558,7 +770,7 @@ export class NotificationService {
             url: url,
             customType: NotificationCustomType.ProposalComment,
           }),
-          this.sendDCLNotifications(dclNotifications),
+          this.sendDCLEvent(dclNotifications),
         ])
       } catch (error) {
         ErrorService.report('Error sending notifications for new comment on proposal', {
@@ -590,7 +802,7 @@ export class NotificationService {
         })
 
         const dclNotifications = addresses.map((address) => ({
-          type: 'governance_new_comment_on_project_update',
+          type: Events.SubType.Governance.NEW_COMMENT_ON_PROJECT_UPDATED,
           address,
           eventKey: updateId,
           metadata: {
@@ -611,7 +823,7 @@ export class NotificationService {
             url: updateUrl,
             customType: NotificationCustomType.ProjectUpdateComment,
           }),
-          this.sendDCLNotifications(dclNotifications),
+          this.sendDCLEvent(dclNotifications),
         ])
       } catch (error) {
         ErrorService.report('Error sending notifications for new comment on project update', {
@@ -669,7 +881,7 @@ export class NotificationService {
         })
 
         const dclNotifications = addresses.map((address) => ({
-          type: 'governance_whale_vote',
+          type: Events.SubType.Governance.WHALE_VOTE,
           address,
           eventKey: proposal.id,
           metadata: {
@@ -690,7 +902,7 @@ export class NotificationService {
             url: proposalUrl(proposal.id),
             customType: NotificationCustomType.WhaleVote,
           }),
-          this.sendDCLNotifications(dclNotifications),
+          this.sendDCLEvent(dclNotifications),
         ])
       } catch (error) {
         ErrorService.report('Error sending notifications for whale vote', {
@@ -716,7 +928,7 @@ export class NotificationService {
         })
 
         const dclNotifications = addresses.map((address) => ({
-          type: 'governance_voted_on_behalf',
+          type: Events.SubType.Governance.VOTED_ON_BEHALF,
           address,
           eventKey: proposal.id,
           metadata: {
@@ -737,7 +949,7 @@ export class NotificationService {
             url: proposalUrl(proposal.id),
             customType: NotificationCustomType.VotedOnBehalf,
           }),
-          this.sendDCLNotifications(dclNotifications),
+          this.sendDCLEvent(dclNotifications),
         ])
       } catch (error) {
         ErrorService.report('Error sending notifications for delegated vote', {
@@ -770,7 +982,7 @@ export class NotificationService {
           })
 
           const dclNotifications = addresses.map((address) => ({
-            type: 'governance_cliff_ended',
+            type: Events.SubType.Governance.CLIFF_ENDED,
             address,
             eventKey: proposal_id,
             metadata: {
@@ -791,7 +1003,7 @@ export class NotificationService {
               url,
               customType: NotificationCustomType.Proposal,
             }),
-            this.sendDCLNotifications(dclNotifications),
+            this.sendDCLEvent(dclNotifications),
           ])
         } catch (error) {
           ErrorService.report('Error sending cliff ended notification to proposal contributors', {
