@@ -108,16 +108,16 @@ export class ProjectService {
   ): UserProject[] {
     return (
       userProjects.map((project) => {
-        const { funding, status } = this.getUpdatedFundingAndStatus(project, latestVestings)
+        const { funding } = this.getUpdatedFundingAndStatus(project, latestVestings)
         const { tier, category, size, funding: proposal_funding } = project.configuration
+
         return {
-          ...project,
+          ...project, // ← mantiene project.status tal como viene de la DB
           configuration: {
             size: size || proposal_funding,
             tier,
             category: category || project.type,
           },
-          status,
           funding,
         }
       }) || []

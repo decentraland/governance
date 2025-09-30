@@ -212,6 +212,7 @@ export default class ProjectModel extends Model<ProjectAttributes> {
     `
 
     const result = await this.namedQuery<UserProject>(`get_user_projects`, query)
+    console.log('[USER PROJECTS][MODEL][0]', result?.[0]?.id, result?.[0]?.status)
     return result || []
   }
 }

@@ -46,13 +46,70 @@ export class SnapshotSubgraph {
     return SNAPSHOT_QUERY_ENDPOINT
   }
 
+  // async getDelegates(
+  //   key: 'delegatedTo' | 'delegatedFrom',
+  //   variables: { address: string; space: string; blockNumber?: string | number }
+  // ) {
+  //   const delegations: Delegation[] = await inBatches(
+  //     async (vars, skip, first) => {
+  //       // --- LOGS ANTES DE LLAMAR
+  //       console.log('[DELEG][SUBGRAPH][CALL]', {
+  //         endpoint: this.queryEndpoint,
+  //         key,
+  //         vars,
+  //         page: { skip, first },
+  //       })
+
+  //       const res = await fetch(this.queryEndpoint, {
+  //         method: 'post',
+  //         headers: { 'Content-Type': 'application/json' },
+  //         body: JSON.stringify({
+  //           query: getDelegatedQuery(key, variables.blockNumber),
+  //           variables: { ...vars, skip, first },
+  //         }),
+  //       })
+
+  //       const text = await res.text()
+  //       console.log('[DELEG][SUBGRAPH][HTTP]', { status: res.status, ok: res.ok })
+
+  //       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //       let body: any = null
+  //       try {
+  //         body = JSON.parse(text)
+  //       } catch {
+  //         console.log('[DELEG][SUBGRAPH][BODY_PREVIEW]', text.slice(0, 400))
+  //       }
+
+  //       if (body?.errors?.length) {
+  //         console.log('[DELEG][SUBGRAPH][ERRORS]', JSON.stringify(body.errors, null, 2))
+  //       }
+
+  //       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //       const page: any[] = body?.data?.[key] || []
+  //       console.log('[DELEG][SUBGRAPH][PAGE]', {
+  //         key,
+  //         count: Array.isArray(page) ? page.length : 'n/a',
+  //         sample: Array.isArray(page) && page[0] ? page[0] : null,
+  //       })
+
+  //       return page
+  //     },
+  //     { ...variables },
+  //     500
+  //   )
+
+  //   console.log('[DELEG][SUBGRAPH][MERGED]', { total: delegations.length })
+  //   return delegations
+  // }
+
+  // Add logs for debugging
   async getDelegates(
     key: 'delegatedTo' | 'delegatedFrom',
     variables: { address: string; space: string; blockNumber?: string | number }
   ) {
     const delegations: Delegation[] = await inBatches(
       async (vars, skip, first) => {
-        const response = await fetch(this.queryEndpoint, {
+        const res = await fetch(this.queryEndpoint, {
           method: 'post',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -61,8 +118,23 @@ export class SnapshotSubgraph {
           }),
         })
 
-        const body = await response.json()
-        return body?.data?.[key] || []
+        const text = await res.text()
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let body: any = null
+        try {
+          body = JSON.parse(text)
+          // eslint-disable-next-line no-empty
+        } catch {}
+
+        const errors = body?.errors
+        const page = body?.data?.[key]
+
+        if (errors || !Array.isArray(page)) {
+          console.log('[DELEG][SUBGRAPH][ERRORS_OR_EMPTY]', errors || 'empty data')
+          return []
+        }
+
+        return page
       },
       { ...variables },
       500

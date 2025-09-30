@@ -18,8 +18,7 @@ import {
   SnapshotSpace,
   SnapshotVote,
   SnapshotVoteResponse,
-  SnapshotVpResponse,
-  StrategyOrder,
+  SnapshotVpResponse, // StrategyOrder,
   VpDistribution,
 } from './SnapshotTypes'
 import { inBatches, trimLastForwardSlash } from './utils'
@@ -351,48 +350,50 @@ export class SnapshotGraphql extends API {
 
   async getVpDistribution(address: string, proposalId?: string): Promise<VpDistribution> {
     const query = `
-     query getVpDistribution($space: String!, $voter: String!, $proposal: String){
-        vp (
-          voter: $voter,
-          space: $space,
-          proposal: $proposal
-        ) {
-          vp
-          vp_by_strategy
-        } 
+    query getVpDistribution($space: String!, $voter: String!, $proposal: String){
+      vp (voter: $voter, space: $space, proposal: $proposal) {
+        vp
+        vp_by_strategy
       }
-    `
-    const variables = {
-      space: SNAPSHOT_SPACE,
-      voter: address,
-      proposal: proposalId || '',
     }
+  `
+
+    const variables = { space: SNAPSHOT_SPACE, voter: address, proposal: proposalId || '' }
 
     const result = await this.fetch<SnapshotVpResponse>(GRAPHQL_ENDPOINT, {
       method: 'POST',
-      json: {
-        query,
-        variables: variables,
-      },
+      json: { query, variables },
     })
 
-    if (!result?.data?.vp) {
-      throw Error('Unable to fetch VP Distribution')
-    }
+    if (!result?.data?.vp) throw Error('Unable to fetch VP Distribution')
 
-    const vpByStrategy = result?.data?.vp.vp_by_strategy
+    const vpByStrategy = result.data.vp.vp_by_strategy
+    console.log('vpByStrategy', vpByStrategy)
+    const total = Math.floor(result.data.vp.vp)
+
+    const I = {
+      WMANA: 0,
+      LAND: 1,
+      ESTATE: 2,
+      NAMES: 3,
+      WEAR: 4,
+      DELEG: 5,
+      RENTAL: 6,
+      MANA_ETH: 7,
+      MANA_POL: 8,
+    } as const
 
     return {
-      total: Math.floor(result?.data?.vp.vp),
-      own: Math.floor(result?.data?.vp.vp - vpByStrategy[5]),
-      wMana: Math.floor(vpByStrategy[StrategyOrder.WrappedMana]),
-      land: Math.floor(vpByStrategy[StrategyOrder.Land]),
-      estate: Math.floor(vpByStrategy[StrategyOrder.Estate]),
-      mana: Math.floor(vpByStrategy[StrategyOrder.Mana]),
-      names: Math.floor(vpByStrategy[StrategyOrder.Names]),
-      delegated: Math.floor(vpByStrategy[StrategyOrder.Delegation]),
-      l1Wearables: Math.floor(vpByStrategy[StrategyOrder.L1Wearables]),
-      rental: Math.floor(vpByStrategy[StrategyOrder.Rental]),
+      total,
+      own: Math.floor(total - (vpByStrategy[I.DELEG] || 0)),
+      wMana: Math.floor(vpByStrategy[I.WMANA] || 0),
+      land: Math.floor(vpByStrategy[I.LAND] || 0),
+      estate: Math.floor(vpByStrategy[I.ESTATE] || 0),
+      mana: Math.floor((vpByStrategy[I.MANA_ETH] || 0) + (vpByStrategy[I.MANA_POL] || 0)),
+      names: Math.floor(vpByStrategy[I.NAMES] || 0),
+      delegated: Math.floor(vpByStrategy[I.DELEG] || 0),
+      l1Wearables: Math.floor(vpByStrategy[I.WEAR] || 0),
+      rental: Math.floor(vpByStrategy[I.RENTAL] || 0),
     }
   }
 

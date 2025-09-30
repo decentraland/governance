@@ -3,7 +3,7 @@ import { MigrationBuilder } from "node-pg-migrate"
 import Model from "../models/ProjectMilestoneUpdate"
 import ProjectMilestoneModel from "../models/ProjectMilestone"
 
-const LEGACY_TABLE_NAME = 'proposal_updates'
+const LEGACY_TABLE_NAME = 'project_updates'
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
   pgm.createTable(Model.tableName, {
