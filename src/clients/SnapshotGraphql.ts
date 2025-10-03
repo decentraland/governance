@@ -19,6 +19,7 @@ import {
   SnapshotVote,
   SnapshotVoteResponse,
   SnapshotVpResponse,
+  StrategyOrder,
   VpDistribution,
 } from './SnapshotTypes'
 import { inBatches, trimLastForwardSlash } from './utils'
@@ -368,32 +369,30 @@ export class SnapshotGraphql extends API {
     if (!result?.data?.vp) throw Error('Unable to fetch VP Distribution')
 
     const vpByStrategy = result.data.vp.vp_by_strategy
-    console.log('vpByStrategy', vpByStrategy)
     const total = Math.floor(result.data.vp.vp)
 
-    const I = {
-      WMANA: 0,
-      LAND: 1,
-      ESTATE: 2,
-      NAMES: 3,
-      WEAR: 4,
-      DELEG: 5,
-      RENTAL: 6,
-      MANA_ETH: 7,
-      MANA_POL: 8,
-    } as const
+    const wMana = Math.floor(vpByStrategy[StrategyOrder.WrappedMana] || 0)
+    const land = Math.floor(vpByStrategy[StrategyOrder.Land] || 0)
+    const estate = Math.floor(vpByStrategy[StrategyOrder.Estate] || 0)
+    const names = Math.floor(vpByStrategy[StrategyOrder.Names] || 0)
+    const delegated = Math.floor(vpByStrategy[StrategyOrder.Delegation] || 0)
+    const l1Wear = Math.floor(vpByStrategy[StrategyOrder.L1Wearables] || 0)
+    const rental = Math.floor(vpByStrategy[StrategyOrder.Rental] || 0)
+    const manaEth = Math.floor(vpByStrategy[StrategyOrder.ManaEth] || 0)
+    const manaPol = Math.floor(vpByStrategy[StrategyOrder.ManaPolygon] || 0)
+    const mana = Math.floor(manaEth + manaPol)
 
     return {
       total,
-      own: Math.floor(total - (vpByStrategy[I.DELEG] || 0)),
-      wMana: Math.floor(vpByStrategy[I.WMANA] || 0),
-      land: Math.floor(vpByStrategy[I.LAND] || 0),
-      estate: Math.floor(vpByStrategy[I.ESTATE] || 0),
-      mana: Math.floor((vpByStrategy[I.MANA_ETH] || 0) + (vpByStrategy[I.MANA_POL] || 0)),
-      names: Math.floor(vpByStrategy[I.NAMES] || 0),
-      delegated: Math.floor(vpByStrategy[I.DELEG] || 0),
-      l1Wearables: Math.floor(vpByStrategy[I.WEAR] || 0),
-      rental: Math.floor(vpByStrategy[I.RENTAL] || 0),
+      own: Math.max(0, Math.floor(total - delegated)),
+      wMana,
+      land,
+      estate,
+      mana,
+      names,
+      delegated,
+      l1Wearables: l1Wear,
+      rental,
     }
   }
 
