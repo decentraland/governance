@@ -124,15 +124,15 @@ export type VpDistribution = {
 }
 
 export enum StrategyOrder {
-  WrappedMana = 0,
-  Land = 1,
-  Estate = 2,
-  Names = 3,
-  Delegation = 4,
-  L1Wearables = 5,
-  Rental = 6,
-  ManaEth = 7,
-  ManaPolygon = 8,
+  WrappedMana,
+  Land,
+  Estate,
+  Names,
+  Delegation,
+  L1Wearables,
+  Rental,
+  ManaEth,
+  ManaPolygon,
 }
 
 export enum ServiceHealth {
