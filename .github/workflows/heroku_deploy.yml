@@ -42,8 +42,7 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
-
+  
       - name: Set up Git
         run: git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
 
@@ -51,7 +50,7 @@ jobs:
         id: install-dependencies
         run: npm ci
 
-      - name: Install Heroku CLI
+      - name: Set up Git
         run: curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
 
       - name: Build image

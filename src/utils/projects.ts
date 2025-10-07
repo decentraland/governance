@@ -54,7 +54,7 @@ export function getProjectStatus(
     return ProjectStatus.Finished
   }
   if (!vesting) {
-    return ProjectStatus.Pending
+    return project.status ?? ProjectStatus.Pending
   }
   return toGovernanceProjectStatus(vesting.status)
 }
