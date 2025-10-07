@@ -12,14 +12,14 @@ jobs:
       registry-path: ${{ steps.push-to-quay.outputs.registry-path }}
       registry-paths: ${{ steps.push-to-quay.outputs.registry-paths }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - name: node.js 18
-        uses: actions/setup-node@v2
+      - name: Setup Node 18
+        uses: actions/setup-node@v4
         with:
-          node-version: 18.8.0
-          registry-url: https://registry.npmjs.org/
+          node-version: '18'
           cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
 
       - name: set up git
         run: git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"

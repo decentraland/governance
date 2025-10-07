@@ -127,11 +127,12 @@ export enum StrategyOrder {
   WrappedMana,
   Land,
   Estate,
-  Mana,
   Names,
   Delegation,
   L1Wearables,
   Rental,
+  ManaEth,
+  ManaPolygon,
 }
 
 export enum ServiceHealth {
