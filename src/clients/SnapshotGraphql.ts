@@ -351,48 +351,48 @@ export class SnapshotGraphql extends API {
 
   async getVpDistribution(address: string, proposalId?: string): Promise<VpDistribution> {
     const query = `
-     query getVpDistribution($space: String!, $voter: String!, $proposal: String){
-        vp (
-          voter: $voter,
-          space: $space,
-          proposal: $proposal
-        ) {
-          vp
-          vp_by_strategy
-        } 
-      }
-    `
-    const variables = {
-      space: SNAPSHOT_SPACE,
-      voter: address,
-      proposal: proposalId || '',
-    }
+   query getVpDistribution($space: String!, $voter: String!, $proposal: String){
+     vp (voter: $voter, space: $space, proposal: $proposal) {
+       vp
+       vp_by_strategy
+     }
+   }
+ `
+
+    const variables = { space: SNAPSHOT_SPACE, voter: address, proposal: proposalId || '' }
 
     const result = await this.fetch<SnapshotVpResponse>(GRAPHQL_ENDPOINT, {
       method: 'POST',
-      json: {
-        query,
-        variables: variables,
-      },
+      json: { query, variables },
     })
 
-    if (!result?.data?.vp) {
-      throw Error('Unable to fetch VP Distribution')
-    }
+    if (!result?.data?.vp) throw Error('Unable to fetch VP Distribution')
 
-    const vpByStrategy = result?.data?.vp.vp_by_strategy
+    const vpByStrategy = result.data.vp.vp_by_strategy
+    const total = Math.floor(result.data.vp.vp)
+
+    const wMana = Math.floor(vpByStrategy[StrategyOrder.WrappedMana] || 0)
+    const land = Math.floor(vpByStrategy[StrategyOrder.Land] || 0)
+    const estate = Math.floor(vpByStrategy[StrategyOrder.Estate] || 0)
+    const names = Math.floor(vpByStrategy[StrategyOrder.Names] || 0)
+    const delegated = Math.floor(vpByStrategy[StrategyOrder.Delegation] || 0)
+    const l1Wear = Math.floor(vpByStrategy[StrategyOrder.L1Wearables] || 0)
+    const rental = Math.floor(vpByStrategy[StrategyOrder.Rental] || 0)
+    const manaEth = Math.floor(vpByStrategy[StrategyOrder.ManaEth] || 0)
+    const manaPol = Math.floor(vpByStrategy[StrategyOrder.ManaPolygon] || 0)
+    const mana = Math.floor(manaEth + manaPol)
 
     return {
-      total: Math.floor(result?.data?.vp.vp),
-      own: Math.floor(result?.data?.vp.vp - vpByStrategy[5]),
-      wMana: Math.floor(vpByStrategy[StrategyOrder.WrappedMana]),
-      land: Math.floor(vpByStrategy[StrategyOrder.Land]),
-      estate: Math.floor(vpByStrategy[StrategyOrder.Estate]),
-      mana: Math.floor(vpByStrategy[StrategyOrder.Mana]),
-      names: Math.floor(vpByStrategy[StrategyOrder.Names]),
-      delegated: Math.floor(vpByStrategy[StrategyOrder.Delegation]),
-      l1Wearables: Math.floor(vpByStrategy[StrategyOrder.L1Wearables]),
-      rental: Math.floor(vpByStrategy[StrategyOrder.Rental]),
+      total,
+      own: Math.max(0, Math.floor(total - delegated)),
+      wMana,
+      land,
+      estate,
+      mana,
+      names,
+      delegated,
+      l1Wearables: l1Wear,
+      rental,
     }
   }
 
