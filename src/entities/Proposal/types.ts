@@ -27,6 +27,7 @@ import {
   VOTING_POWER_TO_PASS_BAN_NAME,
   VOTING_POWER_TO_PASS_BID,
   VOTING_POWER_TO_PASS_CATALYST,
+  VOTING_POWER_TO_PASS_COUNCIL_DECISION_VETO,
   VOTING_POWER_TO_PASS_DRAFT,
   VOTING_POWER_TO_PASS_GOVERNANCE,
   VOTING_POWER_TO_PASS_HIRING,
@@ -117,6 +118,7 @@ export enum ProposalType {
   Pitch = 'pitch',
   Tender = 'tender',
   Bid = 'bid',
+  CouncilDecisionVeto = 'council_decision_veto',
 }
 
 export enum SortingOrder {
@@ -658,6 +660,7 @@ export const ProposalRequiredVP = {
   [ProposalType.Pitch]: requiredVotingPower(VOTING_POWER_TO_PASS_PITCH, 0),
   [ProposalType.Tender]: requiredVotingPower(VOTING_POWER_TO_PASS_TENDER, 0),
   [ProposalType.Bid]: requiredVotingPower(VOTING_POWER_TO_PASS_BID, 0),
+  [ProposalType.CouncilDecisionVeto]: requiredVotingPower(VOTING_POWER_TO_PASS_COUNCIL_DECISION_VETO, 0),
 }
 
 export type GrantProposalConfiguration = GrantRequestGeneralInfo &
@@ -772,6 +775,41 @@ export const newProposalLinkedWearablesScheme = {
       type: 'string',
       minLength: 0,
       maxLength: 750,
+    },
+    coAuthors,
+  },
+}
+
+export type NewProposalCouncilDecisionVeto = {
+  title: string
+  decision_snapshot_id: string
+  reasons: string
+  suggestions?: string
+  coAuthors?: string[]
+}
+
+export const newProposalCouncilDecisionVetoScheme = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['decision_snapshot_id', 'reasons'],
+  properties: {
+    title: {
+      type: 'string',
+      minLength: 1,
+      maxLength: 80,
+    },
+    decision_snapshot_id: {
+      type: 'string',
+    },
+    reasons: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
+    },
+    suggestions: {
+      type: 'string',
+      minLength: 20,
+      maxLength: 3500,
     },
     coAuthors,
   },
