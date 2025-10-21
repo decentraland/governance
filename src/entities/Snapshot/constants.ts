@@ -9,5 +9,5 @@ export const SNAPSHOT_DURATION = Number(process.env.GATSBY_SNAPSHOT_DURATION || 
 export const SNAPSHOT_URL = process.env.GATSBY_SNAPSHOT_URL || 'https://testnet.snapshot.org/'
 export const SNAPSHOT_QUERY_ENDPOINT = `https://gateway-arbitrum.network.thegraph.com/api/${process.env.THE_GRAPH_API_KEY}/subgraphs/id/4YgtogVaqoM8CErHWDK8mKQ825BcVdKB8vBYmb4avAQo`
 export const SNAPSHOT_API = process.env.GATSBY_SNAPSHOT_API || ''
-export const VESTINGS_QUERY_ENDPOINT = `https://gateway-arbitrum.network.thegraph.com/api/${process.env.THE_GRAPH_API_KEY}/subgraphs/id/Dek4AeCYyGQ8Y2yeVNb2N7cfQDy7Pinka1jD5uWvRCxG`
+export const VESTINGS_QUERY_ENDPOINT = ` https://gateway.thegraph.com/api/subgraphs/id/Dek4AeCYyGQ8Y2yeVNb2N7cfQDy7Pinka1jD5uWvRCxG`
 export const SNAPSHOT_SPACE_COUNCIL = process.env.SNAPSHOT_SPACE_COUNCIL || ''
