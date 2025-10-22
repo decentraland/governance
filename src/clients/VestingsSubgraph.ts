@@ -91,41 +91,32 @@ export class VestingsSubgraph {
   }
 
   async getVestings(addresses?: string[]): Promise<SubgraphVesting[]> {
-    const hasAddresses = Array.isArray(addresses) && addresses.length > 0
-    const norm = (a: string) => (a.startsWith('0x') ? a : `0x${a}`).toLowerCase()
-    const addrs = hasAddresses ? [...new Set(addresses!.map(norm))] : []
-
-    const headers = {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.THE_GRAPH_API_KEY}`,
-    }
-
-    const argsDecl = hasAddresses ? '$addresses: [ID!]!' : '$blockNumber: Int!'
-    const argsUse = hasAddresses ? 'where: { id_in: $addresses }' : 'block: { number_gte: $blockNumber }, first: 1000'
-
+    const queryAddresses = addresses && addresses.length > 0
+    const addressesQuery = queryAddresses
+      ? `where: { id_in: $addresses }`
+      : 'block: {number_gte: $blockNumber}, first: 1000'
+    const addressesParam = queryAddresses ? `$addresses: [String]!` : '$blockNumber: Int!'
     const query = `
-    query getVestings(${argsDecl}) {
-      vestings(${argsUse}) {
+    query getVestings(${addressesParam}) {
+      vestings(${addressesQuery}){
         ${VESTING_FIELDS}
       }
     }
-  `
-
-    const variables = hasAddresses ? { addresses: addrs } : { blockNumber: OLDEST_INDEXED_BLOCK }
-
-    const res = await fetch(this.queryEndpoint, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ query, variables, operationName: 'getVestings' }),
+    `
+    const variables = queryAddresses
+      ? { addresses: addresses.map((address) => address.toLowerCase()) }
+      : { blockNumber: OLDEST_INDEXED_BLOCK }
+    const response = await fetch(this.queryEndpoint, {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query,
+        variables,
+      }),
     })
 
-    const body = await res.json()
-
-    if (body?.errors?.length) {
-      throw new Error(`Subgraph error: ${JSON.stringify(body.errors)}`)
-    }
-
-    return body?.data?.vestings ?? []
+    const body = await response.json()
+    return body?.data?.vestings || []
   }
 
   async getVestingsWithRecentlyEndedCliffs(): Promise<SubgraphVesting[]> {
