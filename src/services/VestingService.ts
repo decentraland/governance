@@ -35,9 +35,20 @@ export class VestingService {
   }
 
   static async getVestings(addresses: string[]): Promise<VestingWithLogs[]> {
-    const vestingsData = await VestingsSubgraph.get().getVestings(addresses)
-    const sortedVestings = vestingsData.map(this.parseSubgraphVesting).sort(this.sortVestingsByDate)
-    return sortedVestings
+    if (!addresses?.length) return []
+
+    const norm = (a: string) => (a.startsWith('0x') ? a : `0x${a}`).toLowerCase()
+    const input = [...new Set(addresses.map(norm))]
+
+    const sg = await VestingsSubgraph.get().getVestings(input)
+    const sgById = new Map(sg.map((v) => [v.id.toLowerCase(), v]))
+    const missing = input.filter((a) => !sgById.has(a))
+
+    const fallback = await Promise.all(missing.map((a) => this.getVestingWithLogs(a).catch(() => null)))
+    const okFallback = fallback.filter((x): x is VestingWithLogs => x !== null)
+
+    const parsedFromSubgraph = sg.map(this.parseSubgraphVesting)
+    return [...parsedFromSubgraph, ...okFallback].sort(this.sortVestingsByDate)
   }
 
   static async getVestingsWithRecentlyEndedCliffs(): Promise<VestingWithLogs[]> {
