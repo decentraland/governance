@@ -35,7 +35,6 @@ export class VestingService {
   }
 
   static async getVestings(addresses: string[]): Promise<VestingWithLogs[]> {
-    console.log(addresses)
     if (!addresses?.length) return []
 
     const norm = (a: string) => (a.startsWith('0x') ? a : `0x${a}`).toLowerCase()
