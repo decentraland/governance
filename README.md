@@ -7,6 +7,7 @@
   Decentraland DAO Governance dApp
 </h1>
 
+
 The governance hub for the Decentraland ecosystem. Create and vote on proposals that help shape the future of the metaverse via the Decentraland DAO (Decentralized Autonomous Organization).
 
 ![Screenshot of the governance hub for Decentraland homepage](./static/home.png)
