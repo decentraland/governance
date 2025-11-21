@@ -57,7 +57,6 @@ jobs.cron('30 3 1 * *', giveTopVoterBadges) // Runs at 03:30 on the first day of
 
 const file = readFileSync('static/api.yaml', 'utf8')
 const swaggerDocument = YAML.parse(file)
-
 swaggerDocument['servers'] = [{ url: process.env.GATSBY_GOVERNANCE_API }]
 
 const app = express()
