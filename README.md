@@ -258,7 +258,6 @@ Once you setup this project you can start it using the following command
 
 the app should be running at https://localhost:4000/
 
-
 # About
 ### Routes
 
