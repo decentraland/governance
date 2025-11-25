@@ -24,6 +24,7 @@ export type ProposalVotingResult = ProposalAttributes & VotingResult
 export type ProposalWithOutcome = ProposalVotingResult & { newStatus: ProposalStatus }
 
 const YES_NO_OPTIONS = ['yes', 'no']
+const YES_NO_INVALID_OPTIONS = [...YES_NO_OPTIONS, INVALID_PROPOSAL_POLL_OPTIONS.toLocaleLowerCase()]
 
 const getVotingOutcome = (
   winnerChoice: string,
@@ -35,7 +36,10 @@ const getVotingOutcome = (
   requiredToPass?: number | null
 ): VotingOutcome => {
   const invalidOption = INVALID_PROPOSAL_POLL_OPTIONS.toLocaleLowerCase()
-  const isUsingDefaultOptions = sameOptions(choices, DEFAULT_CHOICES) || sameOptions(choices, YES_NO_OPTIONS)
+  const isUsingDefaultOptions =
+    sameOptions(choices, DEFAULT_CHOICES) ||
+    sameOptions(choices, YES_NO_OPTIONS) ||
+    sameOptions(choices, YES_NO_INVALID_OPTIONS)
 
   const isAcceptReject = sameOptions(choices, ['accept', 'reject', invalidOption])
   const isForAgainst = sameOptions(choices, ['for', 'against', invalidOption])
