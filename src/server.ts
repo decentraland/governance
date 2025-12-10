@@ -27,6 +27,7 @@ import budget from './routes/budget'
 import coauthor from './routes/coauthor'
 import committee from './routes/committee'
 import common from './routes/common'
+import council from './routes/council'
 import debug from './routes/debug'
 import events from './routes/events'
 import newsletter from './routes/newsletter'
@@ -74,6 +75,7 @@ app.use('/api', [
   common,
   coauthor,
   committee,
+  council,
   debug,
   events,
   newsletter,
