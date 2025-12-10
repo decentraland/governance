@@ -23,6 +23,11 @@ export function getVestingContractUrl(address: string) {
   return VESTING_DASHBOARD_URL.replace('%23', '#').concat(address.toLowerCase())
 }
 
+export const DAO_COUNCIL_ADDRESSES = (process.env.DAO_COUNCIL_ADDRESSES || '')
+  .split(',')
+  .filter(isEthereumAddress)
+  .map((address) => address.toLowerCase())
+
 export const GOVERNANCE_URL = process.env.GATSBY_GOVERNANCE_URL || 'https://decentraland.zone/governance'
 export const GOVERNANCE_API = process.env.GATSBY_GOVERNANCE_API || ''
 export const FORUM_URL = process.env.GATSBY_DISCOURSE_API || ''
