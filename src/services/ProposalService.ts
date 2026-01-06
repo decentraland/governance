@@ -5,7 +5,7 @@ import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import { SnapshotProposalContent } from '../clients/SnapshotTypes'
 import UnpublishedBidModel from '../entities/Bid/model'
 import CoauthorModel from '../entities/Coauthor/model'
-import isDAOCommittee from '../entities/Committee/isDAOCommittee'
+import isDAOCouncil from '../entities/Council/IsDAOCouncil'
 import ProposalModel from '../entities/Proposal/model'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import * as templates from '../entities/Proposal/templates'
@@ -153,7 +153,7 @@ export class ProposalService {
   }
 
   private static validateRemoval(proposal: ProposalAttributes, user: string) {
-    const allowToRemove = proposal.user === user || isDAOCommittee(user)
+    const allowToRemove = proposal.user === user || isDAOCouncil(user)
     if (!allowToRemove) {
       throw new RequestError('Forbidden', RequestError.Forbidden)
     }

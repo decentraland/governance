@@ -7,7 +7,7 @@ import isUUID from 'validator/lib/isUUID'
 
 import { SnapshotProposal } from '../clients/SnapshotTypes'
 import { ALCHEMY_DELEGATIONS_WEBHOOK_SECRET, DISCOURSE_WEBHOOK_SECRET } from '../constants'
-import isDAOCommittee from '../entities/Committee/isDAOCommittee'
+import isDAOCouncil from '../entities/Council/IsDAOCouncil'
 import isDebugAddress from '../entities/Debug/isDebugAddress'
 import { ProjectStatus } from '../entities/Grant/types'
 import { ProposalAttributes, ProposalStatus, ProposalStatusUpdate } from '../entities/Proposal/types'
@@ -176,9 +176,9 @@ export function validateEventFilters(req: Request) {
   return parsedEventTypes.data
 }
 
-export function validateIsDaoCommittee(user: string) {
-  if (!isDAOCommittee(user)) {
-    throw new RequestError('Only DAO committee members can update a proposal status', RequestError.Forbidden)
+export function validateIsDaoCouncil(user: string) {
+  if (!isDAOCouncil(user)) {
+    throw new RequestError('Only DAO Council members can update a proposal status', RequestError.Forbidden)
   }
 }
 
