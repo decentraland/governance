@@ -89,7 +89,7 @@ import {
   isValidImage,
   validateAddress,
   validateId,
-  validateIsDaoCommittee,
+  validateIsDaoCouncil,
   validateObjectMarkdownImages,
   validateStatusUpdate,
 } from '../utils/validations'
@@ -595,7 +595,7 @@ const ProposalStatusUpdateValidator = schema.compile(ProposalStatusUpdateScheme)
 
 export async function updateProposalStatus(req: WithAuth<Request<{ proposal: string }>>) {
   const user = req.auth!
-  validateIsDaoCommittee(user)
+  validateIsDaoCouncil(user)
 
   const proposal = await getProposalWithProject(req)
   const statusUpdate = validate<ProposalStatusUpdate>(ProposalStatusUpdateValidator, req.body || {})
