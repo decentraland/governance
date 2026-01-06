@@ -178,7 +178,7 @@ export function validateEventFilters(req: Request) {
 
 export function validateIsDaoCouncil(user: string) {
   if (!isDAOCouncil(user)) {
-    throw new RequestError('Only DAO committee members can update a proposal status', RequestError.Forbidden)
+    throw new RequestError('Only DAO Council members can update a proposal status', RequestError.Forbidden)
   }
 }
 
