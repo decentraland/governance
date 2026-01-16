@@ -12,7 +12,6 @@ The governance hub for the Decentraland ecosystem. Create and vote on proposals 
 ![Screenshot of the governance hub for Decentraland homepage](./static/home.png)
 
 # Setup
-
 Before you start make sure you have installed:
 
 - [Homebrew](https://brew.sh/)
