@@ -58,7 +58,6 @@
     "rollbar": "^2.26.1",
     "slug": "^4.0.4",
     "swagger-ui-express": "^4.6.0",
-    "thirdweb": "^5.118.0",
     "unified": "9.2.2",
     "yaml": "^2.2.1",
     "zod": "^3.22.4"
