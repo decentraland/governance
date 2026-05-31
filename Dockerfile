@@ -1,4 +1,4 @@
-FROM node:18.8-alpine as compiler
+FROM node:24-alpine as compiler
 ARG version_number
 ARG heroku_app_name
 ARG FRONT_BUILD_NODE_OPTIONS="--max-old-space-size=4096"
@@ -42,7 +42,7 @@ COPY ./.babelrc.json                          /app/.babelrc.json
 RUN NODE_OPTIONS="--max-old-space-size=4096" npm run build
 RUN npm prune --production --ignore-scripts
 
-FROM node:18.8-alpine
+FROM node:24-alpine
 WORKDIR /app
 
 RUN rm -rf \
