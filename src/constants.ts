@@ -61,7 +61,6 @@ export const PUSH_CHANNEL_ID = process.env.GATSBY_PUSH_CHANNEL_ID || ''
 
 export const DCL_META_IMAGE_URL = 'https://decentraland.org/images/decentraland.png'
 export const JOIN_DISCORD_URL = 'https://dcl.gg/discord'
-export const BLOCKNATIVE_API_KEY = process.env.BLOCKNATIVE_API_KEY || ''
 export const REASON_THRESHOLD = Number(process.env.GATSBY_REASON_THRESHOLD)
 
 export const VESTING_DASHBOARD_URL = 'https://decentraland.org/vesting/%23/'

@@ -45,7 +45,7 @@ If you are running this project locally you only need to check the following env
 - `COMMITTEE_ADDRESSES`: list of eth addresses separated by `,` that will be able to enact finished proposals
 - `DISCOURSE_API_KEY`: the api key use to publish the proposals on the forum
 - `RPC_PROVIDER_URL`: the rpc provider to get the latest block
-- `BLOCKNATIVE_API_KEY`: api key for [blocknative](https://www.blocknative.com/), a polygon tx gas estimation service we use for calculating airdrops gas fees accurately
+- `POLYGON_RPC_URL`: the Polygon rpc provider used for badge contract transactions and gas fee estimation
 - Snapshot env vars: see snapshot setup
 
 ### Setup the required voting power to pass
