@@ -43,8 +43,9 @@
   },
   "homepage": "https://github.com/decentraland/governance#readme",
   "dependencies": {
+    "@aws-sdk/client-sns": "^3.896.0",
     "@dcl/feature-flags": "^1.2.0",
-    "@dcl/schemas": "^11.5.0",
+    "@dcl/schemas": "^19.0.0",
     "@dcl/ui-env": "1.3.0",
     "@otterspace-xyz/contracts": "^2.7.3",
     "@pushprotocol/restapi": "^1.7.3",
@@ -108,7 +109,6 @@
     "*.{js,jsx,ts,tsx,css,json}": "prettier --write"
   },
   "overrides": {
-    "@dcl/schemas": "^11.5.0",
     "decentraland-connect": "5.2.4"
   }
 }
