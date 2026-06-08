@@ -29,7 +29,7 @@ jobs:
       # Wire up the github deployment so links to `view deployment` are valid on the PR
       - name: Create GitHub deployment
         id: deployment
-        uses: chrnorm/deployment-action@releases/v1
+        uses: chrnorm/deployment-action@fe2fba14b486343ce6893cff73b80e153063917a # releases/v1, pinned for supply-chain safety
         with:
           initial_status: in_progress
           token: ${{ github.token }}
@@ -94,7 +94,7 @@ jobs:
       # Updates the PR with a link to the Review App deployment
       - name: Update deployment status on GitHub to success
         if: steps.heroku_release_image.outcome == 'success'
-        uses: chrnorm/deployment-status@releases/v1
+        uses: chrnorm/deployment-status@598d987f3a8dec3817b995f810e6de7c06c92106 # releases/v1, pinned for supply-chain safety
         with:
           token: ${{ github.token }}
           target_url: https://governance.decentraland.vote/governance/
