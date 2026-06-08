@@ -13,13 +13,7 @@ RUN apk add --no-cache --virtual native-deps \
   openssh \
   shadow \
   musl-dev \
-  nasm \
-  tiff \
-  jpeg \
   zlib \
-  zlib-dev \
-  vips \
-  vips-dev \
   file \
   pkgconf
 
