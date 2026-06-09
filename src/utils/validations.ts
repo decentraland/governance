@@ -137,7 +137,9 @@ export function validateDiscourseWebhookSignature(req: Request) {
     crypto.createHmac('sha256', DISCOURSE_WEBHOOK_SECRET).update(JSON.stringify(payload)).digest('hex')
   )
 
-  if (providedSignature !== calculatedSignature) {
+  const provided = Buffer.from(providedSignature)
+  const calculated = Buffer.from(calculatedSignature)
+  if (provided.length !== calculated.length || !crypto.timingSafeEqual(provided, calculated)) {
     ErrorService.report('Invalid discourse webhook signature', { category: ErrorCategory.Discourse })
     throw new RequestError('Invalid signature', RequestError.Forbidden)
   }
@@ -152,7 +154,9 @@ export function validateAlchemyWebhookSignature(req: Request) {
   const hmac = crypto.createHmac('sha256', ALCHEMY_DELEGATIONS_WEBHOOK_SECRET)
   hmac.update(body, 'utf8')
   const digest = hmac.digest('hex')
-  if (signature !== digest) {
+  const provided = Buffer.from(signature || '')
+  const digestBuffer = Buffer.from(digest)
+  if (provided.length !== digestBuffer.length || !crypto.timingSafeEqual(provided, digestBuffer)) {
     ErrorService.report('Invalid alchemy webhook signature', { category: ErrorCategory.Webhook })
     throw new RequestError('Invalid signature', RequestError.Forbidden)
   }
@@ -289,8 +293,14 @@ export async function isValidImage(imageUrl: string) {
   }
 
   return new Promise<boolean>((resolve) => {
-    fetch(imageUrl)
+    // Do not follow redirects: a URL on a trusted domain could 3xx-redirect to an
+    // internal host (e.g. 169.254.169.254), turning this check into an SSRF.
+    fetch(imageUrl, { redirect: 'manual' })
       .then((response) => {
+        if (!response.ok) {
+          resolve(false)
+          return
+        }
         const mime = response.headers.get('content-type')
         resolve(!!mime && allowedImageTypes.has(mime))
       })
