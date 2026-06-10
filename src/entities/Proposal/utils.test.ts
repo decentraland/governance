@@ -55,6 +55,10 @@ describe('isValidUpdateProposalStatus', () => {
     expect(isValidProposalStatusUpdate(ProposalStatus.Deleted, ProposalStatus.Enacted)).toBe(false)
   })
 
+  it('can update an enacted proposal back to passed', () => {
+    expect(isValidProposalStatusUpdate(ProposalStatus.Enacted, ProposalStatus.Passed)).toBe(true)
+  })
+
   it('returns false for Pending, Active, Rejected, OutOfBudget and Deleted statuses', () => {
     Object.values(ProposalStatus).forEach((status) => {
       expect(isValidProposalStatusUpdate(ProposalStatus.Pending, status)).toBe(false)

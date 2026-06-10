@@ -10,7 +10,7 @@ import { ALCHEMY_DELEGATIONS_WEBHOOK_SECRET, DISCOURSE_WEBHOOK_SECRET } from '..
 import isDAOCouncil from '../entities/Council/IsDAOCouncil'
 import isDebugAddress from '../entities/Debug/isDebugAddress'
 import { ProjectStatus } from '../entities/Grant/types'
-import { ProposalAttributes, ProposalStatus, ProposalStatusUpdate } from '../entities/Proposal/types'
+import { ProposalAttributes, ProposalStatus, ProposalStatusUpdate, ProposalType } from '../entities/Proposal/types'
 import { isProjectProposal, isValidProposalStatusUpdate } from '../entities/Proposal/utils'
 import { validateUniqueAddresses } from '../entities/Transparency/utils'
 import { ErrorService } from '../services/ErrorService'
@@ -186,6 +186,9 @@ export function validateStatusUpdate(proposal: ProposalAttributes, statusUpdate:
   const { status: newStatus, vesting_addresses } = statusUpdate
   if (!isValidProposalStatusUpdate(proposal.status, newStatus)) {
     throw new RequestError(`${proposal.status} can't be updated to ${newStatus}`, RequestError.BadRequest, statusUpdate)
+  }
+  if (newStatus === ProposalStatus.Enacted && [ProposalType.Poll, ProposalType.Draft].includes(proposal.type)) {
+    throw new RequestError(`${proposal.type} proposals can't be enacted`, RequestError.BadRequest, statusUpdate)
   }
   if (newStatus === ProposalStatus.Enacted && isProjectProposal(proposal.type)) {
     if (!vesting_addresses || vesting_addresses.length === 0) {
