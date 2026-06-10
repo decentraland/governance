@@ -81,8 +81,9 @@ export function isValidProposalStatusUpdate(current: ProposalStatus, next: Propo
         next === ProposalStatus.OutOfBudget
       )
     case ProposalStatus.Passed:
-    case ProposalStatus.Enacted:
       return next === ProposalStatus.Enacted
+    case ProposalStatus.Enacted:
+      return next === ProposalStatus.Enacted || next === ProposalStatus.Passed
     default:
       return false
   }

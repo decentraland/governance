@@ -283,6 +283,7 @@ export class ProposalService {
     const { id } = proposal
     const isProject = isProjectProposal(proposal.type)
     const isEnactedStatus = newStatus === ProposalStatus.Enacted
+    const isRevertedEnactedStatus = proposal.status === ProposalStatus.Enacted && newStatus === ProposalStatus.Passed
     const updated_at = new Date()
     let update: Partial<ProposalAttributes> = {
       status: newStatus,
@@ -291,6 +292,8 @@ export class ProposalService {
 
     if (isEnactedStatus) {
       update = { ...update, ...this.getEnactedStatusData(proposal, vesting_addresses, user) }
+    } else if (isRevertedEnactedStatus) {
+      update = { ...update, ...this.getRevertedEnactedStatusData() }
     } else if (newStatus === ProposalStatus.Passed) {
       update.passed_by = user
     } else if (newStatus === ProposalStatus.Rejected) {
@@ -334,6 +337,15 @@ export class ProposalService {
       )
     }
     return update
+  }
+
+  private static getRevertedEnactedStatusData(): Partial<ProposalAttributes> {
+    return {
+      enacted: false,
+      enacted_by: null,
+      enacted_description: null,
+      enacting_tx: null,
+    }
   }
 
   static async findContributorsForProposalsByVestings(vestingAddresses: string[]) {

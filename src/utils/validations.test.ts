@@ -1,8 +1,10 @@
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 
+import { createTestProposal } from '../entities/Proposal/testHelpers'
+import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { EventType } from '../shared/types/events'
 
-import { validateEventFilters, validateId } from './validations'
+import { validateEventFilters, validateId, validateStatusUpdate } from './validations'
 
 describe('validateProposalId', () => {
   const UUID = '00000000-0000-0000-0000-000000000000'
@@ -47,6 +49,32 @@ describe('validateEventTypesFilters', () => {
     const req = { query: { event_type: 'single_event' } } as never
 
     expect(() => validateEventFilters(req)).toThrow()
+  })
+})
+
+describe('validateStatusUpdate', () => {
+  it('allows reverting an enacted draft proposal back to passed', () => {
+    const proposal = createTestProposal(ProposalType.Draft, ProposalStatus.Enacted)
+
+    expect(() => validateStatusUpdate(proposal, { status: ProposalStatus.Passed })).not.toThrow()
+  })
+
+  it('does not allow poll proposals to be enacted', () => {
+    const proposal = createTestProposal(ProposalType.Poll, ProposalStatus.Passed)
+
+    expect(() => validateStatusUpdate(proposal, { status: ProposalStatus.Enacted })).toThrow(RequestError)
+  })
+
+  it('does not allow draft proposals to be enacted', () => {
+    const proposal = createTestProposal(ProposalType.Draft, ProposalStatus.Passed)
+
+    expect(() => validateStatusUpdate(proposal, { status: ProposalStatus.Enacted })).toThrow(RequestError)
+  })
+
+  it('allows governance proposals to be enacted', () => {
+    const proposal = createTestProposal(ProposalType.Governance, ProposalStatus.Passed)
+
+    expect(() => validateStatusUpdate(proposal, { status: ProposalStatus.Enacted })).not.toThrow()
   })
 })
 
