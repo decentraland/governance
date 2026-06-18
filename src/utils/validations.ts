@@ -127,6 +127,13 @@ export function validateDebugAddress(user: string | undefined) {
   }
 }
 
+// Constant-time comparison of two signature strings (guards against length leak).
+function timingSafeStringEqual(a: string, b: string): boolean {
+  const bufA = Buffer.from(a)
+  const bufB = Buffer.from(b)
+  return bufA.length === bufB.length && crypto.timingSafeEqual(bufA, bufB)
+}
+
 export function validateDiscourseWebhookSignature(req: Request) {
   const providedSignature = req.get('X-Discourse-Event-Signature') || ''
   if (!DISCOURSE_WEBHOOK_SECRET || DISCOURSE_WEBHOOK_SECRET.length === 0) {
@@ -137,7 +144,7 @@ export function validateDiscourseWebhookSignature(req: Request) {
     crypto.createHmac('sha256', DISCOURSE_WEBHOOK_SECRET).update(JSON.stringify(payload)).digest('hex')
   )
 
-  if (providedSignature !== calculatedSignature) {
+  if (!timingSafeStringEqual(providedSignature, calculatedSignature)) {
     ErrorService.report('Invalid discourse webhook signature', { category: ErrorCategory.Discourse })
     throw new RequestError('Invalid signature', RequestError.Forbidden)
   }
@@ -152,7 +159,7 @@ export function validateAlchemyWebhookSignature(req: Request) {
   const hmac = crypto.createHmac('sha256', ALCHEMY_DELEGATIONS_WEBHOOK_SECRET)
   hmac.update(body, 'utf8')
   const digest = hmac.digest('hex')
-  if (signature !== digest) {
+  if (!timingSafeStringEqual(signature || '', digest)) {
     ErrorService.report('Invalid alchemy webhook signature', { category: ErrorCategory.Webhook })
     throw new RequestError('Invalid signature', RequestError.Forbidden)
   }
@@ -292,8 +299,14 @@ export async function isValidImage(imageUrl: string) {
   }
 
   return new Promise<boolean>((resolve) => {
-    fetch(imageUrl)
+    // Do not follow redirects: a URL on a trusted domain could 3xx-redirect to an
+    // internal host (e.g. 169.254.169.254), turning this check into an SSRF.
+    fetch(imageUrl, { redirect: 'manual' })
       .then((response) => {
+        if (!response.ok) {
+          resolve(false)
+          return
+        }
         const mime = response.headers.get('content-type')
         resolve(!!mime && allowedImageTypes.has(mime))
       })
