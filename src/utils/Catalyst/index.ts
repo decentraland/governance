@@ -1,4 +1,3 @@
-import fetch from 'isomorphic-fetch'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { isSameAddress } from '../../entities/Snapshot/utils'

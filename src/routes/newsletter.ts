@@ -2,7 +2,6 @@ import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
-import fetch from 'isomorphic-fetch'
 import isEmail from 'validator/lib/isEmail'
 
 import { ErrorService } from '../services/ErrorService'

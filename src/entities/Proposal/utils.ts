@@ -3,7 +3,6 @@ import {
   getNameDenylistFromCache,
   getPoisFromCache,
 } from 'dcl-catalyst-client/dist/contracts-snapshots'
-import 'isomorphic-fetch'
 import numeral from 'numeral'
 
 import { GOVERNANCE_URL } from '../../constants'

@@ -1,5 +1,3 @@
-import fetch from 'isomorphic-fetch'
-
 import { VESTINGS_QUERY_ENDPOINT } from '../entities/Snapshot/constants'
 import Time from '../utils/date/Time'
 

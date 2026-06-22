@@ -1,5 +1,4 @@
 import { ethers } from 'ethers'
-import fetch from 'isomorphic-fetch'
 
 import { PolygonGasData } from '../entities/Badges/types'
 import { ErrorService } from '../services/ErrorService'
