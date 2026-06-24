@@ -1,5 +1,3 @@
-import fetch from 'isomorphic-fetch'
-
 import { OTTERSPACE_DAO_RAFT_ID, OTTERSPACE_QUERY_ENDPOINT } from '../entities/Snapshot/constants'
 import { isProdEnv } from '../utils/governanceEnvs'
 

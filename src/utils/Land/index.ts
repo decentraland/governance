@@ -1,5 +1,3 @@
-import fetch from 'isomorphic-fetch'
-
 import { ErrorClient } from '../../clients/ErrorClient'
 
 import { Tile } from './types'

@@ -1,5 +1,3 @@
-import fetch from 'isomorphic-fetch'
-
 import { SNAPSHOT_QUERY_ENDPOINT } from '../entities/Snapshot/constants'
 import { PICKED_BY_QUERY, getDelegatedQuery } from '../entities/Snapshot/queries'
 
