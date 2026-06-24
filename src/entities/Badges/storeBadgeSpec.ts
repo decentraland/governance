@@ -9,6 +9,7 @@ import {
 } from '../../constants'
 import { getIpfsAddress } from '../../utils/contractInteractions'
 import { toIsoStringDate } from '../../utils/date/toIsoString'
+import { drainResponse } from '../../utils/fetch'
 import logger from '../../utils/logger'
 
 import { ActionStatus, BadgeCreationResult } from './types'
@@ -34,6 +35,7 @@ const getImageFileFromUrl = async (imgUrl: string) => {
   try {
     const response = await fetch(imgUrl)
     if (!response.ok) {
+      await drainResponse(response)
       throw new Error('Failed to fetch image')
     }
     const imageBlob = await response.blob()

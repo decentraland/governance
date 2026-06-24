@@ -18,6 +18,7 @@ import { inBackground } from '../helpers'
 import { ProjectUpdateCommentedEvent, ProposalCommentedEvent } from '../shared/types/events'
 import { DclNotification, Notification, NotificationCustomType, Recipient } from '../shared/types/notifications'
 import { ErrorCategory } from '../utils/errorCategories'
+import { drainResponse } from '../utils/fetch'
 import { isProdEnv } from '../utils/governanceEnvs'
 import logger from '../utils/logger'
 import { NotificationType, Notifications, getCaipAddress, getPushNotificationsEnv } from '../utils/notifications'
@@ -126,7 +127,7 @@ export class NotificationService {
     }
 
     try {
-      await fetch(`${DCL_NOTIFICATIONS_SERVICE_API_URL}/notifications`, {
+      const response = await fetch(`${DCL_NOTIFICATIONS_SERVICE_API_URL}/notifications`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -134,6 +135,7 @@ export class NotificationService {
         },
         body: JSON.stringify(notifications),
       })
+      await drainResponse(response)
     } catch (error) {
       ErrorService.report('Failed to send notification to DCL', {
         error: `${error}`,
