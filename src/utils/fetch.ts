@@ -1,3 +1,5 @@
+import logger from './logger'
+
 /**
  * Discards an unread fetch Response body.
  *
@@ -7,6 +9,12 @@
  */
 export async function drainResponse(response: Response): Promise<void> {
   if (!response.bodyUsed) {
-    await response.body?.cancel().catch(() => undefined)
+    await response.body?.cancel().catch((error) => {
+      // Cancelling an already-settled body is benign; log (no debug level in this
+      // logger, so warn) only so the rare genuine failure stays diagnosable.
+      logger.warn('drainResponse: failed to cancel response body', {
+        error: error instanceof Error ? error.message : String(error),
+      })
+    })
   }
 }
