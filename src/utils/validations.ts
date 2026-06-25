@@ -16,6 +16,7 @@ import { validateUniqueAddresses } from '../entities/Transparency/utils'
 import { ErrorService } from '../services/ErrorService'
 import { ProjectService } from '../services/ProjectService'
 import { EventFilterSchema } from '../shared/types/events'
+import { drainResponse } from '../utils/fetch'
 import logger from '../utils/logger'
 
 import { ErrorCategory } from './errorCategories'
@@ -302,7 +303,10 @@ export async function isValidImage(imageUrl: string) {
     // Do not follow redirects: a URL on a trusted domain could 3xx-redirect to an
     // internal host (e.g. 169.254.169.254), turning this check into an SSRF.
     fetch(imageUrl, { redirect: 'manual' })
-      .then((response) => {
+      .then(async (response) => {
+        // Only the headers are inspected, so the body must be drained on every
+        // path to avoid leaking the keep-alive socket.
+        await drainResponse(response)
         if (!response.ok) {
           resolve(false)
           return
