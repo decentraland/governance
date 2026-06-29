@@ -1,4 +1,11 @@
-import { Env } from '@dcl/ui-env'
+// `Env` is defined locally rather than imported from `@dcl/ui-env` on purpose:
+// ui-env is a front-end (bundler-targeted) package and the backend should not
+// depend on it at runtime. The values must match ui-env's `Env` enum.
+enum Env {
+  DEVELOPMENT = 'dev',
+  STAGING = 'stg',
+  PRODUCTION = 'prod',
+}
 
 // TODO: Review this. It is only used by getBooleanStringVar
 
