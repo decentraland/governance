@@ -137,6 +137,10 @@ function timingSafeStringEqual(a: string, b: string): boolean {
 
 // Prefer the exact raw bytes captured before parsing (see server.ts) so the HMAC matches
 // what the sender signed; fall back to re-serialization if the raw body is unavailable.
+// IMPORTANT: rawBody is only captured for routes under the /api/webhooks prefix (see the
+// express.json verify hook in server.ts). Any new signature-verified webhook MUST be mounted
+// under that prefix — otherwise this falls back to JSON.stringify(req.body), whose key order
+// and whitespace may differ from the sender's payload and cause valid signatures to be rejected.
 function getWebhookPayload(req: Request): string {
   const rawBody = (req as unknown as { rawBody?: string }).rawBody
   return typeof rawBody === 'string' && rawBody.length > 0 ? rawBody : JSON.stringify(req.body)

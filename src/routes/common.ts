@@ -11,23 +11,6 @@ export default routes((router) => {
   return router.post('/url-title', withAuth, handleAPI(checkUrlTitle))
 })
 
-const fetchWithTimeout = async (url: string, timeout = 10000, options?: RequestInit) => {
-  const controller = new AbortController()
-  const timeoutId = setTimeout(() => {
-    controller.abort()
-  }, timeout)
-
-  try {
-    const response = await fetch(url, {
-      ...options,
-      signal: controller.signal,
-    })
-    return response
-  } finally {
-    clearTimeout(timeoutId)
-  }
-}
-
 const isHttpsURL = (url: string) => isURL(url, { protocols: ['https'], require_protocol: true })
 
 // Parses any valid IPv6 textual form (compact, expanded, or with an embedded IPv4 suffix)
@@ -107,6 +90,12 @@ export async function assertPublicUrl(url: string) {
     return
   }
 
+  // Known limitation: this resolves the hostname and vets the IPs, but the subsequent
+  // fetch() resolves DNS again independently, so a DNS-rebinding attacker (very low TTL)
+  // could pass here with a public IP and have the fetch hit a private IP. Fully closing it
+  // would require pinning this IP into the request (connect-to-IP + Host header), which
+  // native fetch doesn't support without breaking TLS SNI. Accepted for the current threat
+  // model (endpoint is authenticated); redirect: 'manual' in getTitle blocks the redirect variant.
   const resolved = await dns.promises.lookup(hostname, { all: true })
   if (resolved.length === 0) {
     throw new Error('Invalid url: could not resolve host')
@@ -117,12 +106,17 @@ export async function assertPublicUrl(url: string) {
 }
 
 async function getTitle(url: string) {
-  // redirect: 'manual' prevents a public URL from 3xx-redirecting to an internal host
-  // after the address check has passed.
-  const response = await fetchWithTimeout(url, 6000, { redirect: 'manual' })
-  const text = await response.text()
-  const title = text.match(/<title>([^<]+)<\/title>/)?.[1]
-  return title
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), 6000)
+  try {
+    // redirect: 'manual' prevents a public URL from 3xx-redirecting to an internal host
+    // after the address check has passed.
+    const response = await fetch(url, { redirect: 'manual', signal: controller.signal })
+    const text = await response.text()
+    return text.match(/<title>([^<]+)<\/title>/)?.[1]
+  } finally {
+    clearTimeout(timeoutId)
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
