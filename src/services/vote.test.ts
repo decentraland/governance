@@ -1,3 +1,5 @@
+import { SnapshotVote } from '../clients/SnapshotTypes'
+import { VOTES_VP_THRESHOLD } from '../constants'
 import CacheService from '../services/CacheService'
 import { SnapshotService } from '../services/SnapshotService'
 import { SNAPSHOT_VOTES_30_DAYS } from '../utils/votes/Votes-30days'
@@ -249,6 +251,31 @@ describe('getSortedCountPerUser', () => {
     expect(sortedVotes[3].lastVoted).toBeLessThan(sortedVotes[4].lastVoted)
     expect(sortedVotes[4].votes).toEqual(sortedVotes[5].votes)
     expect(sortedVotes[4].lastVoted).toBeLessThan(sortedVotes[5].lastVoted)
+  })
+
+  describe('when votes include voting power below, at and above the threshold', () => {
+    const belowThreshold = '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+    const atThreshold = '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'
+    const aboveThreshold = '0xcccccccccccccccccccccccccccccccccccccccc'
+    let votes: SnapshotVote[]
+
+    beforeEach(() => {
+      votes = [
+        { voter: belowThreshold, created: 100, vp: VOTES_VP_THRESHOLD - 1, choice: 1 },
+        { voter: atThreshold, created: 200, vp: VOTES_VP_THRESHOLD, choice: 1 },
+        { voter: aboveThreshold, created: 300, vp: VOTES_VP_THRESHOLD + 1, choice: 1 },
+      ]
+    })
+
+    it('should count the voter whose voting power equals the threshold', () => {
+      const result = VoteService.getSortedVoteCountPerUser(votes)
+      expect(result.map((voter) => voter.address)).toEqual([atThreshold, aboveThreshold])
+    })
+
+    it('should exclude the voter whose voting power is below the threshold', () => {
+      const result = VoteService.getSortedVoteCountPerUser(votes)
+      expect(result.map((voter) => voter.address)).not.toContain(belowThreshold)
+    })
   })
 })
 

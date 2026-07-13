@@ -6,6 +6,7 @@ import ProposalModel from '../entities/Proposal/model'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import { ProposalAttributes } from '../entities/Proposal/types'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
+import { isSameAddress } from '../entities/Snapshot/utils'
 import UpdateModel from '../entities/Updates/model'
 import { UpdateAttributes } from '../entities/Updates/types'
 import UserModel from '../entities/User/model'
@@ -39,6 +40,7 @@ import { DclProfile } from '../utils/Catalyst/types'
 import Time from '../utils/date/Time'
 import { ErrorCategory } from '../utils/errorCategories'
 
+import { SnapshotService } from './SnapshotService'
 import { NotificationService } from './notification'
 
 const CLEAR_DELEGATE_SIGNATURE_HASH = '0x9c4f00c4291262731946e308dc2979a56bd22cce8f95906b975065e96cd5a064'
@@ -131,19 +133,39 @@ export class EventsService {
     }
   }
 
-  static async voted(proposal_id: string, proposal_title: string, choice: string, address: string) {
+  static async voted(proposal_id: string, choice: string, address: string) {
     try {
+      const proposalRow = await ProposalModel.findOne<ProposalAttributes>({ id: proposal_id, deleted: false })
+      if (!proposalRow) {
+        throw new Error(`Proposal not found: "${proposal_id}"`)
+      }
+      const proposal = ProposalModel.parse(proposalRow)
+
+      // Confirm on Snapshot that this address actually voted on the proposal before
+      // recording the activity event, so "voted" entries cannot be fabricated.
+      const votes = await SnapshotService.getVotesByProposal(proposal.snapshot_id)
+      const userVote = votes.find((vote) => isSameAddress(vote.voter, address))
+      if (!userVote) {
+        throw new Error(`No Snapshot vote found for ${address} on proposal "${proposal_id}"`)
+      }
+
+      // Derive the choice label from the proposal's own choices via the vote's choice index
+      // so no client-supplied free text is stored (prevents feed spoofing / stored XSS).
+      const choices: string[] = proposal.snapshot_proposal?.choices || []
+      const derivedChoice = typeof userVote.choice === 'number' ? choices[userVote.choice - 1] : undefined
+      const safeChoice = derivedChoice ?? (choices.includes(choice) ? choice : 'unknown')
+
       const votedEvent: VotedEvent = {
         id: crypto.randomUUID(),
         address,
         event_type: EventType.Voted,
-        event_data: { proposal_id, proposal_title, choice },
+        event_data: { proposal_id, proposal_title: proposal.title, choice: safeChoice },
         created_at: new Date(),
       }
       await EventModel.create(votedEvent)
       NotificationService.newVote(proposal_id, address)
     } catch (error) {
-      this.reportEventError(error as Error, EventType.Voted, { address, proposal_id, proposal_title, choice })
+      this.reportEventError(error as Error, EventType.Voted, { address, proposal_id, choice })
     }
   }
 

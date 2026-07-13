@@ -33,7 +33,7 @@ export class FinancialService {
 
   public static async createRecords(update_id: string, records: FinancialRecord[]): Promise<FinancialAttributes[]> {
     try {
-      this.deleteRecordsByUpdateId(update_id)
+      await this.deleteRecordsByUpdateId(update_id)
       return await FinancialModel.createRecords(update_id, records)
     } catch (error) {
       const msg = 'Error inserting financial records'

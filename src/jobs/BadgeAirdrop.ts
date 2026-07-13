@@ -13,27 +13,39 @@ export async function runQueuedAirdropJobs() {
     return
   }
   logger.log(`Running ${pendingJobs.length} airdrop jobs`)
-  pendingJobs.map(async (pendingJob) => {
-    const { id, badge_spec, recipients } = pendingJob
-    const airdropOutcome = await BadgesService.giveBadgeToUsers(badge_spec, recipients)
-    logger.log('Airdrop Outcome', airdropOutcome)
-    if (airdropOutcome.status === AirdropJobStatus.FAILED) {
-      ErrorService.report('Airdrop job failed', {
-        category: ErrorCategory.Badges,
-        id,
-        badge_spec,
-        recipients,
-        error: airdropOutcome.error,
-      })
-    }
-    await AirdropJobModel.update<AirdropJobAttributes>(
-      {
-        ...airdropOutcome,
-        updated_at: new Date(),
-      },
-      { id }
-    )
-  })
+  await Promise.all(
+    pendingJobs.map(async (pendingJob) => {
+      const { id, badge_spec, recipients } = pendingJob
+      try {
+        const airdropOutcome = await BadgesService.giveBadgeToUsers(badge_spec, recipients)
+        logger.log('Airdrop Outcome', airdropOutcome)
+        if (airdropOutcome.status === AirdropJobStatus.FAILED) {
+          ErrorService.report('Airdrop job failed', {
+            category: ErrorCategory.Badges,
+            id,
+            badge_spec,
+            recipients,
+            error: airdropOutcome.error,
+          })
+        }
+        await AirdropJobModel.update<AirdropJobAttributes>(
+          {
+            ...airdropOutcome,
+            updated_at: new Date(),
+          },
+          { id }
+        )
+      } catch (error) {
+        ErrorService.report('Unexpected error running airdrop job', {
+          category: ErrorCategory.Badges,
+          id,
+          badge_spec,
+          recipients,
+          error: `${error}`,
+        })
+      }
+    })
+  )
 }
 
 export async function giveAndRevokeLandOwnerBadges() {

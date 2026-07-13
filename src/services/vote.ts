@@ -88,7 +88,7 @@ export class VoteService {
 
   public static getSortedVoteCountPerUser(votes: SnapshotVote[]) {
     const votesByUser = votes
-      .filter((vote) => vote.vp && vote.vp > VOTES_VP_THRESHOLD)
+      .filter((vote) => vote.vp && vote.vp >= VOTES_VP_THRESHOLD)
       .reduce((acc, vote) => {
         const address = vote.voter.toLowerCase()
         if (!acc[address]) {

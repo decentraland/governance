@@ -20,6 +20,7 @@ export default routes((router) => {
   const withAuth = auth()
   router.get(
     '/debug',
+    withAuth,
     handleAPI(async () => DEBUG_ADDRESSES)
   )
   router.post('/debug/report-error', auth({ optional: true }), handleAPI(reportClientError))
@@ -27,8 +28,19 @@ export default routes((router) => {
   router.delete('/debug/invalidate-cache', withAuth, handleAPI(invalidateCache))
 })
 
+const MAX_CLIENT_ERROR_MESSAGE_LENGTH = 1000
+
 function reportClientError(req: WithAuth): void {
-  ErrorService.report(req.body.message, { frontend: true, ...req.body.extraInfo })
+  const message =
+    typeof req.body?.message === 'string'
+      ? req.body.message.slice(0, MAX_CLIENT_ERROR_MESSAGE_LENGTH)
+      : 'Unknown client error'
+  const extraInfo =
+    req.body?.extraInfo && typeof req.body.extraInfo === 'object' && !Array.isArray(req.body.extraInfo)
+      ? req.body.extraInfo
+      : {}
+  // Spread first so client-provided keys can never override the trusted `frontend` marker.
+  ErrorService.report(message, { ...extraInfo, frontend: true })
 }
 
 async function triggerFunction(req: WithAuth) {

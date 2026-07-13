@@ -1,4 +1,4 @@
-import { auth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
+import { WithAuth, auth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
@@ -8,7 +8,7 @@ import { Budget, BudgetWithContestants, CategoryBudget } from '../entities/Budge
 import { QuarterBudgetAttributes } from '../entities/QuarterBudget/types'
 import { toNewGrantCategory } from '../entities/QuarterCategoryBudget/utils'
 import { BudgetService } from '../services/BudgetService'
-import { validateId } from '../utils/validations'
+import { validateDebugAddress, validateId } from '../utils/validations'
 
 export default routes((route) => {
   const withAuth = auth()
@@ -27,7 +27,8 @@ async function getCategoryBudget(req: Request): Promise<CategoryBudget> {
   return await BudgetService.getCategoryBudget(grantCategory)
 }
 
-async function updateBudgets(): Promise<QuarterBudgetAttributes[]> {
+async function updateBudgets(req: WithAuth): Promise<QuarterBudgetAttributes[]> {
+  validateDebugAddress(req.auth!)
   return await BudgetService.updateGovernanceBudgets()
 }
 

@@ -52,6 +52,12 @@ export default class BidService {
         status: UnpublishedBidStatus.Pending,
       })
     } catch (error) {
+      // The DB enforces UNIQUE(linked_proposal_id, author_address), so a bid that races
+      // past the check above still fails here with a unique violation (Postgres code 23505).
+      // Surface it as the same "already exists" error rather than a generic failure.
+      if ((error as { code?: string })?.code === '23505') {
+        throw new Error('Bid already exists')
+      }
       const msg = 'Error creating bid'
       ErrorService.report(msg, { error, author_address, linked_proposal_id, category: ErrorCategory.Bid })
       throw new Error(msg)

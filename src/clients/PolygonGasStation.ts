@@ -5,6 +5,8 @@ import { ErrorService } from '../services/ErrorService'
 import { PolygonGasStationResponse } from '../types/PolygonGasStation'
 import { ErrorCategory } from '../utils/errorCategories'
 
+import { fetchWithTimeout } from './utils'
+
 const POLYGON_GAS_STATION_URL = 'https://gasstation.polygon.technology/v2'
 
 // Gwei has 9 decimals; the gas station returns floats that can exceed that precision,
@@ -16,7 +18,7 @@ function parseGwei(value: number): ethers.BigNumber {
 export class PolygonGasStation {
   static async getPolygonGasData(): Promise<PolygonGasData> {
     try {
-      const response = await fetch(POLYGON_GAS_STATION_URL, {
+      const response = await fetchWithTimeout(POLYGON_GAS_STATION_URL, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

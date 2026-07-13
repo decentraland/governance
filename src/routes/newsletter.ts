@@ -26,7 +26,7 @@ async function handleSubscription(req: Request): Promise<NewsletterSubscriptionR
       Accept: 'application/json',
       Authorization: `Bearer ${process.env.BEEHIIV_API_KEY}`,
     },
-    body: `{ "email": "${email}" }`,
+    body: JSON.stringify({ email }),
   })
   const data = await response.json()
 

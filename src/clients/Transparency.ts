@@ -2,6 +2,7 @@ import { TokenInWallet } from '../entities/Transparency/types'
 import { ErrorCategory } from '../utils/errorCategories'
 
 import { ErrorClient } from './ErrorClient'
+import { fetchWithTimeout } from './utils'
 
 export type Detail = {
   name: string
@@ -81,7 +82,7 @@ const API_URL = process.env.GATSBY_DCL_DATA_API || 'https://data.decentraland.vo
 export class Transparency {
   static async getData() {
     try {
-      const response = (await (await fetch(`${API_URL}/api.json`)).json()) as TransparencyData
+      const response = (await (await fetchWithTimeout(`${API_URL}/api.json`)).json()) as TransparencyData
       return response
     } catch (error) {
       ErrorClient.report('Failed to fetch transparency data', { error, category: ErrorCategory.Transparency })
@@ -91,7 +92,7 @@ export class Transparency {
 
   static async getBudgets() {
     try {
-      const response = (await (await fetch(`${API_URL}/budgets.json`)).json()) as TransparencyBudget[]
+      const response = (await (await fetchWithTimeout(`${API_URL}/budgets.json`)).json()) as TransparencyBudget[]
       return response
     } catch (error) {
       ErrorClient.report('Failed to fetch transparency budgets data', { error, category: ErrorCategory.Transparency })
@@ -101,7 +102,7 @@ export class Transparency {
 
   static async getTeams() {
     try {
-      const response = (await (await fetch(`${API_URL}/teams.json`)).json()) as TransparencyTeams
+      const response = (await (await fetchWithTimeout(`${API_URL}/teams.json`)).json()) as TransparencyTeams
       return response
     } catch (error) {
       ErrorClient.report('Failed to fetch transparency data', { error, category: ErrorCategory.Transparency })

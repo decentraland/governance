@@ -2,7 +2,7 @@ import { VESTINGS_QUERY_ENDPOINT } from '../entities/Snapshot/constants'
 import Time from '../utils/date/Time'
 
 import { SubgraphVesting } from './VestingSubgraphTypes'
-import { trimLastForwardSlash } from './utils'
+import { fetchWithTimeout, trimLastForwardSlash } from './utils'
 
 const OLDEST_INDEXED_BLOCK = 20463272
 
@@ -75,7 +75,7 @@ export class VestingsSubgraph {
     }
     `
     const variables = { address: address.toLowerCase() }
-    const response = await fetch(this.queryEndpoint, {
+    const response = await fetchWithTimeout(this.queryEndpoint, {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -104,7 +104,7 @@ export class VestingsSubgraph {
     const variables = queryAddresses
       ? { addresses: addresses.map((address) => address.toLowerCase()) }
       : { blockNumber: OLDEST_INDEXED_BLOCK }
-    const response = await fetch(this.queryEndpoint, {
+    const response = await fetchWithTimeout(this.queryEndpoint, {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -130,7 +130,7 @@ export class VestingsSubgraph {
     `
 
     const variables = { currentTimestamp, aDayAgoTimestamp }
-    const response = await fetch(this.queryEndpoint, {
+    const response = await fetchWithTimeout(this.queryEndpoint, {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
