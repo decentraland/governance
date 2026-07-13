@@ -45,6 +45,16 @@ describe('isPrivateIp', () => {
     })
   })
 
+  describe('when given deprecated IPv4-compatible IPv6 addresses (::a.b.c.d)', () => {
+    it('should classify an embedded loopback address as private', () => {
+      expect(isPrivateIp('::127.0.0.1')).toBe(true)
+    })
+
+    it('should classify an embedded private address as private', () => {
+      expect(isPrivateIp('::10.0.0.1')).toBe(true)
+    })
+  })
+
   describe('when given public IPv6 addresses', () => {
     const publicV6 = ['2001:4860:4860::8888', '2606:4700:4700::1111']
 

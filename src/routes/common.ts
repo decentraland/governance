@@ -70,8 +70,12 @@ export function isPrivateIp(ip: string): boolean {
     if (bytes.slice(0, 10).every((x) => x === 0) && bytes[10] === 0xff && bytes[11] === 0xff) {
       return isPrivateIp(bytes.slice(12).join('.'))
     }
-    if (bytes.slice(0, 15).every((x) => x === 0) && bytes[15] === 1) return true // ::1 loopback
-    if (bytes.every((x) => x === 0)) return true // :: unspecified
+    // Deprecated IPv4-compatible ::a.b.c.d, plus ::1 and ::, all have the first 12 bytes zero.
+    // Apply the IPv4 rules to the embedded address so forms like ::127.0.0.1 or ::10.0.0.1
+    // can't slip through (::1 -> 0.0.0.1 and :: -> 0.0.0.0 both match the 0.x private rule).
+    if (bytes.slice(0, 12).every((x) => x === 0)) {
+      return isPrivateIp(bytes.slice(12).join('.'))
+    }
     if (bytes[0] === 0xfe && (bytes[1] & 0xc0) === 0x80) return true // fe80::/10 link-local
     if ((bytes[0] & 0xfe) === 0xfc) return true // fc00::/7 unique local
     return false
