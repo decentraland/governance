@@ -19,6 +19,7 @@ import {
 } from '../entities/Proposal/types'
 import { isGrantProposalSubmitEnabled, isProjectProposal } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
+import { isSameAddress } from '../entities/Snapshot/utils'
 import VotesModel from '../entities/Votes/model'
 import { getEnvironmentChainId } from '../helpers'
 import { DiscordService } from '../services/discord'
@@ -153,7 +154,7 @@ export class ProposalService {
   }
 
   private static validateRemoval(proposal: ProposalAttributes, user: string) {
-    const allowToRemove = proposal.user === user || isDAOCouncil(user)
+    const allowToRemove = isSameAddress(proposal.user, user) || isDAOCouncil(user)
     if (!allowToRemove) {
       throw new RequestError('Forbidden', RequestError.Forbidden)
     }
@@ -299,13 +300,26 @@ export class ProposalService {
     } else if (newStatus === ProposalStatus.Rejected) {
       update.rejected_by = user
     }
+
+    // Only (re)generate the vesting update schedule on a fresh enactment or when the vesting
+    // addresses actually change, so an accidental re-enact with the same addresses does not
+    // wipe and reset existing pending updates.
+    const wasAlreadyEnacted = proposal.status === ProposalStatus.Enacted
+    const vestingAddressesChanged = !this.haveSameVestingAddresses(proposal.vesting_addresses, vesting_addresses)
+    const shouldCreatePendingUpdates = isEnactedStatus && isProject && (!wasAlreadyEnacted || vestingAddressesChanged)
+
+    // Run the failure-prone vesting work before persisting the status so a failure leaves the
+    // proposal in its previous state (consistent and retryable) rather than half-enacted.
+    if (shouldCreatePendingUpdates) {
+      const validatedProjectId = validateId(proposal.project_id)
+      await UpdateService.createPendingUpdatesForVesting(validatedProjectId, vesting_addresses)
+    }
+
     await ProposalModel.update<ProposalAttributes>(update, { id })
 
     const updatedProposal = { ...proposal, ...update }
 
     if (isEnactedStatus && isProject) {
-      const validatedProjectId = validateId(proposal.project_id)
-      await UpdateService.createPendingUpdatesForVesting(validatedProjectId, vesting_addresses)
       const project = await ProjectService.getUpdatedProject(proposal.project_id!)
       updatedProposal.project_status = project.status
       NotificationService.projectProposalEnacted(proposal)
@@ -315,6 +329,20 @@ export class ProposalService {
     DiscourseService.commentUpdatedProposal(updatedProposal)
 
     return updatedProposal
+  }
+
+  private static haveSameVestingAddresses(a: string[] | null | undefined, b: string[] | null | undefined): boolean {
+    const setA = new Set((a || []).map((address) => address.toLowerCase()))
+    const setB = new Set((b || []).map((address) => address.toLowerCase()))
+    if (setA.size !== setB.size) {
+      return false
+    }
+    for (const address of setA) {
+      if (!setB.has(address)) {
+        return false
+      }
+    }
+    return true
   }
 
   private static getEnactedStatusData(

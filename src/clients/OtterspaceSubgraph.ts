@@ -1,7 +1,7 @@
 import { OTTERSPACE_DAO_RAFT_ID, OTTERSPACE_QUERY_ENDPOINT } from '../entities/Snapshot/constants'
 import { isProdEnv } from '../utils/governanceEnvs'
 
-import { inBatches, trimLastForwardSlash } from './utils'
+import { fetchWithTimeout, inBatches, trimLastForwardSlash } from './utils'
 
 const BADGES_QUERY = `
 query Badges($raft_id: String!, $address: Bytes!, $first: Int!, $skip: Int!) {
@@ -160,7 +160,7 @@ export class OtterspaceSubgraph {
   async getBadgesForAddress(address: string) {
     const badges: OtterspaceBadge[] = await inBatches(
       async (vars, skip, first) => {
-        const response = await fetch(this.queryEndpoint, {
+        const response = await fetchWithTimeout(this.queryEndpoint, {
           method: 'post',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -184,7 +184,7 @@ export class OtterspaceSubgraph {
   async getBadges(badgeCid: string) {
     return await inBatches(
       async (vars, skip, first) => {
-        const response = await fetch(this.queryEndpoint, {
+        const response = await fetchWithTimeout(this.queryEndpoint, {
           method: 'post',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -205,7 +205,7 @@ export class OtterspaceSubgraph {
   async getRecipientsBadgeIds(badgeCid: string, addresses: string[]): Promise<BadgeOwnership[]> {
     const badges: Pick<OtterspaceBadge, 'id' | 'owner'>[] = await inBatches(
       async (vars, skip, first) => {
-        const response = await fetch(this.queryEndpoint, {
+        const response = await fetchWithTimeout(this.queryEndpoint, {
           method: 'post',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -230,7 +230,7 @@ export class OtterspaceSubgraph {
   async getBadgeSpecByTitle(title: string) {
     const badgeSpecs: OtterspaceBadgeSpec[] = await inBatches(
       async (vars, skip, first) => {
-        const response = await fetch(this.queryEndpoint, {
+        const response = await fetchWithTimeout(this.queryEndpoint, {
           method: 'post',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

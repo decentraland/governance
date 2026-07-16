@@ -2,7 +2,7 @@ import { SNAPSHOT_QUERY_ENDPOINT } from '../entities/Snapshot/constants'
 import { PICKED_BY_QUERY, getDelegatedQuery } from '../entities/Snapshot/queries'
 
 import { Delegation } from './SnapshotTypes'
-import { inBatches, trimLastForwardSlash } from './utils'
+import { inBatches, queryGraphql, trimLastForwardSlash } from './utils'
 
 export type DelegationQueryResult = {
   delegatedTo: Delegation[]
@@ -50,16 +50,10 @@ export class SnapshotSubgraph {
   ) {
     const delegations: Delegation[] = await inBatches(
       async (vars, skip, first) => {
-        const response = await fetch(this.queryEndpoint, {
-          method: 'post',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            query: getDelegatedQuery(key, variables.blockNumber),
-            variables: { ...vars, skip, first },
-          }),
+        const body = await queryGraphql<{ data?: Record<string, Delegation[]> }>(this.queryEndpoint, {
+          query: getDelegatedQuery(key, variables.blockNumber),
+          variables: { ...vars, skip, first },
         })
-
-        const body = await response.json()
         return body?.data?.[key] || []
       },
       { ...variables },
@@ -76,16 +70,10 @@ export class SnapshotSubgraph {
 
     const delegations: Delegation[] = await inBatches(
       async (vars, skip, batchSize) => {
-        const response = await fetch(this.queryEndpoint, {
-          method: 'post',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            query: PICKED_BY_QUERY,
-            variables: { ...vars, skip, first: batchSize },
-          }),
+        const body = await queryGraphql<{ data?: { delegatedFrom?: Delegation[] } }>(this.queryEndpoint, {
+          query: PICKED_BY_QUERY,
+          variables: { ...vars, skip, first: batchSize },
         })
-
-        const body = await response.json()
         return body?.data?.delegatedFrom || []
       },
       { address: addresses, space },

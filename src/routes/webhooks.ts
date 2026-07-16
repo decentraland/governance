@@ -15,15 +15,20 @@ export default routes((route) => {
 })
 
 async function delegationUpdate(req: Request) {
+  // Signature validation runs outside the try/catch so an invalid signature surfaces
+  // as a 403 instead of being masked with a 200.
+  validateAlchemyWebhookSignature(req)
+  const block = req.body.event.data.block as AlchemyBlock
+  if (block.transactions.length === 0) {
+    return
+  }
   try {
-    validateAlchemyWebhookSignature(req)
-    const block = req.body.event.data.block as AlchemyBlock
-    if (block.transactions.length === 0) {
-      return
-    }
     return await EventsService.delegationUpdate(block)
   } catch (error) {
+    // Report, then re-throw so Alchemy sees a non-2xx and retries delivery instead of
+    // silently dropping the event. delegationUpdate is idempotent (isDelegationTxRegistered).
     ErrorService.report('Something failed on delegation update webhook', { error, category: ErrorCategory.Webhook })
+    throw error
   }
 }
 

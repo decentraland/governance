@@ -9,6 +9,7 @@ import { toBase64 } from './base64'
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
 const METHODS_WITH_BODY: HttpMethod[] = ['POST', 'PUT', 'PATCH']
+const DEFAULT_REQUEST_TIMEOUT_MS = 30000
 
 export type ApiOptions = {
   method: HttpMethod
@@ -37,11 +38,22 @@ export default abstract class API {
       ...authAndSignatureHeaders,
     }
 
-    const response = await fetch(this.url(endpoint), {
-      method,
-      headers: finalHeaders,
-      body: json ? JSON.stringify(json) : undefined,
-    })
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), DEFAULT_REQUEST_TIMEOUT_MS)
+    let response: Response
+    try {
+      response = await fetch(this.url(endpoint), {
+        method,
+        headers: finalHeaders,
+        body: json ? JSON.stringify(json) : undefined,
+        // Do not follow redirects: these requests carry secret headers (e.g. Discourse
+        // Api-Key, Snapshot x-api-key) that would be re-sent to a redirect target.
+        redirect: 'manual',
+        signal: controller.signal,
+      })
+    } finally {
+      clearTimeout(timeoutId)
+    }
 
     await this.checkForErrors(response)
 

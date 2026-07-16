@@ -17,5 +17,5 @@ export default function isDAOCommittee(user?: string | null | undefined) {
     return false
   }
 
-  return committeeAddresses.has(user)
+  return committeeAddresses.has(user.toLowerCase())
 }

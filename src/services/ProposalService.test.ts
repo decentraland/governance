@@ -1,8 +1,10 @@
 import ProposalModel from '../entities/Proposal/model'
 import { createTestProposal } from '../entities/Proposal/testHelpers'
 import { ProposalStatus, ProposalType, ProposalWithProject } from '../entities/Proposal/types'
+import { UpdateService } from '../services/update'
 
 import { DiscourseService } from './DiscourseService'
+import { ProjectService } from './ProjectService'
 import { ProposalService } from './ProposalService'
 
 jest.mock('../services/discord', () => ({
@@ -26,6 +28,12 @@ jest.mock('../services/notification', () => ({
 jest.mock('../services/update', () => ({
   UpdateService: {
     createPendingUpdatesForVesting: jest.fn(),
+  },
+}))
+
+jest.mock('./ProjectService', () => ({
+  ProjectService: {
+    getUpdatedProject: jest.fn(),
   },
 }))
 
@@ -82,6 +90,80 @@ describe('ProposalService', () => {
         passed_by: passedBy,
       })
       expect(DiscourseService.commentUpdatedProposal).toHaveBeenCalledWith(updatedProposal)
+    })
+
+    describe('when enacting a passed project proposal for the first time', () => {
+      const user = '0x2AC89522CB415AC333E64F52a1a5693218cEBD58'
+      const projectId = '11111111-1111-1111-1111-111111111111'
+      const vestingAddresses = ['0x1111111111111111111111111111111111111111']
+      let proposal: ProposalWithProject
+
+      beforeEach(() => {
+        jest.clearAllMocks()
+        jest.spyOn(ProposalModel, 'update').mockResolvedValue({} as never)
+        ;(ProjectService.getUpdatedProject as jest.Mock).mockResolvedValue({ status: 'in_progress' } as never)
+        proposal = {
+          ...createTestProposal(ProposalType.Grant, ProposalStatus.Passed, 10000),
+          project_id: projectId,
+          personnel: [],
+        }
+      })
+
+      it('should regenerate the pending vesting updates with the requested addresses', async () => {
+        await ProposalService.updateProposalStatus(
+          proposal,
+          { status: ProposalStatus.Enacted, vesting_addresses: vestingAddresses },
+          user
+        )
+
+        expect(UpdateService.createPendingUpdatesForVesting).toHaveBeenCalledWith(projectId, vestingAddresses)
+      })
+    })
+
+    describe('when re-enacting an already-enacted project proposal', () => {
+      const user = '0x2AC89522CB415AC333E64F52a1a5693218cEBD58'
+      const projectId = '11111111-1111-1111-1111-111111111111'
+      const existingAddresses = ['0x1111111111111111111111111111111111111111']
+      let proposal: ProposalWithProject
+
+      beforeEach(() => {
+        jest.clearAllMocks()
+        jest.spyOn(ProposalModel, 'update').mockResolvedValue({} as never)
+        ;(ProjectService.getUpdatedProject as jest.Mock).mockResolvedValue({ status: 'in_progress' } as never)
+        proposal = {
+          ...createTestProposal(ProposalType.Grant, ProposalStatus.Enacted, 10000),
+          project_id: projectId,
+          enacted: true,
+          vesting_addresses: existingAddresses,
+          personnel: [],
+        }
+      })
+
+      describe('and the vesting addresses are unchanged', () => {
+        it('should not regenerate the pending vesting updates', async () => {
+          await ProposalService.updateProposalStatus(
+            proposal,
+            { status: ProposalStatus.Enacted, vesting_addresses: existingAddresses },
+            user
+          )
+
+          expect(UpdateService.createPendingUpdatesForVesting).not.toHaveBeenCalled()
+        })
+      })
+
+      describe('and a new vesting address is added', () => {
+        it('should regenerate the pending vesting updates', async () => {
+          const newAddresses = [...existingAddresses, '0x2222222222222222222222222222222222222222']
+
+          await ProposalService.updateProposalStatus(
+            proposal,
+            { status: ProposalStatus.Enacted, vesting_addresses: newAddresses },
+            user
+          )
+
+          expect(UpdateService.createPendingUpdatesForVesting).toHaveBeenCalledWith(projectId, newAddresses)
+        })
+      })
     })
   })
 })

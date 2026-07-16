@@ -4,7 +4,14 @@ import { createTestProposal } from '../entities/Proposal/testHelpers'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { EventType } from '../shared/types/events'
 
-import { validateEventFilters, validateId, validateStatusUpdate } from './validations'
+import {
+  extractImageUrls,
+  isValidImage,
+  validateBlockNumber,
+  validateEventFilters,
+  validateId,
+  validateStatusUpdate,
+} from './validations'
 
 describe('validateProposalId', () => {
   const UUID = '00000000-0000-0000-0000-000000000000'
@@ -101,5 +108,93 @@ describe('validateEventTypesFilters', () => {
     const req = { query: { event_type: 'single_event' } } as never
 
     expect(() => validateEventFilters(req)).toThrow()
+  })
+})
+
+describe('extractImageUrls', () => {
+  describe('when the markdown contains an inline image', () => {
+    it('should extract the url', () => {
+      expect(extractImageUrls('text ![alt](https://cdn.decentraland.org/a.png) more')).toEqual([
+        'https://cdn.decentraland.org/a.png',
+      ])
+    })
+  })
+
+  describe('when the inline image has a title after the url', () => {
+    it('should extract only the url and drop the title', () => {
+      expect(extractImageUrls('![alt](https://cdn.decentraland.org/a.png "a title")')).toEqual([
+        'https://cdn.decentraland.org/a.png',
+      ])
+    })
+  })
+
+  describe('when the markdown uses a reference-style image definition', () => {
+    it('should extract the referenced url', () => {
+      expect(extractImageUrls('[ref]: https://cdn.decentraland.org/a.png')).toEqual([
+        'https://cdn.decentraland.org/a.png',
+      ])
+    })
+  })
+
+  describe('when the markdown embeds a raw HTML img tag', () => {
+    it('should extract the src of a double-quoted img tag', () => {
+      expect(extractImageUrls('<img src="https://evil.example/track.png">')).toEqual(['https://evil.example/track.png'])
+    })
+
+    it('should extract the src of a single-quoted img tag that has other attributes first', () => {
+      expect(extractImageUrls("<img class='x' src='https://evil.example/track.png' />")).toEqual([
+        'https://evil.example/track.png',
+      ])
+    })
+
+    it('should extract the src of an unquoted img tag', () => {
+      expect(extractImageUrls('<img src=https://evil.example/track.png width=10>')).toEqual([
+        'https://evil.example/track.png',
+      ])
+    })
+  })
+
+  describe('when the markdown contains no images', () => {
+    it('should return an empty array', () => {
+      expect(extractImageUrls('just some text with a [link](https://decentraland.org)')).toEqual([])
+    })
+  })
+})
+
+describe('isValidImage', () => {
+  describe('when the url is not on a trusted domain', () => {
+    it('should return false without performing a request', async () => {
+      await expect(isValidImage('https://evil.example/track.png')).resolves.toBe(false)
+    })
+  })
+})
+
+describe('validateBlockNumber', () => {
+  describe('when the block number is a finite number', () => {
+    it('should not throw', () => {
+      expect(() => validateBlockNumber(12345)).not.toThrow()
+    })
+  })
+
+  describe('when the block number is null or undefined', () => {
+    it('should not throw for null', () => {
+      expect(() => validateBlockNumber(null)).not.toThrow()
+    })
+
+    it('should not throw for undefined', () => {
+      expect(() => validateBlockNumber(undefined)).not.toThrow()
+    })
+  })
+
+  describe('when the block number is NaN', () => {
+    it('should throw an invalid block number error', () => {
+      expect(() => validateBlockNumber(NaN)).toThrow('Invalid blockNumber')
+    })
+  })
+
+  describe('when the block number is a string', () => {
+    it('should throw an invalid block number error', () => {
+      expect(() => validateBlockNumber('12345')).toThrow('Invalid blockNumber')
+    })
   })
 })

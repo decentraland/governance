@@ -187,12 +187,15 @@ export function getChecksumAddress(address: string) {
 
 // TODO: Move to non-snapshot-related file
 export function isSameAddress(userAddress?: string | null, address?: string | null) {
+  // Compare case-insensitively rather than checksumming: ethereum address equality
+  // only differs by casing, and getChecksumAddress throws on malformed input (which
+  // can arrive from external sources), so this stays robust and never throws.
   return (
     !!userAddress &&
     userAddress.length > 0 &&
     !!address &&
     address.length > 0 &&
-    getChecksumAddress(userAddress) === getChecksumAddress(address)
+    userAddress.toLowerCase() === address.toLowerCase()
   )
 }
 

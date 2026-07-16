@@ -63,6 +63,17 @@ swaggerDocument['servers'] = [{ url: process.env.GATSBY_GOVERNANCE_API }]
 const app = express()
 app.set('x-powered-by', false)
 app.use(withLogs())
+// Capture the raw request body for webhook routes so signature HMACs are verified against
+// the exact bytes the sender signed, not a re-serialization. Registered before the main
+// chain; body-parser in withBody() skips re-parsing because req._body is already set.
+app.use(
+  '/api/webhooks',
+  express.json({
+    verify: (req, _res, buf) => {
+      ;(req as unknown as { rawBody?: string }).rawBody = buf.toString('utf8')
+    },
+  })
+)
 app.use('/api', [
   status(),
   withDDosProtection({ limit: 1000, checkinterval: 4 }),

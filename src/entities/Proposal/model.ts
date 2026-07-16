@@ -144,7 +144,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         )}
         WHERE ${join(
           conditionsKeys.map((key) => SQL`"${SQL.raw(key)}" = ${conditions[key]}`),
-          SQL`,`
+          SQL` AND `
         )}
     `
 

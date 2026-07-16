@@ -135,14 +135,25 @@ function timingSafeStringEqual(a: string, b: string): boolean {
   return bufA.length === bufB.length && crypto.timingSafeEqual(bufA, bufB)
 }
 
+// Prefer the exact raw bytes captured before parsing (see server.ts) so the HMAC matches
+// what the sender signed; fall back to re-serialization if the raw body is unavailable.
+// IMPORTANT: rawBody is only captured for routes under the /api/webhooks prefix (see the
+// express.json verify hook in server.ts). Any new signature-verified webhook MUST be mounted
+// under that prefix — otherwise this falls back to JSON.stringify(req.body), whose key order
+// and whitespace may differ from the sender's payload and cause valid signatures to be rejected.
+function getWebhookPayload(req: Request): string {
+  const rawBody = (req as unknown as { rawBody?: string }).rawBody
+  return typeof rawBody === 'string' && rawBody.length > 0 ? rawBody : JSON.stringify(req.body)
+}
+
 export function validateDiscourseWebhookSignature(req: Request) {
   const providedSignature = req.get('X-Discourse-Event-Signature') || ''
   if (!DISCOURSE_WEBHOOK_SECRET || DISCOURSE_WEBHOOK_SECRET.length === 0) {
     throw new RequestError('Endpoint disabled', RequestError.NotImplemented)
   }
-  const payload = req.body
+  const payload = getWebhookPayload(req)
   const calculatedSignature = 'sha256='.concat(
-    crypto.createHmac('sha256', DISCOURSE_WEBHOOK_SECRET).update(JSON.stringify(payload)).digest('hex')
+    crypto.createHmac('sha256', DISCOURSE_WEBHOOK_SECRET).update(payload).digest('hex')
   )
 
   if (!timingSafeStringEqual(providedSignature, calculatedSignature)) {
@@ -156,7 +167,7 @@ export function validateAlchemyWebhookSignature(req: Request) {
   if (!ALCHEMY_DELEGATIONS_WEBHOOK_SECRET || ALCHEMY_DELEGATIONS_WEBHOOK_SECRET.length === 0) {
     throw new RequestError('Endpoint disabled', RequestError.NotImplemented)
   }
-  const body = JSON.stringify(req.body)
+  const body = getWebhookPayload(req)
   const hmac = crypto.createHmac('sha256', ALCHEMY_DELEGATIONS_WEBHOOK_SECRET)
   hmac.update(body, 'utf8')
   const digest = hmac.digest('hex')
@@ -230,7 +241,10 @@ export async function validateCanEditProject(user: string, projectId: string) {
 }
 
 export function validateBlockNumber(blockNumber?: unknown | null) {
-  if (blockNumber !== null && blockNumber !== undefined && typeof blockNumber !== 'number') {
+  if (blockNumber === null || blockNumber === undefined) {
+    return
+  }
+  if (typeof blockNumber !== 'number' || Number.isNaN(blockNumber)) {
     throw new Error('Invalid blockNumber: must be null, undefined, or a number')
   }
 }
@@ -272,13 +286,10 @@ const TRUSTED_IMAGE_DOMAINS = new Set([
   'i.postimg.cc',
   's3.amazonaws.com', // AWS S3
   'storage.googleapis.com', // Google Cloud Storage
-  'drive.google.com', // Google Drive
   'dropboxusercontent.com', // Dropbox
   'www.dropbox.com',
-  'media.discordapp.net', // Discord
+  'media.discordapp.net', // Discord CDN
   'cdn.discordapp.com',
-  'discord.com',
-  'discord.gg',
 ])
 
 function isFromTrustedDomain(url: string): boolean {
@@ -322,12 +333,23 @@ export async function isValidImage(imageUrl: string) {
 }
 
 export function extractImageUrls(markdown: string): string[] {
-  const imageRegex = /!\[.*?\]\((.*?)\)|\[.*?\]:\s*(.*?)(?:\s|$)/g
   const urls: string[] = []
   let match
 
-  while ((match = imageRegex.exec(markdown)) !== null) {
-    const url = match[1] || match[2]
+  // Markdown images ![alt](url) and reference-style [ref]: url
+  const markdownRegex = /!\[.*?\]\((.*?)\)|\[.*?\]:\s*(.*?)(?:\s|$)/g
+  while ((match = markdownRegex.exec(markdown)) !== null) {
+    // Take the first whitespace-delimited token so a trailing "title" (e.g. ![a](url "t"))
+    // does not smuggle an unvalidated URL past the trusted-domain check.
+    const url = (match[1] || match[2] || '').trim().split(/\s+/)[0]
+    if (url) urls.push(url)
+  }
+
+  // Raw HTML <img src=...> embeds (quoted or unquoted), which markdown renderers may honor
+  // and which would otherwise bypass the trusted-domain check entirely.
+  const htmlImgRegex = /<img\b[^>]*?\ssrc\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))/gi
+  while ((match = htmlImgRegex.exec(markdown)) !== null) {
+    const url = (match[1] || match[2] || match[3] || '').trim()
     if (url) urls.push(url)
   }
 

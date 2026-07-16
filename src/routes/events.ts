@@ -22,9 +22,8 @@ async function voted(req: WithAuth) {
   const user = req.auth!
 
   validateId(req.body.proposalId)
-  validateRequiredString('proposalTitle', req.body.proposalTitle)
   validateRequiredString('choice', req.body.choice)
-  return await EventsService.voted(req.body.proposalId, req.body.proposalTitle, req.body.choice, user)
+  return await EventsService.voted(req.body.proposalId, req.body.choice, user)
 }
 
 async function getAllEvents(req: WithAuth) {

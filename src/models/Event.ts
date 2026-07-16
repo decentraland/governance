@@ -43,11 +43,13 @@ export default class EventModel extends Model<Event> {
   }
 
   static async isDiscourseEventRegistered(discourseEventId: string) {
+    // Match any comment event type (proposal_commented and project_update_commented)
+    // so replays of update-topic comments are also deduped, not just proposal comments.
     const query = SQL`
       SELECT count(*)
       FROM ${table(EventModel)}
       WHERE
-          event_type = ${EventType.ProposalCommented} AND 
+          event_type IN (${EventType.ProposalCommented}, ${EventType.ProjectUpdateCommented}) AND
           (event_data ->>'discourse_event_id') = ${discourseEventId}
     `
     const count = (await this.namedQuery<{ count: string }>('find_discourse_event_id', query))[0].count
