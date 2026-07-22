@@ -51,12 +51,13 @@ export class DiscourseService {
       /* eslint-disable @typescript-eslint/no-explicit-any */
     } catch (error: any) {
       SnapshotService.dropSnapshotProposal(snapshotId)
+      const cause = error?.cause ? ` | cause: ${error.cause}` : ''
       ErrorService.report('Error creating discourse post', {
         proposalId,
-        error: `${error}`,
+        error: `${error}${cause}`,
         category: ErrorCategory.Discourse,
       })
-      throw new Error(`Forum error: ${error.body?.errors.join(', ')}`, error)
+      throw new Error(`Forum error: ${error?.message ?? error}`, { cause: error })
     }
   }
 
@@ -72,13 +73,14 @@ export class DiscourseService {
       this.logPostCreation(discourseUpdate)
       return discourseUpdate
     } catch (error: any) {
+      const cause = error?.cause ? ` | cause: ${error.cause}` : ''
       ErrorService.report('Error creating discourse post for update', {
         update_id: newUpdate.id,
         proposal_id: newUpdate.proposal_id,
-        error: `${error}`,
+        error: `${error}${cause}`,
         category: ErrorCategory.Discourse,
       })
-      throw new Error(`Forum error: ${error.body?.errors.join(', ')}`, error)
+      throw new Error(`Forum error: ${error?.message ?? error}`, { cause: error })
     }
   }
 
