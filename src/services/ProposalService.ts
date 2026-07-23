@@ -318,8 +318,13 @@ export class ProposalService {
     // Compare-and-set on the status we read: if a concurrent status change (e.g. a
     // double-submitted enact, or an enact racing a reject) already moved the proposal, this
     // update matches no rows instead of overwriting the winner and leaving the row in an
-    // inconsistent state (e.g. status=Rejected but enacted=true).
-    await ProposalModel.update<ProposalAttributes>(update, { id, status: proposal.status })
+    // inconsistent state (e.g. status=Rejected but enacted=true). Abort before any side effects
+    // so a lost race cannot emit duplicate enactment notifications/events or return a success
+    // for a transition that was never persisted.
+    const updatedRows = await ProposalModel.update<ProposalAttributes>(update, { id, status: proposal.status })
+    if (updatedRows === 0) {
+      throw new Error(`Proposal "${id}" was modified concurrently; the "${newStatus}" update was not applied`)
+    }
 
     const updatedProposal = { ...proposal, ...update }
 

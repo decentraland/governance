@@ -122,10 +122,12 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return this.namedQuery('create_proposal', sql) as any
   }
 
+  // Returns the number of rows updated, so callers can detect a compare-and-set that matched no
+  // row (e.g. a concurrent status change) instead of assuming the write applied.
   static update<U extends QueryPart = any, P extends QueryPart = any>(
     changes: Partial<U>,
     conditions: Partial<P>
-  ): Promise<U> {
+  ): Promise<number> {
     const changesKeys = Object.keys(changes).map((key) => key.replace(/\W/gi, ''))
     const conditionsKeys = Object.keys(conditions).map((key) => key.replace(/\W/gi, ''))
     if (changesKeys.length === 0) {
@@ -148,7 +150,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
         )}
     `
 
-    return this.namedQuery('update_proposal', sql) as any
+    return this.namedRowCount('update_proposal', sql)
   }
 
   static async countAll() {

@@ -6,6 +6,8 @@ import { UpdateService } from '../services/update'
 import { DiscourseService } from './DiscourseService'
 import { ProjectService } from './ProjectService'
 import { ProposalService } from './ProposalService'
+import { EventsService } from './events'
+import { NotificationService } from './notification'
 
 jest.mock('../services/discord', () => ({
   DiscordService: {
@@ -62,7 +64,7 @@ describe('ProposalService', () => {
         passed_by: passedBy,
         personnel: [],
       }
-      const updateSpy = jest.spyOn(ProposalModel, 'update').mockResolvedValue({} as never)
+      const updateSpy = jest.spyOn(ProposalModel, 'update').mockResolvedValue(1 as never)
 
       const updatedProposal = await ProposalService.updateProposalStatus(
         proposal,
@@ -102,7 +104,7 @@ describe('ProposalService', () => {
 
       beforeEach(() => {
         jest.clearAllMocks()
-        jest.spyOn(ProposalModel, 'update').mockResolvedValue({} as never)
+        jest.spyOn(ProposalModel, 'update').mockResolvedValue(1 as never)
         ;(ProjectService.getUpdatedProject as jest.Mock).mockResolvedValue({ status: 'in_progress' } as never)
         proposal = {
           ...createTestProposal(ProposalType.Grant, ProposalStatus.Passed, 10000),
@@ -130,7 +132,7 @@ describe('ProposalService', () => {
 
       beforeEach(() => {
         jest.clearAllMocks()
-        jest.spyOn(ProposalModel, 'update').mockResolvedValue({} as never)
+        jest.spyOn(ProposalModel, 'update').mockResolvedValue(1 as never)
         ;(ProjectService.getUpdatedProject as jest.Mock).mockResolvedValue({ status: 'in_progress' } as never)
         proposal = {
           ...createTestProposal(ProposalType.Grant, ProposalStatus.Enacted, 10000),
@@ -165,6 +167,46 @@ describe('ProposalService', () => {
 
           expect(UpdateService.createPendingUpdatesForVesting).toHaveBeenCalledWith(projectId, newAddresses)
         })
+      })
+    })
+
+    describe('when the compare-and-set matches no rows because a concurrent transition already won', () => {
+      const user = '0x2AC89522CB415AC333E64F52a1a5693218cEBD58'
+      const projectId = '11111111-1111-1111-1111-111111111111'
+      const vestingAddresses = ['0x1111111111111111111111111111111111111111']
+      let proposal: ProposalWithProject
+      let outcome: unknown
+
+      beforeEach(async () => {
+        jest.clearAllMocks()
+        jest.spyOn(ProposalModel, 'update').mockResolvedValue(0 as never)
+        ;(ProjectService.getUpdatedProject as jest.Mock).mockResolvedValue({ status: 'in_progress' } as never)
+        proposal = {
+          ...createTestProposal(ProposalType.Grant, ProposalStatus.Passed, 10000),
+          project_id: projectId,
+          personnel: [],
+        }
+        outcome = await ProposalService.updateProposalStatus(
+          proposal,
+          { status: ProposalStatus.Enacted, vesting_addresses: vestingAddresses },
+          user
+        ).catch((error) => error)
+      })
+
+      it('should reject instead of returning a success', () => {
+        expect(outcome).toBeInstanceOf(Error)
+      })
+
+      it('should not send the enactment notification', () => {
+        expect(NotificationService.projectProposalEnacted).not.toHaveBeenCalled()
+      })
+
+      it('should not emit the project enacted event', () => {
+        expect(EventsService.projectEnacted).not.toHaveBeenCalled()
+      })
+
+      it('should not post the discourse update', () => {
+        expect(DiscourseService.commentUpdatedProposal).not.toHaveBeenCalled()
       })
     })
   })
