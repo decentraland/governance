@@ -139,6 +139,11 @@ export type AlchemyLog = {
   topics: string[]
   data: string
   transaction: AlchemyTransaction
+  // Emitting contract address. Only present when the Alchemy webhook GraphQL query requests
+  // `account { address }`; used to verify the log came from the Snapshot DelegateRegistry.
+  account?: {
+    address: string
+  }
 }
 
 export type AlchemyTransaction = {

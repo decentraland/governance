@@ -229,10 +229,13 @@ export class UserService {
         discord_verification_date,
       }
     } catch (error: unknown) {
+      // Do not fold the stack trace into the thrown message: this runs behind the unauthenticated
+      // GET /user/:address and the message is surfaced in the HTTP response body. The stack is
+      // still captured in the server logs by the central error handler.
       if (error instanceof Error) {
-        throw new Error(`Error while fetching profile data: ${error.message}. Stack: ${error.stack}`)
+        throw new Error(`Error while fetching profile data: ${error.message}`)
       } else {
-        throw new Error(`Unexpected error while fetching profile data ${error}`)
+        throw new Error(`Unexpected error while fetching profile data`)
       }
     }
   }

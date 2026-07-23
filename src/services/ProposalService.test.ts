@@ -78,7 +78,9 @@ describe('ProposalService', () => {
           enacted_description: null,
           enacting_tx: null,
         }),
-        { id: proposal.id }
+        // Compare-and-set: the update is conditioned on the status we read, so a concurrent
+        // transition cannot be clobbered.
+        { id: proposal.id, status: ProposalStatus.Enacted }
       )
       expect(updateSpy.mock.calls[0][0]).not.toHaveProperty('passed_by')
       expect(updatedProposal).toMatchObject({

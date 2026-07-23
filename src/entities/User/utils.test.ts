@@ -4,7 +4,8 @@ import { ProposalCommentsInDiscourse } from '../Proposal/types'
 
 import { ONE_USER_POST, SEVERAL_USERS_POST, createWithPosts } from './__data__/discourse_samples'
 
-import { DISCOURSE_USER, filterComments } from './utils'
+import { ValidationComment } from './types'
+import { DISCOURSE_USER, filterComments, getValidationComment } from './utils'
 
 jest.mock('../../constants', () => ({
   FORUM_URL: 'https://forum.test.url',
@@ -79,6 +80,72 @@ describe('filterUserComments', () => {
     })
     it('returns an empty list', () => {
       expect(filteredComments.comments).toHaveLength(0)
+    })
+  })
+})
+
+describe('getValidationComment', () => {
+  const address = '0xf1e1c1d1a1b1c1d1e1f1a1b1c1d1e1f1a1b1c1d1'
+  const timestamp = '2026-07-23T12:00:00.000Z'
+
+  describe('when exactly one recent comment contains the address and timestamp', () => {
+    let comments: ValidationComment[]
+    let result: ValidationComment | undefined
+
+    beforeEach(() => {
+      comments = [
+        { id: '1', userId: '100', content: 'unrelated chatter', timestamp: Date.now() },
+        { id: '2', userId: '200', content: `Linking ${address} Date: ${timestamp} 0xsignature`, timestamp: Date.now() },
+      ]
+      result = getValidationComment(comments, address, timestamp)
+    })
+
+    it('should return the matching comment', () => {
+      expect(result?.userId).toBe('200')
+    })
+  })
+
+  describe('when no comment contains both the address and the timestamp', () => {
+    let comments: ValidationComment[]
+    let result: ValidationComment | undefined
+
+    beforeEach(() => {
+      comments = [{ id: '1', userId: '100', content: `Linking ${address} Date: 1999-01-01`, timestamp: Date.now() }]
+      result = getValidationComment(comments, address, timestamp)
+    })
+
+    it('should return undefined', () => {
+      expect(result).toBeUndefined()
+    })
+  })
+
+  describe('when the only matching comment is older than the validation window', () => {
+    let comments: ValidationComment[]
+    let result: ValidationComment | undefined
+
+    beforeEach(() => {
+      comments = [{ id: '1', userId: '100', content: `Linking ${address} Date: ${timestamp}`, timestamp: 0 }]
+      result = getValidationComment(comments, address, timestamp)
+    })
+
+    it('should ignore it and return undefined', () => {
+      expect(result).toBeUndefined()
+    })
+  })
+
+  describe('when a second comment copies the same address and timestamp from another account', () => {
+    let action: () => ValidationComment | undefined
+
+    beforeEach(() => {
+      const comments: ValidationComment[] = [
+        { id: '1', userId: '200', content: `Linking ${address} Date: ${timestamp} 0xsignature`, timestamp: Date.now() },
+        { id: '2', userId: '999', content: `Linking ${address} Date: ${timestamp} 0xsignature`, timestamp: Date.now() },
+      ]
+      action = () => getValidationComment(comments, address, timestamp)
+    })
+
+    it('should throw instead of linking an ambiguous account', () => {
+      expect(action).toThrow('Multiple matching verification comments found')
     })
   })
 })

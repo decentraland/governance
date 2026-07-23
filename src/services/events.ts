@@ -45,6 +45,8 @@ import { NotificationService } from './notification'
 
 const CLEAR_DELEGATE_SIGNATURE_HASH = '0x9c4f00c4291262731946e308dc2979a56bd22cce8f95906b975065e96cd5a064'
 const SET_DELEGATE_SIGNATURE_HASH = '0xa9a7fd460f56bddb880a465a9c3e9730389c70bc53108148f16d55a87a6c468e'
+// Snapshot's DelegateRegistry is deployed at the same address on every supported chain.
+const SNAPSHOT_DELEGATION_REGISTRY = '0x469788fE6E9E9681C6ebF3bF78e7Fd26Fc015446'
 
 export class EventsService {
   static async getLatest(filters: EventFilter): Promise<ActivityTickerEvent[]> {
@@ -367,15 +369,44 @@ export class EventsService {
         continue
       }
       for (const log of transaction.logs) {
-        const { spaceId, methodSignature, delegator, delegate } = this.decodeLogTopics(log.topics)
+        // Match the event signature (and topic arity) BEFORE decoding. An unrelated or
+        // malformed log must be skipped, not throw: decodeLogTopics throws on a short topic
+        // array or a non-address topic, and an uncaught throw here aborts the whole block so
+        // Alchemy re-delivers it indefinitely, wedging every legitimate delegation in it.
+        // Guard the array shape first so reading topics[0] on a malformed payload cannot throw.
+        if (!Array.isArray(log.topics) || log.topics.length < 4) {
+          continue
+        }
+        const methodSignature = log.topics[0]
+        if (methodSignature !== SET_DELEGATE_SIGNATURE_HASH && methodSignature !== CLEAR_DELEGATE_SIGNATURE_HASH) {
+          continue
+        }
+        // The HMAC only proves the payload came from Alchemy, not which contract emitted the log.
+        // When the payload carries the emitting address, require the canonical Snapshot registry so
+        // a look-alike SetDelegate/ClearDelegate from an arbitrary contract cannot forge delegations.
+        const emitter = log.account?.address
+        if (emitter && !isSameAddress(emitter, SNAPSHOT_DELEGATION_REGISTRY)) {
+          continue
+        }
+        let decoded
+        try {
+          decoded = this.decodeLogTopics(log.topics)
+        } catch {
+          continue
+        }
+        const { spaceId, delegator, delegate } = decoded
         if (spaceId !== SNAPSHOT_SPACE) {
+          continue
+        }
+        // The real registry rejects self-delegation, so a delegator === delegate log can only be
+        // forged; drop it rather than record a nonsensical feed entry.
+        if (isSameAddress(delegator, delegate)) {
           continue
         }
         const creationDate = this.getContractEventDate(blockTimestamp, log)
         if (methodSignature === CLEAR_DELEGATE_SIGNATURE_HASH) {
           await this.delegationClear(delegate, delegator, txHash, creationDate)
-        }
-        if (methodSignature === SET_DELEGATE_SIGNATURE_HASH) {
+        } else {
           await this.delegationSet(delegate, delegator, txHash, creationDate)
         }
       }

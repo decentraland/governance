@@ -1,5 +1,6 @@
 import { hashMessage, recoverAddress } from 'ethers/lib/utils'
 import capitalize from 'lodash/capitalize'
+import escapeRegExp from 'lodash/escapeRegExp'
 
 import { FORUM_URL } from '../../constants'
 import { DiscoursePostInTopic } from '../../shared/types/discourse'
@@ -66,17 +67,26 @@ export function formatValidationMessage(address: string, timestamp: string, acco
 
 export function getValidationComment(comments: ValidationComment[], address: string, timestamp: string) {
   const timeWindow = new Date(new Date().getTime() - MESSAGE_TIMEOUT_TIME)
+  // escapeRegExp so the address/timestamp are matched literally (defense-in-depth against a
+  // regex-injection/ReDoS if the source of these values ever changes to accept free-form input).
+  const addressRegex = new RegExp(escapeRegExp(address), 'i')
+  const dateRegex = new RegExp(escapeRegExp(timestamp), 'i')
 
-  const filteredComments = comments.filter((comment) => {
-    return new Date(comment.timestamp) > timeWindow
+  const matchingComments = comments.filter((comment) => {
+    return (
+      new Date(comment.timestamp) > timeWindow && addressRegex.test(comment.content) && dateRegex.test(comment.content)
+    )
   })
 
-  return filteredComments.find((comment) => {
-    const addressRegex = new RegExp(address, 'i')
-    const dateRegex = new RegExp(timestamp, 'i')
+  // Fail closed on ambiguity. The address, timestamp, and signature are all public the moment the
+  // user posts their verification comment, so anyone can copy them into a second comment from a
+  // different forum/Discord account. If more than one comment matches we cannot tell which account
+  // is the genuine owner, so we refuse to link rather than risk binding the wallet to an impersonator.
+  if (matchingComments.length > 1) {
+    throw new Error('Multiple matching verification comments found; aborting to avoid linking the wrong account')
+  }
 
-    return addressRegex.test(comment.content) && dateRegex.test(comment.content)
-  })
+  return matchingComments[0]
 }
 
 export function validateComment(

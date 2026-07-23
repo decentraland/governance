@@ -315,7 +315,11 @@ export class ProposalService {
       await UpdateService.createPendingUpdatesForVesting(validatedProjectId, vesting_addresses)
     }
 
-    await ProposalModel.update<ProposalAttributes>(update, { id })
+    // Compare-and-set on the status we read: if a concurrent status change (e.g. a
+    // double-submitted enact, or an enact racing a reject) already moved the proposal, this
+    // update matches no rows instead of overwriting the winner and leaving the row in an
+    // inconsistent state (e.g. status=Rejected but enacted=true).
+    await ProposalModel.update<ProposalAttributes>(update, { id, status: proposal.status })
 
     const updatedProposal = { ...proposal, ...update }
 

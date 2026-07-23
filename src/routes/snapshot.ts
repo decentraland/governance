@@ -17,6 +17,23 @@ import {
   validateProposalSnapshotId,
 } from '../utils/validations'
 
+// These endpoints are unauthenticated and proxy the address list to Snapshot, so an unbounded
+// array becomes an outbound-amplification lever. Cap it well above any real usage — the largest
+// legitimate caller is the delegator set of a top delegate (bounded by subgraph paging) — and
+// reject non-address entries before forwarding. Tune the cap up if a genuine caller ever exceeds it.
+const MAX_ADDRESSES_PER_REQUEST = 5000
+
+function validateBoundedAddresses(addresses: unknown): string[] {
+  if (!Array.isArray(addresses)) {
+    throw new RequestError('Invalid addresses', RequestError.BadRequest)
+  }
+  if (addresses.length > MAX_ADDRESSES_PER_REQUEST) {
+    throw new RequestError(`Too many addresses: max ${MAX_ADDRESSES_PER_REQUEST} per request`, RequestError.BadRequest)
+  }
+  validateAddresses(addresses)
+  return addresses
+}
+
 export default routes((router) => {
   router.get('/snapshot/status', handleAPI(getStatus))
   router.get('/snapshot/config/:spaceName', handleAPI(getConfig))
@@ -41,7 +58,7 @@ async function getConfig(req: Request<{ spaceName?: string }>) {
 }
 
 async function getVotesByAddresses(req: Request) {
-  const { addresses } = req.body
+  const addresses = validateBoundedAddresses(req.body.addresses)
   return await SnapshotService.getVotesByAddresses(addresses)
 }
 
@@ -72,8 +89,8 @@ async function getVpDistribution(req: Request<{ address: string; proposalSnapsho
 }
 
 async function getScores(req: Request) {
-  const addresses = req.body.addresses
-  if (!addresses || addresses.length === 0) {
+  const addresses = validateBoundedAddresses(req.body.addresses)
+  if (addresses.length === 0) {
     throw new RequestError('Addresses missing', RequestError.BadRequest)
   }
 
@@ -93,7 +110,6 @@ async function getDelegations(req: Request) {
 }
 
 async function getPickedBy(req: Request) {
-  const { addresses } = req.body
-  validateAddresses(addresses)
+  const addresses = validateBoundedAddresses(req.body.addresses)
   return await SnapshotSubgraph.get().getPickedBy(addresses, SNAPSHOT_SPACE)
 }

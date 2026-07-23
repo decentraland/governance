@@ -19,7 +19,7 @@ import { updateGovernanceBudgets } from './entities/Budget/jobs'
 import { activateProposals, finishProposal, notifyCliffEndingSoon, publishBids } from './entities/Proposal/jobs'
 import { giveAndRevokeLandOwnerBadges, giveTopVoterBadges, runQueuedAirdropJobs } from './jobs/BadgeAirdrop'
 import { pingSnapshot } from './jobs/PingSnapshot'
-import { withLock } from './jobs/jobLocks'
+import { withPgAdvisoryLock } from './jobs/jobLocks'
 import airdrops from './routes/airdrop'
 import badges from './routes/badges'
 import bid from './routes/bid'
@@ -46,9 +46,14 @@ import webhooks from './routes/webhooks'
 import { DiscordService } from './services/discord'
 
 const jobs = manager()
-jobs.cron('@eachMinute', finishProposal)
+// finishProposal reads shared budget/proposal state and fires non-idempotent side effects,
+// so it must never overlap itself (a slow run spilling into the next tick) or run on two
+// dynos at once — both would double-count budget and duplicate notifications/events. The
+// Postgres advisory lock serializes it across every instance. publishBids has the same
+// exposure and previously used only the in-process guard, which does nothing across dynos.
+jobs.cron('@eachMinute', withPgAdvisoryLock('finishProposal', finishProposal))
 jobs.cron('@eachMinute', activateProposals)
-jobs.cron('@each5Minute', withLock('publishBids', publishBids))
+jobs.cron('@each5Minute', withPgAdvisoryLock('publishBids', publishBids))
 jobs.cron('@each10Second', pingSnapshot)
 jobs.cron('30 0 * * *', updateGovernanceBudgets) // Runs at 00:30 daily
 jobs.cron('35 0 * * *', notifyCliffEndingSoon) // Runs at 00:35 daily

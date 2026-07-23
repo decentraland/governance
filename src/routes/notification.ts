@@ -12,7 +12,7 @@ import { DiscordService } from '../services/discord'
 import { NotificationService } from '../services/notification'
 import { NotificationCustomType } from '../shared/types/notifications'
 import { NotificationType } from '../utils/notifications'
-import { validateDebugAddress } from '../utils/validations'
+import { validateAddress, validateDebugAddress } from '../utils/validations'
 
 export default routes((router) => {
   const withAuth = auth()
@@ -74,11 +74,8 @@ async function sendNotification(req: WithAuth) {
 }
 
 async function getUserFeed(req: Request) {
-  const address = req.params.address
-  if (!address) {
-    throw new RequestError('Missing user', RequestError.BadRequest)
-  }
-
+  // Validate before it is interpolated into the CAIP id and the outbound Push feed URL.
+  const address = validateAddress(req.params.address)
   return await NotificationService.getUserFeed(address)
 }
 
