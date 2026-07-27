@@ -10,6 +10,14 @@ function getPool(): Pool {
   return pool
 }
 
+// Closes the transaction pool. Mainly for tests, so the process can exit cleanly.
+export async function closeTransactionPool(): Promise<void> {
+  if (pool) {
+    await pool.end()
+    pool = undefined
+  }
+}
+
 // Runs fn inside a single transaction on a dedicated client: BEGIN, COMMIT on success, ROLLBACK on
 // any error. The client is always released. Use it when several writes must commit atomically.
 export async function withTransaction<T>(fn: (client: PoolClient) => Promise<T>): Promise<T> {
