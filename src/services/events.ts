@@ -2,6 +2,7 @@ import crypto from 'crypto'
 import { ethers } from 'ethers'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
+import { DELEGATION_REGISTRY_ENFORCED } from '../constants'
 import ProposalModel from '../entities/Proposal/model'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import { ProposalAttributes } from '../entities/Proposal/types'
@@ -381,12 +382,13 @@ export class EventsService {
         if (methodSignature !== SET_DELEGATE_SIGNATURE_HASH && methodSignature !== CLEAR_DELEGATE_SIGNATURE_HASH) {
           continue
         }
-        // The HMAC only proves the payload came from Alchemy, not which contract emitted the log.
-        // When the payload carries the emitting address, require the canonical Snapshot registry so
-        // a look-alike SetDelegate/ClearDelegate from an arbitrary contract cannot forge delegations.
+        // The HMAC proves the payload is from Alchemy, not which contract emitted the log.
         const emitter = log.account?.address
-        if (emitter && !isSameAddress(emitter, SNAPSHOT_DELEGATION_REGISTRY)) {
-          continue
+        const emitterIsRegistry = !!emitter && isSameAddress(emitter, SNAPSHOT_DELEGATION_REGISTRY)
+        if (DELEGATION_REGISTRY_ENFORCED) {
+          if (!emitterIsRegistry) continue // fail-closed: require the registry emitter
+        } else if (emitter && !emitterIsRegistry) {
+          continue // best-effort: reject a mismatching emitter, tolerate a missing one
         }
         let decoded
         try {

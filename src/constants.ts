@@ -47,6 +47,8 @@ export const LEGISLATOR_BADGE_SPEC_CID = process.env.LEGISLATOR_BADGE_SPEC_CID |
 export const LAND_OWNER_BADGE_SPEC_CID = process.env.LAND_OWNER_BADGE_SPEC_CID || ''
 export const DISCOURSE_WEBHOOK_SECRET = process.env.DISCOURSE_WEBHOOK_SECRET || ''
 export const ALCHEMY_DELEGATIONS_WEBHOOK_SECRET = process.env.ALCHEMY_DELEGATIONS_WEBHOOK_SECRET || ''
+// Off until the Alchemy webhook query is confirmed to send the emitting `account.address`.
+export const DELEGATION_REGISTRY_ENFORCED = getBooleanStringVar('DELEGATION_REGISTRY_ENFORCED', false)
 export const DEBUG_ADDRESSES = (process.env.DEBUG_ADDRESSES || '')
   .split(',')
   .filter(isEthereumAddress)
