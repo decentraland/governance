@@ -189,7 +189,12 @@ export class UpdateService {
     return update
   }
 
-  static async createPendingUpdatesForVesting(projectId: string, initialVestingAddresses?: string[]) {
+  // Read-only: fetches vesting data and builds the pending-update rows without touching the DB, so
+  // the failure-prone network call can run before a guarding check (e.g. a status CAS).
+  static async computePendingUpdatesForVesting(
+    projectId: string,
+    initialVestingAddresses?: string[]
+  ): Promise<UpdateAttributes[]> {
     if (projectId.length < 0) throw new Error('Unable to create updates for empty project id')
 
     const project = await ProjectService.getUpdatedProject(projectId)
@@ -201,9 +206,7 @@ export class UpdateService {
     const updatesQuantity = this.getAmountOfUpdates(vesting)
     const firstUpdateStartingDate = Time.utc(vesting.start_at).startOf('day')
 
-    await UpdateModel.delete<UpdateAttributes>({ project_id: projectId, status: UpdateStatus.Pending })
-
-    const updates = Array.from(Array(updatesQuantity), (_, index) => {
+    return Array.from(Array(updatesQuantity), (_, index) => {
       const update: UpdateAttributes = {
         id: crypto.randomUUID(),
         proposal_id,
@@ -216,7 +219,17 @@ export class UpdateService {
 
       return update
     })
+  }
+
+  // The DB mutation, split out so callers can defer it until after a guarding check succeeds.
+  static async persistPendingUpdatesForVesting(projectId: string, updates: UpdateAttributes[]) {
+    await UpdateModel.delete<UpdateAttributes>({ project_id: projectId, status: UpdateStatus.Pending })
     return await UpdateModel.createMany(updates)
+  }
+
+  static async createPendingUpdatesForVesting(projectId: string, initialVestingAddresses?: string[]) {
+    const updates = await this.computePendingUpdatesForVesting(projectId, initialVestingAddresses)
+    return await this.persistPendingUpdatesForVesting(projectId, updates)
   }
 
   static async updateProjectUpdate(

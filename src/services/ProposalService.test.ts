@@ -29,7 +29,8 @@ jest.mock('../services/notification', () => ({
 
 jest.mock('../services/update', () => ({
   UpdateService: {
-    createPendingUpdatesForVesting: jest.fn(),
+    computePendingUpdatesForVesting: jest.fn(),
+    persistPendingUpdatesForVesting: jest.fn(),
   },
 }))
 
@@ -106,6 +107,7 @@ describe('ProposalService', () => {
         jest.clearAllMocks()
         jest.spyOn(ProposalModel, 'update').mockResolvedValue(1 as never)
         ;(ProjectService.getUpdatedProject as jest.Mock).mockResolvedValue({ status: 'in_progress' } as never)
+        ;(UpdateService.computePendingUpdatesForVesting as jest.Mock).mockResolvedValue([])
         proposal = {
           ...createTestProposal(ProposalType.Grant, ProposalStatus.Passed, 10000),
           project_id: projectId,
@@ -120,7 +122,7 @@ describe('ProposalService', () => {
           user
         )
 
-        expect(UpdateService.createPendingUpdatesForVesting).toHaveBeenCalledWith(projectId, vestingAddresses)
+        expect(UpdateService.computePendingUpdatesForVesting).toHaveBeenCalledWith(projectId, vestingAddresses)
       })
     })
 
@@ -134,6 +136,7 @@ describe('ProposalService', () => {
         jest.clearAllMocks()
         jest.spyOn(ProposalModel, 'update').mockResolvedValue(1 as never)
         ;(ProjectService.getUpdatedProject as jest.Mock).mockResolvedValue({ status: 'in_progress' } as never)
+        ;(UpdateService.computePendingUpdatesForVesting as jest.Mock).mockResolvedValue([])
         proposal = {
           ...createTestProposal(ProposalType.Grant, ProposalStatus.Enacted, 10000),
           project_id: projectId,
@@ -151,7 +154,7 @@ describe('ProposalService', () => {
             user
           )
 
-          expect(UpdateService.createPendingUpdatesForVesting).not.toHaveBeenCalled()
+          expect(UpdateService.computePendingUpdatesForVesting).not.toHaveBeenCalled()
         })
       })
 
@@ -165,7 +168,7 @@ describe('ProposalService', () => {
             user
           )
 
-          expect(UpdateService.createPendingUpdatesForVesting).toHaveBeenCalledWith(projectId, newAddresses)
+          expect(UpdateService.computePendingUpdatesForVesting).toHaveBeenCalledWith(projectId, newAddresses)
         })
       })
     })
@@ -181,6 +184,7 @@ describe('ProposalService', () => {
         jest.clearAllMocks()
         jest.spyOn(ProposalModel, 'update').mockResolvedValue(0 as never)
         ;(ProjectService.getUpdatedProject as jest.Mock).mockResolvedValue({ status: 'in_progress' } as never)
+        ;(UpdateService.computePendingUpdatesForVesting as jest.Mock).mockResolvedValue([])
         proposal = {
           ...createTestProposal(ProposalType.Grant, ProposalStatus.Passed, 10000),
           project_id: projectId,
@@ -195,6 +199,10 @@ describe('ProposalService', () => {
 
       it('should reject instead of returning a success', () => {
         expect(outcome).toBeInstanceOf(Error)
+      })
+
+      it('should not persist the pending vesting updates', () => {
+        expect(UpdateService.persistPendingUpdatesForVesting).not.toHaveBeenCalled()
       })
 
       it('should not send the enactment notification', () => {

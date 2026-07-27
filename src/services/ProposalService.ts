@@ -20,6 +20,7 @@ import {
 import { isGrantProposalSubmitEnabled, isProjectProposal } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { isSameAddress } from '../entities/Snapshot/utils'
+import { UpdateAttributes } from '../entities/Updates/types'
 import VotesModel from '../entities/Votes/model'
 import { getEnvironmentChainId } from '../helpers'
 import { DiscordService } from '../services/discord'
@@ -308,22 +309,31 @@ export class ProposalService {
     const vestingAddressesChanged = !this.haveSameVestingAddresses(proposal.vesting_addresses, vesting_addresses)
     const shouldCreatePendingUpdates = isEnactedStatus && isProject && (!wasAlreadyEnacted || vestingAddressesChanged)
 
-    // Run the failure-prone vesting work before persisting the status so a failure leaves the
-    // proposal in its previous state (consistent and retryable) rather than half-enacted.
+    // Fetch/build the vesting schedule (the failure-prone network call) before the write; a fetch
+    // failure aborts here without half-enacting. The DB mutation is deferred until after the CAS.
+    let pendingVestingUpdates: UpdateAttributes[] | undefined
+    let pendingUpdatesProjectId: string | undefined
     if (shouldCreatePendingUpdates) {
-      const validatedProjectId = validateId(proposal.project_id)
-      await UpdateService.createPendingUpdatesForVesting(validatedProjectId, vesting_addresses)
+      pendingUpdatesProjectId = validateId(proposal.project_id)
+      pendingVestingUpdates = await UpdateService.computePendingUpdatesForVesting(
+        pendingUpdatesProjectId,
+        vesting_addresses
+      )
     }
 
-    // Compare-and-set on the status we read: if a concurrent status change (e.g. a
-    // double-submitted enact, or an enact racing a reject) already moved the proposal, this
-    // update matches no rows instead of overwriting the winner and leaving the row in an
-    // inconsistent state (e.g. status=Rejected but enacted=true). Abort before any side effects
-    // so a lost race cannot emit duplicate enactment notifications/events or return a success
-    // for a transition that was never persisted.
+    // Compare-and-set on the status we read: a concurrent transition (double-submitted enact, or
+    // enact racing reject) matches no rows. Abort before persisting pending updates or firing side
+    // effects, so a lost race never mutates vesting updates nor returns a success for an unpersisted
+    // transition.
     const updatedRows = await ProposalModel.update<ProposalAttributes>(update, { id, status: proposal.status })
     if (updatedRows === 0) {
       throw new Error(`Proposal "${id}" was modified concurrently; the "${newStatus}" update was not applied`)
+    }
+
+    // Persist pending updates only after the CAS wins, so the losing request cannot leave the
+    // winner with pending vesting updates from its transition.
+    if (pendingVestingUpdates && pendingUpdatesProjectId) {
+      await UpdateService.persistPendingUpdatesForVesting(pendingUpdatesProjectId, pendingVestingUpdates)
     }
 
     const updatedProposal = { ...proposal, ...update }
