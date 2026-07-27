@@ -222,9 +222,9 @@ export class UpdateService {
   }
 
   // The DB mutation, split out so callers can defer it until after a guarding check succeeds.
+  // Atomic delete+insert so a crash can't leave the project with no pending updates.
   static async persistPendingUpdatesForVesting(projectId: string, updates: UpdateAttributes[]) {
-    await UpdateModel.delete<UpdateAttributes>({ project_id: projectId, status: UpdateStatus.Pending })
-    return await UpdateModel.createMany(updates)
+    return await UpdateModel.replacePendingUpdates(projectId, updates)
   }
 
   static async createPendingUpdatesForVesting(projectId: string, initialVestingAddresses?: string[]) {

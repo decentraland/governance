@@ -1,6 +1,6 @@
 import crypto from 'crypto'
 import { Model } from 'decentraland-gatsby/dist/entities/Database/model'
-import { SQL, table } from 'decentraland-gatsby/dist/entities/Database/utils'
+import { SQL, columns, objectValues, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 
 import { UpdateAttributes, UpdateStatus } from './types'
 
@@ -8,6 +8,25 @@ export default class UpdateModel extends Model<UpdateAttributes> {
   static tableName = 'project_updates'
   static withTimestamps = false
   static primaryKey = 'id'
+
+  // Replace a project's pending updates atomically: the DELETE runs in a data-modifying CTE in the
+  // same statement as the INSERT, so a crash can't drop the old rows without writing the new ones.
+  static async replacePendingUpdates(projectId: string, updates: UpdateAttributes[]) {
+    if (updates.length === 0) {
+      return await this.delete<UpdateAttributes>({ project_id: projectId, status: UpdateStatus.Pending })
+    }
+
+    const keys = Object.keys(updates[0])
+    const query = SQL`
+      WITH deleted AS (
+        DELETE FROM ${table(this)}
+        WHERE "project_id" = ${projectId} AND "status" = ${UpdateStatus.Pending}
+      )
+      INSERT INTO ${table(this)} ${columns(keys)}
+      VALUES ${objectValues(keys, updates)}
+    `
+    return await this.namedRowCount('replace_pending_updates', query)
+  }
 
   static async createUpdate(
     update: Omit<UpdateAttributes, 'id' | 'status' | 'due_date' | 'completion_date' | 'created_at' | 'updated_at'>
