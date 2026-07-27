@@ -9,15 +9,16 @@ export default class UpdateModel extends Model<UpdateAttributes> {
   static withTimestamps = false
   static primaryKey = 'id'
 
-  // Replace a project's pending updates atomically: the DELETE runs in a data-modifying CTE in the
-  // same statement as the INSERT, so a crash can't drop the old rows without writing the new ones.
-  static async replacePendingUpdates(projectId: string, updates: UpdateAttributes[]) {
+  // Builds a single statement that atomically replaces a project's pending updates: the DELETE runs
+  // in a data-modifying CTE alongside the INSERT, so the old rows can't be dropped without writing
+  // the new ones. Returned as a query so it can also run on a transaction client.
+  static getReplacePendingUpdatesQuery(projectId: string, updates: UpdateAttributes[]) {
     if (updates.length === 0) {
-      return await this.delete<UpdateAttributes>({ project_id: projectId, status: UpdateStatus.Pending })
+      return SQL`DELETE FROM ${table(this)} WHERE "project_id" = ${projectId} AND "status" = ${UpdateStatus.Pending}`
     }
 
     const keys = Object.keys(updates[0])
-    const query = SQL`
+    return SQL`
       WITH deleted AS (
         DELETE FROM ${table(this)}
         WHERE "project_id" = ${projectId} AND "status" = ${UpdateStatus.Pending}
@@ -25,7 +26,10 @@ export default class UpdateModel extends Model<UpdateAttributes> {
       INSERT INTO ${table(this)} ${columns(keys)}
       VALUES ${objectValues(keys, updates)}
     `
-    return await this.namedRowCount('replace_pending_updates', query)
+  }
+
+  static async replacePendingUpdates(projectId: string, updates: UpdateAttributes[]) {
+    return await this.namedRowCount('replace_pending_updates', this.getReplacePendingUpdatesQuery(projectId, updates))
   }
 
   static async createUpdate(

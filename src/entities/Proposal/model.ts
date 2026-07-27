@@ -122,12 +122,12 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return this.namedQuery('create_proposal', sql) as any
   }
 
-  // Returns the number of rows updated, so callers can detect a compare-and-set that matched no
-  // row (e.g. a concurrent status change) instead of assuming the write applied.
-  static update<U extends QueryPart = any, P extends QueryPart = any>(
+  // Builds the UPDATE ... SET ... WHERE statement without executing it, so it can be run on a
+  // transaction client alongside other writes.
+  static getUpdateQuery<U extends QueryPart = any, P extends QueryPart = any>(
     changes: Partial<U>,
     conditions: Partial<P>
-  ): Promise<number> {
+  ) {
     const changesKeys = Object.keys(changes).map((key) => key.replace(/\W/gi, ''))
     const conditionsKeys = Object.keys(conditions).map((key) => key.replace(/\W/gi, ''))
     if (changesKeys.length === 0) {
@@ -138,7 +138,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       throw new Error(`Missing update conditions`)
     }
 
-    const sql = SQL`
+    return SQL`
         UPDATE ${table(this)}
         SET ${join(
           changesKeys.map((key) => SQL`"${SQL.raw(key)}" = ${changes[key]}`),
@@ -149,8 +149,21 @@ export default class ProposalModel extends Model<ProposalAttributes> {
           SQL` AND `
         )}
     `
+  }
 
-    return this.namedRowCount('update_proposal', sql)
+  // Returns the number of rows updated, so callers can detect a compare-and-set that matched no
+  // row (e.g. a concurrent status change) instead of assuming the write applied.
+  static update<U extends QueryPart = any, P extends QueryPart = any>(
+    changes: Partial<U>,
+    conditions: Partial<P>
+  ): Promise<number> {
+    return this.namedRowCount('update_proposal', this.getUpdateQuery(changes, conditions))
+  }
+
+  // Row-lock a proposal and read its current status so a caller can serialize concurrent status
+  // changes and re-check the transition inside a transaction.
+  static getSelectStatusForUpdateQuery(id: string) {
+    return SQL`SELECT "status" FROM ${table(this)} WHERE "id" = ${id} FOR UPDATE`
   }
 
   static async countAll() {

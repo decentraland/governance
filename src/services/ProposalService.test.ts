@@ -1,7 +1,9 @@
 import ProposalModel from '../entities/Proposal/model'
 import { createTestProposal } from '../entities/Proposal/testHelpers'
 import { ProposalStatus, ProposalType, ProposalWithProject } from '../entities/Proposal/types'
+import UpdateModel from '../entities/Updates/model'
 import { UpdateService } from '../services/update'
+import { withTransaction } from '../utils/withTransaction'
 
 import { DiscourseService } from './DiscourseService'
 import { ProjectService } from './ProjectService'
@@ -30,7 +32,6 @@ jest.mock('../services/notification', () => ({
 jest.mock('../services/update', () => ({
   UpdateService: {
     computePendingUpdatesForVesting: jest.fn(),
-    persistPendingUpdatesForVesting: jest.fn(),
   },
 }))
 
@@ -47,67 +48,91 @@ jest.mock('./DiscourseService', () => ({
   },
 }))
 
+jest.mock('../utils/withTransaction', () => ({
+  withTransaction: jest.fn(),
+}))
+
+// Wire withTransaction to run its callback against a client whose row lock reports `lockedStatus`,
+// so tests can drive the win/lose-the-race branches without a database.
+function mockTransactionLockedStatus(lockedStatus: ProposalStatus) {
+  ;(withTransaction as jest.Mock).mockImplementation((fn) =>
+    fn({ query: jest.fn().mockResolvedValue({ rows: [{ status: lockedStatus }], rowCount: 1 }) })
+  )
+}
+
 describe('ProposalService', () => {
   afterEach(() => {
     jest.restoreAllMocks()
   })
 
   describe('updateProposalStatus', () => {
-    it('clears enactment metadata when an enacted proposal is reverted to passed', async () => {
-      const user = '0x2AC89522CB415AC333E64F52a1a5693218cEBD58'
+    const user = '0x2AC89522CB415AC333E64F52a1a5693218cEBD58'
+    const projectId = '11111111-1111-1111-1111-111111111111'
+
+    describe('when an enacted proposal is reverted to passed', () => {
       const passedBy = '0x56d0B5eD3D525332F00C9BC938f93598ab16AAA7'
-      const proposal: ProposalWithProject = {
-        ...createTestProposal(ProposalType.Draft, ProposalStatus.Enacted),
-        enacted: true,
-        enacted_by: user,
-        enacted_description: 'Marked as enacted by mistake',
-        enacting_tx: '0x123',
-        passed_by: passedBy,
-        personnel: [],
-      }
-      const updateSpy = jest.spyOn(ProposalModel, 'update').mockResolvedValue(1 as never)
+      let proposal: ProposalWithProject
+      let updateQuerySpy: jest.SpyInstance
+      let updatedProposal: ProposalWithProject
 
-      const updatedProposal = await ProposalService.updateProposalStatus(
-        proposal,
-        { status: ProposalStatus.Passed },
-        user
-      )
+      beforeEach(async () => {
+        jest.clearAllMocks()
+        proposal = {
+          ...createTestProposal(ProposalType.Draft, ProposalStatus.Enacted),
+          enacted: true,
+          enacted_by: user,
+          enacted_description: 'Marked as enacted by mistake',
+          enacting_tx: '0x123',
+          passed_by: passedBy,
+          personnel: [],
+        }
+        mockTransactionLockedStatus(ProposalStatus.Enacted)
+        updateQuerySpy = jest.spyOn(ProposalModel, 'getUpdateQuery')
+        updatedProposal = await ProposalService.updateProposalStatus(proposal, { status: ProposalStatus.Passed }, user)
+      })
 
-      expect(updateSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
+      it('clears the enactment metadata in the update', () => {
+        expect(updateQuerySpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            status: ProposalStatus.Passed,
+            enacted: false,
+            enacted_by: null,
+            enacted_description: null,
+            enacting_tx: null,
+          }),
+          { id: proposal.id }
+        )
+      })
+
+      it('does not set passed_by', () => {
+        expect(updateQuerySpy.mock.calls[0][0]).not.toHaveProperty('passed_by')
+      })
+
+      it('returns the reverted proposal preserving the original passed_by', () => {
+        expect(updatedProposal).toMatchObject({
           status: ProposalStatus.Passed,
           enacted: false,
           enacted_by: null,
           enacted_description: null,
           enacting_tx: null,
-        }),
-        // Compare-and-set: the update is conditioned on the status we read, so a concurrent
-        // transition cannot be clobbered.
-        { id: proposal.id, status: ProposalStatus.Enacted }
-      )
-      expect(updateSpy.mock.calls[0][0]).not.toHaveProperty('passed_by')
-      expect(updatedProposal).toMatchObject({
-        status: ProposalStatus.Passed,
-        enacted: false,
-        enacted_by: null,
-        enacted_description: null,
-        enacting_tx: null,
-        passed_by: passedBy,
+          passed_by: passedBy,
+        })
       })
-      expect(DiscourseService.commentUpdatedProposal).toHaveBeenCalledWith(updatedProposal)
+
+      it('posts the discourse update', () => {
+        expect(DiscourseService.commentUpdatedProposal).toHaveBeenCalledWith(updatedProposal)
+      })
     })
 
     describe('when enacting a passed project proposal for the first time', () => {
-      const user = '0x2AC89522CB415AC333E64F52a1a5693218cEBD58'
-      const projectId = '11111111-1111-1111-1111-111111111111'
       const vestingAddresses = ['0x1111111111111111111111111111111111111111']
       let proposal: ProposalWithProject
 
       beforeEach(() => {
         jest.clearAllMocks()
-        jest.spyOn(ProposalModel, 'update').mockResolvedValue(1 as never)
         ;(ProjectService.getUpdatedProject as jest.Mock).mockResolvedValue({ status: 'in_progress' } as never)
         ;(UpdateService.computePendingUpdatesForVesting as jest.Mock).mockResolvedValue([])
+        mockTransactionLockedStatus(ProposalStatus.Passed)
         proposal = {
           ...createTestProposal(ProposalType.Grant, ProposalStatus.Passed, 10000),
           project_id: projectId,
@@ -127,16 +152,14 @@ describe('ProposalService', () => {
     })
 
     describe('when re-enacting an already-enacted project proposal', () => {
-      const user = '0x2AC89522CB415AC333E64F52a1a5693218cEBD58'
-      const projectId = '11111111-1111-1111-1111-111111111111'
       const existingAddresses = ['0x1111111111111111111111111111111111111111']
       let proposal: ProposalWithProject
 
       beforeEach(() => {
         jest.clearAllMocks()
-        jest.spyOn(ProposalModel, 'update').mockResolvedValue(1 as never)
         ;(ProjectService.getUpdatedProject as jest.Mock).mockResolvedValue({ status: 'in_progress' } as never)
         ;(UpdateService.computePendingUpdatesForVesting as jest.Mock).mockResolvedValue([])
+        mockTransactionLockedStatus(ProposalStatus.Enacted)
         proposal = {
           ...createTestProposal(ProposalType.Grant, ProposalStatus.Enacted, 10000),
           project_id: projectId,
@@ -173,18 +196,21 @@ describe('ProposalService', () => {
       })
     })
 
-    describe('when the compare-and-set matches no rows because a concurrent transition already won', () => {
-      const user = '0x2AC89522CB415AC333E64F52a1a5693218cEBD58'
-      const projectId = '11111111-1111-1111-1111-111111111111'
+    describe('when the row lock reports a different status because a concurrent transition already won', () => {
       const vestingAddresses = ['0x1111111111111111111111111111111111111111']
       let proposal: ProposalWithProject
       let outcome: unknown
+      let updateQuerySpy: jest.SpyInstance
+      let replaceQuerySpy: jest.SpyInstance
 
       beforeEach(async () => {
         jest.clearAllMocks()
-        jest.spyOn(ProposalModel, 'update').mockResolvedValue(0 as never)
         ;(ProjectService.getUpdatedProject as jest.Mock).mockResolvedValue({ status: 'in_progress' } as never)
         ;(UpdateService.computePendingUpdatesForVesting as jest.Mock).mockResolvedValue([])
+        // We read Passed, but the locked row is already Enacted — the transaction must abort.
+        mockTransactionLockedStatus(ProposalStatus.Enacted)
+        updateQuerySpy = jest.spyOn(ProposalModel, 'getUpdateQuery')
+        replaceQuerySpy = jest.spyOn(UpdateModel, 'getReplacePendingUpdatesQuery')
         proposal = {
           ...createTestProposal(ProposalType.Grant, ProposalStatus.Passed, 10000),
           project_id: projectId,
@@ -201,8 +227,12 @@ describe('ProposalService', () => {
         expect(outcome).toBeInstanceOf(Error)
       })
 
-      it('should not persist the pending vesting updates', () => {
-        expect(UpdateService.persistPendingUpdatesForVesting).not.toHaveBeenCalled()
+      it('should not write the proposal status', () => {
+        expect(updateQuerySpy).not.toHaveBeenCalled()
+      })
+
+      it('should not replace the pending vesting updates', () => {
+        expect(replaceQuerySpy).not.toHaveBeenCalled()
       })
 
       it('should not send the enactment notification', () => {

@@ -20,6 +20,7 @@ import {
 import { isGrantProposalSubmitEnabled, isProjectProposal } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { isSameAddress } from '../entities/Snapshot/utils'
+import UpdateModel from '../entities/Updates/model'
 import { UpdateAttributes } from '../entities/Updates/types'
 import VotesModel from '../entities/Votes/model'
 import { getEnvironmentChainId } from '../helpers'
@@ -31,6 +32,7 @@ import { DiscoursePost } from '../shared/types/discourse'
 import { getProfile } from '../utils/Catalyst'
 import Time from '../utils/date/Time'
 import { validateId } from '../utils/validations'
+import { withTransaction } from '../utils/withTransaction'
 
 import { DiscourseService } from './DiscourseService'
 import { ProjectService } from './ProjectService'
@@ -321,20 +323,28 @@ export class ProposalService {
       )
     }
 
-    // Compare-and-set on the status we read: a concurrent transition (double-submitted enact, or
-    // enact racing reject) matches no rows. Abort before persisting pending updates or firing side
-    // effects, so a lost race never mutates vesting updates nor returns a success for an unpersisted
-    // transition.
-    const updatedRows = await ProposalModel.update<ProposalAttributes>(update, { id, status: proposal.status })
-    if (updatedRows === 0) {
-      throw new Error(`Proposal "${id}" was modified concurrently; the "${newStatus}" update was not applied`)
-    }
+    // Apply the status change and the pending-update replacement atomically. SELECT ... FOR UPDATE
+    // locks the row so concurrent enact/reject requests serialize; if the row already moved off the
+    // status we read, roll back without mutating anything or firing side effects.
+    await withTransaction(async (client) => {
+      const lock = ProposalModel.getSelectStatusForUpdateQuery(id)
+      const { rows } = await client.query(lock.text, lock.values)
+      const currentStatus = rows[0]?.status
+      if (!currentStatus) {
+        throw new Error(`Proposal "${id}" not found`)
+      }
+      if (currentStatus !== proposal.status) {
+        throw new Error(`Proposal "${id}" was modified concurrently; the "${newStatus}" update was not applied`)
+      }
 
-    // Persist pending updates only after the CAS wins, so the losing request cannot leave the
-    // winner with pending vesting updates from its transition.
-    if (pendingVestingUpdates && pendingUpdatesProjectId) {
-      await UpdateService.persistPendingUpdatesForVesting(pendingUpdatesProjectId, pendingVestingUpdates)
-    }
+      const updateQuery = ProposalModel.getUpdateQuery(update, { id })
+      await client.query(updateQuery.text, updateQuery.values)
+
+      if (pendingVestingUpdates && pendingUpdatesProjectId) {
+        const replaceQuery = UpdateModel.getReplacePendingUpdatesQuery(pendingUpdatesProjectId, pendingVestingUpdates)
+        await client.query(replaceQuery.text, replaceQuery.values)
+      }
+    })
 
     const updatedProposal = { ...proposal, ...update }
 
