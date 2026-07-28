@@ -279,14 +279,29 @@ describe('the vote routes', () => {
       })
     })
 
-    // Recorded, not endorsed: the handler reads the limit from the request body, but this is a GET,
-    // so a caller has no way to supply one and the query string is ignored.
     describe('when a limit is given in the query string', () => {
       beforeEach(async () => {
         await supertest(app).get('/api/votes/top-voters?limit=5')
       })
 
-      it('should ignore it', () => {
+      it('should pass it through', () => {
+        expect(getTopVoters).toHaveBeenCalledWith(5)
+      })
+    })
+
+    describe('when the limit is not a positive whole number', () => {
+      it('should ignore a non-numeric limit', async () => {
+        await supertest(app).get('/api/votes/top-voters?limit=abc')
+        expect(getTopVoters).toHaveBeenCalledWith(undefined)
+      })
+
+      it('should ignore a zero limit', async () => {
+        await supertest(app).get('/api/votes/top-voters?limit=0')
+        expect(getTopVoters).toHaveBeenCalledWith(undefined)
+      })
+
+      it('should ignore a negative limit', async () => {
+        await supertest(app).get('/api/votes/top-voters?limit=-5')
         expect(getTopVoters).toHaveBeenCalledWith(undefined)
       })
     })

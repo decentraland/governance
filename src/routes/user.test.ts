@@ -289,17 +289,21 @@ describe('the user routes', () => {
       })
     })
 
-    // Recorded, not endorsed: only the first of several account types is acted on.
+    // Acting on only the first would silently leave the rest linked, so the request is refused.
     describe('when several account types are given at once', () => {
       beforeEach(async () => {
-        await supertest(app)
+        response = await supertest(app)
           .post('/api/user/unlink')
           .set('x-test-auth', CALLER)
           .send({ accountType: [AccountType.Forum, AccountType.Discord] })
       })
 
-      it('should unlink only the first', () => {
-        expect(unlinkAccount).toHaveBeenCalledWith(CALLER, AccountType.Forum)
+      it('should reject the request', () => {
+        expect(response.status).toBe(400)
+      })
+
+      it('should not unlink anything', () => {
+        expect(unlinkAccount).not.toHaveBeenCalled()
       })
     })
   })

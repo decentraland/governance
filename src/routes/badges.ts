@@ -60,6 +60,9 @@ async function airdrop(req: WithAuth): Promise<AirdropOutcome> {
 
   validateDebugAddress(user)
 
+  if (!Array.isArray(recipients) || recipients.length === 0) {
+    throw new RequestError('Invalid recipients', RequestError.BadRequest)
+  }
   recipients.map((address) => {
     validateAddress(address)
   })
@@ -78,6 +81,9 @@ async function revoke(req: WithAuth): Promise<RevokeOrReinstateResult[]> {
 
   validateDebugAddress(user)
 
+  if (!Array.isArray(recipients) || recipients.length === 0) {
+    throw new RequestError('Invalid recipients', RequestError.BadRequest)
+  }
   recipients.map((address) => {
     validateAddress(address)
   })

@@ -2,7 +2,6 @@ import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
-import isNumber from 'lodash/isNumber'
 
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 import { SnapshotVote } from '../clients/SnapshotTypes'
@@ -122,8 +121,9 @@ async function getVotesAndProposalsByAddress(req: Request) {
 }
 
 async function getTopVotersForLast30Days(req: Request) {
-  const { limit } = req.body
-  const validLimit = isNumber(limit) && limit > 0 ? limit : undefined
+  // Read from the query string: this is a GET, so a body-supplied limit could never arrive.
+  const limit = Number(req.query.limit)
+  const validLimit = Number.isInteger(limit) && limit > 0 ? limit : undefined
 
   return await VoteService.getTopVotersForLast30Days(validLimit)
 }

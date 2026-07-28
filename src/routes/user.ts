@@ -1,4 +1,5 @@
 import { WithAuth, auth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
+import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
@@ -72,5 +73,9 @@ async function unlinkAccount(req: WithAuth) {
   const address = req.auth!
   const { accountType } = req.body
   const accounts = validateAccountTypes(accountType)
+  // Only one account is unlinked per call, so refuse rather than silently ignore the rest.
+  if (accounts.length > 1) {
+    throw new RequestError('Only one account can be unlinked at a time', RequestError.BadRequest)
+  }
   return await UserService.unlinkAccount(address, accounts[0])
 }

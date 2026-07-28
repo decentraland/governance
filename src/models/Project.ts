@@ -115,7 +115,7 @@ export default class ProjectModel extends Model<ProjectAttributes> {
         LEFT JOIN ${table(CoauthorModel)} co ON pr.proposal_id = co.proposal_id 
               AND co.status = ${CoauthorStatus.APPROVED}
         WHERE pr.id = ${projectId}
-          AND (p.user = ${user} OR co.address = ${user})
+          AND (lower(p.user) = lower(${user}) OR lower(co.address) = lower(${user}))
       ) AS "exists"
     `
 
