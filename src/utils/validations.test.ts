@@ -1,4 +1,5 @@
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
+import { Request } from 'express'
 
 import { createTestProposal } from '../entities/Proposal/testHelpers'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
@@ -8,15 +9,26 @@ import {
   MAX_ADDRESSES_PER_REQUEST,
   MAX_PENDING_PROPOSALS_LIMIT,
   extractImageUrls,
+  isValidDate,
   isValidImage,
+  stringToBoolean,
   validateAddress,
   validateAddresses,
+  validateAlchemyWebhookSignature,
   validateBlockNumber,
   validateBoundedAddresses,
   validateBoundedLimit,
+  validateDate,
+  validateDates,
   validateDebugAddress,
+  validateDiscourseWebhookSignature,
   validateEventFilters,
   validateId,
+  validateIsDaoCouncil,
+  validateProposalFields,
+  validateProposalSnapshotId,
+  validateRequiredString,
+  validateRequiredStrings,
   validateStatusUpdate,
 } from './validations'
 
@@ -361,6 +373,214 @@ describe('validateBoundedLimit', () => {
 
     it('should reject NaN', () => {
       expect(() => validateBoundedLimit(NaN)).toThrow('Invalid limit')
+    })
+  })
+})
+
+describe('validateDate', () => {
+  describe('when the date is a parseable string', () => {
+    it('should return it', () => {
+      expect(validateDate('2024-01-31T00:00:00.000Z')).toBe('2024-01-31T00:00:00.000Z')
+    })
+  })
+
+  describe('when the date is missing and not marked optional', () => {
+    it('should throw an invalid date error', () => {
+      expect(() => validateDate(undefined)).toThrow('Invalid date')
+    })
+  })
+
+  describe('when the date is missing and marked optional', () => {
+    it('should return undefined without throwing', () => {
+      expect(validateDate(undefined, 'optional')).toBeUndefined()
+    })
+  })
+
+  describe('when the date is present but unparseable', () => {
+    it('should throw even when marked optional', () => {
+      expect(() => validateDate('not-a-date', 'optional')).toThrow('Invalid date')
+    })
+  })
+})
+
+describe('validateDates', () => {
+  describe('when both dates are parseable', () => {
+    it('should return them as Date instances', () => {
+      const { validatedStart, validatedEnd } = validateDates('2024-01-01', '2024-02-01')
+      expect([validatedStart.toISOString(), validatedEnd.toISOString()]).toEqual([
+        new Date('2024-01-01').toISOString(),
+        new Date('2024-02-01').toISOString(),
+      ])
+    })
+  })
+
+  describe('when either date is unparseable', () => {
+    it('should throw for an invalid start', () => {
+      expect(() => validateDates('nope', '2024-02-01')).toThrow('Invalid date')
+    })
+
+    it('should throw for an invalid end', () => {
+      expect(() => validateDates('2024-01-01', 'nope')).toThrow('Invalid date')
+    })
+  })
+})
+
+describe('isValidDate', () => {
+  describe('when the value is a parseable date', () => {
+    it('should return true', () => {
+      expect(isValidDate('2024-01-01')).toBe(true)
+    })
+  })
+
+  describe('when the value is empty or unparseable', () => {
+    it('should return false for an empty string', () => {
+      expect(isValidDate('')).toBe(false)
+    })
+
+    it('should return false for undefined', () => {
+      expect(isValidDate(undefined)).toBe(false)
+    })
+
+    it('should return false for a non-date string', () => {
+      expect(isValidDate('nope')).toBe(false)
+    })
+  })
+})
+
+describe('validateProposalFields', () => {
+  describe('when every field is a known snapshot proposal field', () => {
+    it('should not throw', () => {
+      expect(() => validateProposalFields(['id', 'scores_total'])).not.toThrow()
+    })
+  })
+
+  describe('when the list contains an unknown field', () => {
+    // These names are interpolated into the outbound Snapshot GraphQL query.
+    it('should reject it', () => {
+      expect(() => validateProposalFields(['id', 'not_a_field'])).toThrow('Invalid fields')
+    })
+
+    it('should reject a graphql injection attempt', () => {
+      expect(() => validateProposalFields(['id { __schema }'])).toThrow('Invalid fields')
+    })
+  })
+
+  describe('when the list is empty', () => {
+    it('should reject it', () => {
+      expect(() => validateProposalFields([])).toThrow('Invalid fields')
+    })
+  })
+
+  describe('when the value is not an array', () => {
+    it('should reject a string', () => {
+      expect(() => validateProposalFields('id')).toThrow('Invalid fields')
+    })
+
+    it('should reject undefined', () => {
+      expect(() => validateProposalFields(undefined)).toThrow('Invalid fields')
+    })
+  })
+})
+
+describe('validateProposalSnapshotId', () => {
+  describe('when the id is a non-empty string', () => {
+    it('should return it', () => {
+      expect(validateProposalSnapshotId('snapshot-id')).toBe('snapshot-id')
+    })
+  })
+
+  describe('when the id is missing or empty', () => {
+    it('should throw for undefined', () => {
+      expect(() => validateProposalSnapshotId(undefined)).toThrow('Invalid snapshot id')
+    })
+
+    it('should throw for an empty string', () => {
+      expect(() => validateProposalSnapshotId('')).toThrow('Invalid snapshot id')
+    })
+  })
+})
+
+describe('validateRequiredString', () => {
+  describe('when the value is a non-empty string', () => {
+    it('should not throw', () => {
+      expect(() => validateRequiredString('title', 'a title')).not.toThrow()
+    })
+  })
+
+  describe('when the value is missing or empty', () => {
+    it('should name the offending field for undefined', () => {
+      expect(() => validateRequiredString('title', undefined)).toThrow('title')
+    })
+
+    it('should name the offending field for an empty string', () => {
+      expect(() => validateRequiredString('title', '')).toThrow('title')
+    })
+  })
+})
+
+describe('validateRequiredStrings', () => {
+  describe('when every named field is present', () => {
+    it('should not throw', () => {
+      expect(() => validateRequiredStrings(['a', 'b'], { a: 'x', b: 'y' })).not.toThrow()
+    })
+  })
+
+  describe('when one named field is missing', () => {
+    it('should name the missing field', () => {
+      expect(() => validateRequiredStrings(['a', 'b'], { a: 'x' })).toThrow('b')
+    })
+  })
+})
+
+describe('stringToBoolean', () => {
+  describe('when the value is a recognised truthy word', () => {
+    it('should accept true, 1 and yes in any casing or spacing', () => {
+      expect([stringToBoolean('TRUE'), stringToBoolean('1'), stringToBoolean(' yes ')]).toEqual([true, true, true])
+    })
+  })
+
+  describe('when the value is a recognised falsy word', () => {
+    it('should accept false, 0 and no', () => {
+      expect([stringToBoolean('False'), stringToBoolean('0'), stringToBoolean('no')]).toEqual([false, false, false])
+    })
+  })
+
+  describe('when the value is not a recognised boolean', () => {
+    it('should throw for an arbitrary string', () => {
+      expect(() => stringToBoolean('maybe')).toThrow('Invalid boolean value')
+    })
+
+    it('should throw for an empty string', () => {
+      expect(() => stringToBoolean('')).toThrow('Invalid boolean value')
+    })
+  })
+})
+
+describe('validateIsDaoCouncil', () => {
+  // The council list comes from the environment and is empty in tests, so every caller here is a
+  // non-council wallet. That is the property the council-only routes rely on.
+  describe('when the caller is not a dao council member', () => {
+    it('should reject a signed but unprivileged wallet', () => {
+      expect(() => validateIsDaoCouncil(VALID_ADDRESS)).toThrow()
+    })
+  })
+})
+
+describe('the webhook signature validators without a configured secret', () => {
+  // DISCOURSE_WEBHOOK_SECRET and ALCHEMY_DELEGATIONS_WEBHOOK_SECRET are unset in tests, so both
+  // endpoints must refuse rather than verify against an empty key. The signature comparison itself
+  // is covered in validations.webhookSignatures.test.ts, which pins the secrets.
+  const request = { get: () => undefined, body: {} } as unknown as Request
+
+  describe('when the discourse secret is not configured', () => {
+    it('should report the endpoint as disabled', () => {
+      expect(() => validateDiscourseWebhookSignature(request)).toThrow('Endpoint disabled')
+    })
+  })
+
+  describe('when the alchemy secret is not configured', () => {
+    it('should report the endpoint as disabled', () => {
+      expect(() => validateAlchemyWebhookSignature(request)).toThrow('Endpoint disabled')
     })
   })
 })
