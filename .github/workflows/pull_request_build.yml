@@ -67,6 +67,9 @@ jobs:
     env:
       NODE_ENV: test
       CONNECTION_STRING: postgres://postgres:postgres@localhost:5432/governance_test
+      # Not a secret: the bid payload column is encrypted at rest, and the round trip only runs if
+      # both halves use the same key.
+      DB_ENCRYPTION_KEY: integration-test-key
 
     steps:
       - uses: actions/checkout@v4
