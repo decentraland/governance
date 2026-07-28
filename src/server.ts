@@ -44,6 +44,7 @@ import vestings from './routes/vestings'
 import score from './routes/votes'
 import webhooks from './routes/webhooks'
 import { DiscordService } from './services/discord'
+import { assertSubmissionThresholdsConfigured } from './utils/configurationChecks'
 
 const jobs = manager()
 // finishProposal reads shared budget/proposal state and fires non-idempotent side effects,
@@ -116,6 +117,9 @@ app.use(metrics([gatsbyRegister, register]))
 app.use(sitemap)
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+
+// Fail at boot rather than serve with a voting power gate that lets everyone through.
+assertSubmissionThresholdsConfigured()
 
 void initializeServices([
   process.env.DATABASE !== 'false' && databaseInitializer(),
