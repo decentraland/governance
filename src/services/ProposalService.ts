@@ -328,7 +328,12 @@ export class ProposalService {
     // status we read, roll back without mutating anything or firing side effects.
     await withTransaction(async (client) => {
       const lock = ProposalModel.getSelectForUpdateQuery(id)
-      const { rows } = await client.query(lock.text, lock.values)
+      // Typed so the precondition below is checked: if the selected columns ever change shape, this
+      // stops compiling rather than quietly comparing undefined and letting every writer through.
+      const { rows } = await client.query<{ status: ProposalStatus; vesting_addresses: string[] | null }>(
+        lock.text,
+        lock.values
+      )
       const lockedRow = rows[0]
       if (!lockedRow) {
         throw new Error(`Proposal "${id}" not found`)

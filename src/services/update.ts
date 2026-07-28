@@ -196,7 +196,7 @@ export class UpdateService {
     projectId: string,
     initialVestingAddresses?: string[]
   ): Promise<UpdateAttributes[]> {
-    if (projectId.length < 0) throw new Error('Unable to create updates for empty project id')
+    if (!projectId) throw new Error('Unable to create updates for empty project id')
 
     const project = await ProjectModel.getProject(projectId)
     const { vesting_addresses, proposal_id } = project

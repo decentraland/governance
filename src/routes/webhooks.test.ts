@@ -2,6 +2,7 @@ import crypto from 'crypto'
 import { Express } from 'express'
 import supertest from 'supertest'
 
+import { ErrorService } from '../services/ErrorService'
 import { EventsService } from '../services/events'
 
 import { createWebhookTestApp } from './testApp'
@@ -111,6 +112,55 @@ describe('POST /api/webhooks/alchemy/delegation', () => {
     })
 
     it('should not call the events service', () => {
+      expect(delegationUpdate).not.toHaveBeenCalled()
+    })
+  })
+
+  // The signature only proves the sender, not the shape. A malformed body that will never become
+  // readable must not be retried forever.
+  describe('when the signed payload has no block', () => {
+    let response: supertest.Response
+    let report: jest.SpyInstance
+
+    beforeEach(async () => {
+      report = jest.spyOn(ErrorService, 'report').mockImplementation(() => undefined)
+      const body = { event: {} }
+      response = await supertest(app)
+        .post('/api/webhooks/alchemy/delegation')
+        .set('x-alchemy-signature', sign(ALCHEMY_SECRET, JSON.stringify(body)))
+        .send(body)
+    })
+
+    it('should accept it instead of failing in a way alchemy would retry', () => {
+      expect(response.status).toBe(201)
+    })
+
+    it('should not try to process it', () => {
+      expect(delegationUpdate).not.toHaveBeenCalled()
+    })
+
+    it('should report the unexpected payload', () => {
+      expect(report).toHaveBeenCalledWith('Unexpected alchemy delegation webhook payload', expect.anything())
+    })
+  })
+
+  describe('when the signed payload carries no transaction list', () => {
+    let response: supertest.Response
+
+    beforeEach(async () => {
+      jest.spyOn(ErrorService, 'report').mockImplementation(() => undefined)
+      const body = { event: { data: { block: { hash: '0x1' } } } }
+      response = await supertest(app)
+        .post('/api/webhooks/alchemy/delegation')
+        .set('x-alchemy-signature', sign(ALCHEMY_SECRET, JSON.stringify(body)))
+        .send(body)
+    })
+
+    it('should accept it rather than throwing on the missing field', () => {
+      expect(response.status).toBe(201)
+    })
+
+    it('should not try to process it', () => {
       expect(delegationUpdate).not.toHaveBeenCalled()
     })
   })

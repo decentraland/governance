@@ -18,7 +18,17 @@ async function delegationUpdate(req: Request) {
   // Signature validation runs outside the try/catch so an invalid signature surfaces
   // as a 403 instead of being masked with a 200.
   validateAlchemyWebhookSignature(req)
-  const block = req.body.event.data.block as AlchemyBlock
+
+  // The signature proves the payload came from Alchemy, not that it has the shape we expect.
+  // Dereferencing blindly turns a malformed body into a 500, which Alchemy retries forever — the
+  // same wedged delivery the log-level guards exist to avoid. A payload we cannot read will never
+  // become readable, so report it and accept rather than asking for it again.
+  const block = req.body?.event?.data?.block as AlchemyBlock | undefined
+  if (!block || !Array.isArray(block.transactions)) {
+    ErrorService.report('Unexpected alchemy delegation webhook payload', { category: ErrorCategory.Webhook })
+    return
+  }
+
   if (block.transactions.length === 0) {
     return
   }
