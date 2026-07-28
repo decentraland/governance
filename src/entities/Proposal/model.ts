@@ -290,21 +290,26 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return query
   }
 
+  // The containment value is bound as a parameter rather than interpolated. The callers do validate
+  // subtype against the grant categories and linkedProposalId as a uuid before getting here, but
+  // that left the statement one reordering away from taking caller input verbatim.
+  private static getConfigurationContainsQuery(key: string, value: string) {
+    return SQL`p."configuration" @> ${JSON.stringify({ [key]: value })}::jsonb`
+  }
+
   private static getSubtypeQuery(subtype: string) {
     return subtype === SubtypeAlternativeOptions.Legacy
       ? this.getLegacyGrantCategoryQuery()
-      : SQL`p."configuration" @> '{"category": "${SQL.raw(subtype)}"}'`
+      : this.getConfigurationContainsQuery('category', subtype)
   }
 
   private static getLinkedProposalQuery(linkedProposalId: string) {
-    return SQL`p."configuration" @> '{"linked_proposal_id": "${SQL.raw(linkedProposalId)}"}'`
+    return this.getConfigurationContainsQuery('linked_proposal_id', linkedProposalId)
   }
 
   private static getLegacyGrantCategoryQuery() {
     return join(
-      Object.values(OldGrantCategory).map(
-        (category) => SQL`p."configuration" @> '{"category": "${SQL.raw(category)}"}'`
-      ),
+      Object.values(OldGrantCategory).map((category) => this.getConfigurationContainsQuery('category', category)),
       SQL` OR `
     )
   }
