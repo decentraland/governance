@@ -10,7 +10,10 @@ import { ProposalAttributes, ProposalStatus, ProposalType } from '../../src/enti
 import SubscriptionModel from '../../src/entities/Subscription/model'
 import UpdateModel from '../../src/entities/Updates/model'
 import { UpdateAttributes, UpdateStatus } from '../../src/entities/Updates/types'
+import PersonnelModel from '../../src/models/Personnel'
 import ProjectModel from '../../src/models/Project'
+import ProjectLinkModel from '../../src/models/ProjectLink'
+import ProjectMilestoneModel, { ProjectMilestoneStatus } from '../../src/models/ProjectMilestone'
 
 const TEST_GRANT_SIZE = 10000
 
@@ -80,6 +83,49 @@ export async function insertUpdate(
   }
   await UpdateModel.create(update)
   return update
+}
+
+export async function insertPersonnel(projectId: string, name: string, deleted = false): Promise<string> {
+  const id = randomUUID()
+  await PersonnelModel.create({
+    id,
+    project_id: projectId,
+    name,
+    address: null,
+    role: 'Engineer',
+    about: 'About the team member',
+    deleted,
+    created_at: new Date(),
+  })
+  return id
+}
+
+export async function insertMilestone(projectId: string, title: string): Promise<string> {
+  const id = randomUUID()
+  await ProjectMilestoneModel.create({
+    id,
+    project_id: projectId,
+    title,
+    description: 'A milestone',
+    delivery_date: new Date(),
+    status: ProjectMilestoneStatus.Pending,
+    created_by: '0x2ac89522cb415ac333e64f52a1a5693218cebd58',
+    created_at: new Date(),
+  })
+  return id
+}
+
+export async function insertProjectLink(projectId: string, label: string): Promise<string> {
+  const id = randomUUID()
+  await ProjectLinkModel.create({
+    id,
+    project_id: projectId,
+    label,
+    url: 'https://example.com',
+    created_by: '0x2ac89522cb415ac333e64f52a1a5693218cebd58',
+    created_at: new Date(),
+  })
+  return id
 }
 
 export async function insertCoauthor(
