@@ -348,30 +348,35 @@ export class ProposalService {
 
     const updatedProposal = { ...proposal, ...update }
 
+    // A re-enactment that changes nothing has nothing to announce, and none of the side effects
+    // below are idempotent, so an accidental double submit would notify, record and comment twice.
+    const isUnchangedReEnactment = isEnactedStatus && wasAlreadyEnacted && !vestingAddressesChanged
+
     if (isEnactedStatus && isProject) {
+      // Still read the project, since the caller expects the current status back either way.
       const project = await ProjectService.getUpdatedProject(proposal.project_id!)
       updatedProposal.project_status = project.status
-      NotificationService.projectProposalEnacted(proposal)
-      await EventsService.projectEnacted(project)
+      if (!isUnchangedReEnactment) {
+        NotificationService.projectProposalEnacted(proposal)
+        await EventsService.projectEnacted(project)
+      }
     }
 
-    DiscourseService.commentUpdatedProposal(updatedProposal)
+    if (!isUnchangedReEnactment) {
+      DiscourseService.commentUpdatedProposal(updatedProposal)
+    }
 
     return updatedProposal
   }
 
+  // Compared position by position rather than as a set: the update schedule is built from the last
+  // address in the list, so the same addresses in a different order point at a different vesting
+  // contract and the schedule has to be regenerated. Comparing lengths also keeps a repeated
+  // address from collapsing into an equal-looking set.
   private static haveSameVestingAddresses(a: string[] | null | undefined, b: string[] | null | undefined): boolean {
-    const setA = new Set((a || []).map((address) => address.toLowerCase()))
-    const setB = new Set((b || []).map((address) => address.toLowerCase()))
-    if (setA.size !== setB.size) {
-      return false
-    }
-    for (const address of setA) {
-      if (!setB.has(address)) {
-        return false
-      }
-    }
-    return true
+    const first = (a || []).map((address) => address.toLowerCase())
+    const second = (b || []).map((address) => address.toLowerCase())
+    return first.length === second.length && first.every((address, index) => address === second[index])
   }
 
   private static getEnactedStatusData(

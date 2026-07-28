@@ -5,9 +5,12 @@ import ProposalModel from '../../src/entities/Proposal/model'
 import { ProposalAttributes, ProposalStatus, ProposalWithProject } from '../../src/entities/Proposal/types'
 import UpdateModel from '../../src/entities/Updates/model'
 import { UpdateAttributes, UpdateStatus } from '../../src/entities/Updates/types'
+import { DiscourseService } from '../../src/services/DiscourseService'
 import { ProjectService } from '../../src/services/ProjectService'
 import { ProposalService } from '../../src/services/ProposalService'
 import { VestingService } from '../../src/services/VestingService'
+import { EventsService } from '../../src/services/events'
+import { NotificationService } from '../../src/services/notification'
 import { closeTransactionPool, withTransaction } from '../../src/utils/withTransaction'
 import { cleanTables, closeTestDb, initTestDb } from '../setup/db'
 import {
@@ -394,6 +397,57 @@ describe('proposal status transaction', () => {
         it('should keep the existing pending update rather than regenerating the schedule', async () => {
           const pending = await readPendingUpdates(projectId)
           expect(pending.map((update) => update.id)).toEqual([existingPendingUpdate.id])
+        })
+
+        // Re-enacting changes nothing, and none of these are idempotent, so an accidental double
+        // submit would announce the same enactment twice.
+        it('should not notify anyone a second time', () => {
+          expect(NotificationService.projectProposalEnacted).not.toHaveBeenCalled()
+        })
+
+        it('should not record a second enactment event', () => {
+          expect(EventsService.projectEnacted).not.toHaveBeenCalled()
+        })
+
+        it('should not post a second comment to the forum', () => {
+          expect(DiscourseService.commentUpdatedProposal).not.toHaveBeenCalled()
+        })
+      })
+
+      // The schedule is built from the last vesting address, so a reordered list points at a
+      // different vesting contract even though the set is identical.
+      describe('and the vesting addresses are the same set in a different order', () => {
+        beforeEach(async () => {
+          const stored = await insertProposal(ProposalStatus.Enacted, [VESTING_ADDRESS, SECOND_VESTING_ADDRESS])
+          const reorderedProjectId = await insertProject(stored.id)
+          ;(ProjectService.getUpdatedProject as jest.Mock).mockResolvedValue({
+            id: reorderedProjectId,
+            proposal_id: stored.id,
+            status: ProjectStatus.InProgress,
+            vesting_addresses: [VESTING_ADDRESS, SECOND_VESTING_ADDRESS],
+          })
+          existingPendingUpdate = await insertUpdate(stored.id, reorderedProjectId, UpdateStatus.Pending)
+          projectId = reorderedProjectId
+          proposal = { ...stored, project_id: reorderedProjectId, personnel: [] } as ProposalWithProject
+
+          await ProposalService.updateProposalStatus(
+            proposal,
+            { status: ProposalStatus.Enacted, vesting_addresses: [SECOND_VESTING_ADDRESS, VESTING_ADDRESS] },
+            user
+          )
+        })
+
+        it('should regenerate the schedule, since the latest vesting is now a different contract', async () => {
+          expect(await readPendingUpdates(projectId)).toHaveLength(3)
+        })
+
+        it('should not leave the previous schedule in place', async () => {
+          const pending = await readPendingUpdates(projectId)
+          expect(pending.map((update) => update.id)).not.toContain(existingPendingUpdate.id)
+        })
+
+        it('should build the schedule from the address the proposal now records as latest', () => {
+          expect(VestingService.getVestingWithLogs).toHaveBeenCalledWith(VESTING_ADDRESS, expect.anything())
         })
       })
 
