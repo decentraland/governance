@@ -20,6 +20,8 @@ import {
 import { isGrantProposalSubmitEnabled, isProjectProposal } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { isSameAddress } from '../entities/Snapshot/utils'
+import UpdateModel from '../entities/Updates/model'
+import { UpdateAttributes } from '../entities/Updates/types'
 import VotesModel from '../entities/Votes/model'
 import { getEnvironmentChainId } from '../helpers'
 import { DiscordService } from '../services/discord'
@@ -30,6 +32,7 @@ import { DiscoursePost } from '../shared/types/discourse'
 import { getProfile } from '../utils/Catalyst'
 import Time from '../utils/date/Time'
 import { validateId } from '../utils/validations'
+import { withTransaction } from '../utils/withTransaction'
 
 import { DiscourseService } from './DiscourseService'
 import { ProjectService } from './ProjectService'
@@ -308,41 +311,84 @@ export class ProposalService {
     const vestingAddressesChanged = !this.haveSameVestingAddresses(proposal.vesting_addresses, vesting_addresses)
     const shouldCreatePendingUpdates = isEnactedStatus && isProject && (!wasAlreadyEnacted || vestingAddressesChanged)
 
-    // Run the failure-prone vesting work before persisting the status so a failure leaves the
-    // proposal in its previous state (consistent and retryable) rather than half-enacted.
+    // Fetch/build the vesting schedule (the failure-prone network call) before the write; a fetch
+    // failure aborts here without half-enacting. The DB mutation is deferred until after the CAS.
+    let pendingVestingUpdates: UpdateAttributes[] | undefined
+    let pendingUpdatesProjectId: string | undefined
     if (shouldCreatePendingUpdates) {
-      const validatedProjectId = validateId(proposal.project_id)
-      await UpdateService.createPendingUpdatesForVesting(validatedProjectId, vesting_addresses)
+      pendingUpdatesProjectId = validateId(proposal.project_id)
+      pendingVestingUpdates = await UpdateService.computePendingUpdatesForVesting(
+        pendingUpdatesProjectId,
+        vesting_addresses
+      )
     }
 
-    await ProposalModel.update<ProposalAttributes>(update, { id })
+    // Apply the status change and the pending-update replacement atomically. SELECT ... FOR UPDATE
+    // locks the row so concurrent enact/reject requests serialize; if the row already moved off the
+    // status we read, roll back without mutating anything or firing side effects.
+    await withTransaction(async (client) => {
+      const lock = ProposalModel.getSelectForUpdateQuery(id)
+      // Typed so the precondition below is checked: if the selected columns ever change shape, this
+      // stops compiling rather than quietly comparing undefined and letting every writer through.
+      const { rows } = await client.query<{ status: ProposalStatus; vesting_addresses: string[] | null }>(
+        lock.text,
+        lock.values
+      )
+      const lockedRow = rows[0]
+      if (!lockedRow) {
+        throw new Error(`Proposal "${id}" not found`)
+      }
+      // The precondition is that the row still looks like the one this request was built from. The
+      // status alone is not enough: an Enacted -> Enacted update keeps it, so a stale request would
+      // pass while overwriting vesting addresses another request had already changed, and skipping
+      // the schedule replacement because it decided "unchanged" from state that is no longer true.
+      const rowMoved =
+        lockedRow.status !== proposal.status ||
+        !this.haveSameVestingAddresses(lockedRow.vesting_addresses, proposal.vesting_addresses)
+      if (rowMoved) {
+        throw new Error(`Proposal "${id}" was modified concurrently; the "${newStatus}" update was not applied`)
+      }
+
+      const updateQuery = ProposalModel.getUpdateQuery(update, { id })
+      await client.query(updateQuery.text, updateQuery.values)
+
+      if (pendingVestingUpdates && pendingUpdatesProjectId) {
+        const replaceQuery = UpdateModel.getReplacePendingUpdatesQuery(pendingUpdatesProjectId, pendingVestingUpdates)
+        await client.query(replaceQuery.text, replaceQuery.values)
+      }
+    })
 
     const updatedProposal = { ...proposal, ...update }
 
+    // A re-enactment that changes nothing has nothing to announce, and none of the side effects
+    // below are idempotent, so an accidental double submit would notify, record and comment twice.
+    const isUnchangedReEnactment = isEnactedStatus && wasAlreadyEnacted && !vestingAddressesChanged
+
     if (isEnactedStatus && isProject) {
+      // Still read the project, since the caller expects the current status back either way.
       const project = await ProjectService.getUpdatedProject(proposal.project_id!)
       updatedProposal.project_status = project.status
-      NotificationService.projectProposalEnacted(proposal)
-      await EventsService.projectEnacted(project)
+      if (!isUnchangedReEnactment) {
+        NotificationService.projectProposalEnacted(proposal)
+        await EventsService.projectEnacted(project)
+      }
     }
 
-    DiscourseService.commentUpdatedProposal(updatedProposal)
+    if (!isUnchangedReEnactment) {
+      DiscourseService.commentUpdatedProposal(updatedProposal)
+    }
 
     return updatedProposal
   }
 
+  // Compared position by position rather than as a set: the update schedule is built from the last
+  // address in the list, so the same addresses in a different order point at a different vesting
+  // contract and the schedule has to be regenerated. Comparing lengths also keeps a repeated
+  // address from collapsing into an equal-looking set.
   private static haveSameVestingAddresses(a: string[] | null | undefined, b: string[] | null | undefined): boolean {
-    const setA = new Set((a || []).map((address) => address.toLowerCase()))
-    const setB = new Set((b || []).map((address) => address.toLowerCase()))
-    if (setA.size !== setB.size) {
-      return false
-    }
-    for (const address of setA) {
-      if (!setB.has(address)) {
-        return false
-      }
-    }
-    return true
+    const first = (a || []).map((address) => address.toLowerCase())
+    const second = (b || []).map((address) => address.toLowerCase())
+    return first.length === second.length && first.every((address, index) => address === second[index])
   }
 
   private static getEnactedStatusData(

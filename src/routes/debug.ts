@@ -21,7 +21,12 @@ export default routes((router) => {
   router.get(
     '/debug',
     withAuth,
-    handleAPI(async () => DEBUG_ADDRESSES)
+    handleAPI(async (req: WithAuth) => {
+      // Only debug addresses may read the debug-address list; a valid signature from any wallet
+      // is not enough. Otherwise this discloses exactly which wallets hold admin powers.
+      validateDebugAddress(req.auth)
+      return DEBUG_ADDRESSES
+    })
   )
   router.post('/debug/report-error', auth({ optional: true }), handleAPI(reportClientError))
   router.post('/debug/trigger', withAuth, handleAPI(triggerFunction))

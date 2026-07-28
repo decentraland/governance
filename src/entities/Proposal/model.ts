@@ -122,10 +122,12 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return this.namedQuery('create_proposal', sql) as any
   }
 
-  static update<U extends QueryPart = any, P extends QueryPart = any>(
+  // Builds the UPDATE ... SET ... WHERE statement without executing it, so it can be run on a
+  // transaction client alongside other writes.
+  static getUpdateQuery<U extends QueryPart = any, P extends QueryPart = any>(
     changes: Partial<U>,
     conditions: Partial<P>
-  ): Promise<U> {
+  ) {
     const changesKeys = Object.keys(changes).map((key) => key.replace(/\W/gi, ''))
     const conditionsKeys = Object.keys(conditions).map((key) => key.replace(/\W/gi, ''))
     if (changesKeys.length === 0) {
@@ -136,7 +138,7 @@ export default class ProposalModel extends Model<ProposalAttributes> {
       throw new Error(`Missing update conditions`)
     }
 
-    const sql = SQL`
+    return SQL`
         UPDATE ${table(this)}
         SET ${join(
           changesKeys.map((key) => SQL`"${SQL.raw(key)}" = ${changes[key]}`),
@@ -147,8 +149,23 @@ export default class ProposalModel extends Model<ProposalAttributes> {
           SQL` AND `
         )}
     `
+  }
 
-    return this.namedQuery('update_proposal', sql) as any
+  // Returns the number of rows updated, so callers can detect a compare-and-set that matched no
+  // row (e.g. a concurrent status change) instead of assuming the write applied.
+  static update<U extends QueryPart = any, P extends QueryPart = any>(
+    changes: Partial<U>,
+    conditions: Partial<P>
+  ): Promise<number> {
+    return this.namedRowCount('update_proposal', this.getUpdateQuery(changes, conditions))
+  }
+
+  // Row-lock a proposal and read its current status so a caller can serialize concurrent status
+  // changes and re-check the transition inside a transaction.
+  // Selects everything the caller's precondition is built from, not just the status: a same-status
+  // update leaves the status untouched, so it alone cannot tell a stale writer the row has moved.
+  static getSelectForUpdateQuery(id: string) {
+    return SQL`SELECT "status", "vesting_addresses" FROM ${table(this)} WHERE "id" = ${id} FOR UPDATE`
   }
 
   static async countAll() {
@@ -275,21 +292,26 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return query
   }
 
+  // The containment value is bound as a parameter rather than interpolated. The callers do validate
+  // subtype against the grant categories and linkedProposalId as a uuid before getting here, but
+  // that left the statement one reordering away from taking caller input verbatim.
+  private static getConfigurationContainsQuery(key: string, value: string) {
+    return SQL`p."configuration" @> ${JSON.stringify({ [key]: value })}::jsonb`
+  }
+
   private static getSubtypeQuery(subtype: string) {
     return subtype === SubtypeAlternativeOptions.Legacy
       ? this.getLegacyGrantCategoryQuery()
-      : SQL`p."configuration" @> '{"category": "${SQL.raw(subtype)}"}'`
+      : this.getConfigurationContainsQuery('category', subtype)
   }
 
   private static getLinkedProposalQuery(linkedProposalId: string) {
-    return SQL`p."configuration" @> '{"linked_proposal_id": "${SQL.raw(linkedProposalId)}"}'`
+    return this.getConfigurationContainsQuery('linked_proposal_id', linkedProposalId)
   }
 
   private static getLegacyGrantCategoryQuery() {
     return join(
-      Object.values(OldGrantCategory).map(
-        (category) => SQL`p."configuration" @> '{"category": "${SQL.raw(category)}"}'`
-      ),
+      Object.values(OldGrantCategory).map((category) => this.getConfigurationContainsQuery('category', category)),
       SQL` OR `
     )
   }

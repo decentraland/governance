@@ -1,6 +1,5 @@
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 import snakeCase from 'lodash/snakeCase'
-import { Pool } from 'pg'
 
 import { BadgesService } from '../../services/BadgesService'
 import BidService from '../../services/BidService'
@@ -16,6 +15,7 @@ import { NotificationService } from '../../services/notification'
 import { ErrorCategory } from '../../utils/errorCategories'
 import { isProdEnv } from '../../utils/governanceEnvs'
 import logger from '../../utils/logger'
+import { withTransaction } from '../../utils/withTransaction'
 import { Budget } from '../Budget/types'
 
 import ProposalModel from './model'
@@ -225,32 +225,20 @@ export async function publishBids(context: JobContext) {
   }
 }
 
-const pool = new Pool({ connectionString: process.env.CONNECTION_STRING })
-
+// The proposal status changes and the budget allocations they draw against have to land together,
+// which is what withTransaction provides. It also rolls back without letting a failed rollback
+// replace the original error, and discards a connection whose transaction state is unknown rather
+// than returning it to the pool — neither of which the hand-rolled version here did.
 async function updateProposalsAndBudgets(proposalsWithOutcome: ProposalWithOutcome[], budgetsWithUpdates: Budget[]) {
   if (proposalsWithOutcome.length === 0) return
-  const client = await pool.connect()
 
-  try {
-    await client.query('BEGIN')
-
+  await withTransaction(async (client) => {
     const proposalUpdateQueriesByStatus = ProposalService.getFinishProposalQueries(proposalsWithOutcome)
     const budgetUpdateQueries = BudgetService.getBudgetUpdateQueries(budgetsWithUpdates)
     const updateQueries = [...proposalUpdateQueriesByStatus, ...budgetUpdateQueries]
 
-    const clientQueries = updateQueries.map(({ text, values }) => {
-      return client.query(text, values)
-    })
-
-    await Promise.all(clientQueries)
-
-    await client.query('COMMIT')
-  } catch (err) {
-    await client.query('ROLLBACK')
-    throw err
-  } finally {
-    client.release()
-  }
+    await Promise.all(updateQueries.map(({ text, values }) => client.query(text, values)))
+  })
 }
 
 export async function notifyCliffEndingSoon() {

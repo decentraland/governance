@@ -1,4 +1,4 @@
-import { isHerokuEnv, isLocalEnv, isProdEnv, isStagingEnv } from './governanceEnvs'
+import { isLocalEnv, isProdEnv, isStagingEnv } from './governanceEnvs'
 
 jest.mock('../constants', () => ({
   GOVERNANCE_API: 'https://governance.decentraland.zone/api',
@@ -8,6 +8,5 @@ describe('isStagingEnv', () => {
     expect(isStagingEnv()).toBe(true)
     expect(isProdEnv()).toBe(false)
     expect(isLocalEnv()).toBe(false)
-    expect(isHerokuEnv()).toBe(false)
   })
 })

@@ -10,8 +10,9 @@ import { SnapshotService } from '../services/SnapshotService'
 import { SnapshotStatusService } from '../services/SnapshotStatusService'
 import {
   validateAddress,
-  validateAddresses,
   validateBlockNumber,
+  validateBoundedAddresses,
+  validateBoundedLimit,
   validateDates,
   validateProposalFields,
   validateProposalSnapshotId,
@@ -41,7 +42,7 @@ async function getConfig(req: Request<{ spaceName?: string }>) {
 }
 
 async function getVotesByAddresses(req: Request) {
-  const { addresses } = req.body
+  const addresses = validateBoundedAddresses(req.body.addresses)
   return await SnapshotService.getVotesByAddresses(addresses)
 }
 
@@ -62,8 +63,9 @@ async function getPendingProposals(req: Request) {
   const { start, end, fields, limit } = req.body
   const { validatedStart, validatedEnd } = validateDates(start, end)
   validateProposalFields(fields)
+  const validatedLimit = validateBoundedLimit(limit)
 
-  return await SnapshotService.getPendingProposals(validatedStart, validatedEnd, fields, limit)
+  return await SnapshotService.getPendingProposals(validatedStart, validatedEnd, fields, validatedLimit)
 }
 
 async function getVpDistribution(req: Request<{ address: string; proposalSnapshotId?: string }>) {
@@ -72,8 +74,8 @@ async function getVpDistribution(req: Request<{ address: string; proposalSnapsho
 }
 
 async function getScores(req: Request) {
-  const addresses = req.body.addresses
-  if (!addresses || addresses.length === 0) {
+  const addresses = validateBoundedAddresses(req.body.addresses)
+  if (addresses.length === 0) {
     throw new RequestError('Addresses missing', RequestError.BadRequest)
   }
 
@@ -93,7 +95,6 @@ async function getDelegations(req: Request) {
 }
 
 async function getPickedBy(req: Request) {
-  const { addresses } = req.body
-  validateAddresses(addresses)
+  const addresses = validateBoundedAddresses(req.body.addresses)
   return await SnapshotSubgraph.get().getPickedBy(addresses, SNAPSHOT_SPACE)
 }
