@@ -309,11 +309,18 @@ paths:
         - name: limit
           in: query
           required: false
-          description: Limit amount of results
+          description: >-
+            How many voters to return. Must be a whole number between 1 and 100;
+            anything else is rejected with a 400. Defaults to 5 when omitted.
           allowEmptyValue: true
           schema:
-            $ref: '#/components/schemas/limitOffset'
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 5
       responses:
+        '400':
+          description: The limit was not a whole number between 1 and 100
         '200':
           $ref: '#/components/responses/200'
   /events:

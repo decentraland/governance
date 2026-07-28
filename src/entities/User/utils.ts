@@ -1,3 +1,4 @@
+import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import { hashMessage, recoverAddress } from 'ethers/lib/utils'
 import capitalize from 'lodash/capitalize'
 import escapeRegExp from 'lodash/escapeRegExp'
@@ -113,10 +114,12 @@ export function parseAccountTypes(accounts?: string | string[]): AccountType[] {
   return accountsArray.map((account) => toAccountType(account)).filter((account) => !!account) as AccountType[]
 }
 
+// Both callers take this straight from a request, so a bad value is the caller's mistake rather
+// than the server's. A plain Error would surface as a 500.
 export function validateAccountTypes(accounts?: string | string[]): AccountType[] {
   const parsedAccounts = parseAccountTypes(accounts)
   if (parsedAccounts.length === 0) {
-    throw new Error(`Invalid account types. Received: ${accounts}`)
+    throw new RequestError(`Invalid account types. Received: ${accounts}`, RequestError.BadRequest)
   }
   return parsedAccounts
 }

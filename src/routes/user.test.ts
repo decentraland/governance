@@ -181,12 +181,7 @@ describe('the user routes', () => {
       })
 
       it('should reject the request', () => {
-        // Refused rather than served. The status itself is known-wrong — a plain Error becomes a
-        // 500 where this should be a client error — and is fixed in the follow-up, so asserting
-        // refusal here means that fix will not have to rewrite this.
-        // response.ok is superagent's 2xx flag, so this also rules out a 200 that merely says
-        // ok:false in its body. still no exact status, which is the point.
-        expect({ http: response.ok, body: response.body.ok }).toEqual({ http: false, body: false })
+        expect(response.status).toBeGreaterThanOrEqual(400)
       })
 
       it('should not change the stored setting', () => {
@@ -200,12 +195,7 @@ describe('the user routes', () => {
       })
 
       it('should reject the request', () => {
-        // Refused rather than served. The status itself is known-wrong — a plain Error becomes a
-        // 500 where this should be a client error — and is fixed in the follow-up, so asserting
-        // refusal here means that fix will not have to rewrite this.
-        // response.ok is superagent's 2xx flag, so this also rules out a 200 that merely says
-        // ok:false in its body. still no exact status, which is the point.
-        expect({ http: response.ok, body: response.body.ok }).toEqual({ http: false, body: false })
+        expect(response.status).toBeGreaterThanOrEqual(400)
       })
 
       it('should not change the stored setting', () => {
@@ -256,13 +246,8 @@ describe('the user routes', () => {
           .send({ accountType: 'myspace' })
       })
 
-      it('should reject the request', () => {
-        // Refused rather than served. The status itself is known-wrong — a plain Error becomes a
-        // 500 where this should be a client error — and is fixed in the follow-up, so asserting
-        // refusal here means that fix will not have to rewrite this.
-        // response.ok is superagent's 2xx flag, so this also rules out a 200 that merely says
-        // ok:false in its body. still no exact status, which is the point.
-        expect({ http: response.ok, body: response.body.ok }).toEqual({ http: false, body: false })
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
       })
 
       it('should not unlink anything', () => {
@@ -275,13 +260,8 @@ describe('the user routes', () => {
         response = await supertest(app).post('/api/user/unlink').set('x-test-auth', CALLER).send({})
       })
 
-      it('should reject the request', () => {
-        // Refused rather than served. The status itself is known-wrong — a plain Error becomes a
-        // 500 where this should be a client error — and is fixed in the follow-up, so asserting
-        // refusal here means that fix will not have to rewrite this.
-        // response.ok is superagent's 2xx flag, so this also rules out a 200 that merely says
-        // ok:false in its body. still no exact status, which is the point.
-        expect({ http: response.ok, body: response.body.ok }).toEqual({ http: false, body: false })
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
       })
 
       it('should not unlink anything', () => {
@@ -387,13 +367,8 @@ describe('the user routes', () => {
         response = await supertest(app).get(`/api/user/${SOMEONE_ELSE}/is-validated?account=myspace`)
       })
 
-      it('should reject the request', () => {
-        // Refused rather than served. The status itself is known-wrong — a plain Error becomes a
-        // 500 where this should be a client error — and is fixed in the follow-up, so asserting
-        // refusal here means that fix will not have to rewrite this.
-        // response.ok is superagent's 2xx flag, so this also rules out a 200 that merely says
-        // ok:false in its body. still no exact status, which is the point.
-        expect({ http: response.ok, body: response.body.ok }).toEqual({ http: false, body: false })
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
       })
 
       it('should not run the lookup', () => {
