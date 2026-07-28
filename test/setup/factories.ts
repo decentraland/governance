@@ -1,10 +1,13 @@
 import { randomUUID } from 'crypto'
 import { SQL, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 
+import CoauthorModel from '../../src/entities/Coauthor/model'
+import { CoauthorAttributes, CoauthorStatus } from '../../src/entities/Coauthor/types'
 import { ProjectStatus } from '../../src/entities/Grant/types'
 import ProposalModel from '../../src/entities/Proposal/model'
 import { createTestProposal } from '../../src/entities/Proposal/testHelpers'
 import { ProposalAttributes, ProposalStatus, ProposalType } from '../../src/entities/Proposal/types'
+import SubscriptionModel from '../../src/entities/Subscription/model'
 import UpdateModel from '../../src/entities/Updates/model'
 import { UpdateAttributes, UpdateStatus } from '../../src/entities/Updates/types'
 import ProjectModel from '../../src/models/Project'
@@ -77,6 +80,20 @@ export async function insertUpdate(
   }
   await UpdateModel.create(update)
   return update
+}
+
+export async function insertCoauthor(
+  proposalId: string,
+  address: string,
+  status: CoauthorStatus
+): Promise<CoauthorAttributes> {
+  const coauthor: CoauthorAttributes = { proposal_id: proposalId, address: address.toLowerCase(), status }
+  await CoauthorModel.create(coauthor)
+  return coauthor
+}
+
+export async function insertSubscription(proposalId: string, user: string): Promise<void> {
+  await SubscriptionModel.create({ proposal_id: proposalId, user: user.toLowerCase(), created_at: new Date() })
 }
 
 export async function readProposalStatus(id: string): Promise<string | undefined> {
