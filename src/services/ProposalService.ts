@@ -327,13 +327,20 @@ export class ProposalService {
     // locks the row so concurrent enact/reject requests serialize; if the row already moved off the
     // status we read, roll back without mutating anything or firing side effects.
     await withTransaction(async (client) => {
-      const lock = ProposalModel.getSelectStatusForUpdateQuery(id)
+      const lock = ProposalModel.getSelectForUpdateQuery(id)
       const { rows } = await client.query(lock.text, lock.values)
-      const currentStatus = rows[0]?.status
-      if (!currentStatus) {
+      const lockedRow = rows[0]
+      if (!lockedRow) {
         throw new Error(`Proposal "${id}" not found`)
       }
-      if (currentStatus !== proposal.status) {
+      // The precondition is that the row still looks like the one this request was built from. The
+      // status alone is not enough: an Enacted -> Enacted update keeps it, so a stale request would
+      // pass while overwriting vesting addresses another request had already changed, and skipping
+      // the schedule replacement because it decided "unchanged" from state that is no longer true.
+      const rowMoved =
+        lockedRow.status !== proposal.status ||
+        !this.haveSameVestingAddresses(lockedRow.vesting_addresses, proposal.vesting_addresses)
+      if (rowMoved) {
         throw new Error(`Proposal "${id}" was modified concurrently; the "${newStatus}" update was not applied`)
       }
 

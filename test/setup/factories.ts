@@ -150,6 +150,14 @@ export async function readProposalStatus(id: string): Promise<string | undefined
   return rows[0]?.status
 }
 
+export async function readProposalVestingAddresses(id: string): Promise<string[]> {
+  const rows = await ProposalModel.namedQuery<{ vesting_addresses: string[] }>(
+    'test_read_proposal_vesting_addresses',
+    SQL`SELECT vesting_addresses FROM ${table(ProposalModel)} WHERE id = ${id}`
+  )
+  return rows[0]?.vesting_addresses ?? []
+}
+
 export async function readProjectUpdates(projectId: string): Promise<UpdateAttributes[]> {
   return await UpdateModel.namedQuery<UpdateAttributes>(
     'test_read_project_updates',

@@ -52,11 +52,17 @@ jest.mock('../utils/withTransaction', () => ({
   withTransaction: jest.fn(),
 }))
 
-// Wire withTransaction to run its callback against a client whose row lock reports `lockedStatus`,
-// so tests can drive the win/lose-the-race branches without a database.
-function mockTransactionLockedStatus(lockedStatus: ProposalStatus) {
+// Wire withTransaction to run its callback against a client whose row lock reports `lockedStatus`
+// and `lockedVestingAddresses`, so tests can drive the win/lose-the-race branches without a
+// database. The lock re-reads both, because a same-status update cannot be judged on status alone.
+function mockTransactionLockedStatus(lockedStatus: ProposalStatus, lockedVestingAddresses: string[] = []) {
   ;(withTransaction as jest.Mock).mockImplementation((fn) =>
-    fn({ query: jest.fn().mockResolvedValue({ rows: [{ status: lockedStatus }], rowCount: 1 }) })
+    fn({
+      query: jest.fn().mockResolvedValue({
+        rows: [{ status: lockedStatus, vesting_addresses: lockedVestingAddresses }],
+        rowCount: 1,
+      }),
+    })
   )
 }
 
@@ -159,7 +165,7 @@ describe('ProposalService', () => {
         jest.clearAllMocks()
         ;(ProjectService.getUpdatedProject as jest.Mock).mockResolvedValue({ status: 'in_progress' } as never)
         ;(UpdateService.computePendingUpdatesForVesting as jest.Mock).mockResolvedValue([])
-        mockTransactionLockedStatus(ProposalStatus.Enacted)
+        mockTransactionLockedStatus(ProposalStatus.Enacted, existingAddresses)
         proposal = {
           ...createTestProposal(ProposalType.Grant, ProposalStatus.Enacted, 10000),
           project_id: projectId,

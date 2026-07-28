@@ -20,6 +20,7 @@ import {
   readPendingUpdates,
   readProjectUpdates,
   readProposalStatus,
+  readProposalVestingAddresses,
 } from '../setup/factories'
 
 // Keep the enact path off the network; the DB writes still hit the real test database.
@@ -364,6 +365,48 @@ describe('proposal status transaction', () => {
       it('should keep the pending updates consistent with the stored status', async () => {
         const expectedPendingUpdates = storedStatus === ProposalStatus.Enacted ? 3 : 0
         expect(await readPendingUpdates(projectId)).toHaveLength(expectedPendingUpdates)
+      })
+    })
+
+    // The lock re-checks the status, but a same-status re-enactment leaves the status untouched, so
+    // the status alone cannot tell a stale writer that the row moved underneath it.
+    describe('when another request changed the vesting addresses while we held a stale copy', () => {
+      let proposal: ProposalWithProject
+      let projectId: string
+      let outcome: unknown
+
+      beforeEach(async () => {
+        const stored = await insertProposal(ProposalStatus.Enacted, [VESTING_ADDRESS])
+        projectId = await insertProject(stored.id)
+        ;(ProjectService.getUpdatedProject as jest.Mock).mockResolvedValue({
+          id: projectId,
+          proposal_id: stored.id,
+          status: ProjectStatus.InProgress,
+          vesting_addresses: [VESTING_ADDRESS],
+        })
+        // We still hold the proposal as it was, with only the first vesting address.
+        proposal = { ...stored, project_id: projectId, personnel: [] } as ProposalWithProject
+
+        // Meanwhile another request re-enacted it with an extra vesting address and rebuilt the
+        // schedule around it.
+        await ProposalModel.update<ProposalAttributes>(
+          { vesting_addresses: [VESTING_ADDRESS, SECOND_VESTING_ADDRESS] },
+          { id: stored.id }
+        )
+
+        outcome = await ProposalService.updateProposalStatus(
+          proposal,
+          { status: ProposalStatus.Enacted, vesting_addresses: [VESTING_ADDRESS] },
+          user
+        ).catch((error) => error)
+      })
+
+      it('should refuse the stale write', () => {
+        expect(outcome).toBeInstanceOf(Error)
+      })
+
+      it('should leave the winning vesting addresses in place', async () => {
+        expect(await readProposalVestingAddresses(proposal.id)).toEqual([VESTING_ADDRESS, SECOND_VESTING_ADDRESS])
       })
     })
 

@@ -162,8 +162,10 @@ export default class ProposalModel extends Model<ProposalAttributes> {
 
   // Row-lock a proposal and read its current status so a caller can serialize concurrent status
   // changes and re-check the transition inside a transaction.
-  static getSelectStatusForUpdateQuery(id: string) {
-    return SQL`SELECT "status" FROM ${table(this)} WHERE "id" = ${id} FOR UPDATE`
+  // Selects everything the caller's precondition is built from, not just the status: a same-status
+  // update leaves the status untouched, so it alone cannot tell a stale writer the row has moved.
+  static getSelectForUpdateQuery(id: string) {
+    return SQL`SELECT "status", "vesting_addresses" FROM ${table(this)} WHERE "id" = ${id} FOR UPDATE`
   }
 
   static async countAll() {
