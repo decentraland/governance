@@ -34,6 +34,23 @@ function validateBoundedAddresses(addresses: unknown): string[] {
   return addresses
 }
 
+// Same amplification concern for the pending-proposals limit: it becomes the `first` argument of the
+// outbound Snapshot query. Cap it at the client's own default; the only caller asks for 5.
+const MAX_PENDING_PROPOSALS_LIMIT = 1000
+
+function validateBoundedLimit(limit: unknown): number | undefined {
+  if (limit === undefined) {
+    return undefined
+  }
+  if (typeof limit !== 'number' || !Number.isInteger(limit) || limit < 1 || limit > MAX_PENDING_PROPOSALS_LIMIT) {
+    throw new RequestError(
+      `Invalid limit: expected an integer between 1 and ${MAX_PENDING_PROPOSALS_LIMIT}`,
+      RequestError.BadRequest
+    )
+  }
+  return limit
+}
+
 export default routes((router) => {
   router.get('/snapshot/status', handleAPI(getStatus))
   router.get('/snapshot/config/:spaceName', handleAPI(getConfig))
@@ -79,8 +96,9 @@ async function getPendingProposals(req: Request) {
   const { start, end, fields, limit } = req.body
   const { validatedStart, validatedEnd } = validateDates(start, end)
   validateProposalFields(fields)
+  const validatedLimit = validateBoundedLimit(limit)
 
-  return await SnapshotService.getPendingProposals(validatedStart, validatedEnd, fields, limit)
+  return await SnapshotService.getPendingProposals(validatedStart, validatedEnd, fields, validatedLimit)
 }
 
 async function getVpDistribution(req: Request<{ address: string; proposalSnapshotId?: string }>) {

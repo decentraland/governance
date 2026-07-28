@@ -120,7 +120,7 @@ export class SnapshotService {
     return await SnapshotGraphql.get().getProposals(start, end, fields)
   }
 
-  static async getPendingProposals(start: Date, end: Date, fields: (keyof SnapshotProposal)[], limit: number) {
+  static async getPendingProposals(start: Date, end: Date, fields: (keyof SnapshotProposal)[], limit?: number) {
     return await SnapshotGraphql.get().getPendingProposals(start, end, fields, limit)
   }
 
