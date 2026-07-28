@@ -10,46 +10,13 @@ import { SnapshotService } from '../services/SnapshotService'
 import { SnapshotStatusService } from '../services/SnapshotStatusService'
 import {
   validateAddress,
-  validateAddresses,
   validateBlockNumber,
+  validateBoundedAddresses,
+  validateBoundedLimit,
   validateDates,
   validateProposalFields,
   validateProposalSnapshotId,
 } from '../utils/validations'
-
-// These endpoints are unauthenticated and proxy the address list to Snapshot, so an unbounded
-// array becomes an outbound-amplification lever. Cap it well above any real usage — the largest
-// legitimate caller is the delegator set of a top delegate (bounded by subgraph paging) — and
-// reject non-address entries before forwarding. Tune the cap up if a genuine caller ever exceeds it.
-const MAX_ADDRESSES_PER_REQUEST = 5000
-
-function validateBoundedAddresses(addresses: unknown): string[] {
-  if (!Array.isArray(addresses)) {
-    throw new RequestError('Invalid addresses', RequestError.BadRequest)
-  }
-  if (addresses.length > MAX_ADDRESSES_PER_REQUEST) {
-    throw new RequestError(`Too many addresses: max ${MAX_ADDRESSES_PER_REQUEST} per request`, RequestError.BadRequest)
-  }
-  validateAddresses(addresses)
-  return addresses
-}
-
-// Same amplification concern for the pending-proposals limit: it becomes the `first` argument of the
-// outbound Snapshot query. Cap it at the client's own default; the only caller asks for 5.
-const MAX_PENDING_PROPOSALS_LIMIT = 1000
-
-function validateBoundedLimit(limit: unknown): number | undefined {
-  if (limit === undefined) {
-    return undefined
-  }
-  if (typeof limit !== 'number' || !Number.isInteger(limit) || limit < 1 || limit > MAX_PENDING_PROPOSALS_LIMIT) {
-    throw new RequestError(
-      `Invalid limit: expected an integer between 1 and ${MAX_PENDING_PROPOSALS_LIMIT}`,
-      RequestError.BadRequest
-    )
-  }
-  return limit
-}
 
 export default routes((router) => {
   router.get('/snapshot/status', handleAPI(getStatus))
