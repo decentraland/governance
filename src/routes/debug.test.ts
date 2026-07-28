@@ -1,4 +1,4 @@
-import { Express } from 'express'
+import { Server } from 'http'
 import supertest from 'supertest'
 
 import { ErrorService } from '../services/ErrorService'
@@ -42,7 +42,7 @@ jest.mock('../constants', () => ({
 }))
 
 describe('GET /api/debug', () => {
-  let app: Express
+  let app: Server
   let response: supertest.Response
 
   beforeEach(() => {
@@ -95,7 +95,7 @@ describe('GET /api/debug', () => {
 })
 
 describe('POST /api/debug/trigger', () => {
-  let app: Express
+  let app: Server
   let response: supertest.Response
 
   beforeEach(() => {
@@ -130,7 +130,7 @@ describe('POST /api/debug/trigger', () => {
 })
 
 describe('DELETE /api/debug/invalidate-cache', () => {
-  let app: Express
+  let app: Server
   let response: supertest.Response
 
   beforeEach(() => {
@@ -161,7 +161,7 @@ describe('DELETE /api/debug/invalidate-cache', () => {
 })
 
 describe('POST /api/debug/report-error', () => {
-  let app: Express
+  let app: Server
   let report: jest.SpyInstance
 
   beforeEach(() => {

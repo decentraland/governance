@@ -1,4 +1,4 @@
-import { Express } from 'express'
+import { Server } from 'http'
 import supertest from 'supertest'
 
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
@@ -52,7 +52,7 @@ jest.mock('../entities/Council/IsDAOCouncil', () => ({
 }))
 
 describe('the proposal routes', () => {
-  let app: Express
+  let app: Server
 
   beforeEach(() => {
     app = createTestApp(proposal)

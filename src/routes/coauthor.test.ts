@@ -1,4 +1,4 @@
-import { Express } from 'express'
+import { Server } from 'http'
 import supertest from 'supertest'
 
 import CoauthorModel from '../entities/Coauthor/model'
@@ -49,7 +49,7 @@ function finishedProposal() {
 }
 
 describe('PUT /api/coauthors/:proposal', () => {
-  let app: Express
+  let app: Server
   let update: jest.SpyInstance
   let response: supertest.Response
 
@@ -195,7 +195,7 @@ describe('PUT /api/coauthors/:proposal', () => {
 })
 
 describe('GET /api/coauthors/proposals/:address/:status?', () => {
-  let app: Express
+  let app: Server
   let findProposals: jest.SpyInstance
   let response: supertest.Response
 

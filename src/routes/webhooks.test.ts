@@ -1,5 +1,5 @@
 import crypto from 'crypto'
-import { Express } from 'express'
+import { Server } from 'http'
 import supertest from 'supertest'
 
 import { ErrorService } from '../services/ErrorService'
@@ -26,7 +26,7 @@ function alchemyBody(transactions: unknown[]) {
 }
 
 describe('POST /api/webhooks/alchemy/delegation', () => {
-  let app: Express
+  let app: Server
   let delegationUpdate: jest.SpyInstance
 
   beforeEach(() => {
@@ -186,7 +186,7 @@ describe('POST /api/webhooks/alchemy/delegation', () => {
 })
 
 describe('POST /api/webhooks/discourse/comment', () => {
-  let app: Express
+  let app: Server
   let commented: jest.SpyInstance
   const body = { post: { id: 7 } }
 

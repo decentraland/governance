@@ -1,4 +1,4 @@
-import { Express } from 'express'
+import { Server } from 'http'
 import supertest from 'supertest'
 
 import { ProjectService } from '../services/ProjectService'
@@ -47,7 +47,7 @@ const VALID_BODY = {
 const VALID_PATCH_BODY = { ...VALID_BODY, financial_records: null }
 
 describe('the project update routes', () => {
-  let app: Express
+  let app: Server
   let isAuthorOrCoauthor: jest.SpyInstance
 
   beforeEach(() => {

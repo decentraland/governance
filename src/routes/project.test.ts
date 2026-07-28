@@ -1,4 +1,4 @@
-import { Express } from 'express'
+import { Server } from 'http'
 import supertest from 'supertest'
 
 import { ProjectStatus } from '../entities/Grant/types'
@@ -48,7 +48,7 @@ const MILESTONE = {
 // project is still editable. Both halves are exercised here; the ownership query itself is covered
 // against the database in test/integration/projectAuthorization.test.ts.
 describe('the project routes', () => {
-  let app: Express
+  let app: Server
   let isAuthorOrCoauthor: jest.SpyInstance
 
   beforeEach(() => {
