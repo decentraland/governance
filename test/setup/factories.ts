@@ -30,6 +30,25 @@ export async function insertProposal(
   return proposal
 }
 
+/**
+ * Inserts a proposal with arbitrary column overrides, for the query-builder tests that need to vary
+ * type, author, dates and configuration rather than just status.
+ */
+export async function insertProposalWith(overrides: Partial<ProposalAttributes>): Promise<ProposalAttributes> {
+  const base = createTestProposal(
+    (overrides.type as ProposalType) ?? ProposalType.Grant,
+    (overrides.status as ProposalStatus) ?? ProposalStatus.Active,
+    TEST_GRANT_SIZE
+  )
+  const proposal = { ...base, vesting_addresses: [], ...overrides } as ProposalAttributes
+  await ProposalModel.create({
+    ...proposal,
+    configuration: JSON.stringify(proposal.configuration),
+    snapshot_proposal: JSON.stringify(proposal.snapshot_proposal),
+  } as never)
+  return proposal
+}
+
 export async function insertProject(proposalId: string): Promise<string> {
   const projectId = randomUUID()
   await ProjectModel.create({
