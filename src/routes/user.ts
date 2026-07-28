@@ -72,10 +72,12 @@ async function getProfile(req: Request): Promise<UserProfile> {
 async function unlinkAccount(req: WithAuth) {
   const address = req.auth!
   const { accountType } = req.body
-  const accounts = validateAccountTypes(accountType)
-  // Only one account is unlinked per call, so refuse rather than silently ignore the rest.
-  if (accounts.length > 1) {
+  // Exactly one account is unlinked per call. Checked before parsing, because parsing drops entries
+  // it does not recognise — so ['forum', 'nonsense'] would otherwise look like a single valid
+  // account and unlink it while silently ignoring the rest of what was asked for.
+  if (Array.isArray(accountType)) {
     throw new RequestError('Only one account can be unlinked at a time', RequestError.BadRequest)
   }
+  const accounts = validateAccountTypes(accountType)
   return await UserService.unlinkAccount(address, accounts[0])
 }

@@ -274,8 +274,8 @@ describe('the vote routes', () => {
         await supertest(app).get('/api/votes/top-voters')
       })
 
-      it('should query without one', () => {
-        expect(getTopVoters).toHaveBeenCalledWith(undefined)
+      it('should query without one, leaving the service default to apply', () => {
+        expect(getTopVoters).toHaveBeenCalledWith()
       })
     })
 
@@ -289,20 +289,47 @@ describe('the vote routes', () => {
       })
     })
 
+    // The endpoint is unauthenticated and the limit slices the whole ranked list, so it is bounded.
+    describe('when the limit exceeds the maximum', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        response = await supertest(app).get('/api/votes/top-voters?limit=101')
+      })
+
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
+      })
+
+      it('should not run the query', () => {
+        expect(getTopVoters).not.toHaveBeenCalled()
+      })
+    })
+
+    describe('when the limit is exactly the maximum', () => {
+      beforeEach(async () => {
+        await supertest(app).get('/api/votes/top-voters?limit=100')
+      })
+
+      it('should accept it', () => {
+        expect(getTopVoters).toHaveBeenCalledWith(100)
+      })
+    })
+
     describe('when the limit is not a positive whole number', () => {
-      it('should ignore a non-numeric limit', async () => {
-        await supertest(app).get('/api/votes/top-voters?limit=abc')
-        expect(getTopVoters).toHaveBeenCalledWith(undefined)
+      it('should reject a non-numeric limit', async () => {
+        const response = await supertest(app).get('/api/votes/top-voters?limit=abc')
+        expect(response.status).toBe(400)
       })
 
-      it('should ignore a zero limit', async () => {
-        await supertest(app).get('/api/votes/top-voters?limit=0')
-        expect(getTopVoters).toHaveBeenCalledWith(undefined)
+      it('should reject a zero limit', async () => {
+        const response = await supertest(app).get('/api/votes/top-voters?limit=0')
+        expect(response.status).toBe(400)
       })
 
-      it('should ignore a negative limit', async () => {
-        await supertest(app).get('/api/votes/top-voters?limit=-5')
-        expect(getTopVoters).toHaveBeenCalledWith(undefined)
+      it('should reject a negative limit', async () => {
+        const response = await supertest(app).get('/api/votes/top-voters?limit=-5')
+        expect(response.status).toBe(400)
       })
     })
   })

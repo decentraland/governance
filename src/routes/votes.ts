@@ -120,12 +120,26 @@ async function getVotesAndProposalsByAddress(req: Request) {
   return votesWithProposalData.sort((a, b) => b.created - a.created)
 }
 
+// The endpoint is unauthenticated and the limit slices the full ranked-voter list, so it is bounded
+// rather than left to the caller. Generous against a default of five.
+const MAX_TOP_VOTERS_LIMIT = 100
+
 async function getTopVotersForLast30Days(req: Request) {
   // Read from the query string: this is a GET, so a body-supplied limit could never arrive.
-  const limit = Number(req.query.limit)
-  const validLimit = Number.isInteger(limit) && limit > 0 ? limit : undefined
+  const { limit } = req.query
+  if (limit === undefined) {
+    return await VoteService.getTopVotersForLast30Days()
+  }
 
-  return await VoteService.getTopVotersForLast30Days(validLimit)
+  const parsed = Number(limit)
+  if (!Number.isInteger(parsed) || parsed < 1 || parsed > MAX_TOP_VOTERS_LIMIT) {
+    throw new RequestError(
+      `Invalid limit: expected an integer between 1 and ${MAX_TOP_VOTERS_LIMIT}`,
+      RequestError.BadRequest
+    )
+  }
+
+  return await VoteService.getTopVotersForLast30Days(parsed)
 }
 
 async function getParticipation() {

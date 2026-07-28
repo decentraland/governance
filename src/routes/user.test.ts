@@ -289,6 +289,25 @@ describe('the user routes', () => {
       })
     })
 
+    // Parsing drops entries it does not recognise, so a mixed list would otherwise look like a
+    // single valid account and unlink it while ignoring the rest of what was asked for.
+    describe('when the list mixes a valid account type with an invalid one', () => {
+      beforeEach(async () => {
+        response = await supertest(app)
+          .post('/api/user/unlink')
+          .set('x-test-auth', CALLER)
+          .send({ accountType: [AccountType.Forum, 'myspace'] })
+      })
+
+      it('should reject the request', () => {
+        expect(response.status).toBe(400)
+      })
+
+      it('should not unlink the valid one on its own', () => {
+        expect(unlinkAccount).not.toHaveBeenCalled()
+      })
+    })
+
     // Acting on only the first would silently leave the rest linked, so the request is refused.
     describe('when several account types are given at once', () => {
       beforeEach(async () => {
