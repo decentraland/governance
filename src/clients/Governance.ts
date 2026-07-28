@@ -4,16 +4,8 @@ import { GOVERNANCE_API } from '../constants'
 import API, { ApiOptions } from './API'
 import { ApiResponse } from './ApiResponse'
 
-const getGovernanceApiUrl = () => {
-  if (process.env.GATSBY_HEROKU_APP_NAME) {
-    return `https://governance.decentraland.vote/api`
-  }
-
-  return GOVERNANCE_API
-}
-
 export class Governance extends API {
-  static Url = getGovernanceApiUrl()
+  static Url = GOVERNANCE_API
 
   static Cache = new Map<string, Governance>()
 
