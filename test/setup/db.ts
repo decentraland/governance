@@ -1,7 +1,7 @@
 import database from 'decentraland-gatsby/dist/entities/Database/database'
 
 // Dependents first; TRUNCATE ... CASCADE handles the FKs regardless, but this keeps intent clear.
-const TABLES_TO_CLEAN = ['project_updates', 'projects', 'proposals']
+const TABLES_TO_CLEAN = ['project_updates', 'projects', 'proposals', 'quarter_category_budgets', 'quarter_budgets']
 
 /**
  * Guards against running the destructive helpers below against anything but a local test database:
