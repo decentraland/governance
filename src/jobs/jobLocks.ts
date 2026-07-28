@@ -48,6 +48,14 @@ function getLockPool(): Pool {
   return lockPool
 }
 
+// Closes the advisory-lock pool. Mainly for tests, so the process can exit cleanly.
+export async function closeLockPool(): Promise<void> {
+  if (lockPool) {
+    await lockPool.end()
+    lockPool = undefined
+  }
+}
+
 /**
  * Cross-instance mutual exclusion via a Postgres session-level advisory lock.
  *

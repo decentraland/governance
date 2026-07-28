@@ -1,23 +1,23 @@
 import { randomUUID } from 'crypto'
-import { SQL, table } from 'decentraland-gatsby/dist/entities/Database/utils'
 
 import { ProjectStatus } from '../../src/entities/Grant/types'
 import ProposalModel from '../../src/entities/Proposal/model'
-import { createTestProposal } from '../../src/entities/Proposal/testHelpers'
-import {
-  ProposalAttributes,
-  ProposalStatus,
-  ProposalType,
-  ProposalWithProject,
-} from '../../src/entities/Proposal/types'
+import { ProposalAttributes, ProposalStatus, ProposalWithProject } from '../../src/entities/Proposal/types'
 import UpdateModel from '../../src/entities/Updates/model'
 import { UpdateAttributes, UpdateStatus } from '../../src/entities/Updates/types'
-import ProjectModel from '../../src/models/Project'
 import { ProjectService } from '../../src/services/ProjectService'
 import { ProposalService } from '../../src/services/ProposalService'
 import { VestingService } from '../../src/services/VestingService'
 import { closeTransactionPool, withTransaction } from '../../src/utils/withTransaction'
 import { cleanTables, closeTestDb, initTestDb } from '../setup/db'
+import {
+  insertProject,
+  insertProposal,
+  insertUpdate,
+  readPendingUpdates,
+  readProjectUpdates,
+  readProposalStatus,
+} from '../setup/factories'
 
 // Keep the enact path off the network; the DB writes still hit the real test database.
 jest.mock('../../src/services/VestingService', () => ({
@@ -51,63 +51,12 @@ jest.mock('../../src/services/events', () => ({
 }))
 
 const VESTING_ADDRESS = '0x1111111111111111111111111111111111111111'
+const SECOND_VESTING_ADDRESS = '0x2222222222222222222222222222222222222222'
 
 // A ~3-month vesting so UpdateService.getAmountOfUpdates yields 3 pending updates.
 const VESTING_WITH_LOGS = {
   start_at: '2020-01-01 00:00:00z',
   finish_at: '2020-03-31 00:00:00z',
-}
-
-async function insertProposal(status: ProposalStatus): Promise<ProposalAttributes> {
-  const proposal = createTestProposal(ProposalType.Grant, status, 10000)
-  await ProposalModel.create({
-    ...proposal,
-    // Match the production insert (ProposalService.saveToDb) which stores these as JSON strings.
-    configuration: JSON.stringify(proposal.configuration),
-    snapshot_proposal: JSON.stringify(proposal.snapshot_proposal),
-  } as never)
-  return proposal
-}
-
-async function insertProject(proposalId: string): Promise<string> {
-  const projectId = randomUUID()
-  await ProjectModel.create({
-    id: projectId,
-    proposal_id: proposalId,
-    title: 'Integration test project',
-    status: ProjectStatus.InProgress,
-    created_at: new Date(),
-  })
-  return projectId
-}
-
-async function insertUpdate(proposalId: string, projectId: string, status: UpdateStatus): Promise<UpdateAttributes> {
-  const update: UpdateAttributes = {
-    id: randomUUID(),
-    proposal_id: proposalId,
-    project_id: projectId,
-    status,
-    due_date: new Date(),
-    created_at: new Date(),
-    updated_at: new Date(),
-  }
-  await UpdateModel.create(update)
-  return update
-}
-
-async function readProposalStatus(id: string): Promise<string | undefined> {
-  const rows = await ProposalModel.namedQuery<{ status: string }>(
-    'test_read_proposal_status',
-    SQL`SELECT status FROM ${table(ProposalModel)} WHERE id = ${id}`
-  )
-  return rows[0]?.status
-}
-
-async function readProjectUpdates(projectId: string): Promise<UpdateAttributes[]> {
-  return await UpdateModel.namedQuery<UpdateAttributes>(
-    'test_read_project_updates',
-    SQL`SELECT * FROM ${table(UpdateModel)} WHERE project_id = ${projectId}`
-  )
 }
 
 describe('proposal status transaction', () => {
@@ -162,6 +111,64 @@ describe('proposal status transaction', () => {
 
       it('should roll back every write made inside it', async () => {
         expect(await readProposalStatus(proposal.id)).toBe(ProposalStatus.Passed)
+      })
+    })
+
+    describe('when the callback wrote to more than one table before throwing', () => {
+      let projectId: string
+
+      beforeEach(async () => {
+        projectId = await insertProject(proposal.id)
+        await withTransaction(async (client) => {
+          const statusQuery = ProposalModel.getUpdateQuery(
+            { status: ProposalStatus.Enacted, updated_at: new Date() },
+            { id: proposal.id }
+          )
+          await client.query(statusQuery.text, statusQuery.values)
+
+          const replaceQuery = UpdateModel.getReplacePendingUpdatesQuery(projectId, [
+            {
+              id: randomUUID(),
+              proposal_id: proposal.id,
+              project_id: projectId,
+              status: UpdateStatus.Pending,
+              due_date: new Date(),
+              created_at: new Date(),
+              updated_at: new Date(),
+            },
+          ])
+          await client.query(replaceQuery.text, replaceQuery.values)
+
+          throw new Error('forced failure')
+        }).catch(() => undefined)
+      })
+
+      it('should roll back the proposal status write', async () => {
+        expect(await readProposalStatus(proposal.id)).toBe(ProposalStatus.Passed)
+      })
+
+      it('should roll back the pending update write', async () => {
+        expect(await readProjectUpdates(projectId)).toHaveLength(0)
+      })
+    })
+
+    describe('when an earlier transaction on the pool already failed', () => {
+      beforeEach(async () => {
+        await withTransaction(async () => {
+          throw new Error('forced failure')
+        }).catch(() => undefined)
+
+        await withTransaction(async (client) => {
+          const query = ProposalModel.getUpdateQuery(
+            { status: ProposalStatus.Rejected, updated_at: new Date() },
+            { id: proposal.id }
+          )
+          await client.query(query.text, query.values)
+        })
+      })
+
+      it('should still commit the next transaction, so the rollback left no unusable connection', async () => {
+        expect(await readProposalStatus(proposal.id)).toBe(ProposalStatus.Rejected)
       })
     })
   })
@@ -301,6 +308,112 @@ describe('proposal status transaction', () => {
 
       it('should not create any pending updates', async () => {
         expect(await readProjectUpdates(projectId)).toHaveLength(0)
+      })
+    })
+
+    describe('when two council actions race on the same proposal', () => {
+      let proposal: ProposalWithProject
+      let projectId: string
+      let attempts: { target: ProposalStatus; update: Record<string, unknown> }[]
+      let outcomes: PromiseSettledResult<unknown>[]
+      let winner: ProposalStatus | undefined
+      let storedStatus: string | undefined
+
+      beforeEach(async () => {
+        const stored = await insertProposal(ProposalStatus.Passed)
+        projectId = await insertProject(stored.id)
+        ;(ProjectService.getUpdatedProject as jest.Mock).mockResolvedValue({
+          id: projectId,
+          proposal_id: stored.id,
+          status: ProjectStatus.InProgress,
+          vesting_addresses: [VESTING_ADDRESS],
+        })
+        proposal = { ...stored, project_id: projectId, personnel: [] } as ProposalWithProject
+
+        // Both requests read the same Passed status and commit against a real row lock.
+        attempts = [
+          {
+            target: ProposalStatus.Enacted,
+            update: { status: ProposalStatus.Enacted, vesting_addresses: [VESTING_ADDRESS] },
+          },
+          { target: ProposalStatus.Rejected, update: { status: ProposalStatus.Rejected } },
+        ]
+        outcomes = await Promise.allSettled(
+          attempts.map((attempt) => ProposalService.updateProposalStatus(proposal, attempt.update as never, user))
+        )
+        winner = attempts[outcomes.findIndex((outcome) => outcome.status === 'fulfilled')]?.target
+        storedStatus = await readProposalStatus(proposal.id)
+      })
+
+      it('should let exactly one of the two transitions succeed', () => {
+        expect(outcomes.filter((outcome) => outcome.status === 'fulfilled')).toHaveLength(1)
+      })
+
+      it('should store the status of the transition that succeeded', () => {
+        expect(storedStatus).toBe(winner)
+      })
+
+      it('should reject the losing transition with an error', () => {
+        const rejected = outcomes.find((outcome) => outcome.status === 'rejected') as PromiseRejectedResult
+        expect(rejected.reason).toBeInstanceOf(Error)
+      })
+
+      it('should keep the pending updates consistent with the stored status', async () => {
+        const expectedPendingUpdates = storedStatus === ProposalStatus.Enacted ? 3 : 0
+        expect(await readPendingUpdates(projectId)).toHaveLength(expectedPendingUpdates)
+      })
+    })
+
+    describe('when re-enacting a proposal that is already enacted', () => {
+      let proposal: ProposalWithProject
+      let projectId: string
+      let existingPendingUpdate: UpdateAttributes
+
+      beforeEach(async () => {
+        const stored = await insertProposal(ProposalStatus.Enacted, [VESTING_ADDRESS])
+        projectId = await insertProject(stored.id)
+        ;(ProjectService.getUpdatedProject as jest.Mock).mockResolvedValue({
+          id: projectId,
+          proposal_id: stored.id,
+          status: ProjectStatus.InProgress,
+          vesting_addresses: [VESTING_ADDRESS],
+        })
+        existingPendingUpdate = await insertUpdate(stored.id, projectId, UpdateStatus.Pending)
+        proposal = { ...stored, project_id: projectId, personnel: [] } as ProposalWithProject
+      })
+
+      describe('and the vesting addresses have not changed', () => {
+        beforeEach(async () => {
+          await ProposalService.updateProposalStatus(
+            proposal,
+            { status: ProposalStatus.Enacted, vesting_addresses: [VESTING_ADDRESS] },
+            user
+          )
+        })
+
+        it('should keep the existing pending update rather than regenerating the schedule', async () => {
+          const pending = await readPendingUpdates(projectId)
+          expect(pending.map((update) => update.id)).toEqual([existingPendingUpdate.id])
+        })
+      })
+
+      describe('and the vesting addresses changed', () => {
+        beforeEach(async () => {
+          await ProposalService.updateProposalStatus(
+            proposal,
+            { status: ProposalStatus.Enacted, vesting_addresses: [VESTING_ADDRESS, SECOND_VESTING_ADDRESS] },
+            user
+          )
+        })
+
+        it('should replace the previous pending update', async () => {
+          const pending = await readPendingUpdates(projectId)
+          expect(pending.map((update) => update.id)).not.toContain(existingPendingUpdate.id)
+        })
+
+        it('should regenerate the schedule from the new vesting', async () => {
+          expect(await readPendingUpdates(projectId)).toHaveLength(3)
+        })
       })
     })
   })
