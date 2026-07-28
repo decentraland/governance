@@ -1,8 +1,7 @@
 import crypto from 'crypto'
 
 import { VestingWithLogs } from '../../clients/VestingData'
-import { Project } from '../../models/Project'
-import { ProjectService } from '../../services/ProjectService'
+import ProjectModel, { Project } from '../../models/Project'
 import { VestingService } from '../../services/VestingService'
 import { UpdateService } from '../../services/update'
 import Time from '../../utils/date/Time'
@@ -48,7 +47,7 @@ describe('UpdateModel', () => {
     jest.spyOn(crypto, 'randomUUID').mockReturnValue(UUID)
     jest.useFakeTimers()
     jest.setSystemTime(FAKE_NOW)
-    jest.spyOn(ProjectService, 'getUpdatedProject').mockResolvedValue(MOCK_PROJECT)
+    jest.spyOn(ProjectModel, 'getProject').mockResolvedValue(MOCK_PROJECT)
   })
 
   describe('createPendingUpdates', () => {

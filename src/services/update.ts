@@ -14,11 +14,10 @@ import {
   isBetweenLateThresholdDate,
 } from '../entities/Updates/utils'
 import { inBackground } from '../helpers'
-import { Project } from '../models/Project'
+import ProjectModel, { Project } from '../models/Project'
 import { DiscourseService } from '../services/DiscourseService'
 import { ErrorService } from '../services/ErrorService'
 import { FinancialService } from '../services/FinancialService'
-import { ProjectService } from '../services/ProjectService'
 import { DiscoursePost } from '../shared/types/discourse'
 import Time from '../utils/date/Time'
 import { getMonthsBetweenDates } from '../utils/date/getMonthsBetweenDates'
@@ -189,15 +188,17 @@ export class UpdateService {
     return update
   }
 
-  // Read-only: fetches vesting data and builds the pending-update rows without touching the DB, so
-  // the failure-prone network call can run before a guarding check (e.g. a status CAS).
+  // Read-only: reads the project and vesting data and builds the pending-update rows without
+  // writing anything, so the failure-prone network call can run before a guarding check (e.g. a
+  // status CAS) and a request that loses that check leaves no trace. Reads the project directly
+  // rather than through ProjectService.getUpdatedProject, which persists a derived status refresh.
   static async computePendingUpdatesForVesting(
     projectId: string,
     initialVestingAddresses?: string[]
   ): Promise<UpdateAttributes[]> {
     if (projectId.length < 0) throw new Error('Unable to create updates for empty project id')
 
-    const project = await ProjectService.getUpdatedProject(projectId)
+    const project = await ProjectModel.getProject(projectId)
     const { vesting_addresses, proposal_id } = project
     const vestingAddresses = initialVestingAddresses || vesting_addresses
     const vesting = await VestingService.getVestingWithLogs(vestingAddresses[vestingAddresses.length - 1], proposal_id)
