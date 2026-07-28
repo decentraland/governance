@@ -22,19 +22,34 @@ export async function closeTransactionPool(): Promise<void> {
 // any error. The client is always released. Use it when several writes must commit atomically.
 export async function withTransaction<T>(fn: (client: PoolClient) => Promise<T>): Promise<T> {
   const client = await getPool().connect()
+  // Set when COMMIT/ROLLBACK itself fails, which leaves the session's transaction state unknown.
+  let cleanupError: Error | undefined
   try {
     await client.query('BEGIN')
     const result = await fn(client)
-    await client.query('COMMIT')
+    try {
+      await client.query('COMMIT')
+    } catch (commitError) {
+      cleanupError = commitError as Error
+      throw commitError
+    }
     return result
   } catch (error) {
-    try {
-      await client.query('ROLLBACK')
-    } catch {
-      // The connection may be broken; surface the original error rather than the rollback failure.
+    // A failed COMMIT already aborted the transaction, and the connection is about to be discarded,
+    // so only roll back when the failure came from fn.
+    if (!cleanupError) {
+      try {
+        await client.query('ROLLBACK')
+      } catch (rollbackError) {
+        // Surface the original error rather than the rollback failure, but remember that this
+        // connection may still be sitting in an open transaction.
+        cleanupError = rollbackError as Error
+      }
     }
     throw error
   } finally {
-    client.release()
+    // Releasing with an error destroys the connection instead of returning a client that may be
+    // broken or still inside a transaction to the pool.
+    client.release(cleanupError)
   }
 }
