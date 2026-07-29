@@ -287,6 +287,56 @@ describe('POST /api/webhooks/discourse/comment', () => {
     })
   })
 
+  // Same reasoning as the alchemy endpoint: signing what JSON.stringify produces and sending that
+  // same object cannot distinguish the captured bytes from the re-serialised fallback.
+  describe('when the signed bytes differ from what re-serialising the body would produce', () => {
+    const rawBody = '{ "post" : { "id" : 7 , "topic_id" : 42 } }'
+
+    describe('and the signature covers the bytes actually sent', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        response = await supertest(app)
+          .post('/api/webhooks/discourse/comment')
+          .set('Content-Type', 'application/json')
+          .set('X-Discourse-Event-Signature', `sha256=${sign(DISCOURSE_SECRET, rawBody)}`)
+          .set('X-Discourse-Event-Id', '1')
+          .set('X-Discourse-Event', 'post_created')
+          .send(rawBody)
+      })
+
+      it('should accept it', () => {
+        expect(response.status).toBe(201)
+      })
+
+      it('should record the comment parsed out of those bytes', () => {
+        expect(commented).toHaveBeenCalledWith('1', 'post_created', { id: 7, topic_id: 42 })
+      })
+    })
+
+    describe('and the signature covers the re-serialised form instead', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        response = await supertest(app)
+          .post('/api/webhooks/discourse/comment')
+          .set('Content-Type', 'application/json')
+          .set('X-Discourse-Event-Signature', `sha256=${sign(DISCOURSE_SECRET, JSON.stringify(JSON.parse(rawBody)))}`)
+          .set('X-Discourse-Event-Id', '1')
+          .set('X-Discourse-Event', 'post_created')
+          .send(rawBody)
+      })
+
+      it('should respond with a 403', () => {
+        expect(response.status).toBe(403)
+      })
+
+      it('should not record the comment', () => {
+        expect(commented).not.toHaveBeenCalled()
+      })
+    })
+  })
+
   describe('when the signature and event headers are valid', () => {
     let response: supertest.Response
 
