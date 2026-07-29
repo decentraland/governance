@@ -255,6 +255,31 @@ describe('the user routes', () => {
       })
     })
 
+    // The value arrives from a json body, so it can be any shape. Calling toLowerCase on a number
+    // used to raise a TypeError and surface as a 500 for what is a malformed request.
+    describe('when the account type is not a string at all', () => {
+      it('should reject a number with a 400', async () => {
+        const numeric = await supertest(app)
+          .post('/api/user/unlink')
+          .set('x-test-auth', CALLER)
+          .send({ accountType: 7 })
+        expect(numeric.status).toBe(400)
+      })
+
+      it('should reject an object with a 400', async () => {
+        const object = await supertest(app)
+          .post('/api/user/unlink')
+          .set('x-test-auth', CALLER)
+          .send({ accountType: { forum: true } })
+        expect(object.status).toBe(400)
+      })
+
+      it('should not unlink anything', async () => {
+        await supertest(app).post('/api/user/unlink').set('x-test-auth', CALLER).send({ accountType: 7 })
+        expect(unlinkAccount).not.toHaveBeenCalled()
+      })
+    })
+
     describe('when no account type is given', () => {
       beforeEach(async () => {
         response = await supertest(app).post('/api/user/unlink').set('x-test-auth', CALLER).send({})

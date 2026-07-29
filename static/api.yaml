@@ -311,8 +311,8 @@ paths:
           required: false
           description: >-
             How many voters to return. Must be a whole number between 1 and 100;
-            anything else is rejected with a 400. Defaults to 5 when omitted.
-          allowEmptyValue: true
+            anything else is rejected with a 400. Defaults to 5 when omitted, but an
+            empty value is not the same as omitting it and is rejected.
           schema:
             type: integer
             minimum: 1

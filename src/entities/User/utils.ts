@@ -103,11 +103,15 @@ export function validateComment(
   return isSameAddress(recoveredAddress, address)
 }
 
-export function toAccountType(account: string | undefined | null): AccountType | undefined {
-  return Object.values(AccountType).find((a) => a.toLowerCase() === account?.toLowerCase())
+// Takes unknown rather than string: the value comes from a request body or query string, so it can
+// be a number, an object or anything else json admits. Calling toLowerCase on those raises a
+// TypeError, which would surface as a 500 for what is a malformed request.
+export function toAccountType(account: unknown): AccountType | undefined {
+  if (typeof account !== 'string') return undefined
+  return Object.values(AccountType).find((a) => a.toLowerCase() === account.toLowerCase())
 }
 
-export function parseAccountTypes(accounts?: string | string[]): AccountType[] {
+export function parseAccountTypes(accounts?: unknown): AccountType[] {
   if (!accounts) return []
 
   const accountsArray = Array.isArray(accounts) ? accounts : [accounts]
@@ -116,7 +120,7 @@ export function parseAccountTypes(accounts?: string | string[]): AccountType[] {
 
 // Both callers take this straight from a request, so a bad value is the caller's mistake rather
 // than the server's. A plain Error would surface as a 500.
-export function validateAccountTypes(accounts?: string | string[]): AccountType[] {
+export function validateAccountTypes(accounts?: unknown): AccountType[] {
   const parsedAccounts = parseAccountTypes(accounts)
   if (parsedAccounts.length === 0) {
     throw new RequestError(`Invalid account types. Received: ${accounts}`, RequestError.BadRequest)

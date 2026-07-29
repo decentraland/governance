@@ -316,6 +316,23 @@ describe('the vote routes', () => {
       })
     })
 
+    // The spec no longer advertises an empty value as allowed, because the route rejects it.
+    describe('when the limit is present but empty', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        response = await supertest(app).get('/api/votes/top-voters?limit=')
+      })
+
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
+      })
+
+      it('should not run the query', () => {
+        expect(getTopVoters).not.toHaveBeenCalled()
+      })
+    })
+
     describe('when the limit is not a positive whole number', () => {
       it('should reject a non-numeric limit', async () => {
         const response = await supertest(app).get('/api/votes/top-voters?limit=abc')

@@ -160,7 +160,7 @@ describe('the project update routes', () => {
       })
 
       it('should refuse the request', () => {
-        expect(response.status).toBeGreaterThanOrEqual(400)
+        expect(response.status).toBe(401)
       })
 
       it('should not edit the update', () => {
@@ -239,7 +239,7 @@ describe('the project update routes', () => {
       })
 
       it('should refuse the request', () => {
-        expect(response.status).toBeGreaterThanOrEqual(400)
+        expect(response.status).toBe(401)
       })
 
       it('should not delete the update', () => {

@@ -239,7 +239,7 @@ describe('the project routes', () => {
           })
 
           it('should refuse the request', () => {
-            expect(response.status).toBeGreaterThanOrEqual(400)
+            expect(response.status).toBe(401)
           })
 
           it('should not delete it', () => {
