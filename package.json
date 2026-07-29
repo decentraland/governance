@@ -31,7 +31,10 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "testEnvironment": "node",
-    "resolver": "<rootDir>/export-maps-resolver.js"
+    "resolver": "<rootDir>/export-maps-resolver.js",
+    "setupFilesAfterEnv": [
+      "<rootDir>/test/setup/closeTestApps.ts"
+    ]
   },
   "repository": {
     "type": "git",

@@ -130,8 +130,8 @@ describe('the bid routes', () => {
         response = await supertest(app).get(`/api/bids/${PROPOSAL_ID}/get-user-bid`)
       })
 
-      it('should not be refused outright', () => {
-        expect(response.status).not.toBe(401)
+      it('should respond with a 200', () => {
+        expect(response.status).toBe(200)
       })
 
       it('should look up a bid for no address rather than for somebody else', () => {
@@ -243,7 +243,8 @@ describe('POST /api/newsletter-subscribe', () => {
     })
 
     it('should fail rather than subscribe nobody', () => {
-      expect(response.status).toBeGreaterThanOrEqual(400)
+      // Recorded, not endorsed: isEmail throws on a non-string instead of returning false.
+      expect(response.status).toBe(500)
     })
 
     it('should not call the newsletter provider', () => {

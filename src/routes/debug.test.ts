@@ -124,7 +124,8 @@ describe('POST /api/debug/trigger', () => {
     })
 
     it('should not treat the name as callable', () => {
-      expect(response.status).toBeGreaterThanOrEqual(400)
+      // Recorded, not endorsed: the handler raises a plain Error for an unknown name.
+      expect(response.status).toBe(500)
     })
   })
 })
@@ -155,7 +156,8 @@ describe('DELETE /api/debug/invalidate-cache', () => {
     })
 
     it('should reject the request', () => {
-      expect(response.status).toBeGreaterThanOrEqual(400)
+      // Recorded, not endorsed: the handler raises a plain Error for a missing cache key.
+      expect(response.status).toBe(500)
     })
   })
 })

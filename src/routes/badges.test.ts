@@ -143,7 +143,8 @@ describe('the badge routes', () => {
       })
 
       it('should fail rather than airdrop to nobody', () => {
-        expect(response.status).toBeGreaterThanOrEqual(400)
+        // Recorded, not endorsed: the handler maps over recipients before checking it is a list.
+        expect(response.status).toBe(500)
       })
 
       it('should not hand out any badge', () => {

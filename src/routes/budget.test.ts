@@ -120,7 +120,8 @@ describe('the budget routes', () => {
       })
 
       it('should reject the request', () => {
-        expect(response.status).toBeGreaterThanOrEqual(400)
+        // Recorded, not endorsed: toNewGrantCategory raises a plain Error.
+        expect(response.status).toBe(500)
       })
 
       it('should not run the lookup', () => {

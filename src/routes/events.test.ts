@@ -142,7 +142,7 @@ describe('the event routes', () => {
       })
 
       it('should reject the request', () => {
-        expect(response.status).toBeGreaterThanOrEqual(400)
+        expect(response.status).toBe(400)
       })
 
       it('should not record a vote event', () => {
@@ -193,7 +193,8 @@ describe('the event routes', () => {
       })
 
       it('should reject the request', () => {
-        expect(response.status).toBeGreaterThanOrEqual(400)
+        // Recorded, not endorsed: the event filter raises a plain Error.
+        expect(response.status).toBe(500)
       })
 
       it('should not read any events', () => {

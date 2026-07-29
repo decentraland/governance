@@ -181,7 +181,8 @@ describe('the user routes', () => {
       })
 
       it('should reject the request', () => {
-        expect(response.status).toBeGreaterThanOrEqual(400)
+        // Recorded, not endorsed: the flag check raises a plain Error.
+        expect(response.status).toBe(500)
       })
 
       it('should not change the stored setting', () => {
@@ -195,7 +196,8 @@ describe('the user routes', () => {
       })
 
       it('should reject the request', () => {
-        expect(response.status).toBeGreaterThanOrEqual(400)
+        // Recorded, not endorsed: the flag check raises a plain Error.
+        expect(response.status).toBe(500)
       })
 
       it('should not change the stored setting', () => {
@@ -247,7 +249,8 @@ describe('the user routes', () => {
       })
 
       it('should reject the request', () => {
-        expect(response.status).toBeGreaterThanOrEqual(400)
+        // Recorded, not endorsed: validateAccountTypes raises a plain Error.
+        expect(response.status).toBe(500)
       })
 
       it('should not unlink anything', () => {
@@ -261,7 +264,8 @@ describe('the user routes', () => {
       })
 
       it('should reject the request', () => {
-        expect(response.status).toBeGreaterThanOrEqual(400)
+        // Recorded, not endorsed: validateAccountTypes raises a plain Error.
+        expect(response.status).toBe(500)
       })
 
       it('should not unlink anything', () => {
@@ -345,7 +349,8 @@ describe('the user routes', () => {
       })
 
       it('should reject the request', () => {
-        expect(response.status).toBeGreaterThanOrEqual(400)
+        // Recorded, not endorsed: validateAccountTypes raises a plain Error.
+        expect(response.status).toBe(500)
       })
 
       it('should not run the lookup', () => {

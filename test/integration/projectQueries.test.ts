@@ -49,7 +49,7 @@ describe('ProjectModel.getProject', () => {
       })
       projectId = await insertProject(proposal.id)
       livePersonnel = await insertPersonnel(projectId, 'Live member')
-      deletedPersonnel = await insertPersonnel(projectId, 'Removed member', true)
+      deletedPersonnel = await insertPersonnel(projectId, 'Removed member', { deleted: true })
       milestoneId = await insertMilestone(projectId, 'First milestone')
       linkId = await insertProjectLink(projectId, 'Repository')
       await insertCoauthor(proposal.id, APPROVED_COAUTHOR, CoauthorStatus.APPROVED)

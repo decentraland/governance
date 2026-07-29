@@ -180,7 +180,7 @@ describe('POST /api/webhooks/alchemy/delegation', () => {
     // Alchemy retries on a non-2xx, and delegationUpdate is idempotent, so the failure must not
     // be masked with a 200.
     it('should respond with a non-2xx so delivery is retried', () => {
-      expect(response.status).toBeGreaterThanOrEqual(400)
+      expect(response.status).toBe(500)
     })
   })
 })

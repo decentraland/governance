@@ -136,7 +136,8 @@ describe('PUT /api/coauthors/:proposal', () => {
     })
 
     it('should fail rather than report success for a row it never changed', () => {
-      expect(response.status).toBeGreaterThanOrEqual(400)
+      // Recorded, not endorsed: the handler raises a plain Error.
+      expect(response.status).toBe(500)
     })
   })
 
@@ -150,7 +151,8 @@ describe('PUT /api/coauthors/:proposal', () => {
     })
 
     it('should refuse the change', () => {
-      expect(response.status).toBeGreaterThanOrEqual(400)
+      // Recorded, not endorsed: the handler raises a plain Error.
+      expect(response.status).toBe(500)
     })
 
     it('should not touch the invitation', () => {

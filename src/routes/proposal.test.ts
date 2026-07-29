@@ -134,7 +134,7 @@ describe('the proposal routes', () => {
       })
 
       it('should reject the transition', () => {
-        expect(response.status).toBeGreaterThanOrEqual(400)
+        expect(response.status).toBe(400)
       })
 
       it('should not change the proposal status', () => {
@@ -286,7 +286,7 @@ describe('the proposal routes', () => {
       })
 
       it('should reject the request', () => {
-        expect(response.status).toBeGreaterThanOrEqual(400)
+        expect(response.status).toBe(400)
       })
     })
   })

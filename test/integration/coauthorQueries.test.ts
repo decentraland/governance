@@ -184,13 +184,28 @@ describe('ProjectModel.getUserProjects', () => {
     })
   })
 
-  // Personnel are on the team without being coauthors, so they see the project too.
+  // Personnel are on the team without being coauthors, so the query reaches a project through them
+  // as well. Asserting only that a stranger is refused would pass with the branch removed.
   describe('when the caller is listed as personnel', () => {
     beforeEach(async () => {
-      await insertPersonnel(projectId, 'A member')
+      await insertPersonnel(projectId, 'A member', { address: STRANGER })
     })
 
-    it('should not return it for an unrelated address', async () => {
+    it('should return the project for them', async () => {
+      expect(await ProjectModel.getUserProjects(STRANGER)).toHaveLength(1)
+    })
+
+    it('should still refuse an address that is on no team', async () => {
+      expect(await ProjectModel.getUserProjects('0x1111111111111111111111111111111111111111')).toEqual([])
+    })
+  })
+
+  describe('when the caller was removed from the team', () => {
+    beforeEach(async () => {
+      await insertPersonnel(projectId, 'A former member', { address: STRANGER, deleted: true })
+    })
+
+    it('should no longer return the project for them', async () => {
       expect(await ProjectModel.getUserProjects(STRANGER)).toEqual([])
     })
   })
