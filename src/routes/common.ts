@@ -1,4 +1,5 @@
 import { auth } from 'decentraland-gatsby/dist/entities/Auth/middleware'
+import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import dns from 'dns'
@@ -12,6 +13,7 @@ export default routes((router) => {
 })
 
 const isHttpsURL = (url: string) => isURL(url, { protocols: ['https'], require_protocol: true })
+const MAX_TITLE_RESPONSE_BYTES = 64 * 1024
 
 // Parses any valid IPv6 textual form (compact, expanded, or with an embedded IPv4 suffix)
 // into its 16 bytes, so range checks below cannot be bypassed by an alternate spelling
@@ -109,17 +111,48 @@ export async function assertPublicUrl(url: string) {
   }
 }
 
-async function getTitle(url: string) {
+export async function getTitle(url: string) {
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), 6000)
+  let reader: ReadableStreamDefaultReader<Uint8Array> | undefined
   try {
     // redirect: 'manual' prevents a public URL from 3xx-redirecting to an internal host
     // after the address check has passed.
     const response = await fetch(url, { redirect: 'manual', signal: controller.signal })
-    const text = await response.text()
-    return text.match(/<title>([^<]+)<\/title>/)?.[1]
+    reader = response.body?.getReader()
+    const declaredLength = Number(response.headers.get('content-length'))
+    if (Number.isFinite(declaredLength) && declaredLength > MAX_TITLE_RESPONSE_BYTES) {
+      throw new RequestError('Response is too large', RequestError.PayloadTooLarge)
+    }
+
+    if (!reader) {
+      return undefined
+    }
+
+    const decoder = new TextDecoder()
+    let bytesRead = 0
+    let text = ''
+    for (;;) {
+      const { done, value } = await reader.read()
+      if (done) {
+        text += decoder.decode()
+        return text.match(/<title>([^<]+)<\/title>/i)?.[1]
+      }
+
+      bytesRead += value.byteLength
+      if (bytesRead > MAX_TITLE_RESPONSE_BYTES) {
+        throw new RequestError('Response is too large', RequestError.PayloadTooLarge)
+      }
+
+      text += decoder.decode(value, { stream: true })
+      const title = text.match(/<title>([^<]+)<\/title>/i)?.[1]
+      if (title) {
+        return title
+      }
+    }
   } finally {
     clearTimeout(timeoutId)
+    await reader?.cancel().catch(() => undefined)
   }
 }
 

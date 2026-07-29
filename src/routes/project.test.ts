@@ -181,6 +181,33 @@ describe('the project routes', () => {
         expect(addLink).not.toHaveBeenCalled()
       })
     })
+
+    describe('when the owner submits a link with an executable URL scheme', () => {
+      let response: supertest.Response
+      let addLink: jest.SpyInstance
+
+      beforeEach(async () => {
+        addLink = jest.spyOn(ProjectService, 'addLink').mockResolvedValue({} as never)
+        response = await supertest(app)
+          .post('/api/projects/links/')
+          .set('x-test-auth', OWNER)
+          .send({
+            project_link: {
+              project_id: PROJECT_ID,
+              label: 'Repository',
+              url: 'javascript:alert(document.domain)',
+            },
+          })
+      })
+
+      it('should reject the link', () => {
+        expect(response.status).toBe(400)
+      })
+
+      it('should not store the link', () => {
+        expect(addLink).not.toHaveBeenCalled()
+      })
+    })
   })
 
   describe('the routes that delete from a project', () => {

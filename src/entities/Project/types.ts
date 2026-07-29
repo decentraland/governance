@@ -4,6 +4,7 @@ import { ZodSchema, z } from 'zod'
 import { PersonnelAttributes } from '../../models/Personnel'
 import { ProjectLink } from '../../models/ProjectLink'
 import { ProjectMilestone } from '../../models/ProjectMilestone'
+import { isSafeWebUrl } from '../../utils/url'
 
 const addressCheck = (data: string) => !data || (!!data && isEthereumAddress(data))
 
@@ -16,14 +17,14 @@ export const PersonnelInCreationSchema: ZodSchema<PersonnelInCreation> = z.objec
   address: z.string().refine(addressCheck).optional().or(z.null()),
   role: z.string().min(1).max(80),
   about: z.string().min(1).max(750),
-  relevantLink: z.string().min(0).max(200).url().optional().or(z.literal('')),
+  relevantLink: z.string().min(0).max(200).url().refine(isSafeWebUrl).optional().or(z.literal('')),
   project_id: z.string().min(0),
 })
 
 export type ProjectLinkInCreation = Pick<ProjectLink, 'label' | 'url' | 'project_id'>
 export const ProjectLinkInCreationSchema: ZodSchema<ProjectLinkInCreation> = z.object({
   label: z.string().min(1).max(80),
-  url: z.string().min(0).max(200).url(),
+  url: z.string().min(0).max(200).url().refine(isSafeWebUrl),
   project_id: z.string().min(0),
 })
 
