@@ -2,7 +2,7 @@ import { SubgraphVesting } from '../clients/VestingSubgraphTypes'
 import { VestingsSubgraph } from '../clients/VestingsSubgraph'
 import { VestingStatus } from '../entities/Grant/types'
 
-import { VestingService } from './VestingService'
+import { MAX_CONCURRENT_VESTING_FALLBACKS, VestingService } from './VestingService'
 
 const VESTING_ADDRESS = '0x1111111111111111111111111111111111111111'
 const OTHER_ADDRESS = '0x2222222222222222222222222222222222222222'
@@ -248,6 +248,37 @@ describe('VestingService', () => {
 
       it('should still return the one that could', () => {
         expect(result[0].address).toBe(VESTING_ADDRESS)
+      })
+    })
+
+    describe('when several addresses need the fallback', () => {
+      let addresses: string[]
+      let activeFallbacks: number
+      let maximumActiveFallbacks: number
+
+      beforeEach(async () => {
+        addresses = Array.from(
+          { length: MAX_CONCURRENT_VESTING_FALLBACKS + 1 },
+          (_, index) => `0x${(index + 1).toString(16).padStart(40, '0')}`
+        )
+        activeFallbacks = 0
+        maximumActiveFallbacks = 0
+        jest.spyOn(VestingsSubgraph, 'get').mockReturnValue({
+          getVestings: jest.fn().mockResolvedValue([]),
+        } as never)
+        jest.spyOn(VestingService, 'getVestingWithLogs').mockImplementation(async (address) => {
+          activeFallbacks += 1
+          maximumActiveFallbacks = Math.max(maximumActiveFallbacks, activeFallbacks)
+          await new Promise<void>((resolve) => setImmediate(resolve))
+          activeFallbacks -= 1
+          return { address, logs: [], start_at: new Date().toISOString() } as never
+        })
+
+        await VestingService.getVestings(addresses)
+      })
+
+      it('should limit concurrent fallback lookups', () => {
+        expect(maximumActiveFallbacks).toBe(MAX_CONCURRENT_VESTING_FALLBACKS)
       })
     })
   })

@@ -18,6 +18,8 @@ import { ErrorCategory } from '../utils/errorCategories'
 import CacheService, { TTL_1_HS } from './CacheService'
 import { ErrorService } from './ErrorService'
 
+export const MAX_CONCURRENT_VESTING_FALLBACKS = 5
+
 export class VestingService {
   static async getAllVestings(): Promise<VestingWithLogs[]> {
     const cacheKey = `vesting-subgraph-data`
@@ -44,7 +46,12 @@ export class VestingService {
     const sgById = new Map(sg.map((v) => [v.id.toLowerCase(), v]))
     const missing = input.filter((a) => !sgById.has(a))
 
-    const fallback = await Promise.all(missing.map((a) => this.getVestingWithLogs(a).catch(() => null)))
+    const fallback: Array<VestingWithLogs | null> = []
+    for (let index = 0; index < missing.length; index += MAX_CONCURRENT_VESTING_FALLBACKS) {
+      const batch = missing.slice(index, index + MAX_CONCURRENT_VESTING_FALLBACKS)
+      const results = await Promise.all(batch.map((address) => this.getVestingWithLogs(address).catch(() => null)))
+      fallback.push(...results)
+    }
     const okFallback = fallback.filter((x): x is VestingWithLogs => x !== null)
 
     const parsedFromSubgraph = sg.map(this.parseSubgraphVesting)
