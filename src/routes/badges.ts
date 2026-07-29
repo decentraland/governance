@@ -67,7 +67,9 @@ async function airdrop(req: WithAuth): Promise<AirdropOutcome> {
     validateAddress(address)
   })
 
-  if (!badgeSpecCid || badgeSpecCid.length === 0) {
+  // typeof, not just truthiness: a number or an object has no length, so the old check let it
+  // through to the badge service rather than refusing it here.
+  if (typeof badgeSpecCid !== 'string' || badgeSpecCid.length === 0) {
     throw new RequestError('Invalid Badge Spec Cid', RequestError.BadRequest)
   }
 
@@ -88,7 +90,9 @@ async function revoke(req: WithAuth): Promise<RevokeOrReinstateResult[]> {
     validateAddress(address)
   })
 
-  if (!badgeSpecCid || badgeSpecCid.length === 0) {
+  // typeof, not just truthiness: a number or an object has no length, so the old check let it
+  // through to the badge service rather than refusing it here.
+  if (typeof badgeSpecCid !== 'string' || badgeSpecCid.length === 0) {
     throw new RequestError('Invalid Badge Spec Cid', RequestError.BadRequest)
   }
 

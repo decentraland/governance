@@ -401,6 +401,26 @@ describe('the user routes', () => {
       })
     })
 
+    // Answering about a subset would tell the caller "validated" while quietly ignoring one of the
+    // accounts they asked about, which they cannot detect from the response.
+    describe('when one of several account types is not a known one', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        response = await supertest(app).get(
+          `/api/user/${SOMEONE_ELSE}/is-validated?account=${AccountType.Forum}&account=myspace`
+        )
+      })
+
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
+      })
+
+      it('should not answer about the ones it did recognise', () => {
+        expect(isValidated).not.toHaveBeenCalled()
+      })
+    })
+
     describe('when several account types are asked about', () => {
       beforeEach(async () => {
         response = await supertest(app).get(
