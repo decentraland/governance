@@ -102,7 +102,9 @@ describe('the project update routes', () => {
         // Refused rather than served. The status itself is known-wrong — a plain Error becomes a
         // 500 where this should be a client error — and is fixed in the follow-up, so asserting
         // refusal here means that fix will not have to rewrite this.
-        expect(response.body.ok).toBe(false)
+        // response.ok is superagent's 2xx flag, so this also rules out a 200 that merely says
+        // ok:false in its body. still no exact status, which is the point.
+        expect({ http: response.ok, body: response.body.ok }).toEqual({ http: false, body: false })
       })
 
       it('should not create the update', () => {

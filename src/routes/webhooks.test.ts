@@ -119,8 +119,11 @@ describe('POST /api/webhooks/alchemy/delegation', () => {
         expect(response.status).toBe(201)
       })
 
-      it('should process the block it parsed out of those bytes', () => {
-        expect(delegationUpdate).toHaveBeenCalledTimes(1)
+      it('should process the block parsed out of those exact bytes', () => {
+        expect(delegationUpdate).toHaveBeenCalledWith({
+          number: 1,
+          transactions: [{ hash: '0xaa' }],
+        })
       })
     })
 
