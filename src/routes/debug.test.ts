@@ -124,8 +124,10 @@ describe('POST /api/debug/trigger', () => {
     })
 
     it('should not treat the name as callable', () => {
-      // Recorded, not endorsed: the handler raises a plain Error for an unknown name.
-      expect(response.status).toBe(500)
+      // Refused rather than served. The status itself is known-wrong — a plain Error becomes a
+      // 500 where this should be a client error — and is fixed in the follow-up, so asserting
+      // refusal here means that fix will not have to rewrite this.
+      expect(response.body.ok).toBe(false)
     })
   })
 })
@@ -156,8 +158,10 @@ describe('DELETE /api/debug/invalidate-cache', () => {
     })
 
     it('should reject the request', () => {
-      // Recorded, not endorsed: the handler raises a plain Error for a missing cache key.
-      expect(response.status).toBe(500)
+      // Refused rather than served. The status itself is known-wrong — a plain Error becomes a
+      // 500 where this should be a client error — and is fixed in the follow-up, so asserting
+      // refusal here means that fix will not have to rewrite this.
+      expect(response.body.ok).toBe(false)
     })
   })
 })

@@ -120,8 +120,10 @@ describe('the budget routes', () => {
       })
 
       it('should reject the request', () => {
-        // Recorded, not endorsed: toNewGrantCategory raises a plain Error.
-        expect(response.status).toBe(500)
+        // Refused rather than served. The status itself is known-wrong — a plain Error becomes a
+        // 500 where this should be a client error — and is fixed in the follow-up, so asserting
+        // refusal here means that fix will not have to rewrite this.
+        expect(response.body.ok).toBe(false)
       })
 
       it('should not run the lookup', () => {

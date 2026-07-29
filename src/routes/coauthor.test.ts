@@ -136,8 +136,10 @@ describe('PUT /api/coauthors/:proposal', () => {
     })
 
     it('should fail rather than report success for a row it never changed', () => {
-      // Recorded, not endorsed: the handler raises a plain Error.
-      expect(response.status).toBe(500)
+      // Refused rather than served. The status itself is known-wrong — a plain Error becomes a
+      // 500 where this should be a client error — and is fixed in the follow-up, so asserting
+      // refusal here means that fix will not have to rewrite this.
+      expect(response.body.ok).toBe(false)
     })
   })
 
@@ -151,8 +153,10 @@ describe('PUT /api/coauthors/:proposal', () => {
     })
 
     it('should refuse the change', () => {
-      // Recorded, not endorsed: the handler raises a plain Error.
-      expect(response.status).toBe(500)
+      // Refused rather than served. The status itself is known-wrong — a plain Error becomes a
+      // 500 where this should be a client error — and is fixed in the follow-up, so asserting
+      // refusal here means that fix will not have to rewrite this.
+      expect(response.body.ok).toBe(false)
     })
 
     it('should not touch the invitation', () => {

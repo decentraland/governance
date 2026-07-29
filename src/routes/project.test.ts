@@ -375,8 +375,10 @@ describe('the project routes', () => {
       })
 
       it('should refuse the request', () => {
-        // Recorded, not endorsed: the handler's own bad request is swallowed by its catch.
-        expect(response.status).toBe(500)
+        // Refused rather than served. The status itself is known-wrong — a plain Error becomes a
+        // 500 where this should be a client error — and is fixed in the follow-up, so asserting
+        // refusal here means that fix will not have to rewrite this.
+        expect(response.body.ok).toBe(false)
       })
     })
   })

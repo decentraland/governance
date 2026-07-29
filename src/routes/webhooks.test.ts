@@ -96,6 +96,55 @@ describe('POST /api/webhooks/alchemy/delegation', () => {
     })
   })
 
+  // The route captures the exact bytes before parsing and falls back to re-serialising the parsed
+  // body when it cannot. These payloads are deliberately not what JSON.stringify would produce —
+  // the spacing and key order differ — so they only verify if the captured bytes are used. Signing
+  // JSON.stringify(body) and sending that same object cannot tell the two paths apart.
+  describe('when the signed bytes differ from what re-serialising the body would produce', () => {
+    const rawBody =
+      '{ "event" : { "data" : { "block" : { "transactions" : [ { "hash" : "0xaa" } ] , "number" : 1 } } } }'
+
+    describe('and the signature covers the bytes actually sent', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        response = await supertest(app)
+          .post('/api/webhooks/alchemy/delegation')
+          .set('Content-Type', 'application/json')
+          .set('x-alchemy-signature', sign(ALCHEMY_SECRET, rawBody))
+          .send(rawBody)
+      })
+
+      it('should accept it', () => {
+        expect(response.status).toBe(201)
+      })
+
+      it('should process the block it parsed out of those bytes', () => {
+        expect(delegationUpdate).toHaveBeenCalledTimes(1)
+      })
+    })
+
+    describe('and the signature covers the re-serialised form instead', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        response = await supertest(app)
+          .post('/api/webhooks/alchemy/delegation')
+          .set('Content-Type', 'application/json')
+          .set('x-alchemy-signature', sign(ALCHEMY_SECRET, JSON.stringify(JSON.parse(rawBody))))
+          .send(rawBody)
+      })
+
+      it('should respond with a 403', () => {
+        expect(response.status).toBe(403)
+      })
+
+      it('should not process the block', () => {
+        expect(delegationUpdate).not.toHaveBeenCalled()
+      })
+    })
+  })
+
   describe('when the block carries no transactions', () => {
     let response: supertest.Response
 
