@@ -81,14 +81,17 @@ export function validateId(id?: string | null) {
   return id
 }
 
-export function validateAddress(address?: string) {
-  if (!address || !isEthereumAddress(address)) {
+// Takes unknown: the value comes from a request path, query or body, so it can be a number or an
+// object. isEthereumAddress asserts a string and raises a TypeError on anything else, which would
+// surface as a 500 for what is a malformed request.
+export function validateAddress(address?: unknown): string {
+  if (typeof address !== 'string' || !isEthereumAddress(address)) {
     throw new RequestError(`Invalid address ${address}`, RequestError.BadRequest)
   }
   return address
 }
 
-export function validateAddresses(addresses?: string[]) {
+export function validateAddresses(addresses?: unknown[]) {
   if (!Array.isArray(addresses)) {
     throw new RequestError(`Invalid addresses ${addresses}`, RequestError.BadRequest)
   }

@@ -4,7 +4,7 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
 
-import { UserProfile } from '../entities/User/types'
+import { AccountType, UserProfile } from '../entities/User/types'
 import { validateAccountTypes } from '../entities/User/utils'
 import { UserService } from '../services/user'
 import { validateAddress } from '../utils/validations'
@@ -69,6 +69,8 @@ async function getProfile(req: Request): Promise<UserProfile> {
   return await UserService.getProfile(address)
 }
 
+const UNLINKABLE_ACCOUNTS = new Set([AccountType.Forum, AccountType.Discord])
+
 async function unlinkAccount(req: WithAuth) {
   const address = req.auth!
   const { accountType } = req.body
@@ -79,5 +81,11 @@ async function unlinkAccount(req: WithAuth) {
     throw new RequestError('Only one account can be unlinked at a time', RequestError.BadRequest)
   }
   const accounts = validateAccountTypes(accountType)
+  // Not every account type can be unlinked: the query behind this only clears the forum and discord
+  // columns, and push is a subscription held elsewhere. Refuse here rather than let it reach a
+  // switch that has no case for it.
+  if (!UNLINKABLE_ACCOUNTS.has(accounts[0])) {
+    throw new RequestError(`Account type ${accounts[0]} cannot be unlinked`, RequestError.BadRequest)
+  }
   return await UserService.unlinkAccount(address, accounts[0])
 }

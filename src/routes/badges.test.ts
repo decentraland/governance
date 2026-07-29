@@ -149,6 +149,23 @@ describe('the badge routes', () => {
     })
 
     // A number or an object has no length, so a truthiness check alone let it reach the service.
+    describe('when a recipient is not a string at all', () => {
+      beforeEach(async () => {
+        response = await supertest(app)
+          .post('/api/badges/airdrop/')
+          .set('x-test-auth', DEBUG_ADDRESS)
+          .send({ badgeSpecCid: BADGE_CID, recipients: [12345] })
+      })
+
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
+      })
+
+      it('should not hand out any badge', () => {
+        expect(giveBadgeToUsers).not.toHaveBeenCalled()
+      })
+    })
+
     describe('when the badge spec cid is not a string', () => {
       beforeEach(async () => {
         response = await supertest(app)

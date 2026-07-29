@@ -393,6 +393,7 @@ paths:
               enum:
                 - forum
                 - discord
+                - push
       responses:
         '200':
           $ref: '#/components/responses/200'

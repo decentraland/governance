@@ -238,6 +238,25 @@ describe('the user routes', () => {
       })
     })
 
+    // push is a recognised account type but is held as a subscription elsewhere, so there is no
+    // column for the unlink query to clear and no case for it in the switch behind it.
+    describe('when the account type is one that cannot be unlinked', () => {
+      beforeEach(async () => {
+        response = await supertest(app)
+          .post('/api/user/unlink')
+          .set('x-test-auth', CALLER)
+          .send({ accountType: AccountType.Push })
+      })
+
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
+      })
+
+      it('should not attempt the unlink', () => {
+        expect(unlinkAccount).not.toHaveBeenCalled()
+      })
+    })
+
     describe('when the account type is not a known one', () => {
       beforeEach(async () => {
         response = await supertest(app)
@@ -418,6 +437,21 @@ describe('the user routes', () => {
 
       it('should not answer about the ones it did recognise', () => {
         expect(isValidated).not.toHaveBeenCalled()
+      })
+    })
+
+    // Supported here, unlike unlink: the service checks a push subscription rather than a column.
+    describe('when the push account type is asked about', () => {
+      beforeEach(async () => {
+        response = await supertest(app).get(`/api/user/${SOMEONE_ELSE}/is-validated?account=${AccountType.Push}`)
+      })
+
+      it('should answer rather than refuse it', () => {
+        expect(response.status).toBe(200)
+      })
+
+      it('should ask the service about push', () => {
+        expect(isValidated).toHaveBeenCalledWith(SOMEONE_ELSE, new Set([AccountType.Push]))
       })
     })
 
