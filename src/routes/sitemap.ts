@@ -5,6 +5,12 @@ import { Request } from 'express'
 import ProposalModel from '../entities/Proposal/model'
 import { SITEMAP_ITEMS_PER_PAGE, governanceUrl, proposalUrl } from '../entities/Proposal/utils'
 
+const EMPTY_SITEMAP = [
+  '<?xml version="1.0" encoding="UTF-8"?>',
+  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+  '</urlset>',
+].join('')
+
 export default routes((router) => {
   const routePrefix = '/governance'
   router.get(`${routePrefix}/sitemap.xml`, handleRaw(getIndexSitemap, 'application/xml'))
@@ -47,13 +53,20 @@ export async function getStaticSitemap() {
 }
 
 export async function getProposalsSitemap(req: Request) {
-  const page = Number(req.query.page)
-  if (!Number.isFinite(page) || String(page | 0) !== req.query.page) {
-    return [
-      '<?xml version="1.0" encoding="UTF-8"?>',
-      '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-      '</urlset>',
-    ].join('')
+  const pageParam = req.query.page
+  if (typeof pageParam !== 'string' || pageParam.length > 10 || !/^(0|[1-9]\d*)$/.test(pageParam)) {
+    return EMPTY_SITEMAP
+  }
+
+  const page = Number(pageParam)
+  if (!Number.isSafeInteger(page)) {
+    return EMPTY_SITEMAP
+  }
+
+  const proposalCount = await ProposalModel.countAll()
+  const pageCount = Math.ceil(proposalCount / SITEMAP_ITEMS_PER_PAGE)
+  if (page >= pageCount) {
+    return EMPTY_SITEMAP
   }
 
   const proposals = await ProposalModel.getSitemapProposals(page)

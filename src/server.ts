@@ -114,6 +114,9 @@ app.use('/api', [
 
 app.use(metrics([gatsbyRegister, register]))
 
+// Public: crawlers need these documents without authentication. Apply a dedicated limiter
+// because the sitemap router is mounted outside the /api middleware chain.
+app.use('/governance', withDDosProtection({ limit: 100, checkinterval: 4 }))
 app.use(sitemap)
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))

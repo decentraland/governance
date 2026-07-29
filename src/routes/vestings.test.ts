@@ -4,7 +4,7 @@ import supertest from 'supertest'
 import { VestingService } from '../services/VestingService'
 
 import { createTestApp } from './testApp'
-import vestings from './vestings'
+import vestings, { MAX_VESTING_ADDRESSES_PER_REQUEST } from './vestings'
 
 const ADDRESS = '0x2AC89522CB415AC333E64F52a1a5693218cEBD58'
 const OTHER_ADDRESS = '0x56d0B5eD3D525332F00C9BC938f93598ab16AAA7'
@@ -55,6 +55,36 @@ describe('the vesting routes', () => {
 
       it('should not query for the valid ones either', () => {
         expect(getVestings).not.toHaveBeenCalled()
+      })
+    })
+
+    describe('when the request exceeds the address limit', () => {
+      let addresses: string[]
+
+      beforeEach(async () => {
+        addresses = Array.from(
+          { length: MAX_VESTING_ADDRESSES_PER_REQUEST + 1 },
+          (_, index) => `0x${(index + 1).toString(16).padStart(40, '0')}`
+        )
+        response = await supertest(app).post('/api/vesting').send({ addresses })
+      })
+
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
+      })
+
+      it('should not start a vesting lookup', () => {
+        expect(getVestings).not.toHaveBeenCalled()
+      })
+    })
+
+    describe('when the addresses field is missing', () => {
+      beforeEach(async () => {
+        response = await supertest(app).post('/api/vesting').send({})
+      })
+
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
       })
     })
   })

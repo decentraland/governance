@@ -4,9 +4,13 @@ import { Request } from 'express'
 
 import { VestingWithLogs } from '../clients/VestingData'
 import { VestingService } from '../services/VestingService'
-import { validateAddress } from '../utils/validations'
+import { validateAddress, validateBoundedAddresses } from '../utils/validations'
+
+export const MAX_VESTING_ADDRESSES_PER_REQUEST = 100
 
 export default routes((router) => {
+  // Public: vesting data is displayed without authentication. Bulk input is capped here and
+  // fallback RPC work is concurrency-limited in VestingService.
   router.get('/all-vestings', handleAPI(getAllVestings))
   router.post('/vesting', handleAPI(getVestings))
   router.get('/vesting/:address', handleAPI(getVesting))
@@ -17,8 +21,7 @@ async function getAllVestings() {
 }
 
 async function getVestings(req: Request<unknown, unknown, { addresses: string[] }>): Promise<VestingWithLogs[]> {
-  const addresses = req.body.addresses
-  addresses.forEach(validateAddress)
+  const addresses = validateBoundedAddresses(req.body?.addresses, MAX_VESTING_ADDRESSES_PER_REQUEST)
 
   return await VestingService.getVestings(addresses)
 }

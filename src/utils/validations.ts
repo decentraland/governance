@@ -109,12 +109,15 @@ export const areValidAddresses = (addresses: string[]) =>
 // and reject non-address entries before forwarding. Tune the cap up if a genuine caller exceeds it.
 export const MAX_ADDRESSES_PER_REQUEST = 5000
 
-export function validateBoundedAddresses(addresses: unknown): string[] {
+export function validateBoundedAddresses(
+  addresses: unknown,
+  maxAddresses: number = MAX_ADDRESSES_PER_REQUEST
+): string[] {
   if (!Array.isArray(addresses)) {
     throw new RequestError('Invalid addresses', RequestError.BadRequest)
   }
-  if (addresses.length > MAX_ADDRESSES_PER_REQUEST) {
-    throw new RequestError(`Too many addresses: max ${MAX_ADDRESSES_PER_REQUEST} per request`, RequestError.BadRequest)
+  if (addresses.length > maxAddresses) {
+    throw new RequestError(`Too many addresses: max ${maxAddresses} per request`, RequestError.BadRequest)
   }
   validateAddresses(addresses)
   return addresses
