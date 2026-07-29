@@ -377,9 +377,27 @@ paths:
       parameters:
         - name: address
           $ref: '#/components/parameters/address'
+        - name: account
+          in: query
+          required: true
+          description: >-
+            Which linked account to check. Repeat the parameter to ask about more
+            than one, in which case every one of them must be linked for the
+            answer to be true. Every value must be recognised: if any is not, the
+            request is rejected rather than answered about the rest.
+          schema:
+            type: array
+            minItems: 1
+            items:
+              type: string
+              enum:
+                - forum
+                - discord
       responses:
         '200':
           $ref: '#/components/responses/200'
+        '400':
+          description: No account was given, or one of them was not a recognised account type
 
   /budget/current:
     get:

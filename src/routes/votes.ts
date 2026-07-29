@@ -131,8 +131,17 @@ async function getTopVotersForLast30Days(req: Request) {
     return await VoteService.getTopVotersForLast30Days()
   }
 
+  // Plain decimal only. Number() would also read 1e2, 0x10, 0b11 and whitespace-padded values as
+  // valid integers, which is a wider contract than the spec describes.
+  if (typeof limit !== 'string' || !/^\d+$/.test(limit)) {
+    throw new RequestError(
+      `Invalid limit: expected an integer between 1 and ${MAX_TOP_VOTERS_LIMIT}`,
+      RequestError.BadRequest
+    )
+  }
+
   const parsed = Number(limit)
-  if (!Number.isInteger(parsed) || parsed < 1 || parsed > MAX_TOP_VOTERS_LIMIT) {
+  if (parsed < 1 || parsed > MAX_TOP_VOTERS_LIMIT) {
     throw new RequestError(
       `Invalid limit: expected an integer between 1 and ${MAX_TOP_VOTERS_LIMIT}`,
       RequestError.BadRequest

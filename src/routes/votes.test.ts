@@ -333,6 +333,30 @@ describe('the vote routes', () => {
       })
     })
 
+    // Number() reads all of these as integers in range, but the spec promises a plain decimal, and
+    // a public contract should not quietly accept more than it documents. Sent one at a time: this
+    // suite has flaked on bursts of concurrent requests before.
+    describe('when the limit is a number in a form the spec does not describe', () => {
+      const cases = ['1e2', '0x10', '0b11', '5.0', '+5', ' 5 ']
+      let statuses: number[]
+
+      beforeEach(async () => {
+        statuses = []
+        for (const value of cases) {
+          const response = await supertest(app).get(`/api/votes/top-voters?limit=${encodeURIComponent(value)}`)
+          statuses.push(response.status)
+        }
+      })
+
+      it('should reject every one of them with a 400', () => {
+        expect(statuses).toEqual(cases.map(() => 400))
+      })
+
+      it('should not run the query for any of them', () => {
+        expect(getTopVoters).not.toHaveBeenCalled()
+      })
+    })
+
     describe('when the limit is not a positive whole number', () => {
       it('should reject a non-numeric limit', async () => {
         const response = await supertest(app).get('/api/votes/top-voters?limit=abc')

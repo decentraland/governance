@@ -251,6 +251,24 @@ describe('the badge routes', () => {
         expect(response.status).toBe(400)
       })
     })
+
+    // Mirrors the airdrop case: revoke got the same guard, so it gets the same coverage.
+    describe('when the badge spec cid is not a string', () => {
+      beforeEach(async () => {
+        response = await supertest(app)
+          .post('/api/badges/revoke/')
+          .set('x-test-auth', DEBUG_ADDRESS)
+          .send({ badgeSpecCid: 12345, recipients: [RECIPIENT] })
+      })
+
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
+      })
+
+      it('should not revoke anything', () => {
+        expect(revokeBadge).not.toHaveBeenCalled()
+      })
+    })
   })
 
   describe('POST /api/badges/upload-badge-spec', () => {
