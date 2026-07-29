@@ -1,6 +1,7 @@
+import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import dns from 'dns'
 
-import { assertPublicUrl, isPrivateIp } from './common'
+import { assertPublicUrl, getTitle, isPrivateIp } from './common'
 
 describe('isPrivateIp', () => {
   describe('when given IPv4 addresses in a private, loopback, link-local or CGNAT range', () => {
@@ -115,6 +116,58 @@ describe('assertPublicUrl', () => {
 
     it('should reject because at least one resolved address is private', async () => {
       await expect(assertPublicUrl('https://rebind.example/')).rejects.toThrow('private address')
+    })
+  })
+})
+
+describe('getTitle', () => {
+  let fetchMock: jest.SpyInstance
+
+  beforeEach(() => {
+    fetchMock = jest.spyOn(global, 'fetch')
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  describe('when the response contains a title within the size limit', () => {
+    beforeEach(() => {
+      fetchMock.mockResolvedValue(new Response('<html><head><title>Example title</title></head><body></body></html>'))
+    })
+
+    it('should return the title', async () => {
+      await expect(getTitle('https://example.com')).resolves.toBe('Example title')
+    })
+  })
+
+  describe('when the declared response size exceeds the limit', () => {
+    beforeEach(() => {
+      fetchMock.mockResolvedValue(
+        new Response('not read', {
+          headers: {
+            'content-length': String(64 * 1024 + 1),
+          },
+        })
+      )
+    })
+
+    it('should reject the response as too large', async () => {
+      await expect(getTitle('https://example.com')).rejects.toMatchObject({
+        statusCode: RequestError.PayloadTooLarge,
+      })
+    })
+  })
+
+  describe('when a streamed response exceeds the limit without declaring its size', () => {
+    beforeEach(() => {
+      fetchMock.mockResolvedValue(new Response(new Uint8Array(64 * 1024 + 1)))
+    })
+
+    it('should reject the response as too large', async () => {
+      await expect(getTitle('https://example.com')).rejects.toMatchObject({
+        statusCode: RequestError.PayloadTooLarge,
+      })
     })
   })
 })
