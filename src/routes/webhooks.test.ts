@@ -1,5 +1,5 @@
 import crypto from 'crypto'
-import { Express } from 'express'
+import { Server } from 'http'
 import supertest from 'supertest'
 
 import { ErrorService } from '../services/ErrorService'
@@ -26,7 +26,7 @@ function alchemyBody(transactions: unknown[]) {
 }
 
 describe('POST /api/webhooks/alchemy/delegation', () => {
-  let app: Express
+  let app: Server
   let delegationUpdate: jest.SpyInstance
 
   beforeEach(() => {
@@ -93,6 +93,58 @@ describe('POST /api/webhooks/alchemy/delegation', () => {
 
     it('should hand the block to the events service', () => {
       expect(delegationUpdate).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  // The route captures the exact bytes before parsing and falls back to re-serialising the parsed
+  // body when it cannot. These payloads are deliberately not what JSON.stringify would produce —
+  // the spacing and key order differ — so they only verify if the captured bytes are used. Signing
+  // JSON.stringify(body) and sending that same object cannot tell the two paths apart.
+  describe('when the signed bytes differ from what re-serialising the body would produce', () => {
+    const rawBody =
+      '{ "event" : { "data" : { "block" : { "transactions" : [ { "hash" : "0xaa" } ] , "number" : 1 } } } }'
+
+    describe('and the signature covers the bytes actually sent', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        response = await supertest(app)
+          .post('/api/webhooks/alchemy/delegation')
+          .set('Content-Type', 'application/json')
+          .set('x-alchemy-signature', sign(ALCHEMY_SECRET, rawBody))
+          .send(rawBody)
+      })
+
+      it('should accept it', () => {
+        expect(response.status).toBe(201)
+      })
+
+      it('should process the block parsed out of those exact bytes', () => {
+        expect(delegationUpdate).toHaveBeenCalledWith({
+          number: 1,
+          transactions: [{ hash: '0xaa' }],
+        })
+      })
+    })
+
+    describe('and the signature covers the re-serialised form instead', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        response = await supertest(app)
+          .post('/api/webhooks/alchemy/delegation')
+          .set('Content-Type', 'application/json')
+          .set('x-alchemy-signature', sign(ALCHEMY_SECRET, JSON.stringify(JSON.parse(rawBody))))
+          .send(rawBody)
+      })
+
+      it('should respond with a 403', () => {
+        expect(response.status).toBe(403)
+      })
+
+      it('should not process the block', () => {
+        expect(delegationUpdate).not.toHaveBeenCalled()
+      })
     })
   })
 
@@ -180,13 +232,13 @@ describe('POST /api/webhooks/alchemy/delegation', () => {
     // Alchemy retries on a non-2xx, and delegationUpdate is idempotent, so the failure must not
     // be masked with a 200.
     it('should respond with a non-2xx so delivery is retried', () => {
-      expect(response.status).toBeGreaterThanOrEqual(400)
+      expect(response.status).toBe(500)
     })
   })
 })
 
 describe('POST /api/webhooks/discourse/comment', () => {
-  let app: Express
+  let app: Server
   let commented: jest.SpyInstance
   const body = { post: { id: 7 } }
 
@@ -235,6 +287,56 @@ describe('POST /api/webhooks/discourse/comment', () => {
 
     it('should not record the comment', () => {
       expect(commented).not.toHaveBeenCalled()
+    })
+  })
+
+  // Same reasoning as the alchemy endpoint: signing what JSON.stringify produces and sending that
+  // same object cannot distinguish the captured bytes from the re-serialised fallback.
+  describe('when the signed bytes differ from what re-serialising the body would produce', () => {
+    const rawBody = '{ "post" : { "id" : 7 , "topic_id" : 42 } }'
+
+    describe('and the signature covers the bytes actually sent', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        response = await supertest(app)
+          .post('/api/webhooks/discourse/comment')
+          .set('Content-Type', 'application/json')
+          .set('X-Discourse-Event-Signature', `sha256=${sign(DISCOURSE_SECRET, rawBody)}`)
+          .set('X-Discourse-Event-Id', '1')
+          .set('X-Discourse-Event', 'post_created')
+          .send(rawBody)
+      })
+
+      it('should accept it', () => {
+        expect(response.status).toBe(201)
+      })
+
+      it('should record the comment parsed out of those bytes', () => {
+        expect(commented).toHaveBeenCalledWith('1', 'post_created', { id: 7, topic_id: 42 })
+      })
+    })
+
+    describe('and the signature covers the re-serialised form instead', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        response = await supertest(app)
+          .post('/api/webhooks/discourse/comment')
+          .set('Content-Type', 'application/json')
+          .set('X-Discourse-Event-Signature', `sha256=${sign(DISCOURSE_SECRET, JSON.stringify(JSON.parse(rawBody)))}`)
+          .set('X-Discourse-Event-Id', '1')
+          .set('X-Discourse-Event', 'post_created')
+          .send(rawBody)
+      })
+
+      it('should respond with a 403', () => {
+        expect(response.status).toBe(403)
+      })
+
+      it('should not record the comment', () => {
+        expect(commented).not.toHaveBeenCalled()
+      })
     })
   })
 

@@ -1,4 +1,4 @@
-import { Express } from 'express'
+import { Server } from 'http'
 import supertest from 'supertest'
 
 import CoauthorModel from '../entities/Coauthor/model'
@@ -49,7 +49,7 @@ function finishedProposal() {
 }
 
 describe('PUT /api/coauthors/:proposal', () => {
-  let app: Express
+  let app: Server
   let update: jest.SpyInstance
   let response: supertest.Response
 
@@ -136,7 +136,12 @@ describe('PUT /api/coauthors/:proposal', () => {
     })
 
     it('should fail rather than report success for a row it never changed', () => {
-      expect(response.status).toBeGreaterThanOrEqual(400)
+      // Refused rather than served. The status itself is known-wrong — a plain Error becomes a
+      // 500 where this should be a client error — and is fixed in the follow-up, so asserting
+      // refusal here means that fix will not have to rewrite this.
+      // response.ok is superagent's 2xx flag, so this also rules out a 200 that merely says
+      // ok:false in its body. still no exact status, which is the point.
+      expect({ http: response.ok, body: response.body.ok }).toEqual({ http: false, body: false })
     })
   })
 
@@ -150,7 +155,12 @@ describe('PUT /api/coauthors/:proposal', () => {
     })
 
     it('should refuse the change', () => {
-      expect(response.status).toBeGreaterThanOrEqual(400)
+      // Refused rather than served. The status itself is known-wrong — a plain Error becomes a
+      // 500 where this should be a client error — and is fixed in the follow-up, so asserting
+      // refusal here means that fix will not have to rewrite this.
+      // response.ok is superagent's 2xx flag, so this also rules out a 200 that merely says
+      // ok:false in its body. still no exact status, which is the point.
+      expect({ http: response.ok, body: response.body.ok }).toEqual({ http: false, body: false })
     })
 
     it('should not touch the invitation', () => {
@@ -195,7 +205,7 @@ describe('PUT /api/coauthors/:proposal', () => {
 })
 
 describe('GET /api/coauthors/proposals/:address/:status?', () => {
-  let app: Express
+  let app: Server
   let findProposals: jest.SpyInstance
   let response: supertest.Response
 

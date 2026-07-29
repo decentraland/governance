@@ -85,13 +85,18 @@ export async function insertUpdate(
   return update
 }
 
-export async function insertPersonnel(projectId: string, name: string, deleted = false): Promise<string> {
+export async function insertPersonnel(
+  projectId: string,
+  name: string,
+  options: { deleted?: boolean; address?: string | null } = {}
+): Promise<string> {
+  const { deleted = false, address = null } = options
   const id = randomUUID()
   await PersonnelModel.create({
     id,
     project_id: projectId,
     name,
-    address: null,
+    address,
     role: 'Engineer',
     about: 'About the team member',
     deleted,

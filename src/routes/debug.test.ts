@@ -1,4 +1,4 @@
-import { Express } from 'express'
+import { Server } from 'http'
 import supertest from 'supertest'
 
 import { ErrorService } from '../services/ErrorService'
@@ -42,7 +42,7 @@ jest.mock('../constants', () => ({
 }))
 
 describe('GET /api/debug', () => {
-  let app: Express
+  let app: Server
   let response: supertest.Response
 
   beforeEach(() => {
@@ -95,7 +95,7 @@ describe('GET /api/debug', () => {
 })
 
 describe('POST /api/debug/trigger', () => {
-  let app: Express
+  let app: Server
   let response: supertest.Response
 
   beforeEach(() => {
@@ -124,13 +124,18 @@ describe('POST /api/debug/trigger', () => {
     })
 
     it('should not treat the name as callable', () => {
-      expect(response.status).toBeGreaterThanOrEqual(400)
+      // Refused rather than served. The status itself is known-wrong — a plain Error becomes a
+      // 500 where this should be a client error — and is fixed in the follow-up, so asserting
+      // refusal here means that fix will not have to rewrite this.
+      // response.ok is superagent's 2xx flag, so this also rules out a 200 that merely says
+      // ok:false in its body. still no exact status, which is the point.
+      expect({ http: response.ok, body: response.body.ok }).toEqual({ http: false, body: false })
     })
   })
 })
 
 describe('DELETE /api/debug/invalidate-cache', () => {
-  let app: Express
+  let app: Server
   let response: supertest.Response
 
   beforeEach(() => {
@@ -155,13 +160,18 @@ describe('DELETE /api/debug/invalidate-cache', () => {
     })
 
     it('should reject the request', () => {
-      expect(response.status).toBeGreaterThanOrEqual(400)
+      // Refused rather than served. The status itself is known-wrong — a plain Error becomes a
+      // 500 where this should be a client error — and is fixed in the follow-up, so asserting
+      // refusal here means that fix will not have to rewrite this.
+      // response.ok is superagent's 2xx flag, so this also rules out a 200 that merely says
+      // ok:false in its body. still no exact status, which is the point.
+      expect({ http: response.ok, body: response.body.ok }).toEqual({ http: false, body: false })
     })
   })
 })
 
 describe('POST /api/debug/report-error', () => {
-  let app: Express
+  let app: Server
   let report: jest.SpyInstance
 
   beforeEach(() => {

@@ -1,4 +1,4 @@
-import { Express } from 'express'
+import { Server } from 'http'
 import supertest from 'supertest'
 
 import { SnapshotService } from '../services/SnapshotService'
@@ -12,7 +12,7 @@ const START = '2024-01-01T00:00:00.000Z'
 const END = '2024-02-01T00:00:00.000Z'
 
 describe('the snapshot proxy routes', () => {
-  let app: Express
+  let app: Server
 
   beforeEach(() => {
     app = createTestApp(snapshot)

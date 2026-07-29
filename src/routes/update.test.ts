@@ -1,4 +1,4 @@
-import { Express } from 'express'
+import { Server } from 'http'
 import supertest from 'supertest'
 
 import { ProjectService } from '../services/ProjectService'
@@ -47,7 +47,7 @@ const VALID_BODY = {
 const VALID_PATCH_BODY = { ...VALID_BODY, financial_records: null }
 
 describe('the project update routes', () => {
-  let app: Express
+  let app: Server
   let isAuthorOrCoauthor: jest.SpyInstance
 
   beforeEach(() => {
@@ -99,7 +99,12 @@ describe('the project update routes', () => {
       })
 
       it('should refuse the request', () => {
-        expect(response.status).toBeGreaterThanOrEqual(400)
+        // Refused rather than served. The status itself is known-wrong — a plain Error becomes a
+        // 500 where this should be a client error — and is fixed in the follow-up, so asserting
+        // refusal here means that fix will not have to rewrite this.
+        // response.ok is superagent's 2xx flag, so this also rules out a 200 that merely says
+        // ok:false in its body. still no exact status, which is the point.
+        expect({ http: response.ok, body: response.body.ok }).toEqual({ http: false, body: false })
       })
 
       it('should not create the update', () => {
@@ -160,7 +165,7 @@ describe('the project update routes', () => {
       })
 
       it('should refuse the request', () => {
-        expect(response.status).toBeGreaterThanOrEqual(400)
+        expect(response.status).toBe(401)
       })
 
       it('should not edit the update', () => {
@@ -239,7 +244,7 @@ describe('the project update routes', () => {
       })
 
       it('should refuse the request', () => {
-        expect(response.status).toBeGreaterThanOrEqual(400)
+        expect(response.status).toBe(401)
       })
 
       it('should not delete the update', () => {

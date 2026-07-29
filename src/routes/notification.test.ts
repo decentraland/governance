@@ -1,4 +1,4 @@
-import { Express } from 'express'
+import { Server } from 'http'
 import supertest from 'supertest'
 
 import { NotificationService } from '../services/notification'
@@ -29,7 +29,7 @@ jest.mock('decentraland-gatsby/dist/entities/Auth/middleware', () => ({
 }))
 
 describe('GET /api/notifications/user/:address', () => {
-  let app: Express
+  let app: Server
   let getUserFeed: jest.SpyInstance
   let response: supertest.Response
 
@@ -98,7 +98,7 @@ describe('GET /api/notifications/user/:address', () => {
 })
 
 describe('the authenticated notification routes', () => {
-  let app: Express
+  let app: Server
 
   beforeEach(() => {
     app = createTestApp(notification)
