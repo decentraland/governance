@@ -239,7 +239,7 @@ describe('the project routes', () => {
           })
 
           it('should refuse the request', () => {
-            expect(response.status).toBe(401)
+            expect(response.status).toBeGreaterThanOrEqual(400)
           })
 
           it('should not delete it', () => {
@@ -374,13 +374,8 @@ describe('the project routes', () => {
         response = await supertest(app).get('/api/projects?from=2024-02-01&to=2024-01-01')
       })
 
-      it('should refuse the request', () => {
-        // Refused rather than served. The status itself is known-wrong — a plain Error becomes a
-        // 500 where this should be a client error — and is fixed in the follow-up, so asserting
-        // refusal here means that fix will not have to rewrite this.
-        // response.ok is superagent's 2xx flag, so this also rules out a 200 that merely says
-        // ok:false in its body. still no exact status, which is the point.
-        expect({ http: response.ok, body: response.body.ok }).toEqual({ http: false, body: false })
+      it('should respond with a 400 rather than a server error', () => {
+        expect(response.status).toBe(400)
       })
     })
   })

@@ -59,6 +59,11 @@ async function getProjectsList(req: Request) {
     CacheService.set(cacheKey, projects, TTL_1_HS)
     return { data: filterProjectsByDate(projects, from, to) }
   } catch (error) {
+    // A RequestError was raised deliberately by the code above, so it already says what went wrong
+    // and whose fault it is. Wrapping it would turn a rejected date range into a server error.
+    if (error instanceof RequestError) {
+      throw error
+    }
     ErrorService.report('Error fetching projects', { error, category: ErrorCategory.Project })
     throw new RequestError(`Unable to load projects`, RequestError.InternalServerError)
   }

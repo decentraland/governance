@@ -180,8 +180,8 @@ describe('the user routes', () => {
           .send({ is_discord_notifications_active: 'false' })
       })
 
-      it('should reject the request', () => {
-        expect(response.status).toBeGreaterThanOrEqual(400)
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
       })
 
       it('should not change the stored setting', () => {
@@ -194,8 +194,8 @@ describe('the user routes', () => {
         response = await supertest(app).post('/api/user/discord-active').set('x-test-auth', CALLER).send({})
       })
 
-      it('should reject the request', () => {
-        expect(response.status).toBeGreaterThanOrEqual(400)
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
       })
 
       it('should not change the stored setting', () => {

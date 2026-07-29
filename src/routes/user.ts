@@ -43,7 +43,7 @@ async function updateDiscordStatus(req: WithAuth) {
   const address = req.auth!
   const { is_discord_notifications_active } = req.body
   if (typeof is_discord_notifications_active !== 'boolean') {
-    throw new Error('Invalid discord status')
+    throw new RequestError('Invalid discord status', RequestError.BadRequest)
   }
   await UserService.updateDiscordStatus(address, is_discord_notifications_active)
 }
