@@ -180,13 +180,8 @@ describe('the user routes', () => {
           .send({ is_discord_notifications_active: 'false' })
       })
 
-      it('should reject the request', () => {
-        // Refused rather than served. The status itself is known-wrong — a plain Error becomes a
-        // 500 where this should be a client error — and is fixed in the follow-up, so asserting
-        // refusal here means that fix will not have to rewrite this.
-        // response.ok is superagent's 2xx flag, so this also rules out a 200 that merely says
-        // ok:false in its body. still no exact status, which is the point.
-        expect({ http: response.ok, body: response.body.ok }).toEqual({ http: false, body: false })
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
       })
 
       it('should not change the stored setting', () => {
@@ -199,13 +194,8 @@ describe('the user routes', () => {
         response = await supertest(app).post('/api/user/discord-active').set('x-test-auth', CALLER).send({})
       })
 
-      it('should reject the request', () => {
-        // Refused rather than served. The status itself is known-wrong — a plain Error becomes a
-        // 500 where this should be a client error — and is fixed in the follow-up, so asserting
-        // refusal here means that fix will not have to rewrite this.
-        // response.ok is superagent's 2xx flag, so this also rules out a 200 that merely says
-        // ok:false in its body. still no exact status, which is the point.
-        expect({ http: response.ok, body: response.body.ok }).toEqual({ http: false, body: false })
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
       })
 
       it('should not change the stored setting', () => {
@@ -248,6 +238,25 @@ describe('the user routes', () => {
       })
     })
 
+    // push is a recognised account type but is held as a subscription elsewhere, so there is no
+    // column for the unlink query to clear and no case for it in the switch behind it.
+    describe('when the account type is one that cannot be unlinked', () => {
+      beforeEach(async () => {
+        response = await supertest(app)
+          .post('/api/user/unlink')
+          .set('x-test-auth', CALLER)
+          .send({ accountType: AccountType.Push })
+      })
+
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
+      })
+
+      it('should not attempt the unlink', () => {
+        expect(unlinkAccount).not.toHaveBeenCalled()
+      })
+    })
+
     describe('when the account type is not a known one', () => {
       beforeEach(async () => {
         response = await supertest(app)
@@ -256,16 +265,36 @@ describe('the user routes', () => {
           .send({ accountType: 'myspace' })
       })
 
-      it('should reject the request', () => {
-        // Refused rather than served. The status itself is known-wrong — a plain Error becomes a
-        // 500 where this should be a client error — and is fixed in the follow-up, so asserting
-        // refusal here means that fix will not have to rewrite this.
-        // response.ok is superagent's 2xx flag, so this also rules out a 200 that merely says
-        // ok:false in its body. still no exact status, which is the point.
-        expect({ http: response.ok, body: response.body.ok }).toEqual({ http: false, body: false })
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
       })
 
       it('should not unlink anything', () => {
+        expect(unlinkAccount).not.toHaveBeenCalled()
+      })
+    })
+
+    // The value arrives from a json body, so it can be any shape. Calling toLowerCase on a number
+    // used to raise a TypeError and surface as a 500 for what is a malformed request.
+    describe('when the account type is not a string at all', () => {
+      it('should reject a number with a 400', async () => {
+        const numeric = await supertest(app)
+          .post('/api/user/unlink')
+          .set('x-test-auth', CALLER)
+          .send({ accountType: 7 })
+        expect(numeric.status).toBe(400)
+      })
+
+      it('should reject an object with a 400', async () => {
+        const object = await supertest(app)
+          .post('/api/user/unlink')
+          .set('x-test-auth', CALLER)
+          .send({ accountType: { forum: true } })
+        expect(object.status).toBe(400)
+      })
+
+      it('should not unlink anything', async () => {
+        await supertest(app).post('/api/user/unlink').set('x-test-auth', CALLER).send({ accountType: 7 })
         expect(unlinkAccount).not.toHaveBeenCalled()
       })
     })
@@ -275,13 +304,8 @@ describe('the user routes', () => {
         response = await supertest(app).post('/api/user/unlink').set('x-test-auth', CALLER).send({})
       })
 
-      it('should reject the request', () => {
-        // Refused rather than served. The status itself is known-wrong — a plain Error becomes a
-        // 500 where this should be a client error — and is fixed in the follow-up, so asserting
-        // refusal here means that fix will not have to rewrite this.
-        // response.ok is superagent's 2xx flag, so this also rules out a 200 that merely says
-        // ok:false in its body. still no exact status, which is the point.
-        expect({ http: response.ok, body: response.body.ok }).toEqual({ http: false, body: false })
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
       })
 
       it('should not unlink anything', () => {
@@ -289,17 +313,40 @@ describe('the user routes', () => {
       })
     })
 
-    // Recorded, not endorsed: only the first of several account types is acted on.
+    // Parsing drops entries it does not recognise, so a mixed list would otherwise look like a
+    // single valid account and unlink it while ignoring the rest of what was asked for.
+    describe('when the list mixes a valid account type with an invalid one', () => {
+      beforeEach(async () => {
+        response = await supertest(app)
+          .post('/api/user/unlink')
+          .set('x-test-auth', CALLER)
+          .send({ accountType: [AccountType.Forum, 'myspace'] })
+      })
+
+      it('should reject the request', () => {
+        expect(response.status).toBe(400)
+      })
+
+      it('should not unlink the valid one on its own', () => {
+        expect(unlinkAccount).not.toHaveBeenCalled()
+      })
+    })
+
+    // Acting on only the first would silently leave the rest linked, so the request is refused.
     describe('when several account types are given at once', () => {
       beforeEach(async () => {
-        await supertest(app)
+        response = await supertest(app)
           .post('/api/user/unlink')
           .set('x-test-auth', CALLER)
           .send({ accountType: [AccountType.Forum, AccountType.Discord] })
       })
 
-      it('should unlink only the first', () => {
-        expect(unlinkAccount).toHaveBeenCalledWith(CALLER, AccountType.Forum)
+      it('should reject the request', () => {
+        expect(response.status).toBe(400)
+      })
+
+      it('should not unlink anything', () => {
+        expect(unlinkAccount).not.toHaveBeenCalled()
       })
     })
   })
@@ -364,17 +411,47 @@ describe('the user routes', () => {
         response = await supertest(app).get(`/api/user/${SOMEONE_ELSE}/is-validated?account=myspace`)
       })
 
-      it('should reject the request', () => {
-        // Refused rather than served. The status itself is known-wrong — a plain Error becomes a
-        // 500 where this should be a client error — and is fixed in the follow-up, so asserting
-        // refusal here means that fix will not have to rewrite this.
-        // response.ok is superagent's 2xx flag, so this also rules out a 200 that merely says
-        // ok:false in its body. still no exact status, which is the point.
-        expect({ http: response.ok, body: response.body.ok }).toEqual({ http: false, body: false })
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
       })
 
       it('should not run the lookup', () => {
         expect(isValidated).not.toHaveBeenCalled()
+      })
+    })
+
+    // Answering about a subset would tell the caller "validated" while quietly ignoring one of the
+    // accounts they asked about, which they cannot detect from the response.
+    describe('when one of several account types is not a known one', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        response = await supertest(app).get(
+          `/api/user/${SOMEONE_ELSE}/is-validated?account=${AccountType.Forum}&account=myspace`
+        )
+      })
+
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
+      })
+
+      it('should not answer about the ones it did recognise', () => {
+        expect(isValidated).not.toHaveBeenCalled()
+      })
+    })
+
+    // Supported here, unlike unlink: the service checks a push subscription rather than a column.
+    describe('when the push account type is asked about', () => {
+      beforeEach(async () => {
+        response = await supertest(app).get(`/api/user/${SOMEONE_ELSE}/is-validated?account=${AccountType.Push}`)
+      })
+
+      it('should answer rather than refuse it', () => {
+        expect(response.status).toBe(200)
+      })
+
+      it('should ask the service about push', () => {
+        expect(isValidated).toHaveBeenCalledWith(SOMEONE_ELSE, new Set([AccountType.Push]))
       })
     })
 

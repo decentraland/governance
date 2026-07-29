@@ -1,3 +1,4 @@
+import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import { hashMessage, recoverAddress } from 'ethers/lib/utils'
 import capitalize from 'lodash/capitalize'
 import escapeRegExp from 'lodash/escapeRegExp'
@@ -102,21 +103,30 @@ export function validateComment(
   return isSameAddress(recoveredAddress, address)
 }
 
-export function toAccountType(account: string | undefined | null): AccountType | undefined {
-  return Object.values(AccountType).find((a) => a.toLowerCase() === account?.toLowerCase())
+// Takes unknown rather than string: the value comes from a request body or query string, so it can
+// be a number, an object or anything else json admits. Calling toLowerCase on those raises a
+// TypeError, which would surface as a 500 for what is a malformed request.
+export function toAccountType(account: unknown): AccountType | undefined {
+  if (typeof account !== 'string') return undefined
+  return Object.values(AccountType).find((a) => a.toLowerCase() === account.toLowerCase())
 }
 
-export function parseAccountTypes(accounts?: string | string[]): AccountType[] {
+export function parseAccountTypes(accounts?: unknown): AccountType[] {
   if (!accounts) return []
 
   const accountsArray = Array.isArray(accounts) ? accounts : [accounts]
   return accountsArray.map((account) => toAccountType(account)).filter((account) => !!account) as AccountType[]
 }
 
-export function validateAccountTypes(accounts?: string | string[]): AccountType[] {
+// Strict counterpart to parseAccountTypes, which drops what it does not recognise. Both callers take
+// this straight from a request, so anything unrecognised is the caller's mistake rather than the
+// server's — and answering about a subset of what was asked for is worse than refusing, because the
+// caller cannot tell it happened. A plain Error would also surface as a 500.
+export function validateAccountTypes(accounts?: unknown): AccountType[] {
+  const supplied = accounts === undefined || accounts === null ? [] : Array.isArray(accounts) ? accounts : [accounts]
   const parsedAccounts = parseAccountTypes(accounts)
-  if (parsedAccounts.length === 0) {
-    throw new Error(`Invalid account types. Received: ${accounts}`)
+  if (parsedAccounts.length === 0 || parsedAccounts.length !== supplied.length) {
+    throw new RequestError(`Invalid account types. Received: ${accounts}`, RequestError.BadRequest)
   }
   return parsedAccounts
 }

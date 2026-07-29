@@ -131,9 +131,6 @@ describe('the badge routes', () => {
       })
     })
 
-    // Recorded, not endorsed: the handler maps over recipients before checking it is a list, so a
-    // debug address that omits the field gets a 500 rather than a 400. Only a debug address can
-    // reach it, which is why it is a note rather than a fix.
     describe('when a debug address omits the recipient list entirely', () => {
       beforeEach(async () => {
         response = await supertest(app)
@@ -142,13 +139,43 @@ describe('the badge routes', () => {
           .send({ badgeSpecCid: BADGE_CID })
       })
 
-      it('should fail rather than airdrop to nobody', () => {
-        // Refused rather than served. The status itself is known-wrong — a plain Error becomes a
-        // 500 where this should be a client error — and is fixed in the follow-up, so asserting
-        // refusal here means that fix will not have to rewrite this.
-        // response.ok is superagent's 2xx flag, so this also rules out a 200 that merely says
-        // ok:false in its body. still no exact status, which is the point.
-        expect({ http: response.ok, body: response.body.ok }).toEqual({ http: false, body: false })
+      it('should reject it as a bad request rather than fail on the dereference', () => {
+        expect(response.status).toBe(400)
+      })
+
+      it('should not hand out any badge', () => {
+        expect(giveBadgeToUsers).not.toHaveBeenCalled()
+      })
+    })
+
+    // A number or an object has no length, so a truthiness check alone let it reach the service.
+    describe('when a recipient is not a string at all', () => {
+      beforeEach(async () => {
+        response = await supertest(app)
+          .post('/api/badges/airdrop/')
+          .set('x-test-auth', DEBUG_ADDRESS)
+          .send({ badgeSpecCid: BADGE_CID, recipients: [12345] })
+      })
+
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
+      })
+
+      it('should not hand out any badge', () => {
+        expect(giveBadgeToUsers).not.toHaveBeenCalled()
+      })
+    })
+
+    describe('when the badge spec cid is not a string', () => {
+      beforeEach(async () => {
+        response = await supertest(app)
+          .post('/api/badges/airdrop/')
+          .set('x-test-auth', DEBUG_ADDRESS)
+          .send({ badgeSpecCid: 12345, recipients: [RECIPIENT] })
+      })
+
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
       })
 
       it('should not hand out any badge', () => {
@@ -239,6 +266,24 @@ describe('the badge routes', () => {
 
       it('should reject the request', () => {
         expect(response.status).toBe(400)
+      })
+    })
+
+    // Mirrors the airdrop case: revoke got the same guard, so it gets the same coverage.
+    describe('when the badge spec cid is not a string', () => {
+      beforeEach(async () => {
+        response = await supertest(app)
+          .post('/api/badges/revoke/')
+          .set('x-test-auth', DEBUG_ADDRESS)
+          .send({ badgeSpecCid: 12345, recipients: [RECIPIENT] })
+      })
+
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
+      })
+
+      it('should not revoke anything', () => {
+        expect(revokeBadge).not.toHaveBeenCalled()
       })
     })
   })

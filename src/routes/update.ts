@@ -225,6 +225,11 @@ async function createProjectUpdate(req: WithAuth) {
       user
     )
   } catch (error) {
+    // The ownership check and the record validation both raise a RequestError on purpose. Wrapping
+    // those would report a refused request as a server fault, and page on every unauthorized try.
+    if (error instanceof RequestError) {
+      throw error
+    }
     ErrorService.report('Error creating update', {
       error,
       category: ErrorCategory.Update,

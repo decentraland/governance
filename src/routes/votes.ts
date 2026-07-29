@@ -2,7 +2,6 @@ import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 import { Request } from 'express'
-import isNumber from 'lodash/isNumber'
 
 import { SnapshotGraphql } from '../clients/SnapshotGraphql'
 import { SnapshotVote } from '../clients/SnapshotTypes'
@@ -121,11 +120,35 @@ async function getVotesAndProposalsByAddress(req: Request) {
   return votesWithProposalData.sort((a, b) => b.created - a.created)
 }
 
-async function getTopVotersForLast30Days(req: Request) {
-  const { limit } = req.body
-  const validLimit = isNumber(limit) && limit > 0 ? limit : undefined
+// The endpoint is unauthenticated and the limit slices the full ranked-voter list, so it is bounded
+// rather than left to the caller. Generous against a default of five.
+const MAX_TOP_VOTERS_LIMIT = 100
 
-  return await VoteService.getTopVotersForLast30Days(validLimit)
+async function getTopVotersForLast30Days(req: Request) {
+  // Read from the query string: this is a GET, so a body-supplied limit could never arrive.
+  const { limit } = req.query
+  if (limit === undefined) {
+    return await VoteService.getTopVotersForLast30Days()
+  }
+
+  // Plain decimal only. Number() would also read 1e2, 0x10, 0b11 and whitespace-padded values as
+  // valid integers, which is a wider contract than the spec describes.
+  if (typeof limit !== 'string' || !/^\d+$/.test(limit)) {
+    throw new RequestError(
+      `Invalid limit: expected an integer between 1 and ${MAX_TOP_VOTERS_LIMIT}`,
+      RequestError.BadRequest
+    )
+  }
+
+  const parsed = Number(limit)
+  if (parsed < 1 || parsed > MAX_TOP_VOTERS_LIMIT) {
+    throw new RequestError(
+      `Invalid limit: expected an integer between 1 and ${MAX_TOP_VOTERS_LIMIT}`,
+      RequestError.BadRequest
+    )
+  }
+
+  return await VoteService.getTopVotersForLast30Days(parsed)
 }
 
 async function getParticipation() {

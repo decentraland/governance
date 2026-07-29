@@ -115,12 +115,13 @@ describe('ProjectModel.isAuthorOrCoauthor', () => {
     })
   })
 
-  // The comparison is exact, unlike the coauthor filters elsewhere which lower() both sides. These
-  // record what the statement actually does for an address that differs only in case.
+  // Coauthor rows are always stored lowercased and the authenticated address is not reliably so,
+  // hence the case-insensitive comparison. Without it a legitimate coauthor is locked out of their
+  // own project depending on how their address happens to be cased.
   describe('when the caller’s address differs in case from the stored author', () => {
-    it('should report what the exact comparison yields', async () => {
+    it('should still recognise them', async () => {
       const checksummed = '0x2AC89522CB415AC333E64F52a1a5693218cEBD58'
-      expect(await ProjectModel.isAuthorOrCoauthor(checksummed, projectId)).toBe(false)
+      expect(await ProjectModel.isAuthorOrCoauthor(checksummed, projectId)).toBe(true)
     })
   })
 
@@ -129,9 +130,9 @@ describe('ProjectModel.isAuthorOrCoauthor', () => {
       await insertCoauthor(proposalId, COAUTHOR, CoauthorStatus.APPROVED)
     })
 
-    it('should report what the exact comparison yields', async () => {
+    it('should still recognise them', async () => {
       const checksummed = '0x56d0B5eD3D525332F00C9BC938f93598ab16AAA7'
-      expect(await ProjectModel.isAuthorOrCoauthor(checksummed, projectId)).toBe(false)
+      expect(await ProjectModel.isAuthorOrCoauthor(checksummed, projectId)).toBe(true)
     })
   })
 })

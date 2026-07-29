@@ -274,20 +274,103 @@ describe('the vote routes', () => {
         await supertest(app).get('/api/votes/top-voters')
       })
 
-      it('should query without one', () => {
-        expect(getTopVoters).toHaveBeenCalledWith(undefined)
+      it('should query without one, leaving the service default to apply', () => {
+        expect(getTopVoters).toHaveBeenCalledWith()
       })
     })
 
-    // Recorded, not endorsed: the handler reads the limit from the request body, but this is a GET,
-    // so a caller has no way to supply one and the query string is ignored.
     describe('when a limit is given in the query string', () => {
       beforeEach(async () => {
         await supertest(app).get('/api/votes/top-voters?limit=5')
       })
 
-      it('should ignore it', () => {
-        expect(getTopVoters).toHaveBeenCalledWith(undefined)
+      it('should pass it through', () => {
+        expect(getTopVoters).toHaveBeenCalledWith(5)
+      })
+    })
+
+    // The endpoint is unauthenticated and the limit slices the whole ranked list, so it is bounded.
+    describe('when the limit exceeds the maximum', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        response = await supertest(app).get('/api/votes/top-voters?limit=101')
+      })
+
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
+      })
+
+      it('should not run the query', () => {
+        expect(getTopVoters).not.toHaveBeenCalled()
+      })
+    })
+
+    describe('when the limit is exactly the maximum', () => {
+      beforeEach(async () => {
+        await supertest(app).get('/api/votes/top-voters?limit=100')
+      })
+
+      it('should accept it', () => {
+        expect(getTopVoters).toHaveBeenCalledWith(100)
+      })
+    })
+
+    // The spec no longer advertises an empty value as allowed, because the route rejects it.
+    describe('when the limit is present but empty', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        response = await supertest(app).get('/api/votes/top-voters?limit=')
+      })
+
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
+      })
+
+      it('should not run the query', () => {
+        expect(getTopVoters).not.toHaveBeenCalled()
+      })
+    })
+
+    // Number() reads all of these as integers in range, but the spec promises a plain decimal, and
+    // a public contract should not quietly accept more than it documents. Sent one at a time: this
+    // suite has flaked on bursts of concurrent requests before.
+    describe('when the limit is a number in a form the spec does not describe', () => {
+      const cases = ['1e2', '0x10', '0b11', '5.0', '+5', ' 5 ']
+      let statuses: number[]
+
+      beforeEach(async () => {
+        statuses = []
+        for (const value of cases) {
+          const response = await supertest(app).get(`/api/votes/top-voters?limit=${encodeURIComponent(value)}`)
+          statuses.push(response.status)
+        }
+      })
+
+      it('should reject every one of them with a 400', () => {
+        expect(statuses).toEqual(cases.map(() => 400))
+      })
+
+      it('should not run the query for any of them', () => {
+        expect(getTopVoters).not.toHaveBeenCalled()
+      })
+    })
+
+    describe('when the limit is not a positive whole number', () => {
+      it('should reject a non-numeric limit', async () => {
+        const response = await supertest(app).get('/api/votes/top-voters?limit=abc')
+        expect(response.status).toBe(400)
+      })
+
+      it('should reject a zero limit', async () => {
+        const response = await supertest(app).get('/api/votes/top-voters?limit=0')
+        expect(response.status).toBe(400)
+      })
+
+      it('should reject a negative limit', async () => {
+        const response = await supertest(app).get('/api/votes/top-voters?limit=-5')
+        expect(response.status).toBe(400)
       })
     })
   })
