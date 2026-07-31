@@ -201,4 +201,46 @@ describe('linking a discord account to a dao address', () => {
       expect(thrown.message).toBe('That Discord account is already linked to another address')
     })
   })
+
+  describe('when deleting the verification message fails after linking', () => {
+    let result: { valid: boolean }
+
+    beforeEach(async () => {
+      jest.spyOn(DiscordService, 'deleteVerificationMessage').mockRejectedValueOnce(new Error('Discord unavailable'))
+      stubChannelWith([
+        { id: 'v', content: posted, createdTimestamp: now, author: { id: SIGNER_DISCORD_ID, bot: false } },
+      ])
+      result = await UserService.validateDiscordUser(signer.address)
+    })
+
+    it('should still report the persisted link as valid', () => {
+      expect(result.valid).toBe(true)
+    })
+
+    it('should keep the persisted Discord connection', () => {
+      expect(createDiscordConnection).toHaveBeenCalledWith(signer.address, SIGNER_DISCORD_ID)
+    })
+  })
+
+  describe('when enqueueing the confirmation message fails after linking', () => {
+    let result: { valid: boolean }
+
+    beforeEach(async () => {
+      jest.spyOn(DiscordService, 'sendDirectMessage').mockImplementationOnce(() => {
+        throw new Error('Discord unavailable')
+      })
+      stubChannelWith([
+        { id: 'v', content: posted, createdTimestamp: now, author: { id: SIGNER_DISCORD_ID, bot: false } },
+      ])
+      result = await UserService.validateDiscordUser(signer.address)
+    })
+
+    it('should still report the persisted link as valid', () => {
+      expect(result.valid).toBe(true)
+    })
+
+    it('should keep the persisted Discord connection', () => {
+      expect(createDiscordConnection).toHaveBeenCalledWith(signer.address, SIGNER_DISCORD_ID)
+    })
+  })
 })

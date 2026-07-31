@@ -181,6 +181,46 @@ describe('the user routes', () => {
         })
       })
     })
+
+    describe('when the forum verification history cannot be read completely', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        validateForumUser.mockRejectedValueOnce(
+          new RequestError('Could not read the complete forum verification history; please retry', 503, {
+            code: 'validation_source_incomplete',
+          })
+        )
+        response = await supertest(app).post('/api/user/validate/forum').set('x-test-auth', CALLER)
+      })
+
+      it('should respond with a retryable service-unavailable status', () => {
+        expect(response.status).toBe(503)
+      })
+
+      it('should identify the incomplete validation source', () => {
+        expect(response.body.code).toBe('validation_source_incomplete')
+      })
+    })
+
+    describe('when the forum validation window has expired', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        validateForumUser.mockRejectedValueOnce(
+          new RequestError('Validation timed out', 408, { code: 'validation_timeout' })
+        )
+        response = await supertest(app).post('/api/user/validate/forum').set('x-test-auth', CALLER)
+      })
+
+      it('should respond with a request-timeout status', () => {
+        expect(response.status).toBe(408)
+      })
+
+      it('should identify the expired validation window', () => {
+        expect(response.body.code).toBe('validation_timeout')
+      })
+    })
   })
 
   describe('POST /api/user/validate/discord', () => {
@@ -225,6 +265,25 @@ describe('the user routes', () => {
           error: 'Multiple Discord accounts posted the same valid verification message',
           code: 'ambiguous_validation',
         })
+      })
+    })
+
+    describe('when the Discord validation window has expired', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        validateDiscordUser.mockRejectedValueOnce(
+          new RequestError('Validation timed out', 408, { code: 'validation_timeout' })
+        )
+        response = await supertest(app).post('/api/user/validate/discord').set('x-test-auth', CALLER)
+      })
+
+      it('should respond with a request-timeout status', () => {
+        expect(response.status).toBe(408)
+      })
+
+      it('should identify the expired validation window', () => {
+        expect(response.body.code).toBe('validation_timeout')
       })
     })
   })

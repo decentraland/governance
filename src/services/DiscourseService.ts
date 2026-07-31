@@ -23,6 +23,17 @@ import { ErrorService } from './ErrorService'
 import { ProposalInCreation } from './ProposalService'
 import { SnapshotService } from './SnapshotService'
 
+type GetPostCommentsOptions = {
+  requireComplete?: boolean
+}
+
+export class IncompleteDiscourseCommentsError extends Error {
+  constructor(discourseTopicId: number) {
+    super(`Could not fetch every comment for Discourse topic ${discourseTopicId}`)
+    this.name = 'IncompleteDiscourseCommentsError'
+  }
+}
+
 export class DiscourseService {
   private static async createPostWithRetry(post: DiscourseNewPost, retries = 3): Promise<DiscoursePost> {
     try {
@@ -141,10 +152,17 @@ export class DiscourseService {
     })
   }
 
-  static async getPostComments(discourseTopicId: number) {
+  static async getPostComments(discourseTopicId: number, { requireComplete = false }: GetPostCommentsOptions = {}) {
     const DISCOURSE_BATCH_SIZE = 20
     const topic = await Discourse.get().getTopic(discourseTopicId)
     let allComments: DiscoursePostInTopic[] = topic.post_stream.posts //first 20
+    if (requireComplete) {
+      const returnedPostIds = new Set(allComments.map((comment) => comment.id))
+      const initialPostIds = topic.post_stream.stream.slice(0, DISCOURSE_BATCH_SIZE)
+      if (initialPostIds.some((postId) => !returnedPostIds.has(postId))) {
+        throw new IncompleteDiscourseCommentsError(discourseTopicId)
+      }
+    }
     let skip = DISCOURSE_BATCH_SIZE
     if (topic.post_stream.stream.length > DISCOURSE_BATCH_SIZE) {
       let hasNext = true
@@ -154,6 +172,12 @@ export class DiscourseService {
           if (postIds.length === 0) break
           const newPostsResponse = await Discourse.get().getPosts(discourseTopicId, postIds)
           const newComments = newPostsResponse.post_stream.posts
+          if (requireComplete) {
+            const returnedPostIds = new Set(newComments.map((comment) => comment.id))
+            if (postIds.some((postId) => !returnedPostIds.has(postId))) {
+              throw new IncompleteDiscourseCommentsError(discourseTopicId)
+            }
+          }
           allComments = [...allComments, ...newComments]
           if (newComments.length < DISCOURSE_BATCH_SIZE) {
             hasNext = false
@@ -162,7 +186,13 @@ export class DiscourseService {
           }
         }
       } catch (error) {
-        console.error(`Error while fetching discourse posts in batches: `, error)
+        logger.error('Error while fetching Discourse posts in batches', {
+          discourseTopicId,
+          error: `${error}`,
+        })
+        if (requireComplete) {
+          throw new IncompleteDiscourseCommentsError(discourseTopicId)
+        }
       }
     }
 

@@ -1,3 +1,4 @@
+import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import { Wallet } from 'ethers'
 
 import { ProposalComment } from '../entities/Proposal/types'
@@ -15,7 +16,7 @@ jest.mock('../entities/User/model', () => ({
 // Required after the mock so the service picks up the stubbed model.
 /* eslint-disable @typescript-eslint/no-var-requires */
 const UserModel = require('../entities/User/model').default
-const { DiscourseService } = require('./DiscourseService')
+const { DiscourseService, IncompleteDiscourseCommentsError } = require('./DiscourseService')
 const { UserService } = require('./user')
 /* eslint-enable @typescript-eslint/no-var-requires */
 
@@ -33,7 +34,7 @@ function comment(userForumId: number | undefined, cooked: string, createdAt: Dat
 }
 
 function stubComments(comments: ProposalComment[]) {
-  jest
+  return jest
     .spyOn(DiscourseService, 'getPostComments')
     .mockResolvedValue({ totalComments: comments.length, comments } as never)
 }
@@ -69,10 +70,15 @@ describe('linking a forum account to a dao address', () => {
 
   describe('when only the genuine signer posted their verification comment', () => {
     let result: { valid: boolean }
+    let getPostComments: jest.SpyInstance
 
     beforeEach(async () => {
-      stubComments([comment(SIGNER_FORUM_ID, posted, now)])
+      getPostComments = stubComments([comment(SIGNER_FORUM_ID, posted, now)])
       result = await UserService.validateForumUser(signer.address)
+    })
+
+    it('should require a complete forum comment set', () => {
+      expect(getPostComments).toHaveBeenCalledWith(expect.any(Number), { requireComplete: true })
     })
 
     it('should report the validation as valid', () => {
@@ -100,6 +106,31 @@ describe('linking a forum account to a dao address', () => {
     })
 
     it('should not link any forum account', () => {
+      expect(createForumConnection).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('when the complete forum history cannot be fetched', () => {
+    let thrown: RequestError
+
+    beforeEach(async () => {
+      jest
+        .spyOn(DiscourseService, 'getPostComments')
+        .mockRejectedValue(new IncompleteDiscourseCommentsError(123) as never)
+      thrown = (await UserService.validateForumUser(signer.address).catch(
+        (error: RequestError) => error
+      )) as RequestError
+    })
+
+    it('should expose a retryable service-unavailable status', () => {
+      expect(thrown.statusCode).toBe(503)
+    })
+
+    it('should identify the incomplete validation source', () => {
+      expect(thrown.code).toBe('validation_source_incomplete')
+    })
+
+    it('should not link a forum account', () => {
       expect(createForumConnection).not.toHaveBeenCalled()
     })
   })

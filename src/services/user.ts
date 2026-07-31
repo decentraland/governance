@@ -7,12 +7,17 @@ import { isSameAddress } from '../entities/Snapshot/utils'
 import { GATSBY_DISCOURSE_CONNECT_THREAD, MESSAGE_TIMEOUT_TIME } from '../entities/User/constants'
 import UserModel from '../entities/User/model'
 import { AccountType, UserAttributes, UserProfile, ValidationComment, ValidationMessage } from '../entities/User/types'
-import { AmbiguousValidationError, formatValidationMessage, getValidationComment } from '../entities/User/utils'
+import {
+  AmbiguousValidationError,
+  ValidationTimeoutError,
+  formatValidationMessage,
+  getValidationComment,
+} from '../entities/User/utils'
 import { ErrorCategory } from '../utils/errorCategories'
 import { isProdEnv } from '../utils/governanceEnvs'
 import { getCaipAddress, getPushNotificationsEnv } from '../utils/notifications'
 
-import { DiscourseService } from './DiscourseService'
+import { DiscourseService, IncompleteDiscourseCommentsError } from './DiscourseService'
 import { ErrorService } from './ErrorService'
 import { DiscordService } from './discord'
 
@@ -58,7 +63,9 @@ export class UserService {
 
   static async validateForumUser(user: string) {
     try {
-      const comments = await DiscourseService.getPostComments(Number(GATSBY_DISCOURSE_CONNECT_THREAD))
+      const comments = await DiscourseService.getPostComments(Number(GATSBY_DISCOURSE_CONNECT_THREAD), {
+        requireComplete: true,
+      })
       const formattedComments = comments.comments.map<ValidationComment>((comment) => ({
         id: '',
         // Left empty rather than stringified when absent, so 'undefined' does not become an author
@@ -73,30 +80,14 @@ export class UserService {
         valid: !!validationComment,
       }
     } catch (error) {
-      // Preserve a deliberate client-facing failure instead of remapping it to a 500.
-      if (error instanceof RequestError) {
-        throw error
-      }
-      // Someone posted a valid copy of another account's verification message. Nothing was linked,
-      // but it blocks the genuine attempt, so it should be visible rather than a generic failure.
-      if (error instanceof AmbiguousValidationError) {
-        ErrorService.report('Multiple valid verification messages matched one address', {
-          address: user,
-          account: AccountType.Forum,
-          category: ErrorCategory.Discourse,
-        })
-        throw new RequestError('Multiple forum accounts posted the same valid verification message', 409, {
-          code: 'ambiguous_validation',
-        })
-      }
-      throw new Error("Couldn't validate the user. " + error)
+      this.handleValidationError(error, user, AccountType.Forum)
     }
   }
 
   static async checkForumValidationMessage(user: string, validationComments: ValidationComment[]) {
     const messageProperties = this.VALIDATIONS_IN_PROGRESS[this.validationKey(user, AccountType.Forum)]
     if (!messageProperties) {
-      throw new Error('Validation timed out')
+      throw new ValidationTimeoutError()
     }
 
     const { address, timestamp } = messageProperties
@@ -112,6 +103,7 @@ export class UserService {
   }
 
   static async validateDiscordUser(user: string) {
+    let validationComment: ValidationComment | undefined
     try {
       const messages = await DiscordService.getProfileVerificationMessages()
       const formattedMessages = messages.map<ValidationComment>((message) => ({
@@ -121,44 +113,88 @@ export class UserService {
         timestamp: message.createdTimestamp,
       }))
 
-      const validationComment = await this.checkDiscordValidationMessage(user, formattedMessages)
-      if (validationComment) {
-        await DiscordService.deleteVerificationMessage(validationComment.id)
-        DiscordService.sendDirectMessage(validationComment.userId, {
-          title: 'Profile verification completed ✅',
-          action: `You have been verified as ${user}\n\nFrom now on you will receive important notifications for you through this channel.`,
-          fields: [],
-        })
-      }
-
-      return {
-        valid: !!validationComment,
-      }
+      validationComment = await this.checkDiscordValidationMessage(user, formattedMessages)
     } catch (error) {
-      // Preserve a deliberate client-facing failure instead of remapping it to a 500.
-      if (error instanceof RequestError) {
-        throw error
-      }
-      // Someone posted a valid copy of another account's verification message. Nothing was linked,
-      // but it blocks the genuine attempt, so it should be visible rather than a generic failure.
-      if (error instanceof AmbiguousValidationError) {
-        ErrorService.report('Multiple valid verification messages matched one address', {
-          address: user,
-          account: AccountType.Discord,
-          category: ErrorCategory.Discord,
-        })
-        throw new RequestError('Multiple Discord accounts posted the same valid verification message', 409, {
-          code: 'ambiguous_validation',
-        })
-      }
-      throw new Error("Couldn't validate the user. " + error)
+      this.handleValidationError(error, user, AccountType.Discord)
     }
+
+    if (validationComment) {
+      await this.runDiscordPostLinkActions(user, validationComment)
+    }
+
+    return {
+      valid: !!validationComment,
+    }
+  }
+
+  private static async runDiscordPostLinkActions(user: string, validationComment: ValidationComment): Promise<void> {
+    try {
+      await DiscordService.deleteVerificationMessage(validationComment.id)
+    } catch (error) {
+      ErrorService.report('Could not delete a completed Discord verification message', {
+        address: user,
+        messageId: validationComment.id,
+        error: `${error}`,
+        category: ErrorCategory.Discord,
+      })
+    }
+
+    try {
+      DiscordService.sendDirectMessage(validationComment.userId, {
+        title: 'Profile verification completed ✅',
+        action: `You have been verified as ${user}\n\nFrom now on you will receive important notifications for you through this channel.`,
+        fields: [],
+      })
+    } catch (error) {
+      ErrorService.report('Could not enqueue the Discord verification confirmation', {
+        address: user,
+        discordUserId: validationComment.userId,
+        error: `${error}`,
+        category: ErrorCategory.Discord,
+      })
+    }
+  }
+
+  private static handleValidationError(
+    error: unknown,
+    user: string,
+    account: AccountType.Forum | AccountType.Discord
+  ): never {
+    // Preserve deliberate client-facing failures instead of remapping them to a 500.
+    if (error instanceof RequestError) {
+      throw error
+    }
+
+    if (error instanceof ValidationTimeoutError) {
+      throw new RequestError(error.message, 408, { code: 'validation_timeout' })
+    }
+
+    if (error instanceof IncompleteDiscourseCommentsError) {
+      throw new RequestError('Could not read the complete forum verification history; please retry', 503, {
+        code: 'validation_source_incomplete',
+      })
+    }
+
+    // A valid copy posted by another account blocks the genuine attempt without linking anything.
+    if (error instanceof AmbiguousValidationError) {
+      ErrorService.report('Multiple valid verification messages matched one address', {
+        address: user,
+        account,
+        category: account === AccountType.Forum ? ErrorCategory.Discourse : ErrorCategory.Discord,
+      })
+      const accountName = account === AccountType.Forum ? 'forum' : 'Discord'
+      throw new RequestError(`Multiple ${accountName} accounts posted the same valid verification message`, 409, {
+        code: 'ambiguous_validation',
+      })
+    }
+
+    throw new Error("Couldn't validate the user. " + error)
   }
 
   static async checkDiscordValidationMessage(user: string, validationComments: ValidationComment[]) {
     const messageProperties = this.VALIDATIONS_IN_PROGRESS[this.validationKey(user, AccountType.Discord)]
     if (!messageProperties) {
-      throw new Error('Validation timed out')
+      throw new ValidationTimeoutError()
     }
     const { address, timestamp } = messageProperties
 

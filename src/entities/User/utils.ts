@@ -76,6 +76,13 @@ export class AmbiguousValidationError extends Error {
   }
 }
 
+export class ValidationTimeoutError extends Error {
+  constructor() {
+    super('Validation timed out')
+    this.name = 'ValidationTimeoutError'
+  }
+}
+
 export function getValidationComment(
   comments: ValidationComment[],
   address: string,
