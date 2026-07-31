@@ -154,7 +154,18 @@ export class DiscourseService {
 
   static async getPostComments(discourseTopicId: number, { requireComplete = false }: GetPostCommentsOptions = {}) {
     const DISCOURSE_BATCH_SIZE = 20
-    const topic = await Discourse.get().getTopic(discourseTopicId)
+    const topic = await Discourse.get()
+      .getTopic(discourseTopicId)
+      .catch((error) => {
+        logger.error('Error while fetching the initial Discourse topic', {
+          discourseTopicId,
+          error: `${error}`,
+        })
+        if (requireComplete) {
+          throw new IncompleteDiscourseCommentsError(discourseTopicId)
+        }
+        throw error
+      })
     let allComments: DiscoursePostInTopic[] = topic.post_stream.posts //first 20
     if (requireComplete) {
       const returnedPostIds = new Set(allComments.map((comment) => comment.id))

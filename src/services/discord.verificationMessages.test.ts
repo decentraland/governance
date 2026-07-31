@@ -14,7 +14,7 @@ process.env.DISCORD_PROFILE_VERIFICATION_CHANNEL_ID = 'verification-channel'
 
 // Imported after the mock so the service picks up the enabled flag.
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { DiscordService } = require('./discord')
+const { DiscordService, IncompleteDiscordVerificationReadError } = require('./discord')
 
 type FakeMessage = {
   id: string
@@ -235,57 +235,57 @@ describe('DiscordService.getProfileVerificationMessages', () => {
   // A partial read is taken from the newest end, so it can hold a copy while hiding the original.
   describe('when the window holds more messages than the fetch budget covers', () => {
     let fetch: jest.Mock
-    let returned: FakeMessage[]
+    let thrown: Error
 
     beforeEach(async () => {
       const messages = Array.from({ length: 2000 }, (_, index) => createMessage(`m-${index}`, now - 1000))
       fetch = createFetchMock(messages)
       stubChannel(fetch)
-      returned = await DiscordService.getProfileVerificationMessages()
+      thrown = (await DiscordService.getProfileVerificationMessages().catch((error: Error) => error)) as Error
     })
 
     it('should stop at the page cap instead of paging without bound', () => {
       expect(fetch).toHaveBeenCalledTimes(5)
     })
 
-    it('should return nothing rather than a subset that could hide the original', () => {
-      expect(returned).toEqual([])
+    it('should reject the incomplete read rather than return a subset', () => {
+      expect(thrown).toBeInstanceOf(IncompleteDiscordVerificationReadError)
     })
 
-    it('should not spend the page budget again on the next poll inside the cache window', async () => {
+    it('should cache the incomplete result inside the cache window', async () => {
       fetch.mockClear()
-      await DiscordService.getProfileVerificationMessages()
+      await DiscordService.getProfileVerificationMessages().catch(() => undefined)
       expect(fetch).not.toHaveBeenCalled()
     })
   })
 
   describe('when the channel cannot be resolved', () => {
-    let returned: FakeMessage[]
+    let thrown: Error
 
     beforeEach(async () => {
       ;(DiscordService as unknown as { client: unknown }).client = {
         channels: { fetch: jest.fn().mockResolvedValue(null) },
       }
-      returned = await DiscordService.getProfileVerificationMessages()
+      thrown = (await DiscordService.getProfileVerificationMessages().catch((error: Error) => error)) as Error
     })
 
-    it('should return nothing rather than throw', () => {
-      expect(returned).toEqual([])
+    it('should reject with an incomplete-source error', () => {
+      expect(thrown).toBeInstanceOf(IncompleteDiscordVerificationReadError)
     })
   })
 
   describe('when the configured channel is not a text channel', () => {
-    let returned: FakeMessage[]
+    let thrown: Error
 
     beforeEach(async () => {
       ;(DiscordService as unknown as { client: unknown }).client = {
         channels: { fetch: jest.fn().mockResolvedValue({ type: Discord.ChannelType.GuildVoice, messages: {} }) },
       }
-      returned = await DiscordService.getProfileVerificationMessages()
+      thrown = (await DiscordService.getProfileVerificationMessages().catch((error: Error) => error)) as Error
     })
 
-    it('should return nothing rather than read it', () => {
-      expect(returned).toEqual([])
+    it('should reject with an incomplete-source error', () => {
+      expect(thrown).toBeInstanceOf(IncompleteDiscordVerificationReadError)
     })
   })
 
@@ -346,7 +346,7 @@ describe('DiscordService.getProfileVerificationMessages', () => {
     beforeEach(async () => {
       const flooded = Array.from({ length: 2000 }, (_, index) => createMessage(`m-${index}`, now - 1000))
       stubChannel(createFetchMock(flooded))
-      await DiscordService.getProfileVerificationMessages()
+      await DiscordService.getProfileVerificationMessages().catch(() => undefined)
 
       clearVerificationCache()
       stubChannel(createFetchMock([createMessage('original', now - 1000), createMessage('old', now - 400000)]))

@@ -73,9 +73,20 @@ function getChoices(choices: string[]): Field[] {
   }))
 }
 
+export class IncompleteDiscordVerificationReadError extends Error {
+  constructor() {
+    super('Could not read the complete Discord verification message window')
+    this.name = 'IncompleteDiscordVerificationReadError'
+  }
+}
+
 export class DiscordService {
   private static client: Client
-  private static verificationMessagesCache?: { messages: Discord.Message<true>[]; expiresAt: number }
+  private static verificationMessagesCache?: {
+    messages: Discord.Message<true>[]
+    expiresAt: number
+    complete: boolean
+  }
   private static verificationMessagesRequest?: Promise<Discord.Message<true>[]>
 
   static init() {
@@ -368,10 +379,13 @@ export class DiscordService {
 
   static async getProfileVerificationMessages(): Promise<Discord.Message<true>[]> {
     if (!DISCORD_SERVICE_ENABLED) {
-      return []
+      throw new IncompleteDiscordVerificationReadError()
     }
 
     if (this.verificationMessagesCache && this.verificationMessagesCache.expiresAt > Date.now()) {
+      if (!this.verificationMessagesCache.complete) {
+        throw new IncompleteDiscordVerificationReadError()
+      }
       return this.verificationMessagesCache.messages
     }
 
@@ -429,17 +443,20 @@ export class DiscordService {
 
       // Out of pages with the window still not covered. A partial read is taken from the newest
       // end, so it can hold a copy of a verification message while hiding the older original it
-      // was copied from — exactly what the ambiguity check needs to see. Answer with nothing
-      // rather than with a subset. Callers keep polling, so a link still succeeds once the
-      // channel settles. The refusal is cached like any other answer, otherwise a channel kept
-      // above the budget would make every poll spend the whole page budget again.
+      // was copied from — exactly what the ambiguity check needs to see. Surface a retryable
+      // incomplete-source failure rather than returning a subset. The refusal is cached so a
+      // channel kept above the budget does not make every poll spend the whole page budget again.
       if (!readWholeWindow) {
         this.reportError(
           'Verification channel window did not fit the fetch budget',
           new Error(`more than ${VERIFICATION_FETCH_PAGE_SIZE * VERIFICATION_FETCH_MAX_PAGES} messages in the window`)
         )
-        this.verificationMessagesCache = { messages: [], expiresAt: Date.now() + VERIFICATION_FETCH_CACHE_TTL }
-        return []
+        this.verificationMessagesCache = {
+          messages: [],
+          expiresAt: Date.now() + VERIFICATION_FETCH_CACHE_TTL,
+          complete: false,
+        }
+        throw new IncompleteDiscordVerificationReadError()
       }
 
       const relevant = messages.filter(
@@ -448,12 +465,21 @@ export class DiscordService {
       this.verificationMessagesCache = {
         messages: relevant,
         expiresAt: Date.now() + VERIFICATION_FETCH_CACHE_TTL,
+        complete: true,
       }
       return relevant
     } catch (error) {
+      if (error instanceof IncompleteDiscordVerificationReadError) {
+        throw error
+      }
       this.reportError('Error getting profile verification messages', error)
+      this.verificationMessagesCache = {
+        messages: [],
+        expiresAt: Date.now() + VERIFICATION_FETCH_CACHE_TTL,
+        complete: false,
+      }
+      throw new IncompleteDiscordVerificationReadError()
     }
-    return []
   }
 
   static async deleteVerificationMessage(messageId: string) {

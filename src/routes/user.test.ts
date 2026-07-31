@@ -268,6 +268,27 @@ describe('the user routes', () => {
       })
     })
 
+    describe('when the Discord verification history cannot be read completely', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        validateDiscordUser.mockRejectedValueOnce(
+          new RequestError('Could not read the complete Discord verification history; please retry', 503, {
+            code: 'validation_source_incomplete',
+          })
+        )
+        response = await supertest(app).post('/api/user/validate/discord').set('x-test-auth', CALLER)
+      })
+
+      it('should respond with a retryable service-unavailable status', () => {
+        expect(response.status).toBe(503)
+      })
+
+      it('should identify the incomplete validation source', () => {
+        expect(response.body.code).toBe('validation_source_incomplete')
+      })
+    })
+
     describe('when the Discord validation window has expired', () => {
       let response: supertest.Response
 

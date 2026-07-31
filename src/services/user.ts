@@ -19,7 +19,7 @@ import { getCaipAddress, getPushNotificationsEnv } from '../utils/notifications'
 
 import { DiscourseService, IncompleteDiscourseCommentsError } from './DiscourseService'
 import { ErrorService } from './ErrorService'
-import { DiscordService } from './discord'
+import { DiscordService, IncompleteDiscordVerificationReadError } from './discord'
 
 import PushAPI = require('@pushprotocol/restapi')
 
@@ -169,8 +169,9 @@ export class UserService {
       throw new RequestError(error.message, 408, { code: 'validation_timeout' })
     }
 
-    if (error instanceof IncompleteDiscourseCommentsError) {
-      throw new RequestError('Could not read the complete forum verification history; please retry', 503, {
+    if (error instanceof IncompleteDiscourseCommentsError || error instanceof IncompleteDiscordVerificationReadError) {
+      const source = account === AccountType.Forum ? 'forum' : 'Discord'
+      throw new RequestError(`Could not read the complete ${source} verification history; please retry`, 503, {
         code: 'validation_source_incomplete',
       })
     }
@@ -188,7 +189,13 @@ export class UserService {
       })
     }
 
-    throw new Error("Couldn't validate the user. " + error)
+    ErrorService.report('Unexpected profile validation failure', {
+      address: user,
+      account,
+      error: `${error}`,
+      category: account === AccountType.Forum ? ErrorCategory.Discourse : ErrorCategory.Discord,
+    })
+    throw new RequestError("Couldn't validate the user", RequestError.InternalServerError)
   }
 
   static async checkDiscordValidationMessage(user: string, validationComments: ValidationComment[]) {

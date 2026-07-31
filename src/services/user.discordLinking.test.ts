@@ -1,3 +1,4 @@
+import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import { Collection } from 'discord.js'
 import { Wallet } from 'ethers'
 
@@ -22,7 +23,8 @@ process.env.DISCORD_PROFILE_VERIFICATION_CHANNEL_ID = 'verification-channel'
 // Required after the mocks so both pick up the stubbed module graph.
 /* eslint-disable @typescript-eslint/no-var-requires */
 const UserModel = require('../entities/User/model').default
-const { DiscordService } = require('./discord')
+const { DiscordService, IncompleteDiscordVerificationReadError } = require('./discord')
+const { ErrorService } = require('./ErrorService')
 const { UserService } = require('./user')
 /* eslint-enable @typescript-eslint/no-var-requires */
 
@@ -199,6 +201,57 @@ describe('linking a discord account to a dao address', () => {
 
     it('should explain the conflict rather than surface the driver error', () => {
       expect(thrown.message).toBe('That Discord account is already linked to another address')
+    })
+  })
+
+  describe('when the Discord verification source cannot be read completely', () => {
+    let thrown: RequestError
+
+    beforeEach(async () => {
+      jest
+        .spyOn(DiscordService, 'getProfileVerificationMessages')
+        .mockRejectedValueOnce(new IncompleteDiscordVerificationReadError())
+      thrown = (await UserService.validateDiscordUser(signer.address).catch(
+        (error: RequestError) => error
+      )) as RequestError
+    })
+
+    it('should expose a retryable service-unavailable status', () => {
+      expect(thrown.statusCode).toBe(503)
+    })
+
+    it('should identify the incomplete validation source', () => {
+      expect(thrown.code).toBe('validation_source_incomplete')
+    })
+
+    it('should not link a Discord account', () => {
+      expect(createDiscordConnection).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('when an unexpected Discord validation error occurs', () => {
+    let thrown: RequestError
+    let report: jest.SpyInstance
+
+    beforeEach(async () => {
+      report = jest.spyOn(ErrorService, 'report').mockImplementation(() => undefined)
+      jest
+        .spyOn(DiscordService, 'getProfileVerificationMessages')
+        .mockRejectedValueOnce(new Error('secret upstream detail'))
+      thrown = (await UserService.validateDiscordUser(signer.address).catch(
+        (error: RequestError) => error
+      )) as RequestError
+    })
+
+    it('should return a generic client-facing message', () => {
+      expect(thrown.message).toBe("Couldn't validate the user")
+    })
+
+    it('should report the original error for diagnosis', () => {
+      expect(report).toHaveBeenCalledWith(
+        'Unexpected profile validation failure',
+        expect.objectContaining({ error: 'Error: secret upstream detail' })
+      )
     })
   })
 

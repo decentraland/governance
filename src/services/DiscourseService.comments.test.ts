@@ -104,6 +104,38 @@ describe('DiscourseService.getPostComments', () => {
     })
   })
 
+  describe('when the initial topic request fails', () => {
+    beforeEach(() => {
+      getTopic.mockRejectedValue(new Error('Discourse unavailable'))
+    })
+
+    describe('and complete comments are required', () => {
+      let thrown: Error
+
+      beforeEach(async () => {
+        thrown = (await DiscourseService.getPostComments(TOPIC_ID, { requireComplete: true }).catch(
+          (error: Error) => error
+        )) as Error
+      })
+
+      it('should reject with an incomplete-source error', () => {
+        expect(thrown).toBeInstanceOf(IncompleteDiscourseCommentsError)
+      })
+    })
+
+    describe('and best-effort comments are allowed', () => {
+      let thrown: Error
+
+      beforeEach(async () => {
+        thrown = (await DiscourseService.getPostComments(TOPIC_ID).catch((error: Error) => error)) as Error
+      })
+
+      it('should preserve the upstream failure', () => {
+        expect(thrown.message).toBe('Discourse unavailable')
+      })
+    })
+  })
+
   describe('when the initial topic response omits a streamed post', () => {
     let thrown: Error
 
