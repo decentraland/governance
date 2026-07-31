@@ -60,31 +60,57 @@ export function filterComments(
   }
 }
 
-export function formatValidationMessage(address: string, timestamp: string, account?: AccountType) {
-  return `By signing and posting this message I'm linking my Decentraland DAO account ${address} with this ${
-    account ? `${capitalize(account)} ` : ''
-  }account\n\nDate: ${timestamp}`
+// account is required: it is part of the string that gets signed, so omitting it here silently
+// makes every signature fail to verify instead of failing where the mistake was made.
+export function formatValidationMessage(address: string, timestamp: string, account: AccountType) {
+  return `By signing and posting this message I'm linking my Decentraland DAO account ${address} with this ${capitalize(
+    account
+  )} account\n\nDate: ${timestamp}`
 }
 
-export function getValidationComment(comments: ValidationComment[], address: string, timestamp: string) {
+// Named so the caller can tell deliberate interference apart from a generic validation failure.
+export class AmbiguousValidationError extends Error {
+  constructor() {
+    super('Multiple matching verification comments found; aborting to avoid linking the wrong account')
+    this.name = 'AmbiguousValidationError'
+  }
+}
+
+export function getValidationComment(
+  comments: ValidationComment[],
+  address: string,
+  timestamp: string,
+  account: AccountType
+) {
   const timeWindow = new Date(new Date().getTime() - MESSAGE_TIMEOUT_TIME)
   // escapeRegExp so the address/timestamp are matched literally (defense-in-depth against a
   // regex-injection/ReDoS if the source of these values ever changes to accept free-form input).
   const addressRegex = new RegExp(escapeRegExp(address), 'i')
   const dateRegex = new RegExp(escapeRegExp(timestamp), 'i')
 
-  const matchingComments = comments.filter((comment) => {
-    return (
-      new Date(comment.timestamp) > timeWindow && addressRegex.test(comment.content) && dateRegex.test(comment.content)
-    )
-  })
+  // The signature is checked here rather than by the caller so that a comment carrying the address
+  // and timestamp without a valid signature is simply not a candidate: anyone can copy those two
+  // public values, and letting them count would let a stranger interfere with someone else's link.
+  const matchingComments = comments.filter(
+    (comment) =>
+      // An unattributable comment cannot be linked to anything, and must not be able to pair with
+      // another one and read as two accounts.
+      !!comment.userId &&
+      new Date(comment.timestamp) > timeWindow &&
+      addressRegex.test(comment.content) &&
+      dateRegex.test(comment.content) &&
+      validateComment(comment, address, timestamp, account)
+  )
 
-  // Fail closed on ambiguity. The address, timestamp, and signature are all public the moment the
-  // user posts their verification comment, so anyone can copy them into a second comment from a
-  // different forum/Discord account. If more than one comment matches we cannot tell which account
-  // is the genuine owner, so we refuse to link rather than risk binding the wallet to an impersonator.
-  if (matchingComments.length > 1) {
-    throw new Error('Multiple matching verification comments found; aborting to avoid linking the wrong account')
+  // Refuse rather than choose. The signature is public once posted, so another account can carry a
+  // valid copy of it, and no timestamp identifies the original: discord keeps createdTimestamp on
+  // the snowflake when a message is edited, and discourse moves updated_at for reasons other than
+  // an edit. Anything that ranks these candidates can be steered, so nothing ranks them.
+  //
+  // Counted per account, not per comment: two posts from one account resolve to the same link, so
+  // someone who posts their own verification message twice is unambiguous and should still link.
+  if (new Set(matchingComments.map((comment) => comment.userId)).size > 1) {
+    throw new AmbiguousValidationError()
   }
 
   return matchingComments[0]
@@ -94,13 +120,24 @@ export function validateComment(
   validationComment: ValidationComment,
   address: string,
   timestamp: string,
-  account?: AccountType
+  account: AccountType
 ) {
   const signatureRegex = /0x([a-fA-F\d]{130})/
-  const signature = '0x' + validationComment.content.match(signatureRegex)?.[1]
-  const recoveredAddress = recoverAddress(hashMessage(formatValidationMessage(address, timestamp, account)), signature)
+  const signature = validationComment.content.match(signatureRegex)?.[1]
+  if (!signature) {
+    return false
+  }
 
-  return isSameAddress(recoveredAddress, address)
+  try {
+    const recoveredAddress = recoverAddress(
+      hashMessage(formatValidationMessage(address, timestamp, account)),
+      `0x${signature}`
+    )
+    return isSameAddress(recoveredAddress, address)
+  } catch {
+    // A malformed signature is a rejected candidate, not a server error.
+    return false
+  }
 }
 
 // Takes unknown rather than string: the value comes from a request body or query string, so it can

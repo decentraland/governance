@@ -9,6 +9,9 @@ import { validateAccountTypes } from '../entities/User/utils'
 import { UserService } from '../services/user'
 import { validateAddress } from '../utils/validations'
 
+// Push is a subscription held elsewhere, so it is neither linked by signature nor unlinked here.
+const LINKABLE_ACCOUNTS = new Set([AccountType.Forum, AccountType.Discord])
+
 export default routes((route) => {
   const withAuth = auth()
   route.get('/user/validate', withAuth, handleAPI(getValidationMessage))
@@ -24,9 +27,17 @@ export default routes((route) => {
 
 async function getValidationMessage(req: WithAuth) {
   const address = req.auth!
-  const account = typeof req.query.account === 'string' ? req.query.account : undefined
+  // The account type is part of the message that gets signed, so a message issued without one can
+  // never validate against either flow. Refuse instead of handing back an unusable message.
+  if (Array.isArray(req.query.account)) {
+    throw new RequestError('Only one account can be validated at a time', RequestError.BadRequest)
+  }
+  const accounts = validateAccountTypes(req.query.account)
+  if (!LINKABLE_ACCOUNTS.has(accounts[0])) {
+    throw new RequestError(`Account type ${accounts[0]} cannot be validated this way`, RequestError.BadRequest)
+  }
 
-  return UserService.getValidationMessage(address, account)
+  return UserService.getValidationMessage(address, accounts[0])
 }
 
 async function validateForumUser(req: WithAuth) {
@@ -69,8 +80,6 @@ async function getProfile(req: Request): Promise<UserProfile> {
   return await UserService.getProfile(address)
 }
 
-const UNLINKABLE_ACCOUNTS = new Set([AccountType.Forum, AccountType.Discord])
-
 async function unlinkAccount(req: WithAuth) {
   const address = req.auth!
   const { accountType } = req.body
@@ -84,7 +93,7 @@ async function unlinkAccount(req: WithAuth) {
   // Not every account type can be unlinked: the query behind this only clears the forum and discord
   // columns, and push is a subscription held elsewhere. Refuse here rather than let it reach a
   // switch that has no case for it.
-  if (!UNLINKABLE_ACCOUNTS.has(accounts[0])) {
+  if (!LINKABLE_ACCOUNTS.has(accounts[0])) {
     throw new RequestError(`Account type ${accounts[0]} cannot be unlinked`, RequestError.BadRequest)
   }
   return await UserService.unlinkAccount(address, accounts[0])

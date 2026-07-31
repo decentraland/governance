@@ -6,6 +6,7 @@ import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { isGovernanceProcessProposal, proposalUrl } from '../entities/Proposal/utils'
 import { getPublicUpdates, getUpdateNumber, getUpdateUrl } from '../entities/Updates/utils'
+import { MESSAGE_TIMEOUT_TIME } from '../entities/User/constants'
 import UserModel from '../entities/User/model'
 import { getEnumDisplayName, inBackground } from '../helpers'
 import { ErrorService } from '../services/ErrorService'
@@ -25,6 +26,11 @@ const DCL_LOGO = 'https://decentraland.org/images/decentraland.png'
 const DEFAULT_AVATAR = 'https://decentraland.org/images/male.png'
 const BLANK = '\u200B'
 const PREVIEW_MAX_LENGTH = 140
+// Discord caps one fetch at 100; five pages covers any burst the channel's rate limits allow.
+const VERIFICATION_FETCH_PAGE_SIZE = 100
+const VERIFICATION_FETCH_MAX_PAGES = 5
+// Short enough that a message posted now is still picked up well inside the ten second poll.
+const VERIFICATION_FETCH_CACHE_TTL = 3000
 
 type Field = {
   name: string
@@ -69,6 +75,9 @@ function getChoices(choices: string[]): Field[] {
 
 export class DiscordService {
   private static client: Client
+  private static verificationMessagesCache?: { messages: Discord.Message<true>[]; expiresAt: number }
+  private static verificationMessagesRequest?: Promise<Discord.Message<true>[]>
+
   static init() {
     if (!DISCORD_SERVICE_ENABLED) {
       console.log('Discord service disabled')
@@ -86,17 +95,43 @@ export class DiscordService {
         Discord.GatewayIntentBits.MessageContent,
       ],
     })
-    this.client.on('unhandledRejection', (error) => {
-      if (isProdEnv()) {
-        ErrorService.report('Unhandled rejection in Discord client', {
-          error,
-          category: ErrorCategory.Discord,
-        })
-      } else {
-        console.error('Unhandled rejection in Discord client', error)
-      }
+    // 'error' is the client's own failure event. The previous listener was registered for
+    // 'unhandledRejection', which discord.js never emits, so nothing here was ever reported.
+    this.client.on('error', (error) => {
+      this.reportError('Error in Discord client', error)
     })
-    this.client.login(TOKEN)
+
+    // Never leave this rejection unhandled: nothing in the process catches it, so a rejected login
+    // (revoked or malformed token) would terminate the whole server rather than disable Discord.
+    this.client.login(TOKEN).catch((error) => {
+      this.reportError('Discord client login failed', error)
+    })
+  }
+
+  private static reportError(message: string, error: unknown) {
+    if (isProdEnv()) {
+      ErrorService.report(message, { error: `${error}`, category: ErrorCategory.Discord })
+    } else {
+      console.error(message, error)
+    }
+  }
+
+  // channels.cache is only populated for channels the gateway has already delivered, so a cold
+  // start or a reconnect turns a cache read into a silent failure. Fetch falls back to the api.
+  private static async fetchTextChannel(channelId: string) {
+    if (!channelId) {
+      throw new Error('Discord channel ID not set')
+    }
+
+    const channel = await this.client.channels.fetch(channelId)
+    if (!channel) {
+      throw new Error(`Discord channel not found: ${channelId}`)
+    }
+    if (channel.type !== Discord.ChannelType.GuildText) {
+      throw new Error(`Discord channel type is not supported: ${channel.type}`)
+    }
+
+    return channel
   }
 
   private static get channel() {
@@ -331,28 +366,92 @@ export class DiscordService {
     }
   }
 
-  static async getProfileVerificationMessages() {
-    if (DISCORD_SERVICE_ENABLED) {
-      try {
-        const channel = this.client.channels.cache.get(PROFILE_VERIFICATION_CHANNEL_ID)
-        if (!channel) {
-          throw new Error(`Discord channel not found: ${PROFILE_VERIFICATION_CHANNEL_ID}`)
-        }
-        if (channel?.type !== Discord.ChannelType.GuildText) {
-          throw new Error(`Discord channel type is not supported: ${channel?.type}`)
-        }
-        const messages = (await channel.messages.fetch({ limit: 10 })).filter((message) => !message.author.bot)
-        return messages.map((message) => message)
-      } catch (error) {
-        if (isProdEnv()) {
-          ErrorService.report('Error getting profile verification messages', {
-            error,
-            category: ErrorCategory.Discord,
-          })
-        } else {
-          console.error('Error getting profile verification message', error)
-        }
+  static async getProfileVerificationMessages(): Promise<Discord.Message<true>[]> {
+    if (!DISCORD_SERVICE_ENABLED) {
+      return []
+    }
+
+    if (this.verificationMessagesCache && this.verificationMessagesCache.expiresAt > Date.now()) {
+      return this.verificationMessagesCache.messages
+    }
+
+    if (this.verificationMessagesRequest) {
+      return await this.verificationMessagesRequest
+    }
+
+    const request = this.fetchProfileVerificationMessages()
+    this.verificationMessagesRequest = request
+    try {
+      return await request
+    } finally {
+      if (this.verificationMessagesRequest === request) {
+        this.verificationMessagesRequest = undefined
       }
+    }
+  }
+
+  private static async fetchProfileVerificationMessages(): Promise<Discord.Message<true>[]> {
+    try {
+      const channel = await this.fetchTextChannel(PROFILE_VERIFICATION_CHANNEL_ID)
+
+      // Bounded by the validation window, not by a message count: posting after a pending
+      // verification message must not push it out of view and hide it from the ambiguity check.
+      const oldestRelevantTimestamp = Date.now() - MESSAGE_TIMEOUT_TIME
+      const messages: Discord.Message<true>[] = []
+      let before: Snowflake | undefined
+
+      // Paged rather than unbounded, so a flooded channel cannot turn one poll into an unbounded
+      // number of api calls.
+      let readWholeWindow = false
+      for (let page = 0; page < VERIFICATION_FETCH_MAX_PAGES; page++) {
+        const batch = await channel.messages.fetch({ limit: VERIFICATION_FETCH_PAGE_SIZE, before })
+        if (batch.size === 0) {
+          readWholeWindow = true
+          break
+        }
+
+        messages.push(...batch.values())
+
+        // A short page means there is nothing older left to read, so the window is covered even
+        // if its oldest message is still inside it.
+        if (batch.size < VERIFICATION_FETCH_PAGE_SIZE) {
+          readWholeWindow = true
+          break
+        }
+
+        const oldestInBatch = batch.last()
+        if (!oldestInBatch || oldestInBatch.createdTimestamp <= oldestRelevantTimestamp) {
+          readWholeWindow = true
+          break
+        }
+        before = oldestInBatch.id
+      }
+
+      // Out of pages with the window still not covered. A partial read is taken from the newest
+      // end, so it can hold a copy of a verification message while hiding the older original it
+      // was copied from — exactly what the ambiguity check needs to see. Answer with nothing
+      // rather than with a subset. Callers keep polling, so a link still succeeds once the
+      // channel settles. The refusal is cached like any other answer, otherwise a channel kept
+      // above the budget would make every poll spend the whole page budget again.
+      if (!readWholeWindow) {
+        this.reportError(
+          'Verification channel window did not fit the fetch budget',
+          new Error(`more than ${VERIFICATION_FETCH_PAGE_SIZE * VERIFICATION_FETCH_MAX_PAGES} messages in the window`)
+        )
+        this.verificationMessagesCache = { messages: [], expiresAt: Date.now() + VERIFICATION_FETCH_CACHE_TTL }
+        return []
+      }
+
+      const relevant = messages.filter(
+        (message) => !message.author.bot && message.createdTimestamp > oldestRelevantTimestamp
+      )
+      this.verificationMessagesCache = {
+        messages: relevant,
+        expiresAt: Date.now() + VERIFICATION_FETCH_CACHE_TTL,
+      }
+      return relevant
+    } catch (error) {
+      this.reportError('Error getting profile verification messages', error)
     }
     return []
   }
@@ -360,23 +459,13 @@ export class DiscordService {
   static async deleteVerificationMessage(messageId: string) {
     if (DISCORD_SERVICE_ENABLED) {
       try {
-        const channel = this.client.channels.cache.get(PROFILE_VERIFICATION_CHANNEL_ID)
-        if (!channel) {
-          throw new Error(`Discord channel not found: ${PROFILE_VERIFICATION_CHANNEL_ID}`)
-        }
-        if (channel?.type !== Discord.ChannelType.GuildText) {
-          throw new Error(`Discord channel type is not supported: ${channel?.type}`)
-        }
+        const channel = await this.fetchTextChannel(PROFILE_VERIFICATION_CHANNEL_ID)
+        // Dropped before the delete, so a failed delete does not leave a window cached as if the
+        // message were still there in a state we no longer know.
+        this.verificationMessagesCache = undefined
         await channel.messages.delete(messageId)
       } catch (error) {
-        if (isProdEnv()) {
-          ErrorService.report('Error deleting profile verification message', {
-            error,
-            category: ErrorCategory.Discord,
-          })
-        } else {
-          console.error('Error deleting profile verification message', error)
-        }
+        this.reportError('Error deleting profile verification message', error)
       }
     }
   }
