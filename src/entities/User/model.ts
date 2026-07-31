@@ -76,10 +76,11 @@ export default class UserModel extends Model<UserAttributes> {
   }
 
   static async isValidated(address: string, accounts: Set<AccountType>): Promise<boolean> {
-    const columnMap: Record<AccountType, string> = {
+    // Push has no column here; it is left out so the guard below reports it rather than letting a
+    // placeholder name through into the query.
+    const columnMap: Partial<Record<AccountType, string>> = {
       [AccountType.Forum]: 'forum_id',
       [AccountType.Discord]: 'discord_id',
-      [AccountType.Push]: 'NOT_IMPLEMENTED',
     }
 
     if (accounts.size === 0) {

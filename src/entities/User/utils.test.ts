@@ -1,11 +1,13 @@
+import { Wallet } from 'ethers'
+
 import { FORUM_URL } from '../../constants'
 import { DiscoursePostInTopic, DiscourseTopic } from '../../shared/types/discourse'
 import { ProposalCommentsInDiscourse } from '../Proposal/types'
 
 import { ONE_USER_POST, SEVERAL_USERS_POST, createWithPosts } from './__data__/discourse_samples'
 
-import { ValidationComment } from './types'
-import { DISCOURSE_USER, filterComments, getValidationComment } from './utils'
+import { AccountType, ValidationComment } from './types'
+import { DISCOURSE_USER, filterComments, formatValidationMessage, getValidationComment } from './utils'
 
 jest.mock('../../constants', () => ({
   FORUM_URL: 'https://forum.test.url',
@@ -85,19 +87,27 @@ describe('filterUserComments', () => {
 })
 
 describe('getValidationComment', () => {
-  const address = '0xf1e1c1d1a1b1c1d1e1f1a1b1c1d1e1f1a1b1c1d1'
   const timestamp = '2026-07-23T12:00:00.000Z'
+  let signer: Wallet
+  let address: string
+  let signedContent: string
 
-  describe('when exactly one recent comment contains the address and timestamp', () => {
-    let comments: ValidationComment[]
+  beforeEach(async () => {
+    signer = Wallet.createRandom()
+    address = signer.address
+    const message = formatValidationMessage(address, timestamp, AccountType.Discord)
+    signedContent = `${message}\n\n${await signer.signMessage(message)}`
+  })
+
+  describe('when exactly one recent comment carries a signature for the address', () => {
     let result: ValidationComment | undefined
 
     beforeEach(() => {
-      comments = [
+      const comments: ValidationComment[] = [
         { id: '1', userId: '100', content: 'unrelated chatter', timestamp: Date.now() },
-        { id: '2', userId: '200', content: `Linking ${address} Date: ${timestamp} 0xsignature`, timestamp: Date.now() },
+        { id: '2', userId: '200', content: signedContent, timestamp: Date.now() },
       ]
-      result = getValidationComment(comments, address, timestamp)
+      result = getValidationComment(comments, address, timestamp, AccountType.Discord)
     })
 
     it('should return the matching comment', () => {
@@ -106,12 +116,13 @@ describe('getValidationComment', () => {
   })
 
   describe('when no comment contains both the address and the timestamp', () => {
-    let comments: ValidationComment[]
     let result: ValidationComment | undefined
 
     beforeEach(() => {
-      comments = [{ id: '1', userId: '100', content: `Linking ${address} Date: 1999-01-01`, timestamp: Date.now() }]
-      result = getValidationComment(comments, address, timestamp)
+      const comments: ValidationComment[] = [
+        { id: '1', userId: '100', content: `Linking ${address} Date: 1999-01-01`, timestamp: Date.now() },
+      ]
+      result = getValidationComment(comments, address, timestamp, AccountType.Discord)
     })
 
     it('should return undefined', () => {
@@ -120,12 +131,11 @@ describe('getValidationComment', () => {
   })
 
   describe('when the only matching comment is older than the validation window', () => {
-    let comments: ValidationComment[]
     let result: ValidationComment | undefined
 
     beforeEach(() => {
-      comments = [{ id: '1', userId: '100', content: `Linking ${address} Date: ${timestamp}`, timestamp: 0 }]
-      result = getValidationComment(comments, address, timestamp)
+      const comments: ValidationComment[] = [{ id: '1', userId: '100', content: signedContent, timestamp: 0 }]
+      result = getValidationComment(comments, address, timestamp, AccountType.Discord)
     })
 
     it('should ignore it and return undefined', () => {
@@ -133,19 +143,145 @@ describe('getValidationComment', () => {
     })
   })
 
-  describe('when a second comment copies the same address and timestamp from another account', () => {
+  describe('when the comment carries the address and timestamp but no valid signature', () => {
+    let result: ValidationComment | undefined
+
+    beforeEach(() => {
+      const comments: ValidationComment[] = [
+        {
+          id: '1',
+          userId: '100',
+          content: `Linking ${address} Date: ${timestamp} 0xnotasignature`,
+          timestamp: Date.now(),
+        },
+      ]
+      result = getValidationComment(comments, address, timestamp, AccountType.Discord)
+    })
+
+    it('should not treat it as a candidate', () => {
+      expect(result).toBeUndefined()
+    })
+  })
+
+  // Well formed enough to be extracted, but recovery throws on it. That must be a rejected
+  // candidate rather than an error escaping to the caller as a 500.
+  describe('when the extracted signature cannot be recovered at all', () => {
+    let result: ValidationComment | undefined
+
+    beforeEach(() => {
+      const unrecoverable = `0x${'aa'.repeat(64)}05`
+      const comments: ValidationComment[] = [
+        {
+          id: '1',
+          userId: '100',
+          content: `Linking ${address} Date: ${timestamp} ${unrecoverable}`,
+          timestamp: Date.now(),
+        },
+      ]
+      result = getValidationComment(comments, address, timestamp, AccountType.Discord)
+    })
+
+    it('should return undefined instead of throwing', () => {
+      expect(result).toBeUndefined()
+    })
+  })
+
+  describe('when the signature belongs to a different address', () => {
+    let result: ValidationComment | undefined
+
+    beforeEach(async () => {
+      const other = Wallet.createRandom()
+      const message = formatValidationMessage(address, timestamp, AccountType.Discord)
+      const content = `${message}\n\n${await other.signMessage(message)}`
+      const comments: ValidationComment[] = [{ id: '1', userId: '100', content, timestamp: Date.now() }]
+      result = getValidationComment(comments, address, timestamp, AccountType.Discord)
+    })
+
+    it('should return undefined', () => {
+      expect(result).toBeUndefined()
+    })
+  })
+
+  describe('when another account reposts the signed message verbatim', () => {
     let action: () => ValidationComment | undefined
 
     beforeEach(() => {
       const comments: ValidationComment[] = [
-        { id: '1', userId: '200', content: `Linking ${address} Date: ${timestamp} 0xsignature`, timestamp: Date.now() },
-        { id: '2', userId: '999', content: `Linking ${address} Date: ${timestamp} 0xsignature`, timestamp: Date.now() },
+        { id: '2', userId: '999', content: signedContent, timestamp: Date.now() + 1200 },
+        { id: '1', userId: '200', content: signedContent, timestamp: Date.now() },
       ]
-      action = () => getValidationComment(comments, address, timestamp)
+      action = () => getValidationComment(comments, address, timestamp, AccountType.Discord)
     })
 
     it('should throw instead of linking an ambiguous account', () => {
       expect(action).toThrow('Multiple matching verification comments found')
+    })
+  })
+
+  describe('when the signer posts their own verification message twice', () => {
+    let result: ValidationComment | undefined
+
+    beforeEach(() => {
+      const comments: ValidationComment[] = [
+        { id: '2', userId: '200', content: signedContent, timestamp: Date.now() + 500 },
+        { id: '1', userId: '200', content: signedContent, timestamp: Date.now() },
+      ]
+      result = getValidationComment(comments, address, timestamp, AccountType.Discord)
+    })
+
+    it('should link that account rather than treat one account as ambiguous', () => {
+      expect(result?.userId).toBe('200')
+    })
+  })
+
+  describe('when matching comments carry no author id', () => {
+    let action: () => ValidationComment | undefined
+
+    beforeEach(() => {
+      const comments: ValidationComment[] = [
+        { id: '1', userId: '', content: signedContent, timestamp: Date.now() },
+        { id: '2', userId: '', content: signedContent, timestamp: Date.now() + 500 },
+      ]
+      action = () => getValidationComment(comments, address, timestamp, AccountType.Discord)
+    })
+
+    it('should ignore them rather than link an unattributable comment', () => {
+      expect(action()).toBeUndefined()
+    })
+  })
+
+  // A copy can be made to look older than the original, so age must not decide the winner.
+  describe('and the copy carries an earlier timestamp than the genuine message', () => {
+    let action: () => ValidationComment | undefined
+
+    beforeEach(() => {
+      const comments: ValidationComment[] = [
+        { id: '1', userId: '200', content: signedContent, timestamp: Date.now() },
+        { id: '2', userId: '999', content: signedContent, timestamp: Date.now() - 3000 },
+      ]
+      action = () => getValidationComment(comments, address, timestamp, AccountType.Discord)
+    })
+
+    it('should still refuse rather than prefer the older one', () => {
+      expect(action).toThrow('Multiple matching verification comments found')
+    })
+  })
+
+  // Only signature-valid comments are candidates, so the address and timestamp alone — both public
+  // the moment the genuine message is posted — cannot be used to make the match ambiguous.
+  describe('and an unsigned copy is posted to interfere with the link', () => {
+    let result: ValidationComment | undefined
+
+    beforeEach(() => {
+      const comments: ValidationComment[] = [
+        { id: '2', userId: '999', content: `Linking ${address} Date: ${timestamp}`, timestamp: Date.now() - 5000 },
+        { id: '1', userId: '200', content: signedContent, timestamp: Date.now() },
+      ]
+      result = getValidationComment(comments, address, timestamp, AccountType.Discord)
+    })
+
+    it('should ignore it and return the genuine signer', () => {
+      expect(result?.userId).toBe('200')
     })
   })
 })

@@ -1,52 +1,76 @@
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
+import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
+import capitalize from 'lodash/capitalize'
 
 import { PUSH_CHANNEL_ID } from '../constants'
 import { isSameAddress } from '../entities/Snapshot/utils'
 import { GATSBY_DISCOURSE_CONNECT_THREAD, MESSAGE_TIMEOUT_TIME } from '../entities/User/constants'
 import UserModel from '../entities/User/model'
 import { AccountType, UserAttributes, UserProfile, ValidationComment, ValidationMessage } from '../entities/User/types'
-import { formatValidationMessage, getValidationComment, toAccountType, validateComment } from '../entities/User/utils'
+import {
+  AmbiguousValidationError,
+  ValidationTimeoutError,
+  formatValidationMessage,
+  getValidationComment,
+} from '../entities/User/utils'
+import { ErrorCategory } from '../utils/errorCategories'
 import { isProdEnv } from '../utils/governanceEnvs'
 import { getCaipAddress, getPushNotificationsEnv } from '../utils/notifications'
 
-import { DiscourseService } from './DiscourseService'
+import { DiscourseService, IncompleteDiscourseCommentsError } from './DiscourseService'
 import { ErrorService } from './ErrorService'
-import { DiscordService } from './discord'
+import { DiscordService, IncompleteDiscordVerificationReadError } from './discord'
 
 import PushAPI = require('@pushprotocol/restapi')
 
 export class UserService {
   private static VALIDATIONS_IN_PROGRESS: Record<string, ValidationMessage> = {}
 
-  private static clearValidationInProgress(user: string) {
-    const validation = this.VALIDATIONS_IN_PROGRESS[user]
+  // Keyed by account as well as address so opening one flow does not cancel the other.
+  private static validationKey(address: string, account: AccountType) {
+    return `${address.toLowerCase()}:${account}`
+  }
+
+  private static clearValidationInProgress(address: string, account: AccountType) {
+    const key = this.validationKey(address, account)
+    const validation = this.VALIDATIONS_IN_PROGRESS[key]
     if (validation) {
       clearTimeout(validation.message_timeout)
-      delete this.VALIDATIONS_IN_PROGRESS[user]
+      delete this.VALIDATIONS_IN_PROGRESS[key]
     }
   }
 
-  static getValidationMessage(address: string, account?: string) {
+  static getValidationMessage(address: string, account: AccountType) {
+    // Discard any window already open for this pair, otherwise its timer fires later and expires
+    // the window opened here instead of the one it was scheduled for.
+    this.clearValidationInProgress(address, account)
+
     const timestamp = new Date().toISOString()
+    const key = this.validationKey(address, account)
     const message_timeout = setTimeout(() => {
-      delete this.VALIDATIONS_IN_PROGRESS[address]
+      delete this.VALIDATIONS_IN_PROGRESS[key]
     }, MESSAGE_TIMEOUT_TIME)
 
-    this.VALIDATIONS_IN_PROGRESS[address] = {
+    this.VALIDATIONS_IN_PROGRESS[key] = {
       address,
       timestamp,
+      account,
       message_timeout,
     }
 
-    return formatValidationMessage(address, timestamp, toAccountType(account))
+    return formatValidationMessage(address, timestamp, account)
   }
 
   static async validateForumUser(user: string) {
     try {
-      const comments = await DiscourseService.getPostComments(Number(GATSBY_DISCOURSE_CONNECT_THREAD))
+      const comments = await DiscourseService.getPostComments(Number(GATSBY_DISCOURSE_CONNECT_THREAD), {
+        requireComplete: true,
+      })
       const formattedComments = comments.comments.map<ValidationComment>((comment) => ({
         id: '',
-        userId: String(comment.user_forum_id),
+        // Left empty rather than stringified when absent, so 'undefined' does not become an author
+        // id that several unattributable comments appear to share.
+        userId: comment.user_forum_id != null ? String(comment.user_forum_id) : '',
         content: comment.cooked,
         timestamp: new Date(comment.created_at).getTime(),
       }))
@@ -56,33 +80,30 @@ export class UserService {
         valid: !!validationComment,
       }
     } catch (error) {
-      throw new Error("Couldn't validate the user. " + error)
+      this.handleValidationError(error, user, AccountType.Forum)
     }
   }
 
   static async checkForumValidationMessage(user: string, validationComments: ValidationComment[]) {
-    const messageProperties = this.VALIDATIONS_IN_PROGRESS[user]
+    const messageProperties = this.VALIDATIONS_IN_PROGRESS[this.validationKey(user, AccountType.Forum)]
     if (!messageProperties) {
-      throw new Error('Validation timed out')
+      throw new ValidationTimeoutError()
     }
 
     const { address, timestamp } = messageProperties
 
-    const validationComment = getValidationComment(validationComments, address, timestamp)
+    const validationComment = getValidationComment(validationComments, address, timestamp, AccountType.Forum)
 
     if (validationComment) {
-      if (!isSameAddress(address, user) || !validateComment(validationComment, address, timestamp, AccountType.Forum)) {
-        throw new Error('Validation failed')
-      }
-
-      await UserModel.createForumConnection(user, validationComment.userId)
-      this.clearValidationInProgress(user)
+      await this.createConnection(AccountType.Forum, user, validationComment.userId)
+      this.clearValidationInProgress(user, AccountType.Forum)
     }
 
     return validationComment
   }
 
   static async validateDiscordUser(user: string) {
+    let validationComment: ValidationComment | undefined
     try {
       const messages = await DiscordService.getProfileVerificationMessages()
       const formattedMessages = messages.map<ValidationComment>((message) => ({
@@ -92,44 +113,133 @@ export class UserService {
         timestamp: message.createdTimestamp,
       }))
 
-      const validationComment = await this.checkDiscordValidationMessage(user, formattedMessages)
-      if (validationComment) {
-        await DiscordService.deleteVerificationMessage(validationComment.id)
-        DiscordService.sendDirectMessage(validationComment.userId, {
-          title: 'Profile verification completed ✅',
-          action: `You have been verified as ${user}\n\nFrom now on you will receive important notifications for you through this channel.`,
-          fields: [],
-        })
-      }
-
-      return {
-        valid: !!validationComment,
-      }
+      validationComment = await this.checkDiscordValidationMessage(user, formattedMessages)
     } catch (error) {
-      throw new Error("Couldn't validate the user. " + error)
+      this.handleValidationError(error, user, AccountType.Discord)
+    }
+
+    if (validationComment) {
+      await this.runDiscordPostLinkActions(user, validationComment)
+    }
+
+    return {
+      valid: !!validationComment,
     }
   }
+
+  private static async runDiscordPostLinkActions(user: string, validationComment: ValidationComment): Promise<void> {
+    try {
+      await DiscordService.deleteVerificationMessage(validationComment.id)
+    } catch (error) {
+      ErrorService.report('Could not delete a completed Discord verification message', {
+        address: user,
+        messageId: validationComment.id,
+        error: `${error}`,
+        category: ErrorCategory.Discord,
+      })
+    }
+
+    try {
+      DiscordService.sendDirectMessage(validationComment.userId, {
+        title: 'Profile verification completed ✅',
+        action: `You have been verified as ${user}\n\nFrom now on you will receive important notifications for you through this channel.`,
+        fields: [],
+      })
+    } catch (error) {
+      ErrorService.report('Could not enqueue the Discord verification confirmation', {
+        address: user,
+        discordUserId: validationComment.userId,
+        error: `${error}`,
+        category: ErrorCategory.Discord,
+      })
+    }
+  }
+
+  private static handleValidationError(
+    error: unknown,
+    user: string,
+    account: AccountType.Forum | AccountType.Discord
+  ): never {
+    // Preserve deliberate client-facing failures instead of remapping them to a 500.
+    if (error instanceof RequestError) {
+      throw error
+    }
+
+    if (error instanceof ValidationTimeoutError) {
+      throw new RequestError(error.message, 408, { code: 'validation_timeout' })
+    }
+
+    if (error instanceof IncompleteDiscourseCommentsError || error instanceof IncompleteDiscordVerificationReadError) {
+      const source = account === AccountType.Forum ? 'forum' : 'Discord'
+      throw new RequestError(`Could not read the complete ${source} verification history; please retry`, 503, {
+        code: 'validation_source_incomplete',
+      })
+    }
+
+    // A valid copy posted by another account blocks the genuine attempt without linking anything.
+    if (error instanceof AmbiguousValidationError) {
+      ErrorService.report('Multiple valid verification messages matched one address', {
+        address: user,
+        account,
+        category: account === AccountType.Forum ? ErrorCategory.Discourse : ErrorCategory.Discord,
+      })
+      const accountName = account === AccountType.Forum ? 'forum' : 'Discord'
+      throw new RequestError(`Multiple ${accountName} accounts posted the same valid verification message`, 409, {
+        code: 'ambiguous_validation',
+      })
+    }
+
+    ErrorService.report('Unexpected profile validation failure', {
+      address: user,
+      account,
+      error: `${error}`,
+      category: account === AccountType.Forum ? ErrorCategory.Discourse : ErrorCategory.Discord,
+    })
+    throw new RequestError("Couldn't validate the user", RequestError.InternalServerError)
+  }
+
   static async checkDiscordValidationMessage(user: string, validationComments: ValidationComment[]) {
-    const messageProperties = this.VALIDATIONS_IN_PROGRESS[user]
+    const messageProperties = this.VALIDATIONS_IN_PROGRESS[this.validationKey(user, AccountType.Discord)]
     if (!messageProperties) {
-      throw new Error('Validation timed out')
+      throw new ValidationTimeoutError()
     }
     const { address, timestamp } = messageProperties
 
-    const validationComment = getValidationComment(validationComments, address, timestamp)
+    const validationComment = getValidationComment(validationComments, address, timestamp, AccountType.Discord)
 
     if (validationComment) {
-      if (
-        !isSameAddress(address, user) ||
-        !validateComment(validationComment, address, timestamp, AccountType.Discord)
-      ) {
-        throw new Error('Validation failed')
-      }
-      await UserModel.createDiscordConnection(user, validationComment.userId)
-      this.clearValidationInProgress(user)
+      await this.createConnection(AccountType.Discord, user, validationComment.userId)
+      this.clearValidationInProgress(user, AccountType.Discord)
     }
 
     return validationComment
+  }
+
+  // forum_id and discord_id are unique across addresses, so an account already linked elsewhere
+  // reaches the insert and fails there. Answer with the reason instead of a driver error.
+  private static async createConnection(
+    account: AccountType.Forum | AccountType.Discord,
+    address: string,
+    accountId: string
+  ) {
+    try {
+      switch (account) {
+        case AccountType.Discord:
+          await UserModel.createDiscordConnection(address, accountId)
+          break
+        case AccountType.Forum:
+          await UserModel.createForumConnection(address, accountId)
+          break
+      }
+    } catch (error) {
+      if ((error as { code?: string })?.code === '23505') {
+        throw new RequestError(
+          `That ${capitalize(account)} account is already linked to another address`,
+          RequestError.BadRequest
+        )
+      }
+      throw error
+    }
   }
 
   static async updateDiscordActiveStatus(address: string, is_discord_notifications_active: boolean) {

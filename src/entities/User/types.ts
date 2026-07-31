@@ -19,6 +19,7 @@ export type UserProfile = Pick<
 export type ValidationMessage = {
   address: string
   timestamp: string
+  account: AccountType
   message_timeout: NodeJS.Timeout
 }
 

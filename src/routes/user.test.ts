@@ -1,3 +1,4 @@
+import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import { Server } from 'http'
 import supertest from 'supertest'
 
@@ -87,23 +88,51 @@ describe('the user routes', () => {
       })
     })
 
+    // The account type is part of the signed message, so a message issued without one could never
+    // validate against either flow.
     describe('when no account is named', () => {
+      let response: supertest.Response
+
       beforeEach(async () => {
-        await supertest(app).get('/api/user/validate').set('x-test-auth', CALLER)
+        response = await supertest(app).get('/api/user/validate').set('x-test-auth', CALLER)
       })
 
-      it('should ask without one', () => {
-        expect(getValidationMessage).toHaveBeenCalledWith(CALLER, undefined)
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
+      })
+
+      it('should not build a message', () => {
+        expect(getValidationMessage).not.toHaveBeenCalled()
       })
     })
 
     describe('when the account is repeated in the query', () => {
+      let response: supertest.Response
+
       beforeEach(async () => {
-        await supertest(app).get('/api/user/validate?account=forum&account=discord').set('x-test-auth', CALLER)
+        response = await supertest(app)
+          .get('/api/user/validate?account=forum&account=discord')
+          .set('x-test-auth', CALLER)
       })
 
-      it('should ignore the array rather than pass one through', () => {
-        expect(getValidationMessage).toHaveBeenCalledWith(CALLER, undefined)
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
+      })
+
+      it('should not build a message', () => {
+        expect(getValidationMessage).not.toHaveBeenCalled()
+      })
+    })
+
+    describe('when the named account cannot be linked by signature', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        response = await supertest(app).get(`/api/user/validate?account=${AccountType.Push}`).set('x-test-auth', CALLER)
+      })
+
+      it('should respond with a 400', () => {
+        expect(response.status).toBe(400)
       })
     })
   })
@@ -127,6 +156,71 @@ describe('the user routes', () => {
         expect(validateForumUser).toHaveBeenCalledWith(CALLER)
       })
     })
+
+    describe('when multiple forum accounts post the same valid verification', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        validateForumUser.mockRejectedValueOnce(
+          new RequestError('Multiple forum accounts posted the same valid verification message', 409, {
+            code: 'ambiguous_validation',
+          })
+        )
+        response = await supertest(app).post('/api/user/validate/forum').set('x-test-auth', CALLER)
+      })
+
+      it('should respond with a conflict', () => {
+        expect(response.status).toBe(409)
+      })
+
+      it('should identify the ambiguous validation in the response body', () => {
+        expect(response.body).toEqual({
+          ok: false,
+          error: 'Multiple forum accounts posted the same valid verification message',
+          code: 'ambiguous_validation',
+        })
+      })
+    })
+
+    describe('when the forum verification history cannot be read completely', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        validateForumUser.mockRejectedValueOnce(
+          new RequestError('Could not read the complete forum verification history; please retry', 503, {
+            code: 'validation_source_incomplete',
+          })
+        )
+        response = await supertest(app).post('/api/user/validate/forum').set('x-test-auth', CALLER)
+      })
+
+      it('should respond with a retryable service-unavailable status', () => {
+        expect(response.status).toBe(503)
+      })
+
+      it('should identify the incomplete validation source', () => {
+        expect(response.body.code).toBe('validation_source_incomplete')
+      })
+    })
+
+    describe('when the forum validation window has expired', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        validateForumUser.mockRejectedValueOnce(
+          new RequestError('Validation timed out', 408, { code: 'validation_timeout' })
+        )
+        response = await supertest(app).post('/api/user/validate/forum').set('x-test-auth', CALLER)
+      })
+
+      it('should respond with a request-timeout status', () => {
+        expect(response.status).toBe(408)
+      })
+
+      it('should identify the expired validation window', () => {
+        expect(response.body.code).toBe('validation_timeout')
+      })
+    })
   })
 
   describe('POST /api/user/validate/discord', () => {
@@ -146,6 +240,71 @@ describe('the user routes', () => {
 
       it('should link the authenticated address, not the one supplied', () => {
         expect(validateDiscordUser).toHaveBeenCalledWith(CALLER)
+      })
+    })
+
+    describe('when multiple Discord accounts post the same valid verification', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        validateDiscordUser.mockRejectedValueOnce(
+          new RequestError('Multiple Discord accounts posted the same valid verification message', 409, {
+            code: 'ambiguous_validation',
+          })
+        )
+        response = await supertest(app).post('/api/user/validate/discord').set('x-test-auth', CALLER)
+      })
+
+      it('should respond with a conflict', () => {
+        expect(response.status).toBe(409)
+      })
+
+      it('should identify the ambiguous validation in the response body', () => {
+        expect(response.body).toEqual({
+          ok: false,
+          error: 'Multiple Discord accounts posted the same valid verification message',
+          code: 'ambiguous_validation',
+        })
+      })
+    })
+
+    describe('when the Discord verification history cannot be read completely', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        validateDiscordUser.mockRejectedValueOnce(
+          new RequestError('Could not read the complete Discord verification history; please retry', 503, {
+            code: 'validation_source_incomplete',
+          })
+        )
+        response = await supertest(app).post('/api/user/validate/discord').set('x-test-auth', CALLER)
+      })
+
+      it('should respond with a retryable service-unavailable status', () => {
+        expect(response.status).toBe(503)
+      })
+
+      it('should identify the incomplete validation source', () => {
+        expect(response.body.code).toBe('validation_source_incomplete')
+      })
+    })
+
+    describe('when the Discord validation window has expired', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        validateDiscordUser.mockRejectedValueOnce(
+          new RequestError('Validation timed out', 408, { code: 'validation_timeout' })
+        )
+        response = await supertest(app).post('/api/user/validate/discord').set('x-test-auth', CALLER)
+      })
+
+      it('should respond with a request-timeout status', () => {
+        expect(response.status).toBe(408)
+      })
+
+      it('should identify the expired validation window', () => {
+        expect(response.body.code).toBe('validation_timeout')
       })
     })
   })

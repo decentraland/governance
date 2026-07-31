@@ -109,9 +109,52 @@ describe('the user account queries', () => {
         expect(outcome).toBeInstanceOf(Error)
       })
 
+      // UserService maps this code to a 400 explaining the account is taken. Asserted against a real
+      // Postgres because the unit test supplies the code itself, so it cannot prove the driver does.
+      it('should refuse it with a unique violation', () => {
+        expect((outcome as { code?: string }).code).toBe('23505')
+      })
+
       it('should leave the first wallet holding it', async () => {
         const [found] = await UserModel.getAddressesByForumId([FORUM_ID])
         expect(found?.address).toBe(ADDRESS.toLowerCase())
+      })
+    })
+  })
+
+  describe('createDiscordConnection', () => {
+    describe('when the wallet links a discord account twice', () => {
+      beforeEach(async () => {
+        await UserModel.createDiscordConnection(ADDRESS, DISCORD_ID)
+        await UserModel.createDiscordConnection(ADDRESS, 'discord-user-2')
+      })
+
+      it('should replace the link rather than fail on the existing row', async () => {
+        const [found] = await UserModel.getDiscordIds([ADDRESS])
+        expect(found?.discord_id).toBe('discord-user-2')
+      })
+    })
+
+    // A discord account belongs to one wallet, enforced by a unique constraint rather than by code.
+    describe('when a second wallet claims the same discord account', () => {
+      let outcome: unknown
+
+      beforeEach(async () => {
+        await UserModel.createDiscordConnection(ADDRESS, DISCORD_ID)
+        outcome = await UserModel.createDiscordConnection(OTHER_ADDRESS, DISCORD_ID).catch((error) => error)
+      })
+
+      it('should refuse the second claim', () => {
+        expect(outcome).toBeInstanceOf(Error)
+      })
+
+      it('should refuse it with a unique violation', () => {
+        expect((outcome as { code?: string }).code).toBe('23505')
+      })
+
+      it('should leave the first wallet holding it', async () => {
+        const [found] = await UserModel.getDiscordIds([ADDRESS])
+        expect(found?.discord_id).toBe(DISCORD_ID)
       })
     })
   })
