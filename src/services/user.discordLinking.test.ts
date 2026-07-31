@@ -50,8 +50,10 @@ function stubChannelWith(newestFirst: FakeMessage[]) {
   ;(DiscordService as unknown as { client: unknown }).client = {
     channels: { fetch: jest.fn().mockResolvedValue(channel) },
   }
-  // The service caches the window for a few seconds; drop it so each case reads its own stub.
-  ;(DiscordService as unknown as { verificationMessagesCache?: unknown }).verificationMessagesCache = undefined
+  // Drop any throttled failure so each case reads its own stub.
+  ;(
+    DiscordService as unknown as { verificationMessagesFailureCacheExpiresAt?: number }
+  ).verificationMessagesFailureCacheExpiresAt = undefined
 }
 
 describe('linking a discord account to a dao address', () => {

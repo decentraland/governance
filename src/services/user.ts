@@ -217,12 +217,19 @@ export class UserService {
 
   // forum_id and discord_id are unique across addresses, so an account already linked elsewhere
   // reaches the insert and fails there. Answer with the reason instead of a driver error.
-  private static async createConnection(account: AccountType, address: string, accountId: string) {
+  private static async createConnection(
+    account: AccountType.Forum | AccountType.Discord,
+    address: string,
+    accountId: string
+  ) {
     try {
-      if (account === AccountType.Discord) {
-        await UserModel.createDiscordConnection(address, accountId)
-      } else {
-        await UserModel.createForumConnection(address, accountId)
+      switch (account) {
+        case AccountType.Discord:
+          await UserModel.createDiscordConnection(address, accountId)
+          break
+        case AccountType.Forum:
+          await UserModel.createForumConnection(address, accountId)
+          break
       }
     } catch (error) {
       if ((error as { code?: string })?.code === '23505') {

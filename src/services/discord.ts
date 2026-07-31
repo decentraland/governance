@@ -30,7 +30,7 @@ const PREVIEW_MAX_LENGTH = 140
 const VERIFICATION_FETCH_PAGE_SIZE = 100
 const VERIFICATION_FETCH_MAX_PAGES = 5
 // Short enough that a message posted now is still picked up well inside the ten second poll.
-const VERIFICATION_FETCH_CACHE_TTL = 3000
+const VERIFICATION_FETCH_FAILURE_CACHE_TTL = 3000
 
 type Field = {
   name: string
@@ -82,11 +82,7 @@ export class IncompleteDiscordVerificationReadError extends Error {
 
 export class DiscordService {
   private static client: Client
-  private static verificationMessagesCache?: {
-    messages: Discord.Message<true>[]
-    expiresAt: number
-    complete: boolean
-  }
+  private static verificationMessagesFailureCacheExpiresAt?: number
   private static verificationMessagesRequest?: Promise<Discord.Message<true>[]>
 
   static init() {
@@ -382,11 +378,8 @@ export class DiscordService {
       throw new IncompleteDiscordVerificationReadError()
     }
 
-    if (this.verificationMessagesCache && this.verificationMessagesCache.expiresAt > Date.now()) {
-      if (!this.verificationMessagesCache.complete) {
-        throw new IncompleteDiscordVerificationReadError()
-      }
-      return this.verificationMessagesCache.messages
+    if (this.verificationMessagesFailureCacheExpiresAt && this.verificationMessagesFailureCacheExpiresAt > Date.now()) {
+      throw new IncompleteDiscordVerificationReadError()
     }
 
     if (this.verificationMessagesRequest) {
@@ -451,33 +444,20 @@ export class DiscordService {
           'Verification channel window did not fit the fetch budget',
           new Error(`more than ${VERIFICATION_FETCH_PAGE_SIZE * VERIFICATION_FETCH_MAX_PAGES} messages in the window`)
         )
-        this.verificationMessagesCache = {
-          messages: [],
-          expiresAt: Date.now() + VERIFICATION_FETCH_CACHE_TTL,
-          complete: false,
-        }
+        this.verificationMessagesFailureCacheExpiresAt = Date.now() + VERIFICATION_FETCH_FAILURE_CACHE_TTL
         throw new IncompleteDiscordVerificationReadError()
       }
 
       const relevant = messages.filter(
         (message) => !message.author.bot && message.createdTimestamp > oldestRelevantTimestamp
       )
-      this.verificationMessagesCache = {
-        messages: relevant,
-        expiresAt: Date.now() + VERIFICATION_FETCH_CACHE_TTL,
-        complete: true,
-      }
       return relevant
     } catch (error) {
       if (error instanceof IncompleteDiscordVerificationReadError) {
         throw error
       }
       this.reportError('Error getting profile verification messages', error)
-      this.verificationMessagesCache = {
-        messages: [],
-        expiresAt: Date.now() + VERIFICATION_FETCH_CACHE_TTL,
-        complete: false,
-      }
+      this.verificationMessagesFailureCacheExpiresAt = Date.now() + VERIFICATION_FETCH_FAILURE_CACHE_TTL
       throw new IncompleteDiscordVerificationReadError()
     }
   }
@@ -486,9 +466,9 @@ export class DiscordService {
     if (DISCORD_SERVICE_ENABLED) {
       try {
         const channel = await this.fetchTextChannel(PROFILE_VERIFICATION_CHANNEL_ID)
-        // Dropped before the delete, so a failed delete does not leave a window cached as if the
-        // message were still there in a state we no longer know.
-        this.verificationMessagesCache = undefined
+        // A channel mutation can bring a previously oversized window back inside the read budget,
+        // so allow the next validation attempt to retry immediately.
+        this.verificationMessagesFailureCacheExpiresAt = undefined
         await channel.messages.delete(messageId)
       } catch (error) {
         this.reportError('Error deleting profile verification message', error)

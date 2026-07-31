@@ -59,10 +59,10 @@ function stubChannel(fetch: jest.Mock) {
 
 function clearVerificationCache() {
   const service = DiscordService as unknown as {
-    verificationMessagesCache?: unknown
+    verificationMessagesFailureCacheExpiresAt?: number
     verificationMessagesRequest?: unknown
   }
-  service.verificationMessagesCache = undefined
+  service.verificationMessagesFailureCacheExpiresAt = undefined
   service.verificationMessagesRequest = undefined
 }
 
@@ -202,6 +202,31 @@ describe('DiscordService.getProfileVerificationMessages', () => {
     })
   })
 
+  describe('when a message is posted after a successful read completes', () => {
+    let fetch: jest.Mock
+    let secondResult: FakeMessage[]
+
+    beforeEach(async () => {
+      const original = createMessage('original', now - 2000)
+      const copy = createMessage('copy', now - 1000)
+      let visibleMessages = [original]
+      fetch = jest.fn(async () => new Collection(visibleMessages.map((message) => [message.id, message])))
+      stubChannel(fetch)
+
+      await DiscordService.getProfileVerificationMessages()
+      visibleMessages = [copy, original]
+      secondResult = await DiscordService.getProfileVerificationMessages()
+    })
+
+    it('should fetch a fresh snapshot after the completed request', () => {
+      expect(fetch).toHaveBeenCalledTimes(2)
+    })
+
+    it('should include the newly posted message for ambiguity detection', () => {
+      expect(secondResult.map((message) => message.id)).toEqual(['copy', 'original'])
+    })
+  })
+
   describe('when messages predate the validation window', () => {
     let returned: FakeMessage[]
 
@@ -309,7 +334,7 @@ describe('DiscordService.getProfileVerificationMessages', () => {
       expect(deleteMessage).toHaveBeenCalledWith('original')
     })
 
-    it('should drop the cached window so the deleted message is not matched again', async () => {
+    it('should read a fresh window after deletion', async () => {
       fetch.mockClear()
       await DiscordService.getProfileVerificationMessages()
       expect(fetch).toHaveBeenCalled()
