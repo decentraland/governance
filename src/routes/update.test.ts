@@ -9,6 +9,7 @@ import { createTestApp } from './testApp'
 import update from './update'
 
 const AUTHOR = '0x2AC89522CB415AC333E64F52a1a5693218cEBD58'
+const COAUTHOR = '0x4Fc4dE7CD3F8f04F2c9d61A0b1b0A08D5F0e6b3A'
 const STRANGER = '0x56d0B5eD3D525332F00C9BC938f93598ab16AAA7'
 const PROJECT_ID = '00000000-0000-0000-0000-000000000002'
 const UPDATE_ID = '00000000-0000-0000-0000-000000000003'
@@ -123,6 +124,19 @@ describe('the project update routes', () => {
         expect(create).toHaveBeenCalledTimes(1)
       })
     })
+
+    describe('when the body claims a different author', () => {
+      beforeEach(async () => {
+        await supertest(app)
+          .post('/api/updates')
+          .set('x-test-auth', COAUTHOR)
+          .send({ project_id: PROJECT_ID, ...VALID_BODY, author: AUTHOR })
+      })
+
+      it('should store the authenticated caller instead', () => {
+        expect(create).toHaveBeenCalledWith(expect.objectContaining({ author: COAUTHOR }), expect.anything(), COAUTHOR)
+      })
+    })
   })
 
   describe('PATCH /api/updates/:update_id', () => {
@@ -202,6 +216,58 @@ describe('the project update routes', () => {
 
       it('should apply the edit', () => {
         expect(updateProjectUpdate).toHaveBeenCalledTimes(1)
+      })
+    })
+
+    describe('when a coauthor edits an update someone else wrote', () => {
+      beforeEach(async () => {
+        ;(UpdateService.getById as jest.Mock).mockResolvedValue({
+          id: UPDATE_ID,
+          project_id: PROJECT_ID,
+          author: AUTHOR,
+          completion_date: new Date(),
+        })
+        response = await supertest(app)
+          .patch(`/api/updates/${UPDATE_ID}`)
+          .set('x-test-auth', COAUTHOR)
+          .send({ ...VALID_PATCH_BODY, author: STRANGER })
+      })
+
+      it('should allow the edit', () => {
+        expect(response.status).toBe(201)
+      })
+
+      it('should keep the stored author rather than the one in the body', () => {
+        expect(updateProjectUpdate).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.anything(),
+          expect.objectContaining({ author: AUTHOR }),
+          COAUTHOR
+        )
+      })
+    })
+
+    describe('when a coauthor completes a pending update that has no author yet', () => {
+      beforeEach(async () => {
+        ;(UpdateService.getById as jest.Mock).mockResolvedValue({
+          id: UPDATE_ID,
+          project_id: PROJECT_ID,
+          author: null,
+          completion_date: null,
+        })
+        await supertest(app)
+          .patch(`/api/updates/${UPDATE_ID}`)
+          .set('x-test-auth', COAUTHOR)
+          .send({ ...VALID_PATCH_BODY, author: AUTHOR })
+      })
+
+      it('should record the caller as the author', () => {
+        expect(updateProjectUpdate).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.anything(),
+          expect.objectContaining({ author: COAUTHOR }),
+          COAUTHOR
+        )
       })
     })
   })
