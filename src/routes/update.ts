@@ -6,6 +6,7 @@ import validate from 'decentraland-gatsby/dist/entities/Route/validate'
 import schema from 'decentraland-gatsby/dist/entities/Schema'
 import { Request } from 'express'
 import isNaN from 'lodash/isNaN'
+import omit from 'lodash/omit'
 import toNumber from 'lodash/toNumber'
 
 import {
@@ -105,10 +106,11 @@ async function getProjectUpdateComments(req: Request<{ update_id: string }>) {
 const generalSectionValidator = schema.compile(GeneralUpdateSectionSchema)
 async function updateProjectUpdate(req: WithAuth<Request<{ update_id: string }>>) {
   const id = req.params.update_id
-  const { author, financial_records, ...body } = req.body
+  const { financial_records, ...body } = req.body
+  // a body author is dropped: authorship comes from the authenticated caller
   const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<UpdateGeneralSection>(
     generalSectionValidator,
-    body
+    omit(body, 'author')
   )
   const parsedResult = FinancialUpdateSectionSchema.safeParse({ financial_records })
   if (!parsedResult.success) {
@@ -130,7 +132,8 @@ async function updateProjectUpdate(req: WithAuth<Request<{ update_id: string }>>
     update,
     project,
     {
-      author,
+      // pending updates generated from a vesting have no author yet, so whoever completes one claims it
+      author: update.author || user,
       health,
       introduction,
       highlights,
@@ -200,10 +203,11 @@ async function validateFinancialRecords(
 
 async function createProjectUpdate(req: WithAuth) {
   const user = req.auth!
-  const { project_id, author, financial_records, ...body } = req.body
+  const { project_id, financial_records, ...body } = req.body
+  // a body author is dropped: authorship comes from the authenticated caller
   const { health, introduction, highlights, blockers, next_steps, additional_notes } = validate<UpdateGeneralSection>(
     schema.compile(GeneralUpdateSectionSchema),
-    body
+    omit(body, 'author')
   )
   try {
     const project = await ProjectService.getUpdatedProject(project_id)
@@ -212,7 +216,7 @@ async function createProjectUpdate(req: WithAuth) {
     const financialRecords = await validateFinancialRecords(project, financial_records)
     return await UpdateService.create(
       {
-        author,
+        author: user,
         health,
         introduction,
         highlights,
