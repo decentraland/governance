@@ -11,7 +11,7 @@ import CoauthorModel from '../Coauthor/model'
 import { NewGrantCategory } from '../Grant/types'
 import { getQuarterEndDate } from '../QuarterBudget/utils'
 
-import { finishProposal, getFinishableLinkedProposals } from './jobs'
+import { finishProposal, getFinishableLinkedProposals, getLinkedProposalGroups } from './jobs'
 import ProposalModel from './model'
 import * as calculateOutcome from './outcome'
 import {
@@ -402,5 +402,169 @@ describe('getFinishabledLinkedProposals', () => {
 
     const finishableBidProposals = await getFinishableLinkedProposals(pendingProposals, ProposalType.Bid)
     expect(finishableBidProposals.length).toEqual(4)
+  })
+})
+
+describe('getLinkedProposalGroups', () => {
+  const LINKED_ID = '123'
+  let pendingProposals: ProposalAttributes[]
+  let siblings: ProposalAttributes[]
+  let result: { activeProposals: ProposalAttributes[]; decidedLinkedProposalIds: Set<string> }
+
+  beforeEach(() => {
+    pendingProposals = [createTestBid('late', LINKED_ID)]
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  describe('when every sibling of the group is still active', () => {
+    beforeEach(async () => {
+      siblings = [createTestBid('a', LINKED_ID), createTestBid('b', LINKED_ID)]
+      jest.spyOn(ProposalModel, 'getProposalList').mockResolvedValue(siblings)
+      result = await getLinkedProposalGroups(pendingProposals, ProposalType.Bid)
+    })
+
+    it('should return all of them as candidates', () => {
+      expect(result.activeProposals.map((item) => item.id)).toEqual(['a', 'b'])
+    })
+
+    it('should not mark the group as already decided', () => {
+      expect(result.decidedLinkedProposalIds.has(LINKED_ID)).toBe(false)
+    })
+  })
+
+  // An earlier run already elected a winner here. Feeding it back into the election is what produced
+  // two passed bids for one tender, because the rejection that would correct it is CAS'd on 'active'.
+  describe('and one sibling was already passed by an earlier run', () => {
+    beforeEach(async () => {
+      siblings = [createTestBid('a', LINKED_ID, ProposalStatus.Passed), createTestBid('late', LINKED_ID)]
+      jest.spyOn(ProposalModel, 'getProposalList').mockResolvedValue(siblings)
+      result = await getLinkedProposalGroups(pendingProposals, ProposalType.Bid)
+    })
+
+    it('should leave the passed sibling out of the candidates', () => {
+      expect(result.activeProposals.map((item) => item.id)).toEqual(['late'])
+    })
+
+    it('should mark the group as already decided', () => {
+      expect(result.decidedLinkedProposalIds.has(LINKED_ID)).toBe(true)
+    })
+  })
+
+  describe('and one sibling was already enacted', () => {
+    beforeEach(async () => {
+      siblings = [createTestBid('a', LINKED_ID, ProposalStatus.Enacted), createTestBid('late', LINKED_ID)]
+      jest.spyOn(ProposalModel, 'getProposalList').mockResolvedValue(siblings)
+      result = await getLinkedProposalGroups(pendingProposals, ProposalType.Bid)
+    })
+
+    it('should mark the group as already decided', () => {
+      expect(result.decidedLinkedProposalIds.has(LINKED_ID)).toBe(true)
+    })
+  })
+
+  describe('and the siblings were all rejected without a winner', () => {
+    beforeEach(async () => {
+      siblings = [createTestBid('a', LINKED_ID, ProposalStatus.Rejected), createTestBid('late', LINKED_ID)]
+      jest.spyOn(ProposalModel, 'getProposalList').mockResolvedValue(siblings)
+      result = await getLinkedProposalGroups(pendingProposals, ProposalType.Bid)
+    })
+
+    // Nothing was elected, so the remaining sibling may still win.
+    it('should not mark the group as already decided', () => {
+      expect(result.decidedLinkedProposalIds.has(LINKED_ID)).toBe(false)
+    })
+  })
+})
+
+describe('finishProposal for a linked proposal group', () => {
+  const LINKED_ID = '123'
+  const HIGHER_POWER = { ...ACCEPTED_OUTCOME, winnerVotingPower: 500 }
+
+  beforeEach(() => {
+    jest.spyOn(logger, 'error').mockImplementation(() => {})
+    jest.spyOn(logger, 'log').mockImplementation(() => {})
+    jest.spyOn(ProposalModel, 'getFinishProposalQuery')
+    jest.spyOn(ProposalModel, 'findByIds').mockResolvedValue([])
+    jest.spyOn(CoauthorModel, 'findAllByProposals').mockResolvedValue([])
+    jest.spyOn(DiscourseService, 'commentUpdatedProposal').mockImplementation(() => {})
+    jest.spyOn(DiscordService, 'finishProposal').mockImplementation(() => {})
+    jest.spyOn(NotificationService, 'authoredProposalFinished').mockImplementation()
+    jest.spyOn(BudgetService, 'getBudgetsForProposals').mockResolvedValue([getTestBudgetWithAvailableSize()])
+    jest.spyOn(BudgetService, 'getBudgetUpdateQueries').mockReturnValue([])
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  // The straggler is the only active bid left, so before the guard it won its group unopposed and the
+  // tender ended up with two passed bids, which downstream becomes two funded projects.
+  describe('when a bid becomes finishable after its group already elected a winner', () => {
+    const straggler = createTestBid('late', LINKED_ID)
+
+    beforeEach(async () => {
+      jest.spyOn(ProposalModel, 'getFinishableProposals').mockResolvedValue([straggler])
+      jest
+        .spyOn(ProposalModel, 'getProposalList')
+        .mockResolvedValue([createTestBid('winner', LINKED_ID, ProposalStatus.Passed), straggler])
+      jest.spyOn(calculateOutcome, 'calculateVotingResult').mockResolvedValue(HIGHER_POWER)
+      await finishProposal()
+    })
+
+    it('should reject it rather than pass a second winner', () => {
+      expect(ProposalModel.getFinishProposalQuery).toHaveBeenCalledWith(['late'], ProposalStatus.Rejected)
+    })
+
+    it('should never pass it, even though its voting power is the highest among active bids', () => {
+      expect(ProposalModel.getFinishProposalQuery).not.toHaveBeenCalledWith(
+        expect.arrayContaining(['late']),
+        ProposalStatus.Passed
+      )
+    })
+  })
+
+  describe('and one bid in the group has no voting result yet', () => {
+    const resolved = createTestBid('resolved', LINKED_ID)
+    const unresolved = createTestBid('unresolved', LINKED_ID)
+
+    beforeEach(async () => {
+      jest.spyOn(ProposalModel, 'getFinishableProposals').mockResolvedValue([resolved, unresolved])
+      jest.spyOn(ProposalModel, 'getProposalList').mockResolvedValue([resolved, unresolved])
+      jest
+        .spyOn(calculateOutcome, 'calculateVotingResult')
+        .mockImplementation(async (proposal) => (proposal.id === 'resolved' ? HIGHER_POWER : undefined))
+      await finishProposal()
+    })
+
+    // Electing from the subset that resolved can crown the wrong bid, and that is unrecoverable
+    // because the rejection of the real winner is CAS'd on 'active'.
+    it('should not decide the group at all', () => {
+      expect(ProposalModel.getFinishProposalQuery).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('and every bid in the group has a voting result', () => {
+    const winner = createTestBid('winner', LINKED_ID)
+    const loser = createTestBid('loser', LINKED_ID)
+
+    beforeEach(async () => {
+      jest.spyOn(ProposalModel, 'getFinishableProposals').mockResolvedValue([winner, loser])
+      jest.spyOn(ProposalModel, 'getProposalList').mockResolvedValue([winner, loser])
+      jest
+        .spyOn(calculateOutcome, 'calculateVotingResult')
+        .mockImplementation(async (proposal) => (proposal.id === 'winner' ? HIGHER_POWER : ACCEPTED_OUTCOME))
+      await finishProposal()
+    })
+
+    it('should pass the bid with the highest voting power', () => {
+      expect(ProposalModel.getFinishProposalQuery).toHaveBeenCalledWith(['winner'], ProposalStatus.Passed)
+    })
+
+    it('should reject the other one', () => {
+      expect(ProposalModel.getFinishProposalQuery).toHaveBeenCalledWith(['loser'], ProposalStatus.Rejected)
+    })
   })
 })

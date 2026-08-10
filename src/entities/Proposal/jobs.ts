@@ -71,21 +71,63 @@ async function getProposalsVotingResult(proposals: ProposalAttributes[]) {
   return proposalsWithVotingResult
 }
 
+type LinkedProposalGroups = {
+  activeProposals: ProposalAttributes[]
+  decidedLinkedProposalIds: Set<string>
+}
+
+export async function getLinkedProposalGroups(
+  pendingProposals: ProposalAttributes[],
+  type: ProposalType.Tender | ProposalType.Bid
+): Promise<LinkedProposalGroups> {
+  const linkedProposalIds = [
+    ...new Set(
+      pendingProposals.filter((item) => item.type === type).map((item) => item.configuration.linked_proposal_id)
+    ),
+  ]
+
+  const activeProposals: ProposalAttributes[] = []
+  const decidedLinkedProposalIds = new Set<string>()
+
+  for (const linkedProposalId of linkedProposalIds) {
+    const siblings = await ProposalModel.getProposalList({ type, linkedProposalId })
+    // Only active siblings stand in the election. Re-judging one an earlier run already settled can
+    // hand the win to a different proposal, and the rejection that would correct it is CAS'd on
+    // 'active', so it cannot demote the one that already passed.
+    activeProposals.push(...siblings.filter((item) => item.status === ProposalStatus.Active))
+    if (siblings.some((item) => item.status === ProposalStatus.Passed || item.status === ProposalStatus.Enacted)) {
+      decidedLinkedProposalIds.add(linkedProposalId)
+    }
+  }
+
+  return { activeProposals, decidedLinkedProposalIds }
+}
+
 export async function getFinishableLinkedProposals(
   pendingProposals: ProposalAttributes[],
   type: ProposalType.Tender | ProposalType.Bid
 ) {
-  let proposals = pendingProposals.filter((item) => item.type === type)
-  if (proposals.length > 0) {
-    const linkedProposalIds = [...new Set(proposals.map((item) => item.configuration.linked_proposal_id))]
-    proposals = []
-    for (const id of linkedProposalIds) {
-      const tenderProposals = await ProposalModel.getProposalList({ type, linkedProposalId: id })
-      proposals = [...proposals, ...tenderProposals]
+  const { activeProposals } = await getLinkedProposalGroups(pendingProposals, type)
+  return activeProposals
+}
+
+// A group whose members did not all resolve to a voting result cannot be compared. Electing from the
+// subset that did resolve can crown the wrong proposal, and that is not recoverable: the rejection of
+// the real winner is CAS'd on 'active', so a later run cannot take the win back.
+function getIncompleteLinkedProposalIds(
+  activeProposals: ProposalAttributes[],
+  proposalsWithVotingResult: ProposalVotingResult[]
+) {
+  const resolvedIds = new Set(proposalsWithVotingResult.map((item) => item.id))
+  const incompleteLinkedProposalIds = new Set<string>()
+
+  for (const proposal of activeProposals) {
+    if (!resolvedIds.has(proposal.id)) {
+      incompleteLinkedProposalIds.add(proposal.configuration.linked_proposal_id)
     }
   }
 
-  return proposals
+  return incompleteLinkedProposalIds
 }
 
 function hasCustomOutcome(type: ProposalType) {
@@ -118,15 +160,24 @@ async function prepareProposalsAndBudgetsUpdates(
 ): Promise<{ proposalsWithOutcome: ProposalWithOutcome[]; budgetsWithUpdates: Budget[] }> {
   const proposalsWithOutcome: ProposalWithOutcome[] = []
   const budgetsWithUpdates = [...currentBudgets]
-  const finishableTenderProposals = await getFinishableLinkedProposals(pendingProposals, ProposalType.Tender)
-  const finishableBidProposals = await getFinishableLinkedProposals(pendingProposals, ProposalType.Bid)
+  const tenderGroups = await getLinkedProposalGroups(pendingProposals, ProposalType.Tender)
+  const bidGroups = await getLinkedProposalGroups(pendingProposals, ProposalType.Bid)
   const proposalsWithVotingResult = await getProposalsVotingResult([
     ...pendingProposals.filter((item) => item.type !== ProposalType.Tender && item.type !== ProposalType.Bid),
-    ...finishableTenderProposals,
-    ...finishableBidProposals,
+    ...tenderGroups.activeProposals,
+    ...bidGroups.activeProposals,
   ])
 
   reportPendingProposalsWithoutVotingResults(pendingProposals, proposalsWithVotingResult)
+
+  const linkedGroups = {
+    [ProposalType.Tender]: tenderGroups,
+    [ProposalType.Bid]: bidGroups,
+  }
+  const incompleteLinkedProposalIds = {
+    [ProposalType.Tender]: getIncompleteLinkedProposalIds(tenderGroups.activeProposals, proposalsWithVotingResult),
+    [ProposalType.Bid]: getIncompleteLinkedProposalIds(bidGroups.activeProposals, proposalsWithVotingResult),
+  }
 
   for (const proposal of proposalsWithVotingResult) {
     switch (proposal.votingOutcome) {
@@ -140,9 +191,29 @@ async function prepareProposalsAndBudgetsUpdates(
         if (!hasCustomOutcome(proposal.type)) {
           proposalsWithOutcome.push({ ...proposal, newStatus: ProposalStatus.Passed })
         } else if (proposal.type === ProposalType.Tender || proposal.type === ProposalType.Bid) {
+          const linkedProposalId = proposal.configuration.linked_proposal_id
+
+          // An earlier run already elected a winner for this group, so a sibling that only becomes
+          // finishable now can be rejected but never passed: passing it would leave the group with
+          // two winners, and downstream that is two funded projects for one tender.
+          if (linkedGroups[proposal.type].decidedLinkedProposalIds.has(linkedProposalId)) {
+            proposalsWithOutcome.push({ ...proposal, newStatus: ProposalStatus.Rejected })
+            break
+          }
+
+          // Leave the whole group active and retry on the next run rather than electing from a
+          // subset. Missing results are expected here: scores are fetched one proposal at a time.
+          if (incompleteLinkedProposalIds[proposal.type].has(linkedProposalId)) {
+            logger.log('Deferring a linked proposal group with an incomplete voting result', {
+              type: proposal.type,
+              linkedProposalId,
+            })
+            break
+          }
+
           const winnerProposal = getWinnerBiddingAndTenderingProposal(
             proposalsWithVotingResult,
-            proposal.configuration.linked_proposal_id,
+            linkedProposalId,
             proposal.type
           )
           if (winnerProposal?.id === proposal.id) {
