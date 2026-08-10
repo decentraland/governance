@@ -1,11 +1,9 @@
 import { ApiResponse } from 'decentraland-gatsby/dist/utils/api/types'
 
-import { ErrorClient } from '../../clients/ErrorClient'
 import { OtterspaceSubgraph } from '../../clients/OtterspaceSubgraph'
 import { TOP_VOTER_BADGE_IMG_URL } from '../../constants'
 import Time from '../../utils/date/Time'
 import { getPreviousMonthStartAndEnd } from '../../utils/date/getPreviousMonthStartAndEnd'
-import { ErrorCategory } from '../../utils/errorCategories'
 import { getUsersWhoVoted } from '../Snapshot/utils'
 
 import { BadgeStatus } from './types'
@@ -126,7 +124,8 @@ export async function getLandOwnerAddresses(): Promise<string[]> {
     }
     return Array.from(landOwnersAddresses)
   } catch (error) {
-    ErrorClient.report("Couldn't fetch land owners", { error, category: ErrorCategory.Badges })
+    // Not reported here: the caller reports the skipped run with the cause attached, and reporting at
+    // both layers raised two alerts for one failure.
     throw new LandOwnersUnavailableError(error)
   }
 }

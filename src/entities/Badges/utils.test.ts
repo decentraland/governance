@@ -1,5 +1,3 @@
-import { ErrorClient } from '../../clients/ErrorClient'
-
 import { LandOwnersUnavailableError, getLandOwnerAddresses } from './utils'
 
 const FIRST_OWNER = '0x56d0B5eD3D525332F00C9BC938f93598ab16AAA7'
@@ -7,10 +5,6 @@ const SECOND_OWNER = '0x49E4DbfF86a2E5DA27c540c9A9E8D2C3726E278F'
 
 describe('getLandOwnerAddresses', () => {
   let fetchMock: jest.SpyInstance
-
-  beforeEach(() => {
-    jest.spyOn(ErrorClient, 'report').mockImplementation(() => undefined)
-  })
 
   afterEach(() => {
     jest.restoreAllMocks()
