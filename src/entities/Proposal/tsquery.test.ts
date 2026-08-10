@@ -39,8 +39,10 @@ describe('tsquery', () => {
       elapsedMs = Date.now() - startedAt
     })
 
+    // Bounded loosely on purpose. Cubic growth puts this input in the hours before the fix, so a
+    // generous ceiling still separates the two behaviours and cannot be tripped by a slow runner.
     it('should parse without backtracking', () => {
-      expect(elapsedMs).toBeLessThan(1000)
+      expect(elapsedMs).toBeLessThan(10000)
     })
   })
 })

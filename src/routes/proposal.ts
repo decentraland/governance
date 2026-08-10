@@ -143,6 +143,8 @@ export async function getProposals(req: WithAuth) {
   const limit = query.limit && Number.isFinite(Number(query.limit)) ? Number(query.limit) : MAX_PROPOSAL_LIMIT
   const linkedProposalId = isUUID(String(query.linkedProposalId)) ? String(query.linkedProposalId) : undefined
 
+  // Bounds the raw term, deliberately before any normalization: this is an unauthenticated endpoint,
+  // so what is capped should be what was received, not what it collapses to.
   if (search && (search.length > MAX_PROPOSAL_SEARCH_LENGTH || !/\w{2}/.test(search))) {
     return []
   }
