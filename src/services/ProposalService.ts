@@ -17,7 +17,12 @@ import {
   ProposalType,
   ProposalWithProject,
 } from '../entities/Proposal/types'
-import { isGrantProposalSubmitEnabled, isProjectProposal, isProposalDeletable } from '../entities/Proposal/utils'
+import {
+  DELETABLE_PROPOSAL_STATUSES,
+  isGrantProposalSubmitEnabled,
+  isProjectProposal,
+  isProposalDeletable,
+} from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { isSameAddress } from '../entities/Snapshot/utils'
 import UpdateModel from '../entities/Updates/model'
@@ -138,22 +143,21 @@ export class ProposalService {
 
   static async removeProposal(proposal: ProposalAttributes, user: string, updated_at: Date, id: string) {
     this.validateRemoval(proposal, user)
-    await this.markAsDeleted(user, updated_at, id)
+
+    // The council may remove a proposal in any status, so only the author path constrains the write.
+    const allowedStatuses = isDAOCouncil(user) ? undefined : DELETABLE_PROPOSAL_STATUSES
+    const removed = await ProposalModel.markAsDeleted(id, user, updated_at, allowedStatuses)
+
+    // Nothing was removed, so between the check above and this write the proposal either left a
+    // removable status or was already deleted. Dropping the forum topic and cancelling the snapshot
+    // proposal now would destroy the artefacts of a proposal that still exists.
+    if (!removed) {
+      throw new RequestError('Proposal is no longer removable', RequestError.BadRequest)
+    }
+
     DiscourseService.dropDiscourseTopic(proposal.discourse_topic_id)
     SnapshotService.dropSnapshotProposal(proposal.snapshot_id)
     return true
-  }
-
-  private static async markAsDeleted(user: string, updated_at: Date, id: string) {
-    await ProposalModel.update<ProposalAttributes>(
-      {
-        deleted: true,
-        deleted_by: user,
-        updated_at,
-        status: ProposalStatus.Deleted,
-      },
-      { id }
-    )
   }
 
   private static validateRemoval(proposal: ProposalAttributes, user: string) {

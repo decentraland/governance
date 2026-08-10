@@ -2,6 +2,7 @@ import isDAOCouncil from '../entities/Council/IsDAOCouncil'
 import ProposalModel from '../entities/Proposal/model'
 import { createTestProposal } from '../entities/Proposal/testHelpers'
 import { ProposalAttributes, ProposalStatus, ProposalType, ProposalWithProject } from '../entities/Proposal/types'
+import { DELETABLE_PROPOSAL_STATUSES } from '../entities/Proposal/utils'
 import UpdateModel from '../entities/Updates/model'
 import { UpdateService } from '../services/update'
 import { withTransaction } from '../utils/withTransaction'
@@ -281,7 +282,7 @@ describe('ProposalService', () => {
     beforeEach(() => {
       jest.clearAllMocks()
       ;(isDAOCouncil as jest.Mock).mockReturnValue(false)
-      markAsDeleted = jest.spyOn(ProposalModel, 'update').mockResolvedValue({} as never)
+      markAsDeleted = jest.spyOn(ProposalModel, 'markAsDeleted').mockResolvedValue(true)
     })
 
     function buildProposal(status: ProposalStatus): ProposalAttributes {
@@ -294,10 +295,7 @@ describe('ProposalService', () => {
       })
 
       it('should mark the proposal as deleted', () => {
-        expect(markAsDeleted).toHaveBeenCalledWith(
-          expect.objectContaining({ deleted: true, status: ProposalStatus.Deleted }),
-          { id: proposalId }
-        )
+        expect(markAsDeleted).toHaveBeenCalledWith(proposalId, author, expect.any(Date), DELETABLE_PROPOSAL_STATUSES)
       })
     })
 
@@ -354,6 +352,53 @@ describe('ProposalService', () => {
       // The status gate is on the author path only; the council keeps the ability it already had.
       it('should mark the proposal as deleted', () => {
         expect(markAsDeleted).toHaveBeenCalled()
+      })
+
+      it('should not constrain the write to the removable statuses', () => {
+        expect(markAsDeleted).toHaveBeenCalledWith(proposalId, stranger, expect.any(Date), undefined)
+      })
+    })
+
+    // The status the author was authorised against was read before this write. A job can move the
+    // proposal to passed or enacted in between, so the removable statuses are also a condition on the
+    // update itself, and the artefacts must only be destroyed if that update actually removed a row.
+    describe('and the proposal leaves a removable status between the check and the write', () => {
+      beforeEach(() => {
+        markAsDeleted.mockResolvedValue(false)
+      })
+
+      it('should refuse the removal', async () => {
+        await expect(
+          ProposalService.removeProposal(buildProposal(ProposalStatus.Active), author, new Date(), proposalId)
+        ).rejects.toThrow('Proposal is no longer removable')
+      })
+
+      it('should not drop the forum topic', async () => {
+        await expect(
+          ProposalService.removeProposal(buildProposal(ProposalStatus.Active), author, new Date(), proposalId)
+        ).rejects.toThrow()
+        expect(DiscourseService.dropDiscourseTopic).not.toHaveBeenCalled()
+      })
+
+      it('should not cancel the snapshot proposal', async () => {
+        await expect(
+          ProposalService.removeProposal(buildProposal(ProposalStatus.Active), author, new Date(), proposalId)
+        ).rejects.toThrow()
+        expect(SnapshotService.dropSnapshotProposal).not.toHaveBeenCalled()
+      })
+    })
+
+    describe('and the removal succeeds', () => {
+      beforeEach(async () => {
+        await ProposalService.removeProposal(buildProposal(ProposalStatus.Active), author, new Date(), proposalId)
+      })
+
+      it('should drop the forum topic', () => {
+        expect(DiscourseService.dropDiscourseTopic).toHaveBeenCalled()
+      })
+
+      it('should cancel the snapshot proposal', () => {
+        expect(SnapshotService.dropSnapshotProposal).toHaveBeenCalled()
       })
     })
 
