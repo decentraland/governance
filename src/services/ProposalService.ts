@@ -17,7 +17,7 @@ import {
   ProposalType,
   ProposalWithProject,
 } from '../entities/Proposal/types'
-import { isGrantProposalSubmitEnabled, isProjectProposal } from '../entities/Proposal/utils'
+import { isGrantProposalSubmitEnabled, isProjectProposal, isProposalDeletable } from '../entities/Proposal/utils'
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { isSameAddress } from '../entities/Snapshot/utils'
 import UpdateModel from '../entities/Updates/model'
@@ -157,9 +157,22 @@ export class ProposalService {
   }
 
   private static validateRemoval(proposal: ProposalAttributes, user: string) {
-    const allowToRemove = isSameAddress(proposal.user, user) || isDAOCouncil(user)
-    if (!allowToRemove) {
+    // The council keeps the ability to remove a proposal in any status; only the author path is
+    // gated below.
+    if (isDAOCouncil(user)) {
+      return
+    }
+
+    if (!isSameAddress(proposal.user, user)) {
       throw new RequestError('Forbidden', RequestError.Forbidden)
+    }
+
+    // Removal also drops the forum topic and cancels the snapshot proposal, so an author must not be
+    // able to erase a decision that has already been made: a passed or enacted grant would lose the
+    // record authorising a vesting contract that keeps paying out, and its category budget stays
+    // allocated with nothing left pointing at it.
+    if (!isProposalDeletable(proposal.status)) {
+      throw new RequestError(`Proposal with status ${proposal.status} can't be removed`, RequestError.BadRequest)
     }
   }
 

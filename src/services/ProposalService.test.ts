@@ -1,6 +1,7 @@
+import isDAOCouncil from '../entities/Council/IsDAOCouncil'
 import ProposalModel from '../entities/Proposal/model'
 import { createTestProposal } from '../entities/Proposal/testHelpers'
-import { ProposalStatus, ProposalType, ProposalWithProject } from '../entities/Proposal/types'
+import { ProposalAttributes, ProposalStatus, ProposalType, ProposalWithProject } from '../entities/Proposal/types'
 import UpdateModel from '../entities/Updates/model'
 import { UpdateService } from '../services/update'
 import { withTransaction } from '../utils/withTransaction'
@@ -8,6 +9,7 @@ import { withTransaction } from '../utils/withTransaction'
 import { DiscourseService } from './DiscourseService'
 import { ProjectService } from './ProjectService'
 import { ProposalService } from './ProposalService'
+import { SnapshotService } from './SnapshotService'
 import { EventsService } from './events'
 import { NotificationService } from './notification'
 
@@ -45,7 +47,21 @@ jest.mock('./DiscourseService', () => ({
   DiscourseService: {
     commentUpdatedProposal: jest.fn(),
     createProposal: jest.fn(),
+    dropDiscourseTopic: jest.fn(),
   },
+}))
+
+jest.mock('./SnapshotService', () => ({
+  SnapshotService: {
+    dropSnapshotProposal: jest.fn(),
+  },
+}))
+
+// validateRemoval reads the council list through this module, so mocking it is what makes the
+// council path controllable without reaching for environment variables.
+jest.mock('../entities/Council/IsDAOCouncil', () => ({
+  __esModule: true,
+  default: jest.fn(),
 }))
 
 jest.mock('../utils/withTransaction', () => ({
@@ -251,6 +267,101 @@ describe('ProposalService', () => {
 
       it('should not post the discourse update', () => {
         expect(DiscourseService.commentUpdatedProposal).not.toHaveBeenCalled()
+      })
+    })
+  })
+
+  describe('removeProposal', () => {
+    const author = '0x2AC89522CB415AC333E64F52a1a5693218cEBD58'
+    const stranger = '0x49E4DbfF86a2E5DA27c540c9A9E8D2C3726E278F'
+    const proposalId = '00000000-0000-0000-0000-000000000001'
+
+    let markAsDeleted: jest.SpyInstance
+
+    beforeEach(() => {
+      jest.clearAllMocks()
+      ;(isDAOCouncil as jest.Mock).mockReturnValue(false)
+      markAsDeleted = jest.spyOn(ProposalModel, 'update').mockResolvedValue({} as never)
+    })
+
+    function buildProposal(status: ProposalStatus): ProposalAttributes {
+      return { ...createTestProposal(ProposalType.Grant, status), user: author }
+    }
+
+    describe('when the author removes a proposal that is still active', () => {
+      beforeEach(async () => {
+        await ProposalService.removeProposal(buildProposal(ProposalStatus.Active), author, new Date(), proposalId)
+      })
+
+      it('should mark the proposal as deleted', () => {
+        expect(markAsDeleted).toHaveBeenCalledWith(
+          expect.objectContaining({ deleted: true, status: ProposalStatus.Deleted }),
+          { id: proposalId }
+        )
+      })
+    })
+
+    describe('and the author removes a proposal that is still pending', () => {
+      beforeEach(async () => {
+        await ProposalService.removeProposal(buildProposal(ProposalStatus.Pending), author, new Date(), proposalId)
+      })
+
+      it('should mark the proposal as deleted', () => {
+        expect(markAsDeleted).toHaveBeenCalled()
+      })
+    })
+
+    // Removal drops the forum topic and cancels the snapshot proposal with the DAO's own key, so an
+    // author must not be able to erase a decision that has already been made.
+    describe.each([ProposalStatus.Passed, ProposalStatus.Enacted, ProposalStatus.Rejected, ProposalStatus.Finished])(
+      'and the author tries to remove a proposal that is already %s',
+      (status) => {
+        it('should refuse the removal', async () => {
+          await expect(
+            ProposalService.removeProposal(buildProposal(status), author, new Date(), proposalId)
+          ).rejects.toThrow(`Proposal with status ${status} can't be removed`)
+        })
+
+        it('should not mark the proposal as deleted', async () => {
+          await expect(
+            ProposalService.removeProposal(buildProposal(status), author, new Date(), proposalId)
+          ).rejects.toThrow()
+          expect(markAsDeleted).not.toHaveBeenCalled()
+        })
+
+        it('should not drop the forum topic', async () => {
+          await expect(
+            ProposalService.removeProposal(buildProposal(status), author, new Date(), proposalId)
+          ).rejects.toThrow()
+          expect(DiscourseService.dropDiscourseTopic).not.toHaveBeenCalled()
+        })
+
+        it('should not cancel the snapshot proposal', async () => {
+          await expect(
+            ProposalService.removeProposal(buildProposal(status), author, new Date(), proposalId)
+          ).rejects.toThrow()
+          expect(SnapshotService.dropSnapshotProposal).not.toHaveBeenCalled()
+        })
+      }
+    )
+
+    describe('when a council member removes a proposal that is already enacted', () => {
+      beforeEach(async () => {
+        ;(isDAOCouncil as jest.Mock).mockReturnValue(true)
+        await ProposalService.removeProposal(buildProposal(ProposalStatus.Enacted), stranger, new Date(), proposalId)
+      })
+
+      // The status gate is on the author path only; the council keeps the ability it already had.
+      it('should mark the proposal as deleted', () => {
+        expect(markAsDeleted).toHaveBeenCalled()
+      })
+    })
+
+    describe('when someone who is neither the author nor on the council removes a proposal', () => {
+      it('should refuse with a forbidden error', async () => {
+        await expect(
+          ProposalService.removeProposal(buildProposal(ProposalStatus.Active), stranger, new Date(), proposalId)
+        ).rejects.toThrow('Forbidden')
       })
     })
   })
