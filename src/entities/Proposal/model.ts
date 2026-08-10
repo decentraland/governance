@@ -272,6 +272,31 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return result.map(ProposalModel.parse)
   }
 
+  // The removable statuses are a condition on the write, not only a check the caller made against a
+  // proposal it read earlier. Between that read and this update a job can move the proposal to passed
+  // or enacted, and without the condition the stale delete would still land — taking the forum topic
+  // and the snapshot proposal with it. Answers whether a row was actually removed.
+  static async markAsDeleted(
+    id: string,
+    deleted_by: string,
+    updated_at: Date,
+    allowedStatuses?: ProposalStatus[]
+  ): Promise<boolean> {
+    const statuses = (allowedStatuses || []).map((status) => SQL`${status}`)
+    const query = SQL`
+        UPDATE ${table(this)}
+        SET "deleted"    = TRUE,
+            "deleted_by" = ${deleted_by},
+            "updated_at" = ${updated_at},
+            "status"     = ${ProposalStatus.Deleted}
+        WHERE "id" = ${id}
+          AND "deleted" = FALSE
+          ${conditional(statuses.length > 0, SQL`AND "status" IN (${join(statuses)})`)}
+    `
+
+    return (await this.namedRowCount('mark_proposal_deleted', query)) > 0
+  }
+
   static getFinishProposalQuery(proposal_ids: string[], status: ProposalStatus) {
     const valid_ids = (proposal_ids || []).filter((id) => isUUID(id))
     if (valid_ids.length === 0) {

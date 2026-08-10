@@ -178,8 +178,13 @@ export function toSortingOrder<OrElse>(value: string | null | undefined, orElse:
   return toCustomType<SortingOrder, OrElse, typeof value>(value, isSortingOrder, orElse)
 }
 
+// Exported as a list because the same rule is enforced twice: once as a read check before doing any
+// work, and once as a condition on the delete itself. Deriving the check from the list keeps them
+// from drifting apart.
+export const DELETABLE_PROPOSAL_STATUSES = [ProposalStatus.Active, ProposalStatus.Pending]
+
 export function isProposalDeletable(proposalStatus?: ProposalStatus) {
-  return proposalStatus === ProposalStatus.Active || proposalStatus === ProposalStatus.Pending
+  return !!proposalStatus && DELETABLE_PROPOSAL_STATUSES.includes(proposalStatus)
 }
 
 export function isProposalEnactable(proposalStatus: ProposalStatus) {
