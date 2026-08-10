@@ -28,6 +28,9 @@ import {
 
 export const MIN_PROPOSAL_OFFSET = 0
 export const MAX_PROPOSAL_LIMIT = 100
+// The full-text parser backtracks super-linearly on long inputs, so the search term is bounded
+// before it reaches the parser. No real title search comes close to this.
+export const MAX_PROPOSAL_SEARCH_LENGTH = 100
 export const SITEMAP_ITEMS_PER_PAGE = 100
 
 export const DEFAULT_CHOICES = ['yes', 'no', 'abstain']
