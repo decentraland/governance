@@ -11,6 +11,7 @@ import { getUsersWhoVoted } from '../Snapshot/utils'
 import { BadgeStatus } from './types'
 
 const TOP_VOTER_TITLE_PREFIX = `Top Voter`
+const LAND_API_TIMEOUT_MS = 30000
 
 export async function getClassifiedUsersForBadge(badgeCid: string, users: string[]) {
   const badges = await OtterspaceSubgraph.get().getBadges(badgeCid)
@@ -93,17 +94,40 @@ export async function getEligibleUsersForBadge(
   }
 }
 
+// Thrown rather than answered with an empty list: the caller treats "not in the list" as "revoke",
+// so an empty list is indistinguishable from "nobody owns land" and would revoke every holder.
+export class LandOwnersUnavailableError extends Error {
+  constructor(cause: unknown) {
+    super(`Could not read the land owners: ${cause}`)
+    this.name = 'LandOwnersUnavailableError'
+  }
+}
+
 export async function getLandOwnerAddresses(): Promise<string[]> {
   const LAND_API_URL = 'https://api.decentraland.org/v2/tiles?include=owner&type=owned'
   type LandOwner = { owner: string }
   try {
-    const response: ApiResponse<{ [coordinates: string]: LandOwner }> = await (await fetch(LAND_API_URL)).json()
+    const response: ApiResponse<{ [coordinates: string]: LandOwner }> = await (
+      await fetch(LAND_API_URL, { signal: AbortSignal.timeout(LAND_API_TIMEOUT_MS) })
+    ).json()
     const { data: landOwnersMap } = response
-    const landOwnersAddresses = new Set(Object.values(landOwnersMap).map((landOwner) => landOwner.owner.toLowerCase()))
+    if (!landOwnersMap || typeof landOwnersMap !== 'object') {
+      throw new Error('the response carried no tile data')
+    }
+    const landOwnersAddresses = new Set(
+      Object.values(landOwnersMap)
+        // A tile without an owner is skipped rather than throwing: one malformed entry must not turn
+        // into an empty list, which is the shape that revokes everyone.
+        .filter((landOwner) => !!landOwner?.owner)
+        .map((landOwner) => landOwner.owner.toLowerCase())
+    )
+    if (landOwnersAddresses.size === 0) {
+      throw new Error('the response carried no land owners')
+    }
     return Array.from(landOwnersAddresses)
   } catch (error) {
     ErrorClient.report("Couldn't fetch land owners", { error, category: ErrorCategory.Badges })
-    return []
+    throw new LandOwnersUnavailableError(error)
   }
 }
 

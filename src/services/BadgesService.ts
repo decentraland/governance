@@ -152,7 +152,20 @@ export class BadgesService {
   }
 
   static async giveAndRevokeLandOwnerBadges() {
-    const landOwnerAddresses = await getLandOwnerAddresses()
+    let landOwnerAddresses: string[]
+    try {
+      landOwnerAddresses = await getLandOwnerAddresses()
+    } catch (error) {
+      // Revocation is derived from absence, so an unreadable owner list would revoke every holder
+      // on-chain. Nothing is granted either, because a partial run cannot be told apart from a
+      // complete one; the next scheduled run retries.
+      ErrorService.report('Skipping the LandOwner badge run: the land owners could not be read', {
+        category: ErrorCategory.Badges,
+        error: `${error}`,
+      })
+      return
+    }
+
     const { eligibleUsersForBadge, usersWithBadgesToReinstate, usersWithBadgesToRevoke, error } =
       await getEligibleUsersForBadge(LAND_OWNER_BADGE_SPEC_CID, landOwnerAddresses)
     if (error) {
@@ -318,6 +331,7 @@ export class BadgesService {
             badgeId: badgeOwnership.id,
             error: ErrorReason.InvalidBadgeId,
           })
+          continue
         }
         const txn = await contract.connect(signer).revokeBadge(TRIMMED_OTTERSPACE_RAFT_ID, trimmedId, reason, gasConfig)
         await txn.wait()
@@ -360,6 +374,7 @@ export class BadgesService {
             badgeId: badgeOwnership.id,
             error: ErrorReason.InvalidBadgeId,
           })
+          continue
         }
         const txn = await contract.connect(signer).reinstateBadge(TRIMMED_OTTERSPACE_RAFT_ID, trimmedId, gasConfig)
         await txn.wait()
