@@ -51,7 +51,11 @@ Tsquery.prototype.parse = function (str: string) {
 
 function createParser() {
   const parser = new Tsquery()
-  return (str: string) => String(parser.parse(str) || '')
+  // Whitespace runs are collapsed first. The parser's word pattern has three adjacent quantifiers
+  // whose classes all match whitespace, so a long run of it backtracks cubically. to_tsquery treats
+  // any run as one separator, so collapsing changes no result while removing the blowup for every
+  // caller rather than only the ones that bound their own input.
+  return (str: string) => String(parser.parse(str.replace(/\s+/g, ' ')) || '')
 }
 
 export default createParser()

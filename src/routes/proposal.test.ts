@@ -419,6 +419,38 @@ describe('the proposal routes', () => {
       })
     })
 
+    // The term reaches a full-text parser that backtracks super-linearly, and this route is
+    // unauthenticated, so an unbounded term is a single-request stall of the whole event loop.
+    describe('and the search term is longer than the allowed length', () => {
+      let response: supertest.Response
+
+      beforeEach(async () => {
+        response = await supertest(app).get(`/api/proposals?search=${'a'.repeat(101)}`)
+      })
+
+      it('should return an empty list without querying', () => {
+        expect(getProposalList).not.toHaveBeenCalled()
+      })
+
+      it('should not count totals either', () => {
+        expect(getProposalTotal).not.toHaveBeenCalled()
+      })
+
+      it('should respond with a 200', () => {
+        expect(response.status).toBe(200)
+      })
+    })
+
+    describe('and the search term is exactly the allowed length', () => {
+      beforeEach(async () => {
+        await supertest(app).get(`/api/proposals?search=${'a'.repeat(100)}`)
+      })
+
+      it('should still run the query', () => {
+        expect(getProposalList).toHaveBeenCalled()
+      })
+    })
+
     describe('when the linked proposal id is not a uuid', () => {
       beforeEach(async () => {
         await supertest(app).get('/api/proposals?linkedProposalId=not-a-uuid')

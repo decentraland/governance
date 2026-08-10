@@ -60,6 +60,7 @@ import {
 import {
   DEFAULT_CHOICES,
   MAX_PROPOSAL_LIMIT,
+  MAX_PROPOSAL_SEARCH_LENGTH,
   MIN_PROPOSAL_OFFSET,
   canLinkProposal,
   getProposalEndDate,
@@ -142,7 +143,7 @@ export async function getProposals(req: WithAuth) {
   const limit = query.limit && Number.isFinite(Number(query.limit)) ? Number(query.limit) : MAX_PROPOSAL_LIMIT
   const linkedProposalId = isUUID(String(query.linkedProposalId)) ? String(query.linkedProposalId) : undefined
 
-  if (search && !/\w{2}/.test(search)) {
+  if (search && (search.length > MAX_PROPOSAL_SEARCH_LENGTH || !/\w{2}/.test(search))) {
     return []
   }
 
