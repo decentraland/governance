@@ -2,7 +2,6 @@ import crypto from 'crypto'
 import logger from 'decentraland-gatsby/dist/entities/Development/logger'
 import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 
-import { Discourse } from '../clients/Discourse'
 import { VestingWithLogs } from '../clients/VestingData'
 import { ProposalAttributes } from '../entities/Proposal/types'
 import UpdateModel from '../entities/Updates/model'
@@ -118,7 +117,7 @@ export class UpdateService {
         return
       }
 
-      await Discourse.get().commentOnPost({
+      await DiscourseService.commentOnPostWithRetry({
         topic_id: update.discourse_topic_id,
         raw: `This project update has been edited by the author. Please check the latest version on the [Governance dApp](${getUpdateUrl(
           update.id,
@@ -136,7 +135,7 @@ export class UpdateService {
         return
       }
 
-      await Discourse.get().commentOnPost({
+      await DiscourseService.commentOnPostWithRetry({
         topic_id: update.discourse_topic_id,
         raw: `This project update has been deleted by the author.`,
         created_at: new Date().toJSON(),

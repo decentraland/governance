@@ -8,6 +8,17 @@ import { getCurrentIdentity } from '../utils/auth/storage'
 import { toBase64 } from './base64'
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
+
+export class RateLimitError extends Error {
+  readonly waitSeconds: number
+
+  constructor(waitSeconds: number, body: string) {
+    super(`HTTP error! status: 429, body: ${body.length > 200 ? body.slice(0, 200) + '...' : body}`)
+    this.name = 'RateLimitError'
+    this.waitSeconds = waitSeconds
+  }
+}
+
 const METHODS_WITH_BODY: HttpMethod[] = ['POST', 'PUT', 'PATCH']
 const DEFAULT_REQUEST_TIMEOUT_MS = 30000
 
@@ -67,15 +78,26 @@ export default abstract class API {
 
   private async checkForErrors(response: Response) {
     if (!response.ok) {
-      let errorBody = await response.text()
-      const contentType = response.headers.get('Content-Type')
-      if (contentType && contentType.includes('application/json')) {
+      const errorBody = await response.text()
+      if (response.status === 429) {
+        let waitSeconds: number | null = null
         try {
-          const errorJson = await response.json()
-          errorBody = JSON.stringify(errorJson)
-        } catch (e) {
-          // If JSON parsing fails, fallback to using the text response (errorBody already set)
+          const parsed = JSON.parse(errorBody)
+          const raw = parsed?.extras?.wait_seconds
+          if (typeof raw === 'number' && Number.isFinite(raw) && raw > 0) {
+            waitSeconds = raw
+          }
+        } catch {
+          // body is not JSON — fall through to Retry-After header
         }
+        if (waitSeconds === null) {
+          const retryAfter = Number(response.headers.get('Retry-After'))
+          if (Number.isFinite(retryAfter) && retryAfter > 0) {
+            waitSeconds = retryAfter
+          }
+        }
+        const clamped = waitSeconds !== null ? Math.max(Math.min(Math.ceil(waitSeconds), 300), 5) : 10
+        throw new RateLimitError(clamped, errorBody)
       }
       throw new Error(`HTTP error! status: ${response.status}, body: ${errorBody}`)
     }

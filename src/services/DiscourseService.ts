@@ -1,3 +1,4 @@
+import { RateLimitError } from '../clients/API'
 import { Discourse } from '../clients/Discourse'
 import { requiredEnv } from '../config'
 import ProposalModel from '../entities/Proposal/model'
@@ -35,15 +36,16 @@ export class IncompleteDiscourseCommentsError extends Error {
 }
 
 export class DiscourseService {
-  private static async createPostWithRetry(post: DiscourseNewPost, retries = 3): Promise<DiscoursePost> {
+  private static async createPost(post: DiscourseNewPost, retries = 2): Promise<DiscoursePost> {
     try {
       return await Discourse.get().createPost(post)
     } catch (error) {
+      if (error instanceof RateLimitError) throw error
       if (retries > 0) {
-        return this.createPostWithRetry(post, retries - 1)
-      } else {
-        throw error
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+        return this.createPost(post, retries - 1)
       }
+      throw error
     }
   }
 
@@ -56,7 +58,7 @@ export class DiscourseService {
   ) {
     try {
       const discoursePost = await this.getPost(data, profile, proposalId, snapshotUrl, snapshotId)
-      const discourseProposal = await this.createPostWithRetry(discoursePost)
+      const discourseProposal = await this.createPost(discoursePost)
       this.logPostCreation(discourseProposal)
       return discourseProposal
       /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -67,7 +69,7 @@ export class DiscourseService {
         error: `${error}`,
         category: ErrorCategory.Discourse,
       })
-      throw new Error(`Forum error: ${error.body?.errors.join(', ')}`, error)
+      throw new Error(`Forum error: ${error instanceof Error ? error.message : error}`, { cause: error })
     }
   }
 
@@ -78,7 +80,7 @@ export class DiscourseService {
       const updateIndex = publicUpdates.findIndex((update) => update.id === newUpdate.id)
       const latestUpdateIndex = updateIndex < 0 ? publicUpdates.length : publicUpdates.length - updateIndex
       const discoursePost = this.getUpdatePost(newUpdate, latestUpdateIndex, proposalTitle)
-      const discourseUpdate = await this.createPostWithRetry(discoursePost)
+      const discourseUpdate = await this.createPost(discoursePost)
       await UpdateService.updateWithDiscoursePost(newUpdate.id, discourseUpdate)
       this.logPostCreation(discourseUpdate)
       return discourseUpdate
@@ -89,7 +91,7 @@ export class DiscourseService {
         error: `${error}`,
         category: ErrorCategory.Discourse,
       })
-      throw new Error(`Forum error: ${error.body?.errors.join(', ')}`, error)
+      throw new Error(`Forum error: ${error instanceof Error ? error.message : error}`, { cause: error })
     }
   }
 
@@ -222,27 +224,53 @@ export class DiscourseService {
     }
   }
 
+  private static async postProposalComment(proposal: ProposalAttributes): Promise<void> {
+    const votes = await VoteService.getVotes(proposal.id)
+    const updateMessage = getUpdateMessage(proposal, votes)
+    const discourseComment: DiscourseComment = {
+      topic_id: proposal.discourse_topic_id,
+      raw: updateMessage,
+      created_at: new Date().toJSON(),
+    }
+    await this.commentOnPostWithRetry(discourseComment)
+  }
+
   static commentUpdatedProposal(updatedProposal: ProposalAttributes) {
-    inBackground(async () => {
-      // TODO: votes are not necessary in all cases, they could be fetched only when needed
-      const votes = await VoteService.getVotes(updatedProposal.id)
-      const updateMessage = getUpdateMessage(updatedProposal, votes)
-      const discourseComment: DiscourseComment = {
-        topic_id: updatedProposal.discourse_topic_id,
-        raw: updateMessage,
-        created_at: new Date().toJSON(),
+    inBackground(() => this.postProposalComment(updatedProposal))
+  }
+
+  static async commentOnPostWithRetry(comment: DiscourseComment, retries = 3): Promise<void> {
+    try {
+      await Discourse.get().commentOnPost(comment)
+    } catch (error) {
+      if (retries > 0 && error instanceof RateLimitError) {
+        logger.warn('Discourse rate limited, waiting before retry', {
+          topic_id: comment.topic_id,
+          waitSeconds: error.waitSeconds,
+          retriesRemaining: retries - 1,
+        })
+        const waitMs = error.waitSeconds * 1000
+        await new Promise((resolve) => setTimeout(resolve, waitMs))
+        return this.commentOnPostWithRetry(comment, retries - 1)
       }
-      await Discourse.get().commentOnPost(discourseComment)
-    })
+      throw error
+    }
   }
 
   static commentFinishedProposals(proposalsWithOutcome: ProposalWithOutcome[]) {
     inBackground(async () => {
       const ids = proposalsWithOutcome.map(({ id }) => id)
       const updatedProposals = await ProposalModel.findByIds(ids)
-      updatedProposals.forEach((proposal) => {
-        this.commentUpdatedProposal(proposal)
-      })
+      for (const proposal of updatedProposals) {
+        try {
+          await this.postProposalComment(proposal)
+        } catch (error) {
+          logger.error('Error commenting on finished proposal', {
+            proposalId: proposal.id,
+            error: `${error}`,
+          })
+        }
+      }
     })
   }
 }
