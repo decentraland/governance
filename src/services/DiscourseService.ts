@@ -36,17 +36,8 @@ export class IncompleteDiscourseCommentsError extends Error {
 }
 
 export class DiscourseService {
-  private static async createPostWithRetry(post: DiscourseNewPost, retries = 1): Promise<DiscoursePost> {
-    try {
-      return await Discourse.get().createPost(post)
-    } catch (error) {
-      if (retries > 0 && error instanceof RateLimitError) {
-        const waitMs = error.waitSeconds * 1000
-        await new Promise((resolve) => setTimeout(resolve, waitMs))
-        return this.createPostWithRetry(post, retries - 1)
-      }
-      throw error
-    }
+  private static async createPost(post: DiscourseNewPost): Promise<DiscoursePost> {
+    return Discourse.get().createPost(post)
   }
 
   static async createProposal(
@@ -58,7 +49,7 @@ export class DiscourseService {
   ) {
     try {
       const discoursePost = await this.getPost(data, profile, proposalId, snapshotUrl, snapshotId)
-      const discourseProposal = await this.createPostWithRetry(discoursePost)
+      const discourseProposal = await this.createPost(discoursePost)
       this.logPostCreation(discourseProposal)
       return discourseProposal
       /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -80,7 +71,7 @@ export class DiscourseService {
       const updateIndex = publicUpdates.findIndex((update) => update.id === newUpdate.id)
       const latestUpdateIndex = updateIndex < 0 ? publicUpdates.length : publicUpdates.length - updateIndex
       const discoursePost = this.getUpdatePost(newUpdate, latestUpdateIndex, proposalTitle)
-      const discourseUpdate = await this.createPostWithRetry(discoursePost)
+      const discourseUpdate = await this.createPost(discoursePost)
       await UpdateService.updateWithDiscoursePost(newUpdate.id, discourseUpdate)
       this.logPostCreation(discourseUpdate)
       return discourseUpdate
