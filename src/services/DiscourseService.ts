@@ -42,7 +42,8 @@ export class DiscourseService {
     } catch (error) {
       if (retries > 0) {
         if (error instanceof RateLimitError) {
-          await new Promise((resolve) => setTimeout(resolve, error.waitSeconds * 1000))
+          const waitMs = error.waitSeconds * 1000
+          await new Promise((resolve) => setTimeout(resolve, waitMs))
         }
         return this.createPostWithRetry(post, retries - 1)
       }
