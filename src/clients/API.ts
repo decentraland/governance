@@ -8,6 +8,17 @@ import { getCurrentIdentity } from '../utils/auth/storage'
 import { toBase64 } from './base64'
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
+
+export class RateLimitError extends Error {
+  readonly waitSeconds: number
+
+  constructor(waitSeconds: number, body: string) {
+    super(`HTTP error! status: 429, body: ${body}`)
+    this.name = 'RateLimitError'
+    this.waitSeconds = waitSeconds
+  }
+}
+
 const METHODS_WITH_BODY: HttpMethod[] = ['POST', 'PUT', 'PATCH']
 const DEFAULT_REQUEST_TIMEOUT_MS = 30000
 
@@ -67,15 +78,18 @@ export default abstract class API {
 
   private async checkForErrors(response: Response) {
     if (!response.ok) {
-      let errorBody = await response.text()
-      const contentType = response.headers.get('Content-Type')
-      if (contentType && contentType.includes('application/json')) {
+      const errorBody = await response.text()
+      if (response.status === 429) {
+        let waitSeconds = 10
         try {
-          const errorJson = await response.json()
-          errorBody = JSON.stringify(errorJson)
-        } catch (e) {
-          // If JSON parsing fails, fallback to using the text response (errorBody already set)
+          const parsed = JSON.parse(errorBody)
+          if (typeof parsed?.extras?.wait_seconds === 'number') {
+            waitSeconds = parsed.extras.wait_seconds
+          }
+        } catch {
+          // use default wait
         }
+        throw new RateLimitError(waitSeconds, errorBody)
       }
       throw new Error(`HTTP error! status: ${response.status}, body: ${errorBody}`)
     }

@@ -1,3 +1,4 @@
+import { RateLimitError } from '../clients/API'
 import { Discourse } from '../clients/Discourse'
 import { requiredEnv } from '../config'
 import ProposalModel from '../entities/Proposal/model'
@@ -40,10 +41,12 @@ export class DiscourseService {
       return await Discourse.get().createPost(post)
     } catch (error) {
       if (retries > 0) {
+        if (error instanceof RateLimitError) {
+          await new Promise((resolve) => setTimeout(resolve, error.waitSeconds * 1000))
+        }
         return this.createPostWithRetry(post, retries - 1)
-      } else {
-        throw error
       }
+      throw error
     }
   }
 
@@ -240,9 +243,23 @@ export class DiscourseService {
     inBackground(async () => {
       const ids = proposalsWithOutcome.map(({ id }) => id)
       const updatedProposals = await ProposalModel.findByIds(ids)
-      updatedProposals.forEach((proposal) => {
-        this.commentUpdatedProposal(proposal)
-      })
+      for (const proposal of updatedProposals) {
+        try {
+          const votes = await VoteService.getVotes(proposal.id)
+          const updateMessage = getUpdateMessage(proposal, votes)
+          const discourseComment: DiscourseComment = {
+            topic_id: proposal.discourse_topic_id,
+            raw: updateMessage,
+            created_at: new Date().toJSON(),
+          }
+          await Discourse.get().commentOnPost(discourseComment)
+        } catch (error) {
+          logger.error('Error commenting on finished proposal', {
+            proposalId: proposal.id,
+            error: `${error}`,
+          })
+        }
+      }
     })
   }
 }
