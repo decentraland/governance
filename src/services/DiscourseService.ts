@@ -238,7 +238,7 @@ export class DiscourseService {
     })
   }
 
-  private static async commentOnPostWithRetry(comment: DiscourseComment, retries = 3): Promise<void> {
+  static async commentOnPostWithRetry(comment: DiscourseComment, retries = 3): Promise<void> {
     try {
       await Discourse.get().commentOnPost(comment)
     } catch (error) {
