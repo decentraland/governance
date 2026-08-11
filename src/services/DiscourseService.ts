@@ -36,7 +36,7 @@ export class IncompleteDiscourseCommentsError extends Error {
 }
 
 export class DiscourseService {
-  private static async createPostWithRetry(post: DiscourseNewPost, retries = 3): Promise<DiscoursePost> {
+  private static async createPostWithRetry(post: DiscourseNewPost, retries = 1): Promise<DiscoursePost> {
     try {
       return await Discourse.get().createPost(post)
     } catch (error) {
