@@ -240,6 +240,21 @@ export class DiscourseService {
     })
   }
 
+  private static async commentOnPostWithRetry(comment: DiscourseComment, retries = 3): Promise<void> {
+    try {
+      await Discourse.get().commentOnPost(comment)
+    } catch (error) {
+      if (retries > 0) {
+        if (error instanceof RateLimitError) {
+          const waitMs = error.waitSeconds * 1000
+          await new Promise((resolve) => setTimeout(resolve, waitMs))
+        }
+        return this.commentOnPostWithRetry(comment, retries - 1)
+      }
+      throw error
+    }
+  }
+
   static commentFinishedProposals(proposalsWithOutcome: ProposalWithOutcome[]) {
     inBackground(async () => {
       const ids = proposalsWithOutcome.map(({ id }) => id)
@@ -253,7 +268,7 @@ export class DiscourseService {
             raw: updateMessage,
             created_at: new Date().toJSON(),
           }
-          await Discourse.get().commentOnPost(discourseComment)
+          await this.commentOnPostWithRetry(discourseComment)
         } catch (error) {
           logger.error('Error commenting on finished proposal', {
             proposalId: proposal.id,

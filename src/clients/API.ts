@@ -83,8 +83,9 @@ export default abstract class API {
         let waitSeconds = 10
         try {
           const parsed = JSON.parse(errorBody)
-          if (typeof parsed?.extras?.wait_seconds === 'number') {
-            waitSeconds = parsed.extras.wait_seconds
+          const raw = parsed?.extras?.wait_seconds
+          if (typeof raw === 'number' && Number.isFinite(raw) && raw > 0) {
+            waitSeconds = Math.min(Math.ceil(raw), 300)
           }
         } catch {
           // use default wait
