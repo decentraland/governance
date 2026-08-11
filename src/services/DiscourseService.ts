@@ -40,11 +40,9 @@ export class DiscourseService {
     try {
       return await Discourse.get().createPost(post)
     } catch (error) {
-      if (retries > 0) {
-        if (error instanceof RateLimitError) {
-          const waitMs = error.waitSeconds * 1000
-          await new Promise((resolve) => setTimeout(resolve, waitMs))
-        }
+      if (retries > 0 && error instanceof RateLimitError) {
+        const waitMs = error.waitSeconds * 1000
+        await new Promise((resolve) => setTimeout(resolve, waitMs))
         return this.createPostWithRetry(post, retries - 1)
       }
       throw error
@@ -236,7 +234,7 @@ export class DiscourseService {
         raw: updateMessage,
         created_at: new Date().toJSON(),
       }
-      await Discourse.get().commentOnPost(discourseComment)
+      await this.commentOnPostWithRetry(discourseComment)
     })
   }
 
@@ -244,11 +242,9 @@ export class DiscourseService {
     try {
       await Discourse.get().commentOnPost(comment)
     } catch (error) {
-      if (retries > 0) {
-        if (error instanceof RateLimitError) {
-          const waitMs = error.waitSeconds * 1000
-          await new Promise((resolve) => setTimeout(resolve, waitMs))
-        }
+      if (retries > 0 && error instanceof RateLimitError) {
+        const waitMs = error.waitSeconds * 1000
+        await new Promise((resolve) => setTimeout(resolve, waitMs))
         return this.commentOnPostWithRetry(comment, retries - 1)
       }
       throw error
