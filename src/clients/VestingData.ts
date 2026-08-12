@@ -50,12 +50,18 @@ function parseContractValue(value: unknown) {
   return Math.round(Number(value) / 1e18)
 }
 
+const VESTING_ORIGIN_BLOCK = 13916992 // 01/01/2022
+const LOG_CHUNK_SIZE = 2000
+
 async function getVestingContractLogs(vestingAddress: string, provider: JsonRpcProvider, version: ContractVersion) {
-  const logs = await provider.getLogs({
-    address: vestingAddress,
-    fromBlock: 13916992, // 01/01/2022
-    toBlock: 'latest',
-  })
+  const currentBlock = await provider.getBlockNumber()
+  const allLogs = []
+  for (let from = VESTING_ORIGIN_BLOCK; from <= currentBlock; from += LOG_CHUNK_SIZE) {
+    const to = Math.min(from + LOG_CHUNK_SIZE - 1, currentBlock)
+    const chunk = await provider.getLogs({ address: vestingAddress, fromBlock: from, toBlock: to })
+    allLogs.push(...chunk)
+  }
+  const logs = allLogs
 
   const blocks = await Promise.all(logs.map((log) => provider.getBlock(log.blockNumber)))
 
