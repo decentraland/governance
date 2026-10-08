@@ -26,21 +26,30 @@ type CachedContractLogs = {
   logs: ContractLog[]
 }
 
-// rpc.decentraland.org routes each request to Alchemy or Infura, and Infura rejects eth_getLogs
-// ranges wider than 10,000 blocks, so every request covers at most [from, from + 9999].
+// rpc.decentraland.org routes each request to Alchemy or Infura (about half each). Alchemy answers
+// eth_getLogs over any block range as long as the result has at most 10,000 logs; Infura refuses
+// ranges wider than 10,000 blocks. A cold scan first asks for the whole history, retrying until a
+// request reaches Alchemy, and only falls back to [from, from + 9999] chunks (safe on both) when
+// every attempt is refused.
+export const FULL_RANGE_ATTEMPTS = 4
 export const LOG_CHUNK_SIZE = 10_000
 export const MAX_CONCURRENT_LOG_REQUESTS = 5
 export const MAX_RETRIES = 3
 const RETRY_BASE_DELAY_MS = 500
-// A chunk that is still refused after this many halvings (10,000 -> ~156 blocks) is a real error
-const MAX_CHUNK_SPLITS = 6
+// Vesting contracts emit a few dozen logs at most. Both upstreams refuse more than 10,000 results in
+// one response anyway, and a scan must not keep an unbounded list in memory for a busy contract.
+export const MAX_CONTRACT_LOGS = 10_000
 // Blocks this close to the head can still be reorged, so they are scanned again on the next call
 // instead of being cached
 export const REORG_SAFETY_BLOCKS = 64
 
-const RANGE_TOO_LARGE_ERROR = /exceeds limit of \d+|more than \d+ results|block range|response size exceeded/i
+// Infura: "range N exceeds limit of 10000". Another attempt can reach Alchemy, which accepts it.
+const BLOCK_RANGE_LIMIT_ERROR = /exceeds limit of \d+/i
+// Infura: "query returned more than 10000 results" (-32005). Alchemy: "Log response size exceeded",
+// "Response is too big" / "Exceeded max limit of N" (-32008). The contract has too many logs.
+const TOO_MANY_RESULTS_ERROR = /more than \d+ results|response size exceeded|response is too big|exceeded max limit/i
 const TRANSIENT_ERROR =
-  /\b429\b|-32005|too many requests|rate limit|timeout|timed out|ETIMEDOUT|ECONNRESET|missing response|bad response|header not found/i
+  /\b429\b|-32005|-32603|too many requests|rate limit|timeout|timed out|ETIMEDOUT|ECONNRESET|missing response|bad response|header not found|temporarily unavailable|beyond current head/i
 
 const inFlightScans = new Map<string, Promise<ContractLog[]>>()
 
@@ -61,6 +70,14 @@ function getErrorText(error: unknown) {
   return String(error)
 }
 
+function isRequestTooLarge(errorText: string) {
+  return BLOCK_RANGE_LIMIT_ERROR.test(errorText) || TOO_MANY_RESULTS_ERROR.test(errorText)
+}
+
+function tooManyLogsError(address: string) {
+  return new Error(`Contract ${address} has more than ${MAX_CONTRACT_LOGS} logs`)
+}
+
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
@@ -70,7 +87,9 @@ async function withRetries<T>(request: () => Promise<T>): Promise<T> {
     try {
       return await request()
     } catch (error) {
-      if (attempt >= MAX_RETRIES || !TRANSIENT_ERROR.test(getErrorText(error))) {
+      const text = getErrorText(error)
+      // Too-large requests are checked first: Infura's results limit shares the -32005 code of its rate limit
+      if (attempt >= MAX_RETRIES || isRequestTooLarge(text) || !TRANSIENT_ERROR.test(text)) {
         throw error
       }
       await sleep(RETRY_BASE_DELAY_MS * 2 ** attempt)
@@ -141,26 +160,66 @@ export async function getDeploymentBlock(provider: JsonRpcProvider, address: str
   return low
 }
 
-async function getRawLogs(
+function getRawLogs(provider: JsonRpcProvider, address: string, fromBlock: number, toBlock: number) {
+  return withRetries<RawLog[]>(() =>
+    provider.send('eth_getLogs', [{ address, fromBlock: toHex(fromBlock), toBlock: toHex(toBlock) }])
+  )
+}
+
+// Asks for every log up to `toBlock` in one request. Returns null when every attempt was refused for
+// its block range (each attempt is routed to Alchemy or Infura independently, so 4 attempts all reach
+// Infura 1 time in 16).
+async function getAllRawLogsAtOnce(provider: JsonRpcProvider, address: string, toBlock: number) {
+  for (let attempt = 0; attempt < FULL_RANGE_ATTEMPTS; attempt++) {
+    let logs: RawLog[]
+    try {
+      logs = await getRawLogs(provider, address, 0, toBlock)
+    } catch (error) {
+      const text = getErrorText(error)
+      if (TOO_MANY_RESULTS_ERROR.test(text)) {
+        throw tooManyLogsError(address)
+      }
+      if (!BLOCK_RANGE_LIMIT_ERROR.test(text)) {
+        throw error
+      }
+      continue
+    }
+    if (logs.length > MAX_CONTRACT_LOGS) {
+      throw tooManyLogsError(address)
+    }
+    return logs
+  }
+  return null
+}
+
+// Every chunk fits Infura's block range limit, so a refused chunk means more than 10,000 logs in
+// 10,000 blocks: it is not split, the scan fails as over MAX_CONTRACT_LOGS.
+async function getRawLogsInChunks(
   provider: JsonRpcProvider,
   address: string,
   fromBlock: number,
   toBlock: number,
-  splits = 0
-): Promise<RawLog[]> {
-  try {
-    return await withRetries(() =>
-      provider.send('eth_getLogs', [{ address, fromBlock: toHex(fromBlock), toBlock: toHex(toBlock) }])
-    )
-  } catch (error) {
-    if (fromBlock >= toBlock || splits >= MAX_CHUNK_SPLITS || !RANGE_TOO_LARGE_ERROR.test(getErrorText(error))) {
-      throw error
+  knownLogs: number
+) {
+  let logCount = knownLogs
+  const chunks = await mapWithConcurrency(
+    getBlockChunks(fromBlock, toBlock),
+    MAX_CONCURRENT_LOG_REQUESTS,
+    async ([from, to]) => {
+      let logs: RawLog[]
+      try {
+        logs = await getRawLogs(provider, address, from, to)
+      } catch (error) {
+        throw TOO_MANY_RESULTS_ERROR.test(getErrorText(error)) ? tooManyLogsError(address) : error
+      }
+      logCount += logs.length
+      if (logCount > MAX_CONTRACT_LOGS) {
+        throw tooManyLogsError(address)
+      }
+      return logs
     }
-    const middle = Math.floor((fromBlock + toBlock) / 2)
-    const firstHalf = await getRawLogs(provider, address, fromBlock, middle, splits + 1)
-    const secondHalf = await getRawLogs(provider, address, middle + 1, toBlock, splits + 1)
-    return [...firstHalf, ...secondHalf]
-  }
+  )
+  return chunks.flat()
 }
 
 function toHex(value: number) {
@@ -200,12 +259,17 @@ async function scanContractLogs(provider: JsonRpcProvider, address: string): Pro
   const head = await withRetries(() => provider.getBlockNumber())
   const cacheKey = contractLogsKey(address)
   const cached = CacheService.get<CachedContractLogs>(cacheKey)
-  const fromBlock = cached ? cached.toBlock + 1 : await getDeploymentBlock(provider, address, head)
 
-  const chunks = await mapWithConcurrency(getBlockChunks(fromBlock, head), MAX_CONCURRENT_LOG_REQUESTS, ([from, to]) =>
-    getRawLogs(provider, address, from, to)
-  )
-  const newLogs = await toContractLogs(provider, chunks.flat())
+  let fromBlock = cached ? cached.toBlock + 1 : 0
+  let rawLogs = cached ? null : await getAllRawLogsAtOnce(provider, address, head)
+  if (!rawLogs) {
+    if (!cached) {
+      fromBlock = await getDeploymentBlock(provider, address, head)
+    }
+    rawLogs = await getRawLogsInChunks(provider, address, fromBlock, head, cached?.logs.length || 0)
+  }
+
+  const newLogs = await toContractLogs(provider, rawLogs)
   const logs = [...(cached?.logs || []), ...newLogs].sort(compareLogs)
 
   // The cache is in-process: it is not shared between instances and it is lost on every deploy
@@ -221,8 +285,9 @@ async function scanContractLogs(provider: JsonRpcProvider, address: string): Pro
 
 /**
  * Returns every log emitted by a contract, sorted by block and log index, with block timestamps.
- * The first call scans from the contract deployment block in chunks; later calls only scan the
- * blocks added since. Concurrent calls for the same address share a single scan.
+ * The first call asks for the whole history at once, falling back to chunks from the contract
+ * deployment block; later calls only scan the blocks added since. Concurrent calls for the same
+ * address share a single scan. Contracts with more than MAX_CONTRACT_LOGS logs are refused.
  */
 export function getContractLogs(provider: JsonRpcProvider, contractAddress: string): Promise<ContractLog[]> {
   const address = contractAddress.toLowerCase()

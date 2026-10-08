@@ -3,7 +3,11 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import CacheService from '../services/CacheService'
 
 import {
+  FULL_RANGE_ATTEMPTS,
   LOG_CHUNK_SIZE,
+  MAX_CONCURRENT_LOG_REQUESTS,
+  MAX_CONTRACT_LOGS,
+  MAX_RETRIES,
   REORG_SAFETY_BLOCKS,
   getBlockChunks,
   getContractLogs,
@@ -44,13 +48,33 @@ function rawLog(blockNumber: number, logIndex = 0, { withTimestamp = true } = {}
   }
 }
 
+// The error ethers throws for a JSON-RPC error response keeps the payload in `body`
+function rpcError(code: number, message: string) {
+  const body = JSON.stringify({ jsonrpc: '2.0', id: 1, error: { code, message } })
+  return Object.assign(new Error(`processing response error (body=${JSON.stringify(body)})`), { body })
+}
+
+function infuraRangeError(range: number) {
+  return rpcError(-32602, `range ${range} exceeds limit of ${LOG_CHUNK_SIZE}`)
+}
+
+const INFURA_TOO_MANY_RESULTS = rpcError(-32005, 'query returned more than 10000 results. Try with this block range')
+const ALCHEMY_TOO_MANY_RESULTS = rpcError(
+  -32602,
+  'Log response size exceeded. You can make eth_getLogs requests with up to a 2K block range and no limit on the response size, or you can request any block range with a cap of 10K logs in the response.'
+)
+
 type FakeChain = {
   head: number
   deploymentBlock: number
   logs: RawLog[]
+  // widest eth_getLogs range accepted, in blocks. The default refuses wider ranges like Infura does,
+  // Infinity accepts any range like Alchemy does
+  maxBlockRange?: number
 }
 
 function createProvider(chain: FakeChain) {
+  // the eth_getLogs ranges that were answered, not the refused ones
   const requestedRanges: [number, number][] = []
   const provider = {
     getBlockNumber: jest.fn(async () => chain.head),
@@ -61,6 +85,9 @@ function createProvider(chain: FakeChain) {
       expect(filter.address).toBe(CONTRACT_ADDRESS)
       const fromBlock = Number(filter.fromBlock)
       const toBlock = Number(filter.toBlock)
+      if (toBlock - fromBlock + 1 > (chain.maxBlockRange ?? LOG_CHUNK_SIZE)) {
+        throw infuraRangeError(toBlock - fromBlock)
+      }
       requestedRanges.push([fromBlock, toBlock])
       return chain.logs.filter((log) => Number(log.blockNumber) >= fromBlock && Number(log.blockNumber) <= toBlock)
     }),
@@ -139,19 +166,85 @@ describe('ContractLogs', () => {
   })
 
   describe('getContractLogs', () => {
-    it('scans from the deployment block to the head in inclusive chunks', async () => {
-      const logs = [rawLog(DEPLOYMENT_BLOCK + 17), rawLog(DEPLOYMENT_BLOCK + LOG_CHUNK_SIZE), rawLog(HEAD)]
-      const { fakeProvider, requestedRanges } = createProvider({ head: HEAD, deploymentBlock: DEPLOYMENT_BLOCK, logs })
+    it('asks for the whole history in one request when the provider accepts it', async () => {
+      const logs = [rawLog(DEPLOYMENT_BLOCK + 17), rawLog(HEAD)]
+      const { provider, fakeProvider, requestedRanges } = createProvider({
+        head: HEAD,
+        deploymentBlock: DEPLOYMENT_BLOCK,
+        logs,
+        maxBlockRange: Infinity,
+      })
 
       const result = await getContractLogs(fakeProvider, CONTRACT_ADDRESS)
 
-      expect(requestedRanges).toHaveLength(Math.ceil((HEAD - DEPLOYMENT_BLOCK + 1) / LOG_CHUNK_SIZE))
+      expect(requestedRanges).toEqual([[0, HEAD]])
+      expect(provider.getCode).not.toHaveBeenCalled()
+      expect(result.map((log) => log.blockNumber)).toEqual([DEPLOYMENT_BLOCK + 17, HEAD])
+    })
+
+    it('asks for the whole history again when its block range is refused', async () => {
+      const { provider, fakeProvider, requestedRanges } = createProvider({
+        head: HEAD,
+        deploymentBlock: DEPLOYMENT_BLOCK,
+        logs: [rawLog(DEPLOYMENT_BLOCK + 17)],
+        maxBlockRange: Infinity,
+      })
+      provider.send.mockRejectedValueOnce(infuraRangeError(HEAD))
+
+      const result = await getContractLogs(fakeProvider, CONTRACT_ADDRESS)
+
+      expect(provider.send).toHaveBeenCalledTimes(2)
+      expect(requestedRanges).toEqual([[0, HEAD]])
+      expect(provider.getCode).not.toHaveBeenCalled()
+      expect(result).toHaveLength(1)
+    })
+
+    it('falls back to inclusive chunks from the deployment block when every whole-history request is refused', async () => {
+      const logs = [rawLog(DEPLOYMENT_BLOCK + 17), rawLog(DEPLOYMENT_BLOCK + LOG_CHUNK_SIZE), rawLog(HEAD)]
+      const { provider, fakeProvider, requestedRanges } = createProvider({
+        head: HEAD,
+        deploymentBlock: DEPLOYMENT_BLOCK,
+        logs,
+      })
+
+      const result = await getContractLogs(fakeProvider, CONTRACT_ADDRESS)
+
+      const chunks = Math.ceil((HEAD - DEPLOYMENT_BLOCK + 1) / LOG_CHUNK_SIZE)
+      expect(provider.send).toHaveBeenCalledTimes(FULL_RANGE_ATTEMPTS + chunks)
+      expect(requestedRanges).toHaveLength(chunks)
       expectContiguousChunks(requestedRanges, DEPLOYMENT_BLOCK, HEAD)
       expect(result.map((log) => log.blockNumber)).toEqual([
         DEPLOYMENT_BLOCK + 17,
         DEPLOYMENT_BLOCK + LOG_CHUNK_SIZE,
         HEAD,
       ])
+    })
+
+    it('keeps at most MAX_CONCURRENT_LOG_REQUESTS chunk requests in flight', async () => {
+      const head = DEPLOYMENT_BLOCK + 20 * LOG_CHUNK_SIZE - 1
+      const { provider, fakeProvider, requestedRanges } = createProvider({
+        head,
+        deploymentBlock: DEPLOYMENT_BLOCK,
+        logs: [],
+      })
+      const send = provider.send.getMockImplementation()!
+      let inFlight = 0
+      let maxInFlight = 0
+      provider.send.mockImplementation(async (method, params) => {
+        inFlight++
+        maxInFlight = Math.max(maxInFlight, inFlight)
+        try {
+          await new Promise((resolve) => setImmediate(resolve))
+          return await send(method, params)
+        } finally {
+          inFlight--
+        }
+      })
+
+      await getContractLogs(fakeProvider, CONTRACT_ADDRESS)
+
+      expect(requestedRanges).toHaveLength(20)
+      expect(maxInFlight).toBe(MAX_CONCURRENT_LOG_REQUESTS)
     })
 
     it('returns logs sorted by block and log index, without removed logs', async () => {
@@ -192,11 +285,20 @@ describe('ContractLogs', () => {
       ])
     })
 
-    it('only scans the blocks added since the cached scan', async () => {
-      const chain = { head: HEAD, deploymentBlock: DEPLOYMENT_BLOCK, logs: [rawLog(DEPLOYMENT_BLOCK + 1)] }
+    it.each([
+      ['answered in one request', Infinity],
+      ['answered in chunks', LOG_CHUNK_SIZE],
+    ])('only scans the blocks added since the cached scan (history %s)', async (_case, maxBlockRange) => {
+      const chain = {
+        head: HEAD,
+        deploymentBlock: DEPLOYMENT_BLOCK,
+        logs: [rawLog(DEPLOYMENT_BLOCK + 1)],
+        maxBlockRange,
+      }
       const { provider, fakeProvider, requestedRanges } = createProvider(chain)
       await getContractLogs(fakeProvider, CONTRACT_ADDRESS)
       provider.getCode.mockClear()
+      provider.send.mockClear()
       requestedRanges.length = 0
 
       // a log inside the reorg window of the first scan, and one in the new blocks
@@ -205,6 +307,7 @@ describe('ContractLogs', () => {
       const result = await getContractLogs(fakeProvider, CONTRACT_ADDRESS)
 
       expect(provider.getCode).not.toHaveBeenCalled()
+      expect(provider.send).toHaveBeenCalledTimes(1)
       expect(requestedRanges).toEqual([[HEAD - REORG_SAFETY_BLOCKS + 1, HEAD + 1000]])
       expect(result.map((log) => log.blockNumber)).toEqual([DEPLOYMENT_BLOCK + 1, HEAD - 1, HEAD + 500])
     })
@@ -235,58 +338,90 @@ describe('ContractLogs', () => {
 
       expect(second).toBe(first)
       expect(provider.getBlockNumber).toHaveBeenCalledTimes(1)
-      expect(provider.send).toHaveBeenCalledTimes(Math.ceil((HEAD - DEPLOYMENT_BLOCK + 1) / LOG_CHUNK_SIZE))
+      expect(provider.send).toHaveBeenCalledTimes(
+        FULL_RANGE_ATTEMPTS + Math.ceil((HEAD - DEPLOYMENT_BLOCK + 1) / LOG_CHUNK_SIZE)
+      )
     })
 
-    it('splits a chunk in half when the provider refuses its range', async () => {
-      const logs = [rawLog(DEPLOYMENT_BLOCK + 10), rawLog(DEPLOYMENT_BLOCK + 9_000)]
-      const { provider, fakeProvider, requestedRanges } = createProvider({
-        head: DEPLOYMENT_BLOCK + LOG_CHUNK_SIZE - 1,
-        deploymentBlock: DEPLOYMENT_BLOCK,
-        logs,
-      })
-      const send = provider.send.getMockImplementation()!
-      provider.send.mockImplementation(async (method, params) => {
-        const range = Number(params[0].toBlock) - Number(params[0].fromBlock)
-        if (range > 2_500) {
-          throw new Error(
-            `processing response error (body="{\\"error\\":{\\"message\\":\\"range ${range} exceeds limit of 2500\\"}}")`
-          )
-        }
-        return send(method, params)
+    describe('when the contract has more than MAX_CONTRACT_LOGS logs', () => {
+      it('fails as soon as the whole-history request has too many results, without scanning chunks', async () => {
+        const { provider, fakeProvider } = createProvider({ head: HEAD, deploymentBlock: DEPLOYMENT_BLOCK, logs: [] })
+        provider.send.mockRejectedValueOnce(ALCHEMY_TOO_MANY_RESULTS)
+
+        await expect(getContractLogs(fakeProvider, CONTRACT_ADDRESS)).rejects.toThrow(
+          `has more than ${MAX_CONTRACT_LOGS} logs`
+        )
+        expect(provider.send).toHaveBeenCalledTimes(1)
+        expect(provider.getCode).not.toHaveBeenCalled()
       })
 
-      const result = await getContractLogs(fakeProvider, CONTRACT_ADDRESS)
+      it('fails when the whole history returns more logs than the limit', async () => {
+        const logs = Array.from({ length: MAX_CONTRACT_LOGS + 1 }, (_, index) => rawLog(DEPLOYMENT_BLOCK, index))
+        const { fakeProvider } = createProvider({
+          head: HEAD,
+          deploymentBlock: DEPLOYMENT_BLOCK,
+          logs,
+          maxBlockRange: Infinity,
+        })
 
-      expect(requestedRanges).toHaveLength(4)
-      expectContiguousChunks(requestedRanges, DEPLOYMENT_BLOCK, DEPLOYMENT_BLOCK + LOG_CHUNK_SIZE - 1)
-      expect(result.map((log) => log.blockNumber)).toEqual([DEPLOYMENT_BLOCK + 10, DEPLOYMENT_BLOCK + 9_000])
+        await expect(getContractLogs(fakeProvider, CONTRACT_ADDRESS)).rejects.toThrow(
+          `has more than ${MAX_CONTRACT_LOGS} logs`
+        )
+      })
+
+      it('fails without retrying or splitting a chunk that has too many results', async () => {
+        const { provider, fakeProvider } = createProvider({
+          head: DEPLOYMENT_BLOCK + 100,
+          deploymentBlock: DEPLOYMENT_BLOCK,
+          logs: [],
+        })
+        const send = provider.send.getMockImplementation()!
+        provider.send.mockImplementation(async (method, params) => {
+          await send(method, params) // refuses the whole-history requests
+          throw INFURA_TOO_MANY_RESULTS
+        })
+
+        await expect(getContractLogs(fakeProvider, CONTRACT_ADDRESS)).rejects.toThrow(
+          `has more than ${MAX_CONTRACT_LOGS} logs`
+        )
+        expect(provider.send).toHaveBeenCalledTimes(FULL_RANGE_ATTEMPTS + 1)
+      })
+
+      it('stops taking chunks once their logs add up to more than the limit', async () => {
+        const chunks = 20
+        const { provider, fakeProvider, requestedRanges } = createProvider({
+          head: DEPLOYMENT_BLOCK + chunks * LOG_CHUNK_SIZE - 1,
+          deploymentBlock: DEPLOYMENT_BLOCK,
+          logs: [],
+        })
+        const send = provider.send.getMockImplementation()!
+        const logsPerChunk = Math.ceil(MAX_CONTRACT_LOGS / 3)
+        provider.send.mockImplementation(async (method, params) => {
+          await send(method, params) // refuses the whole-history requests
+          return Array.from({ length: logsPerChunk }, (_, index) => rawLog(Number(params[0].fromBlock), index))
+        })
+
+        await expect(getContractLogs(fakeProvider, CONTRACT_ADDRESS)).rejects.toThrow(
+          `has more than ${MAX_CONTRACT_LOGS} logs`
+        )
+        expect(requestedRanges.length).toBeLessThan(chunks)
+      })
     })
 
-    it('splits a chunk in half when it has too many results', async () => {
-      const { provider, fakeProvider } = createProvider({
-        head: DEPLOYMENT_BLOCK + 100,
-        deploymentBlock: DEPLOYMENT_BLOCK,
-        logs: [rawLog(DEPLOYMENT_BLOCK + 1)],
-      })
-      provider.send.mockRejectedValueOnce(new Error('query returned more than 10000 results'))
-
-      const result = await getContractLogs(fakeProvider, CONTRACT_ADDRESS)
-
-      expect(provider.send).toHaveBeenCalledTimes(3)
-      expect(result).toHaveLength(1)
-    })
-
-    it('retries a chunk after a transient error', async () => {
+    it.each([
+      ['an HTTP 429', new Error('bad response (status=429, body="Too Many Requests")')],
+      ['a rate limit', rpcError(-32005, 'request rate limited')],
+      ['an unavailable upstream', rpcError(-32603, 'service temporarily unavailable')],
+      ['an upstream behind the head', rpcError(-32602, 'block range extends beyond current head block')],
+    ])('retries a request after %s', async (_case, error) => {
       jest.useFakeTimers()
       const { provider, fakeProvider } = createProvider({
-        head: DEPLOYMENT_BLOCK + 100,
+        head: HEAD,
         deploymentBlock: DEPLOYMENT_BLOCK,
         logs: [rawLog(DEPLOYMENT_BLOCK + 1)],
+        maxBlockRange: Infinity,
       })
-      provider.send
-        .mockRejectedValueOnce(new Error('bad response (status=429, body="Too Many Requests")'))
-        .mockRejectedValueOnce(new Error('{"code":-32005,"message":"request rate limited"}'))
+      provider.send.mockRejectedValueOnce(error).mockRejectedValueOnce(error)
 
       const scan = getContractLogs(fakeProvider, CONTRACT_ADDRESS)
       await jest.advanceTimersByTimeAsync(5_000)
@@ -295,11 +430,24 @@ describe('ContractLogs', () => {
       expect(provider.send).toHaveBeenCalledTimes(3)
     })
 
+    it('gives up after MAX_RETRIES retries', async () => {
+      jest.useFakeTimers()
+      const { provider, fakeProvider } = createProvider({ head: HEAD, deploymentBlock: DEPLOYMENT_BLOCK, logs: [] })
+      provider.send.mockRejectedValue(new Error('bad response (status=429, body="Too Many Requests")'))
+
+      const scan = expect(getContractLogs(fakeProvider, CONTRACT_ADDRESS)).rejects.toThrow('status=429')
+      await jest.advanceTimersByTimeAsync(60_000)
+      await scan
+
+      expect(provider.send).toHaveBeenCalledTimes(MAX_RETRIES + 1)
+    })
+
     it('fails without retrying other errors, and does not keep the failed scan', async () => {
       const { provider, fakeProvider } = createProvider({
-        head: DEPLOYMENT_BLOCK + 100,
+        head: HEAD,
         deploymentBlock: DEPLOYMENT_BLOCK,
         logs: [rawLog(DEPLOYMENT_BLOCK + 1)],
+        maxBlockRange: Infinity,
       })
       provider.send.mockRejectedValueOnce(new Error('invalid argument'))
 
