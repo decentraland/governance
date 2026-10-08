@@ -67,6 +67,23 @@ function splitArray<Type>(array: Type[], chunkSize: number): Type[][] {
   )
 }
 
+type BadgeOwnership = { id: string; address: string }
+
+// Gas is estimated once for the batch, so it has to be estimated against an id the batch will
+// actually use rather than whichever one happens to be first.
+function getFirstValidBadgeId(badgeOwnerships: BadgeOwnership[]): string | undefined {
+  return badgeOwnerships.map((badgeOwnership) => trimOtterspaceId(badgeOwnership.id)).find((id) => id !== '')
+}
+
+function invalidBadgeIdResults(badgeOwnerships: BadgeOwnership[]): RevokeOrReinstateResult[] {
+  return badgeOwnerships.map((badgeOwnership) => ({
+    status: ActionStatus.Failed,
+    address: badgeOwnership.address,
+    badgeId: badgeOwnership.id,
+    error: ErrorReason.InvalidBadgeId,
+  }))
+}
+
 export class BadgesService {
   public static async getBadges(address: string): Promise<UserBadges> {
     const otterspaceBadges: OtterspaceBadge[] = await OtterspaceSubgraph.get().getBadgesForAddress(address)
@@ -152,7 +169,20 @@ export class BadgesService {
   }
 
   static async giveAndRevokeLandOwnerBadges() {
-    const landOwnerAddresses = await getLandOwnerAddresses()
+    let landOwnerAddresses: string[]
+    try {
+      landOwnerAddresses = await getLandOwnerAddresses()
+    } catch (error) {
+      // Revocation is derived from absence, so an unreadable owner list would revoke every holder
+      // on-chain. Nothing is granted either, because a partial run cannot be told apart from a
+      // complete one; the next scheduled run retries.
+      ErrorService.report('Skipping the LandOwner badge run: the land owners could not be read', {
+        category: ErrorCategory.Badges,
+        error: `${error}`,
+      })
+      return
+    }
+
     const { eligibleUsersForBadge, usersWithBadgesToReinstate, usersWithBadgesToRevoke, error } =
       await getEligibleUsersForBadge(LAND_OWNER_BADGE_SPEC_CID, landOwnerAddresses)
     if (error) {
@@ -298,13 +328,16 @@ export class BadgesService {
     if (!badgeOwnerships || badgeOwnerships.length === 0) {
       return []
     }
+    const firstValidBadgeId = getFirstValidBadgeId(badgeOwnerships)
+    // Estimating against an unusable id fails the whole batch before a single per-item result is
+    // recorded, so with nothing valid to estimate against there is nothing worth submitting either.
+    if (!firstValidBadgeId) {
+      return invalidBadgeIdResults(badgeOwnerships)
+    }
+
     const { signer, contract } = getBadgesSignerAndContract()
     const gasConfig = await estimateGas(async () => {
-      return contract.estimateGas.revokeBadge(
-        TRIMMED_OTTERSPACE_RAFT_ID,
-        trimOtterspaceId(badgeOwnerships[0].id),
-        reason
-      )
+      return contract.estimateGas.revokeBadge(TRIMMED_OTTERSPACE_RAFT_ID, firstValidBadgeId, reason)
     })
 
     const actionResults: RevokeOrReinstateResult[] = []
@@ -318,6 +351,7 @@ export class BadgesService {
             badgeId: badgeOwnership.id,
             error: ErrorReason.InvalidBadgeId,
           })
+          continue
         }
         const txn = await contract.connect(signer).revokeBadge(TRIMMED_OTTERSPACE_RAFT_ID, trimmedId, reason, gasConfig)
         await txn.wait()
@@ -343,9 +377,16 @@ export class BadgesService {
     if (!badgeOwnerships || badgeOwnerships.length === 0) {
       return []
     }
+    const firstValidBadgeId = getFirstValidBadgeId(badgeOwnerships)
+    // Estimating against an unusable id fails the whole batch before a single per-item result is
+    // recorded, so with nothing valid to estimate against there is nothing worth submitting either.
+    if (!firstValidBadgeId) {
+      return invalidBadgeIdResults(badgeOwnerships)
+    }
+
     const { signer, contract } = getBadgesSignerAndContract()
     const gasConfig = await estimateGas(async () => {
-      return contract.estimateGas.reinstateBadge(TRIMMED_OTTERSPACE_RAFT_ID, trimOtterspaceId(badgeOwnerships[0].id))
+      return contract.estimateGas.reinstateBadge(TRIMMED_OTTERSPACE_RAFT_ID, firstValidBadgeId)
     })
 
     const actionResults: RevokeOrReinstateResult[] = []
@@ -360,6 +401,7 @@ export class BadgesService {
             badgeId: badgeOwnership.id,
             error: ErrorReason.InvalidBadgeId,
           })
+          continue
         }
         const txn = await contract.connect(signer).reinstateBadge(TRIMMED_OTTERSPACE_RAFT_ID, trimmedId, gasConfig)
         await txn.wait()
