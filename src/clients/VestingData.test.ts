@@ -84,10 +84,11 @@ function mockV2CallsFailing() {
 
 const v1Topics = TopicsByVersion[ContractVersion.V1]
 const v2Topics = TopicsByVersion[ContractVersion.V2]
+// A V1 release log carries the running total released so far (100, then 300), a V2 one the amount of that release
 const logs = [
   contractLog(v1Topics.RELEASE, START + 100, 100),
   contractLog(v2Topics.RELEASE, START + 200, 50),
-  contractLog(v1Topics.RELEASE, START + 300, 200),
+  contractLog(v1Topics.RELEASE, START + 300, 300),
   contractLog(v2Topics.PAUSED, START + 400),
   contractLog(v1Topics.TRANSFER_OWNERSHIP, START + 500),
 ]
@@ -167,6 +168,51 @@ describe('getVestingWithLogsFromAlchemy', () => {
       { topic: v1Topics.RELEASE, timestamp: isoDate(START + 100), amount: 100 },
     ])
     expect(reportSpy).not.toHaveBeenCalled()
+  })
+
+  it('decodes each V1 release as the difference from the previous running total, in chain order', async () => {
+    mockV2CallsFailing()
+    mockV1Contract()
+    // a revoke that releases nothing still emits the unchanged total
+    getContractLogsMock.mockResolvedValue([
+      contractLog(v1Topics.RELEASE, START + 300, 300),
+      contractLog(v1Topics.RELEASE, START + 100, 100),
+      contractLog(v1Topics.RELEASE, START + 400, 300),
+      contractLog(v1Topics.RELEASE, START + 200, 250),
+    ])
+
+    const vesting = await getVestingWithLogsFromAlchemy(VESTING_ADDRESS)
+
+    expect(vesting.logs.map(({ amount }) => amount)).toEqual([0, 50, 150, 100])
+  })
+
+  // The DAO's MANA vesting, with the totals its Released events carry on chain (blocks 11023708 to 21021596)
+  it('adds the V1 releases of the DAO vesting up to what the contract reports as released', async () => {
+    const totals: [number, string][] = [
+      [11023708, '14165835768645357686453576'],
+      [13327965, '35803584303652968036529680'],
+      [14133226, '43460447792998477929984779'],
+      [14354212, '45541760445205479452054794'],
+      [14533267, '47238561015981735159817351'],
+      [14704560, '48870797431506849315068493'],
+      [17039332, '69862529204718417047184170'],
+      [21021596, '103797847926179604261796042'],
+    ]
+    mockV2CallsFailing()
+    mockV1Contract()
+    getContractLogsMock.mockResolvedValue(
+      totals.map(([blockNumber, total]) => ({
+        ...contractLog(v1Topics.RELEASE, blockNumber),
+        data: `0x${BigInt(total).toString(16)}`,
+      }))
+    )
+
+    const vesting = await getVestingWithLogsFromAlchemy(VESTING_ADDRESS)
+    const amounts = vesting.logs.map(({ amount = 0 }) => amount)
+
+    expect(amounts[0]).toBeCloseTo(33_935_318.72, 2)
+    expect(amounts[amounts.length - 1]).toBeCloseTo(14_165_835.77, 2)
+    expect(amounts.reduce((sum, amount) => sum + amount, 0)).toBeCloseTo(103_797_847.93, 2)
   })
 
   it('returns the vesting without logs and reports the error when the logs cannot be fetched', async () => {
