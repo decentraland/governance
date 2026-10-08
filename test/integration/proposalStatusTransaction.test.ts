@@ -490,7 +490,9 @@ describe('proposal status transaction', () => {
         })
 
         it('should build the schedule from the address the proposal now records as latest', () => {
-          expect(VestingService.getVestingWithLogs).toHaveBeenCalledWith(VESTING_ADDRESS, expect.anything())
+          expect(VestingService.getVestingWithLogs).toHaveBeenCalledWith(VESTING_ADDRESS, expect.anything(), {
+            includeLogs: false,
+          })
         })
       })
 
