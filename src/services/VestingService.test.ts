@@ -2,6 +2,7 @@ import * as VestingData from '../clients/VestingData'
 import { SubgraphVesting } from '../clients/VestingSubgraphTypes'
 import { VestingsSubgraph } from '../clients/VestingsSubgraph'
 import { VestingStatus } from '../entities/Grant/types'
+import { ContractVersion, TopicsByVersion } from '../utils/contracts/vesting'
 
 import { ErrorService } from './ErrorService'
 import { MAX_CONCURRENT_VESTING_FALLBACKS, VestingService } from './VestingService'
@@ -182,6 +183,70 @@ describe('VestingService', () => {
         })
       )
       expect(parsed.logs[0].topic).not.toBe(parsed.logs[1].topic)
+    })
+  })
+
+  // A V1 contract emits the running total released so far, and the subgraph stores it as the release amount and adds
+  // those totals up into `released`
+  describe('when the vesting is a V1 contract', () => {
+    const v1Vesting = () =>
+      subgraphVesting({
+        version: 1,
+        linear: true,
+        released: '600',
+        releaseLogs: [
+          { timestamp: String(now - 30 * DAY), amount: '250' },
+          { timestamp: String(now - 90 * DAY), amount: '100' },
+          { timestamp: String(now - 10 * DAY), amount: '250' },
+        ] as never,
+      })
+
+    it('should report the amount of each release rather than the running total', async () => {
+      const parsed = await parse(v1Vesting())
+      expect(parsed.logs.map(({ amount }) => amount)).toEqual([0, 150, 100])
+    })
+
+    it('should tag the releases with the V1 topic', async () => {
+      const parsed = await parse(v1Vesting())
+      expect(parsed.logs.every(({ topic }) => topic === TopicsByVersion[ContractVersion.V1].RELEASE)).toBe(true)
+    })
+
+    it('should report the latest running total as released', async () => {
+      const parsed = await parse(v1Vesting())
+      expect(parsed.released).toBe(250)
+    })
+
+    it('should subtract only what was actually released', async () => {
+      const parsed = await parse(v1Vesting())
+      expect(Math.round(parsed.releasable)).toBe(50)
+    })
+  })
+
+  // A V2 contract can be linear too, and it emits the amount of each release
+  describe('when the vesting is a linear V2 contract', () => {
+    const linearV2Vesting = () =>
+      subgraphVesting({
+        linear: true,
+        released: '300',
+        releaseLogs: [
+          { timestamp: String(now - 90 * DAY), amount: '100' },
+          { timestamp: String(now - 10 * DAY), amount: '200' },
+        ] as never,
+      })
+
+    it('should keep the amount of each release', async () => {
+      const parsed = await parse(linearV2Vesting())
+      expect(parsed.logs.map(({ amount }) => amount)).toEqual([200, 100])
+    })
+
+    it('should tag the releases with the V2 topic', async () => {
+      const parsed = await parse(linearV2Vesting())
+      expect(parsed.logs.every(({ topic }) => topic === TopicsByVersion[ContractVersion.V2].RELEASE)).toBe(true)
+    })
+
+    it('should report the released amount from the subgraph', async () => {
+      const parsed = await parse(linearV2Vesting())
+      expect(parsed.released).toBe(300)
     })
   })
 
