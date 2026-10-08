@@ -1,7 +1,9 @@
+import * as VestingData from '../clients/VestingData'
 import { SubgraphVesting } from '../clients/VestingSubgraphTypes'
 import { VestingsSubgraph } from '../clients/VestingsSubgraph'
 import { VestingStatus } from '../entities/Grant/types'
 
+import { ErrorService } from './ErrorService'
 import { MAX_CONCURRENT_VESTING_FALLBACKS, VestingService } from './VestingService'
 
 const VESTING_ADDRESS = '0x1111111111111111111111111111111111111111'
@@ -291,6 +293,27 @@ describe('VestingService', () => {
 
       it('should refuse a null address too', async () => {
         await expect(VestingService.getVestingWithLogs(null)).rejects.toThrow('empty contract address')
+      })
+    })
+
+    describe('when the subgraph does not have the vesting', () => {
+      beforeEach(() => {
+        jest
+          .spyOn(VestingsSubgraph, 'get')
+          .mockReturnValue({ getVesting: jest.fn().mockRejectedValue(new Error('not found')) } as never)
+        jest.spyOn(ErrorService, 'report').mockImplementation(() => undefined)
+      })
+
+      it('should read it from the contract, with its logs by default', async () => {
+        const fromContract = jest.spyOn(VestingData, 'getVestingWithLogsFromAlchemy').mockResolvedValue({} as never)
+        await VestingService.getVestingWithLogs(VESTING_ADDRESS, 'proposal-id')
+        expect(fromContract).toHaveBeenCalledWith(VESTING_ADDRESS, 'proposal-id', true)
+      })
+
+      it('should skip the contract logs when they are not wanted', async () => {
+        const fromContract = jest.spyOn(VestingData, 'getVestingWithLogsFromAlchemy').mockResolvedValue({} as never)
+        await VestingService.getVestingWithLogs(VESTING_ADDRESS, undefined, { includeLogs: false })
+        expect(fromContract).toHaveBeenCalledWith(VESTING_ADDRESS, undefined, false)
       })
     })
 

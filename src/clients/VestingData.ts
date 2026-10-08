@@ -53,9 +53,10 @@ function parseContractValue(value: unknown) {
   return Math.round(Number(value) / 1e18)
 }
 
-// A cold scan of a contract's logs can take minutes (about 4 for a 2020 contract), so a request does not wait for
-// it longer than this. The scan keeps running and fills the cache for the next request.
-export const LOGS_TIMEOUT_MS = 10_000
+// A cold scan of a contract's logs usually takes one or two requests, but when it falls back to chunks it can take
+// minutes (about 4 for a 2020 contract), so a request does not wait for it longer than this. The scan keeps running
+// and fills the cache for the next request.
+export const LOGS_TIMEOUT_MS = 3_000
 
 function decodeVestingLogs(logs: ContractLog[], version: ContractVersion) {
   const topics = TopicsByVersion[version]
@@ -233,12 +234,13 @@ export function sortByTimestamp(a: VestingLog, b: VestingLog) {
   return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
 }
 
-export async function getVestingWithLogsFromAlchemy(vestingAddress: string, proposalId?: string | undefined) {
+// `includeLogs: false` is for callers that only need the vesting data (status, dates, amounts): it skips the logs
+export async function getVestingWithLogsFromAlchemy(
+  vestingAddress: string,
+  proposalId?: string | undefined,
+  includeLogs = true
+) {
   const provider = new ethers.providers.JsonRpcProvider(RpcService.getRpcUrl(ChainId.ETHEREUM_MAINNET))
-  // Both contract versions emit their logs at the same address, so they are fetched once and
-  // decoded with the topics of whichever version answers the data calls
-  const logsPromise = getVestingContractLogs(vestingAddress, provider, proposalId)
-
   let data: Omit<Vesting, 'logs' | 'address'>
   let version: ContractVersion
   try {
@@ -259,7 +261,11 @@ export async function getVestingWithLogsFromAlchemy(vestingAddress: string, prop
     }
   }
 
-  const logs = decodeVestingLogs(await logsPromise, version)
+  // Logs are only fetched for an address that answered a vesting data call. Both contract versions emit their logs
+  // at the same address, so they are fetched once and decoded with the topics of the version that answered.
+  const logs = includeLogs
+    ? decodeVestingLogs(await getVestingContractLogs(vestingAddress, provider, proposalId), version)
+    : []
   return {
     ...data,
     logs: logs.sort(sortByTimestamp),

@@ -280,7 +280,8 @@ export class ProjectService {
   private static async updateStatusFromVesting(project: Project) {
     try {
       const latestVesting = project.vesting_addresses[project.vesting_addresses.length - 1]
-      const vestingWithLogs = await VestingService.getVestingWithLogs(latestVesting)
+      // only the status and dates are used here; the project page reads the vesting logs from /api/vesting
+      const vestingWithLogs = await VestingService.getVestingWithLogs(latestVesting, undefined, { includeLogs: false })
       const updatedProjectStatus = toGovernanceProjectStatus(vestingWithLogs.status)
       await ProjectModel.update({ status: updatedProjectStatus, updated_at: new Date() }, { id: project.id })
 

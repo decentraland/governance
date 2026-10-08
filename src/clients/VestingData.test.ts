@@ -215,14 +215,24 @@ describe('getVestingWithLogsFromAlchemy', () => {
     expect(reportSpy).toHaveBeenCalledWith('Unable to fetch vesting contract logs', expect.anything())
   })
 
-  it('still throws and reports when both the V2 and V1 data calls fail', async () => {
+  it('skips the logs when they are not wanted', async () => {
+    mockV2Contract()
+
+    const vesting = await getVestingWithLogsFromAlchemy(VESTING_ADDRESS, undefined, false)
+
+    expect(getContractLogsMock).not.toHaveBeenCalled()
+    expect(vesting).toEqual(expect.objectContaining({ released: 300, total: 1000, logs: [] }))
+  })
+
+  it('still throws and reports once, without scanning logs, when both the V2 and V1 data calls fail', async () => {
     mockV2CallsFailing()
     mockContracts.set(VESTING_ABI, { start: rejected('V1 call failed') })
-    getContractLogsMock.mockRejectedValue(new Error('No contract code found'))
 
     await expect(getVestingWithLogsFromAlchemy(VESTING_ADDRESS)).rejects.toThrow('V1 call failed')
 
-    expect(getContractLogsMock).toHaveBeenCalledTimes(1)
+    // an address that is not a vesting contract must not start a scan of its logs
+    expect(getContractLogsMock).not.toHaveBeenCalled()
+    expect(reportSpy).toHaveBeenCalledTimes(1)
     expect(reportSpy).toHaveBeenCalledWith(
       'Unable to fetch vesting contract data from alchemy',
       expect.objectContaining({ category: ErrorCategory.Vesting })
