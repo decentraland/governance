@@ -58,13 +58,25 @@ function parseContractValue(value: unknown) {
 // and fills the cache for the next request.
 export const LOGS_TIMEOUT_MS = 3_000
 
+function tokenAmount(wei: bigint) {
+  return Number(wei) / 1e18
+}
+
+function compareChainOrder(a: ContractLog, b: ContractLog) {
+  return a.blockNumber - b.blockNumber || a.logIndex - b.logIndex
+}
+
+// A V1 contract (TokenVesting, DecentralandVesting) emits `Released(released)`: the running total released so far, not
+// the amount of that release. A V2 contract (PeriodicTokenVesting) emits the amount of each release. A V1 release is
+// decoded as the difference from the previous total, which needs the logs in chain order and from the deployment on.
 function decodeVestingLogs(logs: ContractLog[], version: ContractVersion) {
   const topics = TopicsByVersion[version]
   const logsData: VestingLog[] = []
+  let releasedSoFar = BigInt(0)
 
-  logs.forEach((log) => {
+  const chainOrderedLogs = [...logs].sort(compareChainOrder)
+  chainOrderedLogs.forEach((log) => {
     const timestamp = toISOString(log.timestamp)
-    const amount = parseInt(log.data, 16) / 1e18
     switch (log.topics[0]) {
       case topics.REVOKE:
         logsData.push({ topic: topics.REVOKE, timestamp })
@@ -75,9 +87,16 @@ function decodeVestingLogs(logs: ContractLog[], version: ContractVersion) {
       case topics.UNPAUSED:
         logsData.push({ topic: topics.UNPAUSED, timestamp })
         break
-      case topics.RELEASE:
-        logsData.push({ topic: topics.RELEASE, timestamp, amount })
+      case topics.RELEASE: {
+        let amount = BigInt(log.data)
+        if (version === ContractVersion.V1) {
+          const total = amount
+          amount = total - releasedSoFar
+          releasedSoFar = total
+        }
+        logsData.push({ topic: topics.RELEASE, timestamp, amount: tokenAmount(amount) })
         break
+      }
       default:
         break
     }
