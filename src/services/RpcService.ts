@@ -1,5 +1,5 @@
 import { ChainId } from '@dcl/schemas/dist/dapps/chain-id'
-import { JsonRpcProvider, getNetwork } from '@ethersproject/providers'
+import { JsonRpcProvider, StaticJsonRpcProvider, getNetwork } from '@ethersproject/providers'
 
 import { getEnvironmentChainId } from '../helpers'
 
@@ -21,6 +21,14 @@ export default class RpcService {
 
     const networkName = network.name === 'homestead' ? 'mainnet' : network.name
     return process.env.RPC_PROVIDER_URL + networkName
+  }
+
+  /**
+   * Provider for the Ethereum network this deployment runs on (GATSBY_DEFAULT_CHAIN_ID). Static, so
+   * it does not re-query eth_chainId before every call.
+   */
+  public static getEnvironmentProvider() {
+    return new StaticJsonRpcProvider(this.getRpcUrl())
   }
 
   public static getPolygonProvider() {

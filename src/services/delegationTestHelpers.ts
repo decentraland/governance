@@ -1,10 +1,11 @@
+import type { TransactionReceipt } from '@ethersproject/providers'
 import { ethers } from 'ethers'
 
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { AlchemyBlock, AlchemyLog, AlchemyTransaction } from '../shared/types/events'
 
-// Alchemy delegation-webhook fixtures, shared by the tests that exercise
-// EventsService.delegationUpdate with the registry check off and on.
+// Alchemy delegation-webhook fixtures and on-chain receipt fakes, shared by the tests that exercise
+// EventsService.delegationUpdate.
 
 export const CLEAR_DELEGATE_SIGNATURE_HASH = '0x9c4f00c4291262731946e308dc2979a56bd22cce8f95906b975065e96cd5a064'
 export const SET_DELEGATE_SIGNATURE_HASH = '0xa9a7fd460f56bddb880a465a9c3e9730389c70bc53108148f16d55a87a6c468e'
@@ -40,10 +41,35 @@ export function transaction(logs: AlchemyLog[], hash = TX_HASH): AlchemyTransact
   return { hash, nonce: 0, index: 0, from: { address: DELEGATOR }, logs }
 }
 
-export function block(transactions: AlchemyTransaction[]): AlchemyBlock {
-  return { hash: '0xblock', number: 1, timestamp: BLOCK_TIMESTAMP, transactions }
+export function block(transactions: AlchemyTransaction[], timestamp = BLOCK_TIMESTAMP): AlchemyBlock {
+  return { hash: '0xblock', number: 1, timestamp, transactions }
 }
 
 export function blockWithLogs(logs: AlchemyLog[]): AlchemyBlock {
   return block([transaction(logs)])
+}
+
+type ReceiptLogOverrides = { address?: string; logIndex?: number; topics?: string[]; data?: string }
+
+// The receipt the chain would return if every given payload log was really emitted by `address`
+// (the registry unless overridden) at the index the payload claims.
+export function receipt(
+  logs: AlchemyLog[],
+  { status = 1, ...logOverrides }: { status?: number } & ReceiptLogOverrides = {}
+): TransactionReceipt {
+  return {
+    status,
+    logs: logs.map((payloadLog) => ({
+      address: SNAPSHOT_DELEGATION_REGISTRY,
+      logIndex: payloadLog.index,
+      topics: payloadLog.topics,
+      data: payloadLog.data,
+      ...logOverrides,
+    })),
+  } as unknown as TransactionReceipt
+}
+
+// Receipts that confirm every log of every transaction in the block, keyed by tx hash.
+export function genuineReceipts(alchemyBlock: AlchemyBlock): Record<string, TransactionReceipt> {
+  return Object.fromEntries(alchemyBlock.transactions.map((tx) => [tx.hash, receipt(tx.logs)]))
 }

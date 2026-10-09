@@ -2,7 +2,6 @@ import crypto from 'crypto'
 import { ethers } from 'ethers'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-import { DELEGATION_REGISTRY_ENFORCED } from '../constants'
 import ProposalModel from '../entities/Proposal/model'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import { ProposalAttributes } from '../entities/Proposal/types'
@@ -41,13 +40,21 @@ import { DclProfile } from '../utils/Catalyst/types'
 import Time from '../utils/date/Time'
 import { ErrorCategory } from '../utils/errorCategories'
 
+import { DelegationReceiptVerifier, SNAPSHOT_DELEGATION_REGISTRY } from './DelegationReceiptVerifier'
 import { SnapshotService } from './SnapshotService'
 import { NotificationService } from './notification'
 
 const CLEAR_DELEGATE_SIGNATURE_HASH = '0x9c4f00c4291262731946e308dc2979a56bd22cce8f95906b975065e96cd5a064'
 const SET_DELEGATE_SIGNATURE_HASH = '0xa9a7fd460f56bddb880a465a9c3e9730389c70bc53108148f16d55a87a6c468e'
-// Snapshot's DelegateRegistry is deployed at the same address on every supported chain.
-const SNAPSHOT_DELEGATION_REGISTRY = '0x469788fE6E9E9681C6ebF3bF78e7Fd26Fc015446'
+const TX_HASH_REGEX = /^0x[0-9a-fA-F]{64}$/
+
+type DelegationCandidate = {
+  txHash: string
+  log: AlchemyLog
+  methodSignature: string
+  delegator: string
+  delegate: string
+}
 
 export class EventsService {
   static async getLatest(filters: EventFilter): Promise<ActivityTickerEvent[]> {
@@ -363,9 +370,48 @@ export class EventsService {
   }
 
   static async delegationUpdate(block: AlchemyBlock) {
-    const blockTimestamp = block.timestamp
+    const candidates = await this.getDelegationCandidates(block)
+
+    // Every candidate is checked against its on-chain receipt before anything is written. Writes are
+    // per transaction and a retry skips transactions already recorded (isDelegationTxRegistered), so
+    // recording the verified ones and then throwing for the rest keeps a retried delivery idempotent.
+    const { verified, rejected, retryTxHashes } = await DelegationReceiptVerifier.verify(candidates, block.timestamp)
+
+    if (rejected.length > 0) {
+      ErrorService.report('Dropped delegation logs that failed on-chain verification', {
+        logs: rejected.map(({ candidate, reason }) => ({
+          transaction_hash: candidate.txHash,
+          log_index: candidate.log.index,
+          reason,
+        })),
+        category: ErrorCategory.Webhook,
+      })
+    }
+
+    for (const { txHash, log, methodSignature, delegator, delegate } of verified) {
+      const creationDate = this.getContractEventDate(block.timestamp, log)
+      if (methodSignature === CLEAR_DELEGATE_SIGNATURE_HASH) {
+        await this.delegationClear(delegate, delegator, txHash, creationDate)
+      } else {
+        await this.delegationSet(delegate, delegator, txHash, creationDate)
+      }
+    }
+
+    if (retryTxHashes.length > 0) {
+      // Thrown so the webhook answers non-2xx and Alchemy re-delivers the block.
+      throw new Error(`Could not verify delegation transactions on chain yet: ${retryTxHashes.join(', ')}`)
+    }
+  }
+
+  private static async getDelegationCandidates(block: AlchemyBlock) {
+    const candidates: DelegationCandidate[] = []
     for (const transaction of block.transactions) {
-      const txHash = transaction.hash
+      const txHash = transaction?.hash
+      // The hash is what the receipt is looked up by, so without a well-formed one the logs cannot
+      // be verified: drop them (fail closed) rather than send the RPC an input it would reject.
+      if (typeof txHash !== 'string' || !TX_HASH_REGEX.test(txHash) || !Array.isArray(transaction.logs)) {
+        continue
+      }
       if (await EventModel.isDelegationTxRegistered(txHash)) {
         continue
       }
@@ -375,20 +421,19 @@ export class EventsService {
         // array or a non-address topic, and an uncaught throw here aborts the whole block so
         // Alchemy re-delivers it indefinitely, wedging every legitimate delegation in it.
         // Guard the array shape first so reading topics[0] on a malformed payload cannot throw.
-        if (!Array.isArray(log.topics) || log.topics.length < 4) {
+        if (!Array.isArray(log?.topics) || log.topics.length < 4) {
           continue
         }
         const methodSignature = log.topics[0]
         if (methodSignature !== SET_DELEGATE_SIGNATURE_HASH && methodSignature !== CLEAR_DELEGATE_SIGNATURE_HASH) {
           continue
         }
-        // The HMAC proves the payload is from Alchemy, not which contract emitted the log.
+        // Cheap pre-check: when the payload does name the emitter and it is not the registry, the
+        // log is forged and needs no RPC call. A missing emitter proves nothing either way; the
+        // receipt check decides.
         const emitter = log.account?.address
-        const emitterIsRegistry = !!emitter && isSameAddress(emitter, SNAPSHOT_DELEGATION_REGISTRY)
-        if (DELEGATION_REGISTRY_ENFORCED) {
-          if (!emitterIsRegistry) continue // fail-closed: require the registry emitter
-        } else if (emitter && !emitterIsRegistry) {
-          continue // best-effort: reject a mismatching emitter, tolerate a missing one
+        if (emitter && !isSameAddress(emitter, SNAPSHOT_DELEGATION_REGISTRY)) {
+          continue
         }
         let decoded
         try {
@@ -405,14 +450,10 @@ export class EventsService {
         if (isSameAddress(delegator, delegate)) {
           continue
         }
-        const creationDate = this.getContractEventDate(blockTimestamp, log)
-        if (methodSignature === CLEAR_DELEGATE_SIGNATURE_HASH) {
-          await this.delegationClear(delegate, delegator, txHash, creationDate)
-        } else {
-          await this.delegationSet(delegate, delegator, txHash, creationDate)
-        }
+        candidates.push({ txHash, log, methodSignature, delegator, delegate })
       }
     }
+    return candidates
   }
 
   static async proposalFinished(proposalsWithOutcome: ProposalWithOutcome[]) {
