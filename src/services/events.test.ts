@@ -4,6 +4,7 @@ import { AlchemyBlock } from '../shared/types/events'
 import { ErrorService } from './ErrorService'
 import RpcService from './RpcService'
 import {
+  BLOCK_HASH,
   BLOCK_TIMESTAMP,
   CLEAR_DELEGATE_SIGNATURE_HASH,
   DELEGATE,
@@ -18,30 +19,30 @@ import {
   addressTopic,
   block,
   blockWithLogs,
-  genuineReceipts,
+  genuineChainLogs,
   log,
+  nodeGetLogs,
   transaction,
 } from './delegationTestHelpers'
 import { EventsService } from './events'
 
-// Payload-level parsing and filtering. Every delivery here is backed by receipts that confirm its
-// logs on chain, so these cases isolate the payload checks; events.receiptVerification.test.ts
-// covers the on-chain side.
+// Payload-level parsing and filtering. Every delivery here is backed by a chain that holds exactly
+// its logs, so these cases isolate the payload checks; events.onChainVerification.test.ts covers the
+// on-chain side.
 
 describe('EventsService.delegationUpdate', () => {
   let delegationSet: jest.SpyInstance
   let delegationClear: jest.SpyInstance
-  let getTransactionReceipt: jest.Mock
+  let getLogs: jest.Mock
 
   function deliver(alchemyBlock: AlchemyBlock) {
-    const receipts = genuineReceipts(alchemyBlock)
-    getTransactionReceipt.mockImplementation(async (hash: string) => receipts[hash] ?? null)
+    getLogs.mockImplementation(nodeGetLogs(genuineChainLogs(alchemyBlock)))
     return EventsService.delegationUpdate(alchemyBlock)
   }
 
   beforeEach(() => {
-    getTransactionReceipt = jest.fn()
-    jest.spyOn(RpcService, 'getEnvironmentProvider').mockReturnValue({ getTransactionReceipt } as never)
+    getLogs = jest.fn()
+    jest.spyOn(RpcService, 'getEnvironmentProvider').mockReturnValue({ getLogs } as never)
     jest.spyOn(ErrorService, 'report').mockImplementation(() => undefined)
     jest.spyOn(EventModel, 'isDelegationTxRegistered').mockResolvedValue(false)
     delegationSet = jest.spyOn(EventsService, 'delegationSet').mockResolvedValue(undefined)
@@ -63,7 +64,7 @@ describe('EventsService.delegationUpdate', () => {
     })
 
     it('should not spend an RPC call verifying it again', () => {
-      expect(getTransactionReceipt).not.toHaveBeenCalled()
+      expect(getLogs).not.toHaveBeenCalled()
     })
   })
 
@@ -129,7 +130,7 @@ describe('EventsService.delegationUpdate', () => {
     })
 
     it('should reject it from the payload alone, without an RPC call', () => {
-      expect(getTransactionReceipt).not.toHaveBeenCalled()
+      expect(getLogs).not.toHaveBeenCalled()
     })
   })
 
@@ -138,14 +139,14 @@ describe('EventsService.delegationUpdate', () => {
       await deliver(blockWithLogs([log({ account: undefined })]))
     })
 
-    // The live Alchemy query does not request `account { address }`; the receipt is what proves the
+    // The live Alchemy query does not request `account { address }`; the chain is what proves the
     // emitter, so a missing one is neither trusted nor fatal.
-    it('should record the delegation once the receipt confirms it', () => {
+    it('should record the delegation once the chain confirms it', () => {
       expect(delegationSet).toHaveBeenCalledTimes(1)
     })
 
-    it('should check the receipt of its transaction', () => {
-      expect(getTransactionReceipt).toHaveBeenCalledWith(TX_HASH)
+    it('should check the registry logs of its block', () => {
+      expect(getLogs).toHaveBeenCalledWith(expect.objectContaining({ blockHash: BLOCK_HASH }))
     })
   })
 

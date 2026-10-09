@@ -1,10 +1,10 @@
-import type { TransactionReceipt } from '@ethersproject/providers'
+import type { Filter, Log } from '@ethersproject/providers'
 import { ethers } from 'ethers'
 
 import { SNAPSHOT_SPACE } from '../entities/Snapshot/constants'
 import { AlchemyBlock, AlchemyLog, AlchemyTransaction } from '../shared/types/events'
 
-// Alchemy delegation-webhook fixtures and on-chain receipt fakes, shared by the tests that exercise
+// Alchemy delegation-webhook fixtures and on-chain (eth_getLogs) fakes, shared by the tests that exercise
 // EventsService.delegationUpdate.
 
 export const CLEAR_DELEGATE_SIGNATURE_HASH = '0x9c4f00c4291262731946e308dc2979a56bd22cce8f95906b975065e96cd5a064'
@@ -16,6 +16,8 @@ export const DELEGATE = '0x56d0b5ed3d525332f00c9bc938f93598ab16aaa7'
 export const TX_HASH = '0x00000000000000000000000000000000000000000000000000000000000000aa'
 export const OTHER_TX_HASH = '0x00000000000000000000000000000000000000000000000000000000000000bb'
 export const BLOCK_TIMESTAMP = 1700000000
+export const BLOCK_NUMBER = 18573000
+export const BLOCK_HASH = '0x' + 'cc'.repeat(32)
 
 // Derived from the configured space rather than hardcoded, so the topic matches whatever
 // GATSBY_SNAPSHOT_SPACE resolves to (the empty string in CI).
@@ -41,35 +43,55 @@ export function transaction(logs: AlchemyLog[], hash = TX_HASH): AlchemyTransact
   return { hash, nonce: 0, index: 0, from: { address: DELEGATOR }, logs }
 }
 
-export function block(transactions: AlchemyTransaction[], timestamp = BLOCK_TIMESTAMP): AlchemyBlock {
-  return { hash: '0xblock', number: 1, timestamp, transactions }
+export function block(
+  transactions: AlchemyTransaction[],
+  timestamp = BLOCK_TIMESTAMP,
+  hash = BLOCK_HASH
+): AlchemyBlock {
+  return { hash, number: BLOCK_NUMBER, timestamp, transactions }
 }
 
 export function blockWithLogs(logs: AlchemyLog[]): AlchemyBlock {
   return block([transaction(logs)])
 }
 
-type ReceiptLogOverrides = { address?: string; logIndex?: number; topics?: string[]; data?: string }
+type ChainLogOverrides = Partial<Pick<Log, 'address' | 'logIndex' | 'topics' | 'data' | 'removed' | 'transactionHash'>>
 
-// The receipt the chain would return if every given payload log was really emitted by `address`
-// (the registry unless overridden) at the index the payload claims.
-export function receipt(
-  logs: AlchemyLog[],
-  { status = 1, ...logOverrides }: { status?: number } & ReceiptLogOverrides = {}
-): TransactionReceipt {
+// The log the chain would hold if `payloadLog` was really emitted by the registry (unless overridden)
+// in transaction `txHash`, in block BLOCK_HASH, at the index the payload claims.
+export function chainLog(payloadLog: AlchemyLog, txHash = TX_HASH, overrides: ChainLogOverrides = {}): Log {
   return {
-    status,
-    logs: logs.map((payloadLog) => ({
-      address: SNAPSHOT_DELEGATION_REGISTRY,
-      logIndex: payloadLog.index,
-      topics: payloadLog.topics,
-      data: payloadLog.data,
-      ...logOverrides,
-    })),
-  } as unknown as TransactionReceipt
+    address: SNAPSHOT_DELEGATION_REGISTRY,
+    blockHash: BLOCK_HASH,
+    blockNumber: BLOCK_NUMBER,
+    transactionHash: txHash,
+    logIndex: payloadLog.index,
+    topics: payloadLog.topics,
+    data: payloadLog.data ?? '0x',
+    removed: false,
+    ...overrides,
+  } as unknown as Log
 }
 
-// Receipts that confirm every log of every transaction in the block, keyed by tx hash.
-export function genuineReceipts(alchemyBlock: AlchemyBlock): Record<string, TransactionReceipt> {
-  return Object.fromEntries(alchemyBlock.transactions.map((tx) => [tx.hash, receipt(tx.logs)]))
+// Chain logs that confirm every log of every transaction in the block.
+export function genuineChainLogs(alchemyBlock: AlchemyBlock): Log[] {
+  return alchemyBlock.transactions.flatMap((tx) => tx.logs.map((payloadLog) => chainLog(payloadLog, tx.hash)))
+}
+
+// Behaves like eth_getLogs over a chain holding `chainLogs`: an unknown block hash is an error, and
+// results are filtered by the requested address and topic0, the way a node filters them.
+export function nodeGetLogs(chainLogs: Log[]) {
+  return async (filter: Filter & { blockHash?: string }): Promise<Log[]> => {
+    if (filter.blockHash?.toLowerCase() !== BLOCK_HASH) {
+      throw new Error(`block not found: hash ${filter.blockHash}`)
+    }
+    const topic0 = filter.topics?.[0]
+    const wanted = topic0 == null ? undefined : [topic0].flat().map((topic) => topic.toLowerCase())
+    return chainLogs.filter(
+      (chainLog) =>
+        chainLog.blockHash.toLowerCase() === BLOCK_HASH &&
+        (!filter.address || chainLog.address.toLowerCase() === filter.address.toLowerCase()) &&
+        (!wanted || wanted.includes(chainLog.topics[0].toLowerCase()))
+    )
+  }
 }

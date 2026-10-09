@@ -3,6 +3,8 @@ import { JsonRpcProvider, StaticJsonRpcProvider, getNetwork } from '@ethersproje
 
 import { getEnvironmentChainId } from '../helpers'
 
+export const ENVIRONMENT_RPC_TIMEOUT_MS = 10_000
+
 export default class RpcService {
   static async getBlockNumber(): Promise<number> {
     try {
@@ -24,11 +26,16 @@ export default class RpcService {
   }
 
   /**
-   * Provider for the Ethereum network this deployment runs on (GATSBY_DEFAULT_CHAIN_ID). Static, so
-   * it does not re-query eth_chainId before every call.
+   * Provider for the Ethereum network this deployment runs on (GATSBY_DEFAULT_CHAIN_ID), for request
+   * paths such as webhooks. The network is given up front, so no eth_chainId/net_version detection
+   * call is made, and each request fails fast instead of using ethers' defaults (120 s timeout and up
+   * to 12 backed-off retries on HTTP 429), which can hold a request open for minutes.
    */
   public static getEnvironmentProvider() {
-    return new StaticJsonRpcProvider(this.getRpcUrl())
+    return new StaticJsonRpcProvider(
+      { url: this.getRpcUrl(), timeout: ENVIRONMENT_RPC_TIMEOUT_MS, throttleLimit: 1 },
+      Number(getEnvironmentChainId())
+    )
   }
 
   public static getPolygonProvider() {

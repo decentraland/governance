@@ -40,16 +40,20 @@ import { DclProfile } from '../utils/Catalyst/types'
 import Time from '../utils/date/Time'
 import { ErrorCategory } from '../utils/errorCategories'
 
-import { DelegationReceiptVerifier, SNAPSHOT_DELEGATION_REGISTRY } from './DelegationReceiptVerifier'
+import {
+  CLEAR_DELEGATE_SIGNATURE_HASH,
+  DelegationLogVerifier,
+  SET_DELEGATE_SIGNATURE_HASH,
+  SNAPSHOT_DELEGATION_REGISTRY,
+} from './DelegationLogVerifier'
 import { SnapshotService } from './SnapshotService'
 import { NotificationService } from './notification'
 
-const CLEAR_DELEGATE_SIGNATURE_HASH = '0x9c4f00c4291262731946e308dc2979a56bd22cce8f95906b975065e96cd5a064'
-const SET_DELEGATE_SIGNATURE_HASH = '0xa9a7fd460f56bddb880a465a9c3e9730389c70bc53108148f16d55a87a6c468e'
 const TX_HASH_REGEX = /^0x[0-9a-fA-F]{64}$/
 
 type DelegationCandidate = {
   txHash: string
+  logIndex: number
   log: AlchemyLog
   methodSignature: string
   delegator: string
@@ -372,34 +376,41 @@ export class EventsService {
   static async delegationUpdate(block: AlchemyBlock) {
     const candidates = await this.getDelegationCandidates(block)
 
-    // Every candidate is checked against its on-chain receipt before anything is written. Writes are
-    // per transaction and a retry skips transactions already recorded (isDelegationTxRegistered), so
-    // recording the verified ones and then throwing for the rest keeps a retried delivery idempotent.
-    const { verified, rejected, retryTxHashes } = await DelegationReceiptVerifier.verify(candidates, block.timestamp)
+    // Every candidate is checked on chain before anything is written. The check reads the whole block
+    // in one call, so it either settles every candidate or none of them.
+    const { verified, rejected, unavailable } = await DelegationLogVerifier.verify(candidates, block)
+
+    if (unavailable) {
+      // Nothing was written, so the retry Alchemy sends on a non-2xx starts from scratch. The message
+      // carries what is needed to backfill by hand if the chain stays unreadable past Alchemy's retries.
+      throw new Error(
+        `Could not read delegation logs on chain yet (${unavailable}): ${candidates
+          .map(describeDelegationCandidate)
+          .join(', ')}`
+      )
+    }
 
     if (rejected.length > 0) {
       ErrorService.report('Dropped delegation logs that failed on-chain verification', {
         logs: rejected.map(({ candidate, reason }) => ({
           transaction_hash: candidate.txHash,
-          log_index: candidate.log.index,
+          log_index: candidate.logIndex,
+          method: candidate.methodSignature === CLEAR_DELEGATE_SIGNATURE_HASH ? 'ClearDelegate' : 'SetDelegate',
+          delegator: candidate.delegator,
+          delegate: candidate.delegate,
           reason,
         })),
         category: ErrorCategory.Webhook,
       })
     }
 
-    for (const { txHash, log, methodSignature, delegator, delegate } of verified) {
-      const creationDate = this.getContractEventDate(block.timestamp, log)
+    for (const { txHash, logIndex, methodSignature, delegator, delegate } of verified) {
+      const creationDate = this.getContractEventDate(block.timestamp, logIndex)
       if (methodSignature === CLEAR_DELEGATE_SIGNATURE_HASH) {
         await this.delegationClear(delegate, delegator, txHash, creationDate)
       } else {
         await this.delegationSet(delegate, delegator, txHash, creationDate)
       }
-    }
-
-    if (retryTxHashes.length > 0) {
-      // Thrown so the webhook answers non-2xx and Alchemy re-delivers the block.
-      throw new Error(`Could not verify delegation transactions on chain yet: ${retryTxHashes.join(', ')}`)
     }
   }
 
@@ -407,8 +418,8 @@ export class EventsService {
     const candidates: DelegationCandidate[] = []
     for (const transaction of block.transactions) {
       const txHash = transaction?.hash
-      // The hash is what the receipt is looked up by, so without a well-formed one the logs cannot
-      // be verified: drop them (fail closed) rather than send the RPC an input it would reject.
+      // The hash is what ties a log to the chain (and what the replay guard keys on), so without a
+      // well-formed one the logs cannot be verified: drop them (fail closed).
       if (typeof txHash !== 'string' || !TX_HASH_REGEX.test(txHash) || !Array.isArray(transaction.logs)) {
         continue
       }
@@ -428,9 +439,13 @@ export class EventsService {
         if (methodSignature !== SET_DELEGATE_SIGNATURE_HASH && methodSignature !== CLEAR_DELEGATE_SIGNATURE_HASH) {
           continue
         }
+        // The index is what ties the log to the chain; without a usable one it cannot be verified.
+        const logIndex = toLogIndex(log.index)
+        if (logIndex === undefined) {
+          continue
+        }
         // Cheap pre-check: when the payload does name the emitter and it is not the registry, the
-        // log is forged and needs no RPC call. A missing emitter proves nothing either way; the
-        // receipt check decides.
+        // log is forged. A missing emitter proves nothing either way; the on-chain check decides.
         const emitter = log.account?.address
         if (emitter && !isSameAddress(emitter, SNAPSHOT_DELEGATION_REGISTRY)) {
           continue
@@ -450,7 +465,7 @@ export class EventsService {
         if (isSameAddress(delegator, delegate)) {
           continue
         }
-        candidates.push({ txHash, log, methodSignature, delegator, delegate })
+        candidates.push({ txHash, logIndex, log, methodSignature, delegator, delegate })
       }
     }
     return candidates
@@ -505,8 +520,8 @@ export class EventsService {
    * This is so each log event is chronologically ordered, and has the closest date
    * to the block timestamp
    */
-  private static getContractEventDate(blockTimestamp: number, log: AlchemyLog) {
-    return new Date(blockTimestamp * 1000 + log.index)
+  private static getContractEventDate(blockTimestamp: number, logIndex: number) {
+    return new Date(blockTimestamp * 1000 + logIndex)
   }
 
   private static decodeTopicToAddress(topic: string) {
@@ -516,4 +531,14 @@ export class EventsService {
     }
     return address
   }
+}
+
+// The GraphQL schema types the index as Int!; a numeric string is tolerated, anything else is not.
+function toLogIndex(value: unknown): number | undefined {
+  const index = typeof value === 'string' && /^\d+$/.test(value) ? Number(value) : value
+  return typeof index === 'number' && Number.isSafeInteger(index) && index >= 0 ? index : undefined
+}
+
+function describeDelegationCandidate({ txHash, logIndex, delegator, delegate }: DelegationCandidate) {
+  return `${txHash}#${logIndex} ${delegator} -> ${delegate}`
 }
