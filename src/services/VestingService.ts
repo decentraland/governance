@@ -20,6 +20,42 @@ import { ErrorService } from './ErrorService'
 
 export const MAX_CONCURRENT_VESTING_FALLBACKS = 5
 
+// `linear` does not tell the versions apart: a V2 contract can be linear too
+function isV1Vesting(vestingData: SubgraphVesting) {
+  return Number(vestingData.version) === 1
+}
+
+// Subgraph deployment QmV6EB6uq5548oCdcjYU3pz1jLwwkSoKUg6DY5dZrAgvTN stores a V1 release's running total as its
+// amount. Remove this once the subgraph stores per-release amounts, or they get subtracted twice.
+function getReleaseAmounts(vestingData: SubgraphVesting) {
+  const releases = vestingData.releaseLogs
+    .map((releaseLog) => ({ timestamp: Number(releaseLog.timestamp), amount: Number(releaseLog.amount) }))
+    .sort((a, b) => a.timestamp - b.timestamp)
+  if (!isV1Vesting(vestingData)) {
+    return releases
+  }
+
+  let releasedSoFar = 0
+  return releases.map(({ timestamp, amount: total }) => {
+    if (total < releasedSoFar) {
+      ErrorService.report('V1 vesting release logs are not running totals', {
+        vestingAddress: vestingData.id,
+        category: ErrorCategory.Vesting,
+      })
+    }
+    const amount = total - releasedSoFar
+    releasedSoFar = total
+    return { timestamp, amount }
+  })
+}
+
+function getReleased(vestingData: SubgraphVesting) {
+  if (!isV1Vesting(vestingData)) {
+    return Number(vestingData.released)
+  }
+  return vestingData.releaseLogs.reduce((released, releaseLog) => Math.max(released, Number(releaseLog.amount)), 0)
+}
+
 export class VestingService {
   static async getAllVestings(): Promise<VestingWithLogs[]> {
     const cacheKey = `vesting-subgraph-data`
@@ -113,7 +149,7 @@ export class VestingService {
     const contractEndsTimestamp = contractStart + contractDuration
     const finish_at = toISOString(contractEndsTimestamp)
 
-    const released = Number(vestingData.released)
+    const released = getReleased(vestingData)
     const total = Number(vestingData.total)
     let vested = 0
 
@@ -182,14 +218,14 @@ export class VestingService {
   }
 
   private static parseVestingLogs(vestingData: SubgraphVesting) {
-    const version = vestingData.linear ? ContractVersion.V1 : ContractVersion.V2
+    const version = isV1Vesting(vestingData) ? ContractVersion.V1 : ContractVersion.V2
     const topics = TopicsByVersion[version]
     const logs: VestingLog[] = []
-    const parsedReleases: VestingLog[] = vestingData.releaseLogs.map((releaseLog) => {
+    const parsedReleases: VestingLog[] = getReleaseAmounts(vestingData).map(({ timestamp, amount }) => {
       return {
         topic: topics.RELEASE,
-        timestamp: toISOString(Number(releaseLog.timestamp)),
-        amount: Number(releaseLog.amount),
+        timestamp: toISOString(timestamp),
+        amount,
       }
     })
     logs.push(...parsedReleases)

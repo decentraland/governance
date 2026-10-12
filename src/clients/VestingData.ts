@@ -55,13 +55,23 @@ function parseContractValue(value: unknown) {
 // A chunked scan can take minutes; it keeps running after the timeout and fills the cache for the next request
 export const LOGS_TIMEOUT_MS = 3_000
 
+function tokenAmount(wei: bigint) {
+  return Number(wei) / 1e18
+}
+
+function compareChainOrder(a: ContractLog, b: ContractLog) {
+  return a.blockNumber - b.blockNumber || a.logIndex - b.logIndex
+}
+
+// A V1 contract emits `Released(released)` with the running total released so far, not the amount of that release
 function decodeVestingLogs(logs: ContractLog[], version: ContractVersion) {
   const topics = TopicsByVersion[version]
   const logsData: VestingLog[] = []
+  let releasedSoFar = BigInt(0)
 
-  logs.forEach((log) => {
+  const chainOrderedLogs = [...logs].sort(compareChainOrder)
+  chainOrderedLogs.forEach((log) => {
     const timestamp = toISOString(log.timestamp)
-    const amount = parseInt(log.data, 16) / 1e18
     switch (log.topics[0]) {
       case topics.REVOKE:
         logsData.push({ topic: topics.REVOKE, timestamp })
@@ -72,9 +82,16 @@ function decodeVestingLogs(logs: ContractLog[], version: ContractVersion) {
       case topics.UNPAUSED:
         logsData.push({ topic: topics.UNPAUSED, timestamp })
         break
-      case topics.RELEASE:
-        logsData.push({ topic: topics.RELEASE, timestamp, amount })
+      case topics.RELEASE: {
+        let amount = BigInt(log.data)
+        if (version === ContractVersion.V1) {
+          const total = amount
+          amount = total - releasedSoFar
+          releasedSoFar = total
+        }
+        logsData.push({ topic: topics.RELEASE, timestamp, amount: tokenAmount(amount) })
         break
+      }
       default:
         break
     }
