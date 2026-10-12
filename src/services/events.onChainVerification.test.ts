@@ -465,7 +465,8 @@ describe('EventsService.delegationUpdate on-chain verification', () => {
 
       // An unknown block hash is an error, not an empty result, so node lag cannot pass for a forgery.
       it('should throw so alchemy retries the delivery', () => {
-        expect(outcome).toBeInstanceOf(Error)
+        expect((outcome as Error).message).toContain('Could not read delegation logs on chain yet')
+        expect((outcome as Error).message).toContain(`block not found: hash ${UNKNOWN_BLOCK_HASH}`)
         expect(delegationSet).not.toHaveBeenCalled()
       })
     })
@@ -808,7 +809,8 @@ describe('EventsService.delegationUpdate on-chain verification', () => {
       })
 
       it('should throw so alchemy retries the delivery', () => {
-        expect(outcome).toBeInstanceOf(Error)
+        expect((outcome as Error).message).toContain('Could not read delegation logs on chain yet')
+        expect((outcome as Error).message).toContain(`block ${BLOCK_NUMBER} not found`)
         expect(getLogs).not.toHaveBeenCalled()
       })
     })
