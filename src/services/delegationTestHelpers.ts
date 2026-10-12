@@ -7,6 +7,9 @@ import { AlchemyBlock, AlchemyLog, AlchemyTransaction } from '../shared/types/ev
 // Alchemy delegation-webhook fixtures and on-chain (eth_getLogs) fakes, shared by the tests that exercise
 // EventsService.delegationUpdate.
 
+// Deliberately written out again instead of imported from DelegationLogVerifier: an independent copy
+// (checked against the deployed registry and keccak256 of the event signatures) makes a typo in the
+// production constants fail the tests, where an import would let both sides agree on the wrong value.
 export const CLEAR_DELEGATE_SIGNATURE_HASH = '0x9c4f00c4291262731946e308dc2979a56bd22cce8f95906b975065e96cd5a064'
 export const SET_DELEGATE_SIGNATURE_HASH = '0xa9a7fd460f56bddb880a465a9c3e9730389c70bc53108148f16d55a87a6c468e'
 export const SNAPSHOT_DELEGATION_REGISTRY = '0x469788fE6E9E9681C6ebF3bF78e7Fd26Fc015446'

@@ -16,7 +16,12 @@ export const SET_DELEGATE_SIGNATURE_HASH = '0xa9a7fd460f56bddb880a465a9c3e973038
 // deliveries, which are then dropped and reported with enough detail to backfill by hand.
 export const VERIFICATION_GRACE_PERIOD_MS = 60 * 60 * 1000
 
-const BLOCK_HASH_REGEX = /^0x[0-9a-fA-F]{64}$/
+// A 32-byte hex value, the shape of both transaction and block hashes.
+const HASH_REGEX = /^0x[0-9a-fA-F]{64}$/
+
+export function isHash(value: unknown): value is string {
+  return typeof value === 'string' && HASH_REGEX.test(value)
+}
 
 export type DelegationLogCandidate = { txHash: string; logIndex: number; log: AlchemyLog }
 
@@ -48,7 +53,7 @@ export class DelegationLogVerifier {
       return { verified: [], rejected: [] }
     }
 
-    if (!isBlockHash(block.hash) && !isBlockNumber(block.number)) {
+    if (!isHash(block.hash) && !isBlockNumber(block.number)) {
       // Nothing to look the logs up by, and a retry carries the same payload: fail closed.
       return {
         verified: [],
@@ -86,7 +91,7 @@ export class DelegationLogVerifier {
   private static async fetchRegistryLogs(block: Pick<AlchemyBlock, 'hash' | 'number'>): Promise<Log[]> {
     const provider = RpcService.getEnvironmentProvider()
     let blockHash = block.hash
-    if (!isBlockHash(blockHash)) {
+    if (!isHash(blockHash)) {
       // Fallback for a webhook query that does not request the block hash: the canonical block at
       // that height. If the delivered block was reorged out, its logs will not match and are dropped;
       // Alchemy delivers the canonical block separately.
@@ -132,10 +137,6 @@ export class DelegationLogVerifier {
     }
     return undefined
   }
-}
-
-function isBlockHash(value: unknown): value is string {
-  return typeof value === 'string' && BLOCK_HASH_REGEX.test(value)
 }
 
 function isBlockNumber(value: unknown): value is number {

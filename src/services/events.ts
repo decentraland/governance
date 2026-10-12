@@ -22,7 +22,6 @@ import { DiscourseWebhookPost } from '../shared/types/discourse'
 import {
   ActivityTickerEvent,
   AlchemyBlock,
-  AlchemyLog,
   DelegationClearEvent,
   DelegationSetEvent,
   EventFilter,
@@ -42,23 +41,16 @@ import { ErrorCategory } from '../utils/errorCategories'
 
 import {
   CLEAR_DELEGATE_SIGNATURE_HASH,
+  DelegationLogCandidate,
   DelegationLogVerifier,
   SET_DELEGATE_SIGNATURE_HASH,
   SNAPSHOT_DELEGATION_REGISTRY,
+  isHash,
 } from './DelegationLogVerifier'
 import { SnapshotService } from './SnapshotService'
 import { NotificationService } from './notification'
 
-const TX_HASH_REGEX = /^0x[0-9a-fA-F]{64}$/
-
-type DelegationCandidate = {
-  txHash: string
-  logIndex: number
-  log: AlchemyLog
-  methodSignature: string
-  delegator: string
-  delegate: string
-}
+type DelegationCandidate = DelegationLogCandidate & { methodSignature: string; delegator: string; delegate: string }
 
 export class EventsService {
   static async getLatest(filters: EventFilter): Promise<ActivityTickerEvent[]> {
@@ -420,7 +412,7 @@ export class EventsService {
       const txHash = transaction?.hash
       // The hash is what ties a log to the chain (and what the replay guard keys on), so without a
       // well-formed one the logs cannot be verified: drop them (fail closed).
-      if (typeof txHash !== 'string' || !TX_HASH_REGEX.test(txHash) || !Array.isArray(transaction.logs)) {
+      if (!isHash(txHash) || !Array.isArray(transaction.logs)) {
         continue
       }
       if (await EventModel.isDelegationTxRegistered(txHash)) {
