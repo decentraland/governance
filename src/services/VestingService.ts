@@ -63,8 +63,6 @@ export class VestingService {
     return vestingsData.map(this.parseSubgraphVesting)
   }
 
-  // `includeLogs: false` lets callers that only need the vesting data skip the contract logs scan when the vesting is
-  // missing from the subgraph (the subgraph always includes its logs)
   static async getVestingWithLogs(
     vestingAddress: string | null | undefined,
     proposalId?: string,

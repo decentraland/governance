@@ -201,7 +201,6 @@ export class UpdateService {
     const { vesting_addresses, proposal_id } = project
     const vestingAddresses = initialVestingAddresses || vesting_addresses
     const latestVestingAddress = vestingAddresses[vestingAddresses.length - 1]
-    // only the vesting dates are used here, not its logs
     const vesting = await VestingService.getVestingWithLogs(latestVestingAddress, proposal_id, { includeLogs: false })
 
     const now = new Date()

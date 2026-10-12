@@ -26,21 +26,14 @@ type CachedContractLogs = {
   logs: ContractLog[]
 }
 
-// rpc.decentraland.org routes each request to Alchemy or Infura (about half each). Alchemy answers
-// eth_getLogs over any block range as long as the result has at most 10,000 logs; Infura refuses
-// ranges wider than 10,000 blocks. A cold scan first asks for the whole history, retrying until a
-// request reaches Alchemy, and only falls back to [from, from + 9999] chunks (safe on both) when
-// every attempt is refused.
+// rpc.decentraland.org routes each request to Alchemy (any range) or Infura (10,000 blocks max)
 export const FULL_RANGE_ATTEMPTS = 4
 export const LOG_CHUNK_SIZE = 10_000
 export const MAX_CONCURRENT_LOG_REQUESTS = 5
 export const MAX_RETRIES = 3
 const RETRY_BASE_DELAY_MS = 500
-// Vesting contracts emit a few dozen logs at most. Both upstreams refuse more than 10,000 results in
-// one response anyway, and a scan must not keep an unbounded list in memory for a busy contract.
 export const MAX_CONTRACT_LOGS = 10_000
-// Blocks this close to the head can still be reorged, so they are scanned again on the next call
-// instead of being cached
+// Blocks this close to the head can still be reorged, so they are not cached
 export const REORG_SAFETY_BLOCKS = 64
 
 // Infura: "range N exceeds limit of 10000". Another attempt can reach Alchemy, which accepts it.
@@ -99,7 +92,6 @@ async function withRetries<T>(request: () => Promise<T>): Promise<T> {
   }
 }
 
-// Runs `task` over `items` with at most `limit` tasks in flight, and stops taking new items once one fails
 async function mapWithConcurrency<T, R>(items: T[], limit: number, task: (item: T) => Promise<R>): Promise<R[]> {
   const results: R[] = new Array(items.length)
   let next = 0
@@ -132,11 +124,7 @@ async function hasCode(provider: JsonRpcProvider, address: string, block: number
   return code !== '0x'
 }
 
-// Binary search for the first block where the contract has code: no log can be older than that.
-// There is no fallback start block when getCode fails: a guessed start either misses older events
-// (the previous 2022 constant skipped every release of contracts deployed earlier) or costs
-// thousands of requests from genesis. The error propagates instead, so the caller can serve the
-// vesting without logs and report it, and the next call tries again.
+// Binary search for the first block where the contract has code: no log can be older than that
 export async function getDeploymentBlock(provider: JsonRpcProvider, address: string, head: number) {
   const cacheKey = deploymentBlockKey(address)
   const cached = CacheService.get<number>(cacheKey)
@@ -168,9 +156,7 @@ function getRawLogs(provider: JsonRpcProvider, address: string, fromBlock: numbe
   )
 }
 
-// Asks for every log up to `toBlock` in one request. Returns null when every attempt was refused for
-// its block range (each attempt is routed to Alchemy or Infura independently, so 4 attempts all reach
-// Infura 1 time in 16).
+// Returns null when every attempt was refused for its block range
 async function getAllRawLogsAtOnce(provider: JsonRpcProvider, address: string, toBlock: number) {
   for (let attempt = 0; attempt < FULL_RANGE_ATTEMPTS; attempt++) {
     let logs: RawLog[]
@@ -194,8 +180,6 @@ async function getAllRawLogsAtOnce(provider: JsonRpcProvider, address: string, t
   return null
 }
 
-// Every chunk fits Infura's block range limit, so a refused chunk means more than 10,000 logs in
-// 10,000 blocks: it is not split, the scan fails as over MAX_CONTRACT_LOGS.
 async function getRawLogsInChunks(
   provider: JsonRpcProvider,
   address: string,
@@ -228,8 +212,7 @@ function toHex(value: number) {
   return `0x${value.toString(16)}`
 }
 
-// eth_getLogs results usually carry `blockTimestamp` (ethers' getLogs drops it, hence the raw
-// `send`). Blocks of logs without it are fetched once each.
+// ethers' getLogs drops `blockTimestamp`, hence the raw `send`
 async function toContractLogs(provider: JsonRpcProvider, rawLogs: RawLog[]): Promise<ContractLog[]> {
   const logs = rawLogs.filter((log) => !log.removed)
   const blocksWithoutTimestamp = [
@@ -274,7 +257,6 @@ async function scanContractLogs(provider: JsonRpcProvider, address: string): Pro
   const newLogs = await toContractLogs(provider, rawLogs)
   const logs = [...(cached?.logs || []), ...newLogs].sort(compareLogs)
 
-  // The cache is in-process: it is not shared between instances and it is lost on every deploy
   const safeBlock = Math.max(head - REORG_SAFETY_BLOCKS, fromBlock - 1)
   CacheService.set<CachedContractLogs>(
     cacheKey,
@@ -285,12 +267,6 @@ async function scanContractLogs(provider: JsonRpcProvider, address: string): Pro
   return logs
 }
 
-/**
- * Returns every log emitted by a contract, sorted by block and log index, with block timestamps.
- * The first call asks for the whole history at once, falling back to chunks from the contract
- * deployment block; later calls only scan the blocks added since. Concurrent calls for the same
- * address share a single scan. Contracts with more than MAX_CONTRACT_LOGS logs are refused.
- */
 export function getContractLogs(provider: JsonRpcProvider, contractAddress: string): Promise<ContractLog[]> {
   const address = contractAddress.toLowerCase()
   const inFlightScan = inFlightScans.get(address)

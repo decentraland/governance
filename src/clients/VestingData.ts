@@ -52,9 +52,7 @@ function parseContractValue(value: unknown) {
   return Math.round(Number(value) / 1e18)
 }
 
-// A cold scan of a contract's logs usually takes one or two requests, but when it falls back to chunks it can take
-// minutes (about 4 for a 2020 contract), so a request does not wait for it longer than this. The scan keeps running
-// and fills the cache for the next request.
+// A chunked scan can take minutes; it keeps running after the timeout and fills the cache for the next request
 export const LOGS_TIMEOUT_MS = 3_000
 
 function decodeVestingLogs(logs: ContractLog[], version: ContractVersion) {
@@ -85,7 +83,6 @@ function decodeVestingLogs(logs: ContractLog[], version: ContractVersion) {
   return logsData
 }
 
-// Never rejects: logs are secondary to the vesting data, so a failed or slow scan yields no logs
 async function getVestingContractLogs(
   vestingAddress: string,
   provider: JsonRpcProvider,
@@ -234,7 +231,6 @@ export function sortByTimestamp(a: VestingLog, b: VestingLog) {
   return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
 }
 
-// `includeLogs: false` is for callers that only need the vesting data (status, dates, amounts): it skips the logs
 export async function getVestingWithLogsFromAlchemy(
   vestingAddress: string,
   proposalId?: string | undefined,
@@ -261,8 +257,6 @@ export async function getVestingWithLogsFromAlchemy(
     }
   }
 
-  // Logs are only fetched for an address that answered a vesting data call. Both contract versions emit their logs
-  // at the same address, so they are fetched once and decoded with the topics of the version that answered.
   const logs = includeLogs
     ? decodeVestingLogs(await getVestingContractLogs(vestingAddress, provider, proposalId), version)
     : []
