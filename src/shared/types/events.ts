@@ -140,7 +140,8 @@ export type AlchemyLog = {
   data: string
   transaction: AlchemyTransaction
   // Emitting contract address. Only present when the Alchemy webhook GraphQL query requests
-  // `account { address }`; used to verify the log came from the Snapshot DelegateRegistry.
+  // `account { address }`. Optional pre-check only: a non-registry emitter is dropped early, but
+  // DelegationLogVerifier (the on-chain check) is what decides whether a log is trusted.
   account?: {
     address: string
   }

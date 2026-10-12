@@ -1,6 +1,10 @@
 import EventModel from '../models/Event'
+import { AlchemyBlock } from '../shared/types/events'
 
+import { ErrorService } from './ErrorService'
+import RpcService from './RpcService'
 import {
+  BLOCK_HASH,
   BLOCK_TIMESTAMP,
   CLEAR_DELEGATE_SIGNATURE_HASH,
   DELEGATE,
@@ -15,16 +19,31 @@ import {
   addressTopic,
   block,
   blockWithLogs,
+  genuineChainLogs,
   log,
+  nodeGetLogs,
   transaction,
 } from './delegationTestHelpers'
 import { EventsService } from './events'
 
+// Payload-level parsing and filtering. Every delivery here is backed by a chain that holds exactly
+// its logs, so these cases isolate the payload checks; events.onChainVerification.test.ts covers the
+// on-chain side.
+
 describe('EventsService.delegationUpdate', () => {
   let delegationSet: jest.SpyInstance
   let delegationClear: jest.SpyInstance
+  let getLogs: jest.Mock
+
+  function deliver(alchemyBlock: AlchemyBlock) {
+    getLogs.mockImplementation(nodeGetLogs(genuineChainLogs(alchemyBlock)))
+    return EventsService.delegationUpdate(alchemyBlock)
+  }
 
   beforeEach(() => {
+    getLogs = jest.fn()
+    jest.spyOn(RpcService, 'getEnvironmentProvider').mockReturnValue({ getLogs } as never)
+    jest.spyOn(ErrorService, 'report').mockImplementation(() => undefined)
     jest.spyOn(EventModel, 'isDelegationTxRegistered').mockResolvedValue(false)
     delegationSet = jest.spyOn(EventsService, 'delegationSet').mockResolvedValue(undefined)
     delegationClear = jest.spyOn(EventsService, 'delegationClear').mockResolvedValue(undefined)
@@ -37,11 +56,15 @@ describe('EventsService.delegationUpdate', () => {
   describe('when the transaction was already registered', () => {
     beforeEach(async () => {
       ;(EventModel.isDelegationTxRegistered as jest.Mock).mockResolvedValue(true)
-      await EventsService.delegationUpdate(blockWithLogs([log()]))
+      await deliver(blockWithLogs([log()]))
     })
 
     it('should not record the delegation a second time', () => {
       expect(delegationSet).not.toHaveBeenCalled()
+    })
+
+    it('should not spend an RPC call verifying it again', () => {
+      expect(getLogs).not.toHaveBeenCalled()
     })
   })
 
@@ -49,7 +72,7 @@ describe('EventsService.delegationUpdate', () => {
     let outcome: unknown
 
     beforeEach(async () => {
-      outcome = await EventsService.delegationUpdate(blockWithLogs([log({ topics: undefined })]))
+      outcome = await deliver(blockWithLogs([log({ topics: undefined })]))
         .then(() => 'resolved')
         .catch((error) => error)
     })
@@ -67,9 +90,7 @@ describe('EventsService.delegationUpdate', () => {
     let outcome: unknown
 
     beforeEach(async () => {
-      outcome = await EventsService.delegationUpdate(
-        blockWithLogs([log({ topics: [SET_DELEGATE_SIGNATURE_HASH, addressTopic(DELEGATOR)] })])
-      )
+      outcome = await deliver(blockWithLogs([log({ topics: [SET_DELEGATE_SIGNATURE_HASH, addressTopic(DELEGATOR)] })]))
         .then(() => 'resolved')
         .catch((error) => error)
     })
@@ -91,7 +112,7 @@ describe('EventsService.delegationUpdate', () => {
         SPACE_TOPIC,
         addressTopic(DELEGATE),
       ]
-      await EventsService.delegationUpdate(blockWithLogs([log({ topics })]))
+      await deliver(blockWithLogs([log({ topics })]))
     })
 
     it('should not record a delegation', () => {
@@ -101,31 +122,37 @@ describe('EventsService.delegationUpdate', () => {
 
   describe('when the emitting contract is not the snapshot delegate registry', () => {
     beforeEach(async () => {
-      await EventsService.delegationUpdate(blockWithLogs([log({ account: { address: UNRELATED_CONTRACT } })]))
+      await deliver(blockWithLogs([log({ account: { address: UNRELATED_CONTRACT } })]))
     })
 
     it('should reject the forged look-alike log', () => {
       expect(delegationSet).not.toHaveBeenCalled()
     })
+
+    it('should reject it from the payload alone, without an RPC call', () => {
+      expect(getLogs).not.toHaveBeenCalled()
+    })
   })
 
   describe('when the payload does not carry the emitting contract', () => {
     beforeEach(async () => {
-      await EventsService.delegationUpdate(blockWithLogs([log({ account: undefined })]))
+      await deliver(blockWithLogs([log({ account: undefined })]))
     })
 
-    // Best-effort mode: the Alchemy query has to request `account { address }` before the check can
-    // be enforced, so a missing emitter is tolerated rather than dropping every real delegation.
-    it('should still record the delegation', () => {
+    // The live Alchemy query does not request `account { address }`; the chain is what proves the
+    // emitter, so a missing one is neither trusted nor fatal.
+    it('should record the delegation once the chain confirms it', () => {
       expect(delegationSet).toHaveBeenCalledTimes(1)
+    })
+
+    it('should check the registry logs of its block', () => {
+      expect(getLogs).toHaveBeenCalledWith(expect.objectContaining({ blockHash: BLOCK_HASH }))
     })
   })
 
   describe('when the emitting contract is the registry in a different case', () => {
     beforeEach(async () => {
-      await EventsService.delegationUpdate(
-        blockWithLogs([log({ account: { address: SNAPSHOT_DELEGATION_REGISTRY.toLowerCase() } })])
-      )
+      await deliver(blockWithLogs([log({ account: { address: SNAPSHOT_DELEGATION_REGISTRY.toLowerCase() } })]))
     })
 
     it('should accept it, since address equality is case-insensitive', () => {
@@ -138,7 +165,7 @@ describe('EventsService.delegationUpdate', () => {
 
     beforeEach(async () => {
       const topics = [SET_DELEGATE_SIGNATURE_HASH, '0x' + 'g'.repeat(64), SPACE_TOPIC, addressTopic(DELEGATE)]
-      outcome = await EventsService.delegationUpdate(blockWithLogs([log({ topics })]))
+      outcome = await deliver(blockWithLogs([log({ topics })]))
         .then(() => 'resolved')
         .catch((error) => error)
     })
@@ -162,7 +189,7 @@ describe('EventsService.delegationUpdate', () => {
         '0xnot-a-bytes32-value',
         addressTopic(DELEGATE),
       ]
-      outcome = await EventsService.delegationUpdate(blockWithLogs([log({ topics })]))
+      outcome = await deliver(blockWithLogs([log({ topics })]))
         .then(() => 'resolved')
         .catch((error) => error)
     })
@@ -179,7 +206,7 @@ describe('EventsService.delegationUpdate', () => {
   describe('when the log belongs to another snapshot space', () => {
     beforeEach(async () => {
       const topics = [SET_DELEGATE_SIGNATURE_HASH, addressTopic(DELEGATOR), OTHER_SPACE_TOPIC, addressTopic(DELEGATE)]
-      await EventsService.delegationUpdate(blockWithLogs([log({ topics })]))
+      await deliver(blockWithLogs([log({ topics })]))
     })
 
     it('should not record a delegation for a space this instance does not track', () => {
@@ -195,7 +222,7 @@ describe('EventsService.delegationUpdate', () => {
         SPACE_TOPIC,
         addressTopic(DELEGATOR.toUpperCase().replace('0X', '0x')),
       ]
-      await EventsService.delegationUpdate(blockWithLogs([log({ topics })]))
+      await deliver(blockWithLogs([log({ topics })]))
     })
 
     it('should drop the self-delegation the real registry could never emit', () => {
@@ -205,7 +232,7 @@ describe('EventsService.delegationUpdate', () => {
 
   describe('when a set delegate log is valid', () => {
     beforeEach(async () => {
-      await EventsService.delegationUpdate(blockWithLogs([log({ index: 7 })]))
+      await deliver(blockWithLogs([log({ index: 7 })]))
     })
 
     it('should record the delegation with the delegate, delegator and transaction hash', () => {
@@ -224,7 +251,7 @@ describe('EventsService.delegationUpdate', () => {
   describe('when a clear delegate log is valid', () => {
     beforeEach(async () => {
       const topics = [CLEAR_DELEGATE_SIGNATURE_HASH, addressTopic(DELEGATOR), SPACE_TOPIC, addressTopic(DELEGATE)]
-      await EventsService.delegationUpdate(blockWithLogs([log({ topics })]))
+      await deliver(blockWithLogs([log({ topics })]))
     })
 
     it('should record the delegation clear with the removed delegate and delegator', () => {
@@ -240,9 +267,7 @@ describe('EventsService.delegationUpdate', () => {
   // re-delivered it indefinitely and every legitimate delegation inside it was wedged.
   describe('when a malformed log precedes a valid one in the same transaction', () => {
     beforeEach(async () => {
-      await EventsService.delegationUpdate(
-        blockWithLogs([log({ topics: [SET_DELEGATE_SIGNATURE_HASH] }), log({ index: 1 })])
-      )
+      await deliver(blockWithLogs([log({ topics: [SET_DELEGATE_SIGNATURE_HASH] }), log({ index: 1 })]))
     })
 
     it('should still record the valid delegation that follows it', () => {
@@ -252,7 +277,7 @@ describe('EventsService.delegationUpdate', () => {
 
   describe('when a malformed log sits in an earlier transaction than a valid one', () => {
     beforeEach(async () => {
-      await EventsService.delegationUpdate(
+      await deliver(
         block([transaction([log({ topics: ['0x00'] })], TX_HASH), transaction([log({ index: 2 })], OTHER_TX_HASH)])
       )
     })
