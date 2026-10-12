@@ -368,8 +368,8 @@ export class EventsService {
   static async delegationUpdate(block: AlchemyBlock) {
     const candidates = await this.getDelegationCandidates(block)
 
-    // Every candidate is checked on chain before anything is written. The check reads the whole block
-    // in one call, so it either settles every candidate or none of them.
+    // Every candidate is checked on chain before anything is written. The check reads the block once
+    // (two calls without a block hash) and either settles every candidate or none of them.
     const verification = await DelegationLogVerifier.verify(candidates, block)
 
     if (verification.status === 'unavailable') {

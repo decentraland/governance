@@ -630,14 +630,24 @@ describe('EventsService.delegationUpdate on-chain verification', () => {
     // fork, or an upstream behind the load balancer that has not caught up.
     const NODE_FORK_HASH = '0x' + 'ee'.repeat(32)
     const UNRELATED_TX_HASH = '0x' + 'ff'.repeat(32)
+    // The delivered block's timestamp, recent enough to be within the grace period.
+    const DELIVERED_AT = nowInSeconds()
+    // A block competing at the same height comes from another slot, 12 s later.
+    const SIBLING_AT = DELIVERED_AT + 12
+    const STALE_AT = DELIVERED_AT - VERIFICATION_GRACE_PERIOD_MS / 1000 - 60
 
-    const withoutHash = (transactions: AlchemyTransaction[], timestamp = nowInSeconds()) =>
+    const withoutHash = (transactions: AlchemyTransaction[], timestamp = DELIVERED_AT) =>
       ({ ...block(transactions, timestamp), hash: undefined } as unknown as AlchemyBlock)
 
-    // What the node holds at BLOCK_NUMBER: the block's hash, its transaction hashes, and its logs.
-    function nodeHoldsAtHeight(blockHash: string, txHashes: string[], ...chainLogs: Log[]) {
-      getBlock.mockResolvedValue({ hash: blockHash, number: BLOCK_NUMBER, transactions: txHashes })
-      getLogs.mockImplementation(nodeGetLogs(chainLogs, blockHash))
+    // What the node holds at BLOCK_NUMBER: the block's hash, timestamp and transaction hashes, and its
+    // registry logs.
+    function nodeHoldsAtHeight(
+      nodeBlock: { hash: string; transactions: string[]; timestamp?: number },
+      ...chainLogs: Log[]
+    ) {
+      const { hash, transactions, timestamp = DELIVERED_AT } = nodeBlock
+      getBlock.mockResolvedValue({ hash, number: BLOCK_NUMBER, timestamp, transactions })
+      getLogs.mockImplementation(nodeGetLogs(chainLogs, hash))
     }
 
     describe('and the node has the delivered block at that height', () => {
@@ -645,7 +655,7 @@ describe('EventsService.delegationUpdate on-chain verification', () => {
 
       beforeEach(async () => {
         const genuine = log({ account: undefined })
-        nodeHoldsAtHeight(BLOCK_HASH, [TX_HASH], chainLog(genuine))
+        nodeHoldsAtHeight({ hash: BLOCK_HASH, transactions: [TX_HASH] }, chainLog(genuine))
         outcome = await outcomeOf(withoutHash([transaction([genuine])]))
       })
 
@@ -665,7 +675,7 @@ describe('EventsService.delegationUpdate on-chain verification', () => {
     describe('and the node reports the transaction hash in a different case', () => {
       beforeEach(async () => {
         const forged = log({ account: undefined })
-        nodeHoldsAtHeight(BLOCK_HASH, [TX_HASH.toUpperCase().replace('0X', '0x')])
+        nodeHoldsAtHeight({ hash: BLOCK_HASH, transactions: [TX_HASH.toUpperCase().replace('0X', '0x')] })
         await outcomeOf(withoutHash([transaction([forged])]))
       })
 
@@ -676,14 +686,17 @@ describe('EventsService.delegationUpdate on-chain verification', () => {
       })
     })
 
-    // The node's block at that height holds the transaction and the registry did not emit the log:
-    // that is final, whichever fork Alchemy saw.
+    // The node's block at that height is the delivered one (same timestamp) and holds the transaction,
+    // and the registry did not emit the log: that is final.
     describe('and the transaction is in the node block but the registry log is not', () => {
       let outcome: unknown
 
       beforeEach(async () => {
         const forged = log({ account: undefined })
-        nodeHoldsAtHeight(BLOCK_HASH, [TX_HASH], chainLog(forged, TX_HASH, { address: UNRELATED_CONTRACT }))
+        nodeHoldsAtHeight(
+          { hash: BLOCK_HASH, transactions: [TX_HASH] },
+          chainLog(forged, TX_HASH, { address: UNRELATED_CONTRACT })
+        )
         outcome = await outcomeOf(withoutHash([transaction([forged])]))
       })
 
@@ -700,7 +713,7 @@ describe('EventsService.delegationUpdate on-chain verification', () => {
       beforeEach(async () => {
         const txHashes = Array.from({ length: 50 }, (_, i) => '0x' + i.toString(16).padStart(64, '0'))
         const forgedTransactions = txHashes.map((hash, i) => transaction([log({ index: i, account: undefined })], hash))
-        nodeHoldsAtHeight(BLOCK_HASH, txHashes)
+        nodeHoldsAtHeight({ hash: BLOCK_HASH, transactions: txHashes })
         await outcomeOf(withoutHash(forgedTransactions))
       })
 
@@ -716,14 +729,96 @@ describe('EventsService.delegationUpdate on-chain verification', () => {
       })
     })
 
-    // The case the fallback could get wrong for good: our node's block at that height is not the one
-    // Alchemy delivered, so the genuine log is missing from it.
-    describe('and the node holds another block at that height, without the delivered transaction', () => {
+    // The case the fallback could get wrong for good: our node still holds a competing block at that
+    // height. It was built from the same mempool, so it holds the delivered transaction too, but the
+    // genuine registry log sits at another block-wide index in it.
+    describe('and the node holds a competing block at that height that also holds the transaction', () => {
+      const SIBLING_INDEX = 2
+      const DELIVERED_INDEX = 7
+      const genuine = log({ index: DELIVERED_INDEX, account: undefined })
+
+      function nodeHoldsSibling() {
+        nodeHoldsAtHeight(
+          { hash: NODE_FORK_HASH, transactions: [UNRELATED_TX_HASH, TX_HASH], timestamp: SIBLING_AT },
+          chainLog(genuine, TX_HASH, { blockHash: NODE_FORK_HASH, logIndex: SIBLING_INDEX })
+        )
+      }
+
       describe('within the grace period', () => {
         let outcome: unknown
 
         beforeEach(async () => {
-          nodeHoldsAtHeight(NODE_FORK_HASH, [UNRELATED_TX_HASH])
+          nodeHoldsSibling()
+          outcome = await outcomeOf(withoutHash([transaction([genuine])]))
+        })
+
+        it('should throw so alchemy retries the delivery', () => {
+          expect((outcome as Error).message).toContain('Could not read delegation logs on chain yet')
+          expect((outcome as Error).message).toContain(
+            `the node's block ${BLOCK_NUMBER} (${NODE_FORK_HASH}) has timestamp ${SIBLING_AT}, not the delivered ${DELIVERED_AT}`
+          )
+          expect((outcome as Error).message).toContain(`${TX_HASH}#${DELIVERED_INDEX} ${DELEGATOR} -> ${DELEGATE}`)
+        })
+
+        it('should not record or drop anything', () => {
+          expect(delegationSet).not.toHaveBeenCalled()
+          expect(report).not.toHaveBeenCalled()
+        })
+
+        it('should not read the logs of a block it already knows is the wrong one', () => {
+          expect(getBlock).toHaveBeenCalledTimes(1)
+          expect(getLogs).not.toHaveBeenCalled()
+        })
+      })
+
+      describe('and alchemy retries once the node has switched to the delivered block', () => {
+        let outcome: unknown
+
+        beforeEach(async () => {
+          const delivery = withoutHash([transaction([genuine])])
+          nodeHoldsSibling()
+          await outcomeOf(delivery)
+          nodeHoldsAtHeight({ hash: BLOCK_HASH, transactions: [TX_HASH, UNRELATED_TX_HASH] }, chainLog(genuine))
+          outcome = await outcomeOf(delivery)
+        })
+
+        it('should record the delegation exactly once', () => {
+          expect(delegationSet).toHaveBeenCalledTimes(1)
+          expect(outcome).toBe('resolved')
+        })
+      })
+
+      describe('past the grace period', () => {
+        let outcome: unknown
+
+        beforeEach(async () => {
+          nodeHoldsSibling()
+          outcome = await outcomeOf(withoutHash([transaction([genuine])], STALE_AT))
+        })
+
+        it('should drop the log and report which block the node held', () => {
+          expect(outcome).toBe('resolved')
+          expect(delegationSet).not.toHaveBeenCalled()
+          expect(droppedLogs()).toEqual([
+            expect.objectContaining({
+              transaction_hash: TX_HASH,
+              log_index: DELIVERED_INDEX,
+              reason: `the node's block ${BLOCK_NUMBER} (${NODE_FORK_HASH}) has timestamp ${SIBLING_AT}, not the delivered ${STALE_AT}`,
+            }),
+          ])
+        })
+      })
+    })
+
+    // A second line of defence, in case a competing block ever carried the delivered timestamp (two
+    // blocks of one slot need the proposer to equivocate): a block without the delivered transaction
+    // is not the delivered block either.
+    describe('and the node holds a block with the delivered timestamp but without the delivered transaction', () => {
+      describe('within the grace period', () => {
+        let outcome: unknown
+
+        beforeEach(async () => {
+          nodeHoldsAtHeight({ hash: NODE_FORK_HASH, transactions: [UNRELATED_TX_HASH] })
           outcome = await outcomeOf(withoutHash([transaction([log({ index: 3, account: undefined })])]))
         })
 
@@ -747,7 +842,7 @@ describe('EventsService.delegationUpdate on-chain verification', () => {
         beforeEach(async () => {
           const confirmed = log({ index: 1, account: undefined })
           const missing = log({ index: 5, account: undefined })
-          nodeHoldsAtHeight(BLOCK_HASH, [TX_HASH], chainLog(confirmed))
+          nodeHoldsAtHeight({ hash: BLOCK_HASH, transactions: [TX_HASH] }, chainLog(confirmed))
           outcome = await outcomeOf(
             withoutHash([transaction([confirmed], TX_HASH), transaction([missing], OTHER_TX_HASH)])
           )
@@ -766,9 +861,9 @@ describe('EventsService.delegationUpdate on-chain verification', () => {
         beforeEach(async () => {
           const genuine = log({ index: 3, account: undefined })
           const delivery = withoutHash([transaction([genuine])])
-          nodeHoldsAtHeight(NODE_FORK_HASH, [UNRELATED_TX_HASH])
+          nodeHoldsAtHeight({ hash: NODE_FORK_HASH, transactions: [UNRELATED_TX_HASH] })
           await outcomeOf(delivery)
-          nodeHoldsAtHeight(BLOCK_HASH, [TX_HASH], chainLog(genuine))
+          nodeHoldsAtHeight({ hash: BLOCK_HASH, transactions: [TX_HASH] }, chainLog(genuine))
           outcome = await outcomeOf(delivery)
         })
 
@@ -782,9 +877,8 @@ describe('EventsService.delegationUpdate on-chain verification', () => {
         let outcome: unknown
 
         beforeEach(async () => {
-          nodeHoldsAtHeight(NODE_FORK_HASH, [UNRELATED_TX_HASH])
-          const staleTimestamp = nowInSeconds() - VERIFICATION_GRACE_PERIOD_MS / 1000 - 60
-          outcome = await outcomeOf(withoutHash([transaction([log({ account: undefined })])], staleTimestamp))
+          nodeHoldsAtHeight({ hash: NODE_FORK_HASH, transactions: [UNRELATED_TX_HASH], timestamp: STALE_AT })
+          outcome = await outcomeOf(withoutHash([transaction([log({ account: undefined })])], STALE_AT))
         })
 
         it('should drop the log and report which block the node held', () => {

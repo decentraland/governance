@@ -79,13 +79,15 @@ export class DelegationLogVerifier {
     try {
       chain = await this.fetchRegistryLogs(block)
     } catch (error) {
-      // Any failure (network, 5xx, 429, timeout, or a block our node does not know yet or no longer
-      // knows after a reorg) says nothing about the logs themselves.
+      // Any failure (network, 5xx, 429, timeout, a block our node does not know yet or no longer
+      // knows after a reorg, or a block at that height that is not the delivered one) says nothing
+      // about the logs themselves.
       const failure = describeRpcError(error)
       if (withinGracePeriod) {
         return { status: 'unavailable', reason: failure }
       }
-      const reason = `could not read the block from the RPC: ${failure}`
+      const reason =
+        error instanceof NotTheDeliveredBlock ? failure : `could not read the block from the RPC: ${failure}`
       return { status: 'checked', verified: [], rejected: candidates.map((candidate) => ({ candidate, reason })) }
     }
 
@@ -104,11 +106,13 @@ export class DelegationLogVerifier {
     }
 
     if (notInNodeBlock.length > 0) {
-      // Only reachable on the block-number fallback (see fetchRegistryLogs). Alchemy says these
-      // transactions are in block N, and our node's block N does not hold them, so our node (or the
-      // upstream that answered) is on another fork or behind: its silence proves nothing yet. This
-      // cannot be used to force retries: a forged log's transaction is in the delivered block like any
-      // other, so a node that agrees with Alchemy holds it and the forgery is rejected at once.
+      // Only reachable on the block-number fallback (see fetchRegistryLogs), and only once the node's
+      // block has the delivered timestamp, so this is a second line of defence: Alchemy says these
+      // transactions are in block N, and our node's block N does not hold them, so it is not the
+      // delivered block after all and its silence proves nothing yet. Forged logs cannot use it to
+      // force retries: Alchemy only delivers transactions of the block, so a forged log's transaction
+      // is in the delivered block like any other, the node's copy of that block holds it, and the
+      // forgery is rejected at once.
       if (withinGracePeriod) {
         return {
           status: 'unavailable',
@@ -122,26 +126,44 @@ export class DelegationLogVerifier {
     return { status: 'checked', verified, rejected }
   }
 
-  private static async fetchRegistryLogs(block: Pick<AlchemyBlock, 'hash' | 'number'>): Promise<ChainBlock> {
+  private static async fetchRegistryLogs(
+    block: Pick<AlchemyBlock, 'hash' | 'number' | 'timestamp'>
+  ): Promise<ChainBlock> {
     const provider = RpcService.getEnvironmentProvider()
     let blockHash = block.hash
     let transactions: Set<string> | undefined
     if (!isHash(blockHash)) {
       // Fallback for a webhook query that does not request the block hash: whatever block our node
       // holds at that height, which may not be the block Alchemy delivered (our node, or one upstream
-      // behind a load balancer, may still be on an orphaned fork or lagging). A missing log is only
-      // final if the transaction is in the block we checked, so the block's transaction hashes are
-      // kept to tell "the registry did not emit it" (reject) from "we looked at another block"
-      // (retry, see verify).
+      // behind a load balancer, may still be on an orphaned fork). Checking the wrong block would
+      // drop a genuine log for good, and the delivered transaction being in it is no proof that it is
+      // the right one: competing blocks at one height are built from the same mempool and usually
+      // share most transactions, with the logs at other block-wide indexes. So the block must first
+      // be shown to be the delivered one:
+      // - Its timestamp must match the delivery's. Under proof of stake, competing blocks at one
+      //   height come from different slots and so have different timestamps; two blocks of one slot
+      //   need the proposer to equivocate, which is slashable. Otherwise it is not the delivered
+      //   block, and the delivery is retried within the grace period (see verify).
+      // - Its transaction hashes are kept, so a candidate whose transaction is not in it is retried
+      //   too rather than rejected (see verify), in case the timestamps matched anyway.
       //
-      // The hashes come in the same eth_getBlockByNumber response as the block hash that eth_getLogs
-      // is pinned to, so both describe one block, and this costs no extra RPC call. Fetching each
-      // missing transaction's receipt instead would cost one call per forged transaction (an attacker
-      // could pack a block with them, so it would need a cap and a policy for what lies past it), and
-      // the receipt could be answered by a different upstream than the one that served the block.
+      // Both come in the same eth_getBlockByNumber response as the block hash that eth_getLogs is
+      // pinned to, so they describe one block, and this costs no extra RPC call. Fetching each
+      // unmatched transaction's receipt instead would cost one call per forged transaction (an
+      // attacker could pack a block with them, so it would need a cap and a policy for what lies past
+      // it), could be answered by a different upstream than the one that served the block, and would
+      // still name the node's block, so it cannot tell a sibling block that shares the transaction.
       const nodeBlock = await provider.getBlock(block.number)
       if (!nodeBlock) {
         throw new Error(`block ${block.number} not found`)
+      }
+      // A payload without a numeric timestamp is past the grace period anyway (NaN, see verify), so
+      // its logs are only checked against the transaction hashes.
+      const deliveredTimestamp = Number(block.timestamp)
+      if (Number.isFinite(deliveredTimestamp) && nodeBlock.timestamp !== deliveredTimestamp) {
+        throw new NotTheDeliveredBlock(
+          `the node's block ${block.number} (${nodeBlock.hash}) has timestamp ${nodeBlock.timestamp}, not the delivered ${deliveredTimestamp}`
+        )
       }
       blockHash = nodeBlock.hash
       transactions = new Set(nodeBlock.transactions.map(lower))
@@ -184,6 +206,9 @@ export class DelegationLogVerifier {
     return undefined
   }
 }
+
+// The node's block at the delivered height is not the delivered block (see fetchRegistryLogs).
+class NotTheDeliveredBlock extends Error {}
 
 function lower(value: string) {
   return value.toLowerCase()

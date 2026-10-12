@@ -58,7 +58,9 @@ export function blockWithLogs(logs: AlchemyLog[]): AlchemyBlock {
   return block([transaction(logs)])
 }
 
-type ChainLogOverrides = Partial<Pick<Log, 'address' | 'logIndex' | 'topics' | 'data' | 'removed' | 'transactionHash'>>
+type ChainLogOverrides = Partial<
+  Pick<Log, 'address' | 'blockHash' | 'logIndex' | 'topics' | 'data' | 'removed' | 'transactionHash'>
+>
 
 // The log the chain would hold if `payloadLog` was really emitted by the registry (unless overridden)
 // in transaction `txHash`, in block BLOCK_HASH, at the index the payload claims.
