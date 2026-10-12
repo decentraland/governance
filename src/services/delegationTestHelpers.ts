@@ -81,18 +81,19 @@ export function genuineChainLogs(alchemyBlock: AlchemyBlock): Log[] {
   return alchemyBlock.transactions.flatMap((tx) => tx.logs.map((payloadLog) => chainLog(payloadLog, tx.hash)))
 }
 
-// Behaves like eth_getLogs over a chain holding `chainLogs`: an unknown block hash is an error, and
-// results are filtered by the requested address and topic0, the way a node filters them.
-export function nodeGetLogs(chainLogs: Log[]) {
+// Behaves like eth_getLogs over a node that knows only block `knownBlockHash` and holds `chainLogs`:
+// an unknown block hash is an error, and results are filtered by the requested address and topic0,
+// the way a node filters them.
+export function nodeGetLogs(chainLogs: Log[], knownBlockHash = BLOCK_HASH) {
   return async (filter: Filter & { blockHash?: string }): Promise<Log[]> => {
-    if (filter.blockHash?.toLowerCase() !== BLOCK_HASH) {
+    if (filter.blockHash?.toLowerCase() !== knownBlockHash.toLowerCase()) {
       throw new Error(`block not found: hash ${filter.blockHash}`)
     }
     const topic0 = filter.topics?.[0]
     const wanted = topic0 == null ? undefined : [topic0].flat().map((topic) => topic.toLowerCase())
     return chainLogs.filter(
       (chainLog) =>
-        chainLog.blockHash.toLowerCase() === BLOCK_HASH &&
+        chainLog.blockHash.toLowerCase() === knownBlockHash.toLowerCase() &&
         (!filter.address || chainLog.address.toLowerCase() === filter.address.toLowerCase()) &&
         (!wanted || wanted.includes(chainLog.topics[0].toLowerCase()))
     )

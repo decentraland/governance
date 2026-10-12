@@ -625,21 +625,177 @@ describe('EventsService.delegationUpdate on-chain verification', () => {
   })
 
   describe('when the payload carries no block hash', () => {
+    // A block our node may hold at the same height instead of the one Alchemy delivered: an orphaned
+    // fork, or an upstream behind the load balancer that has not caught up.
+    const NODE_FORK_HASH = '0x' + 'ee'.repeat(32)
+    const UNRELATED_TX_HASH = '0x' + 'ff'.repeat(32)
+
     const withoutHash = (transactions: AlchemyTransaction[], timestamp = nowInSeconds()) =>
       ({ ...block(transactions, timestamp), hash: undefined } as unknown as AlchemyBlock)
 
-    describe('and the node has the block at that height', () => {
+    // What the node holds at BLOCK_NUMBER: the block's hash, its transaction hashes, and its logs.
+    function nodeHoldsAtHeight(blockHash: string, txHashes: string[], ...chainLogs: Log[]) {
+      getBlock.mockResolvedValue({ hash: blockHash, number: BLOCK_NUMBER, transactions: txHashes })
+      getLogs.mockImplementation(nodeGetLogs(chainLogs, blockHash))
+    }
+
+    describe('and the node has the delivered block at that height', () => {
+      let outcome: unknown
+
       beforeEach(async () => {
         const genuine = log({ account: undefined })
-        getBlock.mockResolvedValue({ hash: BLOCK_HASH })
-        chainHolds(chainLog(genuine))
-        await outcomeOf(withoutHash([transaction([genuine])]))
+        nodeHoldsAtHeight(BLOCK_HASH, [TX_HASH], chainLog(genuine))
+        outcome = await outcomeOf(withoutHash([transaction([genuine])]))
       })
 
       it('should look the block up by number and verify against it', () => {
         expect(getBlock).toHaveBeenCalledWith(BLOCK_NUMBER)
         expect(getLogs).toHaveBeenCalledWith(expect.objectContaining({ blockHash: BLOCK_HASH }))
         expect(delegationSet).toHaveBeenCalledTimes(1)
+        expect(outcome).toBe('resolved')
+      })
+
+      it('should read the chain with exactly two calls', () => {
+        expect(getBlock).toHaveBeenCalledTimes(1)
+        expect(getLogs).toHaveBeenCalledTimes(1)
+      })
+    })
+
+    describe('and the node reports the transaction hash in a different case', () => {
+      beforeEach(async () => {
+        const forged = log({ account: undefined })
+        nodeHoldsAtHeight(BLOCK_HASH, [TX_HASH.toUpperCase().replace('0X', '0x')])
+        await outcomeOf(withoutHash([transaction([forged])]))
+      })
+
+      it('should still treat the transaction as part of the checked block', () => {
+        expect(droppedLogs()).toEqual([
+          expect.objectContaining({ reason: 'no delegate registry log at that transaction and index' }),
+        ])
+      })
+    })
+
+    // The node's block at that height holds the transaction and the registry did not emit the log:
+    // that is final, whichever fork Alchemy saw.
+    describe('and the transaction is in the node block but the registry log is not', () => {
+      let outcome: unknown
+
+      beforeEach(async () => {
+        const forged = log({ account: undefined })
+        nodeHoldsAtHeight(BLOCK_HASH, [TX_HASH], chainLog(forged, TX_HASH, { address: UNRELATED_CONTRACT }))
+        outcome = await outcomeOf(withoutHash([transaction([forged])]))
+      })
+
+      it('should drop the log without asking alchemy to retry', () => {
+        expect(delegationSet).not.toHaveBeenCalled()
+        expect(outcome).toBe('resolved')
+        expect(droppedLogs()).toEqual([
+          expect.objectContaining({ reason: 'no delegate registry log at that transaction and index' }),
+        ])
+      })
+    })
+
+    describe('and the block carries many forged transactions', () => {
+      beforeEach(async () => {
+        const txHashes = Array.from({ length: 50 }, (_, i) => '0x' + i.toString(16).padStart(64, '0'))
+        const forgedTransactions = txHashes.map((hash, i) => transaction([log({ index: i, account: undefined })], hash))
+        nodeHoldsAtHeight(BLOCK_HASH, txHashes)
+        await outcomeOf(withoutHash(forgedTransactions))
+      })
+
+      // Telling a forgery from a node on another fork must not cost an RPC call per transaction.
+      it('should still read the chain with exactly two calls', () => {
+        expect(getBlock).toHaveBeenCalledTimes(1)
+        expect(getLogs).toHaveBeenCalledTimes(1)
+      })
+
+      it('should drop them all', () => {
+        expect(delegationSet).not.toHaveBeenCalled()
+        expect(droppedLogs()).toHaveLength(50)
+      })
+    })
+
+    // The case the fallback could get wrong for good: our node's block at that height is not the one
+    // Alchemy delivered, so the genuine log is missing from it.
+    describe('and the node holds another block at that height, without the delivered transaction', () => {
+      describe('within the grace period', () => {
+        let outcome: unknown
+
+        beforeEach(async () => {
+          nodeHoldsAtHeight(NODE_FORK_HASH, [UNRELATED_TX_HASH])
+          outcome = await outcomeOf(withoutHash([transaction([log({ index: 3, account: undefined })])]))
+        })
+
+        it('should throw so alchemy retries the delivery', () => {
+          expect((outcome as Error).message).toContain('Could not read delegation logs on chain yet')
+          expect((outcome as Error).message).toContain(
+            `the node's block ${BLOCK_NUMBER} (${NODE_FORK_HASH}) does not include 1 delivered transaction(s)`
+          )
+          expect((outcome as Error).message).toContain(`${TX_HASH}#3 ${DELEGATOR} -> ${DELEGATE}`)
+        })
+
+        it('should not record or drop anything', () => {
+          expect(delegationSet).not.toHaveBeenCalled()
+          expect(report).not.toHaveBeenCalled()
+        })
+      })
+
+      describe('alongside a transaction the node block does confirm', () => {
+        let outcome: unknown
+
+        beforeEach(async () => {
+          const confirmed = log({ index: 1, account: undefined })
+          const missing = log({ index: 5, account: undefined })
+          nodeHoldsAtHeight(BLOCK_HASH, [TX_HASH], chainLog(confirmed))
+          outcome = await outcomeOf(
+            withoutHash([transaction([confirmed], TX_HASH), transaction([missing], OTHER_TX_HASH)])
+          )
+        })
+
+        // The delivery is settled all at once, so the retry starts from scratch.
+        it('should retry the whole delivery without writing the confirmed one yet', () => {
+          expect((outcome as Error).message).toContain('Could not read delegation logs on chain yet')
+          expect(delegationSet).not.toHaveBeenCalled()
+        })
+      })
+
+      describe('and alchemy retries once the node has caught up', () => {
+        let outcome: unknown
+
+        beforeEach(async () => {
+          const genuine = log({ index: 3, account: undefined })
+          const delivery = withoutHash([transaction([genuine])])
+          nodeHoldsAtHeight(NODE_FORK_HASH, [UNRELATED_TX_HASH])
+          await outcomeOf(delivery)
+          nodeHoldsAtHeight(BLOCK_HASH, [TX_HASH], chainLog(genuine))
+          outcome = await outcomeOf(delivery)
+        })
+
+        it('should record the delegation exactly once', () => {
+          expect(delegationSet).toHaveBeenCalledTimes(1)
+          expect(outcome).toBe('resolved')
+        })
+      })
+
+      describe('past the grace period', () => {
+        let outcome: unknown
+
+        beforeEach(async () => {
+          nodeHoldsAtHeight(NODE_FORK_HASH, [UNRELATED_TX_HASH])
+          const staleTimestamp = nowInSeconds() - VERIFICATION_GRACE_PERIOD_MS / 1000 - 60
+          outcome = await outcomeOf(withoutHash([transaction([log({ account: undefined })])], staleTimestamp))
+        })
+
+        it('should drop the log and report which block the node held', () => {
+          expect(outcome).toBe('resolved')
+          expect(delegationSet).not.toHaveBeenCalled()
+          expect(droppedLogs()).toEqual([
+            expect.objectContaining({
+              transaction_hash: TX_HASH,
+              reason: `transaction is not in the node's block at that height (${NODE_FORK_HASH})`,
+            }),
+          ])
+        })
       })
     })
 
