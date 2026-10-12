@@ -551,6 +551,65 @@ describe('EventsService.delegationUpdate on-chain verification', () => {
     })
   })
 
+  // Every replay-guard check runs before any write, so a repeat inside one payload must be caught
+  // by the service itself.
+  describe('when the payload lists the same transaction twice', () => {
+    let outcome: unknown
+
+    beforeEach(async () => {
+      const genuine = log({ index: 4, account: undefined })
+      chainHolds(chainLog(genuine))
+      outcome = await outcomeOf(
+        staleBlock([transaction([genuine], TX_HASH), transaction([genuine], TX_HASH.toUpperCase().replace('0X', '0x'))])
+      )
+    })
+
+    it('should record the delegation once', () => {
+      expect(delegationSet).toHaveBeenCalledTimes(1)
+      expect(delegationSet).toHaveBeenCalledWith(DELEGATE, DELEGATOR, TX_HASH, expect.any(Date))
+    })
+
+    it('should check the transaction against the database once', () => {
+      expect(isDelegationTxRegistered).toHaveBeenCalledTimes(1)
+    })
+
+    it('should complete the delivery without reporting the repeat as dropped', () => {
+      expect(outcome).toBe('resolved')
+      expect(report).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('when a transaction lists the same log twice', () => {
+    beforeEach(async () => {
+      const genuine = log({ index: 4, account: undefined })
+      chainHolds(chainLog(genuine))
+      await outcomeOf(staleBlock([transaction([genuine, genuine])]))
+    })
+
+    it('should record the delegation once', () => {
+      expect(delegationSet).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('when the payload lists the same transaction twice, each time with a different log', () => {
+    beforeEach(async () => {
+      const first = log({ index: 1, account: undefined })
+      const second = log({
+        index: 2,
+        account: undefined,
+        topics: [SET_DELEGATE_SIGNATURE_HASH, addressTopic(OTHER_DELEGATE), SPACE_TOPIC, addressTopic(DELEGATE)],
+      })
+      chainHolds(chainLog(first), chainLog(second))
+      await outcomeOf(staleBlock([transaction([first]), transaction([second, first])]))
+    })
+
+    it('should record each distinct log once', () => {
+      expect(delegationSet).toHaveBeenCalledTimes(2)
+      expect(delegationSet).toHaveBeenCalledWith(DELEGATE, DELEGATOR, TX_HASH, expect.any(Date))
+      expect(delegationSet).toHaveBeenCalledWith(DELEGATE, OTHER_DELEGATE, TX_HASH, expect.any(Date))
+    })
+  })
+
   describe('when a genuine and a forged transaction arrive in the same block', () => {
     beforeEach(async () => {
       const genuine = log({ index: 1, account: undefined })

@@ -410,6 +410,11 @@ export class EventsService {
 
   private static async getDelegationCandidates(block: AlchemyBlock) {
     const candidates: DelegationCandidate[] = []
+    // Every replay-guard check runs before any write, so the guard cannot catch a transaction or log
+    // that a payload lists twice. Each (transaction, log index) is kept once, which also means each
+    // transaction is looked up in the database once, and a retried delivery dedupes the same way.
+    const seenLogs = new Set<string>()
+    const registeredByTx = new Map<string, boolean>()
     for (const transaction of block.transactions) {
       const txHash = transaction?.hash
       // The hash is what ties a log to the chain (and what the replay guard keys on), so without a
@@ -417,7 +422,13 @@ export class EventsService {
       if (!isHash(txHash) || !Array.isArray(transaction.logs)) {
         continue
       }
-      if (await EventModel.isDelegationTxRegistered(txHash)) {
+      const txKey = txHash.toLowerCase()
+      let registered = registeredByTx.get(txKey)
+      if (registered === undefined) {
+        registered = await EventModel.isDelegationTxRegistered(txHash)
+        registeredByTx.set(txKey, registered)
+      }
+      if (registered) {
         continue
       }
       for (const log of transaction.logs) {
@@ -459,6 +470,11 @@ export class EventsService {
         if (isSameAddress(delegator, delegate)) {
           continue
         }
+        const logKey = `${txKey}#${logIndex}`
+        if (seenLogs.has(logKey)) {
+          continue
+        }
+        seenLogs.add(logKey)
         candidates.push({ txHash, logIndex, log, methodSignature, delegator, delegate })
       }
     }
