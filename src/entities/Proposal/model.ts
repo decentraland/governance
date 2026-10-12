@@ -272,6 +272,39 @@ export default class ProposalModel extends Model<ProposalAttributes> {
     return result.map(ProposalModel.parse)
   }
 
+  // Selecting and marking happen in the same statement, so when the job runs on more than one
+  // instance each proposal is handed to exactly one of them. A proposal whose whole voting period
+  // fits inside the window is skipped: its reminder would land right next to the new proposal post.
+  static async claimVotingEndsSoonReminders(windowMs: number, minimumRemainingMs: number) {
+    const window = SQL`make_interval(secs => ${windowMs / 1000})`
+    const minimumRemaining = SQL`make_interval(secs => ${minimumRemainingMs / 1000})`
+    const query = SQL`
+        UPDATE ${table(ProposalModel)}
+        SET "voting_ends_soon_notified_at" = now()
+        WHERE "deleted" = FALSE
+          AND "status" = ${ProposalStatus.Active}
+          AND "voting_ends_soon_notified_at" IS NULL
+          AND "finish_at" > now() + ${minimumRemaining}
+          AND "finish_at" <= now() + ${window}
+          AND "finish_at" - "start_at" > ${window}
+        RETURNING *
+    `
+
+    const result = await this.namedQuery('claim_voting_ends_soon_reminders', query)
+    return result.map(ProposalModel.parse)
+  }
+
+  // Hands a claimed reminder back so the next run can retry it.
+  static async releaseVotingEndsSoonReminder(id: string) {
+    const query = SQL`
+        UPDATE ${table(ProposalModel)}
+        SET "voting_ends_soon_notified_at" = NULL
+        WHERE "id" = ${id}
+    `
+
+    return this.namedRowCount('release_voting_ends_soon_reminder', query)
+  }
+
   // The removable statuses are a condition on the write, not only a check the caller made against a
   // proposal it read earlier. Between that read and this update a job can move the proposal to passed
   // or enacted, and without the condition the stale delete would still land — taking the forum topic

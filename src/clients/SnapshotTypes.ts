@@ -86,6 +86,8 @@ export type SnapshotProposal = {
   plugins: any
 }
 
+export type SnapshotProposalTally = Pick<SnapshotProposal, 'scores' | 'scores_total' | 'votes'>
+
 export type SnapshotProposalContent = Omit<
   SnapshotProposal,
   | 'scores'

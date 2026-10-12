@@ -1,9 +1,11 @@
 import type { Client, EmbedBuilder, Snowflake } from 'discord.js'
+import orderBy from 'lodash/orderBy'
 
+import { SnapshotProposalTally } from '../clients/SnapshotTypes'
 import { DISCORD_SERVICE_ENABLED } from '../constants'
 import { getProfileUrl } from '../entities/Profile/utils'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
-import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
+import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { isGovernanceProcessProposal, proposalUrl } from '../entities/Proposal/utils'
 import { getPublicUpdates, getUpdateNumber, getUpdateUrl } from '../entities/Updates/utils'
 import { MESSAGE_TIMEOUT_TIME } from '../entities/User/constants'
@@ -26,6 +28,9 @@ const DCL_LOGO = 'https://decentraland.org/images/decentraland.png'
 const DEFAULT_AVATAR = 'https://decentraland.org/images/male.png'
 const BLANK = '\u200B'
 const PREVIEW_MAX_LENGTH = 140
+// Six lines of the longest possible standing still fit in the 1024 characters Discord allows a field.
+const STANDINGS_MAX_CHOICES = 6
+const STANDINGS_CHOICE_MAX_LENGTH = 60
 // Discord caps one fetch at 100; five pages covers any burst the channel's rate limits allow.
 const VERIFICATION_FETCH_PAGE_SIZE = 100
 const VERIFICATION_FETCH_MAX_PAGES = 5
@@ -42,6 +47,7 @@ enum MessageColors {
   FINISH_PROPOSAL = 0x8142f5,
   NEW_UPDATE = 0x00ff80,
   NOTIFICATION = 0xf5c63b,
+  VOTING_ENDS_SOON = 0xff8c00,
 }
 
 type EmbedMessageProps = {
@@ -71,6 +77,33 @@ function getChoices(choices: string[]): Field[] {
     name: `Option #${idx + 1}`,
     value: capitalizeFirstLetter(choice),
   }))
+}
+
+function formatVotingPower(votingPower: number) {
+  return Math.round(votingPower).toLocaleString('en-US')
+}
+
+function formatStandings(choices: string[], { scores, scores_total }: SnapshotProposalTally) {
+  if (scores_total <= 0) {
+    return 'No votes yet'
+  }
+
+  const standings = orderBy(
+    choices.map((choice, idx) => ({ choice, votingPower: scores[idx] || 0 })),
+    'votingPower',
+    'desc'
+  )
+  const lines = standings.slice(0, STANDINGS_MAX_CHOICES).map(({ choice, votingPower }) => {
+    // Poll choices are free text, so markdown in them must not leak into the message.
+    const name = Discord.escapeMarkdown(shortenText(capitalizeFirstLetter(choice), STANDINGS_CHOICE_MAX_LENGTH))
+    const share = ((votingPower / scores_total) * 100).toFixed(1)
+    return `**${name}**: ${share}% (${formatVotingPower(votingPower)} VP)`
+  })
+  if (standings.length > STANDINGS_MAX_CHOICES) {
+    lines.push(`…and ${standings.length - STANDINGS_MAX_CHOICES} more`)
+  }
+
+  return lines.join('\n')
 }
 
 export class IncompleteDiscordVerificationReadError extends Error {
@@ -221,7 +254,13 @@ export class DiscordService {
   private static async sendMessages(messages: EmbedBuilder[]) {
     const sentMessage = await this.channel.send({ embeds: messages })
     if (this.channel.type === Discord.ChannelType.GuildAnnouncement) {
-      await sentMessage.crosspost()
+      // The message is already in the channel by now. Failing the send over the crosspost would
+      // make a caller that retries on failure post it a second time.
+      try {
+        await sentMessage.crosspost()
+      } catch (error) {
+        this.reportError('Error crossposting Discord message', error)
+      }
     }
   }
 
@@ -325,6 +364,35 @@ export class DiscordService {
         }
       })
     }
+  }
+
+  // Unlike the other channel posts this one is awaited and throws, so the caller can hand the
+  // reminder back for a retry when it does not go out. Without a tally it still goes out, minus the
+  // standings: a late reminder is worth more than none.
+  static async votingEndsSoon(proposal: ProposalAttributes, tally?: SnapshotProposalTally) {
+    const finishAt = new Date(proposal.finish_at)
+    const fields: Field[] = []
+    if (tally) {
+      fields.push(
+        { name: 'Current results', value: formatStandings(proposal.configuration.choices || [], tally) },
+        { name: 'Votes', value: tally.votes.toLocaleString('en-US') }
+      )
+    }
+    if (proposal.required_to_pass) {
+      fields.push({ name: 'Required to pass', value: `${formatVotingPower(proposal.required_to_pass)} VP` })
+    }
+
+    // Discord renders these timestamps in each reader's own timezone and keeps the relative one live.
+    const endsIn = Discord.time(finishAt, Discord.TimestampStyles.RelativeTime)
+    const endsAt = Discord.time(finishAt, Discord.TimestampStyles.ShortDateTime)
+    const message = await this.formatMessage({
+      url: proposalUrl(proposal.id),
+      title: proposal.title,
+      fields,
+      action: `Voting ends ${endsIn} (${endsAt}). Make sure your vote is in.`,
+      color: MessageColors.VOTING_ENDS_SOON,
+    })
+    await this.sendMessages([message])
   }
 
   static sendDirectMessage(userId: Snowflake, message: Omit<EmbedMessageProps, 'color'>) {

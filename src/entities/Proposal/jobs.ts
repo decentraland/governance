@@ -1,6 +1,8 @@
 import JobContext from 'decentraland-gatsby/dist/entities/Job/context'
 import snakeCase from 'lodash/snakeCase'
 
+import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
+import { DISCORD_SERVICE_ENABLED } from '../../constants'
 import { BadgesService } from '../../services/BadgesService'
 import BidService from '../../services/BidService'
 import { BudgetService } from '../../services/BudgetService'
@@ -18,6 +20,7 @@ import logger from '../../utils/logger'
 import { withTransaction } from '../../utils/withTransaction'
 import { Budget } from '../Budget/types'
 
+import { VOTING_ENDS_SOON_MIN_REMAINING, VOTING_ENDS_SOON_WINDOW } from './constants'
 import ProposalModel from './model'
 import {
   ProposalVotingResult,
@@ -320,5 +323,68 @@ export async function notifyCliffEndingSoon() {
     await NotificationService.cliffEnded(proposalContributors)
   } catch (error) {
     ErrorService.report('Error notifying cliff ending soon', { error, category: ErrorCategory.Job })
+  }
+}
+
+async function getVotingTally(proposal: ProposalAttributes) {
+  try {
+    return await SnapshotGraphql.get().getProposalTally(proposal.snapshot_id)
+  } catch (error) {
+    ErrorService.report('Error fetching voting tally for voting ends soon reminder', {
+      proposalId: proposal.id,
+      error: `${error}`,
+      category: ErrorCategory.Snapshot,
+    })
+    return undefined
+  }
+}
+
+async function remindVotingEndsSoon(proposal: ProposalAttributes) {
+  try {
+    await DiscordService.votingEndsSoon(proposal, await getVotingTally(proposal))
+    return true
+  } catch (error) {
+    ErrorService.report('Error sending voting ends soon reminder to Discord', {
+      proposalId: proposal.id,
+      error: `${error}`,
+      category: ErrorCategory.Discord,
+    })
+    try {
+      await ProposalModel.releaseVotingEndsSoonReminder(proposal.id)
+    } catch (releaseError) {
+      // Left claimed, the reminder is skipped rather than retried. Missing one beats posting it twice.
+      ErrorService.report('Error releasing voting ends soon reminder', {
+        proposalId: proposal.id,
+        error: `${releaseError}`,
+        category: ErrorCategory.Job,
+      })
+    }
+    return false
+  }
+}
+
+// Reminds the governance channel once per proposal, about a day before voting closes. Nothing is
+// claimed while discord is off, so turning it on later still reminds the proposals closing soon.
+export async function notifyVotingEndsSoon(context: JobContext) {
+  if (!DISCORD_SERVICE_ENABLED) {
+    return
+  }
+
+  try {
+    const proposals = await ProposalModel.claimVotingEndsSoonReminders(
+      VOTING_ENDS_SOON_WINDOW,
+      VOTING_ENDS_SOON_MIN_REMAINING
+    )
+    let reminded = 0
+    for (const proposal of proposals) {
+      if (await remindVotingEndsSoon(proposal)) {
+        reminded++
+      }
+    }
+    if (reminded > 0) {
+      context.log(`Reminded ${reminded} proposals that voting ends soon...`)
+    }
+  } catch (error) {
+    ErrorService.report('Error notifying voting ends soon', { error, category: ErrorCategory.Job })
   }
 }
