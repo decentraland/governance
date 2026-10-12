@@ -20,6 +20,7 @@ describe('RpcService.getEnvironmentProvider', () => {
       url: RpcService.getRpcUrl(),
       timeout: ENVIRONMENT_RPC_TIMEOUT_MS,
       throttleLimit: 1,
+      throttleCallback: expect.any(Function),
     })
     expect(provider.network.chainId).toBe(Number(getEnvironmentChainId()))
   })
@@ -35,7 +36,9 @@ describe('RpcService.getEnvironmentProvider', () => {
         req.on('data', (chunk) => (body += chunk))
         req.on('end', () => {
           requests.push(body)
-          res.writeHead(429, { 'content-type': 'application/json', connection: 'close' })
+          // Without a throttleCallback, ethers v5 would wait out this Retry-After (up to its timeout)
+          // before failing.
+          res.writeHead(429, { 'content-type': 'application/json', 'retry-after': '30', connection: 'close' })
           res.end('{"jsonrpc":"2.0","id":1,"error":{"code":429,"message":"rate limited"}}')
         })
       })
@@ -57,7 +60,9 @@ describe('RpcService.getEnvironmentProvider', () => {
         .mockImplementation(((...args: Parameters<typeof setTimeout>) =>
           realSetTimeout(...args).unref()) as unknown as typeof setTimeout)
       const provider = RpcService.getEnvironmentProvider()
+      const startedAt = Date.now()
       await expect(provider.getLogs({ blockHash: '0x' + 'cc'.repeat(32) })).rejects.toThrow()
+      expect(Date.now() - startedAt).toBeLessThan(2000)
       expect(requests).toHaveLength(1)
       expect(JSON.parse(requests[0]).method).toBe('eth_getLogs')
     })

@@ -30,10 +30,22 @@ export default class RpcService {
    * paths such as webhooks. The network is given up front, so no eth_chainId/net_version detection
    * call is made, and each request fails fast instead of using ethers' defaults (120 s timeout and up
    * to 12 backed-off retries on HTTP 429), which can hold a request open for minutes.
+   *
+   * Each call is bounded by ENVIRONMENT_RPC_TIMEOUT_MS (10 s), so a caller that makes two calls in a
+   * row (the delegation webhook does when the payload has no block hash) can be held about 20 s.
    */
   public static getEnvironmentProvider() {
     return new StaticJsonRpcProvider(
-      { url: this.getRpcUrl(), timeout: ENVIRONMENT_RPC_TIMEOUT_MS, throttleLimit: 1 },
+      {
+        url: this.getRpcUrl(),
+        timeout: ENVIRONMENT_RPC_TIMEOUT_MS,
+        // An HTTP 429 fails the call at once. throttleLimit alone is not enough: on the first attempt
+        // ethers v5 still stalls (for the Retry-After seconds, if the server sends them) before giving
+        // up. Returning false from throttleCallback skips that stall, and throttleLimit: 1 keeps a
+        // second request from ever being sent. The webhook caller is retried by Alchemy instead.
+        throttleLimit: 1,
+        throttleCallback: async () => false,
+      },
       Number(getEnvironmentChainId())
     )
   }
