@@ -184,7 +184,7 @@ describe('getVestingWithLogsFromAlchemy', () => {
     )
   })
 
-  it('returns the vesting without logs and without reporting an error when the logs take too long', async () => {
+  it('returns the vesting without logs and reports it when the logs take too long', async () => {
     jest.useFakeTimers()
     mockV2Contract()
     let resolveLogs: (logs: ContractLog[]) => void = () => undefined
@@ -196,7 +196,10 @@ describe('getVestingWithLogsFromAlchemy', () => {
     resolveLogs(logs)
 
     expect(vesting).toEqual(expect.objectContaining({ released: 300, logs: [] }))
-    expect(reportSpy).not.toHaveBeenCalled()
+    expect(reportSpy).toHaveBeenCalledWith(
+      'Timed out fetching vesting contract logs, returning the vesting without logs',
+      expect.objectContaining({ vestingAddress: VESTING_ADDRESS, category: ErrorCategory.Vesting })
+    )
     expect(jest.getTimerCount()).toBe(0)
   })
 

@@ -10,7 +10,6 @@ import VESTING_ABI from '../utils/contracts/abi/vesting/vesting.json'
 import VESTING_V2_ABI from '../utils/contracts/abi/vesting/vesting_v2.json'
 import { ContractVersion, TopicsByVersion } from '../utils/contracts/vesting'
 import { ErrorCategory } from '../utils/errorCategories'
-import logger from '../utils/logger'
 
 import { ContractLog, getContractLogs } from './ContractLogs'
 
@@ -109,10 +108,11 @@ async function getVestingContractLogs(
   try {
     const logs = await Promise.race([scan, timeout])
     if (logs === null) {
-      logger.log('Vesting contract logs are still loading, returning the vesting without logs', {
+      ErrorService.report('Timed out fetching vesting contract logs, returning the vesting without logs', {
         proposalId,
         vestingAddress,
         timeoutMs: LOGS_TIMEOUT_MS,
+        category: ErrorCategory.Vesting,
       })
       return []
     }

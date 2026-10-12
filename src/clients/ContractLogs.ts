@@ -45,6 +45,8 @@ export const REORG_SAFETY_BLOCKS = 64
 
 // Infura: "range N exceeds limit of 10000". Another attempt can reach Alchemy, which accepts it.
 const BLOCK_RANGE_LIMIT_ERROR = /exceeds limit of \d+/i
+// JSON-RPC "invalid params", in case an upstream words its range limit differently
+const INVALID_PARAMS_ERROR = /-32602/
 // Infura: "query returned more than 10000 results" (-32005). Alchemy: "Log response size exceeded",
 // "Response is too big" / "Exceeded max limit of N" (-32008). The contract has too many logs.
 const TOO_MANY_RESULTS_ERROR = /more than \d+ results|response size exceeded|response is too big|exceeded max limit/i
@@ -179,7 +181,7 @@ async function getAllRawLogsAtOnce(provider: JsonRpcProvider, address: string, t
       if (TOO_MANY_RESULTS_ERROR.test(text)) {
         throw tooManyLogsError(address)
       }
-      if (!BLOCK_RANGE_LIMIT_ERROR.test(text)) {
+      if (!BLOCK_RANGE_LIMIT_ERROR.test(text) && !INVALID_PARAMS_ERROR.test(text)) {
         throw error
       }
       continue

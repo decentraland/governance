@@ -199,6 +199,22 @@ describe('ContractLogs', () => {
       expect(result).toHaveLength(1)
     })
 
+    it('asks for the whole history again when it is refused as invalid params with another wording', async () => {
+      const { provider, fakeProvider, requestedRanges } = createProvider({
+        head: HEAD,
+        deploymentBlock: DEPLOYMENT_BLOCK,
+        logs: [rawLog(DEPLOYMENT_BLOCK + 17)],
+        maxBlockRange: Infinity,
+      })
+      provider.send.mockRejectedValueOnce(rpcError(-32602, 'block range too wide'))
+
+      const result = await getContractLogs(fakeProvider, CONTRACT_ADDRESS)
+
+      expect(provider.send).toHaveBeenCalledTimes(2)
+      expect(requestedRanges).toEqual([[0, HEAD]])
+      expect(result).toHaveLength(1)
+    })
+
     it('falls back to inclusive chunks from the deployment block when every whole-history request is refused', async () => {
       const logs = [rawLog(DEPLOYMENT_BLOCK + 17), rawLog(DEPLOYMENT_BLOCK + LOG_CHUNK_SIZE), rawLog(HEAD)]
       const { provider, fakeProvider, requestedRanges } = createProvider({
