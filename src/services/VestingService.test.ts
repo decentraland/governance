@@ -220,6 +220,23 @@ describe('VestingService', () => {
       const parsed = await parse(v1Vesting())
       expect(Math.round(parsed.releasable)).toBe(50)
     })
+
+    it('should report release logs that are no longer running totals', async () => {
+      const reportSpy = jest.spyOn(ErrorService, 'report').mockImplementation(() => undefined)
+      await parse(
+        subgraphVesting({
+          version: 1,
+          releaseLogs: [
+            { timestamp: String(now - 90 * DAY), amount: '100' },
+            { timestamp: String(now - 10 * DAY), amount: '50' },
+          ] as never,
+        })
+      )
+      expect(reportSpy).toHaveBeenCalledWith(
+        'V1 vesting release logs are not running totals',
+        expect.objectContaining({ vestingAddress: VESTING_ADDRESS })
+      )
+    })
   })
 
   // A V2 contract can be linear too, and it emits the amount of each release

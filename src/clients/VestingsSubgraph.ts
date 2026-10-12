@@ -25,7 +25,7 @@ const VESTING_FIELDS = `id
         owner
         total
         revokeTimestamp
-        releaseLogs{
+        releaseLogs(first: 1000){
           id
           timestamp
           amount

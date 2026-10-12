@@ -40,6 +40,12 @@ function getReleaseAmounts(vestingData: SubgraphVesting) {
 
   let releasedSoFar = 0
   return releases.map(({ timestamp, amount: total }) => {
+    if (total < releasedSoFar) {
+      ErrorService.report('V1 vesting release logs are not running totals', {
+        vestingAddress: vestingData.id,
+        category: ErrorCategory.Vesting,
+      })
+    }
     const amount = total - releasedSoFar
     releasedSoFar = total
     return { timestamp, amount }
