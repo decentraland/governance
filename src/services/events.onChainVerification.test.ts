@@ -400,6 +400,49 @@ describe('EventsService.delegationUpdate on-chain verification', () => {
     })
   })
 
+  // Transaction and block hashes share one 32-byte hex check, so both are tested at its boundaries.
+  describe.each([
+    ['63 hex digits', '0x' + 'a'.repeat(63)],
+    ['65 hex digits', '0x' + 'a'.repeat(65)],
+    ['64 hex digits and trailing junk', '0x' + 'a'.repeat(64) + 'z'],
+    ['leading junk before 64 hex digits', 'z0x' + 'a'.repeat(64)],
+    ['64 hex digits without the 0x prefix', 'a'.repeat(64)],
+  ])('when a hash has %s', (_, malformedHash) => {
+    describe('as the transaction hash', () => {
+      let outcome: unknown
+
+      beforeEach(async () => {
+        outcome = await outcomeOf(recentBlock([transaction([log()], malformedHash)]))
+      })
+
+      it('should drop its logs without querying the database or the RPC', () => {
+        expect(outcome).toBe('resolved')
+        expect(delegationSet).not.toHaveBeenCalled()
+        expect(isDelegationTxRegistered).not.toHaveBeenCalled()
+        expect(getEnvironmentProvider).not.toHaveBeenCalled()
+      })
+    })
+
+    describe('as the block hash', () => {
+      let outcome: unknown
+
+      beforeEach(async () => {
+        const genuine = log({ account: undefined })
+        const timestamp = nowInSeconds()
+        getBlock.mockResolvedValue({ hash: BLOCK_HASH, number: BLOCK_NUMBER, timestamp, transactions: [TX_HASH] })
+        chainHolds(chainLog(genuine))
+        outcome = await outcomeOf(block([transaction([genuine])], timestamp, malformedHash))
+      })
+
+      it('should ignore it and look the block up by number', () => {
+        expect(getBlock).toHaveBeenCalledWith(BLOCK_NUMBER)
+        expect(getLogs).toHaveBeenCalledWith(expect.objectContaining({ blockHash: BLOCK_HASH }))
+        expect(delegationSet).toHaveBeenCalledTimes(1)
+        expect(outcome).toBe('resolved')
+      })
+    })
+  })
+
   describe('when the payload sends the log index as a numeric string', () => {
     beforeEach(async () => {
       const genuine = log({ index: 10, account: undefined })
@@ -680,6 +723,24 @@ describe('EventsService.delegationUpdate on-chain verification', () => {
       })
 
       it('should still treat the transaction as part of the checked block', () => {
+        expect(droppedLogs()).toEqual([
+          expect.objectContaining({ reason: 'no delegate registry log at that transaction and index' }),
+        ])
+      })
+    })
+
+    describe('and the payload sends the transaction hash in a different case than the node', () => {
+      let outcome: unknown
+
+      beforeEach(async () => {
+        const forged = log({ account: undefined })
+        nodeHoldsAtHeight({ hash: BLOCK_HASH, transactions: [OTHER_TX_HASH] })
+        const upperCaseHash = OTHER_TX_HASH.toUpperCase().replace('0X', '0x')
+        outcome = await outcomeOf(withoutHash([transaction([forged], upperCaseHash)]))
+      })
+
+      it('should still treat the transaction as part of the checked block and drop the log', () => {
+        expect(outcome).toBe('resolved')
         expect(droppedLogs()).toEqual([
           expect.objectContaining({ reason: 'no delegate registry log at that transaction and index' }),
         ])
