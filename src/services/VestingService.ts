@@ -65,7 +65,8 @@ export class VestingService {
 
   static async getVestingWithLogs(
     vestingAddress: string | null | undefined,
-    proposalId?: string
+    proposalId?: string,
+    { includeLogs = true }: { includeLogs?: boolean } = {}
   ): Promise<VestingWithLogs> {
     if (!vestingAddress || vestingAddress.length === 0) {
       throw new Error('Unable to fetch vesting data for empty contract address')
@@ -74,7 +75,7 @@ export class VestingService {
     try {
       return await this.getVestingWithLogsFromSubgraph(vestingAddress, proposalId)
     } catch (error) {
-      return await getVestingWithLogsFromAlchemy(vestingAddress, proposalId)
+      return await getVestingWithLogsFromAlchemy(vestingAddress, proposalId, includeLogs)
     }
   }
 

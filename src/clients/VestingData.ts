@@ -11,6 +11,8 @@ import VESTING_V2_ABI from '../utils/contracts/abi/vesting/vesting_v2.json'
 import { ContractVersion, TopicsByVersion } from '../utils/contracts/vesting'
 import { ErrorCategory } from '../utils/errorCategories'
 
+import { ContractLog, getContractLogs } from './ContractLogs'
+
 export type VestingLog = {
   topic: string
   timestamp: string
@@ -50,33 +52,28 @@ function parseContractValue(value: unknown) {
   return Math.round(Number(value) / 1e18)
 }
 
-async function getVestingContractLogs(vestingAddress: string, provider: JsonRpcProvider, version: ContractVersion) {
-  const logs = await provider.getLogs({
-    address: vestingAddress,
-    fromBlock: 13916992, // 01/01/2022
-    toBlock: 'latest',
-  })
+// A chunked scan can take minutes; it keeps running after the timeout and fills the cache for the next request
+export const LOGS_TIMEOUT_MS = 3_000
 
-  const blocks = await Promise.all(logs.map((log) => provider.getBlock(log.blockNumber)))
-
+function decodeVestingLogs(logs: ContractLog[], version: ContractVersion) {
   const topics = TopicsByVersion[version]
   const logsData: VestingLog[] = []
 
-  logs.forEach((log, idx) => {
-    const eventTimestamp = Number(blocks[idx].timestamp)
+  logs.forEach((log) => {
+    const timestamp = toISOString(log.timestamp)
     const amount = parseInt(log.data, 16) / 1e18
     switch (log.topics[0]) {
       case topics.REVOKE:
-        logsData.push({ topic: topics.REVOKE, timestamp: toISOString(eventTimestamp) })
+        logsData.push({ topic: topics.REVOKE, timestamp })
         break
       case topics.PAUSED:
-        logsData.push({ topic: topics.PAUSED, timestamp: toISOString(eventTimestamp) })
+        logsData.push({ topic: topics.PAUSED, timestamp })
         break
       case topics.UNPAUSED:
-        logsData.push({ topic: topics.UNPAUSED, timestamp: toISOString(eventTimestamp) })
+        logsData.push({ topic: topics.UNPAUSED, timestamp })
         break
       case topics.RELEASE:
-        logsData.push({ topic: topics.RELEASE, timestamp: toISOString(eventTimestamp), amount })
+        logsData.push({ topic: topics.RELEASE, timestamp, amount })
         break
       default:
         break
@@ -84,6 +81,42 @@ async function getVestingContractLogs(vestingAddress: string, provider: JsonRpcP
   })
 
   return logsData
+}
+
+async function getVestingContractLogs(
+  vestingAddress: string,
+  provider: JsonRpcProvider,
+  proposalId?: string
+): Promise<ContractLog[]> {
+  const scan = getContractLogs(provider, vestingAddress).catch((error) => {
+    ErrorService.report('Unable to fetch vesting contract logs', {
+      proposalId,
+      vestingAddress,
+      error: `${error}`,
+      category: ErrorCategory.Vesting,
+    })
+    return []
+  })
+
+  let timeoutId: ReturnType<typeof setTimeout> | undefined
+  const timeout = new Promise<null>((resolve) => {
+    timeoutId = setTimeout(() => resolve(null), LOGS_TIMEOUT_MS)
+  })
+  try {
+    const logs = await Promise.race([scan, timeout])
+    if (logs === null) {
+      ErrorService.report('Timed out fetching vesting contract logs, returning the vesting without logs', {
+        proposalId,
+        vestingAddress,
+        timeoutMs: LOGS_TIMEOUT_MS,
+        category: ErrorCategory.Vesting,
+      })
+      return []
+    }
+    return logs
+  } finally {
+    clearTimeout(timeoutId)
+  }
 }
 
 export function getInitialVestingStatus(startAt: string, finishAt: string) {
@@ -198,28 +231,21 @@ export function sortByTimestamp(a: VestingLog, b: VestingLog) {
   return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
 }
 
-export async function getVestingWithLogsFromAlchemy(vestingAddress: string, proposalId?: string | undefined) {
+export async function getVestingWithLogsFromAlchemy(
+  vestingAddress: string,
+  proposalId?: string | undefined,
+  includeLogs = true
+) {
   const provider = new ethers.providers.JsonRpcProvider(RpcService.getRpcUrl(ChainId.ETHEREUM_MAINNET))
-
+  let data: Omit<Vesting, 'logs' | 'address'>
+  let version: ContractVersion
   try {
-    const dataPromise = getVestingContractDataV2(vestingAddress, provider)
-    const logsPromise = getVestingContractLogs(vestingAddress, provider, ContractVersion.V2)
-    const [data, logs] = await Promise.all([dataPromise, logsPromise])
-    return {
-      ...data,
-      logs: logs.sort(sortByTimestamp),
-      address: vestingAddress,
-    }
+    data = await getVestingContractDataV2(vestingAddress, provider)
+    version = ContractVersion.V2
   } catch (errorV2) {
     try {
-      const dataPromise = getVestingContractDataV1(vestingAddress, provider)
-      const logsPromise = getVestingContractLogs(vestingAddress, provider, ContractVersion.V1)
-      const [data, logs] = await Promise.all([dataPromise, logsPromise])
-      return {
-        ...data,
-        logs: logs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()),
-        address: vestingAddress,
-      }
+      data = await getVestingContractDataV1(vestingAddress, provider)
+      version = ContractVersion.V1
     } catch (errorV1) {
       ErrorService.report('Unable to fetch vesting contract data from alchemy', {
         proposalId,
@@ -229,6 +255,15 @@ export async function getVestingWithLogsFromAlchemy(vestingAddress: string, prop
       })
       throw errorV1
     }
+  }
+
+  const logs = includeLogs
+    ? decodeVestingLogs(await getVestingContractLogs(vestingAddress, provider, proposalId), version)
+    : []
+  return {
+    ...data,
+    logs: logs.sort(sortByTimestamp),
+    address: vestingAddress,
   }
 }
 
