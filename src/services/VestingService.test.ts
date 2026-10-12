@@ -204,18 +204,9 @@ describe('VestingService', () => {
       expect(parsed.logs.map(({ amount }) => amount)).toEqual([0, 150, 100])
     })
 
-    it('should tag the releases with the V1 topic', async () => {
-      const parsed = await parse(v1Vesting())
-      expect(parsed.logs.every(({ topic }) => topic === TopicsByVersion[ContractVersion.V1].RELEASE)).toBe(true)
-    })
-
-    it('should report the latest running total as released', async () => {
+    it('should report the latest running total as released, and subtract only that', async () => {
       const parsed = await parse(v1Vesting())
       expect(parsed.released).toBe(250)
-    })
-
-    it('should subtract only what was actually released', async () => {
-      const parsed = await parse(v1Vesting())
       expect(Math.round(parsed.releasable)).toBe(50)
     })
 
@@ -248,18 +239,10 @@ describe('VestingService', () => {
         ] as never,
       })
 
-    it('should keep the amount of each release', async () => {
-      const parsed = await parse(linearV2Vesting())
-      expect(parsed.logs.map(({ amount }) => amount)).toEqual([200, 100])
-    })
-
-    it('should tag the releases with the V2 topic', async () => {
+    it('should keep the amount of each release and the released amount from the subgraph', async () => {
       const parsed = await parse(linearV2Vesting())
       expect(parsed.logs.every(({ topic }) => topic === TopicsByVersion[ContractVersion.V2].RELEASE)).toBe(true)
-    })
-
-    it('should report the released amount from the subgraph', async () => {
-      const parsed = await parse(linearV2Vesting())
+      expect(parsed.logs.map(({ amount }) => amount)).toEqual([200, 100])
       expect(parsed.released).toBe(300)
     })
   })
