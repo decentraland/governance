@@ -370,17 +370,19 @@ export class EventsService {
 
     // Every candidate is checked on chain before anything is written. The check reads the whole block
     // in one call, so it either settles every candidate or none of them.
-    const { verified, rejected, unavailable } = await DelegationLogVerifier.verify(candidates, block)
+    const verification = await DelegationLogVerifier.verify(candidates, block)
 
-    if (unavailable) {
+    if (verification.status === 'unavailable') {
       // Nothing was written, so the retry Alchemy sends on a non-2xx starts from scratch. The message
       // carries what is needed to backfill by hand if the chain stays unreadable past Alchemy's retries.
       throw new Error(
-        `Could not read delegation logs on chain yet (${unavailable}): ${candidates
+        `Could not read delegation logs on chain yet (${verification.reason}): ${candidates
           .map(describeDelegationCandidate)
           .join(', ')}`
       )
     }
+
+    const { verified, rejected } = verification
 
     if (rejected.length > 0) {
       ErrorService.report('Dropped delegation logs that failed on-chain verification', {

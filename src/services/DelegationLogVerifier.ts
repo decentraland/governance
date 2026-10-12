@@ -25,13 +25,12 @@ export function isHash(value: unknown): value is string {
 
 export type DelegationLogCandidate = { txHash: string; logIndex: number; log: AlchemyLog }
 
-export type DelegationVerification<T extends DelegationLogCandidate> = {
-  verified: T[]
-  rejected: { candidate: T; reason: string }[]
-  // Set when the chain could not be read for this block. Nothing was verified or rejected: the
-  // whole delivery must be retried. Holds a short description of the RPC failure.
-  unavailable?: string
-}
+export type DelegationVerification<T extends DelegationLogCandidate> =
+  // The chain could not be read for this block, so nothing was settled and the whole delivery must
+  // be retried. `reason` is a short, URL-free description of the failure.
+  | { status: 'unavailable'; reason: string }
+  // Every candidate was settled: each one is in exactly one of the two lists.
+  | { status: 'checked'; verified: T[]; rejected: { candidate: T; reason: string }[] }
 
 /**
  * The Alchemy HMAC proves a payload came from Alchemy, not which contract emitted each log, and the
@@ -50,12 +49,13 @@ export class DelegationLogVerifier {
     now = Date.now()
   ): Promise<DelegationVerification<T>> {
     if (candidates.length === 0) {
-      return { verified: [], rejected: [] }
+      return { status: 'checked', verified: [], rejected: [] }
     }
 
     if (!isHash(block.hash) && !isBlockNumber(block.number)) {
       // Nothing to look the logs up by, and a retry carries the same payload: fail closed.
       return {
+        status: 'checked',
         verified: [],
         rejected: candidates.map((candidate) => ({ candidate, reason: 'delivery names no block' })),
       }
@@ -68,24 +68,25 @@ export class DelegationLogVerifier {
       // Any failure (network, 5xx, 429, timeout, or a block our node does not know yet or no longer
       // knows after a reorg) says nothing about the logs themselves. A NaN timestamp compares false,
       // so a malformed payload falls on the drop side and can never be retried forever.
-      const unavailable = describeRpcError(error)
+      const failure = describeRpcError(error)
       if (now - block.timestamp * 1000 < VERIFICATION_GRACE_PERIOD_MS) {
-        return { verified: [], rejected: [], unavailable }
+        return { status: 'unavailable', reason: failure }
       }
-      const reason = `could not read the block from the RPC: ${unavailable}`
-      return { verified: [], rejected: candidates.map((candidate) => ({ candidate, reason })) }
+      const reason = `could not read the block from the RPC: ${failure}`
+      return { status: 'checked', verified: [], rejected: candidates.map((candidate) => ({ candidate, reason })) }
     }
 
-    const result: DelegationVerification<T> = { verified: [], rejected: [] }
+    const verified: T[] = []
+    const rejected: { candidate: T; reason: string }[] = []
     for (const candidate of candidates) {
       const reason = this.mismatchReason(candidate, chainLogs)
       if (reason) {
-        result.rejected.push({ candidate, reason })
+        rejected.push({ candidate, reason })
       } else {
-        result.verified.push(candidate)
+        verified.push(candidate)
       }
     }
-    return result
+    return { status: 'checked', verified, rejected }
   }
 
   private static async fetchRegistryLogs(block: Pick<AlchemyBlock, 'hash' | 'number'>): Promise<Log[]> {
