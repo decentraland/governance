@@ -20,16 +20,13 @@ import { ErrorService } from './ErrorService'
 
 export const MAX_CONCURRENT_VESTING_FALLBACKS = 5
 
-// The subgraph sets `version` to 1 for a V1 contract (TokenVesting) and 2 for a V2 one (PeriodicTokenVesting). `linear`
-// does not tell them apart: a V2 contract can be linear too.
+// `linear` does not tell the versions apart: a V2 contract can be linear too
 function isV1Vesting(vestingData: SubgraphVesting) {
   return Number(vestingData.version) === 1
 }
 
-// A V1 contract emits `Released(released)`: the running total released so far, not the amount of that release.
-// Subgraph deployment QmV6EB6uq5548oCdcjYU3pz1jLwwkSoKUg6DY5dZrAgvTN stores that total as the release log amount and
-// adds those totals up into the vesting's `released`. This turns a V1 vesting's logs back into the amount of each
-// release (oldest first). Remove it once the subgraph stores per-release amounts for V1, or they get subtracted twice.
+// Subgraph deployment QmV6EB6uq5548oCdcjYU3pz1jLwwkSoKUg6DY5dZrAgvTN stores a V1 release's running total as its
+// amount. Remove this once the subgraph stores per-release amounts, or they get subtracted twice.
 function getReleaseAmounts(vestingData: SubgraphVesting) {
   const releases = vestingData.releaseLogs
     .map((releaseLog) => ({ timestamp: Number(releaseLog.timestamp), amount: Number(releaseLog.amount) }))
@@ -52,7 +49,6 @@ function getReleaseAmounts(vestingData: SubgraphVesting) {
   })
 }
 
-// For a V1 vesting the latest running total is what has been released; the subgraph's `released` is a sum of totals
 function getReleased(vestingData: SubgraphVesting) {
   if (!isV1Vesting(vestingData)) {
     return Number(vestingData.released)

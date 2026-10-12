@@ -63,9 +63,7 @@ function compareChainOrder(a: ContractLog, b: ContractLog) {
   return a.blockNumber - b.blockNumber || a.logIndex - b.logIndex
 }
 
-// A V1 contract (TokenVesting, DecentralandVesting) emits `Released(released)`: the running total released so far, not
-// the amount of that release. A V2 contract (PeriodicTokenVesting) emits the amount of each release. A V1 release is
-// decoded as the difference from the previous total, which needs the logs in chain order and from the deployment on.
+// A V1 contract emits `Released(released)` with the running total released so far, not the amount of that release
 function decodeVestingLogs(logs: ContractLog[], version: ContractVersion) {
   const topics = TopicsByVersion[version]
   const logsData: VestingLog[] = []

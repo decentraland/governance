@@ -186,8 +186,6 @@ describe('VestingService', () => {
     })
   })
 
-  // A V1 contract emits the running total released so far, and the subgraph stores it as the release amount and adds
-  // those totals up into `released`
   describe('when the vesting is a V1 contract', () => {
     const v1Vesting = () =>
       subgraphVesting({
@@ -239,7 +237,6 @@ describe('VestingService', () => {
     })
   })
 
-  // A V2 contract can be linear too, and it emits the amount of each release
   describe('when the vesting is a linear V2 contract', () => {
     const linearV2Vesting = () =>
       subgraphVesting({
