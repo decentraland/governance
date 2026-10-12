@@ -31,6 +31,7 @@ const PREVIEW_MAX_LENGTH = 140
 // Six lines of the longest possible standing still fit in the 1024 characters Discord allows a field.
 const STANDINGS_MAX_CHOICES = 6
 const STANDINGS_CHOICE_MAX_LENGTH = 60
+const FORUM_PREVIEW_MAX_LENGTH = 280
 // Discord caps one fetch at 100; five pages covers any burst the channel's rate limits allow.
 const VERIFICATION_FETCH_PAGE_SIZE = 100
 const VERIFICATION_FETCH_MAX_PAGES = 5
@@ -48,6 +49,15 @@ enum MessageColors {
   NEW_UPDATE = 0x00ff80,
   NOTIFICATION = 0xf5c63b,
   VOTING_ENDS_SOON = 0xff8c00,
+  NEW_FORUM_TOPIC = 0x1abc9c,
+}
+
+export type ForumTopicAnnouncement = {
+  url: string
+  title: string
+  category: string
+  author: { username: string; avatarUrl: string; profileUrl: string }
+  preview: string
 }
 
 type EmbedMessageProps = {
@@ -77,6 +87,16 @@ function getChoices(choices: string[]): Field[] {
     name: `Option #${idx + 1}`,
     value: capitalizeFirstLetter(choice),
   }))
+}
+
+// Cuts at a word boundary when there is one reasonably close, and marks the cut.
+function truncateAtWord(text: string, maxLength: number) {
+  if (text.length <= maxLength) {
+    return text
+  }
+  const cut = text.slice(0, maxLength - 1)
+  const lastSpace = cut.lastIndexOf(' ')
+  return `${(lastSpace > maxLength / 2 ? cut.slice(0, lastSpace) : cut).trimEnd()}…`
 }
 
 function formatVotingPower(votingPower: number) {
@@ -392,6 +412,26 @@ export class DiscordService {
       action: `Voting ends ${endsIn} (${endsAt}). Make sure your vote is in.`,
       color: MessageColors.VOTING_ENDS_SOON,
     })
+    await this.sendMessages([message])
+  }
+
+  // Awaited and throwing like votingEndsSoon, so the job can hand the topic back when it does not go
+  // out. The author is the forum account, which has no catalyst profile to look up.
+  static async newForumTopic({ url, title, category, author, preview }: ForumTopicAnnouncement) {
+    const description = [`New topic in **${Discord.escapeMarkdown(category)}**`]
+    if (preview) {
+      // Forum posts are free text, so markdown in them must not leak into the message.
+      description.push(Discord.escapeMarkdown(truncateAtWord(preview, FORUM_PREVIEW_MAX_LENGTH)))
+    }
+
+    const message = await this.formatMessage({
+      url,
+      title,
+      fields: [],
+      action: description.join('\n\n'),
+      color: MessageColors.NEW_FORUM_TOPIC,
+    })
+    message.setAuthor({ name: author.username, iconURL: author.avatarUrl, url: author.profileUrl })
     await this.sendMessages([message])
   }
 

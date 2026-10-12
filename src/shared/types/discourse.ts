@@ -94,6 +94,28 @@ export type DiscourseComment = {
   created_at: string
 }
 
+export type DiscourseTopicListItem = {
+  id: number
+  title: string
+  slug: string
+  created_at: string
+  category_id: number
+  visible: boolean
+}
+
+export type DiscourseTopicList = {
+  topic_list: {
+    topics: DiscourseTopicListItem[]
+  }
+}
+
+export type DiscourseCategory = {
+  id: number
+  name: string
+  slug: string
+  parent_category_id?: number
+}
+
 type DiscoursePostStream = {
   stream: number[]
   posts: DiscoursePostInTopic[]

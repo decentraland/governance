@@ -24,6 +24,7 @@ import {
   publishBids,
 } from './entities/Proposal/jobs'
 import { giveAndRevokeLandOwnerBadges, giveTopVoterBadges, runQueuedAirdropJobs } from './jobs/BadgeAirdrop'
+import { notifyNewForumTopics } from './jobs/NotifyNewForumTopics'
 import { pingSnapshot } from './jobs/PingSnapshot'
 import { withPgAdvisoryLock } from './jobs/jobLocks'
 import airdrops from './routes/airdrop'
@@ -65,6 +66,8 @@ jobs.cron('@each10Second', pingSnapshot)
 // The claim inside makes each reminder single-shot on its own; the lock only saves the other
 // instances from running the same query for nothing.
 jobs.cron('@each10Minute', withPgAdvisoryLock('notifyVotingEndsSoon', notifyVotingEndsSoon))
+// Same as above: the claim keeps each announcement single-shot, the lock spares the duplicate polling.
+jobs.cron('@each5Minute', withPgAdvisoryLock('notifyNewForumTopics', notifyNewForumTopics))
 jobs.cron('30 0 * * *', updateGovernanceBudgets) // Runs at 00:30 daily
 jobs.cron('35 0 * * *', notifyCliffEndingSoon) // Runs at 00:35 daily
 jobs.cron('30 1 * * *', runQueuedAirdropJobs) // Runs at 01:30 daily
