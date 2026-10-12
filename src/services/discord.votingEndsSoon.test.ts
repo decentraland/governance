@@ -24,7 +24,7 @@ const FINISH_AT_UNIX = FINISH_AT.getTime() / 1000
 function stubChannel(type: Discord.ChannelType, send: jest.Mock) {
   const channel = { type, send }
   ;(DiscordService as unknown as { client: unknown }).client = {
-    channels: { cache: { get: jest.fn().mockReturnValue(channel) } },
+    channels: { fetch: jest.fn().mockResolvedValue(channel) },
   }
 }
 

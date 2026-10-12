@@ -19,7 +19,7 @@ const { DiscordService } = require('./discord')
 function stubChannel(send: jest.Mock) {
   const channel = { type: Discord.ChannelType.GuildText, send }
   ;(DiscordService as unknown as { client: unknown }).client = {
-    channels: { cache: { get: jest.fn().mockReturnValue(channel) } },
+    channels: { fetch: jest.fn().mockResolvedValue(channel) },
   }
 }
 

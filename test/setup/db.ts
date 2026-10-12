@@ -3,6 +3,7 @@ import database from 'decentraland-gatsby/dist/entities/Database/database'
 // Dependents first; TRUNCATE ... CASCADE handles the FKs regardless, but this keeps intent clear.
 const TABLES_TO_CLEAN = [
   'airdrop_jobs',
+  'discord_channel_posts',
   'forum_topic_notifications',
   'financial_records',
   'scores',
