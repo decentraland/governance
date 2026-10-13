@@ -3,11 +3,13 @@ import { requiredEnv } from '../config'
 import { DISCOURSE_API, DISCOURSE_USER } from '../entities/User/utils'
 import {
   DiscourseAuth,
+  DiscourseCategory,
   DiscourseCloseTopic,
   DiscourseComment,
   DiscourseNewPost,
   DiscoursePost,
   DiscourseTopic,
+  DiscourseTopicList,
   DiscourseUpdatePost,
   DiscourseUser,
 } from '../shared/types/discourse'
@@ -88,6 +90,16 @@ export class Discourse extends API {
 
   async getTopic(topic_id: number) {
     return this.fetch<DiscourseTopic>(`/t/${topic_id}.json`)
+  }
+
+  // Newest first. Filtering through the query rather than the /c/ path matters: the path for a bare
+  // category id redirects to its slug, and redirects are not followed with the api key attached.
+  async getLatestTopicsInCategory(category_id: number) {
+    return this.fetch<DiscourseTopicList>(`/latest.json?category=${category_id}&order=created&no_subcategories=true`)
+  }
+
+  async getCategory(category_id: number) {
+    return this.fetch<{ category: DiscourseCategory }>(`/c/${category_id}/show.json`)
   }
 
   async getPosts(topic_id: number, postIds: number[]) {

@@ -12,6 +12,7 @@ import {
   SnapshotProposal,
   SnapshotProposalContent,
   SnapshotProposalResponse,
+  SnapshotProposalTally,
   SnapshotProposalsResponse,
   SnapshotQueryResponse,
   SnapshotScoresState,
@@ -147,6 +148,34 @@ export class SnapshotGraphql extends API {
       return response?.data.proposal.scores || []
     } catch (e) {
       throw Error(`Unable to fetch proposal scores for ${proposalId}`, e as Error)
+    }
+  }
+
+  async getProposalTally(proposalId: string): Promise<SnapshotProposalTally> {
+    const query = `
+      query ProposalTally($proposal: String!) {
+        proposal (
+          id: $proposal
+        ) {
+          scores
+          scores_total
+          votes
+        }
+      }
+    `
+    try {
+      const response = await this.fetch<SnapshotProposalResponse>(GRAPHQL_ENDPOINT, {
+        method: 'POST',
+        json: { query, variables: { proposal: proposalId } },
+      })
+      const proposal = response?.data.proposal
+      return {
+        scores: proposal?.scores || [],
+        scores_total: proposal?.scores_total || 0,
+        votes: proposal?.votes || 0,
+      }
+    } catch (e) {
+      throw Error(`Unable to fetch proposal tally for ${proposalId}`, e as Error)
     }
   }
 

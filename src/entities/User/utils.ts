@@ -19,7 +19,7 @@ function getDefaultAvatarSizeUrl(avatar_url: string) {
   return avatar_url.replace('{size}', DEFAULT_AVATAR_SIZE)
 }
 
-function getAvatarUrl(post: DiscoursePostInTopic) {
+export function getAvatarUrl(post: Pick<DiscoursePostInTopic, 'avatar_template'>) {
   const defaultSizeUrl = getDefaultAvatarSizeUrl(post.avatar_template)
   return defaultSizeUrl.includes('letter') ? defaultSizeUrl : FORUM_URL + defaultSizeUrl
 }

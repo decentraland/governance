@@ -33,6 +33,13 @@ export const GOVERNANCE_API = process.env.GATSBY_GOVERNANCE_API || ''
 export const FORUM_URL = process.env.GATSBY_DISCOURSE_API || ''
 export const DAO_ROLLBAR_TOKEN = process.env.DAO_ROLLBAR_TOKEN
 export const DISCORD_SERVICE_ENABLED = getBooleanStringVar('DISCORD_SERVICE_ENABLED', true)
+// Forum categories whose new topics are announced in the governance discord channel. Defaults to
+// Governance and DCL Regenesis Labs; a subcategory is only covered when it is listed itself, and an
+// empty value turns the announcements off.
+export const DISCORD_FORUM_TOPIC_CATEGORIES = (process.env.DISCORD_FORUM_TOPIC_CATEGORIES ?? '13,18')
+  .split(',')
+  .map((id) => Number(id.trim()))
+  .filter((id) => Number.isInteger(id) && id > 0)
 export const NOTIFICATIONS_SERVICE_ENABLED = getBooleanStringVar('NOTIFICATIONS_SERVICE_ENABLED', true)
 export const DCL_NOTIFICATIONS_SERVICE_ENABLED = getBooleanStringVar('DCL_NOTIFICATIONS_SERVICE_ENABLED', true)
 export const VOTES_VP_THRESHOLD = 5

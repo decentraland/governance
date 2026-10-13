@@ -1,3 +1,5 @@
+import Time from '../../utils/date/Time'
+
 export const MIN_NAME_SIZE = 2
 export const MAX_NAME_SIZE = 15
 export const VOTING_POWER_TO_PASS_LINKED_WEARABLES = process.env.GATSBY_VOTING_POWER_TO_PASS_LINKED_WEARABLES
@@ -22,3 +24,8 @@ export const SUBMISSION_THRESHOLD_COUNCIL_DECISION_VETO = process.env.SUBMISSION
 export const VOTING_POWER_TO_PASS_COUNCIL_DECISION_VETO = process.env.VOTING_POWER_TO_PASS_COUNCIL_DECISION_VETO
 export const MAX_DURATION_COUNCIL_DECISION = 14
 export const MILESTONE_SUBMIT_LIMIT = 10
+
+// How long before voting closes the governance channel is reminded. Below the minimum the reminder
+// would race the finish job and arrive too late to act on.
+export const VOTING_ENDS_SOON_WINDOW = Time.Day
+export const VOTING_ENDS_SOON_MIN_REMAINING = Time.Hour

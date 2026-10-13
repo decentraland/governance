@@ -1,18 +1,23 @@
 import type { Client, EmbedBuilder, Snowflake } from 'discord.js'
+import orderBy from 'lodash/orderBy'
 
+import { SnapshotProposalTally } from '../clients/SnapshotTypes'
 import { DISCORD_SERVICE_ENABLED } from '../constants'
 import { getProfileUrl } from '../entities/Profile/utils'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
-import { ProposalStatus, ProposalType } from '../entities/Proposal/types'
+import { ProposalAttributes, ProposalStatus, ProposalType } from '../entities/Proposal/types'
 import { isGovernanceProcessProposal, proposalUrl } from '../entities/Proposal/utils'
 import { getPublicUpdates, getUpdateNumber, getUpdateUrl } from '../entities/Updates/utils'
 import { MESSAGE_TIMEOUT_TIME } from '../entities/User/constants'
 import UserModel from '../entities/User/model'
 import { getEnumDisplayName, inBackground } from '../helpers'
+import DiscordChannelPostModel, { DiscordChannelPostAttributes } from '../models/DiscordChannelPost'
 import { ErrorService } from '../services/ErrorService'
 import { getProfile } from '../utils/Catalyst'
+import Time from '../utils/date/Time'
 import { ErrorCategory } from '../utils/errorCategories'
 import { isProdEnv } from '../utils/governanceEnvs'
+import logger from '../utils/logger'
 
 import { UpdateService } from './update'
 
@@ -26,6 +31,16 @@ const DCL_LOGO = 'https://decentraland.org/images/decentraland.png'
 const DEFAULT_AVATAR = 'https://decentraland.org/images/male.png'
 const BLANK = '\u200B'
 const PREVIEW_MAX_LENGTH = 140
+// Six lines of the longest possible standing still fit in the 1024 characters Discord allows a field.
+const STANDINGS_MAX_CHOICES = 6
+const STANDINGS_CHOICE_MAX_LENGTH = 60
+const FORUM_PREVIEW_MAX_LENGTH = 280
+// Discord allows 25 fields in a message; a new proposal spends two on its type and the spacer.
+const MAX_CHOICE_FIELDS = 23
+const CHANNEL_POST_BATCH_SIZE = 10
+// Retried after 1, 2, 4 ... minutes, capped at an hour, so the attempts cover an outage of a few hours.
+const CHANNEL_POST_MAX_ATTEMPTS = 10
+const CHANNEL_POST_MAX_RETRY_DELAY = Time.Hour
 // Discord caps one fetch at 100; five pages covers any burst the channel's rate limits allow.
 const VERIFICATION_FETCH_PAGE_SIZE = 100
 const VERIFICATION_FETCH_MAX_PAGES = 5
@@ -42,9 +57,19 @@ enum MessageColors {
   FINISH_PROPOSAL = 0x8142f5,
   NEW_UPDATE = 0x00ff80,
   NOTIFICATION = 0xf5c63b,
+  VOTING_ENDS_SOON = 0xff8c00,
+  NEW_FORUM_TOPIC = 0x1abc9c,
 }
 
-type EmbedMessageProps = {
+export type ForumTopicAnnouncement = {
+  url: string
+  title: string
+  category: string
+  author: { username: string; avatarUrl: string; profileUrl: string }
+  preview: string
+}
+
+export type EmbedMessageProps = {
   title: string
   proposalType?: ProposalType
   description?: string
@@ -55,9 +80,12 @@ type EmbedMessageProps = {
   url?: string
 }
 
+// The shape a queued channel post is stored in, rebuilt into an embed when it is sent.
+export type ChannelMessage = EmbedMessageProps
+
 function shortenText(text: string, maxLength: number) {
   if (text.length > maxLength) {
-    return text.substring(0, maxLength) + ''
+    return text.substring(0, maxLength) + '...'
   }
   return text
 }
@@ -66,11 +94,70 @@ function capitalizeFirstLetter(string: string) {
   return string.length > 0 ? `${string[0].toUpperCase()}${string.slice(1)}` : ''
 }
 
+// Polls take any number of options, so past the field limit the rest are summed up in a last field
+// rather than failing the whole message.
 function getChoices(choices: string[]): Field[] {
-  return choices.map((choice, idx) => ({
+  const fields = choices.map((choice, idx) => ({
     name: `Option #${idx + 1}`,
     value: capitalizeFirstLetter(choice),
   }))
+  if (fields.length <= MAX_CHOICE_FIELDS) {
+    return fields
+  }
+
+  const shown = fields.slice(0, MAX_CHOICE_FIELDS - 1)
+  return [...shown, { name: 'More options', value: `…and ${fields.length - shown.length} more` }]
+}
+
+function getRetryDelay(attempts: number) {
+  return Math.min(Time.Minute * 2 ** (attempts - 1), CHANNEL_POST_MAX_RETRY_DELAY)
+}
+
+// Members who left the server, or who do not accept messages from it, are an expected state rather
+// than a fault worth an alert on every notification.
+function isUnreachableUserError(error: unknown) {
+  return (
+    error instanceof Discord.DiscordAPIError &&
+    (error.code === Discord.RESTJSONErrorCodes.CannotSendMessagesToThisUser ||
+      error.code === Discord.RESTJSONErrorCodes.UnknownUser)
+  )
+}
+
+// Cuts at a word boundary when there is one reasonably close, and marks the cut.
+function truncateAtWord(text: string, maxLength: number) {
+  if (text.length <= maxLength) {
+    return text
+  }
+  const cut = text.slice(0, maxLength - 1)
+  const lastSpace = cut.lastIndexOf(' ')
+  return `${(lastSpace > maxLength / 2 ? cut.slice(0, lastSpace) : cut).trimEnd()}…`
+}
+
+function formatVotingPower(votingPower: number) {
+  return Math.round(votingPower).toLocaleString('en-US')
+}
+
+function formatStandings(choices: string[], { scores, scores_total }: SnapshotProposalTally) {
+  if (scores_total <= 0) {
+    return 'No votes yet'
+  }
+
+  const standings = orderBy(
+    choices.map((choice, idx) => ({ choice, votingPower: scores[idx] || 0 })),
+    'votingPower',
+    'desc'
+  )
+  const lines = standings.slice(0, STANDINGS_MAX_CHOICES).map(({ choice, votingPower }) => {
+    // Poll choices are free text, so markdown in them must not leak into the message.
+    const name = Discord.escapeMarkdown(shortenText(capitalizeFirstLetter(choice), STANDINGS_CHOICE_MAX_LENGTH))
+    const share = ((votingPower / scores_total) * 100).toFixed(1)
+    return `**${name}**: ${share}% (${formatVotingPower(votingPower)} VP)`
+  })
+  if (standings.length > STANDINGS_MAX_CHOICES) {
+    lines.push(`…and ${standings.length - STANDINGS_MAX_CHOICES} more`)
+  }
+
+  return lines.join('\n')
 }
 
 export class IncompleteDiscordVerificationReadError extends Error {
@@ -115,9 +202,11 @@ export class DiscordService {
     })
   }
 
-  private static reportError(message: string, error: unknown) {
+  private static reportError(message: string, error: unknown, context?: Record<string, unknown>) {
     if (isProdEnv()) {
-      ErrorService.report(message, { error: `${error}`, category: ErrorCategory.Discord })
+      ErrorService.report(message, { ...context, error: `${error}`, category: ErrorCategory.Discord })
+    } else if (context) {
+      console.error(message, error, context)
     } else {
       console.error(message, error)
     }
@@ -141,19 +230,20 @@ export class DiscordService {
     return channel
   }
 
-  private static get channel() {
+  // Same reason as fetchTextChannel: the cache is empty until the gateway is ready, which leaves a
+  // window after every restart where a cache-only lookup fails. The governance channel may also be an
+  // announcement channel.
+  private static async fetchGovernanceChannel() {
     if (!CHANNEL_ID) {
       throw new Error('Discord channel ID not set')
     }
 
-    const channel = this.client.channels.cache.get(CHANNEL_ID)
-
+    const channel = await this.client.channels.fetch(CHANNEL_ID)
     if (!channel) {
       throw new Error(`Discord channel not found: ${CHANNEL_ID}`)
     }
-
-    if (channel?.type !== Discord.ChannelType.GuildText && channel?.type !== Discord.ChannelType.GuildAnnouncement) {
-      throw new Error(`Discord channel type is not supported: ${channel?.type}`)
+    if (channel.type !== Discord.ChannelType.GuildText && channel.type !== Discord.ChannelType.GuildAnnouncement) {
+      throw new Error(`Discord channel type is not supported: ${channel.type}`)
     }
 
     return channel
@@ -219,9 +309,16 @@ export class DiscordService {
   }
 
   private static async sendMessages(messages: EmbedBuilder[]) {
-    const sentMessage = await this.channel.send({ embeds: messages })
-    if (this.channel.type === Discord.ChannelType.GuildAnnouncement) {
-      await sentMessage.crosspost()
+    const channel = await this.fetchGovernanceChannel()
+    const sentMessage = await channel.send({ embeds: messages })
+    if (channel.type === Discord.ChannelType.GuildAnnouncement) {
+      // The message is already in the channel by now. Failing the send over the crosspost would
+      // make a caller that retries on failure post it a second time.
+      try {
+        await sentMessage.crosspost()
+      } catch (error) {
+        this.reportError('Error crossposting Discord message', error)
+      }
     }
   }
 
@@ -234,26 +331,19 @@ export class DiscordService {
     user: string
   ) {
     if (DISCORD_SERVICE_ENABLED) {
-      const action = 'A new proposal has been created'
-      const embedChoices = getChoices(choices)
-      inBackground(async () => {
-        const message = await this.formatMessage({
+      this.queueChannelPost(
+        {
           url: proposalUrl(proposalId),
           title,
           proposalType: type,
           description,
-          fields: embedChoices,
+          fields: getChoices(choices),
           user,
-          action,
+          action: 'A new proposal has been created',
           color: MessageColors.NEW_PROPOSAL,
-        })
-        try {
-          await this.sendMessages([message])
-          return { action, proposalId }
-        } catch (error) {
-          throw new Error(`[Error sending message to Discord - New proposal] ID ${proposalId}, Error: ${error}`)
-        }
-      })
+        },
+        { proposalId }
+      )
     }
   }
 
@@ -275,11 +365,9 @@ export class DiscordService {
             throw new Error('Missing update fields for Discord message')
           }
 
-          const action = 'A new update has been created'
-          const title = `Update #${updateNumber}: ${proposalTitle}`
-          const message = await this.formatMessage({
+          await DiscordChannelPostModel.enqueue({
             url: getUpdateUrl(updateId, proposalId),
-            title,
+            title: `Update #${updateNumber}: ${proposalTitle}`,
             fields: [
               { name: 'Project Health', value: shortenText(health, PREVIEW_MAX_LENGTH) },
               { name: 'Introduction', value: shortenText(introduction, PREVIEW_MAX_LENGTH) },
@@ -288,13 +376,12 @@ export class DiscordService {
               { name: 'Next Steps', value: shortenText(next_steps, PREVIEW_MAX_LENGTH) },
             ],
             user,
-            action,
+            action: 'A new update has been created',
             color: MessageColors.NEW_UPDATE,
           })
-          await this.sendMessages([message])
-          return { action, updateId }
+          return { updateId }
         } catch (error) {
-          throw new Error(`[Error sending message to Discord - New update] ID ${updateId}, Error: ${error}`)
+          this.reportError('Error queueing new update message for Discord', error, { proposalId, updateId })
         }
       })
     }
@@ -302,29 +389,132 @@ export class DiscordService {
 
   static finishProposal(id: string, title: string, outcome: ProposalStatus, winnerChoice?: string) {
     if (DISCORD_SERVICE_ENABLED) {
-      inBackground(async () => {
-        const action = `Proposal has ended with outcome ${getEnumDisplayName(outcome)}`
-        const message = await this.formatMessage({
+      this.queueChannelPost(
+        {
           url: proposalUrl(id),
           title,
           fields: winnerChoice ? [{ name: 'Result', value: capitalizeFirstLetter(winnerChoice) }] : [],
-          action,
+          action: `Proposal has ended with outcome ${getEnumDisplayName(outcome)}`,
           color: MessageColors.FINISH_PROPOSAL,
-        })
-        try {
-          await this.sendMessages([message])
-          return { action, proposalId: id }
-        } catch (error) {
-          if (isProdEnv()) {
-            ErrorService.report(`Error sending finish proposal message to Discord`, {
-              proposalId: id,
-              error,
-              category: ErrorCategory.Discord,
-            })
-          }
-        }
-      })
+        },
+        { proposalId: id }
+      )
     }
+  }
+
+  // Queued rather than sent here, so a post that does not go out is retried by the job sending the
+  // queue instead of being lost.
+  private static queueChannelPost(message: ChannelMessage, context: Record<string, unknown>) {
+    inBackground(async () => {
+      try {
+        await DiscordChannelPostModel.enqueue(message)
+        return context
+      } catch (error) {
+        this.reportError('Error queueing Discord channel post', error, context)
+      }
+    })
+  }
+
+  // Answers how many went out. A message that cannot be built will not build on a retry either, so
+  // it fails at once; a send that fails is retried later with a growing delay.
+  static async sendQueuedChannelPosts() {
+    const posts = await DiscordChannelPostModel.claimDue(CHANNEL_POST_BATCH_SIZE)
+    let sent = 0
+    for (const post of posts) {
+      if (await this.sendQueuedChannelPost(post)) {
+        sent++
+      }
+    }
+    return sent
+  }
+
+  private static async sendQueuedChannelPost({ id, message, attempts }: DiscordChannelPostAttributes) {
+    // Each post settles on its own: one whose outcome could not be recorded stays in sending, skipped
+    // rather than sent twice, and the rest of the batch still goes out.
+    try {
+      let embed: EmbedBuilder
+      try {
+        embed = await this.formatMessage(message)
+      } catch (error) {
+        this.reportError('Error building queued Discord channel post', error, { postId: id })
+        await DiscordChannelPostModel.markFailed(id, `${error}`)
+        return false
+      }
+
+      try {
+        await this.sendMessages([embed])
+      } catch (error) {
+        const gaveUp = attempts >= CHANNEL_POST_MAX_ATTEMPTS
+        // The first failure is worth an alert right away; the retries after it would only repeat it.
+        if (attempts === 1 || gaveUp) {
+          const reason = gaveUp
+            ? 'Gave up sending queued Discord channel post'
+            : 'Error sending queued Discord channel post'
+          this.reportError(reason, error, { postId: id, attempts })
+        }
+        if (gaveUp) {
+          await DiscordChannelPostModel.markFailed(id, `${error}`)
+        } else {
+          await DiscordChannelPostModel.retryLater(id, `${error}`, new Date(Date.now() + getRetryDelay(attempts)))
+        }
+        return false
+      }
+
+      await DiscordChannelPostModel.markSent(id)
+      return true
+    } catch (error) {
+      this.reportError('Error recording queued Discord channel post outcome', error, { postId: id })
+      return false
+    }
+  }
+
+  // Unlike the other channel posts this one is awaited and throws, so the caller can hand the
+  // reminder back for a retry when it does not go out. Without a tally it still goes out, minus the
+  // standings: a late reminder is worth more than none.
+  static async votingEndsSoon(proposal: ProposalAttributes, tally?: SnapshotProposalTally) {
+    const finishAt = new Date(proposal.finish_at)
+    const fields: Field[] = []
+    if (tally) {
+      fields.push(
+        { name: 'Current results', value: formatStandings(proposal.configuration.choices || [], tally) },
+        { name: 'Votes', value: tally.votes.toLocaleString('en-US') }
+      )
+    }
+    if (proposal.required_to_pass) {
+      fields.push({ name: 'Required to pass', value: `${formatVotingPower(proposal.required_to_pass)} VP` })
+    }
+
+    // Discord renders these timestamps in each reader's own timezone and keeps the relative one live.
+    const endsIn = Discord.time(finishAt, Discord.TimestampStyles.RelativeTime)
+    const endsAt = Discord.time(finishAt, Discord.TimestampStyles.ShortDateTime)
+    const message = await this.formatMessage({
+      url: proposalUrl(proposal.id),
+      title: proposal.title,
+      fields,
+      action: `Voting ends ${endsIn} (${endsAt}). Make sure your vote is in.`,
+      color: MessageColors.VOTING_ENDS_SOON,
+    })
+    await this.sendMessages([message])
+  }
+
+  // Awaited and throwing like votingEndsSoon, so the job can hand the topic back when it does not go
+  // out. The author is the forum account, which has no catalyst profile to look up.
+  static async newForumTopic({ url, title, category, author, preview }: ForumTopicAnnouncement) {
+    const description = [`New topic in **${Discord.escapeMarkdown(category)}**`]
+    if (preview) {
+      // Forum posts are free text, so markdown in them must not leak into the message.
+      description.push(Discord.escapeMarkdown(truncateAtWord(preview, FORUM_PREVIEW_MAX_LENGTH), { maskedLink: true }))
+    }
+
+    const message = await this.formatMessage({
+      url,
+      title,
+      fields: [],
+      action: description.join('\n\n'),
+      color: MessageColors.NEW_FORUM_TOPIC,
+    })
+    message.setAuthor({ name: author.username, iconURL: author.avatarUrl, url: author.profileUrl })
+    await this.sendMessages([message])
   }
 
   static sendDirectMessage(userId: Snowflake, message: Omit<EmbedMessageProps, 'color'>) {
@@ -336,6 +526,10 @@ export class DiscordService {
           const embedMessage = await this.formatMessage({ ...message, color: MessageColors.NOTIFICATION })
           return await dmChannel.send({ embeds: [embedMessage] })
         } catch (error) {
+          if (isUnreachableUserError(error)) {
+            logger.log('Discord user cannot receive direct messages', { userId })
+            return
+          }
           if (isProdEnv()) {
             ErrorService.report(`Error sending direct message to user`, {
               userId,
