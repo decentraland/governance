@@ -21,7 +21,12 @@ const { Discourse: DiscourseClient } = require('../clients/Discourse')
 const { default: ForumTopicNotificationModel } = require('../models/ForumTopicNotification')
 const { ErrorService } = require('../services/ErrorService')
 const { DiscordService } = require('../services/discord')
-const { FORUM_TOPIC_LOOKBACK, notifyNewForumTopics, toPlainText } = require('./NotifyNewForumTopics')
+const {
+  FORUM_TOPIC_LOOKBACK,
+  MAX_FORUM_TOPICS_PER_RUN,
+  notifyNewForumTopics,
+  toPlainText,
+} = require('./NotifyNewForumTopics')
 /* eslint-enable @typescript-eslint/no-var-requires */
 
 // The job reads these when it runs, so changing them on the mocked module is enough.
@@ -44,7 +49,12 @@ function listItem(id: number, categoryId: number, ageMs: number, overrides: Part
   }
 }
 
-function topicDetails(id: number, username: string, cooked = `<p>Body of topic ${id}</p>`) {
+function topicDetails(
+  id: number,
+  username: string,
+  cooked = `<p>Body of topic ${id}</p>`,
+  post: { trust_level?: number; hidden?: boolean } = {}
+) {
   return {
     id,
     slug: `topic-${id}`,
@@ -57,7 +67,7 @@ function topicDetails(id: number, username: string, cooked = `<p>Body of topic $
         avatar_template: `/user_avatar/forum.decentraland.org/${username.toLowerCase()}/{size}/1_2.png`,
       },
     },
-    post_stream: { stream: [1], posts: [{ post_number: 1, cooked }] },
+    post_stream: { stream: [1], posts: [{ post_number: 1, cooked, trust_level: 1, hidden: false, ...post }] },
   } as unknown as DiscourseTopic
 }
 
@@ -201,6 +211,48 @@ describe('notifyNewForumTopics', () => {
 
     it('should keep it claimed so it is not looked at again', () => {
       expect(release).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('when a topic was opened by a brand new forum account', () => {
+    beforeEach(async () => {
+      latestByCategory[13] = [listItem(301, 13, 10 * 60 * 1000)]
+      topicsById[301] = topicDetails(301, 'airdrop', undefined, { trust_level: 0 })
+      await notifyNewForumTopics(createContext())
+    })
+
+    it('should not announce it, and keep it claimed', () => {
+      expect(newForumTopic).not.toHaveBeenCalled()
+      expect(release).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('when the first post of a topic was hidden by moderators', () => {
+    beforeEach(async () => {
+      latestByCategory[13] = [listItem(302, 13, 10 * 60 * 1000)]
+      topicsById[302] = topicDetails(302, 'Nacho', undefined, { hidden: true })
+      await notifyNewForumTopics(createContext())
+    })
+
+    it('should not announce it', () => {
+      expect(newForumTopic).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('when more topics than the per-run cap are new', () => {
+    const ids = [400, 401, 402, 403, 404]
+
+    beforeEach(async () => {
+      latestByCategory[13] = ids.map((id, index) => listItem(id, 13, (60 - index) * 60 * 1000))
+      ids.forEach((id) => (topicsById[id] = topicDetails(id, 'Nacho')))
+      await notifyNewForumTopics(createContext())
+    })
+
+    it('should announce the oldest up to the cap and hand the rest back for the next run', () => {
+      expect(newForumTopic.mock.calls.map(([announcement]) => announcement.title)).toEqual(
+        ids.slice(0, MAX_FORUM_TOPICS_PER_RUN).map((id) => `Topic ${id}`)
+      )
+      expect(release.mock.calls.map(([id]) => id)).toEqual(ids.slice(MAX_FORUM_TOPICS_PER_RUN))
     })
   })
 

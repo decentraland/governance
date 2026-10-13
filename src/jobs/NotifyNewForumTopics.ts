@@ -15,6 +15,10 @@ import { ErrorCategory } from '../utils/errorCategories'
 // Only topics this recent are announced. It bounds what the first run, or a run after an outage,
 // posts at once, while leaving room for topics that only appear once a moderator approves them.
 export const FORUM_TOPIC_LOOKBACK = Time.Day
+// Brand new forum accounts (trust level 0) can open topics, so they are not announced
+export const MIN_FORUM_TOPIC_TRUST_LEVEL = 1
+// A burst of topics is spread over later runs instead of flooding the channel
+export const MAX_FORUM_TOPICS_PER_RUN = 3
 
 // Block elements separate words; inline ones (links, emphasis, mentions) sit inside them.
 const BLOCK_TAG = /<\/?(p|br|div|li|ul|ol|h[1-6]|blockquote|pre|hr|table|tr|td|th)\b[^>]*>/gi
@@ -82,8 +86,17 @@ async function announceTopic(topic: DiscourseTopicListItem) {
       return false
     }
 
-    const { category } = await Discourse.get().getCategory(topic.category_id)
     const firstPost = post_stream.posts.find((post) => post.post_number === 1)
+    if (
+      !firstPost ||
+      firstPost.hidden ||
+      firstPost.deleted_at ||
+      (!firstPost.staff && firstPost.trust_level < MIN_FORUM_TOPIC_TRUST_LEVEL)
+    ) {
+      return false
+    }
+
+    const { category } = await Discourse.get().getCategory(topic.category_id)
     await DiscordService.newForumTopic({
       url: forumUrl(slug, topic.id),
       title,
@@ -93,7 +106,7 @@ async function announceTopic(topic: DiscourseTopicListItem) {
         avatarUrl: getAvatarUrl(author),
         profileUrl: forumProfileUrl(author.username),
       },
-      preview: firstPost ? toPlainText(firstPost.cooked) : '',
+      preview: toPlainText(firstPost.cooked),
     })
     return true
   } catch (error) {
@@ -128,6 +141,10 @@ export async function notifyNewForumTopics(context: JobContext) {
     const claimed = new Set(await ForumTopicNotificationModel.claim(topics))
     let announced = 0
     for (const topic of topics.filter(({ id }) => claimed.has(id))) {
+      if (announced >= MAX_FORUM_TOPICS_PER_RUN) {
+        await ForumTopicNotificationModel.release(topic.id)
+        continue
+      }
       if (await announceTopic(topic)) {
         announced++
       }
