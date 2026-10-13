@@ -131,6 +131,19 @@ describe('DiscordService.newForumTopic', () => {
     })
   })
 
+  describe('when the preview contains a masked link', () => {
+    let description: string | undefined
+
+    beforeEach(async () => {
+      await DiscordService.newForumTopic(createAnnouncement({ preview: '[Claim airdrop](https://evil.example)' }))
+      description = getSentEmbed(send).description
+    })
+
+    it('should escape it so the link text cannot hide where it goes', () => {
+      expect(description?.split('\n\n')[1]).toBe('\\[Claim airdrop](https://evil.example)')
+    })
+  })
+
   describe('when sending to the channel fails', () => {
     let sendError: Error
 

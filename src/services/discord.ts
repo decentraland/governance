@@ -503,7 +503,7 @@ export class DiscordService {
     const description = [`New topic in **${Discord.escapeMarkdown(category)}**`]
     if (preview) {
       // Forum posts are free text, so markdown in them must not leak into the message.
-      description.push(Discord.escapeMarkdown(truncateAtWord(preview, FORUM_PREVIEW_MAX_LENGTH)))
+      description.push(Discord.escapeMarkdown(truncateAtWord(preview, FORUM_PREVIEW_MAX_LENGTH), { maskedLink: true }))
     }
 
     const message = await this.formatMessage({
