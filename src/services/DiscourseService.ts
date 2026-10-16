@@ -5,7 +5,7 @@ import ProposalModel from '../entities/Proposal/model'
 import { ProposalWithOutcome } from '../entities/Proposal/outcome'
 import * as proposalTemplates from '../entities/Proposal/templates'
 import { getUpdateMessage } from '../entities/Proposal/templates/messages'
-import { ProposalAttributes } from '../entities/Proposal/types'
+import { ProposalAttributes, ProposalCommentsInDiscourse } from '../entities/Proposal/types'
 import { forumUrl, proposalUrl } from '../entities/Proposal/utils'
 import * as updateTemplates from '../entities/Updates/templates'
 import { UpdateAttributes } from '../entities/Updates/types'
@@ -20,6 +20,7 @@ import { DclProfile } from '../utils/Catalyst/types'
 import { ErrorCategory } from '../utils/errorCategories'
 import logger from '../utils/logger'
 
+import CacheService, { TTL_5_MINS } from './CacheService'
 import { ErrorService } from './ErrorService'
 import { ProposalInCreation } from './ProposalService'
 import { SnapshotService } from './SnapshotService'
@@ -152,6 +153,21 @@ export class DiscourseService {
       logger.log('Dropping discourse topic', { topic_id: topic_id })
       return Discourse.get().removeTopic(topic_id)
     })
+  }
+
+  // Comments shown in the dapp. A proposals list page asks for one topic per card, so serve them from
+  // a short-lived cache to keep the forum fan-out (and its api-key rate limit) in check. Errors are
+  // not cached, so the next request retries the forum
+  static async getCachedPostComments(discourseTopicId: number): Promise<ProposalCommentsInDiscourse> {
+    const cacheKey = `discourse-post-comments-${discourseTopicId}`
+    const cached = CacheService.get<ProposalCommentsInDiscourse>(cacheKey)
+    if (cached) {
+      return cached
+    }
+
+    const comments = await this.getPostComments(discourseTopicId)
+    CacheService.set(cacheKey, comments, TTL_5_MINS)
+    return comments
   }
 
   static async getPostComments(discourseTopicId: number, { requireComplete = false }: GetPostCommentsOptions = {}) {
