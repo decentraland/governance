@@ -623,7 +623,7 @@ export async function removeProposal(req: WithAuth<Request<{ proposal: string }>
 export async function getProposalComments(req: Request<{ proposal: string }>): Promise<ProposalCommentsInDiscourse> {
   const proposal = await getProposal(req)
   try {
-    return await DiscourseService.getPostComments(proposal.discourse_topic_id)
+    return await DiscourseService.getCachedPostComments(proposal.discourse_topic_id)
   } catch (error) {
     if (isProdEnv()) {
       logger.log('Error fetching discourse topic', {
@@ -633,10 +633,8 @@ export async function getProposalComments(req: Request<{ proposal: string }>): P
         category: ErrorCategory.Discourse,
       })
     }
-    return {
-      comments: [],
-      totalComments: 0,
-    }
+    // a 200 with zero comments would be cached by the dapp as a real (empty) answer
+    throw new RequestError('Could not load the forum comments; please retry', RequestError.ServiceUnavailable)
   }
 }
 
