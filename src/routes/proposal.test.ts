@@ -495,16 +495,17 @@ describe('the proposal routes', () => {
 
     describe('when discourse is unreachable', () => {
       beforeEach(async () => {
-        jest.spyOn(DiscourseService, 'getPostComments').mockRejectedValue(new Error('discourse down'))
+        jest.spyOn(DiscourseService, 'getCachedPostComments').mockRejectedValue(new Error('discourse down'))
         response = await supertest(app).get(`/api/proposals/${PROPOSAL_ID}/comments`)
       })
 
-      it('should respond with a 200 rather than failing the page', () => {
-        expect(response.status).toBe(200)
+      // a 200 with zero comments would be cached by the dapp as a real (empty) answer for an hour
+      it('should respond with a 503 instead of an empty comment set', () => {
+        expect(response.status).toBe(503)
       })
 
-      it('should return an empty comment set', () => {
-        expect(response.body.data).toEqual({ comments: [], totalComments: 0 })
+      it('should not report zero comments', () => {
+        expect(response.body.data).toBeUndefined()
       })
     })
   })

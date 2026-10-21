@@ -6,6 +6,7 @@ import { AccountType } from '../entities/User/types'
 import { DiscoursePostInTopic } from '../shared/types/discourse'
 import logger from '../utils/logger'
 
+import CacheService from './CacheService'
 import { DiscourseService, IncompleteDiscourseCommentsError } from './DiscourseService'
 import { UserService } from './user'
 
@@ -211,6 +212,58 @@ describe('DiscourseService.getPostComments', () => {
 
     it('should not link either forum account', () => {
       expect(UserModel.createForumConnection).not.toHaveBeenCalled()
+    })
+  })
+})
+
+describe('DiscourseService.getCachedPostComments', () => {
+  const COMMENTS = { comments: [], totalComments: 3 }
+  let getPostComments: jest.SpyInstance
+
+  beforeEach(() => {
+    CacheService.flush()
+    getPostComments = jest.spyOn(DiscourseService, 'getPostComments')
+  })
+
+  afterEach(() => {
+    CacheService.flush()
+    jest.restoreAllMocks()
+  })
+
+  describe('when the same topic is requested twice', () => {
+    let secondResult: unknown
+
+    beforeEach(async () => {
+      getPostComments.mockResolvedValue(COMMENTS)
+      await DiscourseService.getCachedPostComments(TOPIC_ID)
+      secondResult = await DiscourseService.getCachedPostComments(TOPIC_ID)
+    })
+
+    it('should only ask the forum once', () => {
+      expect(getPostComments).toHaveBeenCalledTimes(1)
+    })
+
+    it('should serve the cached comments the second time', () => {
+      expect(secondResult).toEqual(COMMENTS)
+    })
+  })
+
+  describe('when the forum request fails', () => {
+    let firstError: Error
+    let secondResult: unknown
+
+    beforeEach(async () => {
+      getPostComments.mockRejectedValueOnce(new Error('rate limited')).mockResolvedValueOnce(COMMENTS)
+      firstError = (await DiscourseService.getCachedPostComments(TOPIC_ID).catch((error: Error) => error)) as Error
+      secondResult = await DiscourseService.getCachedPostComments(TOPIC_ID)
+    })
+
+    it('should propagate the error', () => {
+      expect(firstError.message).toBe('rate limited')
+    })
+
+    it('should not cache the failure, so the next request asks the forum again', () => {
+      expect(secondResult).toEqual(COMMENTS)
     })
   })
 })

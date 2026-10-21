@@ -88,7 +88,7 @@ async function getProjectUpdateComments(req: Request<{ update_id: string }>) {
   }
 
   try {
-    return await DiscourseService.getPostComments(discourse_topic_id)
+    return await DiscourseService.getCachedPostComments(discourse_topic_id)
   } catch (error) {
     ErrorService.report('Error fetching discourse topic', {
       error,
@@ -96,10 +96,8 @@ async function getProjectUpdateComments(req: Request<{ update_id: string }>) {
       updateId: id,
       category: ErrorCategory.Discourse,
     })
-    return {
-      comments: [],
-      totalComments: 0,
-    }
+    // a 200 with zero comments would be cached by the dapp as a real (empty) answer
+    throw new RequestError('Could not load the forum comments; please retry', RequestError.ServiceUnavailable)
   }
 }
 
