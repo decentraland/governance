@@ -1,4 +1,4 @@
-FROM node:24-alpine@sha256:6a1c190e17215d844926b0677f4bf87273ff7d5e54db06d3b5b5863ab0b09a3d as compiler
+FROM node:24-alpine@sha256:98e4e60b35fd50143e1838da2957488c25aa3a3efbd48bb679923f77d6d3d873 as compiler
 ARG version_number
 ARG FRONT_BUILD_NODE_OPTIONS="--max-old-space-size=4096"
 
@@ -35,7 +35,7 @@ COPY ./.babelrc.json                          /app/.babelrc.json
 RUN NODE_OPTIONS="--max-old-space-size=4096" npm run build
 RUN npm prune --production --ignore-scripts
 
-FROM node:24-alpine@sha256:6a1c190e17215d844926b0677f4bf87273ff7d5e54db06d3b5b5863ab0b09a3d
+FROM node:24-alpine@sha256:98e4e60b35fd50143e1838da2957488c25aa3a3efbd48bb679923f77d6d3d873
 WORKDIR /app
 
 RUN rm -rf \
