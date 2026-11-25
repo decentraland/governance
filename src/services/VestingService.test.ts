@@ -358,34 +358,97 @@ describe('VestingService', () => {
       })
     })
 
-    describe('when the subgraph does not have the vesting', () => {
+    // The DAO's own vesting predates the subgraph, so this is expected rather than a fault.
+    describe('when the subgraph does not index the vesting', () => {
+      let report: jest.SpyInstance
+      let fromContract: jest.SpyInstance
+
       beforeEach(() => {
-        jest
-          .spyOn(VestingsSubgraph, 'get')
-          .mockReturnValue({ getVesting: jest.fn().mockRejectedValue(new Error('not found')) } as never)
-        jest.spyOn(ErrorService, 'report').mockImplementation(() => undefined)
+        jest.spyOn(VestingsSubgraph, 'get').mockReturnValue({ getVesting: jest.fn().mockResolvedValue(null) } as never)
+        report = jest.spyOn(ErrorService, 'report').mockImplementation(() => undefined)
+        fromContract = jest
+          .spyOn(VestingData, 'getVestingWithLogsFromAlchemy')
+          .mockResolvedValue({ address: VESTING_ADDRESS } as never)
       })
 
       it('should read it from the contract, with its logs by default', async () => {
-        const fromContract = jest.spyOn(VestingData, 'getVestingWithLogsFromAlchemy').mockResolvedValue({} as never)
         await VestingService.getVestingWithLogs(VESTING_ADDRESS, 'proposal-id')
         expect(fromContract).toHaveBeenCalledWith(VESTING_ADDRESS, 'proposal-id', true)
       })
 
       it('should skip the contract logs when they are not wanted', async () => {
-        const fromContract = jest.spyOn(VestingData, 'getVestingWithLogsFromAlchemy').mockResolvedValue({} as never)
         await VestingService.getVestingWithLogs(VESTING_ADDRESS, undefined, { includeLogs: false })
         expect(fromContract).toHaveBeenCalledWith(VESTING_ADDRESS, undefined, false)
+      })
+
+      it('should return what the contract has', async () => {
+        expect(await VestingService.getVestingWithLogs(VESTING_ADDRESS)).toEqual({ address: VESTING_ADDRESS })
+      })
+
+      it('should not report an error', async () => {
+        await VestingService.getVestingWithLogs(VESTING_ADDRESS)
+        expect(report).not.toHaveBeenCalled()
+      })
+    })
+
+    describe('when the subgraph request fails', () => {
+      const error = new Error('GraphQL request failed with status 503')
+      let report: jest.SpyInstance
+      let fromContract: jest.SpyInstance
+
+      beforeEach(async () => {
+        jest.spyOn(VestingsSubgraph, 'get').mockReturnValue({ getVesting: jest.fn().mockRejectedValue(error) } as never)
+        report = jest.spyOn(ErrorService, 'report').mockImplementation(() => undefined)
+        fromContract = jest.spyOn(VestingData, 'getVestingWithLogsFromAlchemy').mockResolvedValue({} as never)
+        await VestingService.getVestingWithLogs(VESTING_ADDRESS, 'proposal-id')
+      })
+
+      it('should report it', () => {
+        expect(report).toHaveBeenCalledWith(
+          'Unable to fetch vestings subgraph data',
+          expect.objectContaining({ error, vestingAddress: VESTING_ADDRESS, proposalId: 'proposal-id' })
+        )
+      })
+
+      it('should still read it from the contract', () => {
+        expect(fromContract).toHaveBeenCalledWith(VESTING_ADDRESS, 'proposal-id', true)
+      })
+    })
+
+    describe('when the subgraph returns a vesting that cannot be parsed', () => {
+      let report: jest.SpyInstance
+      let fromContract: jest.SpyInstance
+
+      beforeEach(async () => {
+        jest
+          .spyOn(VestingsSubgraph, 'get')
+          .mockReturnValue({ getVesting: jest.fn().mockResolvedValue({ id: VESTING_ADDRESS }) } as never)
+        report = jest.spyOn(ErrorService, 'report').mockImplementation(() => undefined)
+        fromContract = jest.spyOn(VestingData, 'getVestingWithLogsFromAlchemy').mockResolvedValue({} as never)
+        await VestingService.getVestingWithLogs(VESTING_ADDRESS)
+      })
+
+      it('should report it', () => {
+        expect(report).toHaveBeenCalledWith(
+          'Unable to parse vestings subgraph data',
+          expect.objectContaining({ error: expect.any(Error), vestingAddress: VESTING_ADDRESS })
+        )
+      })
+
+      it('should read it from the contract instead', () => {
+        expect(fromContract).toHaveBeenCalledWith(VESTING_ADDRESS, undefined, true)
       })
     })
 
     describe('when the subgraph has the vesting', () => {
-      it('should return it parsed', async () => {
+      it('should return it parsed, without reading the contract', async () => {
         jest
           .spyOn(VestingsSubgraph, 'get')
           .mockReturnValue({ getVesting: jest.fn().mockResolvedValue(subgraphVesting()) } as never)
+        const fromContract = jest.spyOn(VestingData, 'getVestingWithLogsFromAlchemy')
         const parsed = await VestingService.getVestingWithLogs(VESTING_ADDRESS)
         expect(parsed.address).toBe(VESTING_ADDRESS)
+        expect(fromContract).not.toHaveBeenCalled()
       })
     })
   })

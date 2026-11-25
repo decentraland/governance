@@ -186,6 +186,23 @@ function getWebhookPayload(req: Request): string {
   return typeof rawBody === 'string' && rawBody.length > 0 ? rawBody : JSON.stringify(req.body)
 }
 
+const DISCOURSE_SIGNATURE_FORMAT = /^sha256=[0-9a-f]{64}$/
+const ALCHEMY_SIGNATURE_FORMAT = /^[0-9a-f]{64}$/
+const MAX_REPORTED_USER_AGENT_LENGTH = 120
+
+// Tells a probe (no header, or a malformed one, from an unexpected client) from a sender whose secret no longer
+// matches ours (a well-formed signature from the usual client). The user agent is client-controlled, so it is
+// truncated; the payload and the caller's IP are left out.
+function getSignatureFailureContext(req: Request, signatureHeader: string, signatureFormat: RegExp) {
+  const signature = req.get(signatureHeader)
+  const userAgent = req.get('User-Agent')
+  return {
+    signatureHeaderPresent: !!signature,
+    signatureWellFormed: !!signature && signatureFormat.test(signature),
+    userAgent: userAgent ? userAgent.slice(0, MAX_REPORTED_USER_AGENT_LENGTH) : null,
+  }
+}
+
 export function validateDiscourseWebhookSignature(req: Request) {
   const providedSignature = req.get('X-Discourse-Event-Signature') || ''
   if (!DISCOURSE_WEBHOOK_SECRET || DISCOURSE_WEBHOOK_SECRET.length === 0) {
@@ -197,7 +214,10 @@ export function validateDiscourseWebhookSignature(req: Request) {
   )
 
   if (!timingSafeStringEqual(providedSignature, calculatedSignature)) {
-    ErrorService.report('Invalid discourse webhook signature', { category: ErrorCategory.Discourse })
+    ErrorService.report('Invalid discourse webhook signature', {
+      ...getSignatureFailureContext(req, 'X-Discourse-Event-Signature', DISCOURSE_SIGNATURE_FORMAT),
+      category: ErrorCategory.Discourse,
+    })
     throw new RequestError('Invalid signature', RequestError.Forbidden)
   }
 }
@@ -212,7 +232,10 @@ export function validateAlchemyWebhookSignature(req: Request) {
   hmac.update(body, 'utf8')
   const digest = hmac.digest('hex')
   if (!timingSafeStringEqual(signature || '', digest)) {
-    ErrorService.report('Invalid alchemy webhook signature', { category: ErrorCategory.Webhook })
+    ErrorService.report('Invalid alchemy webhook signature', {
+      ...getSignatureFailureContext(req, 'x-alchemy-signature', ALCHEMY_SIGNATURE_FORMAT),
+      category: ErrorCategory.Webhook,
+    })
     throw new RequestError('Invalid signature', RequestError.Forbidden)
   }
 }

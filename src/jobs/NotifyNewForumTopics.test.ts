@@ -22,11 +22,15 @@ const { default: ForumTopicNotificationModel } = require('../models/ForumTopicNo
 const { ErrorService } = require('../services/ErrorService')
 const { DiscordService } = require('../services/discord')
 const {
+  FORUM_FETCH_FAILURE_GAP,
+  FORUM_FETCH_REPORT_AFTER,
   FORUM_TOPIC_LOOKBACK,
   MAX_FORUM_TOPICS_PER_RUN,
   notifyNewForumTopics,
+  resetForumFetchFailures,
   toPlainText,
 } = require('./NotifyNewForumTopics')
+const { default: logger } = require('../utils/logger')
 /* eslint-enable @typescript-eslint/no-var-requires */
 
 // The job reads these when it runs, so changing them on the mocked module is enough.
@@ -107,6 +111,7 @@ describe('notifyNewForumTopics', () => {
     release = jest.spyOn(ForumTopicNotificationModel, 'release').mockResolvedValue(1)
     newForumTopic = jest.spyOn(DiscordService, 'newForumTopic').mockResolvedValue(undefined)
     report = jest.spyOn(ErrorService, 'report').mockImplementation(() => undefined)
+    resetForumFetchFailures()
   })
 
   afterEach(() => {
@@ -271,22 +276,140 @@ describe('notifyNewForumTopics', () => {
   })
 
   describe('when one category cannot be read', () => {
+    let warn: jest.SpyInstance
+
     beforeEach(async () => {
+      warn = jest.spyOn(logger, 'warn').mockImplementation(() => undefined)
       latestByCategory[18] = [listItem(201, 18, 10 * 60 * 1000)]
       topicsById[201] = topicDetails(201, 'ginoct')
       getLatestTopicsInCategory.mockRejectedValueOnce(new Error('HTTP error! status: 502'))
       await notifyNewForumTopics(createContext())
     })
 
-    it('should report it', () => {
-      expect(report).toHaveBeenCalledWith(
-        'Error fetching latest forum topics',
+    // The next run looks a day back, so it picks up whatever this one missed.
+    it('should log it rather than report it', () => {
+      expect(warn).toHaveBeenCalledWith(
+        'Could not fetch latest forum topics, a later run will catch up',
         expect.objectContaining({ categoryId: 13 })
       )
+      expect(report).not.toHaveBeenCalled()
     })
 
     it('should still announce the topics of the others', () => {
       expect(newForumTopic).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('when a category keeps failing', () => {
+    const RUN_INTERVAL = 5 * 60 * 1000
+    let now: number
+
+    async function runAt(time: number, fails: boolean) {
+      now = time
+      if (fails) {
+        getLatestTopicsInCategory.mockRejectedValueOnce(new TypeError('fetch failed'))
+      }
+      await notifyNewForumTopics(createContext())
+    }
+
+    beforeEach(() => {
+      now = Date.now()
+      jest.spyOn(Date, 'now').mockImplementation(() => now)
+      jest.spyOn(logger, 'warn').mockImplementation(() => undefined)
+    })
+
+    describe('for less than the reporting threshold', () => {
+      it('should not report it', async () => {
+        const start = now
+        for (let time = start; time < start + FORUM_FETCH_REPORT_AFTER; time += RUN_INTERVAL) {
+          await runAt(time, true)
+        }
+        expect(report).not.toHaveBeenCalled()
+      })
+    })
+
+    describe('for longer than the reporting threshold', () => {
+      it('should report it, with how long it has been failing', async () => {
+        const start = now
+        for (let time = start; time <= start + FORUM_FETCH_REPORT_AFTER; time += RUN_INTERVAL) {
+          await runAt(time, true)
+        }
+        expect(report).toHaveBeenCalledTimes(1)
+        expect(report).toHaveBeenCalledWith(
+          'Error fetching latest forum topics',
+          expect.objectContaining({
+            categoryId: 13,
+            failingForMinutes: FORUM_FETCH_REPORT_AFTER / 60000,
+            error: expect.any(TypeError),
+          })
+        )
+      })
+    })
+
+    describe('for hours past the reporting threshold', () => {
+      it('should report the outage once, not on every run', async () => {
+        const start = now
+        for (let time = start; time <= start + 3 * FORUM_FETCH_REPORT_AFTER; time += RUN_INTERVAL) {
+          await runAt(time, true)
+        }
+        expect(report).toHaveBeenCalledTimes(1)
+      })
+
+      it('should report a new outage after the category recovers', async () => {
+        const start = now
+        for (let time = start; time <= start + FORUM_FETCH_REPORT_AFTER; time += RUN_INTERVAL) {
+          await runAt(time, true)
+        }
+        const recovered = start + FORUM_FETCH_REPORT_AFTER + RUN_INTERVAL
+        await runAt(recovered, false)
+        for (
+          let time = recovered + RUN_INTERVAL;
+          time <= recovered + 2 * FORUM_FETCH_REPORT_AFTER;
+          time += RUN_INTERVAL
+        ) {
+          await runAt(time, true)
+        }
+        expect(report).toHaveBeenCalledTimes(2)
+      })
+    })
+
+    // The response is only good once it has been read.
+    describe('when the forum keeps answering without a topic list', () => {
+      it('should report it once it has kept failing past the threshold', async () => {
+        getLatestTopicsInCategory.mockImplementation(async (categoryId: number) =>
+          categoryId === 13 ? {} : { topic_list: { topics: latestByCategory[categoryId] } }
+        )
+        const start = now
+        for (let time = start; time <= start + FORUM_FETCH_REPORT_AFTER; time += RUN_INTERVAL) {
+          await runAt(time, false)
+        }
+        expect(report).toHaveBeenCalledWith(
+          'Error fetching latest forum topics',
+          expect.objectContaining({ categoryId: 13, error: expect.any(TypeError) })
+        )
+      })
+    })
+
+    describe('when a run in between succeeds', () => {
+      it('should start counting again', async () => {
+        const start = now
+        await runAt(start, true)
+        await runAt(start + FORUM_FETCH_REPORT_AFTER / 2, false)
+        await runAt(start + FORUM_FETCH_REPORT_AFTER / 2 + RUN_INTERVAL, true)
+        await runAt(start + FORUM_FETCH_REPORT_AFTER + RUN_INTERVAL, true)
+        expect(report).not.toHaveBeenCalled()
+      })
+    })
+
+    // Another instance may have run, and succeeded, in the gap.
+    describe('when the failures are far apart', () => {
+      it('should treat them as separate blips', async () => {
+        const start = now
+        await runAt(start, true)
+        await runAt(start + FORUM_FETCH_FAILURE_GAP + RUN_INTERVAL, true)
+        await runAt(start + 2 * (FORUM_FETCH_FAILURE_GAP + RUN_INTERVAL), true)
+        expect(report).not.toHaveBeenCalled()
+      })
     })
   })
 

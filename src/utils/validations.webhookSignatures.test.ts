@@ -1,6 +1,9 @@
 import crypto from 'crypto'
 import { Request } from 'express'
 
+import { ErrorService } from '../services/ErrorService'
+
+import { ErrorCategory } from './errorCategories'
 import { validateAlchemyWebhookSignature, validateDiscourseWebhookSignature } from './validations'
 
 const DISCOURSE_SECRET = 'discourse-test-secret'
@@ -182,6 +185,97 @@ describe('validateAlchemyWebhookSignature', () => {
         headers: { 'x-alchemy-signature': sign(ALCHEMY_SECRET, rawBody) },
       })
       expect(() => validateAlchemyWebhookSignature(req)).not.toThrow()
+    })
+  })
+})
+
+// A probe and a rotated secret both fail the check; what gets reported is what tells them apart.
+describe('when a webhook signature is rejected', () => {
+  let report: jest.SpyInstance
+
+  beforeEach(() => {
+    report = jest.spyOn(ErrorService, 'report').mockImplementation(() => undefined)
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  describe('when a Discourse request carries no signature at all', () => {
+    it('should report that the header was missing, with the user agent', () => {
+      const req = request({ body: { post: { id: 1 } }, headers: { 'User-Agent': 'curl/8.4.0' } })
+      expect(() => validateDiscourseWebhookSignature(req)).toThrow('Invalid signature')
+      expect(report).toHaveBeenCalledWith('Invalid discourse webhook signature', {
+        signatureHeaderPresent: false,
+        signatureWellFormed: false,
+        userAgent: 'curl/8.4.0',
+        category: ErrorCategory.Discourse,
+      })
+    })
+  })
+
+  describe('when a Discourse signature is well formed but made with another secret', () => {
+    it('should report it as well formed', () => {
+      const body = { post: { id: 1 } }
+      const req = request({
+        body,
+        headers: {
+          'X-Discourse-Event-Signature': `sha256=${sign('rotated-secret', JSON.stringify(body))}`,
+          'User-Agent': 'Discourse Forum Webhooks',
+        },
+      })
+      expect(() => validateDiscourseWebhookSignature(req)).toThrow('Invalid signature')
+      expect(report).toHaveBeenCalledWith(
+        'Invalid discourse webhook signature',
+        expect.objectContaining({ signatureHeaderPresent: true, signatureWellFormed: true })
+      )
+    })
+  })
+
+  describe('when a Discourse signature is present but malformed', () => {
+    it('should report it as present but not well formed', () => {
+      const req = request({ body: {}, headers: { 'X-Discourse-Event-Signature': 'sha256=abc' } })
+      expect(() => validateDiscourseWebhookSignature(req)).toThrow('Invalid signature')
+      expect(report).toHaveBeenCalledWith(
+        'Invalid discourse webhook signature',
+        expect.objectContaining({ signatureHeaderPresent: true, signatureWellFormed: false, userAgent: null })
+      )
+    })
+  })
+
+  describe('when an Alchemy signature is well formed but made with another secret', () => {
+    it('should report it as well formed, with the user agent', () => {
+      const body = { webhookId: 'wh_1', event: {} }
+      const req = request({
+        body,
+        headers: { 'x-alchemy-signature': sign('rotated-secret', JSON.stringify(body)), 'User-Agent': 'Alchemy' },
+      })
+      expect(() => validateAlchemyWebhookSignature(req)).toThrow('Invalid signature')
+      expect(report).toHaveBeenCalledWith('Invalid alchemy webhook signature', {
+        signatureHeaderPresent: true,
+        signatureWellFormed: true,
+        userAgent: 'Alchemy',
+        category: ErrorCategory.Webhook,
+      })
+    })
+  })
+
+  describe('when an Alchemy request carries no signature at all', () => {
+    it('should report that the header was missing', () => {
+      expect(() => validateAlchemyWebhookSignature(request({ body: {} }))).toThrow('Invalid signature')
+      expect(report).toHaveBeenCalledWith(
+        'Invalid alchemy webhook signature',
+        expect.objectContaining({ signatureHeaderPresent: false, signatureWellFormed: false })
+      )
+    })
+  })
+
+  // The user agent is whatever the caller sends.
+  describe('when the user agent is very long', () => {
+    it('should report only its start', () => {
+      const req = request({ body: {}, headers: { 'User-Agent': 'x'.repeat(5000) } })
+      expect(() => validateAlchemyWebhookSignature(req)).toThrow('Invalid signature')
+      expect(report.mock.calls[0][1].userAgent).toHaveLength(120)
     })
   })
 })

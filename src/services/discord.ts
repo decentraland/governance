@@ -113,13 +113,18 @@ function getRetryDelay(attempts: number) {
   return Math.min(Time.Minute * 2 ** (attempts - 1), CHANNEL_POST_MAX_RETRY_DELAY)
 }
 
+// "Cannot send messages to this user due to having no mutual guilds": the member left the server. The
+// discord-api-types version in the lockfile predates this code, so it has no enum member for it.
+export const NO_MUTUAL_GUILDS_ERROR_CODE = 50278
+
 // Members who left the server, or who do not accept messages from it, are an expected state rather
 // than a fault worth an alert on every notification.
 function isUnreachableUserError(error: unknown) {
   return (
     error instanceof Discord.DiscordAPIError &&
     (error.code === Discord.RESTJSONErrorCodes.CannotSendMessagesToThisUser ||
-      error.code === Discord.RESTJSONErrorCodes.UnknownUser)
+      error.code === Discord.RESTJSONErrorCodes.UnknownUser ||
+      error.code === NO_MUTUAL_GUILDS_ERROR_CODE)
   )
 }
 

@@ -1,17 +1,9 @@
+import { redactSecrets } from '../utils/redactSecrets'
+
 import { ErrorClient } from './ErrorClient'
 
 const SUBGRAPH_SKIP_LIMIT = 5000
 const DEFAULT_FETCH_TIMEOUT_MS = 30000
-
-/**
- * Strips API keys that are embedded in URLs (The Graph gateway path segment and `apiKey`
- * query params) so they are not leaked into logs or error reports.
- */
-export function redactSecrets(text: string): string {
-  return text
-    .replace(/(\/api\/)[^/\s]+(\/subgraphs)/g, '$1<redacted>$2')
-    .replace(/([?&]apiKey=)[^&\s]+/gi, '$1<redacted>')
-}
 
 /**
  * fetch wrapper that aborts after `timeoutMs` so a hung upstream cannot keep the
@@ -30,25 +22,47 @@ export async function fetchWithTimeout(url: string, init?: RequestInit, timeoutM
 /**
  * POSTs a GraphQL query with a timeout and validates the response, so an HTTP error
  * (429/500/HTML gateway page) or a GraphQL `errors` payload throws instead of being
- * silently interpreted as "no data".
+ * silently interpreted as "no data". The timeout covers reading the body too: a server that
+ * sends its headers and then stalls must not hang the caller.
  */
-export async function queryGraphql<T>(url: string, body: unknown): Promise<T> {
-  const response = await fetchWithTimeout(url, {
-    method: 'post',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+export async function queryGraphql<T>(url: string, body: unknown, timeoutMs = DEFAULT_FETCH_TIMEOUT_MS): Promise<T> {
+  const controller = new AbortController()
+  let timeoutId: ReturnType<typeof setTimeout> | undefined
+  const timedOut = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(() => {
+      controller.abort()
+      reject(new Error(`GraphQL request to ${redactSecrets(url)} timed out after ${timeoutMs}ms`))
+    }, timeoutMs)
   })
+  // It may fire while nothing races it (while a body is cancelled); that must not surface as unhandled.
+  timedOut.catch(() => undefined)
 
-  if (!response.ok) {
-    throw new Error(`GraphQL request to ${redactSecrets(url)} failed with status ${response.status}`)
+  try {
+    const response = await Promise.race([
+      fetch(url, {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+        signal: controller.signal,
+      }),
+      timedOut,
+    ])
+
+    if (!response.ok) {
+      // Unread, the body would hold its connection until it is garbage collected.
+      await response.body?.cancel().catch(() => undefined)
+      throw new Error(`GraphQL request to ${redactSecrets(url)} failed with status ${response.status}`)
+    }
+
+    const json = await Promise.race([response.json(), timedOut])
+    if (json?.errors) {
+      throw new Error(`GraphQL request to ${redactSecrets(url)} returned errors: ${JSON.stringify(json.errors)}`)
+    }
+
+    return json as T
+  } finally {
+    clearTimeout(timeoutId)
   }
-
-  const json = await response.json()
-  if (json?.errors) {
-    throw new Error(`GraphQL request to ${redactSecrets(url)} returned errors: ${JSON.stringify(json.errors)}`)
-  }
-
-  return json as T
 }
 
 export async function inBatches<T, K>(

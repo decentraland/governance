@@ -14,6 +14,7 @@ import Time from '../utils/date/Time'
 import logger from '../utils/logger'
 
 import { BudgetService } from './BudgetService'
+import { ErrorService } from './ErrorService'
 
 const NOW = new Date('2023-02-03T00:00:00Z')
 
@@ -222,6 +223,40 @@ describe('BudgetService', () => {
           allocated: 12,
           available: -2,
         })
+      })
+    })
+  })
+
+  describe('getCurrentBudget', () => {
+    afterEach(() => jest.restoreAllMocks())
+
+    describe('when there is a budget for the current quarter', () => {
+      it('should return it', async () => {
+        jest.spyOn(QuarterBudgetModel, 'getCurrentBudget').mockResolvedValue(CURRENT_TEST_BUDGET)
+        expect(await BudgetService.getCurrentBudget()).toEqual(CURRENT_TEST_BUDGET)
+      })
+    })
+
+    // The last quarter budget ended on 2025-01-01, when grants through governance stopped.
+    describe('when there is no budget for the current quarter', () => {
+      let report: jest.SpyInstance
+      let warn: jest.SpyInstance
+      let result: Awaited<ReturnType<typeof BudgetService.getCurrentBudget>>
+
+      beforeEach(async () => {
+        jest.spyOn(QuarterBudgetModel, 'getCurrentBudget').mockResolvedValue(null)
+        report = jest.spyOn(ErrorService, 'report').mockImplementation(() => undefined)
+        warn = jest.spyOn(logger, 'warn').mockImplementation(() => undefined)
+        result = await BudgetService.getCurrentBudget()
+      })
+
+      it('should return the empty budget', () => {
+        expect(result).toEqual(NULL_BUDGET)
+      })
+
+      it('should log it rather than report it as an error', () => {
+        expect(warn).toHaveBeenCalledWith('Could not find current budget', expect.any(Object))
+        expect(report).not.toHaveBeenCalled()
       })
     })
   })
