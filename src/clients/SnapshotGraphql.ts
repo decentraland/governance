@@ -399,8 +399,6 @@ export class SnapshotGraphql extends API {
 
     const vpByStrategy = result.data.vp.vp_by_strategy
     const total = Math.floor(result.data.vp.vp)
-    // With a proposal, the hub's `vp` query makes the same getVp call (proposal strategies, proposal snapshot block)
-    // that the sequencer runs before rejecting a vote with "no voting power" when the result is exactly 0
     const hasVotingPower = result.data.vp.vp > 0
 
     const wMana = Math.floor(vpByStrategy[StrategyOrder.WrappedMana] || 0)
