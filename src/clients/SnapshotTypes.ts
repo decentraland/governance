@@ -113,6 +113,12 @@ export type SnapshotVpResponse = SnapshotQueryResponse<{
   } | null
 }>
 export type VpDistribution = {
+  /**
+   * Whether Snapshot reports any VP at all (unfloored) for the address: at the proposal's snapshot block when the
+   * distribution is requested for a proposal, at the latest block otherwise. Snapshot's sequencer rejects a vote with
+   * "no voting power" only when that VP is exactly 0, and the floored fields can't tell 0 apart from 0.4.
+   */
+  hasVotingPower: boolean
   total: number
   own: number
   wMana: number
