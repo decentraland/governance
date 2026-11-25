@@ -346,6 +346,50 @@ describe('notifyNewForumTopics', () => {
       })
     })
 
+    describe('for hours past the reporting threshold', () => {
+      it('should report the outage once, not on every run', async () => {
+        const start = now
+        for (let time = start; time <= start + 3 * FORUM_FETCH_REPORT_AFTER; time += RUN_INTERVAL) {
+          await runAt(time, true)
+        }
+        expect(report).toHaveBeenCalledTimes(1)
+      })
+
+      it('should report a new outage after the category recovers', async () => {
+        const start = now
+        for (let time = start; time <= start + FORUM_FETCH_REPORT_AFTER; time += RUN_INTERVAL) {
+          await runAt(time, true)
+        }
+        const recovered = start + FORUM_FETCH_REPORT_AFTER + RUN_INTERVAL
+        await runAt(recovered, false)
+        for (
+          let time = recovered + RUN_INTERVAL;
+          time <= recovered + 2 * FORUM_FETCH_REPORT_AFTER;
+          time += RUN_INTERVAL
+        ) {
+          await runAt(time, true)
+        }
+        expect(report).toHaveBeenCalledTimes(2)
+      })
+    })
+
+    // The response is only good once it has been read.
+    describe('when the forum keeps answering without a topic list', () => {
+      it('should report it once it has kept failing past the threshold', async () => {
+        getLatestTopicsInCategory.mockImplementation(async (categoryId: number) =>
+          categoryId === 13 ? {} : { topic_list: { topics: latestByCategory[categoryId] } }
+        )
+        const start = now
+        for (let time = start; time <= start + FORUM_FETCH_REPORT_AFTER; time += RUN_INTERVAL) {
+          await runAt(time, false)
+        }
+        expect(report).toHaveBeenCalledWith(
+          'Error fetching latest forum topics',
+          expect.objectContaining({ categoryId: 13, error: expect.any(TypeError) })
+        )
+      })
+    })
+
     describe('when a run in between succeeds', () => {
       it('should start counting again', async () => {
         const start = now

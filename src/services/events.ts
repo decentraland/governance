@@ -344,7 +344,8 @@ export class EventsService {
           discourse_event: discourseEvent,
           ...getReportablePostIds(discoursePost),
         },
-        commentedUpdate,
+        update_id: commentedUpdate.id,
+        project_id: commentedUpdate.project_id,
         category: ErrorCategory.Events,
       })
       return

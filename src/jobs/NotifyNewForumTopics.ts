@@ -6,7 +6,7 @@ import { DISCORD_FORUM_TOPIC_CATEGORIES, DISCORD_SERVICE_ENABLED } from '../cons
 import { forumUrl } from '../entities/Proposal/utils'
 import { DISCOURSE_API, DISCOURSE_USER, getAvatarUrl } from '../entities/User/utils'
 import ForumTopicNotificationModel from '../models/ForumTopicNotification'
-import { ErrorService } from '../services/ErrorService'
+import { ErrorService, serializeError } from '../services/ErrorService'
 import { DiscordService } from '../services/discord'
 import { DiscourseTopicListItem } from '../shared/types/discourse'
 import Time from '../utils/date/Time'
@@ -27,20 +27,23 @@ export const FORUM_FETCH_REPORT_AFTER = Time.Hour
 // may have run, and succeeded, in between.
 export const FORUM_FETCH_FAILURE_GAP = 30 * Time.Minute
 
-// Per process: when each category started failing, and when it last failed.
-const fetchFailures = new Map<number, { since: number; last: number }>()
+// Per process: when each category started failing, when it last failed, and whether that was reported.
+const fetchFailures = new Map<number, { since: number; last: number; reported: boolean }>()
 
 // For tests, which run the job many times in one process.
 export function resetForumFetchFailures() {
   fetchFailures.clear()
 }
 
+// Reported once per outage. The runs after that only log, until a fetch succeeds and the record is cleared.
 function recordFetchFailure(categoryId: number, error: unknown) {
   const now = Date.now()
   const previous = fetchFailures.get(categoryId)
-  const since = previous && now - previous.last <= FORUM_FETCH_FAILURE_GAP ? previous.since : now
-  fetchFailures.set(categoryId, { since, last: now })
-  if (now - since >= FORUM_FETCH_REPORT_AFTER) {
+  const ongoing = previous && now - previous.last <= FORUM_FETCH_FAILURE_GAP ? previous : undefined
+  const since = ongoing?.since ?? now
+  const shouldReport = !ongoing?.reported && now - since >= FORUM_FETCH_REPORT_AFTER
+  fetchFailures.set(categoryId, { since, last: now, reported: !!ongoing?.reported || shouldReport })
+  if (shouldReport) {
     ErrorService.report('Error fetching latest forum topics', {
       categoryId,
       failingForMinutes: Math.round((now - since) / Time.Minute),
@@ -48,7 +51,10 @@ function recordFetchFailure(categoryId: number, error: unknown) {
       category: ErrorCategory.Discourse,
     })
   } else {
-    logger.warn('Could not fetch latest forum topics, a later run will catch up', { categoryId, error: `${error}` })
+    logger.warn('Could not fetch latest forum topics, a later run will catch up', {
+      categoryId,
+      error: error instanceof Error ? serializeError(error) : error,
+    })
   }
 }
 
@@ -89,12 +95,13 @@ async function getRecentTopics(categoryIds: number[]) {
   for (const categoryId of categoryIds) {
     try {
       const { topic_list } = await Discourse.get().getLatestTopicsInCategory(categoryId)
-      fetchFailures.delete(categoryId)
       topics.push(
         ...topic_list.topics.filter(
           (topic) => topic.category_id === categoryId && topic.visible && new Date(topic.created_at).getTime() >= since
         )
       )
+      // Only once the response has been read: a 200 without a topic list is a failure too.
+      fetchFailures.delete(categoryId)
     } catch (error) {
       // One category failing to load must not hold back the others.
       recordFetchFailure(categoryId, error)

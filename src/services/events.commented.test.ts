@@ -111,4 +111,22 @@ describe('EventsService.commented', () => {
       })
     })
   })
+
+  describe('when a commented update points at a proposal that no longer exists', () => {
+    beforeEach(async () => {
+      jest
+        .spyOn(UpdateModel, 'findOne')
+        .mockResolvedValue({ id: 'update-1', project_id: 'project-1', introduction: 'What the author wrote' } as never)
+      jest.spyOn(ProposalModel, 'findOne').mockResolvedValue(null as never)
+      await EventsService.commented('event-3', 'post_created', post({ topic_title: 'Project X | Update #3' }))
+    })
+
+    it('should report the update and project ids, not the update itself', () => {
+      expect(report).toHaveBeenCalledWith(
+        'Unable to find proposal for commented update',
+        expect.objectContaining({ update_id: 'update-1', project_id: 'project-1' })
+      )
+      expect(JSON.stringify(report.mock.calls[0][1])).not.toContain('What the author wrote')
+    })
+  })
 })
