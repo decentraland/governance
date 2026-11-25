@@ -35,6 +35,7 @@ import { NotificationService } from '../services/notification'
 import { UpdateService } from '../services/update'
 import { DiscoursePost } from '../shared/types/discourse'
 import { getProfile } from '../utils/Catalyst'
+import { normalizeVestingAddress } from '../utils/contracts/vesting'
 import Time from '../utils/date/Time'
 import { validateId } from '../utils/validations'
 import { withTransaction } from '../utils/withTransaction'
@@ -300,7 +301,9 @@ export class ProposalService {
     statusUpdate: ProposalStatusUpdate,
     user: string
   ): Promise<ProposalWithProject> {
-    const { status: newStatus, vesting_addresses } = statusUpdate
+    const { status: newStatus } = statusUpdate
+    // Stored lowercased, so an address typed with an uppercase "0X" cannot break the vesting lookups later.
+    const vesting_addresses = statusUpdate.vesting_addresses?.map(normalizeVestingAddress)
     const { id } = proposal
     const isProject = isProjectProposal(proposal.type)
     const isEnactedStatus = newStatus === ProposalStatus.Enacted

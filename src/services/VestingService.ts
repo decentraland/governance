@@ -12,7 +12,7 @@ import {
 import { SubgraphVesting } from '../clients/VestingSubgraphTypes'
 import { VestingsSubgraph } from '../clients/VestingsSubgraph'
 import { VestingStatus } from '../entities/Grant/types'
-import { ContractVersion, TopicsByVersion } from '../utils/contracts/vesting'
+import { ContractVersion, TopicsByVersion, normalizeVestingAddress } from '../utils/contracts/vesting'
 import { ErrorCategory } from '../utils/errorCategories'
 
 import CacheService, { TTL_1_HS } from './CacheService'
@@ -75,8 +75,7 @@ export class VestingService {
   static async getVestings(addresses: string[]): Promise<VestingWithLogs[]> {
     if (!addresses?.length) return []
 
-    const norm = (a: string) => (a.startsWith('0x') ? a : `0x${a}`).toLowerCase()
-    const input = [...new Set(addresses.map(norm))]
+    const input = [...new Set(addresses.map(normalizeVestingAddress))]
 
     const sg = await VestingsSubgraph.get().getVestings(input)
     const sgById = new Map(sg.map((v) => [v.id.toLowerCase(), v]))
@@ -104,6 +103,7 @@ export class VestingService {
     proposalId?: string,
     { includeLogs = true }: { includeLogs?: boolean } = {}
   ): Promise<VestingWithLogs> {
+    vestingAddress = vestingAddress && normalizeVestingAddress(vestingAddress)
     if (!vestingAddress || vestingAddress.length === 0) {
       throw new Error('Unable to fetch vesting data for empty contract address')
     }

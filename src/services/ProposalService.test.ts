@@ -172,6 +172,29 @@ describe('ProposalService', () => {
 
         expect(UpdateService.computePendingUpdatesForVesting).toHaveBeenCalledWith(projectId, vestingAddresses)
       })
+
+      // ethers reads an address with an uppercase "0X" as an ENS name, so it must not be stored as typed.
+      describe('and an address is typed with an uppercase 0X prefix', () => {
+        const typed = '0X4240C3EEA13548418AEA8EFC52E4C2E1B2D42F84'
+        const normalized = '0x4240c3eea13548418aea8efc52e4c2e1b2d42f84'
+        let updated: ProposalWithProject
+
+        beforeEach(async () => {
+          updated = await ProposalService.updateProposalStatus(
+            proposal,
+            { status: ProposalStatus.Enacted, vesting_addresses: [typed] },
+            user
+          )
+        })
+
+        it('should store it lowercased', () => {
+          expect(updated.vesting_addresses).toEqual([normalized])
+        })
+
+        it('should build the pending vesting updates from the lowercased address', () => {
+          expect(UpdateService.computePendingUpdatesForVesting).toHaveBeenCalledWith(projectId, [normalized])
+        })
+      })
     })
 
     describe('when re-enacting an already-enacted project proposal', () => {
