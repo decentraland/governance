@@ -2,7 +2,7 @@ import { VESTINGS_QUERY_ENDPOINT } from '../entities/Snapshot/constants'
 import Time from '../utils/date/Time'
 
 import { SubgraphVesting } from './VestingSubgraphTypes'
-import { fetchWithTimeout, trimLastForwardSlash } from './utils'
+import { fetchWithTimeout, queryGraphql, trimLastForwardSlash } from './utils'
 
 const OLDEST_INDEXED_BLOCK = 20463272
 
@@ -66,7 +66,11 @@ export class VestingsSubgraph {
     return VESTINGS_QUERY_ENDPOINT
   }
 
-  async getVesting(address: string): Promise<SubgraphVesting> {
+  /**
+   * Resolves to null when the subgraph does not index the address (e.g. the DAO's own vesting, which predates it).
+   * Throws when the subgraph itself fails: an HTTP error, GraphQL errors, a timeout, or a response without data.
+   */
+  async getVesting(address: string): Promise<SubgraphVesting | null> {
     const query = `
     query getVesting($address: String!) {
       vestings(where: { id: $address }){
@@ -75,17 +79,15 @@ export class VestingsSubgraph {
     }
     `
     const variables = { address: address.toLowerCase() }
-    const response = await fetchWithTimeout(this.queryEndpoint, {
-      method: 'post',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        query,
-        variables: variables,
-      }),
+    const body = await queryGraphql<{ data?: { vestings?: SubgraphVesting[] } }>(this.queryEndpoint, {
+      query,
+      variables,
     })
-
-    const body = await response.json()
-    return body?.data?.vestings[0] || {}
+    const vestings = body?.data?.vestings
+    if (!Array.isArray(vestings)) {
+      throw new Error('Vestings subgraph returned no data')
+    }
+    return vestings[0] ?? null
   }
 
   async getVestings(addresses?: string[]): Promise<SubgraphVesting[]> {

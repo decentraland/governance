@@ -108,20 +108,19 @@ export class VestingService {
       throw new Error('Unable to fetch vesting data for empty contract address')
     }
 
-    try {
-      return await this.getVestingWithLogsFromSubgraph(vestingAddress, proposalId)
-    } catch (error) {
-      return await getVestingWithLogsFromAlchemy(vestingAddress, proposalId, includeLogs)
-    }
+    const fromSubgraph = await this.getVestingWithLogsFromSubgraph(vestingAddress, proposalId)
+    return fromSubgraph ?? (await getVestingWithLogsFromAlchemy(vestingAddress, proposalId, includeLogs))
   }
 
+  // Null tells the caller to read the contract instead. Only a failing subgraph is reported: a vesting it does not
+  // index (like the DAO's own) is expected, and the contract read covers it.
   private static async getVestingWithLogsFromSubgraph(
     vestingAddress: string,
     proposalId?: string
-  ): Promise<VestingWithLogs> {
+  ): Promise<VestingWithLogs | null> {
+    let subgraphVesting: SubgraphVesting | null
     try {
-      const subgraphVesting = await VestingsSubgraph.get().getVesting(vestingAddress)
-      return this.parseSubgraphVesting(subgraphVesting)
+      subgraphVesting = await VestingsSubgraph.get().getVesting(vestingAddress)
     } catch (error) {
       ErrorService.report('Unable to fetch vestings subgraph data', {
         error,
@@ -129,7 +128,22 @@ export class VestingService {
         proposalId,
         category: ErrorCategory.Vesting,
       })
-      throw error
+      return null
+    }
+    if (!subgraphVesting) {
+      return null
+    }
+
+    try {
+      return this.parseSubgraphVesting(subgraphVesting)
+    } catch (error) {
+      ErrorService.report('Unable to parse vestings subgraph data', {
+        error,
+        vestingAddress,
+        proposalId,
+        category: ErrorCategory.Vesting,
+      })
+      return null
     }
   }
 
