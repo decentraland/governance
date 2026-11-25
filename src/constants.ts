@@ -32,6 +32,8 @@ export const GOVERNANCE_URL = process.env.GATSBY_GOVERNANCE_URL || 'https://dece
 export const GOVERNANCE_API = process.env.GATSBY_GOVERNANCE_API || ''
 export const FORUM_URL = process.env.GATSBY_DISCOURSE_API || ''
 export const DAO_ROLLBAR_TOKEN = process.env.DAO_ROLLBAR_TOKEN
+// Git SHA the image was built from (see the Dockerfile), sent to Rollbar as the code version.
+export const COMMIT_HASH = process.env.COMMIT_HASH || ''
 export const DISCORD_SERVICE_ENABLED = getBooleanStringVar('DISCORD_SERVICE_ENABLED', true)
 // Forum categories whose new topics are announced in the governance discord channel. Defaults to
 // Governance and DCL Regenesis Labs; a subcategory is only covered when it is listed itself, and an

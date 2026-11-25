@@ -57,4 +57,9 @@ COPY --from=compiler /app/entrypoint.sh        /app/entrypoint.sh
 
 VOLUME [ "/data" ]
 
+# master_build.yml passes the commit SHA, sent to Rollbar as the code version. An ARG is scoped to its stage, so
+# it is declared again here, last, so that a new SHA does not invalidate the layers above.
+ARG version_number
+ENV COMMIT_HASH=${version_number}
+
 ENTRYPOINT ["/sbin/tini", "--", "/app/entrypoint.sh"]
