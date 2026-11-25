@@ -398,6 +398,10 @@ describe('VestingService', () => {
       it('should refuse a null address too', async () => {
         await expect(VestingService.getVestingWithLogs(null)).rejects.toThrow('empty contract address')
       })
+
+      it('should refuse an address made only of whitespace', async () => {
+        await expect(VestingService.getVestingWithLogs('  ')).rejects.toThrow('empty contract address')
+      })
     })
 
     describe('when the subgraph does not have the vesting', () => {

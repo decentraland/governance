@@ -103,8 +103,8 @@ export class VestingService {
     proposalId?: string,
     { includeLogs = true }: { includeLogs?: boolean } = {}
   ): Promise<VestingWithLogs> {
-    vestingAddress = vestingAddress && normalizeVestingAddress(vestingAddress)
-    if (!vestingAddress || vestingAddress.length === 0) {
+    vestingAddress = vestingAddress?.trim() ? normalizeVestingAddress(vestingAddress) : undefined
+    if (!vestingAddress) {
       throw new Error('Unable to fetch vesting data for empty contract address')
     }
 
