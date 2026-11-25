@@ -113,6 +113,11 @@ export type SnapshotVpResponse = SnapshotQueryResponse<{
   } | null
 }>
 export type VpDistribution = {
+  /**
+   * Unfloored VP > 0, at the proposal's snapshot block (the latest block without a proposal). Snapshot rejects a vote
+   * with "no voting power" without it, and the floored fields can't tell 0 apart from 0.4.
+   */
+  hasVotingPower: boolean
   total: number
   own: number
   wMana: number

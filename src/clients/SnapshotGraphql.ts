@@ -399,6 +399,7 @@ export class SnapshotGraphql extends API {
 
     const vpByStrategy = result.data.vp.vp_by_strategy
     const total = Math.floor(result.data.vp.vp)
+    const hasVotingPower = result.data.vp.vp > 0
 
     const wMana = Math.floor(vpByStrategy[StrategyOrder.WrappedMana] || 0)
     const land = Math.floor(vpByStrategy[StrategyOrder.Land] || 0)
@@ -412,6 +413,7 @@ export class SnapshotGraphql extends API {
     const mana = Math.floor(manaEth + manaPol)
 
     return {
+      hasVotingPower,
       total,
       own: Math.max(0, Math.floor(total - delegated)),
       wMana,
