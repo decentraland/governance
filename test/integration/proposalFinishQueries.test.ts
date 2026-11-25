@@ -6,13 +6,12 @@ import { ProposalService } from '../../src/services/ProposalService'
 import { cleanTables, closeTestDb, initTestDb } from '../setup/db'
 import { insertProject, insertProposalWith, readProposalStatus } from '../setup/factories'
 
-// ProposalService pulls in the notification, discourse, discord and badge stack at import. None of
+// ProposalService pulls in the notification, discourse and discord stack at import. None of
 // it is needed here and leaving it real makes this suite tens of times slower, so it is stubbed the
 // way the other proposal integration suite does it. The database work stays real.
 jest.mock('../../src/services/DiscourseService', () => ({ DiscourseService: {} }))
 jest.mock('../../src/services/notification', () => ({ NotificationService: {} }))
 jest.mock('../../src/services/discord', () => ({ DiscordService: {} }))
-jest.mock('../../src/services/BadgesService', () => ({ BadgesService: {} }))
 jest.mock('../../src/services/events', () => ({ EventsService: {} }))
 jest.mock('../../src/services/VestingService', () => ({ VestingService: {} }))
 jest.mock('../../src/services/ProjectService', () => ({ ProjectService: {} }))

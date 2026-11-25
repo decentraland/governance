@@ -49,8 +49,4 @@ export default class RpcService {
       Number(getEnvironmentChainId())
     )
   }
-
-  public static getPolygonProvider() {
-    return new JsonRpcProvider(process.env.POLYGON_RPC_URL)
-  }
 }

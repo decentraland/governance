@@ -23,12 +23,10 @@ import {
   notifyVotingEndsSoon,
   publishBids,
 } from './entities/Proposal/jobs'
-import { giveAndRevokeLandOwnerBadges, giveTopVoterBadges, runQueuedAirdropJobs } from './jobs/BadgeAirdrop'
 import { notifyNewForumTopics } from './jobs/NotifyNewForumTopics'
 import { pingSnapshot } from './jobs/PingSnapshot'
 import { sendQueuedDiscordPosts } from './jobs/SendQueuedDiscordPosts'
 import { withPgAdvisoryLock } from './jobs/jobLocks'
-import airdrops from './routes/airdrop'
 import badges from './routes/badges'
 import bid from './routes/bid'
 import budget from './routes/budget'
@@ -73,9 +71,6 @@ jobs.cron('@each5Minute', withPgAdvisoryLock('notifyNewForumTopics', notifyNewFo
 jobs.cron('@eachMinute', withPgAdvisoryLock('sendQueuedDiscordPosts', sendQueuedDiscordPosts))
 jobs.cron('30 0 * * *', updateGovernanceBudgets) // Runs at 00:30 daily
 jobs.cron('35 0 * * *', notifyCliffEndingSoon) // Runs at 00:35 daily
-jobs.cron('30 1 * * *', runQueuedAirdropJobs) // Runs at 01:30 daily
-jobs.cron('30 2 * * *', giveAndRevokeLandOwnerBadges) // Runs at 02:30 daily
-jobs.cron('30 3 1 * *', giveTopVoterBadges) // Runs at 03:30 on the first day of the month
 
 const file = readFileSync('static/api.yaml', 'utf8')
 const swaggerDocument = YAML.parse(file)
@@ -100,7 +95,6 @@ app.use('/api', [
   withDDosProtection({ limit: 1000, checkinterval: 4 }),
   withCors(),
   withBody(),
-  airdrops,
   badges,
   budget,
   bid,

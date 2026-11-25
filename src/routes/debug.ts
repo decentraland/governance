@@ -3,16 +3,12 @@ import handleAPI from 'decentraland-gatsby/dist/entities/Route/handle'
 import routes from 'decentraland-gatsby/dist/entities/Route/routes'
 
 import { DEBUG_ADDRESSES } from '../constants'
-import { giveAndRevokeLandOwnerBadges, giveTopVoterBadges, runQueuedAirdropJobs } from '../jobs/BadgeAirdrop'
 import { restoreMissingUpdatesForumPost } from '../jobs/UpdatesMissingForumPost'
 import CacheService from '../services/CacheService'
 import { ErrorService } from '../services/ErrorService'
 import { validateDebugAddress } from '../utils/validations'
 
 const FUNCTIONS_MAP: { [key: string]: () => Promise<unknown> } = {
-  runQueuedAirdropJobs,
-  giveAndRevokeLandOwnerBadges,
-  giveTopVoterBadges,
   restoreMissingUpdatesForumPost,
 }
 

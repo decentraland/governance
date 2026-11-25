@@ -3,7 +3,6 @@ import snakeCase from 'lodash/snakeCase'
 
 import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { DISCORD_SERVICE_ENABLED } from '../../constants'
-import { BadgesService } from '../../services/BadgesService'
 import BidService from '../../services/BidService'
 import { BudgetService } from '../../services/BudgetService'
 import { DiscourseService } from '../../services/DiscourseService'
@@ -282,7 +281,6 @@ export async function finishProposal() {
 
     await ProjectService.createProjects(proposalsWithOutcome)
     NotificationService.sendFinishProposalNotifications(proposalsWithOutcome)
-    BadgesService.giveFinishProposalBadges(proposalsWithOutcome)
     DiscourseService.commentFinishedProposals(proposalsWithOutcome)
     DiscordService.notifyFinishedProposals(proposalsWithOutcome)
     await EventsService.proposalFinished(proposalsWithOutcome)

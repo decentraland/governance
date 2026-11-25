@@ -3,9 +3,7 @@ import { randomUUID } from 'crypto'
 import { ProposalStatus } from '../../src/entities/Proposal/types'
 import { FinancialRecordCateogry, UpdateStatus } from '../../src/entities/Updates/types'
 import VotesModel from '../../src/entities/Votes/model'
-import AirdropJobModel from '../../src/models/AirdropJob'
 import FinancialModel from '../../src/models/Financial'
-import { AirdropJobStatus } from '../../src/types/AirdropJob'
 import { cleanTables, closeTestDb, initTestDb } from '../setup/db'
 import { insertProject, insertProposalWith, insertUpdate } from '../setup/factories'
 
@@ -160,58 +158,6 @@ describe('FinancialModel', () => {
       it('should return the stored record', async () => {
         expect(await FinancialModel.getAllRecords(0, 10)).toHaveLength(1)
       })
-    })
-  })
-})
-
-describe('AirdropJobModel', () => {
-  beforeAll(async () => {
-    await initTestDb()
-  })
-
-  afterAll(async () => {
-    await closeTestDb()
-  })
-
-  afterEach(async () => {
-    await cleanTables()
-  })
-
-  beforeEach(async () => {
-    await AirdropJobModel.create({
-      id: randomUUID(),
-      badge_spec: 'a-badge-spec',
-      recipients: [RECIPIENT],
-      status: AirdropJobStatus.PENDING,
-      created_at: new Date(),
-      updated_at: new Date(),
-    })
-    await AirdropJobModel.create({
-      id: randomUUID(),
-      badge_spec: 'another-badge-spec',
-      recipients: [RECIPIENT],
-      status: AirdropJobStatus.FINISHED,
-      created_at: new Date(),
-      updated_at: new Date(),
-    })
-  })
-
-  describe('getPending', () => {
-    // The runner acts on what this returns, so a finished job coming back would be re-run.
-    it('should return only the jobs still to run', async () => {
-      const pending = await AirdropJobModel.getPending()
-      expect(pending.map((job) => job.badge_spec)).toEqual(['a-badge-spec'])
-    })
-
-    it('should keep the recipient list intact', async () => {
-      const [job] = await AirdropJobModel.getPending()
-      expect(job.recipients).toEqual([RECIPIENT])
-    })
-  })
-
-  describe('getAll', () => {
-    it('should return the finished jobs as well', async () => {
-      expect(await AirdropJobModel.getAll()).toHaveLength(2)
     })
   })
 })

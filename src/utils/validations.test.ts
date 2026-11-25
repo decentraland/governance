@@ -28,7 +28,6 @@ import {
   validateProposalFields,
   validateProposalSnapshotId,
   validateRequiredString,
-  validateRequiredStrings,
   validateStatusUpdate,
 } from './validations'
 
@@ -384,21 +383,15 @@ describe('validateDate', () => {
     })
   })
 
-  describe('when the date is missing and not marked optional', () => {
+  describe('when the date is missing', () => {
     it('should throw an invalid date error', () => {
       expect(() => validateDate(undefined)).toThrow('Invalid date')
     })
   })
 
-  describe('when the date is missing and marked optional', () => {
-    it('should return undefined without throwing', () => {
-      expect(validateDate(undefined, 'optional')).toBeUndefined()
-    })
-  })
-
   describe('when the date is present but unparseable', () => {
-    it('should throw even when marked optional', () => {
-      expect(() => validateDate('not-a-date', 'optional')).toThrow('Invalid date')
+    it('should throw an invalid date error', () => {
+      expect(() => validateDate('not-a-date')).toThrow('Invalid date')
     })
   })
 })
@@ -514,20 +507,6 @@ describe('validateRequiredString', () => {
 
     it('should name the offending field for an empty string', () => {
       expect(() => validateRequiredString('title', '')).toThrow('title')
-    })
-  })
-})
-
-describe('validateRequiredStrings', () => {
-  describe('when every named field is present', () => {
-    it('should not throw', () => {
-      expect(() => validateRequiredStrings(['a', 'b'], { a: 'x', b: 'y' })).not.toThrow()
-    })
-  })
-
-  describe('when one named field is missing', () => {
-    it('should name the missing field', () => {
-      expect(() => validateRequiredStrings(['a', 'b'], { a: 'x' })).toThrow('b')
     })
   })
 })

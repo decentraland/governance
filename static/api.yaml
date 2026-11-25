@@ -22,7 +22,7 @@ tags:
   - name: Subscriptions (User Watchlist)
     description: The Subscriptions section of the API is focused on retrieving information related to the subscriptions associated with a specific proposal. This feature is called Watchlist on the Governance dApp. Watchlists are usually used to have a closer look on updates or changes related to a proposal.
   - name: Badges
-    description: Endpoints related to user badges
+    description: Retired. Kept only so older frontends keep working; always empty.
   - name: Users
     description: These endpoints handle user validation
   - name: Budgets
@@ -360,6 +360,8 @@ paths:
       tags:
         - Badges
       summary: Get badges for the given address
+      description: Badges are retired. Always answers no badges; will be removed.
+      deprecated: true
       parameters:
         - name: address
           $ref: '#/components/parameters/address'

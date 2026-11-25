@@ -1,12 +1,10 @@
 import { Server } from 'http'
 import supertest from 'supertest'
 
-import AirdropJobModel from '../models/AirdropJob'
 import BidService from '../services/BidService'
 import { ErrorService } from '../services/ErrorService'
 import { SurveyTopicsService } from '../services/SurveyTopicsService'
 
-import airdrop from './airdrop'
 import bid from './bid'
 import committee from './committee'
 import council from './council'
@@ -14,7 +12,6 @@ import newsletter from './newsletter'
 import surveyTopics from './surveyTopics'
 import { createTestApp } from './testApp'
 
-const DEBUG_ADDRESS = '0x2AC89522CB415AC333E64F52a1a5693218cEBD58'
 const REGULAR_ADDRESS = '0x56d0B5eD3D525332F00C9BC938f93598ab16AAA7'
 const PROPOSAL_ID = '00000000-0000-0000-0000-000000000001'
 
@@ -37,65 +34,6 @@ jest.mock('decentraland-gatsby/dist/entities/Auth/middleware', () => ({
       res.status(401).json({ ok: false, error: 'Unauthorized' })
     },
 }))
-
-jest.mock('../entities/Debug/isDebugAddress', () => ({
-  __esModule: true,
-  default: (address?: string) => address === '0x2AC89522CB415AC333E64F52a1a5693218cEBD58',
-}))
-
-describe('GET /api/airdrops/all', () => {
-  let app: Server
-  let getAll: jest.SpyInstance
-  let response: supertest.Response
-
-  beforeEach(() => {
-    app = createTestApp(airdrop)
-    getAll = jest.spyOn(AirdropJobModel, 'getAll').mockResolvedValue([] as never)
-  })
-
-  afterEach(() => {
-    jest.restoreAllMocks()
-  })
-
-  // The airdrop queue names every pending badge recipient, so it is debug-only.
-  describe('when the caller is unauthenticated', () => {
-    beforeEach(async () => {
-      response = await supertest(app).get('/api/airdrops/all')
-    })
-
-    it('should respond with a 401', () => {
-      expect(response.status).toBe(401)
-    })
-
-    it('should not read the queue', () => {
-      expect(getAll).not.toHaveBeenCalled()
-    })
-  })
-
-  describe('when the caller is signed in but not a debug address', () => {
-    beforeEach(async () => {
-      response = await supertest(app).get('/api/airdrops/all').set('x-test-auth', REGULAR_ADDRESS)
-    })
-
-    it('should refuse the request', () => {
-      expect(response.status).toBe(401)
-    })
-
-    it('should not read the queue', () => {
-      expect(getAll).not.toHaveBeenCalled()
-    })
-  })
-
-  describe('when the caller is a debug address', () => {
-    beforeEach(async () => {
-      await supertest(app).get('/api/airdrops/all').set('x-test-auth', DEBUG_ADDRESS)
-    })
-
-    it('should read the queue', () => {
-      expect(getAll).toHaveBeenCalled()
-    })
-  })
-})
 
 describe('the bid routes', () => {
   let app: Server

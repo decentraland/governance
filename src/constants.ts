@@ -1,17 +1,7 @@
 import { ChainId } from '@dcl/schemas'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
-import { OTTERSPACE_DAO_RAFT_ID } from './entities/Snapshot/constants'
-
 import env from './config'
-
-export function trimOtterspaceId(rawId: string) {
-  const parts = rawId.split(':')
-  if (parts.length === 2) {
-    return parts[1]
-  }
-  return ''
-}
 
 function getBooleanStringVar(variableName: string, defaultValue: boolean) {
   const enabled = env(variableName)
@@ -43,15 +33,6 @@ export const DISCORD_FORUM_TOPIC_CATEGORIES = (process.env.DISCORD_FORUM_TOPIC_C
 export const NOTIFICATIONS_SERVICE_ENABLED = getBooleanStringVar('NOTIFICATIONS_SERVICE_ENABLED', true)
 export const DCL_NOTIFICATIONS_SERVICE_ENABLED = getBooleanStringVar('DCL_NOTIFICATIONS_SERVICE_ENABLED', true)
 export const VOTES_VP_THRESHOLD = 5
-export const RAFT_OWNER_PK = process.env.RAFT_OWNER_PK || ''
-export const POLYGON_BADGES_CONTRACT_ADDRESS = process.env.POLYGON_BADGES_CONTRACT_ADDRESS || ''
-export const POLYGON_RAFTS_CONTRACT_ADDRESS = process.env.POLYGON_RAFTS_CONTRACT_ADDRESS || ''
-export const NFT_STORAGE_API_KEY = process.env.NFT_STORAGE_API_KEY || ''
-export const TRIMMED_OTTERSPACE_RAFT_ID = trimOtterspaceId(OTTERSPACE_DAO_RAFT_ID)
-export const TOP_VOTERS_PER_MONTH = 3
-export const TOP_VOTER_BADGE_IMG_URL = process.env.TOP_VOTER_BADGE_IMG_URL || ''
-export const LEGISLATOR_BADGE_SPEC_CID = process.env.LEGISLATOR_BADGE_SPEC_CID || ''
-export const LAND_OWNER_BADGE_SPEC_CID = process.env.LAND_OWNER_BADGE_SPEC_CID || ''
 export const DISCOURSE_WEBHOOK_SECRET = process.env.DISCOURSE_WEBHOOK_SECRET || ''
 export const ALCHEMY_DELEGATIONS_WEBHOOK_SECRET = process.env.ALCHEMY_DELEGATIONS_WEBHOOK_SECRET || ''
 export const DEBUG_ADDRESSES = (process.env.DEBUG_ADDRESSES || '')
