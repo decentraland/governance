@@ -265,6 +265,7 @@ export async function getVestingWithLogsFromAlchemy(
       version = ContractVersion.V1
     } catch (errorV1) {
       ErrorService.report('Unable to fetch vesting contract data from alchemy', {
+        vestingAddress,
         proposalId,
         errorV2: `${errorV2}`,
         errorV1: `${errorV1}`,

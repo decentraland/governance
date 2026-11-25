@@ -1,6 +1,9 @@
 import { Server } from 'http'
 import supertest from 'supertest'
 
+import ProposalModel from '../entities/Proposal/model'
+import { ErrorService } from '../services/ErrorService'
+import { SnapshotService } from '../services/SnapshotService'
 import { EventsService } from '../services/events'
 
 import events from './events'
@@ -161,6 +164,57 @@ describe('the event routes', () => {
 
       it('should attribute the vote to the authenticated address', () => {
         expect(voted).toHaveBeenCalledWith(PROPOSAL_ID, 'yes', REGULAR_ADDRESS)
+      })
+    })
+  })
+
+  // Through the real service, so the status the client gets is the one it throws.
+  describe('POST /api/events/voted, when the vote cannot be recorded', () => {
+    let report: jest.SpyInstance
+    let response: supertest.Response
+
+    beforeEach(() => {
+      report = jest.spyOn(ErrorService, 'report').mockImplementation(() => undefined)
+    })
+
+    describe('when the proposal does not exist', () => {
+      beforeEach(async () => {
+        jest.spyOn(ProposalModel, 'findOne').mockResolvedValue(null as never)
+        response = await supertest(app)
+          .post('/api/events/voted')
+          .set('x-test-auth', REGULAR_ADDRESS)
+          .send({ proposalId: PROPOSAL_ID, choice: 'yes' })
+      })
+
+      it('should respond with a 404', () => {
+        expect(response.status).toBe(404)
+      })
+
+      it('should not report it', () => {
+        expect(report).not.toHaveBeenCalled()
+      })
+    })
+
+    describe('when Snapshot has no vote from the caller', () => {
+      beforeEach(async () => {
+        jest.spyOn(ProposalModel, 'findOne').mockResolvedValue({
+          id: PROPOSAL_ID,
+          snapshot_id: 'snapshot-proposal',
+          snapshot_proposal: JSON.stringify({ choices: ['yes', 'no'] }),
+        } as never)
+        jest.spyOn(SnapshotService, 'getVotesByProposal').mockResolvedValue([])
+        response = await supertest(app)
+          .post('/api/events/voted')
+          .set('x-test-auth', REGULAR_ADDRESS)
+          .send({ proposalId: PROPOSAL_ID, choice: 'yes' })
+      })
+
+      it('should respond with a 403', () => {
+        expect(response.status).toBe(403)
+      })
+
+      it('should not report it', () => {
+        expect(report).not.toHaveBeenCalled()
       })
     })
   })

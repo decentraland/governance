@@ -172,6 +172,29 @@ describe('ProposalService', () => {
 
         expect(UpdateService.computePendingUpdatesForVesting).toHaveBeenCalledWith(projectId, vestingAddresses)
       })
+
+      // ethers reads an address with an uppercase "0X" as an ENS name, so it must not be stored as typed.
+      describe('and an address is typed with an uppercase 0X prefix', () => {
+        const typed = '0X4240C3EEA13548418AEA8EFC52E4C2E1B2D42F84'
+        const normalized = '0x4240c3eea13548418aea8efc52e4c2e1b2d42f84'
+        let updated: ProposalWithProject
+
+        beforeEach(async () => {
+          updated = await ProposalService.updateProposalStatus(
+            proposal,
+            { status: ProposalStatus.Enacted, vesting_addresses: [typed] },
+            user
+          )
+        })
+
+        it('should store it lowercased', () => {
+          expect(updated.vesting_addresses).toEqual([normalized])
+        })
+
+        it('should build the pending vesting updates from the lowercased address', () => {
+          expect(UpdateService.computePendingUpdatesForVesting).toHaveBeenCalledWith(projectId, [normalized])
+        })
+      })
     })
 
     describe('when re-enacting an already-enacted project proposal', () => {
@@ -216,6 +239,34 @@ describe('ProposalService', () => {
 
           expect(UpdateService.computePendingUpdatesForVesting).toHaveBeenCalledWith(projectId, newAddresses)
         })
+      })
+    })
+
+    // An address stored before normalization, without its prefix, is still the same address.
+    describe('when re-enacting a proposal whose stored address lacks the 0x prefix, with that same address', () => {
+      const storedAddresses = ['1111111111111111111111111111111111111111']
+
+      beforeEach(() => {
+        jest.clearAllMocks()
+        ;(ProjectService.getUpdatedProject as jest.Mock).mockResolvedValue({ status: 'in_progress' } as never)
+        ;(UpdateService.computePendingUpdatesForVesting as jest.Mock).mockResolvedValue([])
+        mockTransactionLockedStatus(ProposalStatus.Enacted, storedAddresses)
+      })
+
+      it('should not regenerate the pending vesting updates', async () => {
+        await ProposalService.updateProposalStatus(
+          {
+            ...createTestProposal(ProposalType.Grant, ProposalStatus.Enacted, 10000),
+            project_id: projectId,
+            enacted: true,
+            vesting_addresses: storedAddresses,
+            personnel: [],
+          },
+          { status: ProposalStatus.Enacted, vesting_addresses: ['0x1111111111111111111111111111111111111111'] },
+          user
+        )
+
+        expect(UpdateService.computePendingUpdatesForVesting).not.toHaveBeenCalled()
       })
     })
 

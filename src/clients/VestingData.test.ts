@@ -287,4 +287,17 @@ describe('getVestingWithLogsFromAlchemy', () => {
       expect.objectContaining({ category: ErrorCategory.Vesting })
     )
   })
+
+  // Without it, a report could not say which contract failed when it came from a page with no proposal id.
+  it('reports which vesting address could not be read', async () => {
+    mockV2CallsFailing()
+    mockContracts.set(VESTING_ABI, { start: rejected('V1 call failed') })
+
+    await expect(getVestingWithLogsFromAlchemy(VESTING_ADDRESS, 'proposal-id')).rejects.toThrow('V1 call failed')
+
+    expect(reportSpy).toHaveBeenCalledWith(
+      'Unable to fetch vesting contract data from alchemy',
+      expect.objectContaining({ vestingAddress: VESTING_ADDRESS, proposalId: 'proposal-id' })
+    )
+  })
 })

@@ -272,6 +272,26 @@ describe('VestingService', () => {
       })
     })
 
+    // Two stored addresses had an uppercase "0X", which used to come out as "0x0x…".
+    describe('when an address has an uppercase 0X prefix', () => {
+      let getVestings: jest.Mock
+
+      beforeEach(async () => {
+        getVestings = jest.fn().mockResolvedValue([])
+        jest.spyOn(VestingsSubgraph, 'get').mockReturnValue({ getVestings } as never)
+        jest.spyOn(VestingService, 'getVestingWithLogs').mockRejectedValue(new Error('not found'))
+        await VestingService.getVestings([VESTING_ADDRESS.toUpperCase()])
+      })
+
+      it('should ask for it lowercased, without prefixing it again', () => {
+        expect(getVestings).toHaveBeenCalledWith([VESTING_ADDRESS])
+      })
+
+      it('should fall back with the lowercased address too', () => {
+        expect(VestingService.getVestingWithLogs).toHaveBeenCalledWith(VESTING_ADDRESS)
+      })
+    })
+
     describe('when an address is missing from the subgraph', () => {
       let result: Awaited<ReturnType<typeof VestingService.getVestings>>
 
@@ -348,6 +368,28 @@ describe('VestingService', () => {
   })
 
   describe('VestingService.getVestingWithLogs', () => {
+    // ethers reads an address with an uppercase "0X" as an ENS name.
+    describe('when the address has an uppercase 0X prefix', () => {
+      let getVesting: jest.Mock
+      let fromContract: jest.SpyInstance
+
+      beforeEach(async () => {
+        getVesting = jest.fn().mockRejectedValue(new Error('not found'))
+        jest.spyOn(VestingsSubgraph, 'get').mockReturnValue({ getVesting } as never)
+        jest.spyOn(ErrorService, 'report').mockImplementation(() => undefined)
+        fromContract = jest.spyOn(VestingData, 'getVestingWithLogsFromAlchemy').mockResolvedValue({} as never)
+        await VestingService.getVestingWithLogs(VESTING_ADDRESS.toUpperCase())
+      })
+
+      it('should look it up lowercased in the subgraph', () => {
+        expect(getVesting).toHaveBeenCalledWith(VESTING_ADDRESS)
+      })
+
+      it('should read the contract with the lowercased address', () => {
+        expect(fromContract).toHaveBeenCalledWith(VESTING_ADDRESS, undefined, true)
+      })
+    })
+
     describe('when the address is empty', () => {
       it('should refuse rather than query for nothing', async () => {
         await expect(VestingService.getVestingWithLogs('')).rejects.toThrow('empty contract address')
@@ -355,6 +397,10 @@ describe('VestingService', () => {
 
       it('should refuse a null address too', async () => {
         await expect(VestingService.getVestingWithLogs(null)).rejects.toThrow('empty contract address')
+      })
+
+      it('should refuse an address made only of whitespace', async () => {
+        await expect(VestingService.getVestingWithLogs('  ')).rejects.toThrow('empty contract address')
       })
     })
 

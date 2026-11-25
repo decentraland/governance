@@ -35,6 +35,7 @@ import { NotificationService } from '../services/notification'
 import { UpdateService } from '../services/update'
 import { DiscoursePost } from '../shared/types/discourse'
 import { getProfile } from '../utils/Catalyst'
+import { normalizeVestingAddress } from '../utils/contracts/vesting'
 import Time from '../utils/date/Time'
 import { validateId } from '../utils/validations'
 import { withTransaction } from '../utils/withTransaction'
@@ -300,7 +301,9 @@ export class ProposalService {
     statusUpdate: ProposalStatusUpdate,
     user: string
   ): Promise<ProposalWithProject> {
-    const { status: newStatus, vesting_addresses } = statusUpdate
+    const { status: newStatus } = statusUpdate
+    // Stored lowercased, so an address typed with an uppercase "0X" cannot break the vesting lookups later.
+    const vesting_addresses = statusUpdate.vesting_addresses?.map(normalizeVestingAddress)
     const { id } = proposal
     const isProject = isProjectProposal(proposal.type)
     const isEnactedStatus = newStatus === ProposalStatus.Enacted
@@ -403,8 +406,8 @@ export class ProposalService {
   // contract and the schedule has to be regenerated. Comparing lengths also keeps a repeated
   // address from collapsing into an equal-looking set.
   private static haveSameVestingAddresses(a: string[] | null | undefined, b: string[] | null | undefined): boolean {
-    const first = (a || []).map((address) => address.toLowerCase())
-    const second = (b || []).map((address) => address.toLowerCase())
+    const first = (a || []).map(normalizeVestingAddress)
+    const second = (b || []).map(normalizeVestingAddress)
     return first.length === second.length && first.every((address, index) => address === second[index])
   }
 

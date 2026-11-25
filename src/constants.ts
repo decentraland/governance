@@ -2,6 +2,7 @@ import { ChainId } from '@dcl/schemas'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
 import { OTTERSPACE_DAO_RAFT_ID } from './entities/Snapshot/constants'
+import { normalizeVestingAddress } from './utils/contracts/vesting'
 
 import env from './config'
 
@@ -20,7 +21,7 @@ function getBooleanStringVar(variableName: string, defaultValue: boolean) {
 }
 
 export function getVestingContractUrl(address: string) {
-  return VESTING_DASHBOARD_URL.replace('%23', '#').concat(address.toLowerCase())
+  return VESTING_DASHBOARD_URL.replace('%23', '#').concat(normalizeVestingAddress(address))
 }
 
 export const DAO_COUNCIL_ADDRESSES = (process.env.DAO_COUNCIL_ADDRESSES || '')

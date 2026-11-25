@@ -1,7 +1,11 @@
 import database from 'decentraland-gatsby/dist/entities/Database/database'
+import { MigrationBuilder } from 'node-pg-migrate'
 
+import { ProposalStatus } from '../../src/entities/Proposal/types'
+import { up as lowercaseVestingAddresses } from '../../src/migrations/1795621055921_normalize-legacy-vesting-addresses'
 import { EventType } from '../../src/shared/types/events'
-import { closeTestDb, initTestDb } from '../setup/db'
+import { cleanTables, closeTestDb, initTestDb } from '../setup/db'
+import { insertProposal, readProposalVestingAddresses } from '../setup/factories'
 
 // Asserts the schema the migrations actually produce. CI runs them from an empty database, so these
 // catch a migration that only works from one starting state (the updates table was created under a
@@ -72,6 +76,42 @@ describe('migrations', () => {
 
     it('should contain the types added after the events table was created', () => {
       expect(values).toEqual(expect.arrayContaining([EventType.ProposalFinished, EventType.VestingCreated]))
+    })
+  })
+  // The data fix for two proposals saved with an uppercase "0X" vesting address. Run against rows seeded
+  // after the schema is in place, since an empty database has nothing for it to change.
+  describe('when normalizing legacy vesting addresses', () => {
+    const OTHER = '0x1111111111111111111111111111111111111111'
+    const UPPERCASE = '0X4240C3EEA13548418AEA8EFC52E4C2E1B2D42F84'
+    const CHECKSUMMED = '0x3dA67699E5938bE3336fe0619B07E05CB1CDEEf7'
+    const UNPREFIXED = ' 3DA67699E5938BE3336FE0619B07E05CB1CDEEF7'
+    let affected: string
+    let unprefixed: string
+    let untouched: string
+
+    beforeEach(async () => {
+      affected = (await insertProposal(ProposalStatus.Enacted, [OTHER, UPPERCASE])).id
+      unprefixed = (await insertProposal(ProposalStatus.Enacted, [UNPREFIXED])).id
+      untouched = (await insertProposal(ProposalStatus.Enacted, [CHECKSUMMED])).id
+      let statement = ''
+      await lowercaseVestingAddresses({ sql: (sql: string) => (statement = sql) } as unknown as MigrationBuilder)
+      await database.query(statement)
+    })
+
+    afterEach(async () => {
+      await cleanTables()
+    })
+
+    it('should lowercase every address of an affected proposal, keeping their order', async () => {
+      expect(await readProposalVestingAddresses(affected)).toEqual([OTHER, UPPERCASE.toLowerCase()])
+    })
+
+    it('should trim, lowercase and prefix an address saved without its prefix', async () => {
+      expect(await readProposalVestingAddresses(unprefixed)).toEqual(['0x3da67699e5938be3336fe0619b07e05cb1cdeef7'])
+    })
+
+    it('should leave the proposals without one as they are', async () => {
+      expect(await readProposalVestingAddresses(untouched)).toEqual([CHECKSUMMED])
     })
   })
 })
