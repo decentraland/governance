@@ -39,7 +39,6 @@ import { DEFAULT_AVATAR_IMAGE, getProfiles } from '../utils/Catalyst'
 import { DclProfile } from '../utils/Catalyst/types'
 import Time from '../utils/date/Time'
 import { ErrorCategory } from '../utils/errorCategories'
-import logger from '../utils/logger'
 
 import {
   CLEAR_DELEGATE_SIGNATURE_HASH,
@@ -154,8 +153,8 @@ export class EventsService {
       const votes = await SnapshotService.getVotesByProposal(proposal.snapshot_id)
       const userVote = votes.find((vote) => isSameAddress(vote.voter, address))
       if (!userVote) {
-        // Logged rather than reported: a probe lands here, but so does a real vote Snapshot has not indexed yet.
-        logger.log('Vote event refused, Snapshot has no matching vote', { proposal_id, address })
+        // Not reported: a probe lands here, but so does a real vote Snapshot has not indexed yet. The route's error
+        // handler already logs every refusal with its message, so both stay visible in the logs.
         throw new RequestError(
           `No Snapshot vote found for ${address} on proposal "${proposal_id}"`,
           RequestError.Forbidden

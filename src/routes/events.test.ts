@@ -5,7 +5,6 @@ import ProposalModel from '../entities/Proposal/model'
 import { ErrorService } from '../services/ErrorService'
 import { SnapshotService } from '../services/SnapshotService'
 import { EventsService } from '../services/events'
-import logger from '../utils/logger'
 
 import events from './events'
 import { createTestApp } from './testApp'
@@ -176,7 +175,6 @@ describe('the event routes', () => {
 
     beforeEach(() => {
       report = jest.spyOn(ErrorService, 'report').mockImplementation(() => undefined)
-      jest.spyOn(logger, 'log').mockImplementation(() => undefined)
     })
 
     describe('when the proposal does not exist', () => {

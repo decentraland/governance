@@ -2,7 +2,6 @@ import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 
 import ProposalModel from '../entities/Proposal/model'
 import EventModel from '../models/Event'
-import logger from '../utils/logger'
 
 import { ErrorService } from './ErrorService'
 import { SnapshotService } from './SnapshotService'
@@ -22,11 +21,9 @@ const PROPOSAL_ROW = {
 describe('EventsService.voted', () => {
   let report: jest.SpyInstance
   let createEvent: jest.SpyInstance
-  let loggerLog: jest.SpyInstance
 
   beforeEach(() => {
     report = jest.spyOn(ErrorService, 'report').mockImplementation(() => undefined)
-    loggerLog = jest.spyOn(logger, 'log').mockImplementation(() => undefined)
     createEvent = jest.spyOn(EventModel, 'create').mockImplementation(async (event) => event as never)
     jest.spyOn(NotificationService, 'newVote').mockImplementation(async () => undefined)
   })
@@ -74,14 +71,6 @@ describe('EventsService.voted', () => {
 
     it('should not report it as an error', () => {
       expect(report).not.toHaveBeenCalled()
-    })
-
-    // A vote Snapshot has not indexed yet ends up here too, so it stays visible in the logs.
-    it('should log it', () => {
-      expect(loggerLog).toHaveBeenCalledWith('Vote event refused, Snapshot has no matching vote', {
-        proposal_id: PROPOSAL_ID,
-        address: VOTER,
-      })
     })
   })
 

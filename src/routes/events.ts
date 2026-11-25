@@ -18,6 +18,8 @@ async function getLatestEvents(req: Request) {
   return await EventsService.getLatest(filters)
 }
 
+// Answers 404 for an unknown proposal and 403 when Snapshot has no vote from the caller. A 403 can be transient: it
+// is also what a real voter gets if Snapshot has not indexed their vote yet. The UI ignores this call failing.
 async function voted(req: WithAuth) {
   const user = req.auth!
 
