@@ -31,6 +31,7 @@ import ProjectModel, {
 } from '../models/Project'
 import ProjectLinkModel, { ProjectLink } from '../models/ProjectLink'
 import ProjectMilestoneModel, { ProjectMilestone, ProjectMilestoneStatus } from '../models/ProjectMilestone'
+import { normalizeVestingAddress } from '../utils/contracts/vesting'
 import Time from '../utils/date/Time'
 import { ErrorCategory } from '../utils/errorCategories'
 import { getProjectFunding, getProjectStatus, toGovernanceProjectStatus } from '../utils/projects'
@@ -89,7 +90,9 @@ export class ProjectService {
     project: ProjectQueryResult | UserProject,
     latestVestings: VestingWithLogs[]
   ) {
-    const latestVestingAddress = project.vesting_addresses[project.vesting_addresses.length - 1]
+    const storedAddress = project.vesting_addresses[project.vesting_addresses.length - 1]
+    // Vestings come back normalized; a legacy stored address may lack the prefix.
+    const latestVestingAddress = storedAddress && normalizeVestingAddress(storedAddress)
     const vestingWithLogs = latestVestings.find((vesting) => isSameAddress(vesting.address, latestVestingAddress))
     const funding = getProjectFunding(project, vestingWithLogs)
     const status = getProjectStatus(project, vestingWithLogs)

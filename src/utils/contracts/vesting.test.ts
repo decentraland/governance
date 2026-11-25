@@ -1,3 +1,5 @@
+import { getVestingContractUrl } from '../../constants'
+
 import { normalizeVestingAddress } from './vesting'
 
 describe('normalizeVestingAddress', () => {
@@ -22,6 +24,14 @@ describe('normalizeVestingAddress', () => {
   it('should drop surrounding whitespace', () => {
     expect(normalizeVestingAddress(' 0x3da67699e5938be3336fe0619b07e05cb1cdeef7\n')).toBe(
       '0x3da67699e5938be3336fe0619b07e05cb1cdeef7'
+    )
+  })
+})
+
+describe('getVestingContractUrl', () => {
+  it('should link to the normalized address', () => {
+    expect(getVestingContractUrl('4240C3EEA13548418AEA8EFC52E4C2E1B2D42F84')).toMatch(
+      /0x4240c3eea13548418aea8efc52e4c2e1b2d42f84$/
     )
   })
 })
