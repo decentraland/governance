@@ -27,8 +27,8 @@ export function validateDates(start?: string, end?: string) {
   return { validatedStart, validatedEnd }
 }
 
-export function validateDate(date?: string, required?: 'optional') {
-  if ((required !== 'optional' && !(date && isValidDate(date))) || (date && !isValidDate(date))) {
+export function validateDate(date?: string) {
+  if (!isValidDate(date)) {
     throw new RequestError('Invalid date', RequestError.BadRequest)
   }
   return date
@@ -152,14 +152,6 @@ export function validateRequiredString(fieldName: string, value?: string) {
     throw new RequestError(`Invalid ${fieldName}`, RequestError.BadRequest)
   }
   return value
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function validateRequiredStrings(fieldNames: string[], requestBody: Record<string, any>) {
-  for (const fieldName of fieldNames) {
-    const fieldValue = requestBody[fieldName]
-    validateRequiredString(fieldName, fieldValue)
-  }
 }
 
 export function validateDebugAddress(user: string | undefined) {
