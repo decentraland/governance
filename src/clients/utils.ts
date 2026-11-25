@@ -1,17 +1,11 @@
+import { redactSecrets } from '../utils/redactSecrets'
+
 import { ErrorClient } from './ErrorClient'
+
+export { redactSecrets }
 
 const SUBGRAPH_SKIP_LIMIT = 5000
 const DEFAULT_FETCH_TIMEOUT_MS = 30000
-
-/**
- * Strips API keys that are embedded in URLs (The Graph gateway path segment and `apiKey`
- * query params) so they are not leaked into logs or error reports.
- */
-export function redactSecrets(text: string): string {
-  return text
-    .replace(/(\/api\/)[^/\s]+(\/subgraphs)/g, '$1<redacted>$2')
-    .replace(/([?&]apiKey=)[^&\s]+/gi, '$1<redacted>')
-}
 
 /**
  * fetch wrapper that aborts after `timeoutMs` so a hung upstream cannot keep the
@@ -40,6 +34,8 @@ export async function queryGraphql<T>(url: string, body: unknown): Promise<T> {
   })
 
   if (!response.ok) {
+    // Unread, the body would hold its connection until it is garbage collected.
+    await response.body?.cancel().catch(() => undefined)
     throw new Error(`GraphQL request to ${redactSecrets(url)} failed with status ${response.status}`)
   }
 

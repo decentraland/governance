@@ -2,7 +2,7 @@ import Rollbar from 'rollbar'
 
 import logger from '../utils/logger'
 
-import { ErrorService, getFingerprint, serializeError, shouldIgnoreItem } from './ErrorService'
+import { ErrorService, getFingerprint, serializeError, shouldIgnoreItem, toReportableError } from './ErrorService'
 
 /* eslint-disable @typescript-eslint/no-var-requires */
 // rollbar's own transport, stubbed below so nothing leaves the test.
@@ -18,6 +18,9 @@ jest.mock('../constants', () => ({
   DAO_ROLLBAR_TOKEN: 'test-token',
   COMMIT_HASH: 'abc1234',
 }))
+
+const ALCHEMY_KEY = 'aBcDeFgHiJkLmNoPqRsTuVwXyZ012345'
+const RPC_URL = `https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`
 
 type Payload = { data: Record<string, unknown> & { body: Record<string, unknown>; custom?: Record<string, unknown> } }
 
@@ -53,6 +56,75 @@ describe('serializeError', () => {
     const error = new Error('outer') as Error & { cause?: unknown }
     error.cause = error
     expect(() => JSON.stringify(serializeError(error))).not.toThrow()
+  })
+
+  // ethers quotes the URL it called, and an Alchemy URL carries the key in its path.
+  it('should redact keys from the message and the stack', () => {
+    const error = new Error(`missing response (url="${RPC_URL}", code=SERVER_ERROR)`)
+    expect(JSON.stringify(serializeError(error))).not.toContain(ALCHEMY_KEY)
+    expect(serializeError(error).message).toContain('/v2/<redacted>')
+  })
+
+  it('should keep the details that tell failures apart, and leave out URLs and request bodies', () => {
+    const error = Object.assign(new Error('Missing Access'), {
+      status: 403,
+      method: 'POST',
+      waitSeconds: 30,
+      url: 'https://discord.com/api/webhooks/123/webhook-token',
+      requestBody: { content: 'hi' },
+    })
+    expect(serializeError(error)).toEqual(expect.objectContaining({ status: 403, method: 'POST', waitSeconds: 30 }))
+    expect(serializeError(error)).not.toHaveProperty('url')
+    expect(serializeError(error)).not.toHaveProperty('requestBody')
+  })
+
+  // undici's "fetch failed" is often caused by an AggregateError with an empty message.
+  it('should keep the first few errors of an AggregateError', () => {
+    const attempts = Array.from({ length: 8 }, (_, index) => new Error(`connect ECONNREFUSED 10.0.0.${index}:443`))
+    const serialized = serializeError(new TypeError('fetch failed', { cause: new AggregateError(attempts, '') }))
+    const cause = serialized.cause as { errors: { message: string }[] }
+    expect(cause.errors).toHaveLength(5)
+    expect(cause.errors[0]).toMatchObject({ message: 'connect ECONNREFUSED 10.0.0.0:443' })
+  })
+})
+
+describe('toReportableError', () => {
+  function chainOf(error: Error) {
+    const chain: Error[] = []
+    for (let current: unknown = error; current instanceof Error; current = (current as { cause?: unknown }).cause) {
+      chain.push(current)
+    }
+    return chain
+  }
+
+  it('should keep the name, so Rollbar shows the right class', () => {
+    expect(toReportableError(new TypeError('fetch failed')).name).toBe('TypeError')
+  })
+
+  it('should redact keys from the message and the stack', () => {
+    const copy = toReportableError(new Error(`timeout (url="${RPC_URL}")`))
+    expect(`${copy.message} ${copy.stack}`).not.toContain(ALCHEMY_KEY)
+  })
+
+  // rollbar walks the chain with no check of its own, so a loop would never end.
+  it('should cut a cause chain that loops back on itself', () => {
+    const first = new Error('first') as Error & { cause?: unknown }
+    const second = new Error('second', { cause: first })
+    first.cause = second
+    expect(chainOf(toReportableError(first)).map(({ message }) => message)).toEqual(['first', 'second'])
+  })
+
+  it('should cut a very long chain', () => {
+    let error = new Error('root')
+    for (let index = 0; index < 20; index++) {
+      error = new Error(`wrap ${index}`, { cause: error })
+    }
+    expect(chainOf(toReportableError(error))).toHaveLength(6)
+  })
+
+  it('should follow `nested` the way rollbar does', () => {
+    const error = Object.assign(new Error('outer'), { nested: new Error('inner') })
+    expect(chainOf(toReportableError(error)).map(({ message }) => message)).toEqual(['outer', 'inner'])
   })
 })
 
@@ -101,12 +173,20 @@ describe('ErrorService.report', () => {
       ErrorService.report('Unable to update project status', { error, id: 'project-1' })
     })
 
-    it('should send the Error itself, titled and grouped by the message', () => {
-      expect(rollbarError).toHaveBeenCalledWith('Unable to update project status', error, {
-        extraInfo: { error: serializeError(error), id: 'project-1' },
-        title: 'Unable to update project status',
-        fingerprint: getFingerprint('Unable to update project status'),
-      })
+    it('should send the Error, titled and grouped by the message', () => {
+      expect(rollbarError).toHaveBeenCalledWith(
+        'Unable to update project status',
+        expect.objectContaining({ name: 'Error', message: error.message, stack: error.stack }),
+        {
+          extraInfo: { error: serializeError(error), id: 'project-1' },
+          title: 'Unable to update project status',
+          fingerprint: getFingerprint('Unable to update project status'),
+        }
+      )
+    })
+
+    it('should send a copy rather than the Error itself', () => {
+      expect(rollbarError.mock.calls[0][1]).not.toBe(error)
     })
 
     it('should log it serialized rather than as an empty object', () => {
@@ -214,6 +294,27 @@ describe('the Rollbar client', () => {
       expect(payload.custom?.extraInfo).toMatchObject({
         error: { name: 'TypeError', message: 'fetch failed', stack: expect.stringContaining('fetch failed') },
       })
+    })
+  })
+
+  describe('when an Error whose cause loops back on itself is reported', () => {
+    it('should still send it, with the loop cut', async () => {
+      const first = new Error('first') as Error & { cause?: unknown }
+      first.cause = new Error('second', { cause: first })
+      ErrorService.report('Error creating event', { error: first })
+      const [payload] = await sent()
+      expect((payload.data.body.trace_chain as unknown[]).length).toBe(2)
+    })
+  })
+
+  describe('when an Error quotes a URL with a key in it', () => {
+    it('should keep the key out of everything it sends', async () => {
+      ErrorService.report('Unable to fetch vesting contract data from alchemy', {
+        error: new Error(`missing response (url="${RPC_URL}")`),
+        errorV1: `Error: timeout (url="${RPC_URL}")`,
+      })
+      const [payload] = await sent()
+      expect(JSON.stringify(payload)).not.toContain(ALCHEMY_KEY)
     })
   })
 

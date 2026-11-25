@@ -1,5 +1,5 @@
 import { ErrorClient } from './ErrorClient'
-import { inBatches, redactSecrets, trimLastForwardSlash } from './utils'
+import { inBatches, queryGraphql, trimLastForwardSlash } from './utils'
 
 jest.mock('./ErrorClient', () => ({
   ErrorClient: {
@@ -13,29 +13,6 @@ describe('trimLastForwardSlash', () => {
     expect(trimLastForwardSlash('https://hub.snapshot.org/')).toStrictEqual('https://hub.snapshot.org')
     expect(trimLastForwardSlash('https://testnet.snapshot.org/')).toStrictEqual('https://testnet.snapshot.org')
     expect(trimLastForwardSlash('https://testnet.snapshot.org')).toStrictEqual('https://testnet.snapshot.org')
-  })
-})
-
-describe('redactSecrets', () => {
-  describe('when the text contains a The Graph gateway url with an api key in the path', () => {
-    it('should redact the key segment', () => {
-      const input = 'https://gateway-arbitrum.network.thegraph.com/api/SECRETKEY123/subgraphs/id/abc'
-      expect(redactSecrets(input)).toBe('https://gateway-arbitrum.network.thegraph.com/api/<redacted>/subgraphs/id/abc')
-    })
-  })
-
-  describe('when the text contains an apiKey query parameter', () => {
-    it('should redact the parameter value', () => {
-      expect(redactSecrets('https://score.snapshot.org/?apiKey=abc123&foo=bar')).toBe(
-        'https://score.snapshot.org/?apiKey=<redacted>&foo=bar'
-      )
-    })
-  })
-
-  describe('when the text contains no secrets', () => {
-    it('should return it unchanged', () => {
-      expect(redactSecrets('some error without a url')).toBe('some error without a url')
-    })
   })
 })
 
@@ -72,6 +49,28 @@ describe('inBatches', () => {
     it('should report the failure', async () => {
       await inBatches(fetchFunction, {}, 2)
       expect(ErrorClient.report).toHaveBeenCalled()
+    })
+  })
+})
+
+describe('queryGraphql', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  describe('when the server responds with an HTTP error', () => {
+    let cancel: jest.SpyInstance
+
+    beforeEach(async () => {
+      const response = new Response('<html>bad gateway</html>', { status: 502 })
+      cancel = jest.spyOn(response.body!, 'cancel')
+      jest.spyOn(global, 'fetch').mockResolvedValue(response)
+      await queryGraphql('https://subgraph.test', { query: '{ x }' }).catch(() => undefined)
+    })
+
+    // Unread, the body would keep its connection until garbage collection.
+    it('should release the body it does not read', () => {
+      expect(cancel).toHaveBeenCalled()
     })
   })
 })
