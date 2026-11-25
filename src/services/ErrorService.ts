@@ -10,14 +10,15 @@ const FILTERED_ERRORS = ['FETCH_ERROR', 'ACTION_REJECTED']
 // Per process, and the only limit in effect: rollbar's server build drops any `maxItems` setting.
 const ITEMS_PER_MINUTE = 10
 
-// Enough for errors wrapped a few times over. A cause chain that loops back on itself is cut here too.
-const MAX_CAUSE_DEPTH = 5
+// How deep serialization goes, through causes and nested extra info alike: enough for an error wrapped a few
+// times over. One budget for both is what also stops anything cyclic, even an error nested in its own cause.
+const MAX_DEPTH = 5
+
+// The payload rollbar sends wraps the extra info a few levels down, so its redaction goes a little deeper.
+const MAX_PAYLOAD_DEPTH = 10
 
 // An AggregateError, like the cause of undici's "fetch failed", holds one error per address it tried.
 const MAX_AGGREGATED_ERRORS = 5
-
-// How far into nested extra info Errors get serialized and strings redacted. It also stops a cyclic object.
-const MAX_EXTRA_INFO_DEPTH = 4
 
 // Kept besides the name, message and stack: what tells one failure from another. Nothing that carries a URL,
 // headers or a request body, since a Discord error's url can hold a webhook token.
@@ -37,10 +38,6 @@ type TraceLike = { exception?: { message?: unknown; description?: unknown } }
 type PayloadBody = { message?: { body?: unknown }; trace?: TraceLike; trace_chain?: TraceLike[] }
 type PayloadNotifier = { diagnostic?: { raw_error?: { message?: unknown; stack?: unknown } } }
 
-function redactValue(value: unknown) {
-  return typeof value === 'string' ? redactSecrets(value) : value
-}
-
 function messageOf(value: unknown): string {
   if (value instanceof Error) {
     return value.message
@@ -49,11 +46,34 @@ function messageOf(value: unknown): string {
   return typeof message === 'string' ? message : String(value)
 }
 
-function serializeLinked(value: unknown, depth: number): unknown {
-  if (!(value instanceof Error)) {
-    return redactValue(value)
+/**
+ * Makes a value safe to send and to log: Errors serialized, strings redacted, bigints (common in ethers values)
+ * turned into strings, and anything past MAX_DEPTH cut, so the JSON logger can never throw on it.
+ */
+function serializeValue(value: unknown, depth = 0): unknown {
+  if (typeof value === 'string') {
+    return redactSecrets(value)
   }
-  return depth < MAX_CAUSE_DEPTH ? serializeError(value, depth + 1) : `${value.name}: ${redactSecrets(value.message)}`
+  if (typeof value === 'bigint') {
+    return value.toString()
+  }
+  if (value === null || typeof value !== 'object') {
+    return value
+  }
+  if (depth >= MAX_DEPTH) {
+    return value instanceof Error ? `${value.name}: ${redactSecrets(value.message)}` : '[Truncated]'
+  }
+  if (value instanceof Error) {
+    return serializeError(value, depth)
+  }
+  if (Array.isArray(value)) {
+    return value.map((item) => serializeValue(item, depth + 1))
+  }
+  // Dates and the like know how to serialize themselves.
+  if (typeof (value as { toJSON?: unknown }).toJSON === 'function') {
+    return value
+  }
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, serializeValue(item, depth + 1)]))
 }
 
 /**
@@ -69,14 +89,14 @@ export function serializeError(error: Error, depth = 0): SerializedError {
   for (const detail of ERROR_DETAILS) {
     const value = (error as unknown as Record<string, unknown>)[detail]
     if (value !== undefined) {
-      serialized[detail] = redactValue(value)
+      serialized[detail] = serializeValue(value, depth + 1)
     }
   }
   if (cause !== undefined) {
-    serialized.cause = serializeLinked(cause, depth)
+    serialized.cause = serializeValue(cause, depth + 1)
   }
   if (Array.isArray(errors) && errors.length > 0) {
-    serialized.errors = errors.slice(0, MAX_AGGREGATED_ERRORS).map((inner) => serializeLinked(inner, depth))
+    serialized.errors = errors.slice(0, MAX_AGGREGATED_ERRORS).map((inner) => serializeValue(inner, depth + 1))
   }
   return serialized
 }
@@ -84,7 +104,7 @@ export function serializeError(error: Error, depth = 0): SerializedError {
 /**
  * The copy of an error that rollbar parses, with keys redacted from its message and stack. rollbar follows
  * `nested || cause` with no limit or check, so a chain that loops back on itself would never end: the copy stops
- * at MAX_CAUSE_DEPTH and at the first error it has already seen.
+ * at MAX_DEPTH and at the first error it has already seen.
  */
 export function toReportableError(error: Error, depth = 0, seen = new Set<unknown>()): Error {
   seen.add(error)
@@ -93,7 +113,7 @@ export function toReportableError(error: Error, depth = 0, seen = new Set<unknow
   copy.stack = error.stack ? redactSecrets(error.stack) : `${copy.name}: ${copy.message}`
   const { cause, nested, errors } = error as Error & LinkedErrors
   const next = nested || cause
-  if (next instanceof Error && depth < MAX_CAUSE_DEPTH && !seen.has(next)) {
+  if (next instanceof Error && depth < MAX_DEPTH && !seen.has(next)) {
     copy.cause = toReportableError(next, depth + 1, seen)
   }
   // rollbar takes the first one's message when the error's own is empty, as undici's AggregateError's is.
@@ -101,28 +121,6 @@ export function toReportableError(error: Error, depth = 0, seen = new Set<unknow
     copy.errors = errors.slice(0, MAX_AGGREGATED_ERRORS).map((inner) => ({ message: redactSecrets(messageOf(inner)) }))
   }
   return copy
-}
-
-// Errors are serialized and strings redacted inside plain objects and arrays too. Other objects, like dates, are
-// left for rollbar to handle.
-function serializeValue(value: unknown, depth = 0): unknown {
-  if (value instanceof Error) {
-    return serializeError(value)
-  }
-  if (typeof value === 'string') {
-    return redactSecrets(value)
-  }
-  if (value === null || typeof value !== 'object' || depth >= MAX_EXTRA_INFO_DEPTH) {
-    return value
-  }
-  if (Array.isArray(value)) {
-    return value.map((item) => serializeValue(item, depth + 1))
-  }
-  const prototype = Object.getPrototypeOf(value)
-  if (prototype !== Object.prototype && prototype !== null) {
-    return value
-  }
-  return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, serializeValue(item, depth + 1)]))
 }
 
 // An Error passed in place of the message is kept as `error`, unless the extra info already has one.
@@ -172,8 +170,19 @@ function getItemTexts(item: Rollbar.Dictionary): string[] {
   ].filter((text): text is string => typeof text === 'string')
 }
 
+// Payloads redactPayload could neither redact nor replace. checkIgnore runs right after it, on the same object.
+const unredactablePayloads = new WeakSet<object>()
+
+// rollbar stops calling a checkIgnore that throws, so this never throws: what it cannot read, it drops.
 export function shouldIgnoreItem(item: Rollbar.Dictionary): boolean {
-  return getItemTexts(item).some((text) => FILTERED_ERRORS.some((filtered) => text.includes(filtered)))
+  try {
+    if (unredactablePayloads.has(item)) {
+      return true
+    }
+    return getItemTexts(item).some((text) => FILTERED_ERRORS.some((filtered) => text.includes(filtered)))
+  } catch {
+    return true
+  }
 }
 
 function redactFields<T extends Record<string, unknown>>(target: T | undefined, fields: (keyof T)[]) {
@@ -185,18 +194,66 @@ function redactFields<T extends Record<string, unknown>>(target: T | undefined, 
   }
 }
 
+function redactDeep(value: unknown, depth = 0): unknown {
+  if (typeof value === 'string') {
+    return redactSecrets(value)
+  }
+  if (value === null || typeof value !== 'object') {
+    return value
+  }
+  if (depth >= MAX_PAYLOAD_DEPTH) {
+    return '[Truncated]'
+  }
+  if (Array.isArray(value)) {
+    return value.map((item) => redactDeep(item, depth + 1))
+  }
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, redactDeep(item, depth + 1)]))
+}
+
 /**
  * Runs on every payload just before it is sent, including what rollbar captures by itself (uncaught exceptions
  * and unhandled rejections), which never goes through report(). It has to be this late: rollbar copies the raw
  * error's message and stack into notifier.diagnostic after its `transform` hook has run.
  */
 export function redactPayload(payload: Rollbar.Dictionary) {
-  const body = payload.body as PayloadBody | undefined
-  redactFields(body?.message, ['body'])
-  for (const trace of [...(body?.trace_chain || []), ...(body?.trace ? [body.trace] : [])]) {
-    redactFields(trace?.exception, ['message', 'description'])
+  try {
+    const body = payload.body as PayloadBody | undefined
+    redactFields(body?.message, ['body'])
+    for (const trace of [...(body?.trace_chain || []), ...(body?.trace ? [body.trace] : [])]) {
+      redactFields(trace?.exception, ['message', 'description'])
+    }
+    redactFields((payload.notifier as PayloadNotifier | undefined)?.diagnostic?.raw_error, ['message', 'stack'])
+    // A rejection reason that is a plain object goes into custom, which rollbar also copies to the top of the
+    // payload, or into request when it has request-like keys.
+    const custom = payload.custom as Record<string, unknown> | undefined
+    for (const key of Object.keys(custom || {})) {
+      if (key in payload) {
+        payload[key] = redactDeep(payload[key])
+      }
+    }
+    if (custom) {
+      payload.custom = redactDeep(custom)
+    }
+    if (payload.request) {
+      payload.request = redactDeep(payload.request)
+    }
+  } catch (error) {
+    // rollbar stops calling a callback that throws, so this must not throw. What could not be redacted is not sent:
+    // it is replaced, or if even that fails, dropped by checkIgnore.
+    try {
+      Object.defineProperty(payload, 'body', {
+        value: { message: { body: `An error report was replaced because it could not be redacted: ${error}` } },
+        writable: true,
+        enumerable: true,
+        configurable: true,
+      })
+      delete payload.custom
+      delete payload.request
+      delete (payload.notifier as PayloadNotifier | undefined)?.diagnostic?.raw_error
+    } catch {
+      unredactablePayloads.add(payload)
+    }
   }
-  redactFields((payload.notifier as PayloadNotifier | undefined)?.diagnostic?.raw_error, ['message', 'stack'])
 }
 
 export function getRollbarConfig(accessToken: string, codeVersion?: string): Rollbar.Configuration {
@@ -237,27 +294,39 @@ export class ErrorService {
     return this.client
   }
 
+  // Reports are made from inside callers' catch blocks, so reporting must never throw itself.
   public static report(errorOrMessage: string | Error, extraInfo?: Record<string, unknown>) {
     const message = toMessage(errorOrMessage)
     const serializedExtraInfo = serializeExtraInfo(errorOrMessage, extraInfo)
     if (isProdEnv()) {
-      if (require('../constants').DAO_ROLLBAR_TOKEN) {
-        const error = findError(errorOrMessage, extraInfo)
-        if (error) {
-          // Sent as an Error so Rollbar gets the stack trace and the cause chain. rollbar copies the title and
-          // fingerprint from the custom data to the top of the payload.
-          this.getClient().error(message, toReportableError(error), {
-            extraInfo: serializedExtraInfo,
-            title: message,
-            fingerprint: getFingerprint(message),
-          })
-        } else {
-          this.getClient().error(message, { extraInfo: serializedExtraInfo })
-        }
-      } else {
-        logger.error('Rollbar server access token not found')
+      try {
+        this.sendToRollbar(message, findError(errorOrMessage, extraInfo), serializedExtraInfo)
+      } catch (error) {
+        console.error('Unable to report to Rollbar', `${error}`)
       }
     }
-    logger.error(message, serializedExtraInfo)
+    try {
+      logger.error(message, serializedExtraInfo)
+    } catch (error) {
+      console.error(message, `(could not log its details: ${error})`)
+    }
+  }
+
+  private static sendToRollbar(message: string, error: Error | undefined, extraInfo?: Record<string, unknown>) {
+    if (!require('../constants').DAO_ROLLBAR_TOKEN) {
+      logger.error('Rollbar server access token not found')
+      return
+    }
+    if (error) {
+      // Sent as an Error so Rollbar gets the stack trace and the cause chain. rollbar copies the title and
+      // fingerprint from the custom data to the top of the payload.
+      this.getClient().error(message, toReportableError(error), {
+        extraInfo,
+        title: message,
+        fingerprint: getFingerprint(message),
+      })
+    } else {
+      this.getClient().error(message, { extraInfo })
+    }
   }
 }

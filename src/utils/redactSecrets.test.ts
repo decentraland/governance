@@ -8,6 +8,33 @@ describe('redactSecrets', () => {
     })
   })
 
+  describe('when the text contains a The Graph deployments url with an api key in the path', () => {
+    it('should redact the key segment', () => {
+      expect(redactSecrets('https://gateway.thegraph.com/api/SECRETKEY123/deployments/id/Qm123')).toBe(
+        'https://gateway.thegraph.com/api/<redacted>/deployments/id/Qm123'
+      )
+    })
+  })
+
+  describe('when the text contains credentials in a url', () => {
+    it('should redact them', () => {
+      expect(redactSecrets('connect failed: postgres://governance:hunter2@db.internal:5432/governance')).toBe(
+        'connect failed: postgres://<redacted>@db.internal:5432/governance'
+      )
+    })
+  })
+
+  describe('when the text contains a QuickNode or Ankr url', () => {
+    it('should redact the token segment', () => {
+      expect(redactSecrets('https://red-frosty-sun.quiknode.pro/0123456789abcdef0123456789abcdef/')).toBe(
+        'https://red-frosty-sun.quiknode.pro/<redacted>/'
+      )
+      expect(redactSecrets('https://rpc.ankr.com/eth/0123456789abcdef0123456789abcdef')).toBe(
+        'https://rpc.ankr.com/eth/<redacted>'
+      )
+    })
+  })
+
   describe('when the text contains an apiKey query parameter', () => {
     it('should redact the parameter value', () => {
       expect(redactSecrets('https://score.snapshot.org/?apiKey=abc123&foo=bar')).toBe(

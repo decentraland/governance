@@ -27,7 +27,10 @@ export const FORUM_FETCH_REPORT_AFTER = Time.Hour
 // may have run, and succeeded, in between.
 export const FORUM_FETCH_FAILURE_GAP = 30 * Time.Minute
 
-// Per process: when each category started failing, when it last failed, and whether that was reported.
+// Per process: when each category started failing, when it last failed, and whether that was reported. Any
+// instance can win a run under the job lock, so with several replicas an outage can be reported once by each, an
+// instance that keeps losing the lock starts its window over, and a deploy clears it. None of that loses topics,
+// with a day of lookback, and keeping it in memory avoids a table for what is an alerting heuristic.
 const fetchFailures = new Map<number, { since: number; last: number; reported: boolean }>()
 
 // For tests, which run the job many times in one process.

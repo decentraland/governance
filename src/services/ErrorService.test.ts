@@ -83,6 +83,26 @@ describe('serializeError', () => {
     expect(serializeError(error)).not.toHaveProperty('requestBody')
   })
 
+  it('should redact a cause that is not an Error too', () => {
+    const error = new Error('request failed', { cause: { url: RPC_URL, attempt: 2 } })
+    expect(JSON.stringify(serializeError(error))).not.toContain(ALCHEMY_KEY)
+  })
+
+  // ethers values are often bigints, which JSON.stringify refuses.
+  it('should turn bigints into strings, so the result can always be logged', () => {
+    const error = Object.assign(new Error('gas estimation failed', { cause: { gas: BigInt(21000) } }), {
+      code: BigInt(3),
+    })
+    expect(() => JSON.stringify(serializeError(error))).not.toThrow()
+    expect(serializeError(error)).toMatchObject({ code: '3', cause: { gas: '21000' } })
+  })
+
+  it('should stop when an error is nested in its own cause', () => {
+    const error = new Error('outer') as Error & { cause?: unknown }
+    error.cause = { wrapped: error }
+    expect(() => JSON.stringify(serializeError(error))).not.toThrow()
+  })
+
   // undici's "fetch failed" is often caused by an AggregateError with an empty message.
   it('should keep the first few errors of an AggregateError', () => {
     const attempts = Array.from({ length: 8 }, (_, index) => new Error(`connect ECONNREFUSED 10.0.0.${index}:443`))
@@ -158,6 +178,17 @@ describe('shouldIgnoreItem', () => {
     expect(shouldIgnoreItem(item)).toBe(true)
   })
 
+  // rollbar stops calling a checkIgnore that throws.
+  it('should drop an item it cannot read rather than throw', () => {
+    const item = {}
+    Object.defineProperty(item, 'body', {
+      get() {
+        throw new Error('unreadable')
+      },
+    })
+    expect(shouldIgnoreItem(item)).toBe(true)
+  })
+
   it('should keep anything else', () => {
     expect(shouldIgnoreItem({ body: { message: { body: 'Unable to update project status' } } })).toBe(false)
     expect(shouldIgnoreItem({ body: { trace_chain: [{ exception: { message: 'fetch failed' } }] } })).toBe(false)
@@ -180,6 +211,33 @@ describe('redactPayload', () => {
     }
     redactPayload(payload)
     expect(JSON.stringify(payload)).not.toContain(ALCHEMY_KEY)
+  })
+
+  // An unhandled rejection whose reason is a plain object lands in custom, copied to the top, or in request.
+  it('should redact what rollbar put in custom, its copies at the top, and request', () => {
+    const payload = {
+      body: {},
+      custom: { reason: { url: RPC_URL } },
+      reason: { url: RPC_URL },
+      request: { url: RPC_URL, headers: { referer: RPC_URL } },
+    }
+    redactPayload(payload)
+    expect(JSON.stringify(payload)).not.toContain(ALCHEMY_KEY)
+  })
+
+  // rollbar stops calling a callback that throws, so a failure has to be handled here.
+  it('should replace a payload it cannot redact rather than send it as it is', () => {
+    const payload: Record<string, unknown> = { custom: { url: RPC_URL } }
+    Object.defineProperty(payload, 'body', {
+      configurable: true,
+      enumerable: true,
+      get() {
+        throw new Error('unreadable')
+      },
+    })
+    expect(() => redactPayload(payload)).not.toThrow()
+    expect(payload).not.toHaveProperty('custom')
+    expect(JSON.stringify(payload.body)).toContain('could not be redacted')
   })
 
   it('should redact the message and description of every trace', () => {
@@ -306,6 +364,35 @@ describe('ErrorService.report', () => {
     })
   })
 
+  describe('when the extra info holds a bigint', () => {
+    it('should log it as a string', () => {
+      ErrorService.report('Error creating bid', { amount: BigInt(10) })
+      expect(loggerError).toHaveBeenCalledWith('Error creating bid', { amount: '10' })
+    })
+  })
+
+  // It is called from inside catch blocks, where a throw would replace the error being handled.
+  describe('when logging fails', () => {
+    it('should not throw', () => {
+      loggerError.mockImplementation(() => {
+        throw new TypeError('Converting circular structure to JSON')
+      })
+      jest.spyOn(console, 'error').mockImplementation(() => undefined)
+      expect(() => ErrorService.report('Error creating event', { id: 1 })).not.toThrow()
+    })
+  })
+
+  describe('when sending to Rollbar fails', () => {
+    it('should not throw, and still log', () => {
+      rollbarError.mockImplementation(() => {
+        throw new Error('rollbar is broken')
+      })
+      jest.spyOn(console, 'error').mockImplementation(() => undefined)
+      expect(() => ErrorService.report('Error creating event')).not.toThrow()
+      expect(loggerError).toHaveBeenCalledWith('Error creating event', undefined)
+    })
+  })
+
   describe('when there is no Error to send', () => {
     it('should send a plain message, so Rollbar keeps grouping it by its text', () => {
       ErrorService.report('Could not find any budgets', { category: 'Budget' })
@@ -403,6 +490,17 @@ describe('the Rollbar client', () => {
       const [payload, ...others] = await sent(2)
       expect(others).toHaveLength(0)
       expect(payload.data.body.message).toEqual({ body: 'Unable to update project status' })
+    })
+  })
+
+  describe('when an unhandled rejection carries a plain object', () => {
+    it('should keep a key in it out of what is sent', async () => {
+      ErrorService.report('Unable to update project status')
+      await sent()
+      const client = (ErrorService as unknown as { getClient(): Rollbar }).getClient()
+      client.error('Unhandled rejection', { reason: `timeout (url="${RPC_URL}")` })
+      const [, payload] = await sent(2)
+      expect(JSON.stringify(payload)).not.toContain(ALCHEMY_KEY)
     })
   })
 

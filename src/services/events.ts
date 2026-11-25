@@ -346,6 +346,7 @@ export class EventsService {
         },
         update_id: commentedUpdate.id,
         project_id: commentedUpdate.project_id,
+        proposal_id: commentedUpdate.proposal_id,
         category: ErrorCategory.Events,
       })
       return
