@@ -7,7 +7,6 @@ import CacheService, { TTL_1_HS, TTL_24_HS } from '../services/CacheService'
 import { SnapshotService } from '../services/SnapshotService'
 import Time from '../utils/date/Time'
 import { getAMonthAgo, getAWeekAgo } from '../utils/date/date'
-import { getPreviousMonthStartAndEnd } from '../utils/date/getPreviousMonthStartAndEnd'
 
 const DEFAULT_TOP_VOTERS_LIMIT = 5
 
@@ -22,14 +21,6 @@ export class VoteService {
     const start = getAMonthAgo(end)
 
     const rankedVoters = await this.getRankedVotersWithCache(start, end)
-    return rankedVoters.slice(0, limit)
-  }
-
-  static async getTopVotersForPreviousMonth(limit = DEFAULT_TOP_VOTERS_LIMIT) {
-    const today = Time.utc().toDate()
-    const { start, end } = getPreviousMonthStartAndEnd(today)
-
-    const rankedVoters = await this.getRankedVotersForDates(start, end)
     return rankedVoters.slice(0, limit)
   }
 

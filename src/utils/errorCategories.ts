@@ -1,5 +1,4 @@
 export enum ErrorCategory {
-  Badges = 'Badges',
   Bid = 'Bid',
   Budget = 'Budget',
   Discourse = 'Discourse',

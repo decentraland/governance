@@ -67,8 +67,8 @@ export async function closeLockPool(): Promise<void> {
  * releases the lock automatically, so a stale lock cannot wedge the job.
  *
  * This is the primitive the finish/publish jobs need because they read shared budget/proposal
- * state and fire non-idempotent side effects (events, notifications, badge airdrops, forum and
- * Discord posts) that must not run twice for the same transition.
+ * state and fire non-idempotent side effects (events, notifications, forum and Discord posts)
+ * that must not run twice for the same transition.
  */
 export const withPgAdvisoryLock = (jobName: string, jobFunction: JobFunction) => async (context: JobContext) => {
   const client = await getLockPool().connect()

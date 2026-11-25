@@ -107,7 +107,7 @@ describe('POST /api/debug/trigger', () => {
       response = await supertest(app)
         .post('/api/debug/trigger')
         .set('x-test-auth', REGULAR_ADDRESS)
-        .send({ functionName: 'runQueuedAirdropJobs' })
+        .send({ functionName: 'restoreMissingUpdatesForumPost' })
     })
 
     it('should refuse to run the job', () => {

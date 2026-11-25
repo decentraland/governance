@@ -1,14 +1,16 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { ColumnDefinitions, MigrationBuilder } from "node-pg-migrate"
-import AirdropJobModel from "../models/AirdropJob"
-import { AirdropJobStatus } from "../types/AirdropJob"
 
 export const shorthands: ColumnDefinitions | undefined = undefined
 
+// The badge airdrop model and its status enum were removed when badges were retired, so the
+// values they supplied are inlined here: an applied migration must keep loading and keep its meaning.
+const TABLE_NAME = 'airdrop_jobs'
 const STATUS_TYPE = 'airdrop_job_status'
+const STATUS_VALUES = ['pending', 'finished', 'failed']
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
-  pgm.createType(STATUS_TYPE, Object.values(AirdropJobStatus))
+  pgm.createType(STATUS_TYPE, STATUS_VALUES)
   const columns: ColumnDefinitions = {
     id: {
       type: 'TEXT',
@@ -26,7 +28,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
     status: {
       type: STATUS_TYPE,
       notNull: true,
-      default: AirdropJobStatus.PENDING,
+      default: 'pending',
     },
     error: {
       type: 'TEXT',
@@ -43,10 +45,10 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
     },
   }
 
-  pgm.createTable(AirdropJobModel.tableName, columns)
+  pgm.createTable(TABLE_NAME, columns)
 }
 
 export async function down(pgm: MigrationBuilder): Promise<void> {
-  pgm.dropTable(AirdropJobModel.tableName)
+  pgm.dropTable(TABLE_NAME)
   pgm.dropType(STATUS_TYPE)
 }

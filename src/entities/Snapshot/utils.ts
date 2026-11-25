@@ -1,6 +1,5 @@
 import { ethers } from 'ethers'
 
-import { SnapshotGraphql } from '../../clients/SnapshotGraphql'
 import { SnapshotSubgraph } from '../../clients/SnapshotSubgraph'
 import {
   Delegation,
@@ -197,9 +196,4 @@ export function isSameAddress(userAddress?: string | null, address?: string | nu
     address.length > 0 &&
     userAddress.toLowerCase() === address.toLowerCase()
   )
-}
-
-export async function getUsersWhoVoted(users: string[]) {
-  const votesFromUsers = await SnapshotGraphql.get().getVotesByAddresses(users)
-  return new Set(votesFromUsers.map((vote) => vote.voter.toLowerCase()))
 }
