@@ -11,6 +11,7 @@ import { DiscordService } from '../services/discord'
 import { DiscourseTopicListItem } from '../shared/types/discourse'
 import Time from '../utils/date/Time'
 import { ErrorCategory } from '../utils/errorCategories'
+import logger from '../utils/logger'
 
 // Only topics this recent are announced. It bounds what the first run, or a run after an outage,
 // posts at once, while leaving room for topics that only appear once a moderator approves them.
@@ -19,6 +20,37 @@ export const FORUM_TOPIC_LOOKBACK = Time.Day
 export const MIN_FORUM_TOPIC_TRUST_LEVEL = 1
 // A burst of topics is spread over later runs instead of flooding the channel
 export const MAX_FORUM_TOPICS_PER_RUN = 3
+// A failed fetch is caught up by a later run within FORUM_TOPIC_LOOKBACK, so a category is only reported once it
+// has kept failing this long.
+export const FORUM_FETCH_REPORT_AFTER = Time.Hour
+// Failures further apart than this are separate blips rather than one outage: under the job lock, another instance
+// may have run, and succeeded, in between.
+export const FORUM_FETCH_FAILURE_GAP = 30 * Time.Minute
+
+// Per process: when each category started failing, and when it last failed.
+const fetchFailures = new Map<number, { since: number; last: number }>()
+
+// For tests, which run the job many times in one process.
+export function resetForumFetchFailures() {
+  fetchFailures.clear()
+}
+
+function recordFetchFailure(categoryId: number, error: unknown) {
+  const now = Date.now()
+  const previous = fetchFailures.get(categoryId)
+  const since = previous && now - previous.last <= FORUM_FETCH_FAILURE_GAP ? previous.since : now
+  fetchFailures.set(categoryId, { since, last: now })
+  if (now - since >= FORUM_FETCH_REPORT_AFTER) {
+    ErrorService.report('Error fetching latest forum topics', {
+      categoryId,
+      failingForMinutes: Math.round((now - since) / Time.Minute),
+      error,
+      category: ErrorCategory.Discourse,
+    })
+  } else {
+    logger.warn('Could not fetch latest forum topics, a later run will catch up', { categoryId, error: `${error}` })
+  }
+}
 
 // Block elements separate words; inline ones (links, emphasis, mentions) sit inside them.
 const BLOCK_TAG = /<\/?(p|br|div|li|ul|ol|h[1-6]|blockquote|pre|hr|table|tr|td|th)\b[^>]*>/gi
@@ -57,6 +89,7 @@ async function getRecentTopics(categoryIds: number[]) {
   for (const categoryId of categoryIds) {
     try {
       const { topic_list } = await Discourse.get().getLatestTopicsInCategory(categoryId)
+      fetchFailures.delete(categoryId)
       topics.push(
         ...topic_list.topics.filter(
           (topic) => topic.category_id === categoryId && topic.visible && new Date(topic.created_at).getTime() >= since
@@ -64,11 +97,7 @@ async function getRecentTopics(categoryIds: number[]) {
       )
     } catch (error) {
       // One category failing to load must not hold back the others.
-      ErrorService.report('Error fetching latest forum topics', {
-        categoryId,
-        error: `${error}`,
-        category: ErrorCategory.Discourse,
-      })
+      recordFetchFailure(categoryId, error)
     }
   }
 

@@ -38,6 +38,7 @@ import { DEFAULT_AVATAR_IMAGE, getProfiles } from '../utils/Catalyst'
 import { DclProfile } from '../utils/Catalyst/types'
 import Time from '../utils/date/Time'
 import { ErrorCategory } from '../utils/errorCategories'
+import logger from '../utils/logger'
 
 import {
   CLEAR_DELEGATE_SIGNATURE_HASH,
@@ -51,6 +52,11 @@ import { SnapshotService } from './SnapshotService'
 import { NotificationService } from './notification'
 
 type DelegationCandidate = DelegationLogCandidate & { methodSignature: string; delegator: string; delegate: string }
+
+// Identifies a forum post in a report without copying what the user wrote.
+function getReportablePostIds(discoursePost: DiscourseWebhookPost) {
+  return { post_id: discoursePost.id, topic_id: discoursePost.topic_id, post_number: discoursePost.post_number }
+}
 
 export class EventsService {
   static async getLatest(filters: EventFilter): Promise<ActivityTickerEvent[]> {
@@ -280,14 +286,12 @@ export class EventsService {
     const commentedProposal = await ProposalModel.findOne<ProposalAttributes>({
       discourse_topic_id: discoursePost.topic_id,
     })
+    // The proposals category also holds topics that are not proposals (townhall threads, reports, community
+    // threads), and a comment on one of those has nothing to attach to.
     if (!commentedProposal) {
-      ErrorService.report('Unable to find commented proposal', {
-        event_data: {
-          discourse_event_id: discourseEventId,
-          discourse_event: discourseEvent,
-          discourse_post: discoursePost,
-        },
-        category: ErrorCategory.Events,
+      logger.log('Comment is not on a proposal topic', {
+        discourse_event_id: discourseEventId,
+        topic_id: discoursePost.topic_id,
       })
       return
     }
@@ -324,7 +328,7 @@ export class EventsService {
         event_data: {
           discourse_event_id: discourseEventId,
           discourse_event: discourseEvent,
-          discourse_post: discoursePost,
+          ...getReportablePostIds(discoursePost),
         },
         category: ErrorCategory.Events,
       })
@@ -338,7 +342,7 @@ export class EventsService {
         event_data: {
           discourse_event_id: discourseEventId,
           discourse_event: discourseEvent,
-          discourse_post: discoursePost,
+          ...getReportablePostIds(discoursePost),
         },
         commentedUpdate,
         category: ErrorCategory.Events,

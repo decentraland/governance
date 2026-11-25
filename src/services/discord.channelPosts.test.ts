@@ -24,7 +24,7 @@ process.env.DISCORD_CHANNEL_ID = 'governance-channel'
 
 // Imported after the mock so the service picks up the enabled flag.
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { DiscordService } = require('./discord')
+const { DiscordService, NO_MUTUAL_GUILDS_ERROR_CODE } = require('./discord')
 // The update service imports the discord one, so it has to wait for the channel id as well.
 const { UpdateService } = require('./update')
 /* eslint-enable @typescript-eslint/no-var-requires */
@@ -499,17 +499,25 @@ describe('DiscordService channel posts', () => {
 
     // Members who left the server or do not accept messages from it would otherwise raise an alert on
     // every notification sent their way.
-    describe('when the user does not accept direct messages', () => {
+    describe.each([
+      {
+        reason: 'does not accept direct messages',
+        code: Discord.RESTJSONErrorCodes.CannotSendMessagesToThisUser,
+        message: 'Cannot send messages to this user',
+      },
+      { reason: 'no longer exists', code: Discord.RESTJSONErrorCodes.UnknownUser, message: 'Unknown User' },
+      {
+        reason: 'shares no server with the bot anymore',
+        code: NO_MUTUAL_GUILDS_ERROR_CODE,
+        message: 'Cannot send messages to this user due to having no mutual guilds',
+      },
+    ])('when the user $reason', ({ code, message }) => {
       beforeEach(async () => {
         dmSend.mockRejectedValue(
-          new Discord.DiscordAPIError(
-            { code: 50007, message: 'Cannot send messages to this user' },
-            Discord.RESTJSONErrorCodes.CannotSendMessagesToThisUser,
-            403,
-            'POST',
-            '/channels/dm/messages',
-            { body: undefined, files: undefined }
-          )
+          new Discord.DiscordAPIError({ code, message }, code, 403, 'POST', '/channels/dm/messages', {
+            body: undefined,
+            files: undefined,
+          })
         )
         DiscordService.sendDirectMessage('discord-user', { title: 'Hi', fields: [] })
         await flushBackgroundTasks()

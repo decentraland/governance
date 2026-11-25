@@ -137,7 +137,9 @@ export class BudgetService {
     if (currentBudget !== null) {
       return currentBudget
     }
-    ErrorService.report('Could not find current budget', { category: ErrorCategory.Budget })
+    // Expected since the last quarter budget ended (2025-01-01), when grants through governance stopped, so it is
+    // logged rather than reported on every request.
+    logger.warn('Could not find current budget', { category: ErrorCategory.Budget })
     return NULL_BUDGET
   }
 
