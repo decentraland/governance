@@ -2,8 +2,6 @@ import { redactSecrets } from '../utils/redactSecrets'
 
 import { ErrorClient } from './ErrorClient'
 
-export { redactSecrets }
-
 const SUBGRAPH_SKIP_LIMIT = 5000
 const DEFAULT_FETCH_TIMEOUT_MS = 30000
 

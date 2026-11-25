@@ -16,6 +16,9 @@ const MAX_CAUSE_DEPTH = 5
 // An AggregateError, like the cause of undici's "fetch failed", holds one error per address it tried.
 const MAX_AGGREGATED_ERRORS = 5
 
+// How far into nested extra info Errors get serialized and strings redacted. It also stops a cyclic object.
+const MAX_EXTRA_INFO_DEPTH = 4
+
 // Kept besides the name, message and stack: what tells one failure from another. Nothing that carries a URL,
 // headers or a request body, since a Discord error's url can hold a webhook token.
 const ERROR_DETAILS = ['code', 'errno', 'syscall', 'status', 'statusCode', 'method', 'waitSeconds'] as const
@@ -32,9 +35,18 @@ type LinkedErrors = { cause?: unknown; nested?: unknown; errors?: unknown }
 
 type TraceLike = { exception?: { message?: unknown; description?: unknown } }
 type PayloadBody = { message?: { body?: unknown }; trace?: TraceLike; trace_chain?: TraceLike[] }
+type PayloadNotifier = { diagnostic?: { raw_error?: { message?: unknown; stack?: unknown } } }
 
 function redactValue(value: unknown) {
   return typeof value === 'string' ? redactSecrets(value) : value
+}
+
+function messageOf(value: unknown): string {
+  if (value instanceof Error) {
+    return value.message
+  }
+  const message = (value as { message?: unknown } | null)?.message
+  return typeof message === 'string' ? message : String(value)
 }
 
 function serializeLinked(value: unknown, depth: number): unknown {
@@ -86,11 +98,31 @@ export function toReportableError(error: Error, depth = 0, seen = new Set<unknow
   }
   // rollbar takes the first one's message when the error's own is empty, as undici's AggregateError's is.
   if (Array.isArray(errors) && errors.length > 0) {
-    copy.errors = errors
-      .slice(0, MAX_AGGREGATED_ERRORS)
-      .map((inner) => ({ message: redactSecrets(inner instanceof Error ? inner.message : String(inner)) }))
+    copy.errors = errors.slice(0, MAX_AGGREGATED_ERRORS).map((inner) => ({ message: redactSecrets(messageOf(inner)) }))
   }
   return copy
+}
+
+// Errors are serialized and strings redacted inside plain objects and arrays too. Other objects, like dates, are
+// left for rollbar to handle.
+function serializeValue(value: unknown, depth = 0): unknown {
+  if (value instanceof Error) {
+    return serializeError(value)
+  }
+  if (typeof value === 'string') {
+    return redactSecrets(value)
+  }
+  if (value === null || typeof value !== 'object' || depth >= MAX_EXTRA_INFO_DEPTH) {
+    return value
+  }
+  if (Array.isArray(value)) {
+    return value.map((item) => serializeValue(item, depth + 1))
+  }
+  const prototype = Object.getPrototypeOf(value)
+  if (prototype !== Object.prototype && prototype !== null) {
+    return value
+  }
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, serializeValue(item, depth + 1)]))
 }
 
 // An Error passed in place of the message is kept as `error`, unless the extra info already has one.
@@ -102,9 +134,7 @@ function serializeExtraInfo(errorOrMessage: unknown, extraInfo?: Record<string, 
   if (entries.length === 0) {
     return extraInfo
   }
-  return Object.fromEntries(
-    entries.map(([key, value]) => [key, value instanceof Error ? serializeError(value) : redactValue(value)])
-  )
+  return Object.fromEntries(entries.map(([key, value]) => [key, serializeValue(value)]))
 }
 
 // Some callers hand over a caught error where a message is expected, despite the type.
@@ -146,6 +176,46 @@ export function shouldIgnoreItem(item: Rollbar.Dictionary): boolean {
   return getItemTexts(item).some((text) => FILTERED_ERRORS.some((filtered) => text.includes(filtered)))
 }
 
+function redactFields<T extends Record<string, unknown>>(target: T | undefined, fields: (keyof T)[]) {
+  for (const field of fields) {
+    const value = target?.[field]
+    if (target && typeof value === 'string') {
+      target[field] = redactSecrets(value) as T[keyof T]
+    }
+  }
+}
+
+/**
+ * Runs on every payload just before it is sent, including what rollbar captures by itself (uncaught exceptions
+ * and unhandled rejections), which never goes through report(). It has to be this late: rollbar copies the raw
+ * error's message and stack into notifier.diagnostic after its `transform` hook has run.
+ */
+export function redactPayload(payload: Rollbar.Dictionary) {
+  const body = payload.body as PayloadBody | undefined
+  redactFields(body?.message, ['body'])
+  for (const trace of [...(body?.trace_chain || []), ...(body?.trace ? [body.trace] : [])]) {
+    redactFields(trace?.exception, ['message', 'description'])
+  }
+  redactFields((payload.notifier as PayloadNotifier | undefined)?.diagnostic?.raw_error, ['message', 'stack'])
+}
+
+export function getRollbarConfig(accessToken: string, codeVersion?: string): Rollbar.Configuration {
+  return {
+    accessToken,
+    captureUncaught: true,
+    captureUnhandledRejections: true,
+    environment: 'production',
+    codeVersion: codeVersion || undefined,
+    itemsPerMinute: ITEMS_PER_MINUTE,
+    captureIp: 'anonymize',
+    ignoreDuplicateErrors: true,
+    checkIgnore: (_isUncaught: boolean, _args: Rollbar.LogArgument[], item: Rollbar.Dictionary) =>
+      shouldIgnoreItem(item),
+    onSendCallback: (_isUncaught: boolean, _args: Rollbar.LogArgument[], payload: Rollbar.Dictionary) =>
+      redactPayload(payload),
+  }
+}
+
 /**
  * Rollbar groups an item with a stack trace by its frames. Errors thrown by async library code, like
  * "fetch failed", carry only the library's frames, so every caller would land in one item. Grouping by the
@@ -162,18 +232,7 @@ export class ErrorService {
   private static getClient() {
     if (!this.client) {
       const { DAO_ROLLBAR_TOKEN, COMMIT_HASH } = require('../constants')
-      this.client = new Rollbar({
-        accessToken: DAO_ROLLBAR_TOKEN,
-        captureUncaught: true,
-        captureUnhandledRejections: true,
-        environment: 'production',
-        codeVersion: COMMIT_HASH || undefined,
-        itemsPerMinute: ITEMS_PER_MINUTE,
-        captureIp: 'anonymize',
-        ignoreDuplicateErrors: true,
-        checkIgnore: (_isUncaught: boolean, _args: Rollbar.LogArgument[], item: Rollbar.Dictionary) =>
-          shouldIgnoreItem(item),
-      })
+      this.client = new Rollbar(getRollbarConfig(DAO_ROLLBAR_TOKEN, COMMIT_HASH))
     }
     return this.client
   }

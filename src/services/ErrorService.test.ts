@@ -2,14 +2,19 @@ import Rollbar from 'rollbar'
 
 import logger from '../utils/logger'
 
-import { ErrorService, getFingerprint, serializeError, shouldIgnoreItem, toReportableError } from './ErrorService'
+import {
+  ErrorService,
+  getFingerprint,
+  getRollbarConfig,
+  redactPayload,
+  serializeError,
+  shouldIgnoreItem,
+  toReportableError,
+} from './ErrorService'
 
-/* eslint-disable @typescript-eslint/no-var-requires */
 // rollbar's own transport, stubbed below so nothing leaves the test.
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const RollbarTransport = require('rollbar/src/server/transport')
-// The client the server wrapper builds on, which holds the rate limiter.
-const RollbarCore = require('rollbar/src/rollbar')
-/* eslint-enable @typescript-eslint/no-var-requires */
 
 // Reports only go to Rollbar in production with a token.
 jest.mock('../constants', () => ({
@@ -122,6 +127,14 @@ describe('toReportableError', () => {
     expect(chainOf(toReportableError(error))).toHaveLength(6)
   })
 
+  // rollbar shows the first entry's message when the error's own is empty.
+  it('should take the message of an aggregated entry that is a plain object', () => {
+    const copy = toReportableError(new AggregateError([{ message: 'Validation failed' }], '')) as Error & {
+      errors: { message: string }[]
+    }
+    expect(copy.errors).toEqual([{ message: 'Validation failed' }])
+  })
+
   it('should follow `nested` the way rollbar does', () => {
     const error = Object.assign(new Error('outer'), { nested: new Error('inner') })
     expect(chainOf(toReportableError(error)).map(({ message }) => message)).toEqual(['outer', 'inner'])
@@ -149,6 +162,52 @@ describe('shouldIgnoreItem', () => {
     expect(shouldIgnoreItem({ body: { message: { body: 'Unable to update project status' } } })).toBe(false)
     expect(shouldIgnoreItem({ body: { trace_chain: [{ exception: { message: 'fetch failed' } }] } })).toBe(false)
     expect(shouldIgnoreItem({})).toBe(false)
+  })
+})
+
+describe('redactPayload', () => {
+  it('should redact the text of a message item', () => {
+    const payload = { body: { message: { body: `missing response (url="${RPC_URL}")` } } }
+    redactPayload(payload)
+    expect(JSON.stringify(payload)).not.toContain(ALCHEMY_KEY)
+  })
+
+  // rollbar copies the raw error in there itself.
+  it('should redact the raw error rollbar adds to its diagnostics', () => {
+    const payload = {
+      body: {},
+      notifier: { diagnostic: { raw_error: { message: RPC_URL, stack: `Error: ${RPC_URL}` } } },
+    }
+    redactPayload(payload)
+    expect(JSON.stringify(payload)).not.toContain(ALCHEMY_KEY)
+  })
+
+  it('should redact the message and description of every trace', () => {
+    const payload = {
+      body: {
+        trace_chain: [{ exception: { message: RPC_URL, description: RPC_URL } }, { exception: { message: RPC_URL } }],
+      },
+    }
+    redactPayload(payload)
+    expect(JSON.stringify(payload)).not.toContain(ALCHEMY_KEY)
+  })
+})
+
+describe('getRollbarConfig', () => {
+  const config = getRollbarConfig('token', 'abc1234')
+
+  it('should hold each process to 10 items a minute', () => {
+    expect(config.itemsPerMinute).toBe(10)
+  })
+
+  // rollbar's server build drops it anyway, so setting it would only suggest a cap that does not exist.
+  it('should not set a lifetime cap', () => {
+    expect(config).not.toHaveProperty('maxItems')
+  })
+
+  it('should send the commit as the code version', () => {
+    expect(config.codeVersion).toBe('abc1234')
+    expect(getRollbarConfig('token', '').codeVersion).toBeUndefined()
   })
 })
 
@@ -205,12 +264,17 @@ describe('ErrorService.report', () => {
       ErrorService.report(error, { badgeTitle: 'Top Voter' })
     })
 
-    it('should report the Error under its own message, keeping it serialized in the extra info', () => {
-      expect(rollbarError).toHaveBeenCalledWith('Create spec failed', error, {
-        extraInfo: { error: serializeError(error), badgeTitle: 'Top Voter' },
-        title: 'Create spec failed',
-        fingerprint: getFingerprint('Create spec failed'),
-      })
+    it('should report a copy of the Error under its own message, keeping it serialized in the extra info', () => {
+      expect(rollbarError).toHaveBeenCalledWith(
+        'Create spec failed',
+        expect.objectContaining({ name: 'Error', message: 'Create spec failed', stack: error.stack }),
+        {
+          extraInfo: { error: serializeError(error), badgeTitle: 'Top Voter' },
+          title: 'Create spec failed',
+          fingerprint: getFingerprint('Create spec failed'),
+        }
+      )
+      expect(rollbarError.mock.calls[0][1]).not.toBe(error)
     })
 
     it('should log it with its stack', () => {
@@ -225,6 +289,20 @@ describe('ErrorService.report', () => {
     it('should send it as it is', () => {
       ErrorService.report('Rollbar test')
       expect(rollbarError).toHaveBeenCalledWith('Rollbar test', { extraInfo: undefined })
+    })
+  })
+
+  describe('when the extra info nests an Error or a URL with a key', () => {
+    const error = new Error(`timeout (url="${RPC_URL}")`)
+
+    beforeEach(() => {
+      ErrorService.report('Error creating event', { event_data: { error, endpoints: [RPC_URL] } })
+    })
+
+    it('should serialize the Error and redact the key wherever they sit', () => {
+      const { extraInfo } = rollbarError.mock.calls[0][1]
+      expect(extraInfo.event_data.error).toEqual(serializeError(error))
+      expect(JSON.stringify(extraInfo)).not.toContain(ALCHEMY_KEY)
     })
   })
 
@@ -328,23 +406,15 @@ describe('the Rollbar client', () => {
     })
   })
 
-  describe('when it is rate limiting', () => {
-    const MINUTE = 60 * 1000
-    // Not in rollbar's typings: the limiter every client shares, configured when one is built.
-    const { rateLimiter } = RollbarCore as {
-      rateLimiter: { shouldSend(item: object, now: number): { shouldSend: boolean } }
-    }
-    let start: number
-
-    beforeEach(async () => {
+  // rollbar's own handlers send these without going through report().
+  describe('when an error reaches rollbar directly, as an uncaught one does', () => {
+    it('should keep the key out of what it sends', async () => {
       ErrorService.report('Unable to update project status')
       await sent()
-      start = Date.now() + MINUTE
-    })
-
-    it('should hold each minute to 10 items', () => {
-      const results = Array.from({ length: 11 }, () => rateLimiter.shouldSend({}, start).shouldSend)
-      expect(results.filter(Boolean)).toHaveLength(10)
+      const client = (ErrorService as unknown as { getClient(): Rollbar }).getClient()
+      client.error(new Error(`missing response (url="${RPC_URL}")`))
+      const [, payload] = await sent(2)
+      expect(JSON.stringify(payload)).not.toContain(ALCHEMY_KEY)
     })
   })
 })
