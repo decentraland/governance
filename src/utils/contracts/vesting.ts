@@ -32,6 +32,9 @@ export const TopicsByVersion: Record<ContractVersion, Topics> = {
  * Vesting addresses are stored as the DAO Council typed them on enactment, and a couple were saved with an
  * uppercase "0X". ethers takes anything that does not start with a lowercase "0x" for an ENS name, and the
  * subgraph indexes lowercase ids, so every address is compared and looked up lowercased.
+ *
+ * It expects an address that was already validated (or stored after validation): it fixes the casing and the
+ * prefix, but does not check that the result is an address.
  */
 export function normalizeVestingAddress(address: string) {
   const lowercased = address.trim().toLowerCase()

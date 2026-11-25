@@ -101,6 +101,27 @@ describe('EventsService.voted', () => {
     })
   })
 
+  // Snapshot being down is a fault on our side, not the caller's.
+  describe('when Snapshot cannot be reached', () => {
+    const failure = new Error('Snapshot GraphQL request failed with status 503')
+    let outcome: Promise<unknown>
+
+    beforeEach(() => {
+      jest.spyOn(ProposalModel, 'findOne').mockResolvedValue(PROPOSAL_ROW as never)
+      jest.spyOn(SnapshotService, 'getVotesByProposal').mockRejectedValue(failure)
+      outcome = EventsService.voted(PROPOSAL_ID, 'yes', VOTER)
+    })
+
+    it('should still not fail the request', async () => {
+      await expect(outcome).resolves.toBeUndefined()
+    })
+
+    it('should report it', async () => {
+      await outcome
+      expect(report).toHaveBeenCalledWith('Error creating event', expect.objectContaining({ error: failure }))
+    })
+  })
+
   describe('when the database fails', () => {
     const failure = new Error('connection terminated unexpectedly')
     let outcome: Promise<unknown>

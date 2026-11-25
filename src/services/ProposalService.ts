@@ -406,8 +406,8 @@ export class ProposalService {
   // contract and the schedule has to be regenerated. Comparing lengths also keeps a repeated
   // address from collapsing into an equal-looking set.
   private static haveSameVestingAddresses(a: string[] | null | undefined, b: string[] | null | undefined): boolean {
-    const first = (a || []).map((address) => address.toLowerCase())
-    const second = (b || []).map((address) => address.toLowerCase())
+    const first = (a || []).map(normalizeVestingAddress)
+    const second = (b || []).map(normalizeVestingAddress)
     return first.length === second.length && first.every((address, index) => address === second[index])
   }
 

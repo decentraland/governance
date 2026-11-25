@@ -242,6 +242,34 @@ describe('ProposalService', () => {
       })
     })
 
+    // An address stored before normalization, without its prefix, is still the same address.
+    describe('when re-enacting a proposal whose stored address lacks the 0x prefix, with that same address', () => {
+      const storedAddresses = ['1111111111111111111111111111111111111111']
+
+      beforeEach(() => {
+        jest.clearAllMocks()
+        ;(ProjectService.getUpdatedProject as jest.Mock).mockResolvedValue({ status: 'in_progress' } as never)
+        ;(UpdateService.computePendingUpdatesForVesting as jest.Mock).mockResolvedValue([])
+        mockTransactionLockedStatus(ProposalStatus.Enacted, storedAddresses)
+      })
+
+      it('should not regenerate the pending vesting updates', async () => {
+        await ProposalService.updateProposalStatus(
+          {
+            ...createTestProposal(ProposalType.Grant, ProposalStatus.Enacted, 10000),
+            project_id: projectId,
+            enacted: true,
+            vesting_addresses: storedAddresses,
+            personnel: [],
+          },
+          { status: ProposalStatus.Enacted, vesting_addresses: ['0x1111111111111111111111111111111111111111'] },
+          user
+        )
+
+        expect(UpdateService.computePendingUpdatesForVesting).not.toHaveBeenCalled()
+      })
+    })
+
     describe('when the row lock reports a different status because a concurrent transition already won', () => {
       const vestingAddresses = ['0x1111111111111111111111111111111111111111']
       let proposal: ProposalWithProject
