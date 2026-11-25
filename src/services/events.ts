@@ -1,4 +1,5 @@
 import crypto from 'crypto'
+import RequestError from 'decentraland-gatsby/dist/entities/Route/error'
 import { ethers } from 'ethers'
 import isEthereumAddress from 'validator/lib/isEthereumAddress'
 
@@ -143,7 +144,7 @@ export class EventsService {
     try {
       const proposalRow = await ProposalModel.findOne<ProposalAttributes>({ id: proposal_id, deleted: false })
       if (!proposalRow) {
-        throw new Error(`Proposal not found: "${proposal_id}"`)
+        throw new RequestError(`Proposal not found: "${proposal_id}"`, RequestError.NotFound)
       }
       const proposal = ProposalModel.parse(proposalRow)
 
@@ -152,7 +153,10 @@ export class EventsService {
       const votes = await SnapshotService.getVotesByProposal(proposal.snapshot_id)
       const userVote = votes.find((vote) => isSameAddress(vote.voter, address))
       if (!userVote) {
-        throw new Error(`No Snapshot vote found for ${address} on proposal "${proposal_id}"`)
+        throw new RequestError(
+          `No Snapshot vote found for ${address} on proposal "${proposal_id}"`,
+          RequestError.Forbidden
+        )
       }
 
       // Derive the choice label from the proposal's own choices via the vote's choice index
@@ -171,6 +175,11 @@ export class EventsService {
       await EventModel.create(votedEvent)
       NotificationService.newVote(proposal_id, address)
     } catch (error) {
+      // An unknown proposal or a vote Snapshot does not have is the caller's mistake, not a fault: it goes back
+      // to them rather than to Rollbar. The frontend ignores this call failing.
+      if (error instanceof RequestError) {
+        throw error
+      }
       this.reportEventError(error as Error, EventType.Voted, { address, proposal_id, choice })
     }
   }
