@@ -364,6 +364,51 @@ describe('ErrorService.report', () => {
     })
   })
 
+  describe('when the extra info holds a URL object or a secret header', () => {
+    it('should log the URL redacted and blank the header', () => {
+      ErrorService.report('Error fetching profiles', {
+        endpoint: new URL(RPC_URL),
+        headers: { Authorization: 'Bearer abc.def', 'x-api-key': 'k3y', accept: 'application/json' },
+      })
+      expect(loggerError).toHaveBeenCalledWith('Error fetching profiles', {
+        endpoint: 'https://eth-mainnet.g.alchemy.com/v2/<redacted>',
+        headers: { Authorization: '<redacted>', 'x-api-key': '<redacted>', accept: 'application/json' },
+      })
+    })
+
+    // A vesting's token is a symbol, not a secret.
+    it('should keep a token symbol', () => {
+      ErrorService.report('Error fetching vesting', { vesting: { token: 'MANA' } })
+      expect(loggerError).toHaveBeenCalledWith('Error fetching vesting', { vesting: { token: 'MANA' } })
+    })
+  })
+
+  describe('when its input cannot even be read', () => {
+    beforeEach(() => {
+      jest.spyOn(console, 'error').mockImplementation(() => undefined)
+    })
+
+    it('should not throw on extra info with a getter that throws', () => {
+      const extraInfo = {}
+      Object.defineProperty(extraInfo, 'broken', {
+        enumerable: true,
+        get() {
+          throw new Error('unreadable')
+        },
+      })
+      expect(() => ErrorService.report('Error creating event', extraInfo)).not.toThrow()
+      expect(loggerError).toHaveBeenCalledWith(
+        'Error creating event',
+        expect.objectContaining({ unserializable: expect.any(String) })
+      )
+    })
+
+    it('should not throw on a message that cannot become a string', () => {
+      expect(() => ErrorService.report(Object.create(null))).not.toThrow()
+      expect(() => ErrorService.report(Object.assign(new Error(), { message: Symbol('m') }))).not.toThrow()
+    })
+  })
+
   describe('when the extra info holds a bigint', () => {
     it('should log it as a string', () => {
       ErrorService.report('Error creating bid', { amount: BigInt(10) })

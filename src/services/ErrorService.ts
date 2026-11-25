@@ -3,7 +3,7 @@ import Rollbar from 'rollbar'
 
 import { isProdEnv } from '../utils/governanceEnvs'
 import logger from '../utils/logger'
-import { redactSecrets } from '../utils/redactSecrets'
+import { SECRET_KEY_NAME, redactSecrets } from '../utils/redactSecrets'
 
 const FILTERED_ERRORS = ['FETCH_ERROR', 'ACTION_REJECTED']
 
@@ -47,10 +47,12 @@ function messageOf(value: unknown): string {
 }
 
 /**
- * Makes a value safe to send and to log: Errors serialized, strings redacted, bigints (common in ethers values)
- * turned into strings, and anything past MAX_DEPTH cut, so the JSON logger can never throw on it.
+ * Makes a value safe to send and to log: Errors serialized, strings redacted, values under secret-looking keys
+ * (authorization, api_key…) blanked, bigints (common in ethers values) turned into strings, objects with a
+ * `toJSON` (dates, URLs, buffers) taken in their JSON form, and anything past `maxDepth` cut, so the JSON logger
+ * can never throw on it.
  */
-function serializeValue(value: unknown, depth = 0): unknown {
+function serializeValue(value: unknown, depth = 0, maxDepth = MAX_DEPTH): unknown {
   if (typeof value === 'string') {
     return redactSecrets(value)
   }
@@ -60,20 +62,31 @@ function serializeValue(value: unknown, depth = 0): unknown {
   if (value === null || typeof value !== 'object') {
     return value
   }
-  if (depth >= MAX_DEPTH) {
-    return value instanceof Error ? `${value.name}: ${redactSecrets(value.message)}` : '[Truncated]'
+  if (depth >= maxDepth) {
+    return value instanceof Error ? `${value.name}: ${redactSecrets(String(value.message))}` : '[Truncated]'
   }
   if (value instanceof Error) {
     return serializeError(value, depth)
   }
   if (Array.isArray(value)) {
-    return value.map((item) => serializeValue(item, depth + 1))
+    return value.map((item) => serializeValue(item, depth + 1, maxDepth))
   }
-  // Dates and the like know how to serialize themselves.
-  if (typeof (value as { toJSON?: unknown }).toJSON === 'function') {
-    return value
+  const { toJSON } = value as { toJSON?: unknown }
+  if (typeof toJSON === 'function') {
+    try {
+      return serializeValue(toJSON.call(value), depth + 1, maxDepth)
+    } catch {
+      return '[Unserializable]'
+    }
   }
-  return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, serializeValue(item, depth + 1)]))
+  return Object.fromEntries(
+    Object.entries(value).map(([key, item]) => [
+      key,
+      SECRET_KEY_NAME.test(key) && item !== undefined && item !== null
+        ? '<redacted>'
+        : serializeValue(item, depth + 1, maxDepth),
+    ])
+  )
 }
 
 /**
@@ -194,22 +207,6 @@ function redactFields<T extends Record<string, unknown>>(target: T | undefined, 
   }
 }
 
-function redactDeep(value: unknown, depth = 0): unknown {
-  if (typeof value === 'string') {
-    return redactSecrets(value)
-  }
-  if (value === null || typeof value !== 'object') {
-    return value
-  }
-  if (depth >= MAX_PAYLOAD_DEPTH) {
-    return '[Truncated]'
-  }
-  if (Array.isArray(value)) {
-    return value.map((item) => redactDeep(item, depth + 1))
-  }
-  return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, redactDeep(item, depth + 1)]))
-}
-
 /**
  * Runs on every payload just before it is sent, including what rollbar captures by itself (uncaught exceptions
  * and unhandled rejections), which never goes through report(). It has to be this late: rollbar copies the raw
@@ -228,14 +225,14 @@ export function redactPayload(payload: Rollbar.Dictionary) {
     const custom = payload.custom as Record<string, unknown> | undefined
     for (const key of Object.keys(custom || {})) {
       if (key in payload) {
-        payload[key] = redactDeep(payload[key])
+        payload[key] = serializeValue(payload[key], 0, MAX_PAYLOAD_DEPTH)
       }
     }
     if (custom) {
-      payload.custom = redactDeep(custom)
+      payload.custom = serializeValue(custom, 0, MAX_PAYLOAD_DEPTH)
     }
     if (payload.request) {
-      payload.request = redactDeep(payload.request)
+      payload.request = serializeValue(payload.request, 0, MAX_PAYLOAD_DEPTH)
     }
   } catch (error) {
     // rollbar stops calling a callback that throws, so this must not throw. What could not be redacted is not sent:
@@ -296,8 +293,14 @@ export class ErrorService {
 
   // Reports are made from inside callers' catch blocks, so reporting must never throw itself.
   public static report(errorOrMessage: string | Error, extraInfo?: Record<string, unknown>) {
-    const message = toMessage(errorOrMessage)
-    const serializedExtraInfo = serializeExtraInfo(errorOrMessage, extraInfo)
+    let message = 'Unserializable error report'
+    let serializedExtraInfo: Record<string, unknown> | undefined
+    try {
+      message = toMessage(errorOrMessage)
+      serializedExtraInfo = serializeExtraInfo(errorOrMessage, extraInfo)
+    } catch (error) {
+      serializedExtraInfo = { unserializable: `${error}` }
+    }
     if (isProdEnv()) {
       try {
         this.sendToRollbar(message, findError(errorOrMessage, extraInfo), serializedExtraInfo)

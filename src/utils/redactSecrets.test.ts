@@ -35,6 +35,36 @@ describe('redactSecrets', () => {
     })
   })
 
+  describe('when the text contains a Discord webhook url', () => {
+    it('should redact the token', () => {
+      expect(redactSecrets('POST https://discord.com/api/webhooks/123456789/abcDEF_-xyz failed')).toBe(
+        'POST https://discord.com/api/webhooks/123456789/<redacted> failed'
+      )
+    })
+  })
+
+  describe('when the url carries a token without a password', () => {
+    it('should redact it', () => {
+      expect(redactSecrets('https://ghp_token123@github.com/org/repo')).toBe('https://<redacted>@github.com/org/repo')
+    })
+  })
+
+  describe('when a query parameter name only ends in a secret word', () => {
+    it('should redact its value', () => {
+      expect(redactSecrets('https://api.test/?client_secret=s3&x-api-key=k3&auth=a3&page=2')).toBe(
+        'https://api.test/?client_secret=<redacted>&x-api-key=<redacted>&auth=<redacted>&page=2'
+      )
+    })
+  })
+
+  describe('when the text has secret fields in quoted JSON', () => {
+    it('should redact them and keep a token symbol', () => {
+      expect(redactSecrets('{"apiKey":"abc","client_secret":"s","token":"MANA"}')).toBe(
+        '{"apiKey":"<redacted>","client_secret":"<redacted>","token":"MANA"}'
+      )
+    })
+  })
+
   describe('when the text contains an apiKey query parameter', () => {
     it('should redact the parameter value', () => {
       expect(redactSecrets('https://score.snapshot.org/?apiKey=abc123&foo=bar')).toBe(

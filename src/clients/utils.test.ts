@@ -73,4 +73,19 @@ describe('queryGraphql', () => {
       expect(cancel).toHaveBeenCalled()
     })
   })
+
+  // The headers arriving in time is not enough: the timeout has to cover reading the body.
+  describe('when the server sends its headers and then stalls', () => {
+    it('should time out', async () => {
+      const stalled = new ReadableStream({
+        start(controller) {
+          controller.enqueue(new TextEncoder().encode('{"data":'))
+        },
+      })
+      jest.spyOn(global, 'fetch').mockResolvedValue(new Response(stalled, { status: 200 }))
+      await expect(queryGraphql('https://subgraph.test', { query: '{ x }' }, 20)).rejects.toThrow(
+        'timed out after 20ms'
+      )
+    })
+  })
 })
