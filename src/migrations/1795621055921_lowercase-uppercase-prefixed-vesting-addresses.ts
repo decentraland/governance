@@ -3,8 +3,8 @@ import { MigrationBuilder } from 'node-pg-migrate'
 import ProposalModel from '../entities/Proposal/model'
 
 // Two enacted proposals had a vesting address saved with an uppercase "0X" prefix
-// (e5518e9f-81d3-4ce1-b0e7-d60562620b0b and 4eb9ccee-aad5-48e5-bec8-c03a986ce5ed), which ethers reads as an ENS
-// name, so their vesting could not be read. Lowercasing keeps the same addresses, in the same order.
+// (a847c6e0-c6d6-11ec-90c9-11bf3c6f4ca1 and 2e207620-ba1d-11ec-8561-b591bf2cf0d0), which ethers reads as an ENS
+// name, so the batch vesting lookup could not read them. Lowercasing keeps the same addresses, in the same order.
 export async function up(pgm: MigrationBuilder): Promise<void> {
   pgm.sql(`
     UPDATE ${ProposalModel.tableName}
